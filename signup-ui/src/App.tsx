@@ -1,24 +1,56 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Inspector, InspectParams } from "react-dev-inspector";
+import { QueryClient, QueryClientProvider } from "react-query";
+
+import "./App.css";
+
+import { BrowserRouter } from "react-router-dom";
+
+import { HttpError } from "~services/api.service";
+
+import { AppRouter } from "./app/AppRouter";
+
+// Create a client
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 60 * 1000, // 60 seconds,
+      retry: (failureCount, error) => {
+        // Do not retry on 4xx error codes.
+        if (error instanceof HttpError && String(error.code).startsWith("4")) {
+          return false;
+        }
+        return failureCount !== 3;
+      },
+    },
+  },
+});
 
 function App() {
+  const isDev = process.env.NODE_ENV === "development";
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {isDev && (
+        <Inspector
+          // props see docs:
+          // https://github.com/zthxxx/react-dev-inspector#inspector-component-props
+          keys={["control", "shift", "c"]}
+          disableLaunchEditor={true}
+          onClickElement={({ codeInfo }: InspectParams) => {
+            if (!codeInfo?.absolutePath) return;
+            const { absolutePath, lineNumber, columnNumber } = codeInfo;
+            // you can change the url protocol if you are using in Web IDE
+            window.open(
+              `vscode://file/${absolutePath}:${lineNumber}:${columnNumber}`
+            );
+          }}
+        />
+      )}
+      <QueryClientProvider client={queryClient}>
+        <BrowserRouter>
+          <AppRouter />
+        </BrowserRouter>
+      </QueryClientProvider>
     </div>
   );
 }
