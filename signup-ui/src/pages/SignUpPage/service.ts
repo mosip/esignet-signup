@@ -1,6 +1,8 @@
 import { ApiService } from "~services/api.service";
 import {
   GenerateChallengeRequestDto,
+  RegisterRequestDto,
+  RegisterStatusResponseDto,
   SettingsDto,
   VerifyChallengeRequestDto,
 } from "~typings/types";
@@ -26,3 +28,16 @@ export const verifyChallenge = async (
     verifyChallenge
   ).then(({ data }) => data);
 };
+
+export const register = async (register: RegisterRequestDto) => {
+  return ApiService.post("/registration/register", register).then(
+    ({ data }) => data
+  );
+};
+
+export const getRegisterStatus =
+  async (): Promise<RegisterStatusResponseDto> => {
+    return ApiService.get<RegisterStatusResponseDto>(
+      "/registration/status"
+    ).then(({ data }) => data);
+  };
