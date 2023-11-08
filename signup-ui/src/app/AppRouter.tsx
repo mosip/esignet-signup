@@ -1,14 +1,17 @@
 import { lazy, ReactNode, Suspense } from "react";
 import { Route, Routes } from "react-router-dom";
 
-import { ACCOUNT_SETUP_ROUTE, SIGNUP_ROUTE } from "~constants/routes";
+import { SIGNUP_ROUTE, SOMETHING_WENT_WRONG } from "~constants/routes";
 import { lazyRetry } from "~utils/lazyRetry";
 import AccountSetupPage from "~pages/AccountSetupPage";
 import { SignUpProvider } from "~pages/SignUpPage/SignUpProvider";
 
 const SignUpPage = lazy(() => lazyRetry(() => import("~pages/SignUpPage")));
-const NotFoundErrorPage = lazy(() =>
-  lazyRetry(() => import("~pages/NotFoundErrorPage"))
+const UnderConstructionPage = lazy(() =>
+  lazyRetry(() => import("~pages/UnderConstructionPage"))
+);
+const SomethingWentWrongPage = lazy(() =>
+  lazyRetry(() => import("~pages/SomethingWentWrongPage"))
 );
 
 const WithSuspense = ({ children }: { children: ReactNode }) => (
@@ -29,8 +32,11 @@ export const AppRouter = () => {
             </SignUpProvider>
           }
         />
-        <Route path={ACCOUNT_SETUP_ROUTE} element={<AccountSetupPage />} />
-        <Route path="*" element={<NotFoundErrorPage />} />
+        <Route
+          path={SOMETHING_WENT_WRONG}
+          element={<SomethingWentWrongPage />}
+        />
+        <Route path="*" element={<UnderConstructionPage />} />
       </Routes>
     </WithSuspense>
   );
