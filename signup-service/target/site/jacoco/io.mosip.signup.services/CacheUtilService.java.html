@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CacheUtilService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">signup-service</a> &gt; <a href="index.source.html" class="el_package">io.mosip.signup.services</a> &gt; <span class="el_source">CacheUtilService.java</span></div><h1>CacheUtilService.java</h1><pre class="source lang-java linenums">package io.mosip.signup.services;
+
+import io.mosip.signup.dto.RegistrationTransaction;
+import io.mosip.signup.util.SignUpConstants;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.stereotype.Service;
+
+<span class="fc" id="L12">@Slf4j</span>
+@Service
+<span class="fc" id="L14">public class CacheUtilService {</span>
+    @Autowired
+    CacheManager cacheManager;
+
+    //---Setter---
+    @Cacheable(value = SignUpConstants.CHALLENGE_GENERATED, key = &quot;#transactionId&quot;)
+    public RegistrationTransaction setChallengeGeneratedTransaction(String transactionId,
+                                                                    RegistrationTransaction registrationTransaction) {
+<span class="fc" id="L22">        return registrationTransaction;</span>
+    }
+
+    @CacheEvict(value = SignUpConstants.CHALLENGE_GENERATED, key = &quot;#transactionId&quot;)
+    @Cacheable(value = SignUpConstants.CHALLENGE_VERIFIED, key = &quot;#transactionId&quot;)
+    public RegistrationTransaction setChallengeVerifiedTransaction(String transactionId,
+                                                                   RegistrationTransaction registrationTransaction) {
+<span class="fc" id="L29">        return registrationTransaction;</span>
+    }
+
+    @CacheEvict(value = SignUpConstants.CHALLENGE_VERIFIED, key = &quot;#transactionId&quot;)
+    @Cacheable(value = SignUpConstants.REGISTERED_CACHE, key = &quot;#transactionId&quot;)
+    public RegistrationTransaction setRegisteredTransaction(String transactionId,
+                                                 RegistrationTransaction registrationTransaction) {
+<span class="fc" id="L36">        return registrationTransaction;</span>
+    }
+
+    //---Getter---
+    public RegistrationTransaction getChallengeGeneratedTransaction(String transactionId) {
+<span class="fc" id="L41">        return cacheManager.getCache(SignUpConstants.CHALLENGE_GENERATED).get(transactionId, RegistrationTransaction.class);</span>
+    }
+
+    public RegistrationTransaction getChallengeVerifiedTransaction(String transactionId) {
+<span class="fc" id="L45">        return cacheManager.getCache(SignUpConstants.CHALLENGE_VERIFIED).get(transactionId, RegistrationTransaction.class);</span>
+    }
+
+    public RegistrationTransaction getRegisteredTransaction(String transactionId) {
+<span class="fc" id="L49">        return cacheManager.getCache(SignUpConstants.REGISTERED_CACHE).get(transactionId, RegistrationTransaction.class);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

@@ -1,0 +1,4 @@
+io/mosip/signup/services/RegistrationServiceTest.class
+io/mosip/signup/controllers/SignUpSettingsControllerTest.class
+io/mosip/signup/controllers/RegistrationControllerTest.class
+io/mosip/signup/services/CacheUtilServiceTest.class

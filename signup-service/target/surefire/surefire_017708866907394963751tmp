@@ -1,0 +1,13 @@
+#surefire_0
+#Fri Dec 01 11:14:50 ICT 2023
+basedir=/home/rathanak/MPTC_Work/mosip/esignet-signup/signup-service
+sonar.projectKey=mosip_esignet-signup
+user.dir=/home/rathanak/MPTC_Work/mosip/esignet-signup/signup-service
+sonar.host.url=https\://sonarcloud.io
+sonar.login=
+git.build.version=0.0.1-SNAPSHOT
+git.commit.id.full=e6db33bba646d8c476e6d8cee6e4d8e23daedb56
+git.commit.id.abbrev=e6db33b
+sonar.organization=
+git.build.time=2023-12-01T11\:14\:49+0700
+localRepository=/home/rathanak/.m2/repository

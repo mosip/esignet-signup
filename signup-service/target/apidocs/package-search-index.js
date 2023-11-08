@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"io.mosip.signup"},{"l":"io.mosip.signup.config"},{"l":"io.mosip.signup.controllers"},{"l":"io.mosip.signup.dto"},{"l":"io.mosip.signup.exception"},{"l":"io.mosip.signup.services"},{"l":"io.mosip.signup.util"},{"l":"io.mosip.signup.validator"}]

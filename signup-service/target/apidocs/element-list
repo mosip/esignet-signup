@@ -1,0 +1,8 @@
+io.mosip.signup
+io.mosip.signup.config
+io.mosip.signup.controllers
+io.mosip.signup.dto
+io.mosip.signup.exception
+io.mosip.signup.services
+io.mosip.signup.util
+io.mosip.signup.validator

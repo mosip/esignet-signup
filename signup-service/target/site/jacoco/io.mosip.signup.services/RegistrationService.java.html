@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RegistrationService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">signup-service</a> &gt; <a href="index.source.html" class="el_package">io.mosip.signup.services</a> &gt; <span class="el_source">RegistrationService.java</span></div><h1>RegistrationService.java</h1><pre class="source lang-java linenums">package io.mosip.signup.services;
+
+import io.mosip.esignet.core.util.IdentityProviderUtil;
+import io.mosip.signup.dto.*;
+import io.mosip.signup.exception.ChallengeFailedException;
+import io.mosip.signup.exception.InvalidIdentifierException;
+import io.mosip.signup.exception.InvalidTransactionException;
+import io.mosip.signup.exception.SignUpException;
+import io.mosip.signup.util.ActionStatus;
+import io.mosip.signup.util.ErrorConstants;
+import io.mosip.signup.util.SignUpConstants;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
+
+import io.mosip.signup.exception.CaptchaException;
+import io.mosip.signup.exception.GenerateChallengeException;
+
+@Service
+<span class="fc" id="L23">@Slf4j</span>
+<span class="fc" id="L24">public class RegistrationService {</span>
+
+    @Autowired
+    CacheUtilService cacheUtilService;
+
+    @Autowired
+    HttpServletResponse response;
+
+    @Autowired
+    GoogleRecaptchaValidatorService googleRecaptchaValidatorService;
+
+    @Autowired
+    ChallengeManagerService challengeManagerService;
+
+    @Value(&quot;${mosip.signup.cookie.max-age}&quot;)
+    private int cookieMaxAge;
+
+    @Value(&quot;${mosip.signup.challenge.resend-attempt}&quot;)
+    private int resendAttempts;
+
+    @Value(&quot;${mosip.signup.challenge.resend-delay}&quot;)
+    private long resendDelay;
+
+    public VerifyChallengeResponse verifyChallenge(VerifyChallengeRequest verifyChallengeRequest,
+                                                   String transactionId) throws SignUpException {
+<span class="fc" id="L49">        RegistrationTransaction transaction = cacheUtilService.getChallengeGeneratedTransaction(transactionId);</span>
+<span class="fc bfc" id="L50" title="All 2 branches covered.">        if(transaction == null) {</span>
+<span class="fc" id="L51">            log.error(&quot;verify-challenge failed: transaction null&quot;);</span>
+<span class="fc" id="L52">            throw new InvalidTransactionException();</span>
+        }
+<span class="fc bfc" id="L54" title="All 2 branches covered.">        if(!verifyChallengeRequest.getIdentifier().equals(transaction.getIdentifier())) {</span>
+<span class="fc" id="L55">            log.error(&quot;verify-challenge failed: invalid identifier&quot;);</span>
+<span class="fc" id="L56">            throw new InvalidIdentifierException();</span>
+        }
+
+<span class="fc" id="L59">        String challengeHash = IdentityProviderUtil.generateB64EncodedHash(IdentityProviderUtil.ALGO_SHA3_256, verifyChallengeRequest.getChallengeInfo().getChallenge());</span>
+<span class="fc bfc" id="L60" title="All 2 branches covered.">        if(!challengeHash.equals(transaction.getChallengeHash())) {</span>
+<span class="fc" id="L61">            log.error(&quot;verify-challenge failed: challenge not match&quot;);</span>
+<span class="fc" id="L62">            throw new ChallengeFailedException();</span>
+        }
+
+<span class="fc" id="L65">        cacheUtilService.setChallengeVerifiedTransaction(transactionId, transaction);</span>
+<span class="fc" id="L66">        VerifyChallengeResponse verifyChallengeResponse = new VerifyChallengeResponse();</span>
+<span class="fc" id="L67">        verifyChallengeResponse.setStatus(ActionStatus.SUCCESS);</span>
+<span class="fc" id="L68">        return verifyChallengeResponse;</span>
+    }
+
+    public GenerateChallengeResponse generateChallenge(
+            GenerateChallengeRequest generateChallengeRequest, String transactionId)
+            throws SignUpException {
+<span class="fc bfc" id="L74" title="All 2 branches covered.">        if (!googleRecaptchaValidatorService.validateCaptcha(generateChallengeRequest.getCaptchaToken())) {</span>
+<span class="fc" id="L75">            log.error(&quot;generate-challenge failed: invalid captcha&quot;);</span>
+<span class="fc" id="L76">            throw new CaptchaException(ErrorConstants.INVALID_CAPTCHA);</span>
+        }
+
+<span class="fc" id="L79">        String identifier = generateChallengeRequest.getIdentifier();</span>
+<span class="fc" id="L80">        RegistrationTransaction transaction = null;</span>
+<span class="fc bfc" id="L81" title="All 2 branches covered.">        if (!transactionId.isEmpty()) {</span>
+<span class="fc" id="L82">            transaction = cacheUtilService.getChallengeGeneratedTransaction(transactionId);</span>
+<span class="fc" id="L83">            validateTransaction(transaction, identifier);</span>
+        }
+
+<span class="fc bfc" id="L86" title="All 2 branches covered.">        if(transaction == null) {</span>
+<span class="fc" id="L87">            transactionId = IdentityProviderUtil.createTransactionId(null);</span>
+<span class="fc" id="L88">            transaction = new RegistrationTransaction(identifier, transactionId);</span>
+        }
+
+        // generate Challenge
+<span class="fc" id="L92">        String challenge = challengeManagerService.generateChallenge(transaction);</span>
+<span class="fc" id="L93">        String challengeHash = IdentityProviderUtil.generateB64EncodedHash(IdentityProviderUtil.ALGO_SHA3_256, challenge);</span>
+<span class="fc" id="L94">        addCookieResponse(transactionId);</span>
+<span class="fc" id="L95">        transaction.setChallengeHash(challengeHash);</span>
+<span class="fc" id="L96">        transaction.increaseAttempt();</span>
+<span class="fc" id="L97">        cacheUtilService.setChallengeGeneratedTransaction(transactionId, transaction);</span>
+<span class="fc" id="L98">        return new GenerateChallengeResponse(ActionStatus.SUCCESS);</span>
+    }
+
+    public RegistrationStatusResponse getRegistrationStatus(String transactionId)
+            throws SignUpException {
+<span class="fc bfc" id="L103" title="All 4 branches covered.">        if (transactionId == null || transactionId.isEmpty())</span>
+<span class="fc" id="L104">            throw new InvalidTransactionException();</span>
+
+<span class="fc" id="L106">        RegistrationTransaction registrationTransaction = cacheUtilService.getRegisteredTransaction(</span>
+                transactionId);
+<span class="fc bfc" id="L108" title="All 2 branches covered.">        if (registrationTransaction == null)</span>
+<span class="fc" id="L109">            throw new InvalidTransactionException();</span>
+
+<span class="fc" id="L111">        RegistrationStatusResponse registrationStatusResponse = new RegistrationStatusResponse();</span>
+<span class="fc" id="L112">        registrationStatusResponse.setStatus(registrationTransaction.getRegistrationStatus());</span>
+<span class="fc" id="L113">        return registrationStatusResponse;</span>
+    }
+
+    private void validateTransaction(RegistrationTransaction transaction, String identifier) {
+<span class="fc bfc" id="L117" title="All 2 branches covered.">        if(transaction == null) {</span>
+<span class="fc" id="L118">            log.error(&quot;generate-challenge failed: validate transaction null&quot;);</span>
+<span class="fc" id="L119">            throw new InvalidTransactionException();</span>
+        }
+
+<span class="fc bfc" id="L122" title="All 2 branches covered.">        if(!transaction.getIdentifier().equals(identifier)) {</span>
+<span class="fc" id="L123">            log.error(&quot;generate-challenge failed: invalid identifier&quot;);</span>
+<span class="fc" id="L124">            throw new InvalidIdentifierException();</span>
+        }
+
+<span class="fc bfc" id="L127" title="All 2 branches covered.">        if(transaction.getChallengeRetryAttempts() &gt;= resendAttempts) {</span>
+<span class="fc" id="L128">            log.error(&quot;generate-challenge failed: too many attempts&quot;);</span>
+<span class="fc" id="L129">            throw new GenerateChallengeException(ErrorConstants.TOO_MANY_ATTEMPTS);</span>
+        }
+
+<span class="fc bfc" id="L132" title="All 2 branches covered.">        if(transaction.getLastRetryToNow() &lt;= resendDelay) {</span>
+<span class="fc" id="L133">            log.error(&quot;generate-challenge failed: too early attempts&quot;);</span>
+<span class="fc" id="L134">            throw new GenerateChallengeException(ErrorConstants.TOO_EARLY_ATTEMPTS);</span>
+        }
+<span class="fc" id="L136">    }</span>
+
+    private void addCookieResponse(String transactionId) {
+<span class="fc" id="L139">        Cookie cookie = new Cookie(SignUpConstants.TRANSACTION_ID, transactionId);</span>
+<span class="fc" id="L140">        cookie.setMaxAge(cookieMaxAge); // 60 = 1 minute</span>
+<span class="fc" id="L141">        cookie.setHttpOnly(true);</span>
+<span class="fc" id="L142">        cookie.setSecure(true);</span>
+<span class="fc" id="L143">        response.addCookie(cookie);</span>
+<span class="fc" id="L144">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

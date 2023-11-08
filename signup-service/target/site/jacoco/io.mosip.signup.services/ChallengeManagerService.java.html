@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ChallengeManagerService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">signup-service</a> &gt; <a href="index.source.html" class="el_package">io.mosip.signup.services</a> &gt; <span class="el_source">ChallengeManagerService.java</span></div><h1>ChallengeManagerService.java</h1><pre class="source lang-java linenums">package io.mosip.signup.services;
+
+import io.mosip.esignet.core.util.IdentityProviderUtil;
+import io.mosip.signup.dto.ApiChallengeRequest;
+import io.mosip.signup.dto.RegistrationTransaction;
+import io.mosip.signup.dto.RestRequestWrapper;
+import io.mosip.signup.dto.RestResponseWrapper;
+import io.mosip.signup.exception.SignUpException;
+import io.mosip.signup.util.ErrorConstants;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+import java.util.LinkedHashMap;
+
+@Service
+<span class="fc" id="L20">@Slf4j</span>
+<span class="fc" id="L21">public class ChallengeManagerService {</span>
+    @Autowired
+    @Qualifier(&quot;selfTokenRestTemplate&quot;)
+    private RestTemplate selfTokenRestTemplate;
+
+    @Value(&quot;${mosip.signup.generate-challenge.endpoint}&quot;)
+    private String generateChallengeUrl;
+
+    public String generateChallenge(RegistrationTransaction transaction) throws SignUpException {
+<span class="fc" id="L30">        ApiChallengeRequest apiChallengeRequest = new ApiChallengeRequest();</span>
+<span class="fc" id="L31">        apiChallengeRequest.setKey(transaction.getChallengeTransactionId());</span>
+<span class="fc" id="L32">        RestRequestWrapper&lt;ApiChallengeRequest&gt; restRequest = new RestRequestWrapper&lt;&gt;();</span>
+<span class="fc" id="L33">        restRequest.setRequesttime(IdentityProviderUtil.getUTCDateTime());</span>
+<span class="fc" id="L34">        restRequest.setRequest(apiChallengeRequest);</span>
+<span class="fc" id="L35">        RestResponseWrapper&lt;LinkedHashMap&lt;String, String&gt;&gt; restResponseWrapper = (RestResponseWrapper&lt;LinkedHashMap&lt;String, String&gt;&gt;) selfTokenRestTemplate</span>
+<span class="fc" id="L36">                .postForObject(generateChallengeUrl, restRequest, RestResponseWrapper.class);</span>
+<span class="fc bfc" id="L37" title="All 2 branches covered.">        if (restResponseWrapper == null) {</span>
+<span class="fc" id="L38">            log.error(&quot;generate-challenge Failed wrapper returned null&quot;);</span>
+<span class="fc" id="L39">            throw new SignUpException(ErrorConstants.SEND_CHALLENGE_FAILED);</span>
+        }
+
+<span class="fc bfc" id="L42" title="All 2 branches covered.">        if(restResponseWrapper.getErrors() != null) {</span>
+<span class="fc" id="L43">            log.error(&quot;generate-challenge Failed wrapper returned errors {}!&quot;, restResponseWrapper.getErrors());</span>
+<span class="fc" id="L44">            throw new SignUpException(ErrorConstants.SEND_CHALLENGE_FAILED);</span>
+        }
+
+<span class="fc" id="L47">        String challenge = restResponseWrapper.getResponse().get(&quot;otp&quot;);</span>
+<span class="pc bpc" id="L48" title="1 of 4 branches missed.">        if (challenge == null || challenge.isEmpty()) {</span>
+<span class="fc" id="L49">            log.error(&quot;generate-challenge Failed challenge returned null&quot;);</span>
+<span class="fc" id="L50">            throw new SignUpException(ErrorConstants.SEND_CHALLENGE_FAILED);</span>
+        }
+
+<span class="fc" id="L53">        return challenge;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

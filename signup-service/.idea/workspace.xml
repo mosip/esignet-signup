@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="46e54664-91a8-4e73-bb99-0ccd624dee39" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application-default.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application-default.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../signup-ui/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/../signup-ui/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../signup-ui/src/pages/SignUpPage/SignUpPage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../signup-ui/src/pages/SignUpPage/SignUpPage.tsx" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="AnnotationType" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 4
+}</component>
+  <component name="ProjectId" id="2Xy4F54R4jOqmgV2OUd9BWFe74E" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.SignUpServiceApplication.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.signup in signup-service.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;develop&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/rathanak/MPTC_Work/BPMN/bpmn-backend&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.3643678&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="io.mosip.signup.dto" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Application.SignUpServiceApplication">
+    <configuration name="SignUpServiceApplication" type="Application" factoryName="Application">
+      <classpathModifications>
+        <entry path="$PROJECT_DIR$/../../jar_files/kernel-auth-adapter-1.2.1-es-SNAPSHOT.jar" />
+      </classpathModifications>
+      <option name="MAIN_CLASS_NAME" value="io.mosip.signup.SignUpServiceApplication" />
+      <module name="signup-service" />
+      <extension name="software.aws.toolkits.jetbrains.core.execution.JavaAwsConnectionExtension">
+        <option name="credential" />
+        <option name="region" />
+        <option name="useCurrentConnection" value="false" />
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="java in signup-service" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <classpathModifications>
+        <entry exclude="true" path="$USER_HOME$/Downloads/kernel-auth-adapter-1.2.1-es-SNAPSHOT.jar" />
+      </classpathModifications>
+      <module name="signup-service" />
+      <extension name="software.aws.toolkits.jetbrains.core.execution.JavaAwsConnectionExtension">
+        <option name="credential" />
+        <option name="region" />
+        <option name="useCurrentConnection" value="false" />
+      </extension>
+      <option name="MAIN_CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="TEST_OBJECT" value="directory" />
+      <dir value="$PROJECT_DIR$/src/test/java" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="signup in signup-service" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <classpathModifications>
+        <entry exclude="true" path="$USER_HOME$/Downloads/kernel-auth-adapter-1.2.1-es-SNAPSHOT.jar" />
+      </classpathModifications>
+      <module name="signup-service" />
+      <extension name="software.aws.toolkits.jetbrains.core.execution.JavaAwsConnectionExtension">
+        <option name="credential" />
+        <option name="region" />
+        <option name="useCurrentConnection" value="false" />
+      </extension>
+      <option name="MAIN_CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="TEST_OBJECT" value="directory" />
+      <dir value="$PROJECT_DIR$/src/test/java/io/mosip/signup" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Application.SignUpServiceApplication" />
+      <item itemvalue="JUnit.signup in signup-service" />
+      <item itemvalue="JUnit.java in signup-service" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.signup in signup-service" />
+        <item itemvalue="JUnit.java in signup-service" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="jdk-11.0.21-corretto-11.0.21-8336523bb0d9-3a399477" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="46e54664-91a8-4e73-bb99-0ccd624dee39" name="Changes" comment="" />
+      <created>1699587879634</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1699587879634</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/signup_service$signup_in_signup_service.ic" NAME="signup in signup-service Coverage Results" MODIFIED="1700724563040" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+  </component>
+</project>

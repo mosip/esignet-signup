@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GoogleRecaptchaValidatorService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">signup-service</a> &gt; <a href="index.source.html" class="el_package">io.mosip.signup.services</a> &gt; <span class="el_source">GoogleRecaptchaValidatorService.java</span></div><h1>GoogleRecaptchaValidatorService.java</h1><pre class="source lang-java linenums">package io.mosip.signup.services;
+
+import io.mosip.esignet.api.spi.CaptchaValidator;
+import io.mosip.signup.dto.ReCaptchaResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
+
+@ConditionalOnProperty(value = &quot;mosip.signup.integration.captcha-validator&quot;, havingValue = &quot;GoogleRecaptchaValidatorService&quot;)
+@Component
+<span class="fc" id="L17">@Slf4j</span>
+<span class="nc" id="L18">public class GoogleRecaptchaValidatorService implements CaptchaValidator {</span>
+
+    @Value(&quot;${mosip.signup.send-challenge.captcha-required}&quot;)
+    private boolean requiredCaptcha;
+
+    @Bean
+    public RestTemplate restTemplate() {
+<span class="nc" id="L25">        return new RestTemplate();</span>
+    }
+
+    @Value(&quot;${mosip.signup.captcha-validator.url}&quot;)
+    private String captchaVerifyUrl;
+
+    @Value(&quot;${mosip.signup.captcha-validator.secret}&quot;)
+    private String verifierSecret;
+
+    @Autowired
+    private RestTemplate restTemplate;
+
+    @Override
+    public boolean validateCaptcha(String captchaToken) {
+
+<span class="nc bnc" id="L40" title="All 2 branches missed.">        if (!requiredCaptcha) return true;</span>
+
+<span class="nc" id="L42">        MultiValueMap&lt;String, String&gt; param = new LinkedMultiValueMap&lt;&gt;();</span>
+<span class="nc" id="L43">        param.add(&quot;secret&quot;, verifierSecret);</span>
+<span class="nc" id="L44">        param.add(&quot;response&quot;, captchaToken.trim());</span>
+
+<span class="nc" id="L46">        ReCaptchaResponse reCaptchaResponse = restTemplate.postForObject(captchaVerifyUrl, param,</span>
+                ReCaptchaResponse.class);
+
+<span class="nc bnc" id="L49" title="All 4 branches missed.">        if(reCaptchaResponse != null &amp;&amp; reCaptchaResponse.isSuccess()) {</span>
+<span class="nc" id="L50">            return true;</span>
+        }
+
+<span class="nc bnc" id="L53" title="All 2 branches missed.">        log.error(&quot;Recaptcha validation failed with errors : {}&quot;, reCaptchaResponse != null ?</span>
+<span class="nc" id="L54">                reCaptchaResponse.getErrorCodes() : &quot;Response is null&quot;);</span>
+<span class="nc" id="L55">        return false;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>
