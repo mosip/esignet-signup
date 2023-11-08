@@ -1,9 +1,8 @@
 import { lazy, ReactNode, Suspense } from "react";
 import { Route, Routes } from "react-router-dom";
 
-import { ACCOUNT_SETUP_ROUTE, SIGNUP_ROUTE } from "~constants/routes";
+import { SIGNUP_ROUTE } from "~constants/routes";
 import { lazyRetry } from "~utils/lazyRetry";
-import AccountSetupPage from "~pages/AccountSetupPage";
 import { SignUpProvider } from "~pages/SignUpPage/SignUpProvider";
 
 const SignUpPage = lazy(() => lazyRetry(() => import("~pages/SignUpPage")));
@@ -29,7 +28,6 @@ export const AppRouter = () => {
             </SignUpProvider>
           }
         />
-        <Route path={ACCOUNT_SETUP_ROUTE} element={<AccountSetupPage />} />
         <Route path="*" element={<NotFoundErrorPage />} />
       </Routes>
     </WithSuspense>

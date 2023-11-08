@@ -4,11 +4,13 @@ import { ApiError } from "~typings/core";
 import {
   GenerateChallengeRequestDto,
   GenerateChallengeResponseDto,
+  RegisterRequestDto,
+  RegisterResponseDto,
   VerifyChallengeRequestDto,
   VerifyChallengeResponseDto,
 } from "~typings/types";
 
-import { generateChallenge, verifyChallenge } from "./service";
+import { generateChallenge, register, verifyChallenge } from "./service";
 
 export const useGenerateChallenge = () => {
   const generateChallengeMutation = useMutation<
@@ -32,4 +34,14 @@ export const useVerifyChallenge = () => {
   );
 
   return { verifyChallengeMutation };
+};
+
+export const useRegister = () => {
+  const registerMutation = useMutation<
+    RegisterResponseDto,
+    ApiError,
+    RegisterRequestDto
+  >((registerRequestDto: RegisterRequestDto) => register(registerRequestDto));
+
+  return { registerMutation };
 };

@@ -9,8 +9,10 @@ import { Form } from "~components/ui/form";
 import { SettingsDto } from "~typings/types";
 
 import AccountSetup from "./AccountSetup";
+import { AccountSetupProgress } from "./AccountSetup/components/AccountSetupProgress";
 import Otp from "./Otp";
 import Phone from "./Phone";
+import RegistrationStatus from "./RegistrationStatus";
 import { useSignUpContext } from "./SignUpContext";
 import Status from "./Status";
 
@@ -22,7 +24,7 @@ export interface SignUpForm {
   fullNameInKhmer: string;
   password: string;
   confirmPassword: string;
-  termAndPolicy: false;
+  consent: false;
 }
 
 export enum SignUpSteps {
@@ -83,7 +85,7 @@ export const SignUpPage = ({ settings }: SignUpPageProps) => {
               new RegExp(settings.response.configs["password.pattern"]),
               "Please enter a valid password"
             ),
-          termAndPolicy: z.literal<boolean>(true),
+          consent: z.literal<boolean>(true),
         })
         .refine(
           ({ password, confirmPassword }) => password === confirmPassword,
@@ -92,6 +94,8 @@ export const SignUpPage = ({ settings }: SignUpPageProps) => {
             message: "Password does not match",
           }
         ),
+      // Step 5 - Register Status Validation
+      z.object({}),
     ];
   }, [settings]);
 
@@ -105,7 +109,7 @@ export const SignUpPage = ({ settings }: SignUpPageProps) => {
     fullNameInKhmer: "",
     password: "",
     confirmPassword: "",
-    termAndPolicy: false,
+    consent: false,
   };
 
   const methods = useForm({
@@ -116,11 +120,6 @@ export const SignUpPage = ({ settings }: SignUpPageProps) => {
   });
 
   const { reset } = methods;
-
-  const handleReset = () => {
-    setActiveStep(0);
-    reset();
-  };
 
   const getSignUpStepContent = (step: number) => {
     switch (step) {
@@ -138,16 +137,13 @@ export const SignUpPage = ({ settings }: SignUpPageProps) => {
   };
 
   return (
-    <div>
+    <div className="h-screen flex justify-center items-center">
       {activeStep === steps.length ? (
-        <Button onClick={handleReset}>reset</Button>
+        // <Button onClick={handleReset}>reset</Button>
+        <RegistrationStatus />
       ) : (
         <Form {...methods}>
-          <form>
-            <div className="h-screen flex items-center">
-              {settings && getSignUpStepContent(activeStep)}
-            </div>
-          </form>
+          <form>{settings && getSignUpStepContent(activeStep)}</form>
         </Form>
       )}
     </div>
