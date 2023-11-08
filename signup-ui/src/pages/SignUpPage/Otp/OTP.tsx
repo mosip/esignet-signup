@@ -41,7 +41,7 @@ export const OTP = ({ methods }: OTPProps) => {
   const pinInputRef = useRef<PinInput | null>(null);
   const { control, getValues, setValue } = useFormContext();
   const { setActiveStep } = useSignUpContext();
-  const { trigger, reset } = methods;
+  const { trigger, reset, formState } = methods;
   const [resendAttempts, setResendAttempts] = useState<number>(0);
   const [enableResendOtp, setEnableResendOtp] = useState<boolean>(false);
   const [timeLeft, setTimeLeft] = useTimer(0, setEnableResendOtp);
@@ -77,7 +77,7 @@ export const OTP = ({ methods }: OTPProps) => {
   };
 
   const handleOtpChange = (otp: string) => {
-    setValue("otp", otp, { shouldTouch: true });
+    setValue("otp", otp, { shouldValidate: true, shouldTouch: true });
   };
 
   const handleResendOtp = useCallback(
@@ -276,6 +276,7 @@ export const OTP = ({ methods }: OTPProps) => {
                 variant="secondary"
                 className="w-full p-4 font-semibold"
                 onClick={handleContinue}
+                disabled={!formState.isValid}
               >
                 Continue
               </Button>
