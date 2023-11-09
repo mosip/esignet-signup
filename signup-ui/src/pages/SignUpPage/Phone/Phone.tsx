@@ -80,12 +80,12 @@ export const Phone = ({ methods }: PhoneProps) => {
   );
 
   return (
-    <div className="container max-w-lg border-[1px] rounded-2xl bg-white p-0">
-      <div className="w-full flex items-center justify-items-start my-4">
+    <div className="login-container container max-w-lg border-[1px] rounded-2xl bg-white p-0">
+      <div className="w-full flex items-center justify-items-start my-4 panel-header">
         <Icons.back className="ml-4 cursor-pointer" />
-        <h3 className="w-full font-medium text-center">
+        <label className="w-full font-medium main-label min-padding-left">
           Please enter your mobile number to continue
-        </h3>
+        </label>
       </div>
       <hr />
       {/* Error message */}
@@ -124,7 +124,7 @@ export const Phone = ({ methods }: PhoneProps) => {
                       {...field}
                       id="phone_input"
                       type="tel"
-                      placeholder="Enter a 8-digit phone number"
+                      placeholder="Enter a 8-digit mobile number"
                       className="outline-none border-none"
                     />
                   </FormControl>
@@ -132,15 +132,22 @@ export const Phone = ({ methods }: PhoneProps) => {
               )}
             />
           </div>
+          <div
+            id="captcha"
+            className="flex items-center justify-center"
+          >
           {/* I'm not a robot checkbox */}
           <ReCAPTCHA
             ref={_reCaptchaRef}
             onChange={handleReCaptchaChange}
             onExpired={handleReCaptchaExpired}
+            className="recaptcha"
             sitekey={process.env.REACT_APP_CAPTCHA_SITE_KEY ?? ""}
           />
+          </div>
         </div>
         <Button
+          id="submitButton"
           className="w-full p-4 font-semibold text-white"
           variant="secondary"
           onClick={handleContinue}

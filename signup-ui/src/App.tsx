@@ -9,6 +9,8 @@ import { HttpError } from "~services/api.service";
 
 import { AppRouter } from "./app/AppRouter";
 
+import NavBar from "~components/ui/nav-bar";
+import Footer from "~components/ui/footer";
 // Create a client
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -47,9 +49,11 @@ function App() {
         />
       )}
       <QueryClientProvider client={queryClient}>
+        <NavBar />
         <BrowserRouter>
           <AppRouter />
         </BrowserRouter>
+        <Footer />
       </QueryClientProvider>
     </div>
   );
