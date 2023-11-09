@@ -88,9 +88,17 @@ export const SignUpPage = () => {
       ) : (
         <FormProvider {...methods}>
           <form>
-            <div className="h-screen flex items-center">
-              {isLoading && <div>Loading</div>}
-              {settings && <>{getSignUpStepContent(activeStep)}</>}
+            <div className="grid grid-cols-12 gap-0">
+              <div className="col-span-2">
+                <img className="left-1 top-1" src="images/top.png" />
+              </div>
+              <div className="col-span-8 flex h-[calc(100vh-13.6vh)] items-center">
+                {isLoading && <div>Loading</div>}
+                {settings && <>{getSignUpStepContent(activeStep)}</>}
+              </div>
+              <div className="col-span-2 absolute bottom-0 right-0">
+                <img className="" src="images/bottom.png" />
+              </div>
             </div>
           </form>
         </FormProvider>
