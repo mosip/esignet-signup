@@ -121,7 +121,7 @@ export const Phone = ({ methods }: PhoneProps) => {
               id="phone"
               className="flex items-center justify-center border-[1px] border-input ring-offset-background rounded-md"
             >
-              <span className="text-muted-foreground border-r-[1px] border-input px-3">
+              <span className="text-muted-foreground/60 border-r-[1px] border-input px-3">
                 +855
               </span>
               <FormField
@@ -153,13 +153,7 @@ export const Phone = ({ methods }: PhoneProps) => {
               />
             </div>
           </div>
-          <Button
-            id="submitButton"
-            className="w-full p-4 font-semibold text-white"
-            variant="secondary"
-            onClick={handleContinue}
-            disabled={!formState.isValid}
-          >
+          <Button onClick={handleContinue} disabled={!formState.isValid}>
             Continue
           </Button>
         </div>
