@@ -23,11 +23,6 @@ body {
   font-weight: 700;
 }
 
-.recaptcha {
-  padding-top: 15px !important;
-  transform: scale(1);
-}
-
 .min-padding-left {
   padding-left: 10px !important;
 }
@@ -131,5 +126,12 @@ body {
     font-feature-settings:
       "rlig" 1,
       "calt" 1;
+  }
+}
+
+@layer components {
+  .recaptcha {
+    padding-top: 15px !important;
+    transform: scale(1);
   }
 }

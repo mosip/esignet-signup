@@ -9,7 +9,7 @@ const Step = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      "px-0 container max-w-md rounded-[20px] shadow-[0_3px_10px_rgb(0,0,0,0.2)]",
+      "px-0 container max-w-lg rounded-[20px] bg-white shadow-[0_4px_10px_rgb(0,0,0,0.1)]",
       className
     )}
     {...props}
@@ -60,7 +60,7 @@ const StepContent = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => (
-  <div ref={ref} className={cn("m-6 p-6 pt-0", className)} {...props} />
+  <div ref={ref} className={cn("p-6 pt-0", className)} {...props} />
 ));
 StepContent.displayName = "StepContent";
 
