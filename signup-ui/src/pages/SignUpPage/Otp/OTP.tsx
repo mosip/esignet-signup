@@ -209,14 +209,16 @@ export const OTP = ({ methods }: OTPProps) => {
               className="absolute left-0 ml-4 cursor-pointer"
               onClick={handleBack}
             />
-            <h3 className="w-full font-medium text-center">Enter OTP</h3>
+            <h3 className="w-full font-bold text-[26px] text-center">
+              Enter OTP
+            </h3>
           </StepTitle>
-          <StepDescription>
-            <div className="text-gray-500">
+          <StepDescription className="w-full py-4 tracking-normal">
+            <div className="text-muted-neutral-gray">
               Please enter {settings?.response.configs["otp.length"]}-digit OTP
               received on your number
             </div>
-            <div className="text-primary">
+            <div className="text-muted-dark-gray">
               <span>+855</span>{" "}
               <span>{maskPhoneNumber(getValues("phone"), 4)}</span>
             </div>
@@ -285,7 +287,6 @@ export const OTP = ({ methods }: OTPProps) => {
                   )}
                 />
                 <Button
-                  variant="secondary"
                   className="w-full p-4 font-semibold"
                   onClick={handleContinue}
                   disabled={!formState.isValid}
@@ -301,7 +302,7 @@ export const OTP = ({ methods }: OTPProps) => {
                   </div>
                   <Button
                     variant="link"
-                    className="font-bold text-secondary"
+                    className="font-bold text-secondary disabled:bg-white disabled:text-muted"
                     disabled={
                       !enableResendOtp ||
                       resendAttempts === 0 ||
