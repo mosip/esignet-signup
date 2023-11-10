@@ -4,6 +4,8 @@ import { cva, type VariantProps } from "class-variance-authority";
 
 import { cn } from "~utils/cn";
 
+import { Icons } from "./icons";
+
 const buttonVariants = cva(
   "inline-flex items-center justify-center whitespace-nowrap h-[62px] text-lg rounded-lg font-bold ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:bg-muted disabled:pointer-events-none",
   {
@@ -17,7 +19,7 @@ const buttonVariants = cva(
         secondary:
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
-        link: "text-secondary underline-offset-4 hover:underline  disabled:bg-white disabled:text-[hsla(0, 0%, 68%, 1)]",
+        link: "text-secondary underline-offset-4 hover:underline disabled:bg-white disabled:text-[hsla(0, 0%, 68%, 1)]",
       },
       size: {
         default: "px-4 py-2",
@@ -36,11 +38,23 @@ const buttonVariants = cva(
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
+  isLoading?: boolean;
   asChild?: boolean;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
+  (
+    {
+      className,
+      variant,
+      size,
+      children,
+      isLoading,
+      asChild = false,
+      ...props
+    },
+    ref
+  ) => {
     const Comp = asChild ? Slot : "button";
     return (
       <Comp
@@ -48,7 +62,11 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         {...props}
       >
-        {/* Fix REACT complaint */}
+        {isLoading ? (
+          <Icons.loader2 className="animate-spin" />
+        ) : (
+          <>{children}</>
+        )}
       </Comp>
     );
   }
