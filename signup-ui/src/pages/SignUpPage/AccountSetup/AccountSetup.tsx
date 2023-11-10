@@ -86,7 +86,7 @@ export const AccountSetup = ({ methods }: AccountSetupProps) => {
             </StepDescription>
           </StepHeader>
           <StepDivider />
-          <StepContent>
+          <StepContent className="m-6">
             <div className="flex flex-col gap-y-4">
               <FormField
                 control={control}
