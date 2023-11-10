@@ -153,7 +153,11 @@ export const Phone = ({ methods }: PhoneProps) => {
               />
             </div>
           </div>
-          <Button onClick={handleContinue} disabled={!formState.isValid}>
+          <Button
+            onClick={handleContinue}
+            disabled={!formState.isValid}
+            isLoading={generateChallengeMutation.isLoading}
+          >
             Continue
           </Button>
         </div>
