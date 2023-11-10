@@ -3,6 +3,7 @@ import { useFormContext, UseFormReturn } from "react-hook-form";
 import PinInput from "react-pin-input";
 import { useSearchParams } from "react-router-dom";
 
+import { ReactComponent as FailedIconSvg } from "~assets/svg/failed-icon.svg";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -155,11 +156,6 @@ export const OTP = ({ methods }: OTPProps) => {
             }
 
             if (errors) {
-              if (errors[0].errorCode === "already-registered") {
-                setShowDialog(true);
-              }
-
-              setShowDialog(true);
               setError(errors[0]);
             }
           },
@@ -172,9 +168,9 @@ export const OTP = ({ methods }: OTPProps) => {
     [setActiveStep, trigger, getValues, verifyChallengeMutation]
   );
 
-  const handleRedirectToLandingPage = () => {
+  const handleErrorRedirect = () => {
     const esignetLoginPage = searchParams.get("callback");
-    if (esignetLoginPage) {
+    if (error?.errorCode === "already-registered" && esignetLoginPage) {
       window.location.href = esignetLoginPage;
     } else {
       setActiveStep(0);
@@ -182,22 +178,33 @@ export const OTP = ({ methods }: OTPProps) => {
     }
   };
 
+  const handleExhaustedAttempt = () => {
+    setActiveStep(0);
+    reset();
+  };
+
   return (
     <>
-      <AlertDialog open={showDialog}>
+      <AlertDialog open={!!error}>
         <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-            <AlertDialogDescription>
+          <AlertDialogHeader className="m-2">
+            <AlertDialogTitle className="flex flex-col items-center justify-center gap-y-4">
+              <FailedIconSvg />
+              Error!
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-center text-muted-dark-gray">
               {error?.errorMessage}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogAction
-              onClick={handleRedirectToLandingPage}
+              onClick={handleErrorRedirect}
               className="w-full bg-orange-500"
             >
-              {searchParams.get("callback") ? "Login" : "OK"}
+              {error?.errorCode === "already-registered" &&
+              searchParams.get("callback")
+                ? "Login"
+                : "Okay"}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -290,8 +297,9 @@ export const OTP = ({ methods }: OTPProps) => {
                   className="w-full p-4 font-semibold"
                   onClick={handleContinue}
                   disabled={!formState.isValid}
+                  isLoading={verifyChallengeMutation.isLoading}
                 >
-                  Continue
+                  Continute
                 </Button>
                 <div className="flex flex-col items-center mx-12">
                   <div className="flex gap-x-1">
@@ -312,10 +320,24 @@ export const OTP = ({ methods }: OTPProps) => {
                   >
                     Resend OTP
                   </Button>
-                  <ResendAttempt
-                    currentAttempts={resendAttempts}
-                    totalAttempts={settings.response.configs["resend.attempts"]}
-                  />
+                  {resendAttempts !==
+                    settings.response.configs["resend.attempts"] && (
+                    <ResendAttempt
+                      currentAttempts={resendAttempts}
+                      totalAttempts={
+                        settings.response.configs["resend.attempts"]
+                      }
+                    />
+                  )}
+                  {resendAttempts === 0 && (
+                    <Button
+                      variant="link"
+                      className="text-sm h-4 m-4"
+                      onClick={handleExhaustedAttempt}
+                    >
+                      Go back to landing page
+                    </Button>
+                  )}
                 </div>
               </>
             )}
