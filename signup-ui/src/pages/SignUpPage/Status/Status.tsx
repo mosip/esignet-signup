@@ -14,7 +14,7 @@ interface StatusProps {
 
 export const Status = ({ methods }: StatusProps) => {
   const { setActiveStep } = useSignUpContext();
-  const { trigger, getValues } = methods;
+  const { trigger } = methods;
 
   const handleContinue = useCallback(
     async (e: any) => {
@@ -34,6 +34,7 @@ export const Status = ({ methods }: StatusProps) => {
       description="Please continue to setup your account and complete the registration process."
       action="Continue"
       status="success"
+      handleAction={handleContinue}
     />
   );
 };

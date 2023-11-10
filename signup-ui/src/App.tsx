@@ -5,6 +5,8 @@ import "./App.css";
 
 import { BrowserRouter } from "react-router-dom";
 
+import Footer from "~components/ui/footer";
+import NavBar from "~components/ui/nav-bar";
 import { HttpError } from "~services/api.service";
 
 import { AppRouter } from "./app/AppRouter";
@@ -47,9 +49,11 @@ function App() {
         />
       )}
       <QueryClientProvider client={queryClient}>
+        {/* <NavBar /> */}
         <BrowserRouter>
           <AppRouter />
         </BrowserRouter>
+        {/* <Footer /> */}
       </QueryClientProvider>
     </div>
   );

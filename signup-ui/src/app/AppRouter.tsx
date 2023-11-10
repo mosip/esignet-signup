@@ -3,7 +3,6 @@ import { Route, Routes } from "react-router-dom";
 
 import { SIGNUP_ROUTE } from "~constants/routes";
 import { lazyRetry } from "~utils/lazyRetry";
-import { SignUpProvider } from "~pages/SignUpPage/SignUpProvider";
 
 const SignUpPage = lazy(() => lazyRetry(() => import("~pages/SignUpPage")));
 const NotFoundErrorPage = lazy(() =>
@@ -20,14 +19,7 @@ export const AppRouter = () => {
   return (
     <WithSuspense>
       <Routes>
-        <Route
-          path={SIGNUP_ROUTE}
-          element={
-            <SignUpProvider>
-              <SignUpPage />
-            </SignUpProvider>
-          }
-        />
+        <Route path={SIGNUP_ROUTE} element={<SignUpPage />} />
         <Route path="*" element={<NotFoundErrorPage />} />
       </Routes>
     </WithSuspense>

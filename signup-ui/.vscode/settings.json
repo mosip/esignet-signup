@@ -1,0 +1,7 @@
+{
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "typescript.preferences.importModuleSpecifier": "shortest",
+    "prettier.configPath": "prettier.config.js",
+    "jest.autoRun": {}
+}
