@@ -98,7 +98,7 @@ export const AccountSetup = ({ methods }: AccountSetupProps) => {
                       <Input
                         placeholder="Enter username"
                         {...field}
-                        value={getValues("phone")}
+                        value={`+855 ${getValues("phone")}`}
                         disabled
                       />
                     </FormControl>
