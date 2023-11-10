@@ -4,12 +4,10 @@ import { isValidPhoneNumber } from "libphonenumber-js";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
-import { Button } from "~components/ui/button";
 import { Form } from "~components/ui/form";
 import { SettingsDto } from "~typings/types";
 
 import AccountSetup from "./AccountSetup";
-import { AccountSetupProgress } from "./AccountSetup/components/AccountSetupProgress";
 import Otp from "./Otp";
 import Phone from "./Phone";
 import RegistrationStatus from "./RegistrationStatus";
@@ -39,7 +37,7 @@ interface SignUpPageProps {
 }
 
 export const SignUpPage = ({ settings }: SignUpPageProps) => {
-  const { activeStep, setActiveStep } = useSignUpContext();
+  const { activeStep } = useSignUpContext();
   const steps = Object.values(SignUpSteps);
 
   const validationSchema = useMemo(() => {
@@ -119,8 +117,6 @@ export const SignUpPage = ({ settings }: SignUpPageProps) => {
     mode: "onChange",
   });
 
-  const { reset } = methods;
-
   const getSignUpStepContent = (step: number) => {
     switch (step) {
       case 0:
@@ -137,15 +133,14 @@ export const SignUpPage = ({ settings }: SignUpPageProps) => {
   };
 
   return (
-    <div className="h-screen flex justify-center items-center">
+    <>
       {activeStep === steps.length ? (
-        // <Button onClick={handleReset}>reset</Button>
         <RegistrationStatus />
       ) : (
         <Form {...methods}>
-          <form>{settings && getSignUpStepContent(activeStep)}</form>
+          <form>{getSignUpStepContent(activeStep)}</form>
         </Form>
       )}
-    </div>
+    </>
   );
 };
