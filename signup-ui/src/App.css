@@ -55,6 +55,7 @@ body {
     --muted-foreground: 204 10% 10%;
     --muted-neutral-gray: 0 0% 51%;
     --muted-dark-gray: 0 0% 29%;
+    --muted-light-gray: 0 0% 95%;
 
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 47.4% 11.2%;
