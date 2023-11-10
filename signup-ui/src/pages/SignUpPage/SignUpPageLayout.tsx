@@ -18,28 +18,30 @@ export const SignUpPageLayout = () => {
   }
 
   return (
-    <>
+    <div className="h-screen">
       <NavBar />
-      <div className="flex flex-col">
-        <div className="">
+      <div className="relative w-full flex h-[calc(100vh-14vh)] items-center justify-center">
+        <div>
           <img
-            className="left-1 top-1"
+            className="absolute left-1 top-1"
             src="/images/top.png"
             alt="top left background"
           />
         </div>
-        <SignUpProvider>
-          <SignUpPage settings={settings} />
-        </SignUpProvider>
-        <div className="flex justify-end">
+        <div className="w-full z-10">
+          <SignUpProvider>
+            <SignUpPage settings={settings} />
+          </SignUpProvider>
+        </div>
+        <div>
           <img
-            className="left-1 top-1"
+            className="absolute bottom-1 right-1"
             src="/images/bottom.png"
             alt="bottom right background"
           />
         </div>
       </div>
       <Footer />
-    </>
+    </div>
   );
 };
