@@ -1,3 +1,5 @@
+import { MouseEventHandler } from "react";
+
 import { ReactComponent as FailedIconSvg } from "~assets/svg/failed-icon.svg";
 import { ReactComponent as SuccessIconSvg } from "~assets/svg/success-icon.svg";
 import { Button } from "~components/ui/button";
@@ -8,6 +10,7 @@ interface StatusPageTemplateProps {
   description: string;
   status: "success" | "error";
   action: string;
+  handleAction?: MouseEventHandler<HTMLButtonElement>;
 }
 
 export const StatusPageTemplate = ({
@@ -16,6 +19,7 @@ export const StatusPageTemplate = ({
   description,
   status,
   action,
+  handleAction,
 }: StatusPageTemplateProps) => {
   return (
     <div className="container p-0 max-w-md rounded-[20px] shadow-[0_3px_10px_rgb(0,0,0,0.2)]">
@@ -29,7 +33,9 @@ export const StatusPageTemplate = ({
             )}
             <p className="text-center text-sm text-gray-500">{description}</p>
           </div>
-          <Button className="w-full h-16">{action}</Button>
+          <Button className="w-full h-16" onClick={handleAction}>
+            {action}
+          </Button>
         </div>
       </div>
     </div>
