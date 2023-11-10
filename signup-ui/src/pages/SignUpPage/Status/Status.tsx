@@ -30,8 +30,8 @@ export const Status = ({ methods }: StatusProps) => {
 
   return (
     <StatusPageTemplate
-      title="Your mobile number has been verified successfully."
-      description="Please continue to setup your account and complete the registration process."
+      title="Successful!"
+      description="Your mobile number has been verified successfully. Please continue to setup your account and complete the registration process."
       action="Continue"
       status="success"
       handleAction={handleContinue}
