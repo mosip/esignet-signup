@@ -15,6 +15,14 @@ import {
 import { Button } from "~components/ui/button";
 import { FormControl, FormField, FormItem } from "~components/ui/form";
 import { Icons } from "~components/ui/icons";
+import {
+  Step,
+  StepContent,
+  StepDescription,
+  StepDivider,
+  StepHeader,
+  StepTitle,
+} from "~components/ui/step";
 import { cn } from "~utils/cn";
 import { maskPhoneNumber } from "~utils/phone";
 import { convertTime } from "~utils/timer";
@@ -194,121 +202,128 @@ export const OTP = ({ methods }: OTPProps) => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-      <div className="container max-w-lg border-[1px] rounded-2xl bg-white p-0">
-        <div className="w-full flex-col items-center justify-items-start my-4">
-          <div className="flex items-center justify-center">
-            <Icons.back className="ml-4 cursor-pointer" onClick={handleBack} />
+      <Step>
+        <StepHeader className="px-0">
+          <StepTitle className="relative flex gap-x-4 w-full text-base font-semibold items-center justify-center">
+            <Icons.back
+              className="absolute left-0 ml-4 cursor-pointer"
+              onClick={handleBack}
+            />
             <h3 className="w-full font-medium text-center">Enter OTP</h3>
-          </div>
-          <div className="w-full px-6 text-center text-sm">
+          </StepTitle>
+          <StepDescription>
             <div className="text-gray-500">
               Please enter {settings?.response.configs["otp.length"]}-digit OTP
               received on your number
             </div>
-            <div>
+            <div className="text-primary">
               <span>+855</span>{" "}
               <span>{maskPhoneNumber(getValues("phone"), 4)}</span>
             </div>
+          </StepDescription>
+        </StepHeader>
+        <StepDivider />
+        <StepContent>
+          {/* Error message */}
+          <div
+            className={cn(
+              "flex items-center justify-between bg-destructive/5 px-4 py-2",
+              {
+                hidden: !error,
+              }
+            )}
+          >
+            <p className="text-xs text-destructive">{error?.errorMessage}</p>
+            <Icons.close
+              className="text-destructive h-4 w-4 cursor-pointer"
+              onClick={() => setHasError(false)}
+            />
           </div>
-        </div>
-        <hr />
-        {/* Error message */}
-        <div
-          className={cn(
-            "flex items-center justify-between bg-destructive/5 px-4 py-2",
-            {
-              hidden: !error,
-            }
-          )}
-        >
-          <p className="text-xs text-destructive">{error?.errorMessage}</p>
-          <Icons.close
-            className="text-destructive h-4 w-4 cursor-pointer"
-            onClick={() => setHasError(false)}
-          />
-        </div>
-        {/* OTP inputs */}
-        <div className="p-6 flex flex-col gap-y-6">
-          {settings && (
-            <>
-              <FormField
-                name="otp"
-                control={control}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <PinInput
-                        ref={handlePinInputRef}
-                        length={settings.response.configs["otp.length"]}
-                        secret
-                        focus
-                        initialValue={field.value}
-                        type="numeric"
-                        inputMode="number"
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          padding: "5px 0px",
-                        }}
-                        inputStyle={{
-                          width: "40px",
-                          height: "40px",
-                          margin: "0px 0px",
-                          border: "2px solid #C1C1C1",
-                          color: "#000000",
-                          borderRadius: "6px",
-                        }}
-                        inputFocusStyle={{ border: "2px solid #676766" }}
-                        autoSelect={true}
-                        onComplete={(value, _) => {
-                          //TO handle case when user pastes OTP
-                          handleOtpComplete(value);
-                        }}
-                        onChange={(value, _) => {
-                          handleOtpChange(value);
-                        }}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-              <Button
-                variant="secondary"
-                className="w-full p-4 font-semibold"
-                onClick={handleContinue}
-                disabled={!formState.isValid}
-              >
-                Continue
-              </Button>
-              <div className="flex flex-col items-center mx-12">
-                <div className="flex gap-x-1">
-                  You can resend the OTP in{" "}
-                  <span className="font-semibold">{convertTime(timeLeft)}</span>
-                </div>
-                <Button
-                  variant="link"
-                  className="font-bold text-secondary"
-                  disabled={
-                    !enableResendOtp ||
-                    resendAttempts === 0 ||
-                    (timeLeft > 0 && resendAttempts === 3)
-                  }
-                  onClick={handleResendOtp}
-                >
-                  Resend OTP
-                </Button>
-                <ResendAttempt
-                  currentAttempts={resendAttempts}
-                  totalAttempts={settings.response.configs["resend.attempts"]}
+          {/* OTP inputs */}
+          <div className="p-6 flex flex-col gap-y-6">
+            {settings && (
+              <>
+                <FormField
+                  name="otp"
+                  control={control}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <PinInput
+                          ref={handlePinInputRef}
+                          length={settings.response.configs["otp.length"]}
+                          secret
+                          focus
+                          initialValue={field.value}
+                          type="numeric"
+                          inputMode="number"
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            padding: "5px 0px",
+                          }}
+                          inputStyle={{
+                            width: "40px",
+                            height: "40px",
+                            margin: "0px 0px",
+                            border: "2px solid #C1C1C1",
+                            color: "#000000",
+                            borderRadius: "6px",
+                          }}
+                          inputFocusStyle={{ border: "2px solid #676766" }}
+                          autoSelect={true}
+                          onComplete={(value, _) => {
+                            //TO handle case when user pastes OTP
+                            handleOtpComplete(value);
+                          }}
+                          onChange={(value, _) => {
+                            handleOtpChange(value);
+                          }}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
                 />
-              </div>
-            </>
-          )}
-          {!settings && isLoading && (
-            <div className="flex items-center justify-center">Loading</div>
-          )}
-        </div>
-      </div>
+                <Button
+                  variant="secondary"
+                  className="w-full p-4 font-semibold"
+                  onClick={handleContinue}
+                  disabled={!formState.isValid}
+                >
+                  Continue
+                </Button>
+                <div className="flex flex-col items-center mx-12">
+                  <div className="flex gap-x-1">
+                    You can resend the OTP in{" "}
+                    <span className="font-semibold">
+                      {convertTime(timeLeft)}
+                    </span>
+                  </div>
+                  <Button
+                    variant="link"
+                    className="font-bold text-secondary"
+                    disabled={
+                      !enableResendOtp ||
+                      resendAttempts === 0 ||
+                      (timeLeft > 0 && resendAttempts === 3)
+                    }
+                    onClick={handleResendOtp}
+                  >
+                    Resend OTP
+                  </Button>
+                  <ResendAttempt
+                    currentAttempts={resendAttempts}
+                    totalAttempts={settings.response.configs["resend.attempts"]}
+                  />
+                </div>
+              </>
+            )}
+            {!settings && isLoading && (
+              <div className="flex items-center justify-center">Loading</div>
+            )}
+          </div>
+        </StepContent>
+      </Step>
     </>
   );
 };
