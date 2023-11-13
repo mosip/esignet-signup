@@ -49,11 +49,11 @@ function App() {
         />
       )}
       <QueryClientProvider client={queryClient}>
-        {/* <NavBar /> */}
+        <NavBar />
         <BrowserRouter>
           <AppRouter />
         </BrowserRouter>
-        {/* <Footer /> */}
+        <Footer />
       </QueryClientProvider>
     </div>
   );
