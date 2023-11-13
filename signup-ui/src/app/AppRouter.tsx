@@ -34,8 +34,8 @@ export const AppRouter = () => {
           }
         />
         <Route path={ACCOUNT_SETUP_ROUTE} element={<AccountSetupPage />} />
-        <Route path={TERMS_CONDITIONS_ROUTE} element={<TermsAndPrivacyPage title={t("term_title")} content={t("term_content")}/>} />
-        <Route path={PRIVACY_POLICY_ROUTE} element={<TermsAndPrivacyPage title={t("privacy_title")} content={t("privacy_content")}/>} />
+        <Route path={TERMS_CONDITIONS_ROUTE} element={<TermsAndPrivacyPage title={t("terms_and_conditions_title")} content={t("terms_and_conditions_content")}/>} />
+        <Route path={PRIVACY_POLICY_ROUTE} element={<TermsAndPrivacyPage title={t("privacy_and_policy_title")} content={t("privacy_and_policy_content")}/>} />
         <Route path="*" element={<NotFoundErrorPage />} />
       </Routes>
     </WithSuspense>
