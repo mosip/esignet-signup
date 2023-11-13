@@ -10,7 +10,7 @@ export const ResendAttempt = ({
   return (
     <>
       {currentAttempts < totalAttempts && (
-        <div className="w-full bg-amber-100/60 rounded-md p-2 text-yellow-800 text-center">
+        <div className="w-full bg-[#FFF7E5] rounded-md p-2 text-[#8B6105] text-center text-sm font-semibold">
           {currentAttempts} of {totalAttempts} attempts left
         </div>
       )}
