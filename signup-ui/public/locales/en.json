@@ -36,5 +36,9 @@
     "page_under_construction_detail": "Our experts are working hard to make this page available. Meanwhile, we request you to please visit after some time.",
     "something_went_wrong": "Something went wrong!",
     "something_went_wrong_detail": "Our experts are working hard to make things working again.",
-    "attemps_left": "{{attemptLeft}} of {{totalAttempt}} attempts left"
+    "attemps_left": "{{attemptLeft}} of {{totalAttempt}} attempts left",
+    "term_title": "Terms & Conditions",
+    "term_content": "<h1 style='font-size:24px;font-weight:bold; margin-bottom:15px;'>Some heading goes here</h1><p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry’s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>",
+    "privacy_title": "Privacy & Policy",
+    "privacy_content": "<h1 style='font-size:24px;font-weight:bold; margin-bottom:15px;'>Some heading goes here</h1><p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry’s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>"
 }
