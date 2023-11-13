@@ -24,7 +24,7 @@ export const verifyChallenge = async (
   verifyChallenge: VerifyChallengeRequestDto
 ) => {
   return ApiService.post(
-    "/registration/verify-challenge0",
+    "/registration/verify-challenge",
     verifyChallenge
   ).then(({ data }) => data);
 };
