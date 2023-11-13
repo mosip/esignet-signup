@@ -1,7 +1,9 @@
 import axios, { AxiosError } from "axios";
 import { StatusCodes } from "http-status-codes";
+import { NavigateFunction } from "react-router-dom";
 
 import { LOCAL_STORAGE_EVENT } from "~constants/localStorage";
+import { SOMETHING_WENT_WRONG } from "~constants/routes";
 import { ApiError } from "~typings/core";
 
 export const API_BASE_URL = process.env.REACT_APP_BASE_URL ?? "/api/";
@@ -51,31 +53,23 @@ export const ApiService = axios.create({
   baseURL: API_BASE_URL,
 });
 
-ApiService.interceptors.response.use(
-  (response) => response,
-  (error: AxiosError) => {
-    if (error.response?.status === 401) {
-      // Remove logged in state from localStorage
-      // localStorage.removeItem(LOGGED_IN_KEY);
-      // Event to let useLocalStorage know that key is being deleted.
-      window.dispatchEvent(new Event(LOCAL_STORAGE_EVENT));
+export const setupResponseInterceptor = (navigate: NavigateFunction) => {
+  ApiService.interceptors.response.use(
+    (response) => response,
+    (error: AxiosError) => {
+      if (
+        error.response?.status &&
+        [400, 403, 404, 405, 415, 500, 502, 503, 504].includes(
+          error.response.status
+        )
+      ) {
+        console.log(123);
+        navigate(SOMETHING_WENT_WRONG, {
+          state: { code: error.response.status },
+        });
+      } else {
+        return Promise.reject(error);
+      }
     }
-
-    const transformedError = transformAxiosError(error);
-    throw transformedError;
-  }
-);
-
-export const processFetchResponse = async (response: Response) => {
-  try {
-    // throw if response status not 2XX
-    if (response.status < 200 || response.status >= 300) {
-      throw new Error(`Non-2XX response: ${response.status}`);
-    } else {
-      const data = await response.json();
-      return data;
-    }
-  } catch (error: any) {
-    throw error;
-  }
+  );
 };
