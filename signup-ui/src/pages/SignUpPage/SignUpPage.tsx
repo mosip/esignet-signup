@@ -1,8 +1,8 @@
 import { useMemo } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { yupResolver } from "@hookform/resolvers/yup";
 import { isValidPhoneNumber } from "libphonenumber-js";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
+import { Resolver, useForm } from "react-hook-form";
+import * as yup from "yup";
 
 import { Button } from "~components/ui/button";
 import { Form } from "~components/ui/form";
@@ -45,57 +45,54 @@ export const SignUpPage = ({ settings }: SignUpPageProps) => {
   const validationSchema = useMemo(() => {
     return [
       // Step 1 - Phone Validation
-      z.object({
-        phone: z
+      yup.object({
+        phone: yup
           .string()
+          .required()
           .min(1, "Failed to send OTP. Please provide a valid mobile number.")
-          .refine(
-            (phone) => isValidPhoneNumber(phone, "KH"),
-            "Failed to send OTP. Please provide a valid mobile number."
+          .test(
+            "is-phone-number",
+            "Failed to send OTP. Please provide a valid mobile number.",
+            (phone) => isValidPhoneNumber(phone, "KH")
           ),
-        captchaToken: z
+        captchaToken: yup
           .string()
-          .nonempty("Please verify that you are a human."),
+          .required("Please verify that you are a human."),
       }),
       // Step 2 - OTP Validation
-      z.object({
-        otp: z.string().regex(/^\d{6}$/gm),
+      yup.object({
+        otp: yup.string().matches(/^\d{6}$/gm),
       }),
       // Step 3 - Status Validation
-      z.object({}),
+      yup.object({}),
       // Step 4 - Account Setup Validation
-      z
-        .object({
-          username: z.string(),
-          fullNameInKhmer: z
-            .string()
-            .regex(
-              new RegExp(settings.response.configs["fullname.pattern"]),
-              "Please enter a valid name"
-            ),
-          password: z
-            .string()
-            .regex(
-              new RegExp(settings.response.configs["password.pattern"]),
-              "Please enter a valid password"
-            ),
-          confirmPassword: z
-            .string()
-            .regex(
-              new RegExp(settings.response.configs["password.pattern"]),
-              "Please enter a valid password"
-            ),
-          consent: z.literal<boolean>(true),
-        })
-        .refine(
-          ({ password, confirmPassword }) => password === confirmPassword,
-          {
-            path: ["confirmPassword"],
-            message: "Password does not match",
-          }
-        ),
+      yup.object({
+        username: yup.string(),
+        fullNameInKhmer: yup
+          .string()
+          .matches(
+            new RegExp(settings.response.configs["fullname.pattern"]),
+            "Please enter a valid name"
+          ),
+        password: yup
+          .string()
+          .matches(
+            new RegExp(settings.response.configs["password.pattern"]),
+            "Please enter a valid password"
+          ),
+        confirmPassword: yup
+          .string()
+          .matches(
+            new RegExp(settings.response.configs["password.pattern"]),
+            "Please enter a valid password"
+          )
+          .oneOf([yup.ref("password")], "Passwords must match"),
+        consent: yup
+          .bool()
+          .oneOf([true], "You must accept the terms and conditions"),
+      }),
       // Step 5 - Register Status Validation
-      z.object({}),
+      yup.object({}),
     ];
   }, [settings]);
 
@@ -112,11 +109,14 @@ export const SignUpPage = ({ settings }: SignUpPageProps) => {
     consent: false,
   };
 
-  const methods = useForm({
+  const methods = useForm<SignUpForm>({
     shouldUnregister: false,
     defaultValues: signUpFormDefaultValues,
-    resolver: zodResolver(currentValidationSchema),
-    mode: "onChange",
+    resolver: yupResolver(currentValidationSchema) as unknown as Resolver<
+      SignUpForm,
+      any
+    >,
+    mode: "all",
   });
 
   const { reset } = methods;
