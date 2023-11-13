@@ -1,6 +1,4 @@
-import Footer from "~components/ui/footer";
 import { Icons } from "~components/ui/icons";
-import NavBar from "~components/ui/nav-bar";
 
 import { useSettings } from "./queries";
 import { SignUpPage } from "./SignUpPage";
