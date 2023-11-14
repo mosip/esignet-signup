@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client";
 
 import App from "./App";
 
-import "./services/i18n.service";
+import "./i18n/i18n";
 import "react-tooltip/dist/react-tooltip.css";
 
 const root = ReactDOM.createRoot(

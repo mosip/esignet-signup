@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { isValidPhoneNumber } from "libphonenumber-js";
 import { Resolver, useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import * as yup from "yup";
 
 import { Form } from "~components/ui/form";
@@ -37,6 +38,8 @@ interface SignUpPageProps {
 }
 
 export const SignUpPage = ({ settings }: SignUpPageProps) => {
+  const { t } = useTranslation();
+
   const { activeStep } = useSignUpContext();
   const steps = Object.values(SignUpSteps);
 
@@ -47,15 +50,11 @@ export const SignUpPage = ({ settings }: SignUpPageProps) => {
         phone: yup
           .string()
           .required()
-          .min(1, "Failed to send OTP. Please provide a valid mobile number.")
-          .test(
-            "is-phone-number",
-            "Failed to send OTP. Please provide a valid mobile number.",
-            (phone) => isValidPhoneNumber(phone, "KH")
+          .min(1, t("fail_to_send_otp"))
+          .test("is-phone-number", t("fail_to_send_otp"), (phone) =>
+            isValidPhoneNumber(phone, "KH")
           ),
-        captchaToken: yup
-          .string()
-          .required("Please verify that you are a human."),
+        captchaToken: yup.string().required(t("captcha_token_validation")),
       }),
       // Step 2 - OTP Validation
       yup.object({
@@ -70,29 +69,27 @@ export const SignUpPage = ({ settings }: SignUpPageProps) => {
           .string()
           .matches(
             new RegExp(settings.response.configs["fullname.pattern"]),
-            "Please enter a valid name"
+            t("full_name_validation")
           ),
         password: yup
           .string()
           .matches(
             new RegExp(settings.response.configs["password.pattern"]),
-            "Please enter a valid password"
+            t("password_validation")
           ),
         confirmPassword: yup
           .string()
           .matches(
             new RegExp(settings.response.configs["password.pattern"]),
-            "Please enter a valid password"
+            t("password_validation")
           )
-          .oneOf([yup.ref("password")], "Passwords must match"),
-        consent: yup
-          .bool()
-          .oneOf([true], "You must accept the terms and conditions"),
+          .oneOf([yup.ref("password")], t("password_validation_must_match")),
+        consent: yup.bool().oneOf([true], t("terms_and_conditions_validation")),
       }),
       // Step 5 - Register Status Validation
       yup.object({}),
     ];
-  }, [settings]);
+  }, [settings, t]);
 
   const currentValidationSchema = validationSchema[activeStep];
 
