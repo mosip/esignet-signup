@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
 import { useFormContext, UseFormReturn } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 
 import { Button } from "~components/ui/button";
 import { FormControl, FormField, FormItem } from "~components/ui/form";
@@ -24,6 +25,8 @@ interface PhoneProps {
   methods: UseFormReturn<SignUpForm, any, undefined>;
 }
 export const Phone = ({ methods }: PhoneProps) => {
+  const { t } = useTranslation();
+
   const [hasError, setHasError] = useState<boolean>(false);
   const { control, setValue, getValues } = useFormContext();
   const { setActiveStep } = useSignUpContext();
@@ -92,7 +95,7 @@ export const Phone = ({ methods }: PhoneProps) => {
         <StepTitle className="relative flex gap-x-4 w-full text-base font-semibold items-center justify-center">
           <Icons.back className="absolute left-0 ml-4 cursor-pointer" />
           <div className="text-center font-semibold tracking-normal">
-            Please enter your mobile number to continue
+            {t("enter_your_number")}
           </div>
         </StepTitle>
       </StepHeader>
@@ -134,7 +137,7 @@ export const Phone = ({ methods }: PhoneProps) => {
                         {...field}
                         id="phone_input"
                         type="tel"
-                        placeholder="Enter a 8-digit mobile number"
+                        placeholder={t("enter_your_number_placeholder")}
                         className="outline-none border-none"
                       />
                     </FormControl>
@@ -158,7 +161,7 @@ export const Phone = ({ methods }: PhoneProps) => {
             disabled={!formState.isValid}
             isLoading={generateChallengeMutation.isLoading}
           >
-            Continue
+            {t("continue")}
           </Button>
         </div>
       </StepContent>
