@@ -27,6 +27,7 @@
     "i18next": "^23.6.0",
     "i18next-browser-languagedetector": "^7.1.0",
     "i18next-http-backend": "^2.3.0",
+    "i18next-icu": "^2.3.0",
     "libphonenumber-js": "^1.10.49",
     "lodash": "^4.17.21",
     "lucide-react": "^0.290.0",
