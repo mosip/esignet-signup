@@ -1,6 +1,7 @@
 import { useCallback } from "react";
 import { PopoverTrigger } from "@radix-ui/react-popover";
 import { UseFormReturn } from "react-hook-form";
+import { Trans, useTranslation } from "react-i18next";
 
 import { Button } from "~components/ui/button";
 import { Checkbox } from "~components/ui/checkbox";
@@ -34,6 +35,8 @@ interface AccountSetupProps {
 }
 
 export const AccountSetup = ({ methods }: AccountSetupProps) => {
+  const { t } = useTranslation();
+
   const { setActiveStep } = useSignUpContext();
   const { control, trigger, getValues, formState } = methods;
 
@@ -73,8 +76,6 @@ export const AccountSetup = ({ methods }: AccountSetupProps) => {
     [setActiveStep, trigger, getValues, registerMutation]
   );
 
-  console.log(registerMutation.isLoading);
-
   return (
     <>
       {registerMutation.isLoading && <AccountSetupProgress />}
@@ -94,10 +95,10 @@ export const AccountSetup = ({ methods }: AccountSetupProps) => {
                 name="username"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Username</FormLabel>
+                    <FormLabel>{t("username")}</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="Enter username"
+                        placeholder={t("username_placeholder")}
                         {...field}
                         value={`+855 ${getValues("phone")}`}
                         disabled
@@ -113,21 +114,19 @@ export const AccountSetup = ({ methods }: AccountSetupProps) => {
                 render={({ field }) => (
                   <FormItem>
                     <div className="flex items-center gap-1">
-                      <FormLabel>Full Name in Khmer</FormLabel>
+                      <FormLabel>{t("full_name")}</FormLabel>
                       <Popover>
                         <PopoverTrigger asChild>
                           <Icons.info className="w-4 h-4 cursor-pointer" />
                         </PopoverTrigger>
                         <PopoverContent side="right">
-                          Maximum 30 characters allowed and it should not
-                          contain any digit or special characters except ""
-                          space.
+                          {t("full_name_tooltip")}
                         </PopoverContent>
                       </Popover>
                     </div>
                     <FormControl>
                       <Input
-                        placeholder="Enter Full Name in Khmer"
+                        placeholder={t("full_name_placeholder")}
                         {...field}
                       />
                     </FormControl>
@@ -141,7 +140,7 @@ export const AccountSetup = ({ methods }: AccountSetupProps) => {
                 render={({ field }) => (
                   <FormItem>
                     <div className="flex items-center gap-1">
-                      <FormLabel>Password</FormLabel>
+                      <FormLabel>{t("password")}</FormLabel>
                       <Popover>
                         <PopoverTrigger asChild>
                           <Icons.info className="w-4 h-4 cursor-pointer" />
@@ -149,10 +148,12 @@ export const AccountSetup = ({ methods }: AccountSetupProps) => {
                         <PopoverContent side="right" className="w-80">
                           <div className="flex items-center justify-center">
                             <ul className="list-disc">
-                              <li>Require at least 8 characters long</li>
-                              <li>Require at least 1 digit</li>
-                              <li>Require at least 1 special character</li>
-                              <li>Require at least 1 capital letter</li>
+                              <Trans
+                                i18nKey="password_rules"
+                                components={{
+                                  li: <li />,
+                                }}
+                              />
                             </ul>
                           </div>
                         </PopoverContent>
@@ -161,7 +162,7 @@ export const AccountSetup = ({ methods }: AccountSetupProps) => {
                     <FormControl>
                       <Input
                         type="password"
-                        placeholder="Enter Password"
+                        placeholder={t("password_placeholder")}
                         {...field}
                       />
                     </FormControl>
@@ -174,11 +175,11 @@ export const AccountSetup = ({ methods }: AccountSetupProps) => {
                 name="confirmPassword"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Confirm Password</FormLabel>
+                    <FormLabel>{t("confirm_password")}</FormLabel>
                     <FormControl>
                       <Input
                         type="password"
-                        placeholder="Enter Password"
+                        placeholder={t("confirm_password_placeholder")}
                         {...field}
                       />
                     </FormControl>
@@ -191,7 +192,7 @@ export const AccountSetup = ({ methods }: AccountSetupProps) => {
                 name="consent"
                 render={({ field }) => (
                   <FormItem className="flex space-y-0 items-start gap-x-4">
-                    <FormControl className="">
+                    <FormControl>
                       <Checkbox
                         checked={field.value}
                         onCheckedChange={field.onChange}
@@ -199,17 +200,28 @@ export const AccountSetup = ({ methods }: AccountSetupProps) => {
                       />
                     </FormControl>
                     <FormLabel>
-                      I agree to Cambodia's{" "}
-                      <a className="text-orange-500 underline" target="_blank">
-                        Terms & Conditions
-                      </a>{" "}
-                      and{" "}
-                      <a className="text-orange-400 underline" target="_blank">
-                        Privacy Policy
-                      </a>
-                      , to store & process my information as required.
+                      <Trans
+                        i18nKey="terms_and_condition"
+                        components={{
+                          TermsAndConditionsAnchor: (
+                            <a
+                              href="#!"
+                              className="text-orange-500 underline"
+                              target="_blank"
+                              aria-label="Terms and Conditions"
+                            />
+                          ),
+                          PrivacyPolicyAnchor: (
+                            <a
+                              href="#!"
+                              className="text-orange-500 underline"
+                              target="_blank"
+                              aria-label="Terms and Conditions"
+                            />
+                          ),
+                        }}
+                      />
                     </FormLabel>
-                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -220,7 +232,7 @@ export const AccountSetup = ({ methods }: AccountSetupProps) => {
                 onClick={handleContinue}
                 disabled={!formState.isValid}
               >
-                Continue
+                {t("continue")}
               </Button>
             </div>
           </StepContent>

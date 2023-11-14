@@ -1,8 +1,7 @@
 import { useCallback } from "react";
 import { UseFormReturn } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 
-import { Button } from "~components/ui/button";
-import { Icons } from "~components/ui/icons";
 import StatusPageTemplate from "~templates/ResponsePageTemplate";
 
 import { useSignUpContext } from "../SignUpContext";
@@ -13,6 +12,8 @@ interface StatusProps {
 }
 
 export const Status = ({ methods }: StatusProps) => {
+  const { t } = useTranslation();
+
   const { setActiveStep } = useSignUpContext();
   const { trigger } = methods;
 
@@ -30,9 +31,9 @@ export const Status = ({ methods }: StatusProps) => {
 
   return (
     <StatusPageTemplate
-      title="Successful!"
-      description="Your mobile number has been verified successfully. Please continue to setup your account and complete the registration process."
-      action="Continue"
+      title={t("successful")}
+      description={t("mobile_number_verified")}
+      action={t("continue")}
       status="success"
       handleAction={handleContinue}
     />

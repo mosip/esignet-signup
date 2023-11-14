@@ -63,7 +63,6 @@ export const setupResponseInterceptor = (navigate: NavigateFunction) => {
           error.response.status
         )
       ) {
-        console.log(123);
         navigate(SOMETHING_WENT_WRONG, {
           state: { code: error.response.status },
         });
