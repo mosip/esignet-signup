@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useFormContext, UseFormReturn } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import PinInput from "react-pin-input";
 import { useSearchParams } from "react-router-dom";
 
@@ -45,6 +46,8 @@ interface OTPProps {
 }
 
 export const OTP = ({ methods }: OTPProps) => {
+  const { t } = useTranslation();
+
   const { data: settings, isLoading } = useSettings();
   const [hasError, setHasError] = useState<boolean>(false);
   const pinInputRef = useRef<PinInput | null>(null);
@@ -203,8 +206,8 @@ export const OTP = ({ methods }: OTPProps) => {
             >
               {error?.errorCode === "already-registered" &&
               searchParams.get("callback")
-                ? "Login"
-                : "Okay"}
+                ? t("login")
+                : t("okay")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -217,13 +220,14 @@ export const OTP = ({ methods }: OTPProps) => {
               onClick={handleBack}
             />
             <h3 className="w-full font-bold text-[26px] text-center">
-              Enter OTP
+              {t("otp_header")}
             </h3>
           </StepTitle>
           <StepDescription className="w-full py-4 tracking-normal">
             <div className="text-muted-neutral-gray">
-              Please enter {settings?.response.configs["otp.length"]}-digit OTP
-              received on your number
+              {t("otp_subheader", {
+                no_of_digit: settings?.response.configs["otp.length"],
+              })}
             </div>
             <div className="text-muted-dark-gray">
               <span>+855</span>{" "}
@@ -299,11 +303,11 @@ export const OTP = ({ methods }: OTPProps) => {
                   disabled={!formState.isValid}
                   isLoading={verifyChallengeMutation.isLoading}
                 >
-                  Continute
+                  {t("continue")}
                 </Button>
                 <div className="flex flex-col items-center mx-12">
                   <div className="flex gap-x-1">
-                    You can resend the OTP in{" "}
+                    {t("resend_otp_detail")}
                     <span className="font-semibold">
                       {convertTime(timeLeft)}
                     </span>
@@ -318,7 +322,7 @@ export const OTP = ({ methods }: OTPProps) => {
                     }
                     onClick={handleResendOtp}
                   >
-                    Resend OTP
+                    {t("resend_otp")}
                   </Button>
                   {resendAttempts !==
                     settings.response.configs["resend.attempts"] && (
@@ -335,14 +339,11 @@ export const OTP = ({ methods }: OTPProps) => {
                       className="text-sm h-4 m-4"
                       onClick={handleExhaustedAttempt}
                     >
-                      Go back to landing page
+                      {t("go_back_to_landing_page")}
                     </Button>
                   )}
                 </div>
               </>
-            )}
-            {!settings && isLoading && (
-              <div className="flex items-center justify-center">Loading</div>
             )}
           </div>
         </StepContent>
