@@ -6,6 +6,13 @@ import { Button } from "~components/ui/button";
 import { FormControl, FormField, FormItem } from "~components/ui/form";
 import { Icons } from "~components/ui/icons";
 import { Input } from "~components/ui/input";
+import {
+  Step,
+  StepContent,
+  StepDivider,
+  StepHeader,
+  StepTitle,
+} from "~components/ui/step";
 import { cn } from "~utils/cn";
 import { Error, GenerateChallengeRequestDto } from "~typings/types";
 
@@ -24,7 +31,7 @@ export const Phone = ({ methods }: PhoneProps) => {
   const _reCaptchaRef = useRef<ReCAPTCHA>(null);
   const [error, setError] = useState<Error | null>(null);
 
-  const { trigger } = methods;
+  const { trigger, formState } = methods;
 
   useEffect(() => {
     if (!hasError) return;
@@ -80,81 +87,81 @@ export const Phone = ({ methods }: PhoneProps) => {
   );
 
   return (
-    <div className="login-container container max-w-lg border-[1px] rounded-2xl bg-white p-0">
-      <div className="w-full flex items-center justify-items-start my-4 panel-header">
-        <Icons.back className="ml-4 cursor-pointer" />
-        <label className="w-full font-medium main-label min-padding-left">
-          Please enter your mobile number to continue
-        </label>
-      </div>
-      <hr />
-      {/* Error message */}
-      <div
-        className={cn(
-          "flex items-center justify-between bg-destructive/5 px-4 py-2",
-          {
-            hidden: !hasError,
-          }
-        )}
-      >
-        <p className="text-xs text-destructive">{error?.errorMessage}</p>
-        <Icons.close
-          className="text-destructive h-4 w-4 cursor-pointer"
-          onClick={() => setHasError(false)}
-        />
-      </div>
-      {/* Phone and reCAPTCHA inputs */}
-      <div className="p-6 flex flex-col gap-y-6">
-        <div className="flex flex-col gap-y-3">
-          {/* Phone number input */}
-          <div
-            id="phone"
-            className="flex items-center justify-center border-[1px] border-input ring-offset-background rounded-md"
-          >
-            <span className="text-muted-foreground border-r-[1px] border-input px-3">
-              +855
-            </span>
-            <FormField
-              name="phone"
-              control={control}
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormControl>
-                    <Input
-                      {...field}
-                      id="phone_input"
-                      type="tel"
-                      placeholder="Enter a 8-digit mobile number"
-                      className="outline-none border-none"
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
+    <Step>
+      <StepHeader className="px-0">
+        <StepTitle className="relative flex gap-x-4 w-full text-base font-semibold items-center justify-center">
+          <Icons.back className="absolute left-0 ml-4 cursor-pointer" />
+          <div className="text-center font-semibold tracking-normal">
+            Please enter your mobile number to continue
           </div>
-          <div
-            id="captcha"
-            className="flex items-center justify-center"
-          >
-          {/* I'm not a robot checkbox */}
-          <ReCAPTCHA
-            ref={_reCaptchaRef}
-            onChange={handleReCaptchaChange}
-            onExpired={handleReCaptchaExpired}
-            className="recaptcha"
-            sitekey={process.env.REACT_APP_CAPTCHA_SITE_KEY ?? ""}
-          />
-          </div>
-        </div>
-        <Button
-          id="submitButton"
-          className="w-full p-4 font-semibold text-white"
-          variant="secondary"
-          onClick={handleContinue}
+        </StepTitle>
+      </StepHeader>
+      <StepDivider />
+      <StepContent>
+        {/* Error message */}
+        <div
+          className={cn(
+            "flex items-center justify-between bg-destructive/5 px-4 py-2",
+            {
+              hidden: !hasError,
+            }
+          )}
         >
-          Continue
-        </Button>
-      </div>
-    </div>
+          <p className="text-xs text-destructive">{error?.errorMessage}</p>
+          <Icons.close
+            className="text-destructive h-4 w-4 cursor-pointer"
+            onClick={() => setHasError(false)}
+          />
+        </div>
+        {/* Phone and reCAPTCHA inputs */}
+        <div className="p-6 flex flex-col gap-y-6">
+          <div className="flex flex-col gap-y-3">
+            {/* Phone number input */}
+            <div
+              id="phone"
+              className="flex items-center justify-center border-[1px] border-input ring-offset-background rounded-md"
+            >
+              <span className="text-muted-foreground/60 border-r-[1px] border-input px-3">
+                +855
+              </span>
+              <FormField
+                name="phone"
+                control={control}
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormControl>
+                      <Input
+                        {...field}
+                        id="phone_input"
+                        type="tel"
+                        placeholder="Enter a 8-digit mobile number"
+                        className="outline-none border-none"
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div id="captcha" className="flex items-center justify-center">
+              {/* I'm not a robot checkbox */}
+              <ReCAPTCHA
+                ref={_reCaptchaRef}
+                onChange={handleReCaptchaChange}
+                onExpired={handleReCaptchaExpired}
+                className="recaptcha"
+                sitekey={process.env.REACT_APP_CAPTCHA_SITE_KEY ?? ""}
+              />
+            </div>
+          </div>
+          <Button
+            onClick={handleContinue}
+            disabled={!formState.isValid}
+            isLoading={generateChallengeMutation.isLoading}
+          >
+            Continue
+          </Button>
+        </div>
+      </StepContent>
+    </Step>
   );
 };

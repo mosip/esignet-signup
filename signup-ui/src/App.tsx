@@ -5,12 +5,12 @@ import "./App.css";
 
 import { BrowserRouter } from "react-router-dom";
 
+import Footer from "~components/ui/footer";
+import NavBar from "~components/ui/nav-bar";
 import { HttpError } from "~services/api.service";
 
 import { AppRouter } from "./app/AppRouter";
 
-import NavBar from "~components/ui/nav-bar";
-import Footer from "~components/ui/footer";
 // Create a client
 const queryClient = new QueryClient({
   defaultOptions: {

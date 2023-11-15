@@ -2,77 +2,80 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css?family=Inter');
+@import url("https://fonts.googleapis.com/css?family=Inter");
 
 body {
-  font-family: 'Inter';
-  background: #F7F9FD 0% 0% no-repeat padding-box;
+  font-family: "Inter";
+  background: #f7f9fd 0% 0% no-repeat padding-box;
 }
 
 .login-container {
   width: 477px;
   height: 372px;
-  box-shadow: 0px 4px 10px #0000001A;
+  box-shadow: 0px 4px 10px #0000001a;
 }
 
 .main-label {
   letter-spacing: 0px;
-  color: #2B3840;
+  color: #2b3840;
   opacity: 1;
-  font-size:16px;
+  font-size: 16px;
   font-weight: 700;
 }
 
-.recaptcha{
-  padding-top: 15px !important;
-  transform: scale(1);
-}
-
-.min-padding-left{
+.min-padding-left {
   padding-left: 10px !important;
 }
 
-.panel-header{
+.panel-header {
   height: 42px;
 }
 
-#phone{
+#phone {
   height: 52px;
 }
 
-#submitButton{
+#submitButton {
   height: 62px;
   font-size: 18px;
 }
 
-#navbar{
+#navbar {
   height: 70px;
 }
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
+    --font-sans: "Inter";
+
+    --background: 220 60% 98%;
     --foreground: 222.2 47.4% 11.2%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 0 0% 80%;
+    --muted-foreground: 204 10% 10%;
+    --muted-neutral-gray: 0 0% 51%;
+    --muted-dark-gray: 0 0% 29%;
+    --muted-light-gray: 0 0% 95%;
 
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 47.4% 11.2%;
 
     --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
+    --input: 0 0% 44%;
 
     --card: 0 0% 100%;
     --card-foreground: 222.2 47.4% 11.2%;
+
+    --step: 0 0% 100%;
+    --step-foreground: 222.2 47.4% 11.2%;
 
     --primary: 222.2 47.4% 11.2%;
     --primary-foreground: 210 40% 98%;
 
     --secondary: 21 83% 55%;
-    --secondary-foreground: 210 40% 96.1%;
+    --secondary-foreground: 0 0% 100%;
 
-    --accent: 210 40% 96.1%;
+    --accent: 0 0% 100%;
     --accent-foreground: 222.2 47.4% 11.2%;
 
     --destructive: 0 100% 50%;
@@ -81,8 +84,6 @@ body {
     --ring: 215 20.2% 65.1%;
 
     --radius: 0.5rem;
-
-    --font-sans: "Inter";
   }
 
   .dark {
@@ -128,5 +129,12 @@ body {
     font-feature-settings:
       "rlig" 1,
       "calt" 1;
+  }
+}
+
+@layer components {
+  .recaptcha {
+    padding-top: 15px !important;
+    transform: scale(1);
   }
 }
