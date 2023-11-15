@@ -32,7 +32,7 @@ export const TermsAndPrivacyModal = ({ title, content, isOpen, backdrop, toggleM
   }, [modalRef, isOpen]);
 
   return (
-    <AlertDialog open={!!isOpen}>
+    <AlertDialog open={isOpen}>
       <AlertDialogContent ref={modalRef} className="container max-w-[90%] md:w-[1088px] w-[1088px] p-0 bg-white rounded-lg">
         <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
           <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
