@@ -10,7 +10,7 @@ export const SignUpPageLayout = () => {
   if (isLoading || !settings) {
     return (
       <div className="w-full flex h-[calc(100vh-14vh)] items-center justify-center">
-        <Icons.loader2 className="animate-spin" />
+        <Icons.loader className="animate-spin" />
       </div>
     );
   }
