@@ -41,7 +41,6 @@ interface SignUpPageProps {
 
 export const SignUpPage = ({ settings }: SignUpPageProps) => {
   const { t } = useTranslation();
-
   const { activeStep } = useSignUpContext();
   const steps = Object.values(SignUpSteps);
 

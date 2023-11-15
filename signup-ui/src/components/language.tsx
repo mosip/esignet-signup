@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 
 import { ReactComponent as TranslationIcon } from "~assets/svg/translation-icon.svg";
-import { langLabel } from "~/i18n/lang";
+import { langLabel } from "~constants/i18n";
 
 import {
   Select,
