@@ -36,7 +36,7 @@ interface AccountSetupProps {
 }
 
 export const AccountSetup = ({ methods }: AccountSetupProps) => {
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   const { setActiveStep } = useSignUpContext();
   const { control, trigger, getValues, formState } = methods;
   const { registerMutation } = useRegister();
