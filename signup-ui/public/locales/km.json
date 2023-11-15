@@ -36,5 +36,9 @@
     "page_under_construction_detail": "អ្នកជំនាញកំពុងធ្វើការដើម្បីឱ្យទំព័រនេះអាចប្រើប្រាស់បាន។ សូមចូលម្ដងទៀតនៅពេលក្រោយ។",
     "something_went_wrong": "មានអ្វីមួយខុសប្រក្រតី!",
     "something_went_wrong_detail": "អ្នកជំនាញកំពុងធ្វើការដើម្បីឱ្យអ្វីៗដំណើរការឡើងវិញ។",
-    "attemps_left": "ការព្យាយាមនៅសល់{{attemptLeft}} នៃ {{totalAttempt}}"
+    "attemps_left": "ការព្យាយាមនៅសល់{{attemptLeft}} នៃ {{totalAttempt}}",
+    "terms_and_conditions_title": "Terms & Conditions",
+    "terms_and_conditions_content": "<h1 style='font-size:24px;font-weight:bold; margin-bottom:15px;'>Some heading goes here</h1><p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry’s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>",
+    "privacy_and_policy_content": "<h1 style='font-size:24px;font-weight:bold; margin-bottom:15px;'>Some heading goes here</h1><p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry’s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>",
+    "privacy_and_policy_title": "Privacy & Policy"
 }
