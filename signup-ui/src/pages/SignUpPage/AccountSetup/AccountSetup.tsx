@@ -1,7 +1,7 @@
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { PopoverTrigger } from "@radix-ui/react-popover";
 import { UseFormReturn } from "react-hook-form";
-import { Trans, useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 
 import { Button } from "~components/ui/button";
 import { Checkbox } from "~components/ui/checkbox";
@@ -29,18 +29,20 @@ import { useRegister } from "../mutations";
 import { useSignUpContext } from "../SignUpContext";
 import { SignUpForm } from "../SignUpPage";
 import { AccountSetupProgress } from "./components/AccountSetupProgress";
+import { TermsAndPrivacyModal } from "./components/TermsAndPrivacyModal";
 
 interface AccountSetupProps {
   methods: UseFormReturn<SignUpForm, any, undefined>;
 }
 
 export const AccountSetup = ({ methods }: AccountSetupProps) => {
-  const { t } = useTranslation();
-
+  const {t} = useTranslation();
   const { setActiveStep } = useSignUpContext();
   const { control, trigger, getValues, formState } = methods;
 
   const { registerMutation } = useRegister();
+  const [openTermCondition, setOpenTermCondition] = useState(false);
+  const [modalData, setModalData] = useState({title: "", content: ""});
 
   const handleContinue = useCallback(
     async (e: any) => {
@@ -75,6 +77,23 @@ export const AccountSetup = ({ methods }: AccountSetupProps) => {
     },
     [setActiveStep, trigger, getValues, registerMutation]
   );
+
+  const onModalToggle = () => {
+    setOpenTermCondition(false);
+    setModalData({title: "", content: ""});
+  }
+
+  const onOpenTerm = (e: any) => {
+    e.preventDefault();
+    setModalData({title: t("terms_and_conditions_title"), content: t("terms_and_conditions_content")});
+    setOpenTermCondition(true);
+  }
+
+  const onOpenPrivacy = (e: any) => {
+    e.preventDefault();
+    setModalData({title: t("privacy_and_policy_title"), content: t("privacy_and_policy_content")});
+    setOpenTermCondition(true);
+  }
 
   return (
     <>
@@ -200,27 +219,15 @@ export const AccountSetup = ({ methods }: AccountSetupProps) => {
                       />
                     </FormControl>
                     <FormLabel>
-                      <Trans
-                        i18nKey="terms_and_condition"
-                        components={{
-                          TermsAndConditionsAnchor: (
-                            <a
-                              href="#!"
-                              className="text-orange-500 underline"
-                              target="_blank"
-                              aria-label="Terms and Conditions"
-                            />
-                          ),
-                          PrivacyPolicyAnchor: (
-                            <a
-                              href="#!"
-                              className="text-orange-500 underline"
-                              target="_blank"
-                              aria-label="Terms and Conditions"
-                            />
-                          ),
-                        }}
-                      />
+                      I agree to Cambodia's{" "}
+                      <a className="text-orange-500 underline cursor-pointer" target="_blank" onClick={onOpenTerm}>
+                        Terms & Conditions
+                      </a>{" "}
+                      and{" "}
+                      <a className="text-orange-400 underline cursor-pointer" target="_blank" onClick={onOpenPrivacy}>
+                        Privacy Policy
+                      </a>
+                      , to store & process my information as required.
                     </FormLabel>
                   </FormItem>
                 )}
@@ -234,6 +241,13 @@ export const AccountSetup = ({ methods }: AccountSetupProps) => {
               >
                 {t("continue")}
               </Button>
+
+              <TermsAndPrivacyModal
+                title={modalData.title}
+                content={modalData.content}
+                isOpen={openTermCondition}
+                backdrop="static"
+                toggleModal={onModalToggle} />
             </div>
           </StepContent>
         </Step>
