@@ -1,8 +1,8 @@
 import { useTranslation } from "react-i18next";
 
 import { ReactComponent as TranslationIcon } from "~assets/svg/translation-icon.svg";
-import { langLabel } from "~constants/i18n";
 
+import locales from "../../public/locales/default.json";
 import {
   Select,
   SelectContent,
@@ -24,12 +24,19 @@ export const Language = () => {
       <Select onValueChange={handleLanguageChange} defaultValue={i18n.language}>
         <SelectTrigger>
           <SelectValue
-            placeholder={langLabel[i18n.language as keyof typeof langLabel]}
+            placeholder={
+              locales.languages_2Letters[
+                i18n.language as keyof typeof locales.languages_2Letters
+              ]
+            }
           />
         </SelectTrigger>
         <SelectContent className="w-12">
-          <SelectItem value="en">English</SelectItem>
-          <SelectItem value="km">ខ្មែរ</SelectItem>
+          {Object.entries(locales.languages_2Letters).map(([key, value]) => (
+            <SelectItem key={key} value={key}>
+              {value}
+            </SelectItem>
+          ))}
         </SelectContent>
       </Select>
     </div>
