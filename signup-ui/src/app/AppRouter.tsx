@@ -3,7 +3,6 @@ import { Route, Routes, useNavigate } from "react-router-dom";
 
 import { SIGNUP_ROUTE } from "~constants/routes";
 import { lazyRetry } from "~utils/lazyRetry";
-import { useTranslation } from "react-i18next";
 
 const SignUpPage = lazy(() => lazyRetry(() => import("~pages/SignUpPage")));
 const UnderConstructionPage = lazy(() =>
@@ -20,8 +19,6 @@ const WithSuspense = ({ children }: { children: ReactNode }) => (
 );
 
 export const AppRouter = () => {
-  const {t} = useTranslation();
-
   return (
     <WithSuspense>
       <Routes>
