@@ -41,7 +41,7 @@ export const AccountSetup = ({ methods }: AccountSetupProps) => {
   const { control, trigger, getValues, formState } = methods;
 
   const { registerMutation } = useRegister();
-  const [openTermCondition, setOpenTermCondition] = useState(false);
+  const [openTermConditionModal, setOpenTermConditionModal] = useState(false);
   const [modalData, setModalData] = useState({title: "", content: ""});
 
   const handleContinue = useCallback(
@@ -79,20 +79,20 @@ export const AccountSetup = ({ methods }: AccountSetupProps) => {
   );
 
   const onModalToggle = () => {
-    setOpenTermCondition(false);
+    setOpenTermConditionModal(false);
     setModalData({title: "", content: ""});
   }
 
   const onOpenTerm = (e: any) => {
     e.preventDefault();
     setModalData({title: t("terms_and_conditions_title"), content: t("terms_and_conditions_content")});
-    setOpenTermCondition(true);
+    setOpenTermConditionModal(true);
   }
 
   const onOpenPrivacy = (e: any) => {
     e.preventDefault();
     setModalData({title: t("privacy_and_policy_title"), content: t("privacy_and_policy_content")});
-    setOpenTermCondition(true);
+    setOpenTermConditionModal(true);
   }
 
   return (
@@ -245,7 +245,7 @@ export const AccountSetup = ({ methods }: AccountSetupProps) => {
               <TermsAndPrivacyModal
                 title={modalData.title}
                 content={modalData.content}
-                isOpen={openTermCondition}
+                isOpen={openTermConditionModal}
                 backdrop="static"
                 toggleModal={onModalToggle} />
             </div>
