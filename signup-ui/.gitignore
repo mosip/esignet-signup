@@ -50,3 +50,5 @@ test/the-files-to-test.generated.js
 chrome-user-data
 
 .idea
+
+.vscode
