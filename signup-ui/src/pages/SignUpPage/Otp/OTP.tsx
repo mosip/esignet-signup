@@ -3,6 +3,7 @@ import { useFormContext, UseFormReturn } from "react-hook-form";
 import PinInput from "react-pin-input";
 import { useSearchParams } from "react-router-dom";
 
+import { ReactComponent as FailedIconSvg } from "~assets/svg/failed-icon.svg";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -15,6 +16,14 @@ import {
 import { Button } from "~components/ui/button";
 import { FormControl, FormField, FormItem } from "~components/ui/form";
 import { Icons } from "~components/ui/icons";
+import {
+  Step,
+  StepContent,
+  StepDescription,
+  StepDivider,
+  StepHeader,
+  StepTitle,
+} from "~components/ui/step";
 import { cn } from "~utils/cn";
 import { maskPhoneNumber } from "~utils/phone";
 import { convertTime } from "~utils/timer";
@@ -41,7 +50,7 @@ export const OTP = ({ methods }: OTPProps) => {
   const pinInputRef = useRef<PinInput | null>(null);
   const { control, getValues, setValue } = useFormContext();
   const { setActiveStep } = useSignUpContext();
-  const { trigger, reset } = methods;
+  const { trigger, reset, formState } = methods;
   const [resendAttempts, setResendAttempts] = useState<number>(0);
   const [enableResendOtp, setEnableResendOtp] = useState<boolean>(false);
   const [timeLeft, setTimeLeft] = useTimer(0, setEnableResendOtp);
@@ -77,7 +86,7 @@ export const OTP = ({ methods }: OTPProps) => {
   };
 
   const handleOtpChange = (otp: string) => {
-    setValue("otp", otp, { shouldTouch: true });
+    setValue("otp", otp, { shouldValidate: true, shouldTouch: true });
   };
 
   const handleResendOtp = useCallback(
@@ -147,11 +156,6 @@ export const OTP = ({ methods }: OTPProps) => {
             }
 
             if (errors) {
-              if (errors[0].errorCode === "already-registered") {
-                setShowDialog(true);
-              }
-
-              setShowDialog(true);
               setError(errors[0]);
             }
           },
@@ -164,9 +168,9 @@ export const OTP = ({ methods }: OTPProps) => {
     [setActiveStep, trigger, getValues, verifyChallengeMutation]
   );
 
-  const handleRedirectToLandingPage = () => {
+  const handleErrorRedirect = () => {
     const esignetLoginPage = searchParams.get("callback");
-    if (esignetLoginPage) {
+    if (error?.errorCode === "already-registered" && esignetLoginPage) {
       window.location.href = esignetLoginPage;
     } else {
       setActiveStep(0);
@@ -174,140 +178,175 @@ export const OTP = ({ methods }: OTPProps) => {
     }
   };
 
+  const handleExhaustedAttempt = () => {
+    setActiveStep(0);
+    reset();
+  };
+
   return (
     <>
-      <AlertDialog open={showDialog}>
+      <AlertDialog open={!!error}>
         <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-            <AlertDialogDescription>
+          <AlertDialogHeader className="m-2">
+            <AlertDialogTitle className="flex flex-col items-center justify-center gap-y-4">
+              <FailedIconSvg />
+              Error!
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-center text-muted-dark-gray">
               {error?.errorMessage}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogAction
-              onClick={handleRedirectToLandingPage}
+              onClick={handleErrorRedirect}
               className="w-full bg-orange-500"
             >
-              {searchParams.get("callback") ? "Login" : "OK"}
+              {error?.errorCode === "already-registered" &&
+              searchParams.get("callback")
+                ? "Login"
+                : "Okay"}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-      <div className="container max-w-lg border-[1px] rounded-2xl bg-white p-0">
-        <div className="w-full flex-col items-center justify-items-start my-4">
-          <div className="flex items-center justify-center">
-            <Icons.back className="ml-4 cursor-pointer" onClick={handleBack} />
-            <h3 className="w-full font-medium text-center">Enter OTP</h3>
-          </div>
-          <div className="w-full px-6 text-center text-sm">
-            <div className="text-gray-500">
+      <Step>
+        <StepHeader className="px-0">
+          <StepTitle className="relative flex gap-x-4 w-full text-base font-semibold items-center justify-center">
+            <Icons.back
+              className="absolute left-0 ml-4 cursor-pointer"
+              onClick={handleBack}
+            />
+            <h3 className="w-full font-bold text-[26px] text-center">
+              Enter OTP
+            </h3>
+          </StepTitle>
+          <StepDescription className="w-full py-4 tracking-normal">
+            <div className="text-muted-neutral-gray">
               Please enter {settings?.response.configs["otp.length"]}-digit OTP
               received on your number
             </div>
-            <div>
+            <div className="text-muted-dark-gray">
               <span>+855</span>{" "}
               <span>{maskPhoneNumber(getValues("phone"), 4)}</span>
             </div>
+          </StepDescription>
+        </StepHeader>
+        <StepDivider />
+        <StepContent>
+          {/* Error message */}
+          <div
+            className={cn(
+              "flex items-center justify-between bg-destructive/5 px-4 py-2",
+              {
+                hidden: !error,
+              }
+            )}
+          >
+            <p className="text-xs text-destructive">{error?.errorMessage}</p>
+            <Icons.close
+              className="text-destructive h-4 w-4 cursor-pointer"
+              onClick={() => setHasError(false)}
+            />
           </div>
-        </div>
-        <hr />
-        {/* Error message */}
-        <div
-          className={cn(
-            "flex items-center justify-between bg-destructive/5 px-4 py-2",
-            {
-              hidden: !error,
-            }
-          )}
-        >
-          <p className="text-xs text-destructive">{error?.errorMessage}</p>
-          <Icons.close
-            className="text-destructive h-4 w-4 cursor-pointer"
-            onClick={() => setHasError(false)}
-          />
-        </div>
-        {/* OTP inputs */}
-        <div className="p-6 flex flex-col gap-y-6">
-          {settings && (
-            <>
-              <FormField
-                name="otp"
-                control={control}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <PinInput
-                        ref={handlePinInputRef}
-                        length={settings.response.configs["otp.length"]}
-                        secret
-                        focus
-                        initialValue={field.value}
-                        type="numeric"
-                        inputMode="number"
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          padding: "5px 0px",
-                        }}
-                        inputStyle={{
-                          width: "40px",
-                          height: "40px",
-                          margin: "0px 0px",
-                          border: "2px solid #C1C1C1",
-                          color: "#000000",
-                          borderRadius: "6px",
-                        }}
-                        inputFocusStyle={{ border: "2px solid #676766" }}
-                        autoSelect={true}
-                        onComplete={(value, _) => {
-                          //TO handle case when user pastes OTP
-                          handleOtpComplete(value);
-                        }}
-                        onChange={(value, _) => {
-                          handleOtpChange(value);
-                        }}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-              <Button
-                variant="secondary"
-                className="w-full p-4 font-semibold"
-                onClick={handleContinue}
-              >
-                Continue
-              </Button>
-              <div className="flex flex-col items-center mx-12">
-                <div className="flex gap-x-1">
-                  You can resend the OTP in{" "}
-                  <span className="font-semibold">{convertTime(timeLeft)}</span>
-                </div>
-                <Button
-                  variant="link"
-                  className="font-bold text-secondary"
-                  disabled={
-                    !enableResendOtp ||
-                    resendAttempts === 0 ||
-                    (timeLeft > 0 && resendAttempts === 3)
-                  }
-                  onClick={handleResendOtp}
-                >
-                  Resend OTP
-                </Button>
-                <ResendAttempt
-                  currentAttempts={resendAttempts}
-                  totalAttempts={settings.response.configs["resend.attempts"]}
+          {/* OTP inputs */}
+          <div className="p-6 flex flex-col gap-y-6">
+            {settings && (
+              <>
+                <FormField
+                  name="otp"
+                  control={control}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <PinInput
+                          ref={handlePinInputRef}
+                          length={settings.response.configs["otp.length"]}
+                          secret
+                          focus
+                          initialValue={field.value}
+                          type="numeric"
+                          inputMode="number"
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            padding: "5px 0px",
+                          }}
+                          inputStyle={{
+                            width: "40px",
+                            height: "40px",
+                            margin: "0px 0px",
+                            border: "2px solid #C1C1C1",
+                            color: "#000000",
+                            borderRadius: "6px",
+                          }}
+                          inputFocusStyle={{ border: "2px solid #676766" }}
+                          autoSelect={true}
+                          onComplete={(value, _) => {
+                            //TO handle case when user pastes OTP
+                            handleOtpComplete(value);
+                          }}
+                          onChange={(value, _) => {
+                            handleOtpChange(value);
+                          }}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
                 />
-              </div>
-            </>
-          )}
-          {!settings && isLoading && (
-            <div className="flex items-center justify-center">Loading</div>
-          )}
-        </div>
-      </div>
+                <Button
+                  className="w-full p-4 font-semibold"
+                  onClick={handleContinue}
+                  disabled={!formState.isValid}
+                  isLoading={verifyChallengeMutation.isLoading}
+                >
+                  Continute
+                </Button>
+                <div className="flex flex-col items-center mx-12">
+                  <div className="flex gap-x-1">
+                    You can resend the OTP in{" "}
+                    <span className="font-semibold">
+                      {convertTime(timeLeft)}
+                    </span>
+                  </div>
+                  <Button
+                    variant="link"
+                    className="font-bold text-secondary disabled:bg-white disabled:text-muted"
+                    disabled={
+                      !enableResendOtp ||
+                      resendAttempts === 0 ||
+                      (timeLeft > 0 && resendAttempts === 3)
+                    }
+                    onClick={handleResendOtp}
+                  >
+                    Resend OTP
+                  </Button>
+                  {resendAttempts !==
+                    settings.response.configs["resend.attempts"] && (
+                    <ResendAttempt
+                      currentAttempts={resendAttempts}
+                      totalAttempts={
+                        settings.response.configs["resend.attempts"]
+                      }
+                    />
+                  )}
+                  {resendAttempts === 0 && (
+                    <Button
+                      variant="link"
+                      className="text-sm h-4 m-4"
+                      onClick={handleExhaustedAttempt}
+                    >
+                      Go back to landing page
+                    </Button>
+                  )}
+                </div>
+              </>
+            )}
+            {!settings && isLoading && (
+              <div className="flex items-center justify-center">Loading</div>
+            )}
+          </div>
+        </StepContent>
+      </Step>
     </>
   );
 };

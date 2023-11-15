@@ -1,15 +1,29 @@
 import { useQuery, UseQueryResult } from "react-query";
 
-import { SettingsDto } from "~typings/types";
+import { RegisterStatusResponseDto, SettingsDto } from "~typings/types";
 
-import { getSettings } from "./service";
+import { getRegisterStatus, getSettings } from "./service";
 
-export const SettingsKeys = {
-  base: ["settings"] as const,
+export const keys = {
+  settings: ["settings"] as const,
+  registerStatus: ["registerStatus"] as const,
 };
 
 export const useSettings = (): UseQueryResult<SettingsDto, unknown> => {
-  return useQuery<SettingsDto>(SettingsKeys.base, () => getSettings(), {
+  return useQuery<SettingsDto>(keys.settings, () => getSettings(), {
     staleTime: Infinity,
   });
+};
+
+export const useRegisterStatus = (): UseQueryResult<
+  RegisterStatusResponseDto,
+  unknown
+> => {
+  return useQuery<RegisterStatusResponseDto>(
+    keys.registerStatus,
+    () => getRegisterStatus(),
+    {
+      staleTime: Infinity,
+    }
+  );
 };

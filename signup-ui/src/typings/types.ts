@@ -117,11 +117,7 @@ export interface LanguageTaggedValue {
 export interface UserInfo {
   fullName: LanguageTaggedValue[];
   phone: string;
-  issueDate: string;
-  expireDate: string;
-  gender: string;
-  dateOfBirth: string;
-  address: LanguageTaggedValue[];
+  preferredLang: string;
 }
 
 export type RegisterRequestDto = BaseRequestDto & {
