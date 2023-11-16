@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { PopoverTrigger } from "@radix-ui/react-popover";
 import { UseFormReturn } from "react-hook-form";
 import { Trans, useTranslation } from "react-i18next";
@@ -29,6 +29,7 @@ import { useRegister } from "../mutations";
 import { useSignUpContext } from "../SignUpContext";
 import { SignUpForm } from "../SignUpPage";
 import { AccountSetupProgress } from "./components/AccountSetupProgress";
+import { TermsAndPrivacyModal } from "./components/TermsAndPrivacyModal";
 
 interface AccountSetupProps {
   methods: UseFormReturn<SignUpForm, any, undefined>;
@@ -41,6 +42,8 @@ export const AccountSetup = ({ methods }: AccountSetupProps) => {
   const { control, trigger, getValues, formState } = methods;
 
   const { registerMutation } = useRegister();
+  const [openTermConditionModal, setOpenTermConditionModal] = useState(false);
+  const [modalData, setModalData] = useState({ title: "", content: "" });
 
   const handleContinue = useCallback(
     async (e: any) => {
@@ -75,6 +78,29 @@ export const AccountSetup = ({ methods }: AccountSetupProps) => {
     },
     [setActiveStep, trigger, getValues, registerMutation]
   );
+
+  const onModalToggle = () => {
+    setOpenTermConditionModal(false);
+    setModalData({ title: "", content: "" });
+  };
+
+  const onOpenTerm = (e: any) => {
+    e.preventDefault();
+    setModalData({
+      title: t("terms_and_conditions_title"),
+      content: t("terms_and_conditions_content"),
+    });
+    setOpenTermConditionModal(true);
+  };
+
+  const onOpenPrivacy = (e: any) => {
+    e.preventDefault();
+    setModalData({
+      title: t("privacy_and_policy_title"),
+      content: t("privacy_and_policy_content"),
+    });
+    setOpenTermConditionModal(true);
+  };
 
   return (
     <>
@@ -234,6 +260,14 @@ export const AccountSetup = ({ methods }: AccountSetupProps) => {
               >
                 {t("continue")}
               </Button>
+
+              <TermsAndPrivacyModal
+                title={modalData.title}
+                content={modalData.content}
+                isOpen={openTermConditionModal}
+                backdrop="static"
+                toggleModal={onModalToggle}
+              />
             </div>
           </StepContent>
         </Step>
