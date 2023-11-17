@@ -1,0 +1,1 @@
+export { ErrorPageTemplate as default } from "./ErrorPageTemplate";

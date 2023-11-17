@@ -1,6 +1,4 @@
-import Footer from "~components/ui/footer";
 import { Icons } from "~components/ui/icons";
-import NavBar from "~components/ui/nav-bar";
 
 import { useSettings } from "./queries";
 import { SignUpPage } from "./SignUpPage";
@@ -12,7 +10,7 @@ export const SignUpPageLayout = () => {
   if (isLoading || !settings) {
     return (
       <div className="w-full flex h-[calc(100vh-14vh)] items-center justify-center">
-        <Icons.loader2 className="animate-spin" />
+        <Icons.loader className="animate-spin" />
       </div>
     );
   }
