@@ -1,8 +1,7 @@
-import { Icons } from "~components/ui/icons";
-
 import { useSettings } from "./queries";
 import { SignUpPage } from "./SignUpPage";
 import { SignUpProvider } from "./SignUpProvider";
+import LoadingIndicator from "~/common/LoadingIndicator";
 
 export const SignUpPageLayout = () => {
   const { data: settings, isLoading } = useSettings();
@@ -10,13 +9,13 @@ export const SignUpPageLayout = () => {
   if (isLoading || !settings) {
     return (
       <div className="w-full flex h-[calc(100vh-14vh)] items-center justify-center">
-        <Icons.loader className="animate-spin" />
+        <LoadingIndicator />
       </div>
     );
   }
 
   return (
-    <div className="relative w-full flex h-[calc(100vh-14vh)] items-center justify-center">
+    <div className="relative w-full flex h-[calc(100vh-16vh)] items-center justify-center">
       <div>
         <img
           className="absolute left-1 top-1"
