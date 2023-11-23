@@ -44,6 +44,21 @@ body {
   height: 70px;
 }
 
+.footer-brand-logo {
+  content: url("../public/images/footer_logo.png");
+  height: 25px;
+}
+
+.footer-container {
+  padding-top: 11px;
+  padding-bottom: 11px;
+}
+
+.footer-text {
+  color: #898989;
+  font-size: smaller;
+}
+
 @layer base {
   :root {
     --font-sans: "Inter";
