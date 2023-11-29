@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useFormContext, UseFormReturn } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import PinInput from "react-pin-input";
-import { useSearchParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 import { ReactComponent as FailedIconSvg } from "~assets/svg/failed-icon.svg";
 import {
@@ -26,6 +26,7 @@ import {
   StepTitle,
 } from "~components/ui/step";
 import { cn } from "~utils/cn";
+import { getSignInRedirectURL } from "~utils/link";
 import { maskPhoneNumber } from "~utils/phone";
 import { convertTime } from "~utils/timer";
 import {
@@ -61,7 +62,7 @@ export const OTP = ({ methods }: OTPProps) => {
   const { verifyChallengeMutation } = useVerifyChallenge();
   const [error, setError] = useState<Error | null>(null);
   const [showDialog, setShowDialog] = useState(false);
-  const [searchParams] = useSearchParams();
+  const { hash: fromSingInHash } = useLocation();
 
   useEffect(() => {
     if (settings?.response.configs) {
@@ -172,9 +173,8 @@ export const OTP = ({ methods }: OTPProps) => {
   );
 
   const handleErrorRedirect = () => {
-    const esignetLoginPage = searchParams.get("callback");
-    if (error?.errorCode === "already-registered" && esignetLoginPage) {
-      window.location.href = esignetLoginPage;
+    if (error?.errorCode === "already-registered" && !!fromSingInHash) {
+      window.location.href = getSignInRedirectURL(fromSingInHash);
     } else {
       setActiveStep(0);
       reset();
@@ -205,7 +205,7 @@ export const OTP = ({ methods }: OTPProps) => {
               className="w-full bg-orange-500"
             >
               {error?.errorCode === "already-registered" &&
-              searchParams.get("callback")
+              !!fromSingInHash
                 ? t("login")
                 : t("okay")}
             </AlertDialogAction>
