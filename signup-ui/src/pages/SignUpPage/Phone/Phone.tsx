@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
 import { useFormContext, UseFormReturn } from "react-hook-form";
 import { useTranslation } from "react-i18next";
+import { useLocation } from "react-router-dom";
 
 import { Button } from "~components/ui/button";
 import { FormControl, FormField, FormItem } from "~components/ui/form";
@@ -15,6 +16,7 @@ import {
   StepTitle,
 } from "~components/ui/step";
 import { cn } from "~utils/cn";
+import { getSignInRedirectURL } from "~utils/link";
 import { Error, GenerateChallengeRequestDto } from "~typings/types";
 
 import { useGenerateChallenge } from "../mutations";
@@ -33,6 +35,7 @@ export const Phone = ({ methods }: PhoneProps) => {
   const { generateChallengeMutation } = useGenerateChallenge();
   const _reCaptchaRef = useRef<ReCAPTCHA>(null);
   const [error, setError] = useState<Error | null>(null);
+  const { hash: fromSingInHash } = useLocation();
 
   const { trigger, formState } = methods;
 
@@ -93,7 +96,7 @@ export const Phone = ({ methods }: PhoneProps) => {
     <Step>
       <StepHeader className="px-0">
         <StepTitle className="relative flex gap-x-4 w-full text-base font-semibold items-center justify-center">
-          <Icons.back className="absolute left-0 ml-4 cursor-pointer" />
+          {!!fromSingInHash && <a href={getSignInRedirectURL(fromSingInHash)} className="absolute left-0 ml-4 cursor-pointer"><Icons.back /></a>}
           <div className="text-center font-semibold tracking-normal">
             {t("enter_your_number")}
           </div>
