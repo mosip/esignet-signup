@@ -32,24 +32,24 @@ import { convertTime } from "~utils/timer";
 import {
   Error,
   GenerateChallengeRequestDto,
+  SettingsDto,
   VerifyChallengeRequestDto,
 } from "~typings/types";
 
 import { useGenerateChallenge, useVerifyChallenge } from "../mutations";
-import { useSettings } from "../queries";
 import { useSignUpContext } from "../SignUpContext";
 import { SignUpForm } from "../SignUpPage";
 import { ResendAttempt } from "./components/ResendAttempt";
 import { useTimer } from "./hooks/useTimer";
 
 interface OTPProps {
+  settings: SettingsDto;
   methods: UseFormReturn<SignUpForm, any, undefined>;
 }
 
-export const OTP = ({ methods }: OTPProps) => {
+export const OTP = ({ methods, settings }: OTPProps) => {
   const { t } = useTranslation();
 
-  const { data: settings, isLoading } = useSettings();
   const [hasError, setHasError] = useState<boolean>(false);
   const pinInputRef = useRef<PinInput | null>(null);
   const { control, getValues, setValue } = useFormContext();
@@ -65,11 +65,9 @@ export const OTP = ({ methods }: OTPProps) => {
   const { hash: fromSingInHash } = useLocation();
 
   useEffect(() => {
-    if (settings?.response.configs) {
-      setTimeLeft(settings.response.configs["resend.delay"]);
-      setResendAttempts(settings.response.configs["resend.attempts"]);
-    }
-  }, [settings?.response.configs, setTimeLeft]);
+    setTimeLeft(settings.response.configs["resend.delay"]);
+    setResendAttempts(settings.response.configs["resend.attempts"]);
+  }, [settings.response.configs, setTimeLeft]);
 
   useEffect(() => {
     if (!hasError) return;
@@ -219,9 +217,9 @@ export const OTP = ({ methods }: OTPProps) => {
               className="absolute left-0 ml-4 cursor-pointer"
               onClick={handleBack}
             />
-            <h3 className="w-full font-bold text-[26px] text-center">
+            <div className="w-full font-bold text-[26px] text-center">
               {t("otp_header")}
-            </h3>
+            </div>
           </StepTitle>
           <StepDescription className="w-full py-4 tracking-normal">
             <div className="text-muted-neutral-gray">
@@ -301,7 +299,7 @@ export const OTP = ({ methods }: OTPProps) => {
                   className="w-full p-4 font-semibold"
                   onClick={handleContinue}
                   disabled={!formState.isValid}
-                  isLoading={verifyChallengeMutation.isLoading}
+                  isLoading={verifyChallengeMutation.isPending}
                 >
                   {t("continue")}
                 </Button>

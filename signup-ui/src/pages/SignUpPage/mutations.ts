@@ -1,11 +1,11 @@
-import { useMutation } from "react-query";
+import { useMutation } from "@tanstack/react-query";
 
 import { ApiError } from "~typings/core";
 import {
   GenerateChallengeRequestDto,
   GenerateChallengeResponseDto,
-  RegisterRequestDto,
-  RegisterResponseDto,
+  RegistrationRequestDto,
+  RegistrationResponseDto,
   VerifyChallengeRequestDto,
   VerifyChallengeResponseDto,
 } from "~typings/types";
@@ -17,9 +17,10 @@ export const useGenerateChallenge = () => {
     GenerateChallengeResponseDto,
     ApiError,
     GenerateChallengeRequestDto
-  >((generateChallengeRequestDto: GenerateChallengeRequestDto) =>
-    generateChallenge(generateChallengeRequestDto)
-  );
+  >({
+    mutationFn: (generateChallengeRequestDto: GenerateChallengeRequestDto) =>
+      generateChallenge(generateChallengeRequestDto),
+  });
 
   return { generateChallengeMutation };
 };
@@ -29,19 +30,23 @@ export const useVerifyChallenge = () => {
     VerifyChallengeResponseDto,
     ApiError,
     VerifyChallengeRequestDto
-  >((verifyChallengeRequestDto: VerifyChallengeRequestDto) =>
-    verifyChallenge(verifyChallengeRequestDto)
-  );
+  >({
+    mutationFn: (verifyChallengeRequestDto: VerifyChallengeRequestDto) =>
+      verifyChallenge(verifyChallengeRequestDto),
+  });
 
   return { verifyChallengeMutation };
 };
 
 export const useRegister = () => {
   const registerMutation = useMutation<
-    RegisterResponseDto,
+    RegistrationResponseDto,
     ApiError,
-    RegisterRequestDto
-  >((registerRequestDto: RegisterRequestDto) => register(registerRequestDto));
+    RegistrationRequestDto
+  >({
+    mutationFn: (RegistrationRequestDto: RegistrationRequestDto) =>
+      register(RegistrationRequestDto),
+  });
 
   return { registerMutation };
 };

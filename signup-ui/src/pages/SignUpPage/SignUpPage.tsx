@@ -8,6 +8,7 @@ import * as yup from "yup";
 import { Form } from "~components/ui/form";
 import { SettingsDto } from "~typings/types";
 
+import AccountRegistrationStatus from "./AccountRegistrationStatus";
 import AccountSetup from "./AccountSetup";
 import Otp from "./Otp";
 import Phone from "./Phone";
@@ -31,6 +32,7 @@ export enum SignUpSteps {
   OTP = "OTP",
   STATUS = "STATUS",
   ACCOUNTSETUP = "ACCOUNTSETUP",
+  ACCOUNTSTATUS = "ACCOUNTSTATUS",
 }
 
 interface SignUpPageProps {
@@ -118,11 +120,15 @@ export const SignUpPage = ({ settings }: SignUpPageProps) => {
       case 0:
         return <Phone methods={methods} />;
       case 1:
-        return <Otp methods={methods} />;
+        return <Otp methods={methods} settings={settings} />;
       case 2:
         return <Status methods={methods} />;
       case 3:
         return <AccountSetup methods={methods} />;
+      case 4:
+        return (
+          <AccountRegistrationStatus methods={methods} settings={settings} />
+        );
       default:
         return "unknown step";
     }
