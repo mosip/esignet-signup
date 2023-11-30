@@ -1,29 +1,30 @@
-import { useQuery, UseQueryResult } from "react-query";
+import { useQuery, UseQueryResult } from "@tanstack/react-query";
 
-import { RegisterStatusResponseDto, SettingsDto } from "~typings/types";
+import { RegistrationStatusResponseDto, SettingsDto } from "~typings/types";
 
-import { getRegisterStatus, getSettings } from "./service";
+import { getRegistrationStatus, getSettings } from "./service";
 
 export const keys = {
   settings: ["settings"] as const,
-  registerStatus: ["registerStatus"] as const,
+  registrationStatus: ["registrationStatus"] as const,
 };
 
 export const useSettings = (): UseQueryResult<SettingsDto, unknown> => {
-  return useQuery<SettingsDto>(keys.settings, () => getSettings(), {
+  return useQuery<SettingsDto>({
+    queryKey: keys.settings,
+    queryFn: () => getSettings(),
     staleTime: Infinity,
   });
 };
 
-export const useRegisterStatus = (): UseQueryResult<
-  RegisterStatusResponseDto,
-  unknown
-> => {
-  return useQuery<RegisterStatusResponseDto>(
-    keys.registerStatus,
-    () => getRegisterStatus(),
-    {
-      staleTime: Infinity,
-    }
-  );
+export const useRegistrationStatus = (
+  statusRequestAttempt: number,
+  statusRequestDelay: number
+): UseQueryResult<RegistrationStatusResponseDto, unknown> => {
+  return useQuery<RegistrationStatusResponseDto>({
+    queryKey: keys.registrationStatus,
+    queryFn: () => getRegistrationStatus(),
+    retry: statusRequestAttempt,
+    retryDelay: statusRequestDelay * 1000,
+  });
 };

@@ -1,8 +1,9 @@
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Inspector, InspectParams } from "react-dev-inspector";
-import { QueryClient, QueryClientProvider } from "react-query";
 
 import "./App.css";
 
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter } from "react-router-dom";
 
 import Footer from "~components/ui/footer";
@@ -17,9 +18,9 @@ import Footer from "~components/ui/footer";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 60 * 1000, // 60 seconds,
+      staleTime: Infinity,
       retry: (failureCount, error) => {
-        // Do not retry on 4xx error codes.
+        // Do not retry on 4xx error codes
         if (error instanceof HttpError && String(error.code).startsWith("4")) {
           return false;
         }
@@ -56,6 +57,10 @@ function App() {
           <AppRouter />
         </BrowserRouter>
         <Footer />
+        <ReactQueryDevtools
+          initialIsOpen={false}
+          buttonPosition="bottom-left"
+        />
       </QueryClientProvider>
     </div>
   );

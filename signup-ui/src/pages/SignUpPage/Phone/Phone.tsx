@@ -162,7 +162,7 @@ export const Phone = ({ methods }: PhoneProps) => {
           <Button
             onClick={handleContinue}
             disabled={!formState.isValid}
-            isLoading={generateChallengeMutation.isLoading}
+            isLoading={generateChallengeMutation.isPending}
           >
             {t("continue")}
           </Button>

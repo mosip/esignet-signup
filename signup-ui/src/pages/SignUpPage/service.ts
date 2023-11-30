@@ -1,8 +1,9 @@
 import { ApiService } from "~services/api.service";
 import {
   GenerateChallengeRequestDto,
-  RegisterRequestDto,
-  RegisterStatusResponseDto,
+  RegistrationRequestDto,
+  RegistrationStatusResponseDto,
+  RegistrationWithFailedStatus,
   SettingsDto,
   VerifyChallengeRequestDto,
 } from "~typings/types";
@@ -29,15 +30,22 @@ export const verifyChallenge = async (
   ).then(({ data }) => data);
 };
 
-export const register = async (register: RegisterRequestDto) => {
+export const register = async (register: RegistrationRequestDto) => {
   return ApiService.post("/registration/register", register).then(
     ({ data }) => data
   );
 };
 
-export const getRegisterStatus =
-  async (): Promise<RegisterStatusResponseDto> => {
-    return ApiService.get<RegisterStatusResponseDto>(
+export const getRegistrationStatus =
+  async (): Promise<RegistrationStatusResponseDto> => {
+    return ApiService.get<RegistrationStatusResponseDto>(
       "/registration/status"
-    ).then(({ data }) => data);
+    ).then(({ data }) => {
+      // treat PENDING as an error so that react-query will auto retry
+      if (data.response.status === RegistrationWithFailedStatus.PENDING) {
+        throw new Error("Status pending");
+      }
+
+      return data;
+    });
   };

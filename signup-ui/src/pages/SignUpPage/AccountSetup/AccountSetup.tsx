@@ -23,12 +23,11 @@ import {
   StepHeader,
   StepTitle,
 } from "~components/ui/step";
-import { RegisterRequestDto } from "~typings/types";
+import { RegistrationRequestDto, RegistrationStatus } from "~typings/types";
 
 import { useRegister } from "../mutations";
 import { useSignUpContext } from "../SignUpContext";
 import { SignUpForm } from "../SignUpPage";
-import { AccountSetupProgress } from "./components/AccountSetupProgress";
 import { TermsAndPrivacyModal } from "./components/TermsAndPrivacyModal";
 
 interface AccountSetupProps {
@@ -50,7 +49,7 @@ export const AccountSetup = ({ methods }: AccountSetupProps) => {
       const isStepValid = await trigger();
 
       if (isStepValid) {
-        const registerRequestDto: RegisterRequestDto = {
+        const RegistrationRequestDto: RegistrationRequestDto = {
           requestTime: new Date().toISOString(),
           request: {
             username: `855${getValues("phone")}`,
@@ -66,10 +65,17 @@ export const AccountSetup = ({ methods }: AccountSetupProps) => {
           },
         };
 
-        return registerMutation.mutate(registerRequestDto, {
-          onSuccess: ({ errors }) => {
+        return registerMutation.mutate(RegistrationRequestDto, {
+          onSuccess: ({ response, errors }) => {
             if (!errors) {
-              setActiveStep((prevActiveStep) => prevActiveStep + 1);
+              if (response.status === RegistrationStatus.PENDING) {
+                // direct user to status step when the account creation is pending
+                setActiveStep((prevActiveStep) => prevActiveStep + 1);
+              }
+              if (response.status === RegistrationStatus.COMPLETED) {
+                // direct user to the final (success) step when user successfully create the account
+                setActiveStep((prevActiveStep) => prevActiveStep + 2);
+              }
             }
           },
         });
@@ -96,162 +102,167 @@ export const AccountSetup = ({ methods }: AccountSetupProps) => {
   }
 
   return (
-    <>
-      {registerMutation.isLoading && <AccountSetupProgress />}
-      {!registerMutation.isLoading && (
-        <Step>
-          <StepHeader>
-            <StepTitle>Setup Account</StepTitle>
-            <StepDescription>
-              Please enter the requested details to complete your registration.
-            </StepDescription>
-          </StepHeader>
-          <StepDivider />
-          <StepContent className="m-6">
-            <div className="flex flex-col gap-y-4">
-              <FormField
-                control={control}
-                name="username"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t("username")}</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder={t("username_placeholder")}
-                        {...field}
-                        value={`+855 ${getValues("phone")}`}
-                        disabled
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={control}
-                name="fullNameInKhmer"
-                render={({ field }) => (
-                  <FormItem>
-                    <div className="flex items-center gap-1">
-                      <FormLabel>{t("full_name")}</FormLabel>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <Icons.info className="w-4 h-4 cursor-pointer" />
-                        </PopoverTrigger>
-                        <PopoverContent side="right">
-                          {t("full_name_tooltip")}
-                        </PopoverContent>
-                      </Popover>
-                    </div>
-                    <FormControl>
-                      <Input
-                        placeholder={t("full_name_placeholder")}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <div className="flex items-center gap-1">
-                      <FormLabel>{t("password")}</FormLabel>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <Icons.info className="w-4 h-4 cursor-pointer" />
-                        </PopoverTrigger>
-                        <PopoverContent side="right" className="w-80">
-                          <div className="flex items-center justify-center">
-                            <ul className="list-disc">
-                              <Trans
-                                i18nKey="password_rules"
-                                components={{
-                                  li: <li />,
-                                }}
-                              />
-                            </ul>
-                          </div>
-                        </PopoverContent>
-                      </Popover>
-                    </div>
-                    <FormControl>
-                      <Input
-                        type="password"
-                        placeholder={t("password_placeholder")}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={control}
-                name="confirmPassword"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t("confirm_password")}</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="password"
-                        placeholder={t("confirm_password_placeholder")}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={control}
-                name="consent"
-                render={({ field }) => (
-                  <FormItem className="flex space-y-0 items-start gap-x-4">
-                    <FormControl>
-                      <Checkbox
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                        className="h-5 w-5 rounded-[2px] text-white data-[state=checked]:bg-orange-500 data-[state=checked]:border-orange-500"
-                      />
-                    </FormControl>
-                    <FormLabel>
-                      I agree to Cambodia's{" "}
-                      <a className="text-orange-500 underline cursor-pointer" target="_blank" onClick={onOpenTerm}>
-                        Terms & Conditions
-                      </a>{" "}
-                      and{" "}
-                      <a className="text-orange-400 underline cursor-pointer" target="_blank" onClick={onOpenPrivacy}>
-                        Privacy Policy
-                      </a>
-                      , to store & process my information as required.
-                    </FormLabel>
-                  </FormItem>
-                )}
-              />
-              <Button
-                type="submit"
-                variant="secondary"
-                className="w-full"
-                onClick={handleContinue}
-                disabled={!formState.isValid}
-              >
-                {t("continue")}
-              </Button>
+    <Step>
+      <StepHeader>
+        <StepTitle>Setup Account</StepTitle>
+        <StepDescription>
+          Please enter the requested details to complete your registration.
+        </StepDescription>
+      </StepHeader>
+      <StepDivider />
+      <StepContent className="m-6">
+        <div className="flex flex-col gap-y-4">
+          <FormField
+            control={control}
+            name="username"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t("username")}</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder={t("username_placeholder")}
+                    {...field}
+                    value={`+855 ${getValues("phone")}`}
+                    disabled
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={control}
+            name="fullNameInKhmer"
+            render={({ field }) => (
+              <FormItem>
+                <div className="flex items-center gap-1">
+                  <FormLabel>{t("full_name")}</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Icons.info className="w-4 h-4 cursor-pointer" />
+                    </PopoverTrigger>
+                    <PopoverContent side="right">
+                      {t("full_name_tooltip")}
+                    </PopoverContent>
+                  </Popover>
+                </div>
+                <FormControl>
+                  <Input placeholder={t("full_name_placeholder")} {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <div className="flex items-center gap-1">
+                  <FormLabel>{t("password")}</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Icons.info className="w-4 h-4 cursor-pointer" />
+                    </PopoverTrigger>
+                    <PopoverContent side="right" className="w-80">
+                      <div className="flex items-center justify-center">
+                        <ul className="list-disc">
+                          <Trans
+                            i18nKey="password_rules"
+                            components={{
+                              li: <li />,
+                            }}
+                          />
+                        </ul>
+                      </div>
+                    </PopoverContent>
+                  </Popover>
+                </div>
+                <FormControl>
+                  <Input
+                    type="password"
+                    placeholder={t("password_placeholder")}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={control}
+            name="confirmPassword"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t("confirm_password")}</FormLabel>
+                <FormControl>
+                  <Input
+                    type="password"
+                    placeholder={t("confirm_password_placeholder")}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={control}
+            name="consent"
+            render={({ field }) => (
+              <FormItem className="flex space-y-0 items-start gap-x-4">
+                <FormControl>
+                  <Checkbox
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                    className="h-5 w-5 rounded-[2px] text-white data-[state=checked]:bg-orange-500 data-[state=checked]:border-orange-500"
+                  />
+                </FormControl>
+                <FormLabel>
+                  <Trans
+                    i18nKey="terms_and_condition"
+                    components={{
+                      TermsAndConditionsAnchor: (
+                        <a
+                          href="#!"
+                          className="text-orange-500 underline"
+                          target="_blank"
+                          aria-label="Terms and Conditions"
+                        />
+                      ),
+                      PrivacyPolicyAnchor: (
+                        <a
+                          href="#!"
+                          className="text-orange-500 underline"
+                          target="_blank"
+                          aria-label="Terms and Conditions"
+                        />
+                      ),
+                    }}
+                  />
+                </FormLabel>
+              </FormItem>
+            )}
+          />
+          <Button
+            type="submit"
+            variant="secondary"
+            className="w-full"
+            onClick={handleContinue}
+            disabled={!formState.isValid}
+          >
+            {t("continue")}
+          </Button>
 
-              <TermsAndPrivacyModal
-                title={modalData.title}
-                content={modalData.content}
-                isOpen={openTermConditionModal}
-                backdrop="static"
-                toggleModal={onModalToggle} />
-            </div>
-          </StepContent>
-        </Step>
-      )}
-    </>
+          <TermsAndPrivacyModal
+            title={modalData.title}
+            content={modalData.content}
+            isOpen={openTermConditionModal}
+            backdrop="static"
+            toggleModal={onModalToggle}
+          />
+        </div>
+      </StepContent>
+    </Step>
   );
 };
