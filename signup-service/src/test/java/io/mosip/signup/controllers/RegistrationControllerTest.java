@@ -3,16 +3,15 @@ package io.mosip.signup.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.esignet.core.dto.RequestWrapper;
 import io.mosip.esignet.core.util.IdentityProviderUtil;
-import io.mosip.signup.dto.ChallengeInfo;
-import io.mosip.signup.dto.RegistrationTransaction;
-import io.mosip.signup.dto.VerifyChallengeRequest;
-import io.mosip.signup.dto.VerifyChallengeResponse;
+import io.mosip.signup.dto.*;
 import io.mosip.signup.exception.ChallengeFailedException;
 import io.mosip.signup.exception.InvalidIdentifierException;
 import io.mosip.signup.exception.InvalidTransactionException;
 import io.mosip.signup.services.CacheUtilService;
 import io.mosip.signup.services.RegistrationService;
 import io.mosip.signup.util.ActionStatus;
+import io.mosip.signup.util.RegistrationStatus;
+import io.mosip.signup.util.SignUpConstants;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +27,7 @@ import javax.servlet.http.Cookie;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -72,7 +72,7 @@ public class RegistrationControllerTest {
 
         mockMvc.perform(post("/registration/verify-challenge")
                         .content(objectMapper.writeValueAsString(wrapper))
-                        .cookie(new Cookie("TRANSACTION_ID", mockTransactionID))
+                        .cookie(new Cookie(SignUpConstants.TRANSACTION_ID, mockTransactionID))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.response.status").value("SUCCESS"));
@@ -93,7 +93,7 @@ public class RegistrationControllerTest {
         wrapper.setRequest(verifyChallengeRequest);
 
         String mockTransactionID = "123456789";
-        Cookie cookie = new Cookie("TRANSACTION_ID", mockTransactionID);
+        Cookie cookie = new Cookie(SignUpConstants.TRANSACTION_ID, mockTransactionID);
 
         mockMvc.perform(post("/registration/verify-challenge").cookie(cookie)
                         .content(objectMapper.writeValueAsString(wrapper))
@@ -118,7 +118,7 @@ public class RegistrationControllerTest {
         wrapper.setRequest(verifyChallengeRequest);
 
         String mockTransactionID = "123456789";
-        Cookie cookie = new Cookie("TRANSACTION_ID", mockTransactionID);
+        Cookie cookie = new Cookie(SignUpConstants.TRANSACTION_ID, mockTransactionID);
 
         mockMvc.perform(post("/registration/verify-challenge").cookie(cookie)
                         .content(objectMapper.writeValueAsString(wrapper))
@@ -143,7 +143,7 @@ public class RegistrationControllerTest {
         wrapper.setRequest(verifyChallengeRequest);
 
         String mockTransactionID = "123456789";
-        Cookie cookie = new Cookie("TRANSACTION_ID", mockTransactionID);
+        Cookie cookie = new Cookie(SignUpConstants.TRANSACTION_ID, mockTransactionID);
 
         mockMvc.perform(post("/registration/verify-challenge").cookie(cookie)
                         .content(objectMapper.writeValueAsString(wrapper))
@@ -169,7 +169,7 @@ public class RegistrationControllerTest {
         wrapper.setRequest(verifyChallengeRequest);
 
         String mockTransactionID = "123456789";
-        Cookie cookie = new Cookie("TRANSACTION_ID", mockTransactionID);
+        Cookie cookie = new Cookie(SignUpConstants.TRANSACTION_ID, mockTransactionID);
 
         mockMvc.perform(post("/registration/verify-challenge").cookie(cookie)
                         .content(objectMapper.writeValueAsString(wrapper))
@@ -195,7 +195,7 @@ public class RegistrationControllerTest {
         wrapper.setRequest(verifyChallengeRequest);
 
         String mockTransactionID = "123456789";
-        Cookie cookie = new Cookie("TRANSACTION_ID", mockTransactionID);
+        Cookie cookie = new Cookie(SignUpConstants.TRANSACTION_ID, mockTransactionID);
 
         mockMvc.perform(post("/registration/verify-challenge").cookie(cookie)
                         .content(objectMapper.writeValueAsString(wrapper))
@@ -222,7 +222,7 @@ public class RegistrationControllerTest {
         wrapper.setRequest(verifyChallengeRequest);
 
         String mockTransactionID = "123456789";
-        Cookie cookie = new Cookie("TRANSACTION_ID", mockTransactionID);
+        Cookie cookie = new Cookie(SignUpConstants.TRANSACTION_ID, mockTransactionID);
 
         mockMvc.perform(post("/registration/verify-challenge").cookie(cookie)
                         .content(objectMapper.writeValueAsString(wrapper))
@@ -244,7 +244,7 @@ public class RegistrationControllerTest {
         wrapper.setRequest(verifyChallengeRequest);
 
         String mockTransactionID = "123456789";
-        Cookie cookie = new Cookie("TRANSACTION_ID", mockTransactionID);
+        Cookie cookie = new Cookie(SignUpConstants.TRANSACTION_ID, mockTransactionID);
 
         mockMvc.perform(post("/registration/verify-challenge").cookie(cookie)
                         .content(objectMapper.writeValueAsString(wrapper))
@@ -279,7 +279,7 @@ public class RegistrationControllerTest {
 
         mockMvc.perform(post("/registration/verify-challenge")
                         .content(objectMapper.writeValueAsString(wrapper))
-                        .cookie(new Cookie("TRANSACTION_ID", mockTransactionID))
+                        .cookie(new Cookie(SignUpConstants.TRANSACTION_ID, mockTransactionID))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.errors").isNotEmpty())
@@ -311,7 +311,7 @@ public class RegistrationControllerTest {
 
         mockMvc.perform(post("/registration/verify-challenge")
                         .content(objectMapper.writeValueAsString(wrapper))
-                        .cookie(new Cookie("TRANSACTION_ID", mockTransactionID))
+                        .cookie(new Cookie(SignUpConstants.TRANSACTION_ID, mockTransactionID))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.errors").isNotEmpty())
@@ -343,7 +343,7 @@ public class RegistrationControllerTest {
 
         mockMvc.perform(post("/registration/verify-challenge")
                         .content(objectMapper.writeValueAsString(wrapper))
-                        .cookie(new Cookie("TRANSACTION_ID", mockTransactionID))
+                        .cookie(new Cookie(SignUpConstants.TRANSACTION_ID, mockTransactionID))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.errors").isNotEmpty())
@@ -375,7 +375,7 @@ public class RegistrationControllerTest {
 
         mockMvc.perform(post("/registration/verify-challenge")
                         .content(objectMapper.writeValueAsString(wrapper))
-                        .cookie(new Cookie("TRANSACTION_ID", mockTransactionID))
+                        .cookie(new Cookie(SignUpConstants.TRANSACTION_ID, mockTransactionID))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.errors").isNotEmpty())
@@ -405,10 +405,58 @@ public class RegistrationControllerTest {
 
         mockMvc.perform(post("/registration/verify-challenge")
                         .content(objectMapper.writeValueAsString(wrapper))
-                        .cookie(new Cookie("TRANSACTION_ID", mockTransactionID))
+                        .cookie(new Cookie(SignUpConstants.TRANSACTION_ID, mockTransactionID))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.errors").isNotEmpty())
                 .andExpect(jsonPath("$.errors.length()").value(2));
+    }
+
+    @Test
+    public void getRegistrationStatus_returnCompletedResponse() throws Exception {
+        String mockTransactionID = "123456789";
+        RegistrationTransaction registrationTransaction = new RegistrationTransaction();
+        registrationTransaction.setRegistrationStatus(RegistrationStatus.COMPLETED);
+        RegistrationStatusResponse response = new RegistrationStatusResponse();
+        response.setStatus(registrationTransaction.getRegistrationStatus());
+
+        when(registrationService.getRegistrationStatus(mockTransactionID)).thenReturn(response);
+        mockMvc.perform(get("/registration/status")
+                        .cookie(new Cookie(SignUpConstants.TRANSACTION_ID, mockTransactionID))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.response.status").value("COMPLETED"));
+    }
+
+    @Test
+    public void getRegistrationStatus_returnPendingResponse() throws Exception {
+        String mockTransactionID = "123456789";
+        RegistrationTransaction registrationTransaction = new RegistrationTransaction();
+        registrationTransaction.setRegistrationStatus(RegistrationStatus.PENDING);
+        RegistrationStatusResponse response = new RegistrationStatusResponse();
+        response.setStatus(registrationTransaction.getRegistrationStatus());
+
+        when(registrationService.getRegistrationStatus(mockTransactionID)).thenReturn(response);
+        mockMvc.perform(get("/registration/status")
+                        .cookie(new Cookie(SignUpConstants.TRANSACTION_ID, mockTransactionID))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.response.status").value("PENDING"));
+    }
+
+    @Test
+    public void getRegistrationStatus_returnFailedResponse() throws Exception {
+        String mockTransactionID = "123456789";
+        RegistrationTransaction registrationTransaction = new RegistrationTransaction();
+        registrationTransaction.setRegistrationStatus(RegistrationStatus.FAILED);
+        RegistrationStatusResponse response = new RegistrationStatusResponse();
+        response.setStatus(registrationTransaction.getRegistrationStatus());
+
+        when(registrationService.getRegistrationStatus(mockTransactionID)).thenReturn(response);
+        mockMvc.perform(get("/registration/status")
+                        .cookie(new Cookie(SignUpConstants.TRANSACTION_ID, mockTransactionID))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.response.status").value("FAILED"));
     }
 }
