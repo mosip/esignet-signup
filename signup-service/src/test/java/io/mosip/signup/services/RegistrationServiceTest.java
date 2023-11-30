@@ -1,12 +1,10 @@
 package io.mosip.signup.services;
 
-import io.mosip.signup.dto.ChallengeInfo;
-import io.mosip.signup.dto.RegistrationTransaction;
-import io.mosip.signup.dto.VerifyChallengeRequest;
-import io.mosip.signup.dto.VerifyChallengeResponse;
+import io.mosip.signup.dto.*;
 import io.mosip.signup.exception.ChallengeFailedException;
 import io.mosip.signup.exception.InvalidIdentifierException;
 import io.mosip.signup.exception.InvalidTransactionException;
+import io.mosip.signup.util.RegistrationStatus;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -112,6 +110,73 @@ public class RegistrationServiceTest {
             Assert.fail();
         }catch (InvalidIdentifierException invalidIdentifierException){
             Assert.assertEquals("invalid_identifier", invalidIdentifierException.getErrorCode());
+        }
+    }
+
+    @Test
+    public void getRegistrationStatus_withCompletedTransaction() {
+        String transactionId = "TRAN-1234";
+        RegistrationTransaction registrationTransaction = new RegistrationTransaction();
+        registrationTransaction.setRegistrationStatus(RegistrationStatus.COMPLETED);
+        when(cacheUtilService.getRegisteredTransaction(transactionId)).thenReturn(registrationTransaction);
+        RegistrationStatusResponse registrationStatusResponse = registrationService.getRegistrationStatus(transactionId);
+
+        Assert.assertNotNull(registrationStatusResponse);
+        Assert.assertEquals(registrationStatusResponse.getStatus(), RegistrationStatus.COMPLETED);
+    }
+
+    @Test
+    public void getRegistrationStatus_withPendingTransaction() {
+        String transactionId = "TRAN-1234";
+        RegistrationTransaction registrationTransaction = new RegistrationTransaction();
+        registrationTransaction.setRegistrationStatus(RegistrationStatus.PENDING);
+        when(cacheUtilService.getRegisteredTransaction(transactionId)).thenReturn(registrationTransaction);
+        RegistrationStatusResponse registrationStatusResponse = registrationService.getRegistrationStatus(transactionId);
+
+        Assert.assertNotNull(registrationStatusResponse);
+        Assert.assertEquals(registrationStatusResponse.getStatus(), RegistrationStatus.PENDING);
+    }
+
+    @Test
+    public void getRegistrationStatus_withFailedTransaction() {
+        String transactionId = "TRAN-1234";
+        RegistrationTransaction registrationTransaction = new RegistrationTransaction();
+        registrationTransaction.setRegistrationStatus(RegistrationStatus.FAILED);
+        when(cacheUtilService.getRegisteredTransaction(transactionId)).thenReturn(registrationTransaction);
+        RegistrationStatusResponse registrationStatusResponse = registrationService.getRegistrationStatus(transactionId);
+
+        Assert.assertNotNull(registrationStatusResponse);
+        Assert.assertEquals(registrationStatusResponse.getStatus(), RegistrationStatus.FAILED);
+    }
+
+    @Test
+    public void getRegistrationStatus_withInvalidTransaction() {
+        String transactionId = "TRAN-1234";
+        try {
+            RegistrationStatusResponse registrationStatusResponse = registrationService.getRegistrationStatus(transactionId);
+            Assert.fail();
+        } catch (InvalidTransactionException exception) {
+            Assert.assertEquals("invalid_transaction", exception.getErrorCode());
+        }
+    }
+
+    @Test
+    public void getRegistrationStatus_withEmptyTransactionId() {
+        try {
+            RegistrationStatusResponse registrationStatusResponse = registrationService.getRegistrationStatus("");
+            Assert.fail();
+        } catch (InvalidTransactionException exception) {
+            Assert.assertEquals("invalid_transaction", exception.getErrorCode());
+        }
+    }
+
+    @Test
+    public void getRegistrationStatus_withNullTransactionId() {
+        try {
+            RegistrationStatusResponse registrationStatusResponse = registrationService.getRegistrationStatus(null);
+            Assert.fail();
+        } catch (InvalidTransactionException exception) {
+            Assert.assertEquals("invalid_transaction", exception.getErrorCode());
         }
     }
 }
