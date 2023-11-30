@@ -49,7 +49,6 @@ export interface Error {
 
 export interface BaseResponseDto {
   responseTime: string;
-  response: any;
   errors: Error[] | null;
 }
 
@@ -70,6 +69,8 @@ interface SettingsConfig {
   "fullname.pattern": string;
   "status.deferred.response.timeout": number;
   "status.check.limit": number;
+  "status.request.limit": number;
+  "status.request.delay": number;
 }
 
 export interface Settings {
@@ -120,7 +121,7 @@ export interface UserInfo {
   preferredLang: string;
 }
 
-export type RegisterRequestDto = BaseRequestDto & {
+export type RegistrationRequestDto = BaseRequestDto & {
   request: {
     username: string;
     password: string;
@@ -129,14 +130,25 @@ export type RegisterRequestDto = BaseRequestDto & {
   };
 };
 
-export type RegisterResponseDto = BaseResponseDto & {
+export enum RegistrationStatus {
+  PENDING = "PENDING",
+  COMPLETED = "COMPLETED",
+}
+
+export type RegistrationResponseDto = BaseResponseDto & {
   response: {
-    status: string;
+    status: RegistrationStatus;
   };
 };
 
-export type RegisterStatusResponseDto = BaseResponseDto & {
+export enum RegistrationWithFailedStatus {
+  PENDING = "PENDING",
+  COMPLETED = "COMPLETED",
+  FAILED = "FAILED",
+}
+
+export type RegistrationStatusResponseDto = BaseResponseDto & {
   response: {
-    status: string;
+    status: RegistrationWithFailedStatus;
   };
 };
