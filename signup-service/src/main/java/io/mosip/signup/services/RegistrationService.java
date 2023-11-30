@@ -1,5 +1,6 @@
 package io.mosip.signup.services;
 
+import io.mosip.signup.dto.RegistrationStatusResponse;
 import io.mosip.signup.dto.RegistrationTransaction;
 import io.mosip.signup.dto.VerifyChallengeRequest;
 import io.mosip.signup.dto.VerifyChallengeResponse;
@@ -29,5 +30,20 @@ public class RegistrationService {
         VerifyChallengeResponse verifyChallengeResponse = new VerifyChallengeResponse();
         verifyChallengeResponse.setStatus(ActionStatus.SUCCESS);
         return verifyChallengeResponse;
+    }
+
+    public RegistrationStatusResponse getRegistrationStatus(String transactionId)
+            throws SignUpException {
+        if (transactionId == null || transactionId.isEmpty())
+            throw new InvalidTransactionException();
+
+        RegistrationTransaction registrationTransaction = cacheUtilService.getRegisteredTransaction(
+                transactionId);
+        if (registrationTransaction == null)
+            throw new InvalidTransactionException();
+
+        RegistrationStatusResponse registrationStatusResponse = new RegistrationStatusResponse();
+        registrationStatusResponse.setStatus(registrationTransaction.getRegistrationStatus());
+        return registrationStatusResponse;
     }
 }
