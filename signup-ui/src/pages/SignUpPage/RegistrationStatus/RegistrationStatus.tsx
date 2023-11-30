@@ -10,7 +10,7 @@ export const RegistrationStatus = () => {
 
   const handleAction = () => {
     window.location.href = getSignInRedirectURL(fromSingInHash);
-  }
+  };
 
   return (
     <StatusPageTemplate
