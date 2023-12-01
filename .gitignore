@@ -35,3 +35,4 @@ target/
 helm/*/Chart.lock
 helm/*/charts/
 signup-service/target
+.idea/
