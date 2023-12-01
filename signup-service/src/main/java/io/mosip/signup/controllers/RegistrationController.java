@@ -1,9 +1,10 @@
 package io.mosip.signup.controllers;
 
-
 import io.mosip.esignet.core.dto.RequestWrapper;
 import io.mosip.esignet.core.dto.ResponseWrapper;
 import io.mosip.esignet.core.util.IdentityProviderUtil;
+import io.mosip.signup.dto.GenerateChallengeRequest;
+import io.mosip.signup.dto.GenerateChallengeResponse;
 import io.mosip.signup.dto.RegistrationStatusResponse;
 import io.mosip.signup.dto.VerifyChallengeRequest;
 import io.mosip.signup.dto.VerifyChallengeResponse;
@@ -34,6 +35,15 @@ public class RegistrationController {
         responseWrapper.setResponseTime(IdentityProviderUtil.getUTCDateTime());
         responseWrapper.setResponse(registrationService.verifyChallenge(requestWrapper.getRequest(),transactionId));
         return  responseWrapper;
+    }
+
+    @PostMapping("/generate-challenge")
+    public ResponseWrapper<GenerateChallengeResponse> generateChallenge (
+            @Valid @RequestBody RequestWrapper<GenerateChallengeRequest> requestWrapper, @CookieValue(name = SignUpConstants.TRANSACTION_ID, defaultValue = "") String transactionId) throws SignUpException {
+        ResponseWrapper<GenerateChallengeResponse> responseWrapper = new ResponseWrapper<>();
+        responseWrapper.setResponse(registrationService.generateChallenge(requestWrapper.getRequest(), transactionId));
+        responseWrapper.setResponseTime(IdentityProviderUtil.getUTCDateTime());
+        return responseWrapper;
     }
 
     @GetMapping("/status")
