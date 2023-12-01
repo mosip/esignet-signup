@@ -3,6 +3,8 @@ package io.mosip.signup.config;
 import io.mosip.esignet.core.dto.Error;
 import io.mosip.esignet.core.dto.ResponseWrapper;
 import io.mosip.esignet.core.util.IdentityProviderUtil;
+import io.mosip.signup.exception.CaptchaException;
+import io.mosip.signup.exception.GenerateChallengeException;
 import io.mosip.signup.exception.SignUpException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.TypeMismatchException;
@@ -105,6 +107,7 @@ public class ExceptionHandlerAdvice extends ResponseEntityExceptionHandler {
                     HttpStatus.OK);
         }
         //Add other custom exceptions here
+
         return new ResponseEntity<ResponseWrapper>(getResponseWrapper(UNKNOWN_ERROR), HttpStatus.OK);
     }
 
