@@ -34,6 +34,6 @@ on:
 
 jobs:
   analyze:
-    uses: mosip/kattu/.github/workflows/codeql-analysis.yml@master
-    with:
-      repo-token: ${{ secrets.ACTION_PAT }}
+    - uses: mosip/kattu/.github/workflows/codeql-analysis.yml@master
+      with:
+        repo-token: ${{ secrets.ACTION_PAT }}
