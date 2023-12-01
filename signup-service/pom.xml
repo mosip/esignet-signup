@@ -18,6 +18,14 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>signup-service</name>
 	<description>Sign Up Service</description>
+	<url>https://github.com/DGTDept/esignet-signup</url>
+
+	<licenses>
+		<license>
+			<name>MPL 2.0</name>
+			<url>https://www.mozilla.org/en-US/MPL/2.0/</url>
+		</license>
+	</licenses>
 	
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
