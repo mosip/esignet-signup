@@ -26,6 +26,21 @@
 			<url>https://www.mozilla.org/en-US/MPL/2.0/</url>
 		</license>
 	</licenses>
+	<scm>
+		<connection>scm:git:git://github.com/DGTDept/esignet-signup.git</connection>
+		<developerConnection>scm:git:ssh://github.com/DGTDept/esignet-signup.git</developerConnection>
+		<url>https://github.com/DGTDept/esignet-signup</url>
+		<tag>HEAD</tag>
+	</scm>
+
+	<developers>
+		<developer>
+			<name>Mosip</name>
+			<email>mosip.emailnotifier@gmail.com</email>
+			<organization>io.mosip</organization>
+			<organizationUrl>https://github.com/DGTDept/esignet-signup</organizationUrl>
+		</developer>
+	</developers>
 	
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
