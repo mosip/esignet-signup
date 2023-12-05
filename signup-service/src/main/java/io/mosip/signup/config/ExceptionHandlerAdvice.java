@@ -76,7 +76,7 @@ public class ExceptionHandlerAdvice extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = { Exception.class, RuntimeException.class })
     public ResponseEntity handleExceptions(Exception ex, WebRequest request) {
-        log.error("Unhandled exception encountered in handler advice", ex);
+        log.error("Exception encountered while serving request {}: ", request.getDescription(false), ex);
 
         if(ex instanceof MethodArgumentNotValidException) {
             List<Error> errors = new ArrayList<>();

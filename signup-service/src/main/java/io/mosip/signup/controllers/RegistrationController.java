@@ -6,6 +6,8 @@ import io.mosip.esignet.core.util.IdentityProviderUtil;
 import io.mosip.signup.dto.GenerateChallengeRequest;
 import io.mosip.signup.dto.GenerateChallengeResponse;
 import io.mosip.signup.dto.RegistrationStatusResponse;
+import io.mosip.signup.dto.RegisterRequest;
+import io.mosip.signup.dto.RegisterResponse;
 import io.mosip.signup.dto.VerifyChallengeRequest;
 import io.mosip.signup.dto.VerifyChallengeResponse;
 import io.mosip.signup.exception.SignUpException;
@@ -27,6 +29,15 @@ public class RegistrationController {
     @Autowired
     RegistrationService registrationService;
 
+    @PostMapping("/generate-challenge")
+    public ResponseWrapper<GenerateChallengeResponse> generateChallenge (
+            @Valid @RequestBody RequestWrapper<GenerateChallengeRequest> requestWrapper, @CookieValue(name = SignUpConstants.TRANSACTION_ID, defaultValue = "") String transactionId) throws SignUpException {
+        ResponseWrapper<GenerateChallengeResponse> responseWrapper = new ResponseWrapper<>();
+        responseWrapper.setResponse(registrationService.generateChallenge(requestWrapper.getRequest(), transactionId));
+        responseWrapper.setResponseTime(IdentityProviderUtil.getUTCDateTime());
+        return responseWrapper;
+    }
+
     @PostMapping("/verify-challenge")
     public ResponseWrapper<VerifyChallengeResponse> verifyChallenge(@Valid @RequestBody RequestWrapper<VerifyChallengeRequest> requestWrapper,
                                                                     @CookieValue(SignUpConstants.TRANSACTION_ID) String transactionId)
@@ -37,13 +48,14 @@ public class RegistrationController {
         return  responseWrapper;
     }
 
-    @PostMapping("/generate-challenge")
-    public ResponseWrapper<GenerateChallengeResponse> generateChallenge (
-            @Valid @RequestBody RequestWrapper<GenerateChallengeRequest> requestWrapper, @CookieValue(name = SignUpConstants.TRANSACTION_ID, defaultValue = "") String transactionId) throws SignUpException {
-        ResponseWrapper<GenerateChallengeResponse> responseWrapper = new ResponseWrapper<>();
-        responseWrapper.setResponse(registrationService.generateChallenge(requestWrapper.getRequest(), transactionId));
+    @PostMapping("/register")
+    public ResponseWrapper<RegisterResponse> register(@Valid @RequestBody RequestWrapper<RegisterRequest> requestWrapper,
+                                                      @CookieValue(SignUpConstants.TRANSACTION_ID) String transactionId)
+            throws SignUpException {
+        ResponseWrapper<RegisterResponse> responseWrapper = new ResponseWrapper<>();
+        responseWrapper.setResponse(registrationService.register(requestWrapper.getRequest(), transactionId));
         responseWrapper.setResponseTime(IdentityProviderUtil.getUTCDateTime());
-        return responseWrapper;
+        return  responseWrapper;
     }
 
     @GetMapping("/status")
