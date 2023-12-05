@@ -7,10 +7,11 @@ import java.util.ArrayList;
 
 @Data
 public class RestResponseWrapper<T> implements Serializable {
+    
     private String id;
     private String version;
     private String responsetime;
     private String metadata;
     private T response;
-    private ArrayList<Error> errors;
+    private ArrayList<RestError> errors;
 }
