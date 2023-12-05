@@ -8,13 +8,13 @@ import io.mosip.signup.exception.CaptchaException;
 import io.mosip.signup.exception.ChallengeFailedException;
 import io.mosip.signup.exception.InvalidIdentifierException;
 import io.mosip.signup.exception.InvalidTransactionException;
-import io.mosip.signup.services.CacheUtilService;
 import io.mosip.signup.services.RegistrationService;
 import io.mosip.signup.util.ActionStatus;
 import io.mosip.signup.util.ErrorConstants;
 import io.mosip.signup.util.SignUpConstants;
 import org.junit.Before;
 import io.mosip.signup.util.RegistrationStatus;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +30,9 @@ import javax.servlet.http.Cookie;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static io.mosip.esignet.core.constants.Constants.UTC_DATETIME_PATTERN;
 import static org.mockito.Mockito.when;
@@ -49,9 +52,6 @@ public class RegistrationControllerTest {
 
     @MockBean
     RegistrationService registrationService;
-
-    @MockBean
-    CacheUtilService cacheUtilService;
 
     ObjectMapper objectMapper = new ObjectMapper();
 
@@ -238,7 +238,6 @@ public class RegistrationControllerTest {
         registrationTransaction.setChallengeHash("mock");
         registrationTransaction.setIdentifier("mock");
 
-        when(cacheUtilService.getChallengeGeneratedTransaction(mockTransactionID)).thenReturn(null);
         when(registrationService.verifyChallenge(verifyChallengeRequest, mockTransactionID)).thenThrow(new InvalidIdentifierException());
 
         mockMvc.perform(post("/registration/verify-challenge")
@@ -258,7 +257,6 @@ public class RegistrationControllerTest {
         registrationTransaction.setChallengeHash("mock");
         registrationTransaction.setIdentifier("mock");
 
-        when(cacheUtilService.getChallengeGeneratedTransaction(mockTransactionID)).thenReturn(null);
         when(registrationService.verifyChallenge(verifyChallengeRequest, mockTransactionID)).thenThrow(new InvalidTransactionException());
 
         mockMvc.perform(post("/registration/verify-challenge")
@@ -278,7 +276,6 @@ public class RegistrationControllerTest {
         registrationTransaction.setChallengeHash("mock");
         registrationTransaction.setIdentifier("mock");
 
-        when(cacheUtilService.getChallengeGeneratedTransaction(mockTransactionID)).thenReturn(null);
         when(registrationService.verifyChallenge(verifyChallengeRequest, mockTransactionID)).thenThrow(new ChallengeFailedException());
 
         mockMvc.perform(post("/registration/verify-challenge")
@@ -298,7 +295,6 @@ public class RegistrationControllerTest {
         registrationTransaction.setChallengeHash("mock");
         registrationTransaction.setIdentifier("mock");
 
-        when(cacheUtilService.getChallengeGeneratedTransaction(mockTransactionID)).thenReturn(null);
         when(registrationService.verifyChallenge(verifyChallengeRequest, mockTransactionID)).thenThrow(new InvalidIdentifierException());
 
         mockMvc.perform(post("/registration/verify-challenge")
@@ -324,7 +320,6 @@ public class RegistrationControllerTest {
         registrationTransaction.setChallengeHash("mock");
         registrationTransaction.setIdentifier("mock");
 
-        when(cacheUtilService.getChallengeGeneratedTransaction(mockTransactionID)).thenReturn(null);
         when(registrationService.verifyChallenge(verifyChallengeRequest, mockTransactionID)).thenThrow(new InvalidIdentifierException());
 
         mockMvc.perform(post("/registration/verify-challenge")
@@ -438,5 +433,493 @@ public class RegistrationControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.response.status").value("FAILED"));
+    }
+
+//  Register endpoint
+    @Test
+    public void register_thenPass() throws Exception{
+
+        UserInfoMap userInfo = new UserInfoMap();
+        userInfo.setPreferredLang("khm");
+        userInfo.setFullName(List.of(new LanguageTaggedValue("khm", "Panharith AN")));
+        userInfo.setPhone("+855219718732");
+
+        RegisterRequest registerRequest = new RegisterRequest();
+        registerRequest.setUserInfo(userInfo);
+        registerRequest.setUsername("+855219718732");
+        registerRequest.setPassword("123123");
+        registerRequest.setConsent("AGREE");
+
+        RequestWrapper<RegisterRequest> wrapper = new RequestWrapper<RegisterRequest>();
+        wrapper.setRequestTime(IdentityProviderUtil.getUTCDateTime());
+        wrapper.setRequest(registerRequest);
+
+        String mockTransactionID = "123456789";
+
+        RegisterResponse registerResponse = new RegisterResponse();
+        registerResponse.setStatus(ActionStatus.PENDING);
+        when(registrationService.register(registerRequest, mockTransactionID)).thenReturn(registerResponse);
+
+        mockMvc.perform(post("/registration/register")
+                        .content(objectMapper.writeValueAsString(wrapper))
+                        .cookie(new Cookie("TRANSACTION_ID", mockTransactionID))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.response.status").value("PENDING"));
+    }
+
+    @Test
+    public void register_withBlankConsent_returnErrorResponse() throws Exception{
+
+        UserInfoMap userInfo = new UserInfoMap();
+        userInfo.setPreferredLang("khm");
+        List<LanguageTaggedValue> fullNames = new ArrayList<>();
+        fullNames.add(new LanguageTaggedValue("eng", "Panharith AN"));
+        fullNames.add(new LanguageTaggedValue("khm", "Panharith AN"));
+        userInfo.setFullName(fullNames);
+        userInfo.setPhone("+85512345678");
+
+        RegisterRequest registerRequest = new RegisterRequest();
+        registerRequest.setUserInfo(userInfo);
+        registerRequest.setUsername("+85512345678");
+        registerRequest.setPassword("123123");
+
+        RequestWrapper<RegisterRequest> wrapper = new RequestWrapper<RegisterRequest>();
+        wrapper.setRequestTime(IdentityProviderUtil.getUTCDateTime());
+        wrapper.setRequest(registerRequest);
+
+        String mockTransactionID = "123456789";
+
+        mockMvc.perform(post("/registration/register")
+                        .content(objectMapper.writeValueAsString(wrapper))
+                        .cookie(new Cookie("TRANSACTION_ID", mockTransactionID))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.response").isEmpty())
+                .andExpect(jsonPath("$.errors").isNotEmpty())
+                .andExpect(jsonPath("$.errors[0].errorMessage").value("request.consent: invalid_consent"));
+    }
+
+    @Test
+    public void register_withUnsupportedConsent_returnErrorResponse() throws Exception{
+
+        UserInfoMap userInfo = new UserInfoMap();
+        userInfo.setPreferredLang("khm");
+        userInfo.setFullName(List.of(new LanguageTaggedValue("khm", "Panharith AN")));
+        userInfo.setPhone("+855219718732");
+
+        RegisterRequest registerRequest = new RegisterRequest();
+        registerRequest.setUserInfo(userInfo);
+        registerRequest.setUsername("+855219718732");
+        registerRequest.setPassword("123123");
+        registerRequest.setConsent("not agree");
+
+        RequestWrapper<RegisterRequest> wrapper = new RequestWrapper<RegisterRequest>();
+        wrapper.setRequestTime(IdentityProviderUtil.getUTCDateTime());
+        wrapper.setRequest(registerRequest);
+
+        String mockTransactionID = "123456789";
+
+        mockMvc.perform(post("/registration/register")
+                        .content(objectMapper.writeValueAsString(wrapper))
+                        .cookie(new Cookie("TRANSACTION_ID", mockTransactionID))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.response").isEmpty())
+                .andExpect(jsonPath("$.errors").isNotEmpty())
+                .andExpect(jsonPath("$.errors[0].errorMessage").value("request.consent: invalid_consent"));
+    }
+
+    @Test
+    public void register_withInvalidPhoneNumber_returnErrorResponse() throws Exception{
+
+        UserInfoMap userInfo = new UserInfoMap();
+        userInfo.setPreferredLang("khm");
+        userInfo.setFullName(List.of(new LanguageTaggedValue("khm", "Panharith AN")));
+        userInfo.setPhone("+8551234567890");
+
+        RegisterRequest registerRequest = new RegisterRequest();
+        registerRequest.setUserInfo(userInfo);
+        registerRequest.setUsername("+85512345678");
+        registerRequest.setPassword("123123");
+        registerRequest.setConsent("AGREE");
+
+        RequestWrapper<RegisterRequest> wrapper = new RequestWrapper<RegisterRequest>();
+        wrapper.setRequestTime(IdentityProviderUtil.getUTCDateTime());
+        wrapper.setRequest(registerRequest);
+
+        String mockTransactionID = "123456789";
+
+        mockMvc.perform(post("/registration/register")
+                        .content(objectMapper.writeValueAsString(wrapper))
+                        .cookie(new Cookie("TRANSACTION_ID", mockTransactionID))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.response").isEmpty())
+                .andExpect(jsonPath("$.errors").isNotEmpty())
+                .andExpect(jsonPath("$.errors[0].errorMessage").value("request.userInfo.phone: invalid_phone_number"));
+    }
+
+    @Test
+    public void register_withBlankPhoneNumber_returnErrorResponse() throws Exception{
+
+        UserInfoMap userInfo = new UserInfoMap();
+        userInfo.setPreferredLang("khm");
+        userInfo.setFullName(List.of(new LanguageTaggedValue("khm", "Panharith AN")));
+
+        RegisterRequest registerRequest = new RegisterRequest();
+        registerRequest.setUserInfo(userInfo);
+        registerRequest.setUsername("+85512345678");
+        registerRequest.setPassword("123123");
+        registerRequest.setConsent("AGREE");
+
+        RequestWrapper<RegisterRequest> wrapper = new RequestWrapper<RegisterRequest>();
+        wrapper.setRequestTime(IdentityProviderUtil.getUTCDateTime());
+        wrapper.setRequest(registerRequest);
+
+        String mockTransactionID = "123456789";
+
+        mockMvc.perform(post("/registration/register")
+                        .content(objectMapper.writeValueAsString(wrapper))
+                        .cookie(new Cookie("TRANSACTION_ID", mockTransactionID))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.response").isEmpty())
+                .andExpect(jsonPath("$.errors").isNotEmpty())
+                .andExpect(jsonPath("$.errors[0].errorMessage").value("request.userInfo.phone: invalid_phone_number"));
+    }
+
+    @Test
+    public void register_withBlankPreferredLang_returnErrorResponse() throws Exception{
+
+        UserInfoMap userInfo = new UserInfoMap();
+        userInfo.setFullName(List.of(new LanguageTaggedValue("khm", "Panharith AN")));
+        userInfo.setPhone("+855123456789");
+
+        RegisterRequest registerRequest = new RegisterRequest();
+        registerRequest.setUserInfo(userInfo);
+        registerRequest.setUsername("+85512345678");
+        registerRequest.setPassword("123123");
+        registerRequest.setConsent("AGREE");
+
+        RequestWrapper<RegisterRequest> wrapper = new RequestWrapper<RegisterRequest>();
+        wrapper.setRequestTime(IdentityProviderUtil.getUTCDateTime());
+        wrapper.setRequest(registerRequest);
+
+        String mockTransactionID = "123456789";
+
+        mockMvc.perform(post("/registration/register")
+                        .content(objectMapper.writeValueAsString(wrapper))
+                        .cookie(new Cookie("TRANSACTION_ID", mockTransactionID))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.response").isEmpty())
+                .andExpect(jsonPath("$.errors").isNotEmpty())
+                .andExpect(jsonPath("$.errors[0].errorMessage").value("request.userInfo.preferredLang: unsupported_language"));
+    }
+
+    @Test
+    public void register_withUnsupportedPreferredLang_returnErrorResponse() throws Exception{
+
+        UserInfoMap userInfo = new UserInfoMap();
+        userInfo.setFullName(List.of(new LanguageTaggedValue("khm", "Panharith AN")));
+        userInfo.setPhone("+855123456789");
+        userInfo.setPreferredLang("usa");
+
+        RegisterRequest registerRequest = new RegisterRequest();
+        registerRequest.setUserInfo(userInfo);
+        registerRequest.setUsername("+85512345678");
+        registerRequest.setPassword("123123");
+        registerRequest.setConsent("AGREE");
+
+        RequestWrapper<RegisterRequest> wrapper = new RequestWrapper<RegisterRequest>();
+        wrapper.setRequestTime(IdentityProviderUtil.getUTCDateTime());
+        wrapper.setRequest(registerRequest);
+
+        String mockTransactionID = "123456789";
+
+        mockMvc.perform(post("/registration/register")
+                        .content(objectMapper.writeValueAsString(wrapper))
+                        .cookie(new Cookie("TRANSACTION_ID", mockTransactionID))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.response").isEmpty())
+                .andExpect(jsonPath("$.errors").isNotEmpty())
+                .andExpect(jsonPath("$.errors[0].errorMessage").value("request.userInfo.preferredLang: unsupported_language"));
+    }
+
+    @Test
+    public void register_withNullFullName_returnErrorResponse() throws Exception{
+
+        UserInfoMap userInfo = new UserInfoMap();
+        userInfo.setPhone("+855123456789");
+        userInfo.setPreferredLang("khm");
+
+        RegisterRequest registerRequest = new RegisterRequest();
+        registerRequest.setUserInfo(userInfo);
+        registerRequest.setUsername("+85512345678");
+        registerRequest.setPassword("123123");
+        registerRequest.setConsent("AGREE");
+
+        RequestWrapper<RegisterRequest> wrapper = new RequestWrapper<RegisterRequest>();
+        wrapper.setRequestTime(IdentityProviderUtil.getUTCDateTime());
+        wrapper.setRequest(registerRequest);
+
+        String mockTransactionID = "123456789";
+
+        mockMvc.perform(post("/registration/register")
+                        .content(objectMapper.writeValueAsString(wrapper))
+                        .cookie(new Cookie("TRANSACTION_ID", mockTransactionID))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.response").isEmpty())
+                .andExpect(jsonPath("$.errors").isNotEmpty())
+                .andExpect(jsonPath("$.errors[0].errorMessage").value("request.userInfo.fullName: invalid_fullname"));
+    }
+
+    @Test
+    @Ignore
+    public void register_withInvalidFullNameInKhm_returnErrorResponse() throws Exception{
+
+        UserInfoMap userInfo = new UserInfoMap();
+        userInfo.setPhone("+855123456789");
+        userInfo.setPreferredLang("khm");
+        userInfo.setFullName(List.of(new LanguageTaggedValue("khm", "qkITAu9BW5hfiZcLCwPuefQqu6QIthy2J9R")));
+
+        RegisterRequest registerRequest = new RegisterRequest();
+        registerRequest.setUserInfo(userInfo);
+        registerRequest.setUsername("+85512345678");
+        registerRequest.setPassword("123123");
+        registerRequest.setConsent("AGREE");
+
+        RequestWrapper<RegisterRequest> wrapper = new RequestWrapper<RegisterRequest>();
+        wrapper.setRequestTime(IdentityProviderUtil.getUTCDateTime());
+        wrapper.setRequest(registerRequest);
+
+        String mockTransactionID = "123456789";
+
+        mockMvc.perform(post("/registration/register")
+                        .content(objectMapper.writeValueAsString(wrapper))
+                        .cookie(new Cookie("TRANSACTION_ID", mockTransactionID))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.response").isEmpty())
+                .andExpect(jsonPath("$.errors").isNotEmpty())
+                .andExpect(jsonPath("$.errors[0].errorMessage").value("request.userInfo.fullName: invalid_fullname"));
+    }
+
+    @Test
+    @Ignore
+    public void register_withValidFullNameInKhmAndInvalidFullNameInEng_returnErrorResponse() throws Exception{
+
+        UserInfoMap userInfo = new UserInfoMap();
+        userInfo.setPhone("+855123456789");
+        userInfo.setPreferredLang("khm");
+        List<LanguageTaggedValue> fullNames = new ArrayList<>();
+        fullNames.add(new LanguageTaggedValue("khm", "Mengleang Ngoun"));
+        fullNames.add(new LanguageTaggedValue("eng", "qkITAu9BW5hfiZcLCwPuefQqu6QIthy2J9R"));
+        userInfo.setFullName(fullNames);
+
+        RegisterRequest registerRequest = new RegisterRequest();
+        registerRequest.setUserInfo(userInfo);
+        registerRequest.setUsername("+85512345678");
+        registerRequest.setPassword("123123");
+        registerRequest.setConsent("AGREE");
+
+        RequestWrapper<RegisterRequest> wrapper = new RequestWrapper<RegisterRequest>();
+        wrapper.setRequestTime(IdentityProviderUtil.getUTCDateTime());
+        wrapper.setRequest(registerRequest);
+
+        String mockTransactionID = "123456789";
+
+        mockMvc.perform(post("/registration/register")
+                        .content(objectMapper.writeValueAsString(wrapper))
+                        .cookie(new Cookie("TRANSACTION_ID", mockTransactionID))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.response").isEmpty())
+                .andExpect(jsonPath("$.errors").isNotEmpty())
+                .andExpect(jsonPath("$.errors[0].errorMessage").value("request.userInfo.fullName: invalid_fullname"));
+    }
+
+    @Test
+    public void register_withValidFullNameInKhmAndFullNameInEng_returnSuccessResponse() throws Exception{
+
+        UserInfoMap userInfo = new UserInfoMap();
+        userInfo.setPhone("+855123456789");
+        userInfo.setPreferredLang("khm");
+        List<LanguageTaggedValue> fullNames = new ArrayList<>();
+        fullNames.add(new LanguageTaggedValue("khm", "Mengleang Ngoun"));
+        fullNames.add(new LanguageTaggedValue("eng", "Mengleang Ngoun"));
+        userInfo.setFullName(fullNames);
+
+        RegisterRequest registerRequest = new RegisterRequest();
+        registerRequest.setUserInfo(userInfo);
+        registerRequest.setUsername("+85512345678");
+        registerRequest.setPassword("123123");
+        registerRequest.setConsent("AGREE");
+
+        RequestWrapper<RegisterRequest> wrapper = new RequestWrapper<RegisterRequest>();
+        wrapper.setRequestTime(IdentityProviderUtil.getUTCDateTime());
+        wrapper.setRequest(registerRequest);
+
+        String mockTransactionID = "123456789";
+
+        RegisterResponse registerResponse = new RegisterResponse();
+        registerResponse.setStatus(ActionStatus.PENDING);
+        when(registrationService.register(registerRequest, mockTransactionID)).thenReturn(registerResponse);
+
+        mockMvc.perform(post("/registration/register")
+                        .content(objectMapper.writeValueAsString(wrapper))
+                        .cookie(new Cookie("TRANSACTION_ID", mockTransactionID))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.response.status").value("PENDING"));
+    }
+
+    @Test
+    public void register_withInvalidPassword_returnErrorResponse() throws Exception{
+
+        UserInfoMap userInfo = new UserInfoMap();
+        userInfo.setPhone("+855123456789");
+        userInfo.setPreferredLang("khm");
+        List<LanguageTaggedValue> fullNames = new ArrayList<>();
+        fullNames.add(new LanguageTaggedValue("khm", "Mengleang Ngoun"));
+        fullNames.add(new LanguageTaggedValue("eng", "Mengleang Ngoun"));
+        userInfo.setFullName(fullNames);
+
+        RegisterRequest registerRequest = new RegisterRequest();
+        registerRequest.setUserInfo(userInfo);
+        registerRequest.setUsername("+85512345678");
+        registerRequest.setPassword("qkITAu9BW5hfiZcLCwPuefQqu6QIthy2J9R");
+        registerRequest.setConsent("AGREE");
+
+        RequestWrapper<RegisterRequest> wrapper = new RequestWrapper<RegisterRequest>();
+        wrapper.setRequestTime(IdentityProviderUtil.getUTCDateTime());
+        wrapper.setRequest(registerRequest);
+
+        String mockTransactionID = "123456789";
+
+        RegisterResponse registerResponse = new RegisterResponse();
+        registerResponse.setStatus(ActionStatus.PENDING);
+        when(registrationService.register(registerRequest, mockTransactionID)).thenReturn(registerResponse);
+
+        mockMvc.perform(post("/registration/register")
+                        .content(objectMapper.writeValueAsString(wrapper))
+                        .cookie(new Cookie("TRANSACTION_ID", mockTransactionID))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.response").isEmpty())
+                .andExpect(jsonPath("$.errors").isNotEmpty())
+                .andExpect(jsonPath("$.errors[0].errorMessage").value("request.password: invalid_password"));
+    }
+
+    @Test
+    public void register_withBlankPassword_returnErrorResponse() throws Exception{
+
+        UserInfoMap userInfo = new UserInfoMap();
+        userInfo.setPhone("+855123456789");
+        userInfo.setPreferredLang("khm");
+        List<LanguageTaggedValue> fullNames = new ArrayList<>();
+        fullNames.add(new LanguageTaggedValue("khm", "Mengleang Ngoun"));
+        fullNames.add(new LanguageTaggedValue("eng", "Mengleang Ngoun"));
+        userInfo.setFullName(fullNames);
+
+        RegisterRequest registerRequest = new RegisterRequest();
+        registerRequest.setUserInfo(userInfo);
+        registerRequest.setUsername("+85512345678");
+        registerRequest.setConsent("AGREE");
+
+        RequestWrapper<RegisterRequest> wrapper = new RequestWrapper<RegisterRequest>();
+        wrapper.setRequestTime(IdentityProviderUtil.getUTCDateTime());
+        wrapper.setRequest(registerRequest);
+
+        String mockTransactionID = "123456789";
+
+        RegisterResponse registerResponse = new RegisterResponse();
+        registerResponse.setStatus(ActionStatus.PENDING);
+        when(registrationService.register(registerRequest, mockTransactionID)).thenReturn(registerResponse);
+
+        mockMvc.perform(post("/registration/register")
+                        .content(objectMapper.writeValueAsString(wrapper))
+                        .cookie(new Cookie("TRANSACTION_ID", mockTransactionID))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.response").isEmpty())
+                .andExpect(jsonPath("$.errors").isNotEmpty())
+                .andExpect(jsonPath("$.errors[0].errorMessage").value("request.password: invalid_password"));
+    }
+
+    @Test
+    public void register_withBlankUsername_returnErrorResponse() throws Exception{
+
+        UserInfoMap userInfo = new UserInfoMap();
+        userInfo.setPhone("+855123456789");
+        userInfo.setPreferredLang("khm");
+        List<LanguageTaggedValue> fullNames = new ArrayList<>();
+        fullNames.add(new LanguageTaggedValue("khm", "Mengleang Ngoun"));
+        fullNames.add(new LanguageTaggedValue("eng", "Mengleang Ngoun"));
+        userInfo.setFullName(fullNames);
+
+        RegisterRequest registerRequest = new RegisterRequest();
+        registerRequest.setUserInfo(userInfo);
+        registerRequest.setConsent("AGREE");
+        registerRequest.setPassword("12345678");
+
+        RequestWrapper<RegisterRequest> wrapper = new RequestWrapper<RegisterRequest>();
+        wrapper.setRequestTime(IdentityProviderUtil.getUTCDateTime());
+        wrapper.setRequest(registerRequest);
+
+        String mockTransactionID = "123456789";
+
+        RegisterResponse registerResponse = new RegisterResponse();
+        registerResponse.setStatus(ActionStatus.PENDING);
+        when(registrationService.register(registerRequest, mockTransactionID)).thenReturn(registerResponse);
+
+        mockMvc.perform(post("/registration/register")
+                        .content(objectMapper.writeValueAsString(wrapper))
+                        .cookie(new Cookie("TRANSACTION_ID", mockTransactionID))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.response").isEmpty())
+                .andExpect(jsonPath("$.errors").isNotEmpty())
+                .andExpect(jsonPath("$.errors[0].errorMessage").value("request.username: invalid_username"));
+    }
+
+    @Test
+    public void register_withNotMatchUsernameRegex_returnErrorResponse() throws Exception{
+
+        UserInfoMap userInfo = new UserInfoMap();
+        userInfo.setPhone("+855123456789");
+        userInfo.setPreferredLang("khm");
+        List<LanguageTaggedValue> fullNames = new ArrayList<>();
+        fullNames.add(new LanguageTaggedValue("khm", "Mengleang Ngoun"));
+        fullNames.add(new LanguageTaggedValue("eng", "Mengleang Ngoun"));
+        userInfo.setFullName(fullNames);
+
+        RegisterRequest registerRequest = new RegisterRequest();
+        registerRequest.setUserInfo(userInfo);
+        registerRequest.setConsent("AGREE");
+        registerRequest.setUsername("+8551234567890");
+        registerRequest.setPassword("12345678");
+
+        RequestWrapper<RegisterRequest> wrapper = new RequestWrapper<RegisterRequest>();
+        wrapper.setRequestTime(IdentityProviderUtil.getUTCDateTime());
+        wrapper.setRequest(registerRequest);
+
+        String mockTransactionID = "123456789";
+
+        RegisterResponse registerResponse = new RegisterResponse();
+        registerResponse.setStatus(ActionStatus.PENDING);
+        when(registrationService.register(registerRequest, mockTransactionID)).thenReturn(registerResponse);
+
+        mockMvc.perform(post("/registration/register")
+                        .content(objectMapper.writeValueAsString(wrapper))
+                        .cookie(new Cookie("TRANSACTION_ID", mockTransactionID))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.response").isEmpty())
+                .andExpect(jsonPath("$.errors").isNotEmpty())
+                .andExpect(jsonPath("$.errors[0].errorMessage").value("request.username: invalid_username"));
     }
 }
