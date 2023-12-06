@@ -11,6 +11,10 @@
 #
 name: "CodeQL"
 
+permissions:
+  actions: read
+  security-events: write
+  
 on:
   release:
     types: [published]
