@@ -75,6 +75,44 @@ public class RegistrationService {
     @Value("${mosip.signup.challenge.resend-delay}")
     private long resendDelay;
 
+    /**
+     * Generate and regenerate challenge based on the "regenerate" flag in the request.
+     * if regenerate is false - always creates a new transaction and set-cookie header is sent in the response.
+     * if regenerate is true - expects a valid transaction Id in the cookie
+     * @param generateChallengeRequest
+     * @param transactionId
+     * @return
+     * @throws SignUpException
+     */
+    public GenerateChallengeResponse generateChallenge(GenerateChallengeRequest generateChallengeRequest, String transactionId) throws SignUpException {
+        if (!googleRecaptchaValidatorService.validateCaptcha(generateChallengeRequest.getCaptchaToken())) {
+            log.error("generate-challenge failed: invalid captcha");
+            throw new CaptchaException(ErrorConstants.INVALID_CAPTCHA);
+        }
+
+        String identifier = generateChallengeRequest.getIdentifier();
+        RegistrationTransaction transaction = null;
+
+        if(generateChallengeRequest.isRegenerate() == false) {
+            transactionId = IdentityProviderUtil.createTransactionId(null);
+            transaction = new RegistrationTransaction(identifier);
+        }
+        else {
+            transaction = cacheUtilService.getChallengeGeneratedTransaction(transactionId);
+            validateTransaction(transaction, identifier);
+        }
+
+        // generate Challenge
+        String challenge = challengeManagerService.generateChallenge(transaction);
+        String challengeHash = IdentityProviderUtil.generateB64EncodedHash(IdentityProviderUtil.ALGO_SHA3_256, challenge);
+        addCookieResponse(transactionId);
+        transaction.setChallengeHash(challengeHash);
+        transaction.increaseAttempt();
+        transaction.setLocale(generateChallengeRequest.getLocale());
+        cacheUtilService.setChallengeGeneratedTransaction(transactionId, transaction);
+        return new GenerateChallengeResponse(ActionStatus.SUCCESS);
+    }
+
     public VerifyChallengeResponse verifyChallenge(VerifyChallengeRequest verifyChallengeRequest,
                                                    String transactionId) throws SignUpException {
 
@@ -126,6 +164,21 @@ public class RegistrationService {
         registration.setStatus(ActionStatus.PENDING);
         log.debug("Transaction {} : registration status {}", transactionId, RegistrationStatus.PENDING);
         return registration;
+    }
+
+    public RegistrationStatusResponse getRegistrationStatus(String transactionId)
+            throws SignUpException {
+        if (transactionId == null || transactionId.isEmpty())
+            throw new InvalidTransactionException();
+
+        RegistrationTransaction registrationTransaction = cacheUtilService.getRegisteredTransaction(
+                transactionId);
+        if (registrationTransaction == null)
+            throw new InvalidTransactionException();
+
+        RegistrationStatusResponse registrationStatusResponse = new RegistrationStatusResponse();
+        registrationStatusResponse.setStatus(registrationTransaction.getRegistrationStatus());
+        return registrationStatusResponse;
     }
 
     private void saveIdentityData(RegisterRequest registerRequest, String transactionId, String applicationId) throws SignUpException{
@@ -210,49 +263,6 @@ public class RegistrationService {
         log.error("Transaction {} : Get unique identifier failed with response {}", transactionId, restResponseWrapper);
         throw new SignUpException(restResponseWrapper != null && !CollectionUtils.isEmpty(restResponseWrapper.getErrors()) ?
                 restResponseWrapper.getErrors().get(0).getErrorCode() : ErrorConstants.GET_UIN_FAILED);
-    }
-
-    public GenerateChallengeResponse generateChallenge(GenerateChallengeRequest generateChallengeRequest, String transactionId) throws SignUpException {
-        if (!googleRecaptchaValidatorService.validateCaptcha(generateChallengeRequest.getCaptchaToken())) {
-            log.error("generate-challenge failed: invalid captcha");
-            throw new CaptchaException(ErrorConstants.INVALID_CAPTCHA);
-        }
-
-        String identifier = generateChallengeRequest.getIdentifier();
-        RegistrationTransaction transaction = null;
-        if (!transactionId.isEmpty()) {
-            transaction = cacheUtilService.getChallengeGeneratedTransaction(transactionId);
-            validateTransaction(transaction, identifier);
-        }
-
-        if(transaction == null) {
-            transactionId = IdentityProviderUtil.createTransactionId(null);
-            transaction = new RegistrationTransaction(identifier, transactionId);
-        }
-
-        // generate Challenge
-        String challenge = challengeManagerService.generateChallenge(transaction);
-        String challengeHash = IdentityProviderUtil.generateB64EncodedHash(IdentityProviderUtil.ALGO_SHA3_256, challenge);
-        addCookieResponse(transactionId);
-        transaction.setChallengeHash(challengeHash);
-        transaction.increaseAttempt();
-        cacheUtilService.setChallengeGeneratedTransaction(transactionId, transaction);
-        return new GenerateChallengeResponse(ActionStatus.SUCCESS);
-    }
-
-    public RegistrationStatusResponse getRegistrationStatus(String transactionId)
-            throws SignUpException {
-        if (transactionId == null || transactionId.isEmpty())
-            throw new InvalidTransactionException();
-
-        RegistrationTransaction registrationTransaction = cacheUtilService.getRegisteredTransaction(
-                transactionId);
-        if (registrationTransaction == null)
-            throw new InvalidTransactionException();
-
-        RegistrationStatusResponse registrationStatusResponse = new RegistrationStatusResponse();
-        registrationStatusResponse.setStatus(registrationTransaction.getRegistrationStatus());
-        return registrationStatusResponse;
     }
 
     private void validateTransaction(RegistrationTransaction transaction, String identifier) {

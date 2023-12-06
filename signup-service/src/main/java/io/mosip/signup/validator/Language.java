@@ -20,4 +20,6 @@ public @interface Language {
     String message() default ErrorConstants.UNSUPPORTED_LANGUAGE;
     Class<?>[] groups() default { };
     Class<? extends Payload>[] payload() default { };
+
+    boolean required() default true;
 }

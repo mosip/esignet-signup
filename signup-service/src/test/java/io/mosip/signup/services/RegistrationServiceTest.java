@@ -26,6 +26,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -87,7 +88,7 @@ public class RegistrationServiceTest {
         verifyChallengeRequest.setChallengeInfo(challengeInfo);
 
         String mockTransactionId = "mock-transactionId";
-        RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85512123123", "");
+        RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85512123123");
         String challengeHash = IdentityProviderUtil.generateB64EncodedHash(IdentityProviderUtil.ALGO_SHA3_256, challengeInfo.getChallenge());
         registrationTransaction.setChallengeHash(challengeHash);
         registrationTransaction.setIdentifier(verifyChallengeRequest.getIdentifier());
@@ -131,7 +132,7 @@ public class RegistrationServiceTest {
         verifyChallengeRequest.setChallengeInfo(challengeInfo);
 
         String mockTransactionId = "mock-transactionId";
-        RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85512123123", "");
+        RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85512123123");
         registrationTransaction.setChallengeHash("failed");
         registrationTransaction.setIdentifier(verifyChallengeRequest.getIdentifier());
         when(cacheUtilService.getChallengeGeneratedTransaction(mockTransactionId)).thenReturn(registrationTransaction);
@@ -155,7 +156,7 @@ public class RegistrationServiceTest {
         verifyChallengeRequest.setChallengeInfo(challengeInfo);
 
         String mockTransactionId = "mock-transactionId";
-        RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85512123123", "");
+        RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85512123123");
         registrationTransaction.setChallengeHash(challengeInfo.getChallenge());
         registrationTransaction.setIdentifier("failed");
         when(cacheUtilService.getChallengeGeneratedTransaction(mockTransactionId)).thenReturn(registrationTransaction);
@@ -184,7 +185,7 @@ public class RegistrationServiceTest {
 
         String mockTransactionID = "123456789";
 
-        RegistrationTransaction mockRegistrationTransaction = new RegistrationTransaction(userInfo.getPhone(), mockTransactionID);
+        RegistrationTransaction mockRegistrationTransaction = new RegistrationTransaction(userInfo.getPhone());
         mockRegistrationTransaction.setChallengeHash("123456");
         mockRegistrationTransaction.setIdentifier(userInfo.getPhone());
 
@@ -242,7 +243,7 @@ public class RegistrationServiceTest {
 
         String mockTransactionID = "123456789";
 
-        RegistrationTransaction mockRegistrationTransaction = new RegistrationTransaction(registerRequest.getUsername(), mockTransactionID);
+        RegistrationTransaction mockRegistrationTransaction = new RegistrationTransaction(registerRequest.getUsername());
         mockRegistrationTransaction.setChallengeHash("123456");
         mockRegistrationTransaction.setIdentifier(userInfo.getPhone());
 
@@ -278,7 +279,7 @@ public class RegistrationServiceTest {
 
         String mockTransactionID = "123456789";
 
-        RegistrationTransaction mockRegistrationTransaction = new RegistrationTransaction(registerRequest.getUsername(), mockTransactionID);
+        RegistrationTransaction mockRegistrationTransaction = new RegistrationTransaction(registerRequest.getUsername());
         mockRegistrationTransaction.setChallengeHash("123456");
         mockRegistrationTransaction.setIdentifier(userInfo.getPhone());
 
@@ -319,7 +320,7 @@ public class RegistrationServiceTest {
 
         String mockTransactionID = "123456789";
 
-        RegistrationTransaction mockRegistrationTransaction = new RegistrationTransaction(registerRequest.getUsername(), mockTransactionID);
+        RegistrationTransaction mockRegistrationTransaction = new RegistrationTransaction(registerRequest.getUsername());
         mockRegistrationTransaction.setChallengeHash("123456");
         mockRegistrationTransaction.setIdentifier(userInfo.getPhone());
 
@@ -371,7 +372,7 @@ public class RegistrationServiceTest {
 
         String mockTransactionID = "123456789";
 
-        RegistrationTransaction mockRegistrationTransaction = new RegistrationTransaction(registerRequest.getUsername(), mockTransactionID);
+        RegistrationTransaction mockRegistrationTransaction = new RegistrationTransaction(registerRequest.getUsername());
         mockRegistrationTransaction.setChallengeHash("123456");
         mockRegistrationTransaction.setIdentifier(userInfo.getPhone());
 
@@ -427,7 +428,7 @@ public class RegistrationServiceTest {
 
         String mockTransactionID = "123456789";
 
-        RegistrationTransaction mockRegistrationTransaction = new RegistrationTransaction(registerRequest.getUsername(), mockTransactionID);
+        RegistrationTransaction mockRegistrationTransaction = new RegistrationTransaction(registerRequest.getUsername());
         mockRegistrationTransaction.setChallengeHash("123456");
         mockRegistrationTransaction.setIdentifier(userInfo.getPhone());
 
@@ -486,7 +487,7 @@ public class RegistrationServiceTest {
 
         String mockTransactionID = "123456789";
 
-        RegistrationTransaction mockRegistrationTransaction = new RegistrationTransaction(registerRequest.getUsername(), mockTransactionID);
+        RegistrationTransaction mockRegistrationTransaction = new RegistrationTransaction(registerRequest.getUsername());
         mockRegistrationTransaction.setChallengeHash("123456");
         mockRegistrationTransaction.setIdentifier(userInfo.getPhone());
 
@@ -572,7 +573,7 @@ public class RegistrationServiceTest {
 
         String mockTransactionID = "123456789";
 
-        RegistrationTransaction mockRegistrationTransaction = new RegistrationTransaction(registerRequest.getUsername(), mockTransactionID);
+        RegistrationTransaction mockRegistrationTransaction = new RegistrationTransaction(registerRequest.getUsername());
         mockRegistrationTransaction.setChallengeHash("123456");
         mockRegistrationTransaction.setIdentifier(userInfo.getPhone());
 
@@ -602,7 +603,7 @@ public class RegistrationServiceTest {
 
         String mockTransactionID = "123456789";
 
-        RegistrationTransaction mockRegistrationTransaction = new RegistrationTransaction(registerRequest.getUsername(), mockTransactionID);
+        RegistrationTransaction mockRegistrationTransaction = new RegistrationTransaction(registerRequest.getUsername());
         mockRegistrationTransaction.setChallengeHash("123456");
         mockRegistrationTransaction.setIdentifier(userInfo.getPhone());
 
@@ -624,6 +625,7 @@ public class RegistrationServiceTest {
         GenerateChallengeRequest generateChallengeRequest = new GenerateChallengeRequest();
         generateChallengeRequest.setIdentifier(identifier);
         generateChallengeRequest.setCaptchaToken("mock-captcha");
+        generateChallengeRequest.setRegenerate(false);
         when(challengeManagerService.generateChallenge(any())).thenReturn("1111");
         when(googleRecaptchaValidatorService.validateCaptcha(
                 generateChallengeRequest.getCaptchaToken())).thenReturn(true);
@@ -641,9 +643,10 @@ public class RegistrationServiceTest {
         GenerateChallengeRequest generateChallengeRequest = new GenerateChallengeRequest();
         generateChallengeRequest.setIdentifier(identifier);
         generateChallengeRequest.setCaptchaToken("mock-captcha");
+        generateChallengeRequest.setRegenerate(true);
         String transactionId = "TRAN-1234";
-        RegistrationTransaction transaction = new RegistrationTransaction(identifier, transactionId);
-        transaction.setLastRetryAt(LocalDateTime.now().minusSeconds(40));
+        RegistrationTransaction transaction = new RegistrationTransaction(identifier);
+        transaction.setLastRetryAt(LocalDateTime.now(ZoneOffset.UTC).minusSeconds(40));
 
         when(cacheUtilService.getChallengeGeneratedTransaction(transactionId)).thenReturn(transaction);
         when(challengeManagerService.generateChallenge(transaction)).thenReturn("1111");
@@ -655,6 +658,29 @@ public class RegistrationServiceTest {
                         generateChallengeRequest, transactionId);
         Assert.assertNotNull(generateChallengeResponse);
         Assert.assertEquals("SUCCESS", generateChallengeResponse.getStatus());
+    }
+
+    @Test
+    public void doGenerateChallenge_regenerateWithInvalidTransactionId_thenFail() throws SignUpException {
+        String identifier = "+85577410541";
+        GenerateChallengeRequest generateChallengeRequest = new GenerateChallengeRequest();
+        generateChallengeRequest.setIdentifier(identifier);
+        generateChallengeRequest.setCaptchaToken("mock-captcha");
+        generateChallengeRequest.setRegenerate(true);
+        String transactionId = "TRAN-12341";
+        RegistrationTransaction transaction = new RegistrationTransaction(identifier);
+        transaction.setLastRetryAt(LocalDateTime.now(ZoneOffset.UTC).minusSeconds(40));
+
+        when(challengeManagerService.generateChallenge(transaction)).thenReturn("1111");
+        when(googleRecaptchaValidatorService.validateCaptcha(
+                generateChallengeRequest.getCaptchaToken())).thenReturn(true);
+
+        try {
+            registrationService.generateChallenge(generateChallengeRequest, transactionId);
+            Assert.fail();
+        } catch (SignUpException ex) {
+            Assert.assertEquals("invalid_transaction", ex.getErrorCode());
+        }
     }
 
     @Test
@@ -679,8 +705,9 @@ public class RegistrationServiceTest {
         GenerateChallengeRequest generateChallengeRequest = new GenerateChallengeRequest();
         generateChallengeRequest.setIdentifier(identifier);
         generateChallengeRequest.setCaptchaToken("mock-captcha");
+        generateChallengeRequest.setRegenerate(true);
         String transactionId = "TRAN-1234";
-        RegistrationTransaction transaction = new RegistrationTransaction(identifier, transactionId);
+        RegistrationTransaction transaction = new RegistrationTransaction(identifier);
 
         when(cacheUtilService.getChallengeGeneratedTransaction(transactionId)).thenReturn(null);
         when(googleRecaptchaValidatorService.validateCaptcha(
@@ -701,8 +728,9 @@ public class RegistrationServiceTest {
         GenerateChallengeRequest generateChallengeRequest = new GenerateChallengeRequest();
         generateChallengeRequest.setIdentifier(identifier);
         generateChallengeRequest.setCaptchaToken("mock-captcha");
+        generateChallengeRequest.setRegenerate(true);
         String transactionId = "TRAN-1234";
-        RegistrationTransaction transaction = new RegistrationTransaction(other_identifier, transactionId);
+        RegistrationTransaction transaction = new RegistrationTransaction(other_identifier);
 
         when(cacheUtilService.getChallengeGeneratedTransaction(transactionId)).thenReturn(transaction);
         when(googleRecaptchaValidatorService.validateCaptcha(
@@ -722,8 +750,9 @@ public class RegistrationServiceTest {
         GenerateChallengeRequest generateChallengeRequest = new GenerateChallengeRequest();
         generateChallengeRequest.setIdentifier(identifier);
         generateChallengeRequest.setCaptchaToken("mock-captcha");
+        generateChallengeRequest.setRegenerate(true);
         String transactionId = "TRAN-1234";
-        RegistrationTransaction transaction = new RegistrationTransaction(identifier, transactionId);
+        RegistrationTransaction transaction = new RegistrationTransaction(identifier);
         transaction.setChallengeRetryAttempts(4);
 
         when(cacheUtilService.getChallengeGeneratedTransaction(transactionId)).thenReturn(transaction);
@@ -744,8 +773,9 @@ public class RegistrationServiceTest {
         GenerateChallengeRequest generateChallengeRequest = new GenerateChallengeRequest();
         generateChallengeRequest.setIdentifier(identifier);
         generateChallengeRequest.setCaptchaToken("mock-captcha");
+        generateChallengeRequest.setRegenerate(true);
         String transactionId = "TRAN-1234";
-        RegistrationTransaction transaction = new RegistrationTransaction(identifier, transactionId);
+        RegistrationTransaction transaction = new RegistrationTransaction(identifier);
         transaction.increaseAttempt();
 
         when(cacheUtilService.getChallengeGeneratedTransaction(transactionId)).thenReturn(transaction);
@@ -763,7 +793,7 @@ public class RegistrationServiceTest {
     @Test
     public void doGetRegistrationStatus_withCompletedTransaction_thenPass() {
         String transactionId = "TRAN-1234";
-        RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85577410541", "TRAN_ID");
+        RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85577410541");
         registrationTransaction.setRegistrationStatus(RegistrationStatus.COMPLETED);
         when(cacheUtilService.getRegisteredTransaction(transactionId)).thenReturn(registrationTransaction);
         RegistrationStatusResponse registrationStatusResponse = registrationService.getRegistrationStatus(transactionId);
@@ -775,7 +805,7 @@ public class RegistrationServiceTest {
     @Test
     public void doGetRegistrationStatus_withPendingTransaction_thenPass() {
         String transactionId = "TRAN-1234";
-        RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85577410541", "TRAN_ID");
+        RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85577410541");
         registrationTransaction.setRegistrationStatus(RegistrationStatus.PENDING);
         when(cacheUtilService.getRegisteredTransaction(transactionId)).thenReturn(registrationTransaction);
         RegistrationStatusResponse registrationStatusResponse = registrationService.getRegistrationStatus(transactionId);
@@ -787,7 +817,7 @@ public class RegistrationServiceTest {
     @Test
     public void doGetRegistrationStatus_withFailedTransaction_thenPass() {
         String transactionId = "TRAN-1234";
-        RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85577410541", "TRAN_ID");
+        RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85577410541");
         registrationTransaction.setRegistrationStatus(RegistrationStatus.FAILED);
         when(cacheUtilService.getRegisteredTransaction(transactionId)).thenReturn(registrationTransaction);
         RegistrationStatusResponse registrationStatusResponse = registrationService.getRegistrationStatus(transactionId);
