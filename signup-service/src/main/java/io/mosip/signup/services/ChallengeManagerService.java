@@ -1,24 +1,25 @@
 package io.mosip.signup.services;
 
 import io.mosip.esignet.core.util.IdentityProviderUtil;
-import io.mosip.signup.dto.ApiChallengeRequest;
-import io.mosip.signup.dto.RegistrationTransaction;
-import io.mosip.signup.dto.RestRequestWrapper;
-import io.mosip.signup.dto.RestResponseWrapper;
+import io.mosip.signup.dto.*;
 import io.mosip.signup.exception.SignUpException;
 import io.mosip.signup.util.ErrorConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.LinkedHashMap;
 
 @Service
 @Slf4j
 public class ChallengeManagerService {
+
     @Autowired
     @Qualifier("selfTokenRestTemplate")
     private RestTemplate selfTokenRestTemplate;
@@ -26,30 +27,38 @@ public class ChallengeManagerService {
     @Value("${mosip.signup.generate-challenge.endpoint}")
     private String generateChallengeUrl;
 
+    @Value("${mosip.signup.supported.challenge-type:OTP}")
+    private String challengeType;
+
+
     public String generateChallenge(RegistrationTransaction transaction) throws SignUpException {
-        ApiChallengeRequest apiChallengeRequest = new ApiChallengeRequest();
-        apiChallengeRequest.setKey(transaction.getChallengeTransactionId());
-        RestRequestWrapper<ApiChallengeRequest> restRequest = new RestRequestWrapper<>();
-        restRequest.setRequesttime(IdentityProviderUtil.getUTCDateTime());
-        restRequest.setRequest(apiChallengeRequest);
-        RestResponseWrapper<LinkedHashMap<String, String>> restResponseWrapper = (RestResponseWrapper<LinkedHashMap<String, String>>) selfTokenRestTemplate
-                .postForObject(generateChallengeUrl, restRequest, RestResponseWrapper.class);
-        if (restResponseWrapper == null) {
-            log.error("generate-challenge Failed wrapper returned null");
-            throw new SignUpException(ErrorConstants.SEND_CHALLENGE_FAILED);
+        switch (challengeType) {
+            case "OTP" :
+                return generateOTPChallenge(transaction.getChallengeTransactionId());
+        }
+        throw new SignUpException(ErrorConstants.UNSUPPORTED_CHALLENGE_TYPE);
+    }
+
+    private String generateOTPChallenge(String challengeTransactionId) {
+        OtpRequest otpRequest = new OtpRequest();
+        otpRequest.setKey(challengeTransactionId);
+        RestRequestWrapper<OtpRequest> restRequestWrapper = new RestRequestWrapper<>();
+        restRequestWrapper.setRequesttime(IdentityProviderUtil.getUTCDateTime());
+        restRequestWrapper.setRequest(otpRequest);
+
+        RestResponseWrapper<OtpResponse> restResponseWrapper = selfTokenRestTemplate
+                .exchange(generateChallengeUrl, HttpMethod.POST,
+                        new HttpEntity<>(restRequestWrapper),
+                        new ParameterizedTypeReference<RestResponseWrapper<OtpResponse>>() {}).getBody();
+
+        if (restResponseWrapper != null && restResponseWrapper.getResponse() != null &&
+                !StringUtils.isEmpty(restResponseWrapper.getResponse().getOtp()) &&
+                !restResponseWrapper.getResponse().getOtp().equals("null")) {
+            return restResponseWrapper.getResponse().getOtp();
         }
 
-        if(restResponseWrapper.getErrors() != null) {
-            log.error("generate-challenge Failed wrapper returned errors {}!", restResponseWrapper.getErrors());
-            throw new SignUpException(ErrorConstants.SEND_CHALLENGE_FAILED);
-        }
-
-        String challenge = restResponseWrapper.getResponse().get("otp");
-        if (challenge == null || challenge.isEmpty()) {
-            log.error("generate-challenge Failed challenge returned null");
-            throw new SignUpException(ErrorConstants.SEND_CHALLENGE_FAILED);
-        }
-
-        return challenge;
+        log.error("Generate OTP failed with response {}", restResponseWrapper);
+        throw new SignUpException(restResponseWrapper != null && !CollectionUtils.isEmpty(restResponseWrapper.getErrors()) ?
+                restResponseWrapper.getErrors().get(0).getErrorCode() : ErrorConstants.GENERATE_CHALLENGE_FAILED);
     }
 }

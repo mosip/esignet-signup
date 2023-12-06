@@ -234,7 +234,7 @@ public class RegistrationControllerTest {
         verifyRequestWrapper.setRequest(verifyChallengeRequest);
 
         String mockTransactionID = "123456789";
-        RegistrationTransaction registrationTransaction = new RegistrationTransaction("", "");
+        RegistrationTransaction registrationTransaction = new RegistrationTransaction("");
         registrationTransaction.setChallengeHash("mock");
         registrationTransaction.setIdentifier("mock");
 
@@ -253,7 +253,7 @@ public class RegistrationControllerTest {
     @Test
     public void doVerifyChallenge_withInvalidTransaction_returnErrorResponse() throws Exception {
         String mockTransactionID = "123456789";
-        RegistrationTransaction registrationTransaction = new RegistrationTransaction("", "");
+        RegistrationTransaction registrationTransaction = new RegistrationTransaction("");
         registrationTransaction.setChallengeHash("mock");
         registrationTransaction.setIdentifier("mock");
 
@@ -272,7 +272,7 @@ public class RegistrationControllerTest {
     @Test
     public void doVerifyChallenge_withVerifyChallengeRaiseChallengeFailedException_returnErrorResponse() throws Exception {
         String mockTransactionID = "123456789";
-        RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85512123128", "");
+        RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85512123128");
         registrationTransaction.setChallengeHash("mock");
         registrationTransaction.setIdentifier("mock");
 
@@ -291,7 +291,7 @@ public class RegistrationControllerTest {
     @Test
     public void doVerifyChallenge_withVerifyChallengeRaiseInvalidIdentifierException_returnErrorResponse() throws Exception {
         String mockTransactionID = "123456789";
-        RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85512123128", "");
+        RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85512123128");
         registrationTransaction.setChallengeHash("mock");
         registrationTransaction.setIdentifier("mock");
 
@@ -316,7 +316,7 @@ public class RegistrationControllerTest {
         verifyRequestWrapper.setRequestTime(null);
 
         String mockTransactionID = "123456789";
-        RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85512123128", "");
+        RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85512123128");
         registrationTransaction.setChallengeHash("mock");
         registrationTransaction.setIdentifier("mock");
 
@@ -390,7 +390,7 @@ public class RegistrationControllerTest {
     @Test
     public void doGetRegistrationStatus_returnCompletedResponse() throws Exception {
         String mockTransactionID = "123456789";
-        RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85577410541", "TRAN_ID");
+        RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85577410541");
         registrationTransaction.setRegistrationStatus(RegistrationStatus.COMPLETED);
         RegistrationStatusResponse response = new RegistrationStatusResponse();
         response.setStatus(registrationTransaction.getRegistrationStatus());
@@ -406,7 +406,7 @@ public class RegistrationControllerTest {
     @Test
     public void doGetRegistrationStatus_returnPendingResponse() throws Exception {
         String mockTransactionID = "123456789";
-        RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85577410541", "TRAN_ID");
+        RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85577410541");
         registrationTransaction.setRegistrationStatus(RegistrationStatus.PENDING);
         RegistrationStatusResponse response = new RegistrationStatusResponse();
         response.setStatus(registrationTransaction.getRegistrationStatus());
@@ -422,7 +422,7 @@ public class RegistrationControllerTest {
     @Test
     public void doGetRegistrationStatus_returnFailedResponse() throws Exception {
         String mockTransactionID = "123456789";
-        RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85577410541", "TRAN_ID");
+        RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85577410541");
         registrationTransaction.setRegistrationStatus(RegistrationStatus.FAILED);
         RegistrationStatusResponse response = new RegistrationStatusResponse();
         response.setStatus(registrationTransaction.getRegistrationStatus());

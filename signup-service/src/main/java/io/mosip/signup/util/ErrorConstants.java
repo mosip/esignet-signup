@@ -11,9 +11,9 @@ public class ErrorConstants {
     public static final String UNSUPPORTED_USERNAME = "unsupported_username";
     public static final String CONSENT_REQUIRED = "consent_required";
     public static final String INVALID_TRANSACTION="invalid_transaction";
-    public static final String INVALID_CHALLENGE_CHANNEL ="invalid_challenge_channel";
+    public static final String UNSUPPORTED_CHALLENGE_TYPE ="unsupported_challenge_type";
     public static final String INVALID_CAPTCHA="invalid_captcha";
-    public static final String SEND_CHALLENGE_FAILED ="send_challenge_failed";
+    public static final String GENERATE_CHALLENGE_FAILED ="generate_challenge_failed";
     public static final String ACTIVE_CHALLENGE_FOUND="active_challenge_found";
     public static final String UNKNOWN_ERROR="unknown_error";
     public static final String TOO_MANY_ATTEMPTS="too_many_attempts";
