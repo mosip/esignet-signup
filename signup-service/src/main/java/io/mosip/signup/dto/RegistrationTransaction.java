@@ -5,11 +5,13 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
 @Data
 public class RegistrationTransaction implements Serializable {
+
     private String challengeHash;
     private String identifier;
     private LocalDateTime startedAt;
@@ -18,10 +20,12 @@ public class RegistrationTransaction implements Serializable {
     private String challengeTransactionId;
     private String applicationId;
     private RegistrationStatus registrationStatus;
-    public RegistrationTransaction(String identifier, String transactionId) {
+    private String locale;
+
+    public RegistrationTransaction(String identifier) {
         this.identifier = identifier;
-        this.startedAt = LocalDateTime.now();
-        this.challengeTransactionId = transactionId;
+        this.startedAt = LocalDateTime.now(ZoneOffset.UTC);
+        this.challengeTransactionId = UUID.randomUUID().toString();
         this.applicationId = UUID.randomUUID().toString();
         this.registrationStatus = null;
         this.challengeHash = null;
@@ -32,11 +36,11 @@ public class RegistrationTransaction implements Serializable {
     public long getLastRetryToNow() {
         if (this.lastRetryAt == null) return 0;
 
-        return this.lastRetryAt.until(LocalDateTime.now(), ChronoUnit.SECONDS);
+        return this.lastRetryAt.until(LocalDateTime.now(ZoneOffset.UTC), ChronoUnit.SECONDS);
     }
 
     public void increaseAttempt() {
         this.challengeRetryAttempts += 1;
-        this.lastRetryAt = LocalDateTime.now();
+        this.lastRetryAt = LocalDateTime.now(ZoneOffset.UTC);
     }
 }

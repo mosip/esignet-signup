@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
 @ConditionalOnProperty(value = "mosip.signup.integration.captcha-validator", havingValue = "GoogleRecaptchaValidatorService")
@@ -38,6 +39,9 @@ public class GoogleRecaptchaValidatorService implements CaptchaValidator {
     public boolean validateCaptcha(String captchaToken) {
 
         if (!requiredCaptcha) return true;
+
+        if(StringUtils.isEmpty(captchaToken))
+            return false;
 
         MultiValueMap<String, String> param = new LinkedMultiValueMap<>();
         param.add("secret", verifierSecret);
