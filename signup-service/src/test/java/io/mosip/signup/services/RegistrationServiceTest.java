@@ -20,6 +20,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -41,7 +42,7 @@ import io.mosip.esignet.core.exception.EsignetException;
 import java.time.LocalDateTime;
 
 @RunWith(SpringRunner.class)
-@TestPropertySource(locations = "classpath:application-test.properties")
+@ActiveProfiles(value = {"test"})
 public class RegistrationServiceTest {
 
     @InjectMocks
@@ -75,6 +76,12 @@ public class RegistrationServiceTest {
                 registrationService, "resendAttempts", 3);
         ReflectionTestUtils.setField(
                 registrationService, "resendDelay", 30);
+
+        ReflectionTestUtils.setField(
+                registrationService, "otpRegistrationKhmMessage", "ប្រើ XXXXXX ដើម្បីផ្ទៀងផ្ទាត់គណនី KhID របស់អ្នក។");
+
+        ReflectionTestUtils.setField(
+                registrationService, "otpRegistrationEngMessage", "Use XXXXXX to verify your KhID account.");
     }
 
     @Test
