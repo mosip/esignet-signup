@@ -34,6 +34,8 @@ google-chrome-stable --user-data-dir="~/ dev session" --disable-web-security
 
 #### Scripts
 
+##### Web app
+
 To start the web application, run the following script:
 
 ```bash
@@ -41,6 +43,16 @@ npm start
 ```
 
 This opens [http://localhost:3000](http://localhost:3000) to view it in the browser. The page will reload if you make edits. You will also see any lint errors in the console.
+
+##### Storybook
+
+To start the storybook, run the following script:
+
+```bash
+npm storybook
+```
+
+This opens [http://localhost:6006](http://localhost:6006) in the browser. Making change to your components triggers hot reload in storybook.
 
 #### Environments
 

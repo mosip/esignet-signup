@@ -5,11 +5,18 @@ import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
 
 import { Button } from "~components/ui/button";
-import { FormControl, FormField, FormItem } from "~components/ui/form";
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+  useFormField,
+} from "~components/ui/form";
 import { Icons } from "~components/ui/icons";
 import { Input } from "~components/ui/input";
 import {
   Step,
+  StepAlert,
   StepContent,
   StepDivider,
   StepHeader,
@@ -17,27 +24,37 @@ import {
 } from "~components/ui/step";
 import { cn } from "~utils/cn";
 import { getSignInRedirectURL } from "~utils/link";
-import { Error, GenerateChallengeRequestDto } from "~typings/types";
+import {
+  Error,
+  GenerateChallengeRequestDto,
+  SettingsDto,
+} from "~typings/types";
 
 import { useGenerateChallenge } from "../mutations";
-import { useSignUpContext } from "../SignUpContext";
 import { SignUpForm } from "../SignUpPage";
+import { setStepSelector, SignUpStep, useSignUpStore } from "../useSignUpStore";
 
 interface PhoneProps {
+  settings: SettingsDto;
   methods: UseFormReturn<SignUpForm, any, undefined>;
 }
-export const Phone = ({ methods }: PhoneProps) => {
+export const Phone = ({ settings, methods }: PhoneProps) => {
   const { t } = useTranslation();
 
+  const { setStep } = useSignUpStore(
+    useCallback((state) => ({ setStep: setStepSelector(state) }), [])
+  );
   const [hasError, setHasError] = useState<boolean>(false);
   const { control, setValue, getValues } = useFormContext();
-  const { setActiveStep } = useSignUpContext();
   const { generateChallengeMutation } = useGenerateChallenge();
   const _reCaptchaRef = useRef<ReCAPTCHA>(null);
   const [error, setError] = useState<Error | null>(null);
-  const { hash: fromSingInHash } = useLocation();
+  const { hash: fromSignInHash } = useLocation();
 
-  const { trigger, formState } = methods;
+  const {
+    trigger,
+    formState: { errors: formError, isValid },
+  } = methods;
 
   useEffect(() => {
     if (!hasError) return;
@@ -75,7 +92,7 @@ export const Phone = ({ methods }: PhoneProps) => {
           onSuccess: ({ errors }) => {
             if (!errors) {
               setValue("otp", "", { shouldValidate: true });
-              setActiveStep((prevActiveStep) => prevActiveStep + 1);
+              setStep(SignUpStep.Otp);
             }
 
             if (errors) {
@@ -89,25 +106,32 @@ export const Phone = ({ methods }: PhoneProps) => {
         });
       }
     },
-    [generateChallengeMutation, getValues, setActiveStep, trigger, setValue]
+    [generateChallengeMutation, getValues, setStep, trigger, setValue]
   );
 
   return (
     <Step>
       <StepHeader className="px-0">
-        <StepTitle className="relative flex gap-x-4 w-full text-base font-semibold items-center justify-center">
-          {!!fromSingInHash && <a href={getSignInRedirectURL(fromSingInHash)} className="absolute left-0 ml-4 cursor-pointer"><Icons.back /></a>}
+        <StepTitle className="relative flex w-full items-center justify-center gap-x-4 text-base font-semibold">
+          {!!fromSignInHash && (
+            <a
+              href={getSignInRedirectURL(fromSignInHash)}
+              className="absolute left-0 ml-6 cursor-pointer"
+            >
+              <Icons.back />
+            </a>
+          )}
           <div className="text-center font-semibold tracking-normal">
             {t("enter_your_number")}
           </div>
         </StepTitle>
       </StepHeader>
       <StepDivider />
-      <StepContent>
+      <StepAlert className="relative">
         {/* Error message */}
         <div
           className={cn(
-            "flex items-center justify-between bg-destructive/5 px-4 py-2",
+            "absolute flex w-full items-center justify-between bg-destructive/5 px-4 py-2",
             {
               hidden: !hasError,
             }
@@ -115,39 +139,48 @@ export const Phone = ({ methods }: PhoneProps) => {
         >
           <p className="text-xs text-destructive">{error?.errorMessage}</p>
           <Icons.close
-            className="text-destructive h-4 w-4 cursor-pointer"
+            className="h-4 w-4 cursor-pointer text-destructive"
             onClick={() => setHasError(false)}
           />
         </div>
+      </StepAlert>
+      <StepContent>
         {/* Phone and reCAPTCHA inputs */}
-        <div className="p-6 flex flex-col gap-y-6">
+        <div className="flex flex-col gap-y-6 p-6">
           <div className="flex flex-col gap-y-3">
             {/* Phone number input */}
-            <div
-              id="phone"
-              className="flex items-center justify-center border-[1px] border-input ring-offset-background rounded-md"
-            >
-              <span className="text-muted-foreground/60 border-r-[1px] border-input px-3">
-                +855
-              </span>
-              <FormField
-                name="phone"
-                control={control}
-                render={({ field }) => (
-                  <FormItem className="w-full">
+            <FormField
+              name="phone"
+              control={control}
+              render={({ field }) => (
+                <FormItem>
+                  <div className="relative w-full rounded-md">
                     <FormControl>
-                      <Input
-                        {...field}
-                        id="phone_input"
-                        type="tel"
-                        placeholder={t("enter_your_number_placeholder")}
-                        className="outline-none border-none"
-                      />
+                      <div
+                        className={cn(
+                          "flex h-[52px] rounded-md border-[1px] border-input",
+                          formError.phone && "border-destructive"
+                        )}
+                      >
+                        <span className="flex self-center border-r-[1px] border-input px-3 text-muted-foreground/60">
+                          {settings.response.configs["identifier.prefix"]}
+                        </span>
+                        <div className="w-full">
+                          <Input
+                            {...field}
+                            id="phone_input"
+                            type="tel"
+                            placeholder={t("enter_your_number_placeholder")}
+                            className="h-[inherit] border-none outline-none"
+                          />
+                        </div>
+                      </div>
                     </FormControl>
-                  </FormItem>
-                )}
-              />
-            </div>
+                    <FormMessage className="w-full" />
+                  </div>
+                </FormItem>
+              )}
+            />
             <div id="captcha" className="flex items-center justify-center">
               {/* I'm not a robot checkbox */}
               <ReCAPTCHA
@@ -161,7 +194,7 @@ export const Phone = ({ methods }: PhoneProps) => {
           </div>
           <Button
             onClick={handleContinue}
-            disabled={!formState.isValid}
+            disabled={!isValid}
             isLoading={generateChallengeMutation.isPending}
           >
             {t("continue")}

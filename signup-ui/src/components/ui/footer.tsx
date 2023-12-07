@@ -1,22 +1,20 @@
-import { forwardRef, ReactNode } from "react";
+import { forwardRef } from "react";
 import { useTranslation } from "react-i18next";
 
-const Footer = ({ i18nKeyPrefix = "footer" }) => {
-  const footerCheck = process.env.REACT_APP_FOOTER === "true";
-
-  const { t } = useTranslation("translation", {
-    keyPrefix: i18nKeyPrefix,
-  });
+const Footer = () => {
+  const { t } = useTranslation();
 
   return (
-    <>
-      {footerCheck && (
-        <footer className="footer-container flex w-full flex-row flex-wrap items-center justify-center gap-y-6 gap-x-1 border-t border-blue-gray-50 text-center">
-          <span className="footer-text">{t("powered_by")}</span>
-          <img className="footer-brand-logo" alt="footerLogo" />
-        </footer>
-      )}
-    </>
+    <footer className="border-blue-gray-50 flex w-full flex-row flex-wrap items-center justify-center gap-x-1 gap-y-6 border-t py-[11px] text-center">
+      <span className="text-sm text-[hsl(0,0%,53.7%)]">
+        {t("footer.powered_by")}
+      </span>
+      <img
+        src="/images/footer_logo.png"
+        alt="footer logo"
+        className="h-[25px]"
+      />
+    </footer>
   );
 };
 

@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useFormContext, UseFormReturn } from "react-hook-form";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import PinInput from "react-pin-input";
-import { useLocation } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 
 import { ReactComponent as FailedIconSvg } from "~assets/svg/failed-icon.svg";
 import {
@@ -26,7 +26,6 @@ import {
   StepTitle,
 } from "~components/ui/step";
 import { cn } from "~utils/cn";
-import { getSignInRedirectURL } from "~utils/link";
 import { maskPhoneNumber } from "~utils/phone";
 import { convertTime } from "~utils/timer";
 import {
@@ -37,23 +36,36 @@ import {
 } from "~typings/types";
 
 import { useGenerateChallenge, useVerifyChallenge } from "../mutations";
-import { useSignUpContext } from "../SignUpContext";
 import { SignUpForm } from "../SignUpPage";
+import {
+  setStepSelector,
+  SignUpStep,
+  stepSelector,
+  useSignUpStore,
+} from "../useSignUpStore";
 import { ResendAttempt } from "./components/ResendAttempt";
 import { useTimer } from "./hooks/useTimer";
 
-interface OTPProps {
+interface OtpProps {
   settings: SettingsDto;
   methods: UseFormReturn<SignUpForm, any, undefined>;
 }
 
-export const OTP = ({ methods, settings }: OTPProps) => {
+export const Otp = ({ methods, settings }: OtpProps) => {
   const { t } = useTranslation();
 
   const [hasError, setHasError] = useState<boolean>(false);
   const pinInputRef = useRef<PinInput | null>(null);
   const { control, getValues, setValue } = useFormContext();
-  const { setActiveStep } = useSignUpContext();
+  const { step, setStep } = useSignUpStore(
+    useCallback(
+      (state) => ({
+        step: stepSelector(state),
+        setStep: setStepSelector(state),
+      }),
+      []
+    )
+  );
   const { trigger, reset, formState } = methods;
   const [resendAttempts, setResendAttempts] = useState<number>(0);
   const [enableResendOtp, setEnableResendOtp] = useState<boolean>(false);
@@ -62,7 +74,7 @@ export const OTP = ({ methods, settings }: OTPProps) => {
   const { verifyChallengeMutation } = useVerifyChallenge();
   const [error, setError] = useState<Error | null>(null);
   const [showDialog, setShowDialog] = useState(false);
-  const { hash: fromSingInHash } = useLocation();
+  const [searchParams] = useSearchParams();
 
   useEffect(() => {
     setTimeLeft(settings.response.configs["resend.delay"]);
@@ -105,6 +117,9 @@ export const OTP = ({ methods, settings }: OTPProps) => {
 
         return generateChallengeMutation.mutate(generateChallengeRequestDto, {
           onSuccess: ({ errors }) => {
+            pinInputRef.current?.clear();
+            setValue("otp", "", { shouldValidate: true });
+
             setResendAttempts((resendAttempt) => resendAttempt - 1);
             setTimeLeft(settings.response.configs["resend.delay"]);
             setEnableResendOtp(false);
@@ -121,18 +136,17 @@ export const OTP = ({ methods, settings }: OTPProps) => {
       resendAttempts,
       generateChallengeMutation,
       getValues,
+      setValue,
       setTimeLeft,
     ]
   );
 
   const handleBack = useCallback(() => {
-    setActiveStep((prevActiveStep) => {
-      if (prevActiveStep === 1) {
-        setValue("captchaToken", "", { shouldValidate: true });
-      }
-      return prevActiveStep - 1;
-    });
-  }, [setActiveStep, setValue]);
+    if (step === SignUpStep.Otp)
+      setValue("captchaToken", "", { shouldValidate: true });
+
+    setStep(SignUpStep.Phone);
+  }, [step, setStep, setValue]);
 
   const handleContinue = useCallback(
     async (e: any) => {
@@ -154,7 +168,7 @@ export const OTP = ({ methods, settings }: OTPProps) => {
         return verifyChallengeMutation.mutate(verifyChallengeRequestDto, {
           onSuccess: ({ errors }) => {
             if (!errors) {
-              setActiveStep((prevActiveStep) => prevActiveStep + 1);
+              setStep(SignUpStep.PhoneStatus);
             }
 
             if (errors) {
@@ -167,20 +181,21 @@ export const OTP = ({ methods, settings }: OTPProps) => {
         });
       }
     },
-    [setActiveStep, trigger, getValues, verifyChallengeMutation]
+    [setStep, trigger, getValues, verifyChallengeMutation]
   );
 
   const handleErrorRedirect = () => {
-    if (error?.errorCode === "already-registered" && !!fromSingInHash) {
-      window.location.href = getSignInRedirectURL(fromSingInHash);
+    const esignetLoginPage = searchParams.get("callback");
+    if (error?.errorCode === "already-registered" && esignetLoginPage) {
+      window.location.href = esignetLoginPage;
     } else {
-      setActiveStep(0);
+      setStep(SignUpStep.Phone);
       reset();
     }
   };
 
   const handleExhaustedAttempt = () => {
-    setActiveStep(0);
+    setStep(SignUpStep.Phone);
     reset();
   };
 
@@ -203,7 +218,7 @@ export const OTP = ({ methods, settings }: OTPProps) => {
               className="w-full bg-orange-500"
             >
               {error?.errorCode === "already-registered" &&
-              !!fromSingInHash
+              searchParams.get("callback")
                 ? t("login")
                 : t("okay")}
             </AlertDialogAction>
@@ -211,24 +226,24 @@ export const OTP = ({ methods, settings }: OTPProps) => {
         </AlertDialogContent>
       </AlertDialog>
       <Step>
-        <StepHeader className="px-0">
-          <StepTitle className="relative flex gap-x-4 w-full text-base font-semibold items-center justify-center">
+        <StepHeader className="px-0 py-9">
+          <StepTitle className="relative flex w-full items-center justify-center gap-x-4 text-base font-semibold">
             <Icons.back
-              className="absolute left-0 ml-4 cursor-pointer"
+              className="absolute left-0 ml-8 cursor-pointer"
               onClick={handleBack}
             />
-            <div className="w-full font-bold text-[26px] text-center">
+            <div className="w-full text-center text-[26px] font-semibold">
               {t("otp_header")}
             </div>
           </StepTitle>
-          <StepDescription className="w-full py-4 tracking-normal">
+          <StepDescription className="w-full pt-2 tracking-normal">
             <div className="text-muted-neutral-gray">
               {t("otp_subheader", {
                 no_of_digit: settings?.response.configs["otp.length"],
               })}
             </div>
-            <div className="text-muted-dark-gray">
-              <span>+855</span>{" "}
+            <div className="font-medium text-muted-dark-gray">
+              <span>{settings.response.configs["identifier.prefix"]}</span>{" "}
               <span>{maskPhoneNumber(getValues("phone"), 4)}</span>
             </div>
           </StepDescription>
@@ -246,103 +261,104 @@ export const OTP = ({ methods, settings }: OTPProps) => {
           >
             <p className="text-xs text-destructive">{error?.errorMessage}</p>
             <Icons.close
-              className="text-destructive h-4 w-4 cursor-pointer"
+              className="h-4 w-4 cursor-pointer text-destructive"
               onClick={() => setHasError(false)}
             />
           </div>
           {/* OTP inputs */}
-          <div className="p-6 flex flex-col gap-y-6">
-            {settings && (
-              <>
-                <FormField
-                  name="otp"
-                  control={control}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <PinInput
-                          ref={handlePinInputRef}
-                          length={settings.response.configs["otp.length"]}
-                          secret
-                          focus
-                          initialValue={field.value}
-                          type="numeric"
-                          inputMode="number"
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            padding: "5px 0px",
-                          }}
-                          inputStyle={{
-                            width: "40px",
-                            height: "40px",
-                            margin: "0px 0px",
-                            border: "2px solid #C1C1C1",
-                            color: "#000000",
-                            borderRadius: "6px",
-                          }}
-                          inputFocusStyle={{ border: "2px solid #676766" }}
-                          autoSelect={true}
-                          onComplete={(value, _) => {
-                            //TO handle case when user pastes OTP
-                            handleOtpComplete(value);
-                          }}
-                          onChange={(value, _) => {
-                            handleOtpChange(value);
-                          }}
-                        />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-                <Button
-                  className="w-full p-4 font-semibold"
-                  onClick={handleContinue}
-                  disabled={!formState.isValid}
-                  isLoading={verifyChallengeMutation.isPending}
-                >
-                  {t("continue")}
-                </Button>
-                <div className="flex flex-col items-center mx-12">
-                  <div className="flex gap-x-1">
-                    {t("resend_otp_detail")}
-                    <span className="font-semibold">
-                      {convertTime(timeLeft)}
-                    </span>
-                  </div>
-                  <Button
-                    variant="link"
-                    className="font-bold text-secondary disabled:bg-white disabled:text-muted"
-                    disabled={
-                      !enableResendOtp ||
-                      resendAttempts === 0 ||
-                      (timeLeft > 0 && resendAttempts === 3)
-                    }
-                    onClick={handleResendOtp}
-                  >
-                    {t("resend_otp")}
-                  </Button>
-                  {resendAttempts !==
-                    settings.response.configs["resend.attempts"] && (
-                    <ResendAttempt
-                      currentAttempts={resendAttempts}
-                      totalAttempts={
-                        settings.response.configs["resend.attempts"]
-                      }
+          <div className="flex flex-col gap-y-6 p-6">
+            <FormField
+              name="otp"
+              control={control}
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <PinInput
+                      ref={handlePinInputRef}
+                      length={settings.response.configs["otp.length"]}
+                      secret
+                      secretDelay={200}
+                      focus
+                      initialValue={field.value}
+                      type="numeric"
+                      inputMode="number"
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        padding: "5px 0px",
+                        fontSize: "24px",
+                      }}
+                      inputStyle={{
+                        width: "55px",
+                        height: "52px",
+                        margin: "0px 0px",
+                        border: "2px solid #C1C1C1",
+                        color: "#000000",
+                        borderRadius: "8px",
+                      }}
+                      inputFocusStyle={{
+                        border: "2px solid #676766",
+                      }}
+                      autoSelect={true}
+                      onComplete={(value, _) => {
+                        //TO handle case when user pastes OTP
+                        handleOtpComplete(value);
+                      }}
+                      onChange={(value, _) => {
+                        handleOtpChange(value);
+                      }}
                     />
-                  )}
-                  {resendAttempts === 0 && (
-                    <Button
-                      variant="link"
-                      className="text-sm h-4 m-4"
-                      onClick={handleExhaustedAttempt}
-                    >
-                      {t("go_back_to_landing_page")}
-                    </Button>
-                  )}
-                </div>
-              </>
-            )}
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <Button
+              className="w-full p-4 font-semibold"
+              onClick={handleContinue}
+              disabled={!formState.isValid}
+              isLoading={verifyChallengeMutation.isPending}
+            >
+              {t("verify")}
+            </Button>
+            <div className="mx-12 flex flex-col items-center">
+              <div className="flex gap-x-1 text-center">
+                <Trans
+                  i18nKey="resend_otp_detail"
+                  components={{
+                    CountDownSpan: <span className="font-semibold" />,
+                  }}
+                  values={{ countDown: convertTime(timeLeft) }}
+                />
+              </div>
+              <Button
+                variant="link"
+                className="m-1 h-5 text-base font-bold"
+                disabled={
+                  !enableResendOtp ||
+                  resendAttempts === 0 ||
+                  (timeLeft > 0 && resendAttempts === 3)
+                }
+                onClick={handleResendOtp}
+              >
+                {t("resend_otp")}
+              </Button>
+              {resendAttempts !==
+                settings.response.configs["resend.attempts"] && (
+                <ResendAttempt
+                  currentAttempts={resendAttempts}
+                  totalAttempts={settings.response.configs["resend.attempts"]}
+                />
+              )}
+              {resendAttempts === 0 && (
+                <Button
+                  variant="link"
+                  className="m-4 h-4 text-sm"
+                  onClick={handleExhaustedAttempt}
+                >
+                  {t("go_back_to_landing_page")}
+                </Button>
+              )}
+            </div>
           </div>
         </StepContent>
       </Step>

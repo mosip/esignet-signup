@@ -1,3 +1,5 @@
+import * as React from "react";
+
 import { ReactComponent as ArrowLeft } from "~assets/svg/arrow-left.svg";
 import { ReactComponent as Check } from "~assets/svg/check.svg";
 import { ReactComponent as ChevronDown } from "~assets/svg/chevron-down.svg";
@@ -18,4 +20,25 @@ export const Icons = {
   eyeOff: EyeOff,
   info: Info,
   loader: Loader,
+  arrow: React.forwardRef<SVGSVGElement, React.SVGAttributes<SVGSVGElement>>(
+    (props, ref) => (
+      <svg
+        width="24"
+        height="12"
+        viewBox="0 0 24 12"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        {...props}
+        ref={ref}
+      >
+        <rect width="24" height="2" fill="white" />
+        <path
+          d="M24 1C18 1 18 11 12 11C6 11 6 0.999999 8.74228e-07 0.999999"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinejoin="round"
+        />
+      </svg>
+    )
+  ),
 };
