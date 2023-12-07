@@ -19,12 +19,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
+
+import java.util.concurrent.CompletableFuture;
 
 import static io.mosip.signup.util.SignUpConstants.CONSENT_DISAGREE;
 
@@ -66,6 +69,9 @@ public class RegistrationService {
     @Value("${mosip.signup.get-uin.endpoint}")
     private String getUinEndpoint;
 
+    @Value("${mosip.signup.send-notification.endpoint}")
+    private String sendNotificationEndpoint;
+
     @Value("${mosip.signup.cookie.max-age}")
     private int cookieMaxAge;
 
@@ -74,6 +80,18 @@ public class RegistrationService {
 
     @Value("${mosip.signup.challenge.resend-delay}")
     private long resendDelay;
+
+    @Value("${mosip.signup.otp-registration.sms.khm}")
+    private String otpRegistrationKhmMessage;
+
+    @Value("${mosip.signup.otp-registration.sms.eng}")
+    private String otpRegistrationEngMessage;
+
+    @Value("${mosip.signup.successfully.registration.sms.khm}")
+    private String registrationSuccessKhmMessage;
+
+    @Value("${mosip.signup.successfully.registration.sms.eng}")
+    private String registrationSuccessEngMessage;
 
     /**
      * Generate and regenerate challenge based on the "regenerate" flag in the request.
@@ -110,6 +128,11 @@ public class RegistrationService {
         transaction.increaseAttempt();
         transaction.setLocale(generateChallengeRequest.getLocale());
         cacheUtilService.setChallengeGeneratedTransaction(transactionId, transaction);
+
+        sendNotificationAsync(generateChallengeRequest.getIdentifier(), transaction.getLocale(), challenge)
+                .thenAccept(notificationResponseRestResponseWrapper -> {
+                    log.debug("Send SMS response {}", notificationResponseRestResponseWrapper.toString());
+                });
         return new GenerateChallengeResponse(ActionStatus.SUCCESS);
     }
 
@@ -263,6 +286,25 @@ public class RegistrationService {
         log.error("Transaction {} : Get unique identifier failed with response {}", transactionId, restResponseWrapper);
         throw new SignUpException(restResponseWrapper != null && !CollectionUtils.isEmpty(restResponseWrapper.getErrors()) ?
                 restResponseWrapper.getErrors().get(0).getErrorCode() : ErrorConstants.GET_UIN_FAILED);
+    }
+
+    @Async
+    private CompletableFuture<RestResponseWrapper<NotificationResponse>> sendNotificationAsync
+            (String number, String locale, String challenge) {
+
+        NotificationRequest notificationRequest = new NotificationRequest(number.substring(4),
+                locale == null || locale.equals("khm") ? otpRegistrationKhmMessage : otpRegistrationEngMessage );
+
+        notificationRequest.setMessage(notificationRequest.getMessage().replace("XXXXXX", challenge));
+
+        RestRequestWrapper<NotificationRequest> restRequestWrapper = new RestRequestWrapper<>();
+        restRequestWrapper.setRequest(notificationRequest);
+
+        return CompletableFuture.supplyAsync(() -> selfTokenRestTemplate
+                .exchange(sendNotificationEndpoint,
+                        HttpMethod.POST,
+                        new HttpEntity<>(restRequestWrapper),
+                        new ParameterizedTypeReference<RestResponseWrapper<NotificationResponse>>(){}).getBody());
     }
 
     private void validateTransaction(RegistrationTransaction transaction, String identifier) {
