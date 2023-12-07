@@ -30,8 +30,9 @@ public class RegistrationController {
     RegistrationService registrationService;
 
     @PostMapping("/generate-challenge")
-    public ResponseWrapper<GenerateChallengeResponse> generateChallenge (
-            @Valid @RequestBody RequestWrapper<GenerateChallengeRequest> requestWrapper, @CookieValue(name = SignUpConstants.TRANSACTION_ID, defaultValue = "") String transactionId) throws SignUpException {
+    public ResponseWrapper<GenerateChallengeResponse> generateChallenge (@Valid @RequestBody RequestWrapper<GenerateChallengeRequest> requestWrapper,
+                                                                         @CookieValue(name = SignUpConstants.TRANSACTION_ID, defaultValue = "") String transactionId)
+            throws SignUpException {
         ResponseWrapper<GenerateChallengeResponse> responseWrapper = new ResponseWrapper<>();
         responseWrapper.setResponse(registrationService.generateChallenge(requestWrapper.getRequest(), transactionId));
         responseWrapper.setResponseTime(IdentityProviderUtil.getUTCDateTime());
