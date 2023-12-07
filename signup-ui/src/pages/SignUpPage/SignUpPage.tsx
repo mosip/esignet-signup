@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { isValidPhoneNumber } from "libphonenumber-js";
 import { Resolver, useForm } from "react-hook-form";
@@ -9,14 +9,13 @@ import { Button } from "~components/ui/button";
 import { Form } from "~components/ui/form";
 import { SettingsDto } from "~typings/types";
 
-import AccountRegistrationStatus from "./AccountRegistrationStatus";
+import { AccountRegistrationStatus } from "./AccountRegistrationStatus/AccountRegistrationStatus";
 import AccountSetup from "./AccountSetup";
-import { AccountSetupProgress } from "./AccountSetup/components/AccountSetupProgress";
+import AccountSetupStatus from "./AccountSetupStatus";
 import Otp from "./Otp";
 import Phone from "./Phone";
-import RegistrationStatus from "./RegistrationStatus";
-import { useSignUpContext } from "./SignUpContext";
-import Status from "./Status";
+import PhoneStatus from "./PhoneStatus";
+import { SignUpStep, stepSelector, useSignUpStore } from "./useSignUpStore";
 
 export interface SignUpForm {
   phone: string;
@@ -29,22 +28,16 @@ export interface SignUpForm {
   consent: false;
 }
 
-export enum SignUpSteps {
-  PHONE = "PHONE",
-  OTP = "OTP",
-  STATUS = "STATUS",
-  ACCOUNTSETUP = "ACCOUNTSETUP",
-  ACCOUNTSTATUS = "ACCOUNTSTATUS",
-}
-
 interface SignUpPageProps {
   settings: SettingsDto;
 }
 
 export const SignUpPage = ({ settings }: SignUpPageProps) => {
   const { t } = useTranslation();
-  const { activeStep } = useSignUpContext();
-  const steps = Object.values(SignUpSteps);
+
+  const { step } = useSignUpStore(
+    useCallback((state) => ({ step: stepSelector(state) }), [])
+  );
 
   const validationSchema = useMemo(() => {
     return [
@@ -94,7 +87,7 @@ export const SignUpPage = ({ settings }: SignUpPageProps) => {
     ];
   }, [settings, t]);
 
-  const currentValidationSchema = validationSchema[activeStep];
+  const currentValidationSchema = validationSchema[step];
 
   const signUpFormDefaultValues: SignUpForm = {
     phone: "",
@@ -117,50 +110,28 @@ export const SignUpPage = ({ settings }: SignUpPageProps) => {
     mode: "all",
   });
 
-  const { reset } = methods;
-
-  const getSignUpStepContent = (step: number) => {
+  const getSignUpStepContent = (step: SignUpStep) => {
     switch (step) {
-      case 0:
-        return <Phone methods={methods} />;
-      case 1:
+      case SignUpStep.Phone:
+        return <Phone methods={methods} settings={settings} />;
+      case SignUpStep.Otp:
         return <Otp methods={methods} settings={settings} />;
-      case 2:
-        return <Status methods={methods} />;
-      case 3:
-        return <AccountSetup methods={methods} />;
-      case 4:
-        return (
-          <AccountRegistrationStatus methods={methods} settings={settings} />
-        );
+      case SignUpStep.PhoneStatus:
+        return <PhoneStatus methods={methods} />;
+      case SignUpStep.AccountSetup:
+        return <AccountSetup methods={methods} settings={settings} />;
+      case SignUpStep.AccountSetupStatus:
+        return <AccountSetupStatus methods={methods} settings={settings} />;
+      case SignUpStep.AccountRegistrationStatus:
+        return <AccountRegistrationStatus />;
       default:
         return "unknown step";
     }
   };
 
   return (
-    <div className="h-screen flex justify-center items-center">
-      {activeStep === steps.length ? (
-        // <Button onClick={handleReset}>reset</Button>
-        <RegistrationStatus />
-      ) : (
-        <FormProvider {...methods}>
-          <form>
-            <div className="grid grid-cols-12 gap-0">
-              <div className="col-span-2">
-                <img className="left-1 top-1" src="images/top.png" />
-              </div>
-              <div className="col-span-8 flex h-[calc(100vh-13.6vh)] items-center">
-                {isLoading && <div>Loading</div>}
-                {settings && <>{getSignUpStepContent(activeStep)}</>}
-              </div>
-              <div className="col-span-2 absolute bottom-0 right-0">
-                <img className="" src="images/bottom.png" />
-              </div>
-            </div>
-          </form>
-        </FormProvider>
-      )}
-    </div>
+    <Form {...methods}>
+      <form>{getSignUpStepContent(step)}</form>
+    </Form>
   );
 };
