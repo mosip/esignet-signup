@@ -2,19 +2,19 @@ import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { useTranslation } from "react-i18next";
 
 import { ReactComponent as TranslationIcon } from "~assets/svg/translation-icon.svg";
+import { langFontMapping } from "~constants/language";
 
 import locales from "../../public/locales/default.json";
 import { Icons } from "./ui/icons";
+import { cn } from "~utils/cn";
 
 export const Language = () => {
   const { i18n } = useTranslation();
 
   const handleLanguageChange = (language: string) => {
     i18n.changeLanguage(language);
+    window.location.reload();
   };
-
-  var dropdownItemClass =
-    "group text-[14px] leading-none flex items-center relative select-none outline-none data-[disabled]:pointer-events-none hover:font-bold cursor-pointer py-2 first:border-b-[1px]";
 
   return (
     <div className="flex">
@@ -42,9 +42,13 @@ export const Language = () => {
               <DropdownMenu.Item
                 key={key}
                 className={
-                  i18n.language === key
-                    ? `font-bold ${dropdownItemClass}`
-                    : dropdownItemClass
+                  cn(
+                    "group text-[14px] leading-none flex items-center relative select-none outline-none data-[disabled]:pointer-events-none hover:font-bold cursor-pointer py-2 first:border-b-[1px]",
+                    langFontMapping[key],
+                    {
+                      "font-bold": i18n.language === key
+                    },
+                  )
                 }
                 onSelect={() => handleLanguageChange(key)}
               >

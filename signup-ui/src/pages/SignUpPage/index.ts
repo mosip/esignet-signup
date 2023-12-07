@@ -1,2 +1,2 @@
 // Default required for lazy loading.
-export { SignUpPageLayout as default } from "./SignUpPageLayout";
+export { SignUpPageContainer as default } from "./SignUpPageContainer";

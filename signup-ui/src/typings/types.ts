@@ -58,8 +58,8 @@ export interface BaseRequestDto {
 }
 
 interface SettingsConfig {
-  "username.pattern": string;
-  "username.prefix": string;
+  "identifier.pattern": string;
+  "identifier.prefix": string;
   "captcha.site.key": string;
   "otp.length": number;
   "password.pattern": string;
