@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { isValidPhoneNumber } from "libphonenumber-js";
 import { Resolver, useForm } from "react-hook-form";
@@ -8,13 +8,13 @@ import * as yup from "yup";
 import { Form } from "~components/ui/form";
 import { SettingsDto } from "~typings/types";
 
-import AccountRegistrationStatus from "./AccountRegistrationStatus";
+import { AccountRegistrationStatus } from "./AccountRegistrationStatus/AccountRegistrationStatus";
 import AccountSetup from "./AccountSetup";
+import AccountSetupStatus from "./AccountSetupStatus";
 import Otp from "./Otp";
 import Phone from "./Phone";
-import RegistrationStatus from "./RegistrationStatus";
-import { useSignUpContext } from "./SignUpContext";
-import Status from "./Status";
+import PhoneStatus from "./PhoneStatus";
+import { SignUpStep, stepSelector, useSignUpStore } from "./useSignUpStore";
 
 export interface SignUpForm {
   phone: string;
@@ -27,22 +27,16 @@ export interface SignUpForm {
   consent: false;
 }
 
-export enum SignUpSteps {
-  PHONE = "PHONE",
-  OTP = "OTP",
-  STATUS = "STATUS",
-  ACCOUNTSETUP = "ACCOUNTSETUP",
-  ACCOUNTSTATUS = "ACCOUNTSTATUS",
-}
-
 interface SignUpPageProps {
   settings: SettingsDto;
 }
 
 export const SignUpPage = ({ settings }: SignUpPageProps) => {
   const { t } = useTranslation();
-  const { activeStep } = useSignUpContext();
-  const steps = Object.values(SignUpSteps);
+
+  const { step } = useSignUpStore(
+    useCallback((state) => ({ step: stepSelector(state) }), [])
+  );
 
   const validationSchema = useMemo(() => {
     return [
@@ -92,7 +86,7 @@ export const SignUpPage = ({ settings }: SignUpPageProps) => {
     ];
   }, [settings, t]);
 
-  const currentValidationSchema = validationSchema[activeStep];
+  const currentValidationSchema = validationSchema[step];
 
   const signUpFormDefaultValues: SignUpForm = {
     phone: "",
@@ -115,34 +109,28 @@ export const SignUpPage = ({ settings }: SignUpPageProps) => {
     mode: "all",
   });
 
-  const getSignUpStepContent = (step: number) => {
+  const getSignUpStepContent = (step: SignUpStep) => {
     switch (step) {
-      case 0:
-        return <Phone methods={methods} />;
-      case 1:
+      case SignUpStep.Phone:
+        return <Phone methods={methods} settings={settings} />;
+      case SignUpStep.Otp:
         return <Otp methods={methods} settings={settings} />;
-      case 2:
-        return <Status methods={methods} />;
-      case 3:
-        return <AccountSetup methods={methods} />;
-      case 4:
-        return (
-          <AccountRegistrationStatus methods={methods} settings={settings} />
-        );
+      case SignUpStep.PhoneStatus:
+        return <PhoneStatus methods={methods} />;
+      case SignUpStep.AccountSetup:
+        return <AccountSetup methods={methods} settings={settings} />;
+      case SignUpStep.AccountSetupStatus:
+        return <AccountSetupStatus methods={methods} settings={settings} />;
+      case SignUpStep.AccountRegistrationStatus:
+        return <AccountRegistrationStatus />;
       default:
         return "unknown step";
     }
   };
 
   return (
-    <>
-      {activeStep === steps.length ? (
-        <RegistrationStatus />
-      ) : (
-        <Form {...methods}>
-          <form>{getSignUpStepContent(activeStep)}</form>
-        </Form>
-      )}
-    </>
+    <Form {...methods}>
+      <form>{getSignUpStepContent(step)}</form>
+    </Form>
   );
 };

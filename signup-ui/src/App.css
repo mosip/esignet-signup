@@ -2,66 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url("https://fonts.googleapis.com/css?family=Inter");
+@import "@fontsource-variable/inter";
+@import "@fontsource-variable/kantumruy-pro";
 
 body {
-  font-family: "Inter";
   background: #f7f9fd 0% 0% no-repeat padding-box;
-}
-
-.login-container {
-  width: 477px;
-  height: 372px;
-  box-shadow: 0px 4px 10px #0000001a;
-}
-
-.main-label {
-  letter-spacing: 0px;
-  color: #2b3840;
-  opacity: 1;
-  font-size: 16px;
-  font-weight: 700;
-}
-
-.min-padding-left {
-  padding-left: 10px !important;
-}
-
-.panel-header {
-  height: 42px;
-}
-
-#phone {
-  height: 52px;
-}
-
-#submitButton {
-  height: 62px;
-  font-size: 18px;
-}
-
-#navbar {
-  height: 70px;
-}
-
-.footer-brand-logo {
-  content: url("../public/images/footer_logo.png");
-  height: 25px;
-}
-
-.footer-container {
-  padding-top: 11px;
-  padding-bottom: 11px;
-}
-
-.footer-text {
-  color: #898989;
-  font-size: smaller;
 }
 
 @layer base {
   :root {
-    --font-sans: "Inter";
+    --font-inter: "Inter";
+    --font-kantumruypro: "Kantumruy Pro Variable";
 
     --background: 220 60% 98%;
     --foreground: 222.2 47.4% 11.2%;
@@ -84,17 +35,17 @@ body {
     --step: 0 0% 100%;
     --step-foreground: 222.2 47.4% 11.2%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 21 83% 55%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 21 83% 55%;
-    --secondary-foreground: 0 0% 100%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
 
     --accent: 0 0% 100%;
     --accent-foreground: 222.2 47.4% 11.2%;
 
-    --destructive: 0 100% 50%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 68% 50%;
+    --destructive-foreground: 0 52% 96%;
 
     --ring: 215 20.2% 65.1%;
 

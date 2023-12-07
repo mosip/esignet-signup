@@ -4,10 +4,10 @@ import { Inspector, InspectParams } from "react-dev-inspector";
 import "./App.css";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { BrowserRouter } from "react-router-dom";
 
-import Footer from "~components/ui/footer";
-import NavBar from "~components/ui/nav-bar";
+import { langFontMapping } from "~constants/language";
 import { HttpError } from "~services/api.service";
 
 import { AppRouter } from "./app/AppRouter";
@@ -31,8 +31,10 @@ const queryClient = new QueryClient({
 function App() {
   const isDev = process.env.NODE_ENV === "development";
 
+  const { i18n } = useTranslation();
+
   return (
-    <div className="App">
+    <div className={langFontMapping[i18n.language]}>
       {isDev && (
         <Inspector
           // props see docs:
@@ -50,11 +52,9 @@ function App() {
         />
       )}
       <QueryClientProvider client={queryClient}>
-        <NavBar />
         <BrowserRouter>
           <AppRouter />
         </BrowserRouter>
-        <Footer />
         <ReactQueryDevtools
           initialIsOpen={false}
           buttonPosition="bottom-left"

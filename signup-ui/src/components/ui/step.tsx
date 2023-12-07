@@ -9,7 +9,7 @@ const Step = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      "px-0 container max-w-lg rounded-[20px] bg-white shadow-[0_4px_10px_rgb(0,0,0,0.1)]",
+      "container max-w-lg rounded-[20px] bg-white px-0 shadow-[0_4px_10px_rgb(0,0,0,0.1)]",
       className
     )}
     {...props}
@@ -50,7 +50,7 @@ const StepDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn("text-sm text-center text-gray-500", className)}
+    className={cn("text-center text-gray-500", className)}
     {...props}
   />
 ));
@@ -60,7 +60,7 @@ const StepContent = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => (
-  <div ref={ref} className={cn("p-6 pt-0", className)} {...props} />
+  <div ref={ref} className={cn("p-6", className)} {...props} />
 ));
 StepContent.displayName = "StepContent";
 
@@ -76,6 +76,14 @@ const StepFooter = React.forwardRef<
 ));
 StepFooter.displayName = "StepFooter";
 
+const StepAlert = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div ref={ref} className={cn("w-full", className)} {...props} />
+));
+StepAlert.displayName = "StepAlert";
+
 const StepDivider = React.forwardRef<
   HTMLHRElement,
   React.HTMLAttributes<HTMLHRElement>
@@ -89,6 +97,7 @@ export {
   Step,
   StepHeader,
   StepDivider,
+  StepAlert,
   StepFooter,
   StepTitle,
   StepDescription,

@@ -2,6 +2,8 @@ import { lazy, ReactNode, Suspense, useEffect } from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
 
 import { SIGNUP_ROUTE, SOMETHING_WENT_WRONG } from "~constants/routes";
+import Footer from "~components/ui/footer";
+import NavBar from "~components/ui/nav-bar";
 import { lazyRetry } from "~utils/lazyRetry";
 import { setupResponseInterceptor } from "~services/api.service";
 
@@ -27,15 +29,21 @@ export const AppRouter = () => {
   }, [navigate]);
 
   return (
-    <WithSuspense>
-      <Routes>
-        <Route path={SIGNUP_ROUTE} element={<SignUpPage />} />
-        <Route
-          path={SOMETHING_WENT_WRONG}
-          element={<SomethingWentWrongPage />}
-        />
-        <Route path="*" element={<UnderConstructionPage />} />
-      </Routes>
-    </WithSuspense>
+    <div className="min-h-screen flex flex-col">
+      <NavBar />
+      <div className="relative flex flex-grow flex-col">
+        <WithSuspense>
+          <Routes>
+            <Route path={SIGNUP_ROUTE} element={<SignUpPage />} />
+            <Route
+              path={SOMETHING_WENT_WRONG}
+              element={<SomethingWentWrongPage />}
+            />
+            <Route path="*" element={<UnderConstructionPage />} />
+          </Routes>
+        </WithSuspense>
+        <Footer />
+      </div>
+    </div>
   );
 };
