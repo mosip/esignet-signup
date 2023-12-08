@@ -21,6 +21,8 @@ on:
       - MOSIP*
       - release*
       - feature*
+  pull_request:
+    types: [opened, synchronize, reopened]
 
 jobs:
   build-maven-signup-service:
