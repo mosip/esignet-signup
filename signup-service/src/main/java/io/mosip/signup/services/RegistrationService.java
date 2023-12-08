@@ -72,9 +72,6 @@ public class RegistrationService {
     @Value("${mosip.signup.send-notification.endpoint}")
     private String sendNotificationEndpoint;
 
-    @Value("${mosip.signup.cookie.max-age}")
-    private int cookieMaxAge;
-
     @Value("${mosip.signup.challenge.resend-attempt}")
     private int resendAttempts;
 
@@ -92,6 +89,15 @@ public class RegistrationService {
 
     @Value("${mosip.signup.successfully.registration.sms.eng}")
     private String registrationSuccessEngMessage;
+
+    @Value("${mosip.signup.unauthenticated.txn.timeout}")
+    private int unauthenticatedTransactionTimeout;
+
+    @Value("${mosip.signup.register.txn.timeout}")
+    private int registerTransactionTimeout;
+
+    @Value("${mosip.signup.status-check.txn.timeout}")
+    private int statusCheckTransactionTimeout;
 
     /**
      * Generate and regenerate challenge based on the "regenerate" flag in the request.
@@ -114,6 +120,8 @@ public class RegistrationService {
         if(generateChallengeRequest.isRegenerate() == false) {
             transactionId = IdentityProviderUtil.createTransactionId(null);
             transaction = new RegistrationTransaction(identifier);
+            //Need to set cookie only when regenerate is false.
+            addCookieInResponse(transactionId, unauthenticatedTransactionTimeout);
         }
         else {
             transaction = cacheUtilService.getChallengeGeneratedTransaction(transactionId);
@@ -123,7 +131,6 @@ public class RegistrationService {
         // generate Challenge
         String challenge = challengeManagerService.generateChallenge(transaction);
         String challengeHash = IdentityProviderUtil.generateB64EncodedHash(IdentityProviderUtil.ALGO_SHA3_256, challenge);
-        addCookieResponse(transactionId);
         transaction.setChallengeHash(challengeHash);
         transaction.increaseAttempt();
         transaction.setLocale(generateChallengeRequest.getLocale());
@@ -131,7 +138,7 @@ public class RegistrationService {
 
         sendNotificationAsync(generateChallengeRequest.getIdentifier(), transaction.getLocale(), challenge)
                 .thenAccept(notificationResponseRestResponseWrapper -> {
-                    log.debug("Send SMS response {}", notificationResponseRestResponseWrapper.toString());
+                    log.debug("Notification response -> {}", notificationResponseRestResponseWrapper);
                 });
         return new GenerateChallengeResponse(ActionStatus.SUCCESS);
     }
@@ -147,18 +154,21 @@ public class RegistrationService {
         }
         if(!verifyChallengeRequest.getIdentifier().equals(transaction.getIdentifier())) {
             log.error("Transaction {} : contain identifier not the same with identifier user request", transactionId);
-            throw new InvalidIdentifierException();
+            throw new SignUpException(ErrorConstants.IDENTIFIER_MISMATCH);
         }
         String challengeHash = IdentityProviderUtil.generateB64EncodedHash(IdentityProviderUtil.ALGO_SHA3_256, verifyChallengeRequest.getChallengeInfo().getChallenge());
         if(!challengeHash.equals(transaction.getChallengeHash())) {
             log.error("Transaction {} : challenge not match", transactionId);
             throw new ChallengeFailedException();
         }
+
+        //After successful verification of the user, change the transactionId
+        transactionId = IdentityProviderUtil.createTransactionId(null);
+        addVerifiedCookieInResponse(transactionId, registerTransactionTimeout+statusCheckTransactionTimeout);
+
         cacheUtilService.setChallengeVerifiedTransaction(transactionId, transaction);
-        VerifyChallengeResponse verifyChallengeResponse = new VerifyChallengeResponse();
-        verifyChallengeResponse.setStatus(ActionStatus.SUCCESS);
         log.debug("Transaction {} : verify challenge status {}", transactionId, ActionStatus.SUCCESS);
-        return verifyChallengeResponse;
+        return new VerifyChallengeResponse(ActionStatus.SUCCESS);
     }
 
     public RegisterResponse register(RegisterRequest registerRequest, String transactionId) throws SignUpException {
@@ -169,9 +179,10 @@ public class RegistrationService {
             log.error("Transaction {} : not found in ChallengeVerifiedTransaction cache", transactionId);
             throw new InvalidTransactionException();
         }
-        if(!registerRequest.getUsername().equals(registerRequest.getUserInfo().getPhone())) {
+        if(!transaction.getIdentifier().equals(registerRequest.getUsername()) ||
+                !registerRequest.getUsername().equals(registerRequest.getUserInfo().getPhone())) {
             log.error("Transaction {} : given unsupported username in L1", transactionId);
-            throw new SignUpException(ErrorConstants.UNSUPPORTED_USERNAME);
+            throw new SignUpException(ErrorConstants.IDENTIFIER_MISMATCH);
         }
         if(registerRequest.getConsent().equals(CONSENT_DISAGREE)) {
             log.error("Transaction {} : disagrees consent", transactionId);
@@ -329,11 +340,23 @@ public class RegistrationService {
         }
     }
 
-    private void addCookieResponse(String transactionId) {
+    private void addCookieInResponse(String transactionId, int maxAge) {
         Cookie cookie = new Cookie(SignUpConstants.TRANSACTION_ID, transactionId);
-        cookie.setMaxAge(cookieMaxAge); // 60 = 1 minute
+        cookie.setMaxAge(maxAge); // 60 = 1 minute
         cookie.setHttpOnly(true);
         cookie.setSecure(true);
         response.addCookie(cookie);
+    }
+
+    private void addVerifiedCookieInResponse(String transactionId, int maxAge) {
+        Cookie cookie = new Cookie(SignUpConstants.VERIFIED_TRANSACTION_ID, transactionId);
+        cookie.setMaxAge(maxAge);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+        response.addCookie(cookie);
+
+        Cookie unsetCookie = new Cookie(SignUpConstants.TRANSACTION_ID, "");
+        unsetCookie.setMaxAge(0);
+        response.addCookie(unsetCookie);
     }
 }
