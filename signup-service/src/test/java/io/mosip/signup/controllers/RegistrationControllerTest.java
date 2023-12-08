@@ -59,6 +59,7 @@ public class RegistrationControllerTest {
     private VerifyChallengeRequest verifyChallengeRequest;
     private RequestWrapper verifyRequestWrapper;
     private RequestWrapper wrapper;
+
     @Before
     public void init() {
         generateChallengeRequest = new GenerateChallengeRequest();
@@ -81,9 +82,7 @@ public class RegistrationControllerTest {
     @Test
     public void doVerifyChallenge_thenPass() throws Exception {
         String mockTransactionID = "123456789";
-        VerifyChallengeResponse verifyChallengeResponse = new VerifyChallengeResponse();
-        verifyChallengeResponse.setStatus(ActionStatus.SUCCESS);
-
+        VerifyChallengeResponse verifyChallengeResponse = new VerifyChallengeResponse(ActionStatus.SUCCESS);
         when(registrationService.verifyChallenge(verifyChallengeRequest, mockTransactionID))
                 .thenReturn(verifyChallengeResponse);
 
@@ -397,7 +396,7 @@ public class RegistrationControllerTest {
 
         when(registrationService.getRegistrationStatus(mockTransactionID)).thenReturn(response);
         mockMvc.perform(get("/registration/status")
-                        .cookie(new Cookie(SignUpConstants.TRANSACTION_ID, mockTransactionID))
+                        .cookie(new Cookie(SignUpConstants.VERIFIED_TRANSACTION_ID, mockTransactionID))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.response.status").value("COMPLETED"));
@@ -413,7 +412,7 @@ public class RegistrationControllerTest {
 
         when(registrationService.getRegistrationStatus(mockTransactionID)).thenReturn(response);
         mockMvc.perform(get("/registration/status")
-                        .cookie(new Cookie(SignUpConstants.TRANSACTION_ID, mockTransactionID))
+                        .cookie(new Cookie(SignUpConstants.VERIFIED_TRANSACTION_ID, mockTransactionID))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.response.status").value("PENDING"));
@@ -429,7 +428,7 @@ public class RegistrationControllerTest {
 
         when(registrationService.getRegistrationStatus(mockTransactionID)).thenReturn(response);
         mockMvc.perform(get("/registration/status")
-                        .cookie(new Cookie(SignUpConstants.TRANSACTION_ID, mockTransactionID))
+                        .cookie(new Cookie(SignUpConstants.VERIFIED_TRANSACTION_ID, mockTransactionID))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.response.status").value("FAILED"));
@@ -447,7 +446,7 @@ public class RegistrationControllerTest {
         RegisterRequest registerRequest = new RegisterRequest();
         registerRequest.setUserInfo(userInfo);
         registerRequest.setUsername("+855219718732");
-        registerRequest.setPassword("123123");
+        registerRequest.setPassword("12312399");
         registerRequest.setConsent("AGREE");
 
         RequestWrapper<RegisterRequest> wrapper = new RequestWrapper<RegisterRequest>();
@@ -462,7 +461,7 @@ public class RegistrationControllerTest {
 
         mockMvc.perform(post("/registration/register")
                         .content(objectMapper.writeValueAsString(wrapper))
-                        .cookie(new Cookie("TRANSACTION_ID", mockTransactionID))
+                        .cookie(new Cookie(SignUpConstants.VERIFIED_TRANSACTION_ID, mockTransactionID))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.response.status").value("PENDING"));
@@ -482,7 +481,7 @@ public class RegistrationControllerTest {
         RegisterRequest registerRequest = new RegisterRequest();
         registerRequest.setUserInfo(userInfo);
         registerRequest.setUsername("+85512345678");
-        registerRequest.setPassword("123123");
+        registerRequest.setPassword("12312333");
 
         RequestWrapper<RegisterRequest> wrapper = new RequestWrapper<RegisterRequest>();
         wrapper.setRequestTime(IdentityProviderUtil.getUTCDateTime());
@@ -492,7 +491,7 @@ public class RegistrationControllerTest {
 
         mockMvc.perform(post("/registration/register")
                         .content(objectMapper.writeValueAsString(wrapper))
-                        .cookie(new Cookie("TRANSACTION_ID", mockTransactionID))
+                        .cookie(new Cookie(SignUpConstants.VERIFIED_TRANSACTION_ID, mockTransactionID))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.response").isEmpty())
@@ -511,7 +510,7 @@ public class RegistrationControllerTest {
         RegisterRequest registerRequest = new RegisterRequest();
         registerRequest.setUserInfo(userInfo);
         registerRequest.setUsername("+855219718732");
-        registerRequest.setPassword("123123");
+        registerRequest.setPassword("12312388");
         registerRequest.setConsent("not agree");
 
         RequestWrapper<RegisterRequest> wrapper = new RequestWrapper<RegisterRequest>();
@@ -522,7 +521,7 @@ public class RegistrationControllerTest {
 
         mockMvc.perform(post("/registration/register")
                         .content(objectMapper.writeValueAsString(wrapper))
-                        .cookie(new Cookie("TRANSACTION_ID", mockTransactionID))
+                        .cookie(new Cookie(SignUpConstants.VERIFIED_TRANSACTION_ID, mockTransactionID))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.response").isEmpty())
@@ -541,7 +540,7 @@ public class RegistrationControllerTest {
         RegisterRequest registerRequest = new RegisterRequest();
         registerRequest.setUserInfo(userInfo);
         registerRequest.setUsername("+85512345678");
-        registerRequest.setPassword("123123");
+        registerRequest.setPassword("123123ss");
         registerRequest.setConsent("AGREE");
 
         RequestWrapper<RegisterRequest> wrapper = new RequestWrapper<RegisterRequest>();
@@ -552,7 +551,7 @@ public class RegistrationControllerTest {
 
         mockMvc.perform(post("/registration/register")
                         .content(objectMapper.writeValueAsString(wrapper))
-                        .cookie(new Cookie("TRANSACTION_ID", mockTransactionID))
+                        .cookie(new Cookie(SignUpConstants.VERIFIED_TRANSACTION_ID, mockTransactionID))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.response").isEmpty())
@@ -570,7 +569,7 @@ public class RegistrationControllerTest {
         RegisterRequest registerRequest = new RegisterRequest();
         registerRequest.setUserInfo(userInfo);
         registerRequest.setUsername("+85512345678");
-        registerRequest.setPassword("123123");
+        registerRequest.setPassword("123123qq");
         registerRequest.setConsent("AGREE");
 
         RequestWrapper<RegisterRequest> wrapper = new RequestWrapper<RegisterRequest>();
@@ -581,7 +580,7 @@ public class RegistrationControllerTest {
 
         mockMvc.perform(post("/registration/register")
                         .content(objectMapper.writeValueAsString(wrapper))
-                        .cookie(new Cookie("TRANSACTION_ID", mockTransactionID))
+                        .cookie(new Cookie(SignUpConstants.VERIFIED_TRANSACTION_ID, mockTransactionID))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.response").isEmpty())
@@ -599,7 +598,7 @@ public class RegistrationControllerTest {
         RegisterRequest registerRequest = new RegisterRequest();
         registerRequest.setUserInfo(userInfo);
         registerRequest.setUsername("+85512345678");
-        registerRequest.setPassword("123123");
+        registerRequest.setPassword("12312322");
         registerRequest.setConsent("AGREE");
 
         RequestWrapper<RegisterRequest> wrapper = new RequestWrapper<RegisterRequest>();
@@ -610,7 +609,7 @@ public class RegistrationControllerTest {
 
         mockMvc.perform(post("/registration/register")
                         .content(objectMapper.writeValueAsString(wrapper))
-                        .cookie(new Cookie("TRANSACTION_ID", mockTransactionID))
+                        .cookie(new Cookie(SignUpConstants.VERIFIED_TRANSACTION_ID, mockTransactionID))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.response").isEmpty())
@@ -629,7 +628,7 @@ public class RegistrationControllerTest {
         RegisterRequest registerRequest = new RegisterRequest();
         registerRequest.setUserInfo(userInfo);
         registerRequest.setUsername("+85512345678");
-        registerRequest.setPassword("123123");
+        registerRequest.setPassword("1231288s3");
         registerRequest.setConsent("AGREE");
 
         RequestWrapper<RegisterRequest> wrapper = new RequestWrapper<RegisterRequest>();
@@ -640,7 +639,7 @@ public class RegistrationControllerTest {
 
         mockMvc.perform(post("/registration/register")
                         .content(objectMapper.writeValueAsString(wrapper))
-                        .cookie(new Cookie("TRANSACTION_ID", mockTransactionID))
+                        .cookie(new Cookie(SignUpConstants.VERIFIED_TRANSACTION_ID, mockTransactionID))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.response").isEmpty())
@@ -658,7 +657,7 @@ public class RegistrationControllerTest {
         RegisterRequest registerRequest = new RegisterRequest();
         registerRequest.setUserInfo(userInfo);
         registerRequest.setUsername("+85512345678");
-        registerRequest.setPassword("123123");
+        registerRequest.setPassword("12312773");
         registerRequest.setConsent("AGREE");
 
         RequestWrapper<RegisterRequest> wrapper = new RequestWrapper<RegisterRequest>();
@@ -669,7 +668,7 @@ public class RegistrationControllerTest {
 
         mockMvc.perform(post("/registration/register")
                         .content(objectMapper.writeValueAsString(wrapper))
-                        .cookie(new Cookie("TRANSACTION_ID", mockTransactionID))
+                        .cookie(new Cookie(SignUpConstants.VERIFIED_TRANSACTION_ID, mockTransactionID))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.response").isEmpty())
@@ -700,7 +699,7 @@ public class RegistrationControllerTest {
 
         mockMvc.perform(post("/registration/register")
                         .content(objectMapper.writeValueAsString(wrapper))
-                        .cookie(new Cookie("TRANSACTION_ID", mockTransactionID))
+                        .cookie(new Cookie(SignUpConstants.VERIFIED_TRANSACTION_ID, mockTransactionID))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.response").isEmpty())
@@ -734,7 +733,7 @@ public class RegistrationControllerTest {
 
         mockMvc.perform(post("/registration/register")
                         .content(objectMapper.writeValueAsString(wrapper))
-                        .cookie(new Cookie("TRANSACTION_ID", mockTransactionID))
+                        .cookie(new Cookie(SignUpConstants.VERIFIED_TRANSACTION_ID, mockTransactionID))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.response").isEmpty())
@@ -756,7 +755,7 @@ public class RegistrationControllerTest {
         RegisterRequest registerRequest = new RegisterRequest();
         registerRequest.setUserInfo(userInfo);
         registerRequest.setUsername("+85512345678");
-        registerRequest.setPassword("123123");
+        registerRequest.setPassword("12312311");
         registerRequest.setConsent("AGREE");
 
         RequestWrapper<RegisterRequest> wrapper = new RequestWrapper<RegisterRequest>();
@@ -771,7 +770,7 @@ public class RegistrationControllerTest {
 
         mockMvc.perform(post("/registration/register")
                         .content(objectMapper.writeValueAsString(wrapper))
-                        .cookie(new Cookie("TRANSACTION_ID", mockTransactionID))
+                        .cookie(new Cookie(SignUpConstants.VERIFIED_TRANSACTION_ID, mockTransactionID))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.response.status").value("PENDING"));
@@ -806,7 +805,7 @@ public class RegistrationControllerTest {
 
         mockMvc.perform(post("/registration/register")
                         .content(objectMapper.writeValueAsString(wrapper))
-                        .cookie(new Cookie("TRANSACTION_ID", mockTransactionID))
+                        .cookie(new Cookie(SignUpConstants.VERIFIED_TRANSACTION_ID, mockTransactionID))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.response").isEmpty())
@@ -842,7 +841,7 @@ public class RegistrationControllerTest {
 
         mockMvc.perform(post("/registration/register")
                         .content(objectMapper.writeValueAsString(wrapper))
-                        .cookie(new Cookie("TRANSACTION_ID", mockTransactionID))
+                        .cookie(new Cookie(SignUpConstants.VERIFIED_TRANSACTION_ID, mockTransactionID))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.response").isEmpty())
@@ -878,7 +877,7 @@ public class RegistrationControllerTest {
 
         mockMvc.perform(post("/registration/register")
                         .content(objectMapper.writeValueAsString(wrapper))
-                        .cookie(new Cookie("TRANSACTION_ID", mockTransactionID))
+                        .cookie(new Cookie(SignUpConstants.VERIFIED_TRANSACTION_ID, mockTransactionID))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.response").isEmpty())
@@ -915,7 +914,7 @@ public class RegistrationControllerTest {
 
         mockMvc.perform(post("/registration/register")
                         .content(objectMapper.writeValueAsString(wrapper))
-                        .cookie(new Cookie("TRANSACTION_ID", mockTransactionID))
+                        .cookie(new Cookie(SignUpConstants.VERIFIED_TRANSACTION_ID, mockTransactionID))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.response").isEmpty())

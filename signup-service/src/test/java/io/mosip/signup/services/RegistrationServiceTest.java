@@ -171,8 +171,8 @@ public class RegistrationServiceTest {
         try {
             registrationService.verifyChallenge(verifyChallengeRequest, mockTransactionId);
             Assert.fail();
-        }catch (InvalidIdentifierException invalidIdentifierException){
-            Assert.assertEquals("invalid_identifier", invalidIdentifierException.getErrorCode());
+        }catch (SignUpException e){
+            Assert.assertEquals(ErrorConstants.IDENTIFIER_MISMATCH, e.getErrorCode());
         }
     }
 
@@ -591,7 +591,7 @@ public class RegistrationServiceTest {
             registrationService.register(registerRequest, mockTransactionID);
             Assert.fail();
         }catch (SignUpException signUpException){
-            Assert.assertEquals("unsupported_username", signUpException.getErrorCode());
+            Assert.assertEquals(ErrorConstants.IDENTIFIER_MISMATCH, signUpException.getErrorCode());
         }
     }
 
