@@ -49,7 +49,7 @@ export interface Error {
 
 export interface BaseResponseDto {
   responseTime: string;
-  errors: Error[] | null;
+  errors: Error[];
 }
 
 export interface BaseRequestDto {
@@ -71,27 +71,31 @@ interface SettingsConfig {
   "status.check.limit": number;
   "status.request.limit": number;
   "status.request.delay": number;
+  "popup.timeout": number;
 }
 
 export interface Settings {
   configs: SettingsConfig;
 }
 
-export interface SettingsDto extends BaseResponseDto {
+export type SettingsDto = BaseResponseDto & {
   response: Settings;
-}
+  errors: Error[] | null;
+};
 
 export type GenerateChallengeRequestDto = BaseRequestDto & {
   request: {
     identifier: string;
     captchaToken: string;
+    locale: string;
+    regenerate: boolean;
   };
 };
 
 export type GenerateChallengeResponseDto = BaseResponseDto & {
   response: {
     status: string;
-  };
+  } | null;
 };
 
 export type VerifyChallengeRequestDto = BaseRequestDto & {
@@ -107,7 +111,7 @@ export type VerifyChallengeRequestDto = BaseRequestDto & {
 export type VerifyChallengeResponseDto = BaseResponseDto & {
   response: {
     status: string;
-  };
+  } | null;
 };
 
 export interface LanguageTaggedValue {
@@ -138,7 +142,7 @@ export enum RegistrationStatus {
 export type RegistrationResponseDto = BaseResponseDto & {
   response: {
     status: RegistrationStatus;
-  };
+  } | null;
 };
 
 export enum RegistrationWithFailedStatus {
@@ -150,5 +154,5 @@ export enum RegistrationWithFailedStatus {
 export type RegistrationStatusResponseDto = BaseResponseDto & {
   response: {
     status: RegistrationWithFailedStatus;
-  };
+  } | null;
 };

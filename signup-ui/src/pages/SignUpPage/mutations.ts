@@ -12,12 +12,19 @@ import {
 
 import { generateChallenge, register, verifyChallenge } from "./service";
 
+export const keys = {
+  challengeGeneration: ["challengeGeneration"] as const,
+  challengeVerification: ["challengeVerification"] as const,
+  registration: ["registration"] as const,
+};
+
 export const useGenerateChallenge = () => {
   const generateChallengeMutation = useMutation<
     GenerateChallengeResponseDto,
     ApiError,
     GenerateChallengeRequestDto
   >({
+    mutationKey: keys.challengeGeneration,
     mutationFn: (generateChallengeRequestDto: GenerateChallengeRequestDto) =>
       generateChallenge(generateChallengeRequestDto),
   });
@@ -31,6 +38,7 @@ export const useVerifyChallenge = () => {
     ApiError,
     VerifyChallengeRequestDto
   >({
+    mutationKey: keys.challengeVerification,
     mutationFn: (verifyChallengeRequestDto: VerifyChallengeRequestDto) =>
       verifyChallenge(verifyChallengeRequestDto),
   });
@@ -44,8 +52,10 @@ export const useRegister = () => {
     ApiError,
     RegistrationRequestDto
   >({
+    mutationKey: keys.registration,
     mutationFn: (RegistrationRequestDto: RegistrationRequestDto) =>
       register(RegistrationRequestDto),
+    gcTime: Infinity,
   });
 
   return { registerMutation };

@@ -4,13 +4,13 @@ import { useFormContext, UseFormReturn } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
 
+import { ActiveMessage } from "~components/ui/active-message";
 import { Button } from "~components/ui/button";
 import {
   FormControl,
   FormField,
   FormItem,
   FormMessage,
-  useFormField,
 } from "~components/ui/form";
 import { Icons } from "~components/ui/icons";
 import { Input } from "~components/ui/input";
@@ -23,6 +23,7 @@ import {
   StepTitle,
 } from "~components/ui/step";
 import { cn } from "~utils/cn";
+import { getLocale } from "~utils/language";
 import { getSignInRedirectURL } from "~utils/link";
 import {
   Error,
@@ -32,17 +33,28 @@ import {
 
 import { useGenerateChallenge } from "../mutations";
 import { SignUpForm } from "../SignUpPage";
-import { setStepSelector, SignUpStep, useSignUpStore } from "../useSignUpStore";
+import {
+  setCriticalErrorSelector,
+  setStepSelector,
+  SignUpStep,
+  useSignUpStore,
+} from "../useSignUpStore";
 
 interface PhoneProps {
   settings: SettingsDto;
   methods: UseFormReturn<SignUpForm, any, undefined>;
 }
 export const Phone = ({ settings, methods }: PhoneProps) => {
-  const { t } = useTranslation();
+  const { i18n, t } = useTranslation();
 
-  const { setStep } = useSignUpStore(
-    useCallback((state) => ({ setStep: setStepSelector(state) }), [])
+  const { setStep, setCriticalError } = useSignUpStore(
+    useCallback(
+      (state) => ({
+        setStep: setStepSelector(state),
+        setCriticalError: setCriticalErrorSelector(state),
+      }),
+      []
+    )
   );
   const [hasError, setHasError] = useState<boolean>(false);
   const { control, setValue, getValues } = useFormContext();
@@ -61,7 +73,7 @@ export const Phone = ({ settings, methods }: PhoneProps) => {
 
     const intervalId = setInterval(() => {
       setHasError(false);
-    }, 3 * 1000);
+    }, settings.response.configs["popup.timeout"] * 1000);
 
     return () => clearInterval(intervalId);
   }, [hasError]);
@@ -80,24 +92,34 @@ export const Phone = ({ settings, methods }: PhoneProps) => {
       const isStepValid = await trigger();
 
       if (isStepValid) {
+        setHasError(false);
+
         const generateChallengeRequestDto: GenerateChallengeRequestDto = {
           requestTime: new Date().toISOString(),
           request: {
-            identifier: getValues("phone"),
+            identifier: `${
+              settings.response.configs["identifier.prefix"]
+            }${getValues("phone")}`,
             captchaToken: getValues("captchaToken"),
+            locale: getLocale(i18n.language),
+            regenerate: false,
           },
         };
 
         return generateChallengeMutation.mutate(generateChallengeRequestDto, {
-          onSuccess: ({ errors }) => {
-            if (!errors) {
-              setValue("otp", "", { shouldValidate: true });
-              setStep(SignUpStep.Otp);
+          onSuccess: ({ response, errors }) => {
+            if (errors.length > 0) {
+              if (errors[0].errorCode === "invalid_transaction") {
+                setCriticalError(errors[0]);
+              } else {
+                setError(errors[0]);
+                setHasError(true);
+              }
             }
 
-            if (errors) {
-              setError(errors[0]);
-              setHasError(true);
+            if (response && errors.length === 0) {
+              setValue("otp", "", { shouldValidate: true });
+              setStep(SignUpStep.Otp);
             }
           },
           onError: () => {
@@ -129,20 +151,17 @@ export const Phone = ({ settings, methods }: PhoneProps) => {
       <StepDivider />
       <StepAlert className="relative">
         {/* Error message */}
-        <div
-          className={cn(
-            "absolute flex w-full items-center justify-between bg-destructive/5 px-4 py-2",
-            {
-              hidden: !hasError,
-            }
-          )}
-        >
-          <p className="text-xs text-destructive">{error?.errorMessage}</p>
+        <ActiveMessage hidden={!hasError}>
+          <p className="truncate text-xs text-destructive">
+            {error && t(`error_response.${error.errorCode}`)}
+          </p>
           <Icons.close
             className="h-4 w-4 cursor-pointer text-destructive"
-            onClick={() => setHasError(false)}
+            onClick={() => {
+              setHasError(false);
+            }}
           />
-        </div>
+        </ActiveMessage>
       </StepAlert>
       <StepContent>
         {/* Phone and reCAPTCHA inputs */}
@@ -188,7 +207,7 @@ export const Phone = ({ settings, methods }: PhoneProps) => {
                 onChange={handleReCaptchaChange}
                 onExpired={handleReCaptchaExpired}
                 className="recaptcha"
-                sitekey={process.env.REACT_APP_CAPTCHA_SITE_KEY ?? ""}
+                sitekey={settings.response.configs["captcha.site.key"] ?? ""}
               />
             </div>
           </div>

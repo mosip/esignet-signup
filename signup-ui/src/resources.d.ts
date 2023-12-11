@@ -54,6 +54,20 @@ interface Resources {
     footer: {
       powered_by: string;
     };
+    error_response: {
+      invalid_transaction: string;
+      invalid_otp_channel: string;
+      invalid_captcha: string;
+      send_otp_failed: string;
+      active_otp_found: string;
+      unknown_error: string;
+      challenge_failed: string;
+      invalid_challenge_type: string;
+      invalid_challenge_format: string;
+      "already-registered": string;
+      timed_out: string;
+      request_limit: string;
+    };
   };
 }
 
