@@ -24,15 +24,16 @@ import {
   StepTitle,
 } from "~components/ui/step";
 import { cn } from "~utils/cn";
-import {
-  RegistrationRequestDto,
-  RegistrationStatus,
-  SettingsDto,
-} from "~typings/types";
+import { RegistrationRequestDto, SettingsDto } from "~typings/types";
 
 import { useRegister } from "../mutations";
 import { SignUpForm } from "../SignUpPage";
-import { setStepSelector, SignUpStep, useSignUpStore } from "../useSignUpStore";
+import {
+  setCriticalErrorSelector,
+  setStepSelector,
+  SignUpStep,
+  useSignUpStore,
+} from "../useSignUpStore";
 import { TermsAndPrivacyModal } from "./components/TermsAndPrivacyModal";
 
 interface AccountSetupProps {
@@ -43,13 +44,20 @@ interface AccountSetupProps {
 export const AccountSetup = ({ settings, methods }: AccountSetupProps) => {
   const { t } = useTranslation();
 
-  const { setStep } = useSignUpStore(
-    useCallback((state) => ({ setStep: setStepSelector(state) }), [])
+  const { setStep, setCriticalError } = useSignUpStore(
+    useCallback(
+      (state) => ({
+        setStep: setStepSelector(state),
+        setCriticalError: setCriticalErrorSelector(state),
+      }),
+      []
+    )
   );
   const {
     control,
     trigger,
     getValues,
+    reset,
     formState: { errors: formErrors, isValid },
   } = methods;
 
@@ -68,7 +76,7 @@ export const AccountSetup = ({ settings, methods }: AccountSetupProps) => {
           request: {
             username: `${
               settings.response.configs["identifier.prefix"]
-            } ${getValues("phone")}`,
+            }${getValues("phone")}`,
             password: getValues("password"),
             consent: getValues("consent") ? "AGREE" : "DISAGREE",
             userInfo: {
@@ -84,16 +92,14 @@ export const AccountSetup = ({ settings, methods }: AccountSetupProps) => {
         };
 
         return registerMutation.mutate(RegistrationRequestDto, {
-          onSuccess: ({ response, errors }) => {
-            if (!errors) {
-              if (response.status === RegistrationStatus.PENDING) {
-                // direct user to status step when the account creation is pending
-                setStep(SignUpStep.AccountSetupStatus);
-              }
-              if (response.status === RegistrationStatus.COMPLETED) {
-                // direct user to the final (success) step when user successfully create the account
-                setStep(SignUpStep.AccountRegistrationStatus);
-              }
+          onSuccess: ({ errors }) => {
+            if (
+              errors.length > 0 &&
+              errors[0].errorCode === "invalid_transaction"
+            ) {
+              setCriticalError(errors[0]);
+            } else {
+              setStep(SignUpStep.AccountSetupStatus);
             }
           },
         });
@@ -263,7 +269,7 @@ export const AccountSetup = ({ settings, methods }: AccountSetupProps) => {
                     <Checkbox
                       checked={field.value}
                       onCheckedChange={field.onChange}
-                      className="h-5 w-5 rounded-[2px] text-white data-[state=checked]:border-orange-500 data-[state=checked]:bg-orange-500"
+                      className="h-5 w-5 rounded-[2px] text-white data-[state=checked]:border-primary data-[state=checked]:bg-primary"
                     />
                   </FormControl>
                   <FormLabel className="font-medium">
@@ -273,17 +279,19 @@ export const AccountSetup = ({ settings, methods }: AccountSetupProps) => {
                         TermsAndConditionsAnchor: (
                           <a
                             href="#!"
-                            className="text-orange-500 underline"
+                            className="text-primary underline"
                             target="_blank"
                             aria-label="Terms and Conditions"
+                            onClick={onOpenTerm}
                           />
                         ),
                         PrivacyPolicyAnchor: (
                           <a
                             href="#!"
-                            className="text-orange-500 underline"
+                            className="text-primary underline"
                             target="_blank"
                             aria-label="Terms and Conditions"
+                            onClick={onOpenPrivacy}
                           />
                         ),
                       }}
@@ -297,6 +305,7 @@ export const AccountSetup = ({ settings, methods }: AccountSetupProps) => {
               className="w-full"
               onClick={handleContinue}
               disabled={!isValid}
+              isLoading={registerMutation.isPending}
             >
               {t("continue")}
             </Button>

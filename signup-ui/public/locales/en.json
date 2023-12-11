@@ -18,7 +18,7 @@
   "complete_your_registration": "Please enter the requested details to complete your registration.",
   "username": "Username",
   "username_placeholder": "Enter username",
-  "full_name": "Full Name",
+  "full_name": "Full Name in Khmer",
   "full_name_placeholder": "Enter Full Name in Khmer",
   "full_name_tooltip": "Maximum 30 characters allowed and it should not contain any digit or special characters except “ “ space.",
   "password": "Password",
@@ -52,5 +52,19 @@
   "privacy_and_policy_title": "Privacy & Policy",
   "footer": {
     "powered_by": "Powered by"
+  },
+  "error_response": {
+    "invalid_transaction": "",
+    "invalid_otp_channel": "",
+    "invalid_captcha": "",
+    "send_otp_failed": "",
+    "active_otp_found": "",
+    "unknown_error": "",
+    "challenge_failed": "",
+    "invalid_challenge_type": "",
+    "invalid_challenge_format": "",
+    "already-registered": "",
+    "timed_out": "",
+    "request_limit": ""
   }
 }

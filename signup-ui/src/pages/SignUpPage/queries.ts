@@ -1,6 +1,11 @@
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
 
-import { RegistrationStatusResponseDto, SettingsDto } from "~typings/types";
+import {
+  RegistrationResponseDto,
+  RegistrationStatus,
+  RegistrationStatusResponseDto,
+  SettingsDto,
+} from "~typings/types";
 
 import { getRegistrationStatus, getSettings } from "./service";
 
@@ -19,12 +24,17 @@ export const useSettings = (): UseQueryResult<SettingsDto, unknown> => {
 
 export const useRegistrationStatus = (
   statusRequestAttempt: number,
-  statusRequestDelay: number
+  statusRequestDelay: number,
+  registration: RegistrationResponseDto
 ): UseQueryResult<RegistrationStatusResponseDto, unknown> => {
   return useQuery<RegistrationStatusResponseDto>({
     queryKey: keys.registrationStatus,
     queryFn: () => getRegistrationStatus(),
-    retry: statusRequestAttempt,
+    gcTime: Infinity,
+    retry: statusRequestAttempt - 1, // minus 1 for we called it once already
     retryDelay: statusRequestDelay * 1000,
+    enabled:
+      !!registration.response &&
+      registration.response.status === RegistrationStatus.PENDING,
   });
 };
