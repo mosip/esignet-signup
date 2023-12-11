@@ -42,7 +42,7 @@ export const getRegistrationStatus =
       "/registration/status"
     ).then(({ data }) => {
       // treat PENDING as an error so that react-query will auto retry
-      if (data.response.status === RegistrationWithFailedStatus.PENDING) {
+      if (data.response?.status === RegistrationWithFailedStatus.PENDING) {
         throw new Error("Status pending");
       }
 

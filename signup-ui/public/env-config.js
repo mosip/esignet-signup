@@ -1,3 +1,3 @@
 window._env_ = {
-  DEFAULT_LANG: "en",
+  DEFAULT_LANG: "km",
 };
