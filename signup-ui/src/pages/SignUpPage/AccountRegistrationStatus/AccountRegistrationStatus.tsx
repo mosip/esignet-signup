@@ -1,33 +1,112 @@
+import { useMutationState, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { useLocation } from "react-router-dom";
 
-import { ReactComponent as SuccessIconSvg } from "~assets/svg/success-icon.svg";
-import { Button } from "~components/ui/button";
-import { Step, StepContent } from "~components/ui/step";
-import { getSignInRedirectURL } from "~utils/link";
+import { keys as mutationKeys } from "~pages/SignUpPage/mutations";
+import { keys as queryKeys } from "~pages/SignUpPage/queries";
+import {
+  RegistrationResponseDto,
+  RegistrationStatus,
+  RegistrationStatusResponseDto,
+  RegistrationWithFailedStatus,
+} from "~typings/types";
+
+import { AccountRegistrationStatusLayout } from "./components/AccountRegistrationStatusLayout";
 
 export const AccountRegistrationStatus = () => {
   const { t } = useTranslation();
-  const { hash: fromSignInHash } = useLocation();
 
-  const handleAction = () => {
-    window.location.href = getSignInRedirectURL(fromSignInHash);
-  };
+  const queryClient = useQueryClient();
+
+  const [registration] = useMutationState<RegistrationResponseDto>({
+    filters: { mutationKey: mutationKeys.registration, status: "success" },
+    select: (mutation) => mutation.state.data as RegistrationResponseDto,
+  });
+
+  const registrationStatus =
+    queryClient.getQueryData<RegistrationStatusResponseDto>(
+      queryKeys.registrationStatus
+    );
+
+  const registrationStatusState = queryClient.getQueryState(
+    queryKeys.registrationStatus
+  );
+
+  if (!registration) {
+    return (
+      <AccountRegistrationStatusLayout
+        status="failed"
+        message={t("something_went_wrong")}
+      />
+    );
+  }
+
+  if (registration && registration.errors.length > 0) {
+    return (
+      <AccountRegistrationStatusLayout
+        status="failed"
+        message={t(`error_response.${registration.errors[0].errorCode}`)}
+      />
+    );
+  }
+
+  if (
+    registration.response?.status === RegistrationStatus.PENDING &&
+    registrationStatusState?.error
+  ) {
+    return (
+      <AccountRegistrationStatusLayout
+        status="failed"
+        message={t("error_response.request_limit")}
+      />
+    );
+  }
+
+  if (
+    registration.response?.status === RegistrationStatus.PENDING &&
+    !registrationStatus
+  ) {
+    return (
+      <AccountRegistrationStatusLayout
+        status="failed"
+        message={t(`error_response.${registration.errors[0].errorCode}`)}
+      />
+    );
+  }
+
+  if (
+    registration.response?.status === RegistrationStatus.PENDING &&
+    registrationStatus
+  ) {
+    if (registrationStatus.errors.length > 0) {
+      return (
+        <AccountRegistrationStatusLayout
+          status="failed"
+          message={t(
+            `error_response.${registrationStatus.errors[0].errorCode}`
+          )}
+        />
+      );
+    }
+    if (
+      registrationStatus.response &&
+      [
+        RegistrationWithFailedStatus.FAILED,
+        RegistrationWithFailedStatus.PENDING,
+      ].includes(registrationStatus.response.status)
+    ) {
+      return (
+        <AccountRegistrationStatusLayout
+          status="failed"
+          message={t("something_went_wrong")}
+        />
+      );
+    }
+  }
+
   return (
-    <Step>
-      <StepContent>
-        <div className="flex flex-col items-center gap-4 py-4">
-          <SuccessIconSvg />
-          <div className="text-center text-lg font-semibold">
-            <h1>{t("congratulations")}</h1>
-            <h2>{t("account_created_successfully")}</h2>
-          </div>
-          <p className="text-center text-gray-500">{t("login_to_proceed")}</p>
-        </div>
-        <Button className="my-4 h-16 w-full" onClick={handleAction}>
-          {fromSignInHash ? t("login") : t("okay")}
-        </Button>
-      </StepContent>
-    </Step>
+    <AccountRegistrationStatusLayout
+      status="success"
+      message={t("login_to_proceed")}
+    />
   );
 };

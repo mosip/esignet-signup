@@ -52,5 +52,19 @@
   "privacy_and_policy_title": "Privacy & Policy",
   "footer": {
     "powered_by": "ដំណើរការដោយ"
+  },
+  "error_response": {
+    "invalid_transaction": "",
+    "invalid_otp_channel": "",
+    "invalid_captcha": "",
+    "send_otp_failed": "",
+    "active_otp_found": "",
+    "unknown_error": "",
+    "challenge_failed": "",
+    "invalid_challenge_type": "",
+    "invalid_challenge_format": "",
+    "already-registered": "",
+    "timed_out": "",
+    "request_limit": ""
   }
 }

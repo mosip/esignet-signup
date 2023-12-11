@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { isValidPhoneNumber } from "libphonenumber-js";
+import { AsYouType, isValidPhoneNumber } from "libphonenumber-js";
 import { Resolver, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import * as yup from "yup";
@@ -15,7 +15,13 @@ import AccountSetupStatus from "./AccountSetupStatus";
 import Otp from "./Otp";
 import Phone from "./Phone";
 import PhoneStatus from "./PhoneStatus";
-import { SignUpStep, stepSelector, useSignUpStore } from "./useSignUpStore";
+import { SignUpPopover } from "./SignUpPopover";
+import {
+  criticalErrorSelector,
+  SignUpStep,
+  stepSelector,
+  useSignUpStore,
+} from "./useSignUpStore";
 
 export interface SignUpForm {
   phone: string;
@@ -35,8 +41,14 @@ interface SignUpPageProps {
 export const SignUpPage = ({ settings }: SignUpPageProps) => {
   const { t } = useTranslation();
 
-  const { step } = useSignUpStore(
-    useCallback((state) => ({ step: stepSelector(state) }), [])
+  const { step, criticalError } = useSignUpStore(
+    useCallback(
+      (state) => ({
+        step: stepSelector(state),
+        criticalError: criticalErrorSelector(state),
+      }),
+      []
+    )
   );
 
   const validationSchema = useMemo(() => {
@@ -47,9 +59,12 @@ export const SignUpPage = ({ settings }: SignUpPageProps) => {
           .string()
           .required()
           .min(1, t("fail_to_send_otp"))
-          .test("is-phone-number", t("fail_to_send_otp"), (phone) =>
-            isValidPhoneNumber(phone, "KH")
-          ),
+          .test("is-phone-number", t("fail_to_send_otp"), (phone) => {
+            const asYouType = new AsYouType();
+            asYouType.input(settings.response.configs["identifier.prefix"]);
+
+            return isValidPhoneNumber(phone, asYouType.country);
+          }),
         captchaToken: yup.string().required(t("captcha_token_validation")),
       }),
       // Step 2 - OTP Validation
@@ -83,6 +98,7 @@ export const SignUpPage = ({ settings }: SignUpPageProps) => {
         consent: yup.bool().oneOf([true], t("terms_and_conditions_validation")),
       }),
       // Step 5 - Register Status Validation
+      yup.object({}),
       yup.object({}),
     ];
   }, [settings, t]);
@@ -130,8 +146,14 @@ export const SignUpPage = ({ settings }: SignUpPageProps) => {
   };
 
   return (
-    <Form {...methods}>
-      <form>{getSignUpStepContent(step)}</form>
-    </Form>
+    <>
+      {criticalError &&
+        ["invalid_transaction"].includes(criticalError.errorCode) && (
+          <SignUpPopover />
+        )}
+      <Form {...methods}>
+        <form>{getSignUpStepContent(step)}</form>
+      </Form>
+    </>
   );
 };

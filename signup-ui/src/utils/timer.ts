@@ -13,3 +13,15 @@ export const convertTime = (secondsLeft: number): string => {
 
   return `${minutes}:${seconds}`;
 };
+
+/**
+ *
+ * @param timeoutInSeconds the number of seconds that will be timeout
+ * @returns Date object of the timeout
+ */
+export const getTimeoutTime = (timeoutInSeconds: number): Date => {
+  const time = new Date();
+  time.setSeconds(time.getSeconds() + timeoutInSeconds); // timeout seconds later
+
+  return time;
+};

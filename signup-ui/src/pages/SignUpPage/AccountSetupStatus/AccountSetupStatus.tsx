@@ -1,10 +1,17 @@
 import { useCallback, useEffect } from "react";
+import { useMutationState } from "@tanstack/react-query";
 import { UseFormReturn } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
 import { Icons } from "~components/ui/icons";
 import { Step, StepContent } from "~components/ui/step";
-import { RegistrationWithFailedStatus, SettingsDto } from "~typings/types";
+import { keys as mutationKeys } from "~pages/SignUpPage/mutations";
+import {
+  RegistrationResponseDto,
+  RegistrationStatus,
+  RegistrationWithFailedStatus,
+  SettingsDto,
+} from "~typings/types";
 
 import { useRegistrationStatus } from "../queries";
 import { SignUpForm } from "../SignUpPage";
@@ -26,29 +33,49 @@ export const AccountSetupStatus = ({
   );
   const { trigger } = methods;
 
-  const { data: registrationStatus, isError } = useRegistrationStatus(
-    settings.response.configs["status.request.limit"],
-    settings.response.configs["status.request.delay"]
-  );
+  const [registration] = useMutationState<RegistrationResponseDto>({
+    filters: { mutationKey: mutationKeys.registration, status: "success" },
+    select: (mutation) => mutation.state.data as RegistrationResponseDto,
+  });
 
   useEffect(() => {
-    if (isError) {
-      // TODO: handle case the request limit is reached
-    }
-
+    // go to the last step on response status is COMPLETED or on error(s)
     if (
-      registrationStatus?.response.status ===
-      RegistrationWithFailedStatus.FAILED
-    ) {
-      // TODO: handle case the registration status failed
-    }
-    if (
-      registrationStatus?.response.status ===
-      RegistrationWithFailedStatus.COMPLETED
+      (registration.response &&
+        registration.response.status === RegistrationStatus.COMPLETED) ||
+      registration.errors.length > 0
     ) {
       setStep(SignUpStep.AccountRegistrationStatus);
     }
-  }, [registrationStatus, settings.response.configs, isError, setStep]);
+  }, [registration]);
+
+  // isError occurs when the query encounters a network error or the request limit attempts is reached
+  const { data: registrationStatus, isError: isRegistrationStatusError } =
+    useRegistrationStatus(
+      settings.response.configs["status.request.limit"],
+      settings.response.configs["status.request.delay"],
+      registration
+    );
+
+  useEffect(() => {
+    // go to the last step on registration status FAILED or COMPLETED or reach the request limit
+    if (
+      (registrationStatus &&
+        (registrationStatus.response?.status ===
+          RegistrationWithFailedStatus.FAILED ||
+          registrationStatus.response?.status ===
+            RegistrationWithFailedStatus.COMPLETED ||
+          registrationStatus.errors.length > 0)) ||
+      isRegistrationStatusError
+    ) {
+      setStep(SignUpStep.AccountRegistrationStatus);
+    }
+  }, [
+    registrationStatus,
+    setStep,
+    isRegistrationStatusError,
+    settings.response.configs,
+  ]);
 
   return (
     <Step>
