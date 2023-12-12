@@ -12,6 +12,7 @@ import io.mosip.signup.util.RegistrationStatus;
 import io.mosip.signup.exception.CaptchaException;
 import io.mosip.signup.util.SignUpConstants;
 import io.mosip.signup.exception.GenerateChallengeException;
+import io.mosip.signup.helper.NotificationHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -19,7 +20,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -27,7 +27,7 @@ import org.springframework.web.client.RestTemplate;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
-import java.util.concurrent.CompletableFuture;
+import java.util.HashMap;
 
 import static io.mosip.signup.util.SignUpConstants.CONSENT_DISAGREE;
 
@@ -43,6 +43,9 @@ public class RegistrationService {
 
     @Autowired
     private ChallengeManagerService challengeManagerService;
+
+    @Autowired
+    private NotificationHelper notificationHelper;
 
     @Autowired
     HttpServletResponse response;
@@ -78,17 +81,9 @@ public class RegistrationService {
     @Value("${mosip.signup.challenge.resend-delay}")
     private long resendDelay;
 
-    @Value("${mosip.signup.otp-registration.sms.khm}")
-    private String otpRegistrationKhmMessage;
+    private String otpRegistrationMessageTemplatekey = "mosip.signup.sms-notification-template.send-otp";
 
-    @Value("${mosip.signup.otp-registration.sms.eng}")
-    private String otpRegistrationEngMessage;
-
-    @Value("${mosip.signup.successfully.registration.sms.khm}")
-    private String registrationSuccessKhmMessage;
-
-    @Value("${mosip.signup.successfully.registration.sms.eng}")
-    private String registrationSuccessEngMessage;
+    private String registrationSMSNotificationTemplate = "mosip.signup.sms-notification-template.success-registration";
 
     @Value("${mosip.signup.unauthenticated.txn.timeout}")
     private int unauthenticatedTransactionTimeout;
@@ -136,7 +131,8 @@ public class RegistrationService {
         transaction.setLocale(generateChallengeRequest.getLocale());
         cacheUtilService.setChallengeGeneratedTransaction(transactionId, transaction);
 
-        sendNotificationAsync(generateChallengeRequest.getIdentifier(), transaction.getLocale(), challenge)
+        notificationHelper.sendSMSNotificationAsync(generateChallengeRequest.getIdentifier(), transaction.getLocale(),
+                        otpRegistrationMessageTemplatekey, new HashMap<>(){{put("{challenge}", challenge);}})
                 .thenAccept(notificationResponseRestResponseWrapper -> {
                     log.debug("Notification response -> {}", notificationResponseRestResponseWrapper);
                 });
@@ -193,6 +189,12 @@ public class RegistrationService {
 
         transaction.setRegistrationStatus(RegistrationStatus.PENDING);
         cacheUtilService.setRegisteredTransaction(transactionId, transaction);
+
+        notificationHelper.sendSMSNotificationAsync(transaction.getIdentifier(), transaction.getLocale(),
+                        registrationSMSNotificationTemplate, null)
+                .thenAccept(notificationResponseRestResponseWrapper -> {
+                    log.debug("Notification response -> {}", notificationResponseRestResponseWrapper);
+                });
 
         RegisterResponse registration = new RegisterResponse();
         registration.setStatus(ActionStatus.PENDING);
@@ -297,25 +299,6 @@ public class RegistrationService {
         log.error("Transaction {} : Get unique identifier failed with response {}", transactionId, restResponseWrapper);
         throw new SignUpException(restResponseWrapper != null && !CollectionUtils.isEmpty(restResponseWrapper.getErrors()) ?
                 restResponseWrapper.getErrors().get(0).getErrorCode() : ErrorConstants.GET_UIN_FAILED);
-    }
-
-    @Async
-    private CompletableFuture<RestResponseWrapper<NotificationResponse>> sendNotificationAsync
-            (String number, String locale, String challenge) {
-
-        NotificationRequest notificationRequest = new NotificationRequest(number.substring(4),
-                locale == null || locale.equals("khm") ? otpRegistrationKhmMessage : otpRegistrationEngMessage );
-
-        notificationRequest.setMessage(notificationRequest.getMessage().replace("XXXXXX", challenge));
-
-        RestRequestWrapper<NotificationRequest> restRequestWrapper = new RestRequestWrapper<>();
-        restRequestWrapper.setRequest(notificationRequest);
-
-        return CompletableFuture.supplyAsync(() -> selfTokenRestTemplate
-                .exchange(sendNotificationEndpoint,
-                        HttpMethod.POST,
-                        new HttpEntity<>(restRequestWrapper),
-                        new ParameterizedTypeReference<RestResponseWrapper<NotificationResponse>>(){}).getBody());
     }
 
     private void validateTransaction(RegistrationTransaction transaction, String identifier) {
