@@ -6,6 +6,7 @@ import io.mosip.signup.exception.*;
 import io.mosip.signup.exception.ChallengeFailedException;
 import io.mosip.signup.exception.InvalidIdentifierException;
 import io.mosip.signup.exception.InvalidTransactionException;
+import io.mosip.signup.helper.NotificationHelper;
 import io.mosip.signup.util.ErrorConstants;
 import io.mosip.signup.util.RegistrationStatus;
 import io.mosip.signup.exception.SignUpException;
@@ -21,7 +22,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestTemplate;
@@ -40,6 +40,7 @@ import javax.servlet.http.HttpServletResponse;
 import io.mosip.esignet.core.exception.EsignetException;
 
 import java.time.LocalDateTime;
+import java.util.concurrent.CompletableFuture;
 
 @RunWith(SpringRunner.class)
 @ActiveProfiles(value = {"test"})
@@ -63,6 +64,9 @@ public class RegistrationServiceTest {
     @Mock
     GoogleRecaptchaValidatorService googleRecaptchaValidatorService;
 
+    @Mock
+    NotificationHelper notificationHelper;
+
     private final String addIdentityEndpoint = "addIdentityEndpoint";
     private final String generateHashEndpoint = "generateHashEndpoint";
     private final String getUinEndpoint = "getUinEndpoint";
@@ -76,12 +80,6 @@ public class RegistrationServiceTest {
                 registrationService, "resendAttempts", 3);
         ReflectionTestUtils.setField(
                 registrationService, "resendDelay", 30);
-
-        ReflectionTestUtils.setField(
-                registrationService, "otpRegistrationKhmMessage", "ប្រើ XXXXXX ដើម្បីផ្ទៀងផ្ទាត់គណនី KhID របស់អ្នក។");
-
-        ReflectionTestUtils.setField(
-                registrationService, "otpRegistrationEngMessage", "Use XXXXXX to verify your KhID account.");
     }
 
     @Test
@@ -229,6 +227,9 @@ public class RegistrationServiceTest {
                 eq(HttpMethod.POST),
                 any(HttpEntity.class),
                 any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<>(mockRestResponseWrapperAddIdentityResponse, HttpStatus.OK));
+
+        when(notificationHelper.sendSMSNotificationAsync(any(), any(), any(), any()))
+                .thenReturn(new CompletableFuture<>());
 
         RegisterResponse registerResponse = registrationService.register(registerRequest, mockTransactionID);
         Assert.assertNotNull(registerResponse);
@@ -636,6 +637,8 @@ public class RegistrationServiceTest {
         when(challengeManagerService.generateChallenge(any())).thenReturn("1111");
         when(googleRecaptchaValidatorService.validateCaptcha(
                 generateChallengeRequest.getCaptchaToken())).thenReturn(true);
+        when(notificationHelper.sendSMSNotificationAsync(any(), any(), any(), any()))
+                .thenReturn(new CompletableFuture<>());
 
         GenerateChallengeResponse generateChallengeResponse =
                 registrationService.generateChallenge(
@@ -659,6 +662,8 @@ public class RegistrationServiceTest {
         when(challengeManagerService.generateChallenge(transaction)).thenReturn("1111");
         when(googleRecaptchaValidatorService.validateCaptcha(
                 generateChallengeRequest.getCaptchaToken())).thenReturn(true);
+        when(notificationHelper.sendSMSNotificationAsync(any(), any(), any(), any()))
+                .thenReturn(new CompletableFuture<>());
 
         GenerateChallengeResponse generateChallengeResponse =
                 registrationService.generateChallenge(
