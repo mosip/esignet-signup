@@ -798,7 +798,7 @@ public class RegistrationServiceTest {
             registrationService.generateChallenge(generateChallengeRequest, transactionId);
             Assert.fail();
         } catch (GenerateChallengeException ex) {
-            Assert.assertEquals(ErrorConstants.ACTIVE_CHALLENGE_FOUND, ex.getErrorCode());
+            Assert.assertEquals(ErrorConstants.TOO_EARLY_ATTEMPT, ex.getErrorCode());
         }
     }
 
