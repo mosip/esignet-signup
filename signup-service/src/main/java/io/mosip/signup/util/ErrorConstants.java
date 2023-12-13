@@ -27,5 +27,6 @@ public class ErrorConstants {
     public static final String HASH_GENERATE_FAILED = "hash_generate_failed";
     public static final String GET_UIN_FAILED = "get_uin_failed";
     public static final String INVALID_FULLNAME = "invalid_fullname";
+    public static final String TOO_EARLY_ATTEMPT = "too_early_attempt";
 
 }
