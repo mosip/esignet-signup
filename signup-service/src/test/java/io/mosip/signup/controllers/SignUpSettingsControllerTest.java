@@ -42,6 +42,7 @@ public class SignUpSettingsControllerTest {
                 .andExpect(jsonPath("$['response']['configs']['fullname.pattern']").value(".*"))
                 .andExpect(jsonPath("$['response']['configs']['status.request.delay']").value(20))
                 .andExpect(jsonPath("$['response']['configs']['status.request.limit']").value(10))
+                .andExpect(jsonPath("$['response']['configs']['signin.redirect-url']").value("https://esignet.camdgc-dev.mosip.net/authorize"))
                 .andExpect(jsonPath("$.errors").isEmpty());
     }
 }

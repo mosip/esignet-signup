@@ -3,7 +3,10 @@ import { NavigateFunction } from "react-router-dom";
 
 import { SOMETHING_WENT_WRONG } from "~constants/routes";
 
-export const API_BASE_URL = process.env.REACT_APP_API_BASE_URL ?? "/api/";
+const API_BASE_URL =
+  process.env.NODE_ENV === "development"
+    ? process.env.REACT_APP_API_BASE_URL
+    : window.origin + process.env.REACT_APP_API_BASE_URL;
 
 export class HttpError extends Error {
   code: number;
