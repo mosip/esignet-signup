@@ -319,7 +319,7 @@ public class RegistrationService {
 
         if(transaction.getLastRetryToNow() <= resendDelay) {
             log.error("generate-challenge failed: too early attempts");
-            throw new GenerateChallengeException(ErrorConstants.ACTIVE_CHALLENGE_FOUND);
+            throw new GenerateChallengeException(ErrorConstants.TOO_EARLY_ATTEMPT);
         }
     }
 
