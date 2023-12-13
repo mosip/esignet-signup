@@ -5,6 +5,7 @@ import { ReactComponent as FailedIconSvg } from "~assets/svg/failed-icon.svg";
 import { ReactComponent as SuccessIconSvg } from "~assets/svg/success-icon.svg";
 import { Button } from "~components/ui/button";
 import { Step, StepContent } from "~components/ui/step";
+import { useSettings } from "~pages/SignUpPage/queries";
 import { getSignInRedirectURL } from "~utils/link";
 
 interface AccountRegistrationStatusLayoutProps {
@@ -17,11 +18,12 @@ export const AccountRegistrationStatusLayout = ({
   message,
 }: AccountRegistrationStatusLayoutProps) => {
   const { t } = useTranslation();
+  const { data: settings } = useSettings();
   const { hash: fromSignInHash } = useLocation();
 
   const handleAction = (e: any) => {
     e.preventDefault();
-    window.location.href = getSignInRedirectURL(fromSignInHash);
+    window.location.href = getSignInRedirectURL(settings?.response.configs["signin.redirect-url"], fromSignInHash);
   };
 
   return (

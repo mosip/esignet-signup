@@ -14,6 +14,7 @@ import { VerifyChallengeResponseDto } from "~typings/types";
 
 import { SignUpForm } from "../SignUpPage";
 import { setStepSelector, SignUpStep, useSignUpStore } from "../useSignUpStore";
+import { useSettings } from "../queries";
 
 interface PhoneStatusProps {
   methods: UseFormReturn<SignUpForm, any, undefined>;
@@ -21,6 +22,7 @@ interface PhoneStatusProps {
 
 export const PhoneStatus = ({ methods }: PhoneStatusProps) => {
   const { t } = useTranslation();
+  const { data: settings } = useSettings();
 
   const { setStep } = useSignUpStore(
     useCallback((state) => ({ setStep: setStepSelector(state) }), [])
@@ -42,7 +44,7 @@ export const PhoneStatus = ({ methods }: PhoneStatusProps) => {
 
   const handleChallengeVerificationErrorRedirect = (e: any) => {
     e.preventDefault();
-    window.location.href = getSignInRedirectURL(fromSignInHash);
+    window.location.href = getSignInRedirectURL(settings?.response.configs["signin.redirect-url"], fromSignInHash);
   };
 
   const [challengeVerification] = useMutationState<VerifyChallengeResponseDto>({

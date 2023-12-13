@@ -72,6 +72,7 @@ interface SettingsConfig {
   "status.request.limit": number;
   "status.request.delay": number;
   "popup.timeout": number;
+  "signin.redirect-url": string;
 }
 
 export interface Settings {

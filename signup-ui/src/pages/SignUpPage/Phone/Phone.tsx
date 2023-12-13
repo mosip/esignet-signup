@@ -46,7 +46,6 @@ interface PhoneProps {
 }
 export const Phone = ({ settings, methods }: PhoneProps) => {
   const { i18n, t } = useTranslation();
-
   const { setStep, setCriticalError } = useSignUpStore(
     useCallback(
       (state) => ({
@@ -137,7 +136,7 @@ export const Phone = ({ settings, methods }: PhoneProps) => {
         <StepTitle className="relative flex w-full items-center justify-center gap-x-4 text-base font-semibold">
           {!!fromSignInHash && (
             <a
-              href={getSignInRedirectURL(fromSignInHash)}
+              href={getSignInRedirectURL(settings?.response.configs["signin.redirect-url"], fromSignInHash)}
               className="absolute left-0 ml-6 cursor-pointer"
             >
               <Icons.back />
