@@ -14,10 +14,12 @@ import {
 } from "~components/ui/alert-dialog";
 import { getSignInRedirectURL } from "~utils/link";
 
+import { useSettings } from "./queries";
 import { criticalErrorSelector, useSignUpStore } from "./useSignUpStore";
 
 export const SignUpPopover = () => {
   const { t } = useTranslation();
+  const { data: settings } = useSettings();
 
   const { criticalError } = useSignUpStore(
     useCallback(
@@ -31,7 +33,7 @@ export const SignUpPopover = () => {
 
   const handleAction = (e: any) => {
     e.preventDefault();
-    window.location.href = getSignInRedirectURL(fromSignInHash);
+    window.location.href = getSignInRedirectURL(settings?.response.configs["signin.redirect-url"], fromSignInHash);
   };
 
   return (
