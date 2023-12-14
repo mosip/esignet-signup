@@ -6,7 +6,7 @@ import { SOMETHING_WENT_WRONG } from "~constants/routes";
 const API_BASE_URL =
   process.env.NODE_ENV === "development"
     ? process.env.REACT_APP_API_BASE_URL
-    : window.origin + process.env.REACT_APP_API_BASE_URL;
+    : window.origin + "/v1/signup";
 
 export class HttpError extends Error {
   code: number;
