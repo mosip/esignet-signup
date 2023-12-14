@@ -751,8 +751,8 @@ public class RegistrationServiceTest {
         try {
             registrationService.generateChallenge(generateChallengeRequest, transactionId);
             Assert.fail();
-        } catch (InvalidIdentifierException ex) {
-            Assert.assertEquals("invalid_identifier", ex.getErrorCode());
+        } catch (SignUpException ex) {
+            Assert.assertEquals(ErrorConstants.IDENTIFIER_MISMATCH, ex.getErrorCode());
         }
     }
 
@@ -808,6 +808,7 @@ public class RegistrationServiceTest {
         RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85577410541");
         registrationTransaction.setRegistrationStatus(RegistrationStatus.COMPLETED);
         when(cacheUtilService.getRegisteredTransaction(transactionId)).thenReturn(registrationTransaction);
+        when(cacheUtilService.setRegisteredTransaction(transactionId, registrationTransaction)).thenReturn(registrationTransaction);
         RegistrationStatusResponse registrationStatusResponse = registrationService.getRegistrationStatus(transactionId);
 
         Assert.assertNotNull(registrationStatusResponse);
@@ -820,6 +821,7 @@ public class RegistrationServiceTest {
         RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85577410541");
         registrationTransaction.setRegistrationStatus(RegistrationStatus.PENDING);
         when(cacheUtilService.getRegisteredTransaction(transactionId)).thenReturn(registrationTransaction);
+        when(cacheUtilService.setRegisteredTransaction(transactionId, registrationTransaction)).thenReturn(registrationTransaction);
         RegistrationStatusResponse registrationStatusResponse = registrationService.getRegistrationStatus(transactionId);
 
         Assert.assertNotNull(registrationStatusResponse);
@@ -832,6 +834,7 @@ public class RegistrationServiceTest {
         RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85577410541");
         registrationTransaction.setRegistrationStatus(RegistrationStatus.FAILED);
         when(cacheUtilService.getRegisteredTransaction(transactionId)).thenReturn(registrationTransaction);
+        when(cacheUtilService.setRegisteredTransaction(transactionId, registrationTransaction)).thenReturn(registrationTransaction);
         RegistrationStatusResponse registrationStatusResponse = registrationService.getRegistrationStatus(transactionId);
 
         Assert.assertNotNull(registrationStatusResponse);
