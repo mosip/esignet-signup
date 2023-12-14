@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 import org.springframework.web.bind.annotation.RestController;
 
@@ -64,6 +63,8 @@ public class RegistrationController {
     public ResponseWrapper<RegistrationStatusResponse> getRegistrationStatus(
             @Valid @NotBlank(message = ErrorConstants.INVALID_TRANSACTION)
             @CookieValue(value = SignUpConstants.VERIFIED_TRANSACTION_ID, defaultValue = EMTPY) String transactionId) {
+        //TODO Need to change the response to List<RegistrationStatusResponse>
+        //As it will be easier to give out credential issuance status for each handle type.
         ResponseWrapper<RegistrationStatusResponse> responseWrapper = new ResponseWrapper<RegistrationStatusResponse>();
         responseWrapper.setResponse(registrationService.getRegistrationStatus(transactionId));
         responseWrapper.setResponseTime(IdentityProviderUtil.getUTCDateTime());

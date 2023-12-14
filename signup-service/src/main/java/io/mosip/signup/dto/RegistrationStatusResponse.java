@@ -5,5 +5,6 @@ import lombok.Data;
 
 @Data
 public class RegistrationStatusResponse {
+
     private RegistrationStatus status;
 }

@@ -1,9 +1,9 @@
 package io.mosip.signup.services;
 
 import io.mosip.esignet.core.util.IdentityProviderUtil;
+import io.mosip.kernel.core.util.HMACUtils2;
 import io.mosip.signup.dto.*;
 import io.mosip.signup.exception.ChallengeFailedException;
-import io.mosip.signup.exception.InvalidIdentifierException;
 import io.mosip.signup.exception.InvalidTransactionException;
 import io.mosip.signup.exception.SignUpException;
 import io.mosip.signup.util.ActionStatus;
@@ -27,9 +27,14 @@ import org.springframework.web.client.RestTemplate;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
+import java.nio.charset.StandardCharsets;
+import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
-import static io.mosip.signup.util.SignUpConstants.CONSENT_DISAGREE;
+import static io.mosip.signup.util.SignUpConstants.*;
 
 @Slf4j
 @Service
@@ -81,10 +86,6 @@ public class RegistrationService {
     @Value("${mosip.signup.challenge.resend-delay}")
     private long resendDelay;
 
-    private String otpRegistrationMessageTemplatekey = "mosip.signup.sms-notification-template.send-otp";
-
-    private String registrationSMSNotificationTemplate = "mosip.signup.sms-notification-template.success-registration";
-
     @Value("${mosip.signup.unauthenticated.txn.timeout}")
     private int unauthenticatedTransactionTimeout;
 
@@ -93,6 +94,9 @@ public class RegistrationService {
 
     @Value("${mosip.signup.status-check.txn.timeout}")
     private int statusCheckTransactionTimeout;
+
+    @Value("${mosip.signup.get-registration-status.endpoint}")
+    private String getRegistrationStatusEndpoint;
 
     /**
      * Generate and regenerate challenge based on the "regenerate" flag in the request.
@@ -132,7 +136,7 @@ public class RegistrationService {
         cacheUtilService.setChallengeGeneratedTransaction(transactionId, transaction);
 
         notificationHelper.sendSMSNotificationAsync(generateChallengeRequest.getIdentifier(), transaction.getLocale(),
-                        otpRegistrationMessageTemplatekey, new HashMap<>(){{put("{challenge}", challenge);}})
+                        SEND_OTP_SMS_NOTIFICATION_TEMPLATE_KEY, new HashMap<>(){{put("{challenge}", challenge);}})
                 .thenAccept(notificationResponseRestResponseWrapper -> {
                     log.debug("Notification response -> {}", notificationResponseRestResponseWrapper);
                 });
@@ -148,7 +152,7 @@ public class RegistrationService {
             log.error("Transaction {} : not found in ChallengeGeneratedTransaction cache", transactionId);
             throw new InvalidTransactionException();
         }
-        if(!verifyChallengeRequest.getIdentifier().equals(transaction.getIdentifier())) {
+        if(!transaction.isValidIdentifier(verifyChallengeRequest.getIdentifier())) {
             log.error("Transaction {} : contain identifier not the same with identifier user request", transactionId);
             throw new SignUpException(ErrorConstants.IDENTIFIER_MISMATCH);
         }
@@ -175,7 +179,7 @@ public class RegistrationService {
             log.error("Transaction {} : not found in ChallengeVerifiedTransaction cache", transactionId);
             throw new InvalidTransactionException();
         }
-        if(!transaction.getIdentifier().equals(registerRequest.getUsername()) ||
+        if(!transaction.isValidIdentifier(registerRequest.getUsername()) ||
                 !registerRequest.getUsername().equals(registerRequest.getUserInfo().getPhone())) {
             log.error("Transaction {} : given unsupported username in L1", transactionId);
             throw new SignUpException(ErrorConstants.IDENTIFIER_MISMATCH);
@@ -185,13 +189,13 @@ public class RegistrationService {
             throw new SignUpException(ErrorConstants.CONSENT_REQUIRED);
         }
 
-        saveIdentityData(registerRequest, transactionId, transaction.getApplicationId());
+        saveIdentityData(registerRequest, transactionId, transaction);
 
         transaction.setRegistrationStatus(RegistrationStatus.PENDING);
         cacheUtilService.setRegisteredTransaction(transactionId, transaction);
 
-        notificationHelper.sendSMSNotificationAsync(transaction.getIdentifier(), transaction.getLocale(),
-                        registrationSMSNotificationTemplate, null)
+        notificationHelper.sendSMSNotificationAsync(registerRequest.getUserInfo().getPhone(), transaction.getLocale(),
+                        REGISTRATION_SMS_NOTIFICATION_TEMPLATE_KEY, null)
                 .thenAccept(notificationResponseRestResponseWrapper -> {
                     log.debug("Notification response -> {}", notificationResponseRestResponseWrapper);
                 });
@@ -212,12 +216,24 @@ public class RegistrationService {
         if (registrationTransaction == null)
             throw new InvalidTransactionException();
 
+        //For L1 only phone is considered to be handle, later other fields can also be used as handles.
+        //We should know the credential issuance status of each handle.
+        for(String handleRequestId : registrationTransaction.getHandlesStatus().keySet()) {
+            if(!RegistrationStatus.getEndStatuses().contains(registrationTransaction.getHandlesStatus().get(handleRequestId))) {
+                RegistrationStatus registrationStatus = getRegistrationStatusFromServer(registrationTransaction.getApplicationId());
+                registrationTransaction.getHandlesStatus().put(handleRequestId, registrationStatus);
+                //TODO This is temporary fix, we need to remove this field later from registrationTransaction DTO.
+                registrationTransaction.setRegistrationStatus(registrationStatus);
+            }
+        }
+        registrationTransaction = cacheUtilService.setRegisteredTransaction(transactionId, registrationTransaction);
         RegistrationStatusResponse registrationStatusResponse = new RegistrationStatusResponse();
         registrationStatusResponse.setStatus(registrationTransaction.getRegistrationStatus());
         return registrationStatusResponse;
     }
 
-    private void saveIdentityData(RegisterRequest registerRequest, String transactionId, String applicationId) throws SignUpException{
+    private void saveIdentityData(RegisterRequest registerRequest, String transactionId,
+                                  RegistrationTransaction transaction) throws SignUpException{
 
         UserInfoMap userInfoMap = registerRequest.getUserInfo();
 
@@ -234,8 +250,13 @@ public class RegistrationService {
         Password password = generateSaltedHash(registerRequest.getPassword(), transactionId);
         identity.setPassword(password);
 
+        //By default, phone is set as the selected handle.
+        identity.setSelectedHandles(Arrays.asList("phone"));
+        transaction.getHandlesStatus().put(getHandleRequestId(transaction.getApplicationId(),
+                "phone", userInfoMap.getPhone()), RegistrationStatus.PENDING);
+
         AddIdentityRequest addIdentityRequest = new AddIdentityRequest();
-        addIdentityRequest.setRegistrationId(applicationId);
+        addIdentityRequest.setRegistrationId(transaction.getApplicationId());
         addIdentityRequest.setIdentity(identity);
 
         addIdentity(addIdentityRequest, transactionId);
@@ -296,7 +317,7 @@ public class RegistrationService {
             return restResponseWrapper.getResponse().getUIN();
         }
 
-        log.error("Transaction {} : Get unique identifier failed with response {}", transactionId, restResponseWrapper);
+        log.error("Transaction {} : Get unique identifier(UIN) failed with response {}", transactionId, restResponseWrapper);
         throw new SignUpException(restResponseWrapper != null && !CollectionUtils.isEmpty(restResponseWrapper.getErrors()) ?
                 restResponseWrapper.getErrors().get(0).getErrorCode() : ErrorConstants.GET_UIN_FAILED);
     }
@@ -307,9 +328,9 @@ public class RegistrationService {
             throw new InvalidTransactionException();
         }
 
-        if(!transaction.getIdentifier().equals(identifier)) {
+        if(!transaction.isValidIdentifier(identifier)) {
             log.error("generate-challenge failed: invalid identifier");
-            throw new InvalidIdentifierException();
+            throw new SignUpException(ErrorConstants.IDENTIFIER_MISMATCH);
         }
 
         if(transaction.getChallengeRetryAttempts() >= resendAttempts) {
@@ -321,6 +342,24 @@ public class RegistrationService {
             log.error("generate-challenge failed: too early attempts");
             throw new GenerateChallengeException(ErrorConstants.TOO_EARLY_ATTEMPT);
         }
+    }
+
+    private RegistrationStatus getRegistrationStatusFromServer(String applicationId) {
+        RestResponseWrapper<Map<String,String>> restResponseWrapper = selfTokenRestTemplate.exchange(getRegistrationStatusEndpoint,
+                HttpMethod.GET, null,
+                new ParameterizedTypeReference<RestResponseWrapper<Map<String,String>>>() {}, applicationId).getBody();
+
+        if (restResponseWrapper != null && restResponseWrapper.getResponse() != null &&
+                !StringUtils.isEmpty(restResponseWrapper.getResponse().get("statusCode")) ) {
+            switch (restResponseWrapper.getResponse().get("statusCode")) {
+                case "STORED" : return RegistrationStatus.COMPLETED;
+                case "FAILED" : return RegistrationStatus.FAILED;
+                case "ISSUED" :
+                default: return RegistrationStatus.PENDING;
+            }
+        }
+        log.error("Transaction {} : Get registration status failed with response {}", applicationId, restResponseWrapper);
+        return RegistrationStatus.PENDING;
     }
 
     private void addCookieInResponse(String transactionId, int maxAge) {
@@ -341,5 +380,17 @@ public class RegistrationService {
         Cookie unsetCookie = new Cookie(SignUpConstants.TRANSACTION_ID, "");
         unsetCookie.setMaxAge(0);
         response.addCookie(unsetCookie);
+    }
+
+    private String getHandleRequestId(String requestId, String handleFieldId, String handle) {
+        //TODO need to take the tag from configuration based on fieldId
+        String handleWithTaggedHandleType = handle.concat("@").concat(handleFieldId).toLowerCase(Locale.ROOT);
+        String handleRequestId = requestId.concat(handleWithTaggedHandleType);
+        try {
+            return HMACUtils2.digestAsPlainText(handleRequestId.getBytes(StandardCharsets.UTF_8));
+        } catch (NoSuchAlgorithmException e) {
+            log.error("Failed to generate handleRequestId", e);
+        }
+        return requestId;
     }
 }
