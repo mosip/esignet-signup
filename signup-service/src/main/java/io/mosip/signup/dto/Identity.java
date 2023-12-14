@@ -20,4 +20,5 @@ public class Identity implements Serializable {
     private String preferredLang;
     private Password password;
     private String registrationType;
+    private List<String> selectedHandles;
 }
