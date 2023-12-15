@@ -54,17 +54,18 @@
     "powered_by": "ដំណើរការដោយ"
   },
   "error_response": {
-    "invalid_transaction": "",
-    "invalid_otp_channel": "",
-    "invalid_captcha": "",
-    "send_otp_failed": "",
-    "active_otp_found": "",
-    "unknown_error": "",
-    "challenge_failed": "",
-    "invalid_challenge_type": "",
-    "invalid_challenge_format": "",
-    "already-registered": "",
-    "timed_out": "",
-    "request_limit": ""
+    "invalid_transaction": "ប្រតិបត្តិការមិនត្រឹមត្រូវ ឬប្រតិបត្តិការផុតកំណត់",
+    "invalid_otp_channel": "ឆានែលលេខសម្ងាត់ដែលបានផ្ដល់មិនត្រឹមត្រូវ",
+    "invalid_captcha": "បានរកឃើញ captcha មិនត្រឹមត្រូវ",
+    "send_otp_failed": "ផ្ញើលេខសម្ងាត់បរាជ័យ។ លេខសម្គាល់បុគ្គលមិនពិត/មិនស្គាល់",
+    "active_otp_found": "រកឃើញលេខសម្ងាត់សកម្ម",
+    "unknown_error": "មិនស្គាល់កំហុស",
+    "challenge_failed": "ការផ្ទៀងផ្ទាត់បរាជ័យ",
+    "invalid_challenge_type": "ប្រភេទផ្ទៀងផ្ទាត់មិនត្រឹមត្រូវ",
+    "invalid_challenge_format": "ទម្រង់ផ្ទៀងផ្ទាត់មិនត្រឹមត្រូវ",
+    "already-registered": "បានចុះឈ្មោះរួចហើយ",
+    "timed_out": "អស់ម៉ោង",
+    "timeout_transaction": "ប្រតិបត្តិការផុតកំណត់",
+    "request_limit": "ចំនួនសំណើដល់កំណត់"
   }
 }
