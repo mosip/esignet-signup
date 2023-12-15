@@ -6,9 +6,12 @@ module.exports = {
     container: {
       center: true,
       padding: "2rem",
-      screens: {
-        "2xl": "1400px",
-      },
+    },
+    screens: {
+      "2xl": "1536px",
+      lg: { max: "1280px" },
+      md: { max: "768px" },
+      sm: { max: "640px" },
     },
     extend: {
       colors: {
@@ -56,9 +59,15 @@ module.exports = {
         },
       },
       borderRadius: {
+        "2xl": "calc(var(--radius) + 12px)",
+        xl: "calc(var(--radius) + 2px)",
         lg: `var(--radius)`,
         md: `calc(var(--radius) - 2px)`,
         sm: "calc(var(--radius) - 4px)",
+      },
+      boxShadow: {
+        md: "0px 2px 5px rgba(0, 0, 0, 0.10)",
+        lg: "0px 4px 10px rgba(0, 0, 0, 0.10)",
       },
       fontFamily: {
         inter: ["var(--font-inter)", ...fontFamily.sans],
