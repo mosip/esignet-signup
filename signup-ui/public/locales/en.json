@@ -54,17 +54,18 @@
     "powered_by": "Powered by"
   },
   "error_response": {
-    "invalid_transaction": "",
-    "invalid_otp_channel": "",
-    "invalid_captcha": "",
-    "send_otp_failed": "",
-    "active_otp_found": "",
-    "unknown_error": "",
-    "challenge_failed": "",
-    "invalid_challenge_type": "",
-    "invalid_challenge_format": "",
-    "already-registered": "",
-    "timed_out": "",
-    "request_limit": ""
+    "invalid_transaction": "Invalid Transaction or Transaction Expired",
+    "invalid_otp_channel": "Invalid OTP Channel Provided",
+    "invalid_captcha": "Invalid captcha found.",
+    "send_otp_failed": "Send OTP failed",
+    "active_otp_found": "Active OTP Found",
+    "unknown_error": "Unknown Error",
+    "challenge_failed": "Challenge Failed",
+    "invalid_challenge_type": "Invalid Challenge Type",
+    "invalid_challenge_format": "Invalid Challenge Format",
+    "already-registered": "Already Registered",
+    "timed_out": "Timedout",
+    "timeout_transaction": "Transaction Timeout",
+    "request_limit": "Request Limit"
   }
 }
