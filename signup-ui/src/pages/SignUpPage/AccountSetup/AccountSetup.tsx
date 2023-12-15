@@ -126,14 +126,14 @@ export const AccountSetup = ({ settings, methods }: AccountSetupProps) => {
   }
 
   return (
-    <div className="my-10">
+    <div className="my-10 sm:my-0">
       <Step>
         <StepHeader>
           <StepTitle>{t("setup_account")}</StepTitle>
           <StepDescription>{t("complete_your_registration")}</StepDescription>
         </StepHeader>
         <StepDivider />
-        <StepContent className="px-10 py-8">
+        <StepContent className="px-10 py-8 sm:px-[18px] sm:pt-[22px] sm:pb-[70px]">
           <div className="flex flex-col gap-y-6">
             <FormField
               control={control}

@@ -129,11 +129,10 @@ export const Phone = ({ settings, methods }: PhoneProps) => {
     },
     [generateChallengeMutation, getValues, setStep, trigger, setValue]
   );
-
   return (
     <Step>
-      <StepHeader className="px-0">
-        <StepTitle className="relative flex w-full items-center justify-center gap-x-4 text-base font-semibold">
+      <StepHeader className="px-0 sm:px-[18px] sm:pb-[25px] sm:pt-[33px]">
+        <StepTitle className="relative flex w-full items-center justify-center gap-x-4 text-base font-semibold leading-5">
           {!!fromSignInHash && (
             <a
               href={getSignInRedirectURL(settings?.response.configs["signin.redirect-url"], fromSignInHash)}
@@ -164,7 +163,7 @@ export const Phone = ({ settings, methods }: PhoneProps) => {
       </StepAlert>
       <StepContent>
         {/* Phone and reCAPTCHA inputs */}
-        <div className="flex flex-col gap-y-6 p-6">
+        <div className="flex flex-col gap-y-6 p-6 sm:p-0">
           <div className="flex flex-col gap-y-3">
             {/* Phone number input */}
             <FormField
@@ -176,7 +175,7 @@ export const Phone = ({ settings, methods }: PhoneProps) => {
                     <FormControl>
                       <div
                         className={cn(
-                          "flex h-[52px] rounded-md border-[1px] border-input",
+                          "flex input rounded-md border-[1px] border-input",
                           formError.phone && "border-destructive"
                         )}
                       >

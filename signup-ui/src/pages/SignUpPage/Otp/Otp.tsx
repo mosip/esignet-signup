@@ -204,13 +204,13 @@ export const Otp = ({ methods, settings }: OtpProps) => {
 
   return (
     <Step>
-      <StepHeader className="px-0 py-9">
+      <StepHeader className="px-0 sm:px-[18px] sm:pb-[25px] sm:pt-[33px]">
         <StepTitle className="relative flex w-full items-center justify-center gap-x-4 text-base font-semibold">
           <Icons.back
             className="absolute left-0 ml-8 cursor-pointer"
             onClick={handleBack}
           />
-          <div className="w-full text-center text-[26px] font-semibold">
+          <div className="w-full text-center text-[22px] font-semibold">
             {t("otp_header")}
           </div>
         </StepTitle>
@@ -242,7 +242,7 @@ export const Otp = ({ methods, settings }: OtpProps) => {
       </StepAlert>
       <StepContent>
         {/* OTP inputs */}
-        <div className="flex flex-col gap-y-6 p-6">
+        <div className="flex flex-col gap-y-6 p-6 sm:p-0">
           <FormField
             name="otp"
             control={control}
@@ -260,14 +260,14 @@ export const Otp = ({ methods, settings }: OtpProps) => {
                     inputMode="number"
                     style={{
                       display: "flex",
-                      justifyContent: "space-between",
+                      justifyContent: "center",
                       padding: "5px 0px",
                       fontSize: "24px",
                     }}
                     inputStyle={{
                       width: "55px",
                       height: "52px",
-                      margin: "0px 0px",
+                      margin: "0px 02px",
                       border: "2px solid #C1C1C1",
                       color: "#000000",
                       borderRadius: "8px",
@@ -296,7 +296,7 @@ export const Otp = ({ methods, settings }: OtpProps) => {
           >
             {t("verify")}
           </Button>
-          <div className="mx-12 flex flex-col items-center">
+          <div className="mx-12 sm:mx-0 flex flex-col items-center">
             <div className="flex gap-x-1 text-center">
               <Trans
                 i18nKey="resend_otp_detail"

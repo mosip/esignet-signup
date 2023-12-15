@@ -8,24 +8,24 @@ export const SignUpPageContainer = () => {
 
   if (isLoading || !settings) {
     return (
-      <div className="w-full flex h-[calc(100vh-14vh)] items-center justify-center">
+      <div className="flex h-[calc(100vh-14vh)] w-full items-center justify-center">
         <Icons.loader className="animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="relative flex-1 flex items-center justify-center">
+    <div className="relative flex flex-1 items-center justify-center sm:flex-none">
       <img
-        className="absolute left-1 top-1"
+        className="absolute left-1 top-1 block sm:hidden"
         src="/images/top.png"
         alt="top left background"
       />
-      <div className="w-full z-10">
+      <div className="z-10 w-full">
         <SignUpPage settings={settings} />
       </div>
       <img
-        className="absolute bottom-1 right-1"
+        className="absolute bottom-1 right-1 block sm:hidden"
         src="/images/bottom.png"
         alt="bottom right background"
       />
