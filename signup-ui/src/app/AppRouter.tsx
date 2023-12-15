@@ -22,7 +22,7 @@ const WithSuspense = ({ children }: { children: ReactNode }) => (
 
 export const AppRouter = () => {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col sm:bg-white">
       <NavBar />
       <div className="relative flex flex-grow flex-col">
         <WithSuspense>
