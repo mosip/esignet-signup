@@ -34,6 +34,7 @@ interface Resources {
     congratulations: string;
     account_created_successfully: string;
     login_to_proceed: string;
+    okay_to_proceed: string;
     login: string;
     okay: string;
     continue: string;
