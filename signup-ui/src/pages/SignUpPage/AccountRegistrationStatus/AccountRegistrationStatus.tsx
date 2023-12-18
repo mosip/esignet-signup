@@ -1,5 +1,6 @@
 import { useMutationState, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
+import { useLocation } from "react-router-dom";
 
 import { keys as mutationKeys } from "~pages/SignUpPage/mutations";
 import { keys as queryKeys } from "~pages/SignUpPage/queries";
@@ -30,6 +31,8 @@ export const AccountRegistrationStatus = () => {
   const registrationStatusState = queryClient.getQueryState(
     queryKeys.registrationStatus
   );
+
+  const { hash: fromSignInHash } = useLocation();
 
   if (!registration) {
     return (
@@ -106,7 +109,7 @@ export const AccountRegistrationStatus = () => {
   return (
     <AccountRegistrationStatusLayout
       status="success"
-      message={t("login_to_proceed")}
+      message={fromSignInHash ? t("login_to_proceed") : t("okay_to_proceed")}
     />
   );
 };

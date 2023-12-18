@@ -12,7 +12,6 @@ export const Language = () => {
 
   const handleLanguageChange = (language: string) => {
     i18n.changeLanguage(language);
-    window.location.reload();
   };
 
   return (
