@@ -68,7 +68,11 @@ export const SignUpPage = ({ settings }: SignUpPageProps) => {
       }),
       // Step 2 - OTP Validation
       yup.object({
-        otp: yup.string().matches(/^\d{6}$/gm),
+        otp: yup
+          .string()
+          .matches(
+            new RegExp(`^\\d{${settings.response.configs["otp.length"]}}$`)
+          ),
       }),
       // Step 3 - Status Validation
       yup.object({}),
