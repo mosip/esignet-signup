@@ -135,7 +135,7 @@ export const Phone = ({ settings, methods }: PhoneProps) => {
         <StepTitle className="relative flex w-full items-center justify-center gap-x-4 text-base font-semibold leading-5">
           {!!fromSignInHash && (
             <a
-              href={getSignInRedirectURL(settings?.response.configs["signin.redirect-url"], fromSignInHash)}
+              href={getSignInRedirectURL(settings?.response.configs["signin.redirect-url"], fromSignInHash, "/signup")}
               className="absolute left-0 ml-6 cursor-pointer"
             >
               <Icons.back />

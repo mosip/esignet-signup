@@ -23,7 +23,7 @@ export const AccountRegistrationStatusLayout = ({
 
   const handleAction = (e: any) => {
     e.preventDefault();
-    window.location.href = getSignInRedirectURL(settings?.response.configs["signin.redirect-url"], fromSignInHash);
+    window.location.href = getSignInRedirectURL(settings?.response.configs["signin.redirect-url"], fromSignInHash, "/signup");
   };
 
   return (

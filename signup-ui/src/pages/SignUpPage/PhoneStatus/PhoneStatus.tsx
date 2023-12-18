@@ -44,7 +44,7 @@ export const PhoneStatus = ({ methods }: PhoneStatusProps) => {
 
   const handleChallengeVerificationErrorRedirect = (e: any) => {
     e.preventDefault();
-    window.location.href = getSignInRedirectURL(settings?.response.configs["signin.redirect-url"], fromSignInHash);
+    window.location.href = getSignInRedirectURL(settings?.response.configs["signin.redirect-url"], fromSignInHash, "/signup");
   };
 
   const [challengeVerification] = useMutationState<VerifyChallengeResponseDto>({
