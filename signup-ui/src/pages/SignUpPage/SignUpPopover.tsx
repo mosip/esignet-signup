@@ -33,7 +33,7 @@ export const SignUpPopover = () => {
 
   const handleAction = (e: any) => {
     e.preventDefault();
-    window.location.href = getSignInRedirectURL(settings?.response.configs["signin.redirect-url"], fromSignInHash);
+    window.location.href = getSignInRedirectURL(settings?.response.configs["signin.redirect-url"], fromSignInHash, "/signup");
   };
 
   return (
