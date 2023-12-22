@@ -1,5 +1,9 @@
 interface Resources {
   translation: {
+    reset_password: string;
+    register: string;
+    landing_page_title: string;
+    landing_page_description: string;
     enter_your_number: string;
     enter_your_number_placeholder: string;
     fail_to_send_otp: string;

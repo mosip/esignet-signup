@@ -1,13 +1,14 @@
 import { lazy, ReactNode, Suspense, useEffect } from "react";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes, useNavigate, useLocation, Navigate } from "react-router-dom";
 
-import { SIGNUP_ROUTE, SOMETHING_WENT_WRONG } from "~constants/routes";
+import { ROOT_ROUTE, SIGNUP_ROUTE, SOMETHING_WENT_WRONG, UNDER_CONSTRUCTION } from "~constants/routes";
 import Footer from "~components/ui/footer";
 import NavBar from "~components/ui/nav-bar";
 import { lazyRetry } from "~utils/lazyRetry";
 import { setupResponseInterceptor } from "~services/api.service";
 
 const SignUpPage = lazy(() => lazyRetry(() => import("~pages/SignUpPage")));
+const LandingPage = lazy(() => lazyRetry(() => import("~pages/LandingPage")));
 const UnderConstructionPage = lazy(() =>
   lazyRetry(() => import("~pages/UnderConstructionPage"))
 );
@@ -23,6 +24,8 @@ const WithSuspense = ({ children }: { children: ReactNode }) => (
 
 export const AppRouter = () => {
   const navigate = useNavigate();
+  const { hash: fromSignInHash } = useLocation();
+  const REDIRECT_ROUTE = `${ROOT_ROUTE}${fromSignInHash}`;
 
   useEffect(() => {
     setupResponseInterceptor(navigate);
@@ -39,7 +42,12 @@ export const AppRouter = () => {
               path={SOMETHING_WENT_WRONG}
               element={<SomethingWentWrongPage />}
             />
-            <Route path="*" element={<UnderConstructionPage />} />
+            <Route
+              path={UNDER_CONSTRUCTION}
+              element={<UnderConstructionPage />}
+            />
+            <Route path={ROOT_ROUTE} element={<LandingPage />} />
+            <Route path="*" element={<Navigate to={REDIRECT_ROUTE} />} />
           </Routes>
         </WithSuspense>
         <Footer />
