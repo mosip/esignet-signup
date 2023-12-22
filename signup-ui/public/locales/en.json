@@ -1,4 +1,8 @@
 {
+  "reset_password": "Reset Password",
+  "register": "Register",
+  "landing_page_title": "Oops! The page you are looking for does not exist.",
+  "landing_page_description": "Please try navigating using the options below.",
   "enter_your_number": "Please enter your mobile number to continue",
   "enter_your_number_placeholder": "Enter 8-9 digit phone number",
   "fail_to_send_otp": "Failed to send OTP. Please provide a valid mobile number.",
