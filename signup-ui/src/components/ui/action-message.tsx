@@ -2,10 +2,10 @@ import * as React from "react";
 
 import { cn } from "~utils/cn";
 
-export interface ActiveMessageProps
+export interface ActionMessageProps
   extends React.HTMLAttributes<HTMLDivElement> {}
 
-const ActiveMessage = React.forwardRef<HTMLDivElement, ActiveMessageProps>(
+const ActionMessage = React.forwardRef<HTMLDivElement, ActionMessageProps>(
   ({ className, hidden, children, ...props }, ref) => (
     <div
       ref={ref}
@@ -22,6 +22,6 @@ const ActiveMessage = React.forwardRef<HTMLDivElement, ActiveMessageProps>(
   )
 );
 
-ActiveMessage.displayName = "ActiveMessage";
+ActionMessage.displayName = "ActionMessage";
 
-export { ActiveMessage };
+export { ActionMessage };

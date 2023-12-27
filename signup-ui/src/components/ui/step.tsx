@@ -9,7 +9,7 @@ const Step = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      "container max-w-lg sm:max-w-none rounded-2xl bg-white px-0 shadow-lg sm:rounded-none sm:shadow-none",
+      "container max-w-lg rounded-2xl bg-white px-0 shadow-lg sm:max-w-none sm:rounded-none sm:shadow-none",
       className
     )}
     {...props}

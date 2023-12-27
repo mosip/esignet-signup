@@ -57,14 +57,12 @@ export const SignUpPage = ({ settings }: SignUpPageProps) => {
       yup.object({
         phone: yup
           .string()
-          .required()
-          .min(1, t("fail_to_send_otp"))
-          .test("is-phone-number", t("fail_to_send_otp"), (phone) => {
-            const asYouType = new AsYouType();
-            asYouType.input(settings.response.configs["identifier.prefix"]);
-
-            return isValidPhoneNumber(phone, asYouType.country);
-          }),
+          .required(t("username_validation"))
+          .matches(/^[^0].*$/, t("username_validation"))
+          .matches(
+            new RegExp(settings.response.configs["identifier.pattern"]),
+            t("username_validation")
+          ),
         captchaToken: yup.string().required(t("captcha_token_validation")),
       }),
       // Step 2 - OTP Validation

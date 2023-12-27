@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
 
 import { ReactComponent as FailedIconSvg } from "~assets/svg/failed-icon.svg";
+import { SIGNUP_ROUTE } from "~constants/routes";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -15,13 +16,16 @@ import {
 import { getSignInRedirectURL } from "~utils/link";
 import { useSettings } from "~pages/shared/queries";
 
-import { criticalErrorSelector, useSignUpStore } from "./useSignUpStore";
+import {
+  criticalErrorSelector,
+  useResetPasswordStore,
+} from "./useResetPasswordStore";
 
-export const SignUpPopover = () => {
+export const ResetPasswordPopover = () => {
   const { t } = useTranslation();
-
   const { data: settings } = useSettings();
-  const { criticalError } = useSignUpStore(
+
+  const { criticalError } = useResetPasswordStore(
     useCallback(
       (state) => ({
         criticalError: criticalErrorSelector(state),
@@ -36,7 +40,7 @@ export const SignUpPopover = () => {
     window.location.href = getSignInRedirectURL(
       settings?.response.configs["signin.redirect-url"],
       fromSignInHash,
-      "/signup"
+      SIGNUP_ROUTE
     );
   };
 

@@ -42,13 +42,17 @@ interface Resources {
     login: string;
     okay: string;
     continue: string;
+    forgot_password: string;
+    forgot_password_description: string;
     page_under_construction: string;
     page_under_construction_detail: string;
     something_went_wrong: string;
     something_went_wrong_detail: string;
     attempts_left: string;
     captcha_token_validation: string;
+    username_validation: string;
     full_name_validation: string;
+    full_name_in_lng_validation: string;
     password_validation: string;
     password_validation_must_match: string;
     terms_and_conditions_validation: string;

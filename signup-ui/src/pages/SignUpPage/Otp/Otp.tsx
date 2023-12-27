@@ -4,7 +4,7 @@ import { Trans, useTranslation } from "react-i18next";
 import PinInput from "react-pin-input";
 import { useTimer } from "react-timer-hook";
 
-import { ActiveMessage } from "~components/ui/active-message";
+import { ActionMessage } from "~components/ui/action-message";
 import { Button } from "~components/ui/button";
 import { FormControl, FormField, FormItem } from "~components/ui/form";
 import { Icons } from "~components/ui/icons";
@@ -17,10 +17,13 @@ import {
   StepHeader,
   StepTitle,
 } from "~components/ui/step";
-import { cn } from "~utils/cn";
 import { getLocale } from "~utils/language";
 import { maskPhoneNumber } from "~utils/phone";
 import { convertTime, getTimeoutTime } from "~utils/timer";
+import {
+  useGenerateChallenge,
+  useVerifyChallenge,
+} from "~pages/shared/mutations";
 import {
   Error,
   GenerateChallengeRequestDto,
@@ -28,7 +31,6 @@ import {
   VerifyChallengeRequestDto,
 } from "~typings/types";
 
-import { useGenerateChallenge, useVerifyChallenge } from "../mutations";
 import { SignUpForm } from "../SignUpPage";
 import {
   setCriticalErrorSelector,
@@ -114,6 +116,7 @@ export const Otp = ({ methods, settings }: OtpProps) => {
             captchaToken: getValues("captchaToken"),
             locale: getLocale(i18n.language),
             regenerate: true,
+            purpose: "REGISTRATION",
           },
         };
 
@@ -229,7 +232,7 @@ export const Otp = ({ methods, settings }: OtpProps) => {
       <StepDivider />
       <StepAlert>
         {/* Error message */}
-        <ActiveMessage hidden={!challengeVerificationError}>
+        <ActionMessage hidden={!challengeVerificationError}>
           <p className="truncate text-xs text-destructive">
             {challengeVerificationError &&
               t(`error_response.${challengeVerificationError.errorCode}`)}
@@ -238,7 +241,7 @@ export const Otp = ({ methods, settings }: OtpProps) => {
             className="h-4 w-4 cursor-pointer text-destructive"
             onClick={() => setChallengeVerificationError(null)}
           />
-        </ActiveMessage>
+        </ActionMessage>
       </StepAlert>
       <StepContent>
         {/* OTP inputs */}
@@ -296,7 +299,7 @@ export const Otp = ({ methods, settings }: OtpProps) => {
           >
             {t("verify")}
           </Button>
-          <div className="mx-12 sm:mx-0 flex flex-col items-center">
+          <div className="mx-12 flex flex-col items-center sm:mx-0">
             <div className="flex gap-x-1 text-center">
               <Trans
                 i18nKey="resend_otp_detail"

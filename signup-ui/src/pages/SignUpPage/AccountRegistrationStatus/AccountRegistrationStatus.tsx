@@ -2,8 +2,8 @@ import { useMutationState, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
 
-import { keys as mutationKeys } from "~pages/SignUpPage/mutations";
-import { keys as queryKeys } from "~pages/SignUpPage/queries";
+import { keys as mutationKeys } from "~pages/shared/mutations";
+import { keys as queryKeys } from "~pages/shared/queries";
 import {
   RegistrationResponseDto,
   RegistrationStatus,
