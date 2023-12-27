@@ -5,8 +5,8 @@ import { ReactComponent as FailedIconSvg } from "~assets/svg/failed-icon.svg";
 import { ReactComponent as SuccessIconSvg } from "~assets/svg/success-icon.svg";
 import { Button } from "~components/ui/button";
 import { Step, StepContent } from "~components/ui/step";
-import { useSettings } from "~pages/SignUpPage/queries";
 import { getSignInRedirectURL } from "~utils/link";
+import { useSettings } from "~pages/shared/queries";
 
 interface AccountRegistrationStatusLayoutProps {
   status: "success" | "failed";
@@ -23,7 +23,11 @@ export const AccountRegistrationStatusLayout = ({
 
   const handleAction = (e: any) => {
     e.preventDefault();
-    window.location.href = getSignInRedirectURL(settings?.response.configs["signin.redirect-url"], fromSignInHash, "/signup");
+    window.location.href = getSignInRedirectURL(
+      settings?.response.configs["signin.redirect-url"],
+      fromSignInHash,
+      "/signup"
+    );
   };
 
   return (
