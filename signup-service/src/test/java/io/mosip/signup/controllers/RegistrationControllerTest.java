@@ -440,13 +440,13 @@ public class RegistrationControllerTest {
 
         UserInfoMap userInfo = new UserInfoMap();
         userInfo.setPreferredLang("khm");
-        userInfo.setFullName(List.of(new LanguageTaggedValue("khm", "Panharith AN")));
+        userInfo.setFullName(List.of(new LanguageTaggedValue("khm", "អាន បញ្ញារិទ្ធ")));
         userInfo.setPhone("+855219718732");
 
         RegisterRequest registerRequest = new RegisterRequest();
         registerRequest.setUserInfo(userInfo);
         registerRequest.setUsername("+855219718732");
-        registerRequest.setPassword("12312399");
+        registerRequest.setPassword("12312399a");
         registerRequest.setConsent("AGREE");
 
         RequestWrapper<RegisterRequest> wrapper = new RequestWrapper<RegisterRequest>();
@@ -473,15 +473,14 @@ public class RegistrationControllerTest {
         UserInfoMap userInfo = new UserInfoMap();
         userInfo.setPreferredLang("khm");
         List<LanguageTaggedValue> fullNames = new ArrayList<>();
-        fullNames.add(new LanguageTaggedValue("eng", "Panharith AN"));
-        fullNames.add(new LanguageTaggedValue("khm", "Panharith AN"));
+        fullNames.add(new LanguageTaggedValue("khm", "អាន បញ្ញារិទ្ធ"));
         userInfo.setFullName(fullNames);
         userInfo.setPhone("+85512345678");
 
         RegisterRequest registerRequest = new RegisterRequest();
         registerRequest.setUserInfo(userInfo);
         registerRequest.setUsername("+85512345678");
-        registerRequest.setPassword("12312333");
+        registerRequest.setPassword("12312333a");
 
         RequestWrapper<RegisterRequest> wrapper = new RequestWrapper<RegisterRequest>();
         wrapper.setRequestTime(IdentityProviderUtil.getUTCDateTime());
@@ -504,13 +503,13 @@ public class RegistrationControllerTest {
 
         UserInfoMap userInfo = new UserInfoMap();
         userInfo.setPreferredLang("khm");
-        userInfo.setFullName(List.of(new LanguageTaggedValue("khm", "Panharith AN")));
+        userInfo.setFullName(List.of(new LanguageTaggedValue("khm", "អាន បញ្ញារិទ្ធ")));
         userInfo.setPhone("+855219718732");
 
         RegisterRequest registerRequest = new RegisterRequest();
         registerRequest.setUserInfo(userInfo);
         registerRequest.setUsername("+855219718732");
-        registerRequest.setPassword("12312388");
+        registerRequest.setPassword("12312388a");
         registerRequest.setConsent("not agree");
 
         RequestWrapper<RegisterRequest> wrapper = new RequestWrapper<RegisterRequest>();
@@ -534,7 +533,7 @@ public class RegistrationControllerTest {
 
         UserInfoMap userInfo = new UserInfoMap();
         userInfo.setPreferredLang("khm");
-        userInfo.setFullName(List.of(new LanguageTaggedValue("khm", "Panharith AN")));
+        userInfo.setFullName(List.of(new LanguageTaggedValue("khm", "អាន បញ្ញារិទ្ធ")));
         userInfo.setPhone("+8551234567890");
 
         RegisterRequest registerRequest = new RegisterRequest();
@@ -564,7 +563,7 @@ public class RegistrationControllerTest {
 
         UserInfoMap userInfo = new UserInfoMap();
         userInfo.setPreferredLang("khm");
-        userInfo.setFullName(List.of(new LanguageTaggedValue("khm", "Panharith AN")));
+        userInfo.setFullName(List.of(new LanguageTaggedValue("khm", "អាន បញ្ញារិទ្ធ")));
 
         RegisterRequest registerRequest = new RegisterRequest();
         registerRequest.setUserInfo(userInfo);
@@ -592,13 +591,13 @@ public class RegistrationControllerTest {
     public void register_withBlankPreferredLang_returnErrorResponse() throws Exception{
 
         UserInfoMap userInfo = new UserInfoMap();
-        userInfo.setFullName(List.of(new LanguageTaggedValue("khm", "Panharith AN")));
+        userInfo.setFullName(List.of(new LanguageTaggedValue("khm", "អាន បញ្ញារិទ្ធ")));
         userInfo.setPhone("+855123456789");
 
         RegisterRequest registerRequest = new RegisterRequest();
         registerRequest.setUserInfo(userInfo);
         registerRequest.setUsername("+85512345678");
-        registerRequest.setPassword("12312322");
+        registerRequest.setPassword("12312322a");
         registerRequest.setConsent("AGREE");
 
         RequestWrapper<RegisterRequest> wrapper = new RequestWrapper<RegisterRequest>();
@@ -621,7 +620,7 @@ public class RegistrationControllerTest {
     public void register_withUnsupportedPreferredLang_returnErrorResponse() throws Exception{
 
         UserInfoMap userInfo = new UserInfoMap();
-        userInfo.setFullName(List.of(new LanguageTaggedValue("khm", "Panharith AN")));
+        userInfo.setFullName(List.of(new LanguageTaggedValue("khm", "អាន បញ្ញារិទ្ធ")));
         userInfo.setPhone("+855123456789");
         userInfo.setPreferredLang("usa");
 
@@ -677,7 +676,6 @@ public class RegistrationControllerTest {
     }
 
     @Test
-    @Ignore
     public void register_withInvalidFullNameInKhm_returnErrorResponse() throws Exception{
 
         UserInfoMap userInfo = new UserInfoMap();
@@ -688,7 +686,7 @@ public class RegistrationControllerTest {
         RegisterRequest registerRequest = new RegisterRequest();
         registerRequest.setUserInfo(userInfo);
         registerRequest.setUsername("+85512345678");
-        registerRequest.setPassword("123123");
+        registerRequest.setPassword("123123123a");
         registerRequest.setConsent("AGREE");
 
         RequestWrapper<RegisterRequest> wrapper = new RequestWrapper<RegisterRequest>();
@@ -704,25 +702,24 @@ public class RegistrationControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.response").isEmpty())
                 .andExpect(jsonPath("$.errors").isNotEmpty())
-                .andExpect(jsonPath("$.errors[0].errorMessage").value("request.userInfo.fullName: invalid_fullname"));
+                .andExpect(jsonPath("$.errors[0].errorMessage").value("request.userInfo.fullName[0]: invalid_fullname"));
     }
 
     @Test
-    @Ignore
     public void register_withValidFullNameInKhmAndInvalidFullNameInEng_returnErrorResponse() throws Exception{
 
         UserInfoMap userInfo = new UserInfoMap();
         userInfo.setPhone("+855123456789");
         userInfo.setPreferredLang("khm");
         List<LanguageTaggedValue> fullNames = new ArrayList<>();
-        fullNames.add(new LanguageTaggedValue("khm", "Mengleang Ngoun"));
+        fullNames.add(new LanguageTaggedValue("khm", "ងន់ ម៉េងលាង"));
         fullNames.add(new LanguageTaggedValue("eng", "qkITAu9BW5hfiZcLCwPuefQqu6QIthy2J9R"));
         userInfo.setFullName(fullNames);
 
         RegisterRequest registerRequest = new RegisterRequest();
         registerRequest.setUserInfo(userInfo);
         registerRequest.setUsername("+85512345678");
-        registerRequest.setPassword("123123");
+        registerRequest.setPassword("1231231234a");
         registerRequest.setConsent("AGREE");
 
         RequestWrapper<RegisterRequest> wrapper = new RequestWrapper<RegisterRequest>();
@@ -738,24 +735,60 @@ public class RegistrationControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.response").isEmpty())
                 .andExpect(jsonPath("$.errors").isNotEmpty())
-                .andExpect(jsonPath("$.errors[0].errorMessage").value("request.userInfo.fullName: invalid_fullname"));
+                .andExpect(jsonPath("$.errors[0].errorMessage").value(
+                        "request.userInfo.fullName[1]: invalid_fullname"));
     }
 
     @Test
-    public void register_withValidFullNameInKhmAndFullNameInEng_returnSuccessResponse() throws Exception{
+    public void register_withInValidFullNameInKhm_returnErrorResponse() throws Exception{
 
         UserInfoMap userInfo = new UserInfoMap();
         userInfo.setPhone("+855123456789");
         userInfo.setPreferredLang("khm");
         List<LanguageTaggedValue> fullNames = new ArrayList<>();
         fullNames.add(new LanguageTaggedValue("khm", "Mengleang Ngoun"));
-        fullNames.add(new LanguageTaggedValue("eng", "Mengleang Ngoun"));
         userInfo.setFullName(fullNames);
 
         RegisterRequest registerRequest = new RegisterRequest();
         registerRequest.setUserInfo(userInfo);
         registerRequest.setUsername("+85512345678");
         registerRequest.setPassword("12312311");
+        registerRequest.setConsent("AGREE");
+
+        RequestWrapper<RegisterRequest> wrapper = new RequestWrapper<RegisterRequest>();
+        wrapper.setRequestTime(IdentityProviderUtil.getUTCDateTime());
+        wrapper.setRequest(registerRequest);
+
+        String mockTransactionID = "123456789";
+
+        RegisterResponse registerResponse = new RegisterResponse();
+        registerResponse.setStatus(ActionStatus.PENDING);
+        when(registrationService.register(registerRequest, mockTransactionID)).thenReturn(registerResponse);
+
+        mockMvc.perform(post("/registration/register")
+                        .content(objectMapper.writeValueAsString(wrapper))
+                        .cookie(new Cookie(SignUpConstants.VERIFIED_TRANSACTION_ID, mockTransactionID))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.response").isEmpty())
+                .andExpect(jsonPath("$.errors").isNotEmpty())
+                .andExpect(jsonPath("$.errors[0].errorMessage").value(
+                        "request.userInfo.fullName[0]: invalid_fullname"));
+    }
+
+    @Test
+    public void register_withValidFullName_returnSuccessResponse() throws Exception{
+
+        UserInfoMap userInfo = new UserInfoMap();
+        userInfo.setPhone("+855123456789");
+        userInfo.setPreferredLang("khm");
+        List<LanguageTaggedValue> fullNames = new ArrayList<>();
+        fullNames.add(new LanguageTaggedValue("khm", "សុខ សាន្ត"));
+        userInfo.setFullName(fullNames);
+
+        RegisterRequest registerRequest = new RegisterRequest();
+        registerRequest.setUserInfo(userInfo);
+        registerRequest.setUsername("+85512345678");
+        registerRequest.setPassword("12312311a");
         registerRequest.setConsent("AGREE");
 
         RequestWrapper<RegisterRequest> wrapper = new RequestWrapper<RegisterRequest>();
@@ -783,8 +816,7 @@ public class RegistrationControllerTest {
         userInfo.setPhone("+855123456789");
         userInfo.setPreferredLang("khm");
         List<LanguageTaggedValue> fullNames = new ArrayList<>();
-        fullNames.add(new LanguageTaggedValue("khm", "Mengleang Ngoun"));
-        fullNames.add(new LanguageTaggedValue("eng", "Mengleang Ngoun"));
+        fullNames.add(new LanguageTaggedValue("khm", "ងន់ ម៉េងលាង"));
         userInfo.setFullName(fullNames);
 
         RegisterRequest registerRequest = new RegisterRequest();
@@ -820,8 +852,7 @@ public class RegistrationControllerTest {
         userInfo.setPhone("+855123456789");
         userInfo.setPreferredLang("khm");
         List<LanguageTaggedValue> fullNames = new ArrayList<>();
-        fullNames.add(new LanguageTaggedValue("khm", "Mengleang Ngoun"));
-        fullNames.add(new LanguageTaggedValue("eng", "Mengleang Ngoun"));
+        fullNames.add(new LanguageTaggedValue("khm", "ងន់ ម៉េងលាង"));
         userInfo.setFullName(fullNames);
 
         RegisterRequest registerRequest = new RegisterRequest();
@@ -856,8 +887,7 @@ public class RegistrationControllerTest {
         userInfo.setPhone("+855123456789");
         userInfo.setPreferredLang("khm");
         List<LanguageTaggedValue> fullNames = new ArrayList<>();
-        fullNames.add(new LanguageTaggedValue("khm", "Mengleang Ngoun"));
-        fullNames.add(new LanguageTaggedValue("eng", "Mengleang Ngoun"));
+        fullNames.add(new LanguageTaggedValue("khm", "ងន់ ម៉េងលាង"));
         userInfo.setFullName(fullNames);
 
         RegisterRequest registerRequest = new RegisterRequest();
@@ -889,17 +919,16 @@ public class RegistrationControllerTest {
     public void register_withNotMatchUsernameRegex_returnErrorResponse() throws Exception{
 
         UserInfoMap userInfo = new UserInfoMap();
-        userInfo.setPhone("+855123456789");
+        userInfo.setPhone("+85512345678");
         userInfo.setPreferredLang("khm");
         List<LanguageTaggedValue> fullNames = new ArrayList<>();
         fullNames.add(new LanguageTaggedValue("khm", "Mengleang Ngoun"));
-        fullNames.add(new LanguageTaggedValue("eng", "Mengleang Ngoun"));
         userInfo.setFullName(fullNames);
 
         RegisterRequest registerRequest = new RegisterRequest();
         registerRequest.setUserInfo(userInfo);
         registerRequest.setConsent("AGREE");
-        registerRequest.setUsername("+8551234567890");
+        registerRequest.setUsername("+85512345678");
         registerRequest.setPassword("12345678");
 
         RequestWrapper<RegisterRequest> wrapper = new RequestWrapper<RegisterRequest>();
@@ -919,6 +948,7 @@ public class RegistrationControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.response").isEmpty())
                 .andExpect(jsonPath("$.errors").isNotEmpty())
-                .andExpect(jsonPath("$.errors[0].errorMessage").value("request.username: invalid_username"));
+                .andExpect(jsonPath("$.errors[0].errorMessage").value(
+                        "request.userInfo.fullName[0]: invalid_fullname"));
     }
 }
