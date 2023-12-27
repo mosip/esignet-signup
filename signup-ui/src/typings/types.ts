@@ -1,3 +1,12 @@
+export interface ResetPasswordForm {
+  username: string;
+  fullname: string;
+  captchaToken: string;
+  otp: string;
+  newPassword: string;
+  confirmNewPassword: string;
+}
+
 const GenerateChallengePossibleErrors = [
   "invalid_transaction",
   "invalid_otp_channel",
@@ -84,13 +93,32 @@ export type SettingsDto = BaseResponseDto & {
   errors: Error[] | null;
 };
 
-export type GenerateChallengeRequestDto = BaseRequestDto & {
-  request: {
-    identifier: string;
-    captchaToken: string;
-    locale: string;
-    regenerate: boolean;
+const ChallengeGenerationPurposes = ["REGISTRATION", "RESET_PASSWORD"] as const;
+
+export type ChallengeGenerationPurpose =
+  (typeof ChallengeGenerationPurposes)[number];
+
+type BaseChallengeGenerationRequest = {
+  identifier: string;
+  captchaToken: string;
+  locale: string;
+  regenerate: boolean;
+};
+
+type RegistrationChallengeGenerationRequest = BaseChallengeGenerationRequest & {
+  purpose: "REGISTRATION";
+};
+
+type ResetPasswordChallengeGenerationRequest =
+  BaseChallengeGenerationRequest & {
+    fullname: string;
+    purpose: "RESET_PASSWORD";
   };
+
+export type GenerateChallengeRequestDto = BaseRequestDto & {
+  request:
+    | RegistrationChallengeGenerationRequest
+    | ResetPasswordChallengeGenerationRequest;
 };
 
 export type GenerateChallengeResponseDto = BaseResponseDto & {
