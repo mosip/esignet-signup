@@ -4,7 +4,7 @@ import { useFormContext, UseFormReturn } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
 
-import { ActiveMessage } from "~components/ui/active-message";
+import { ActionMessage } from "~components/ui/action-message";
 import { Button } from "~components/ui/button";
 import {
   FormControl,
@@ -25,13 +25,13 @@ import {
 import { cn } from "~utils/cn";
 import { getLocale } from "~utils/language";
 import { getSignInRedirectURL } from "~utils/link";
+import { useGenerateChallenge } from "~pages/shared/mutations";
 import {
   Error,
   GenerateChallengeRequestDto,
   SettingsDto,
 } from "~typings/types";
 
-import { useGenerateChallenge } from "../mutations";
 import { SignUpForm } from "../SignUpPage";
 import {
   setCriticalErrorSelector,
@@ -102,6 +102,7 @@ export const Phone = ({ settings, methods }: PhoneProps) => {
             captchaToken: getValues("captchaToken"),
             locale: getLocale(i18n.language),
             regenerate: false,
+            purpose: "REGISTRATION",
           },
         };
 
@@ -135,7 +136,11 @@ export const Phone = ({ settings, methods }: PhoneProps) => {
         <StepTitle className="relative flex w-full items-center justify-center gap-x-4 text-base font-semibold leading-5">
           {!!fromSignInHash && (
             <a
-              href={getSignInRedirectURL(settings?.response.configs["signin.redirect-url"], fromSignInHash, "/signup")}
+              href={getSignInRedirectURL(
+                settings?.response.configs["signin.redirect-url"],
+                fromSignInHash,
+                "/signup"
+              )}
               className="absolute left-0 ml-6 cursor-pointer"
             >
               <Icons.back />
@@ -149,7 +154,7 @@ export const Phone = ({ settings, methods }: PhoneProps) => {
       <StepDivider />
       <StepAlert className="relative">
         {/* Error message */}
-        <ActiveMessage hidden={!hasError}>
+        <ActionMessage hidden={!hasError}>
           <p className="truncate text-xs text-destructive">
             {error && t(`error_response.${error.errorCode}`)}
           </p>
@@ -159,7 +164,7 @@ export const Phone = ({ settings, methods }: PhoneProps) => {
               setHasError(false);
             }}
           />
-        </ActiveMessage>
+        </ActionMessage>
       </StepAlert>
       <StepContent>
         {/* Phone and reCAPTCHA inputs */}
@@ -175,7 +180,7 @@ export const Phone = ({ settings, methods }: PhoneProps) => {
                     <FormControl>
                       <div
                         className={cn(
-                          "flex input rounded-md border-[1px] border-input",
+                          "input flex rounded-md border-[1px] border-input",
                           formError.phone && "border-destructive"
                         )}
                       >

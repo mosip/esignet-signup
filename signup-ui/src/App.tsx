@@ -16,7 +16,7 @@ import { AppRouter } from "./app/AppRouter";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: Infinity,
+      staleTime: 60 * 1000, // set to one minutes
       retry: (failureCount, error) => {
         // Do not retry on 4xx error codes
         if (error instanceof HttpError && String(error.code).startsWith("4")) {

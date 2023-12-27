@@ -24,9 +24,9 @@ import {
   StepTitle,
 } from "~components/ui/step";
 import { cn } from "~utils/cn";
+import { useRegister } from "~pages/shared/mutations";
 import { RegistrationRequestDto, SettingsDto } from "~typings/types";
 
-import { useRegister } from "../mutations";
 import { SignUpForm } from "../SignUpPage";
 import {
   setCriticalErrorSelector,
@@ -139,7 +139,7 @@ export const AccountSetup = ({ settings, methods }: AccountSetupProps) => {
           <StepDescription>{t("complete_your_registration")}</StepDescription>
         </StepHeader>
         <StepDivider />
-        <StepContent className="px-10 py-8 sm:px-[18px] sm:pt-[22px] sm:pb-[70px]">
+        <StepContent className="px-10 py-8 sm:px-[18px] sm:pb-[70px] sm:pt-[22px]">
           <div className="flex flex-col gap-y-6">
             <FormField
               control={control}

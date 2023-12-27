@@ -5,7 +5,8 @@ import { useTranslation } from "react-i18next";
 
 import { Icons } from "~components/ui/icons";
 import { Step, StepContent } from "~components/ui/step";
-import { keys as mutationKeys } from "~pages/SignUpPage/mutations";
+import { keys as mutationKeys } from "~pages/shared/mutations";
+import { useRegistrationStatus } from "~pages/shared/queries";
 import {
   RegistrationResponseDto,
   RegistrationStatus,
@@ -13,7 +14,6 @@ import {
   SettingsDto,
 } from "~typings/types";
 
-import { useRegistrationStatus } from "../queries";
 import { SignUpForm } from "../SignUpPage";
 import { setStepSelector, SignUpStep, useSignUpStore } from "../useSignUpStore";
 

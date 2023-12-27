@@ -1,13 +1,27 @@
 import { lazy, ReactNode, Suspense, useEffect } from "react";
-import { Route, Routes, useNavigate, useLocation, Navigate } from "react-router-dom";
+import { AppLayout } from "~layouts/AppLayout";
+import {
+  Navigate,
+  Route,
+  Routes,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
 
-import { ROOT_ROUTE, SIGNUP_ROUTE, SOMETHING_WENT_WRONG, UNDER_CONSTRUCTION } from "~constants/routes";
-import Footer from "~components/ui/footer";
-import NavBar from "~components/ui/nav-bar";
+import {
+  RESET_PASSWORD,
+  ROOT_ROUTE,
+  SIGNUP_ROUTE,
+  SOMETHING_WENT_WRONG,
+  UNDER_CONSTRUCTION,
+} from "~constants/routes";
 import { lazyRetry } from "~utils/lazyRetry";
 import { setupResponseInterceptor } from "~services/api.service";
 
 const SignUpPage = lazy(() => lazyRetry(() => import("~pages/SignUpPage")));
+const ResetPasswordPage = lazy(() =>
+  lazyRetry(() => import("~pages/ResetPasswordPage"))
+);
 const LandingPage = lazy(() => lazyRetry(() => import("~pages/LandingPage")));
 const UnderConstructionPage = lazy(() =>
   lazyRetry(() => import("~pages/UnderConstructionPage"))
@@ -32,26 +46,23 @@ export const AppRouter = () => {
   }, [navigate]);
 
   return (
-    <div className="min-h-screen flex flex-col sm:bg-white">
-      <NavBar />
-      <div className="relative flex flex-grow flex-col">
-        <WithSuspense>
-          <Routes>
-            <Route path={SIGNUP_ROUTE} element={<SignUpPage />} />
-            <Route
-              path={SOMETHING_WENT_WRONG}
-              element={<SomethingWentWrongPage />}
-            />
-            <Route
-              path={UNDER_CONSTRUCTION}
-              element={<UnderConstructionPage />}
-            />
-            <Route path={ROOT_ROUTE} element={<LandingPage />} />
-            <Route path="*" element={<Navigate to={REDIRECT_ROUTE} />} />
-          </Routes>
-        </WithSuspense>
-        <Footer />
-      </div>
-    </div>
+    <WithSuspense>
+      <Routes>
+        <Route element={<AppLayout />}>
+          <Route path={SIGNUP_ROUTE} element={<SignUpPage />} />
+          <Route path={RESET_PASSWORD} element={<ResetPasswordPage />} />
+          <Route
+            path={SOMETHING_WENT_WRONG}
+            element={<SomethingWentWrongPage />}
+          />
+          <Route
+            path={UNDER_CONSTRUCTION}
+            element={<UnderConstructionPage />}
+          />
+          <Route path={ROOT_ROUTE} element={<LandingPage />} />
+          <Route path="*" element={<Navigate to={REDIRECT_ROUTE} />} />
+        </Route>
+      </Routes>
+    </WithSuspense>
   );
 };
