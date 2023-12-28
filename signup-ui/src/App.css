@@ -100,7 +100,6 @@ body {
 
 @layer components {
   .recaptcha {
-    padding-top: 15px !important;
     transform: scale(1);
   }
   .input{
