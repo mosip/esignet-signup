@@ -5,6 +5,7 @@ import io.mosip.signup.dto.RegistrationTransaction;
 import io.mosip.signup.dto.RestError;
 import io.mosip.signup.dto.RestResponseWrapper;
 import io.mosip.signup.exception.SignUpException;
+import io.mosip.signup.util.Purpose;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,7 +48,7 @@ public class ChallengeManagerServiceTest {
 
     @Test
     public void doGenerateChallenge_allValid_thenPass() throws SignUpException {
-        RegistrationTransaction transaction = new RegistrationTransaction("+85577410541");
+        RegistrationTransaction transaction = new RegistrationTransaction("+85577410541", Purpose.REGISTRATION);
         RestResponseWrapper<OtpResponse> challengeResponse = new RestResponseWrapper<>();
         OtpResponse otpResponse = new OtpResponse();
         otpResponse.setOtp("1111");
@@ -65,7 +66,7 @@ public class ChallengeManagerServiceTest {
 
     @Test
     public void doGenerateChallenge_withApiResponseEmptyChallenge_thenFail() throws SignUpException {
-        RegistrationTransaction transaction = new RegistrationTransaction("+85577410541");
+        RegistrationTransaction transaction = new RegistrationTransaction("+85577410541", Purpose.REGISTRATION);
         RestResponseWrapper<OtpResponse> challengeResponse = new RestResponseWrapper<>();
         OtpResponse otpResponse = new OtpResponse();
         otpResponse.setOtp("");
@@ -87,7 +88,7 @@ public class ChallengeManagerServiceTest {
 
     @Test
     public void doGenerateChallenge_withApiNullResponse_thenFail() throws SignUpException {
-        RegistrationTransaction transaction = new RegistrationTransaction("+85577410541");
+        RegistrationTransaction transaction = new RegistrationTransaction("+85577410541", Purpose.REGISTRATION);
         when(selfTokenRestTemplate.exchange(
                 eq(generateChallengeUrl),
                 eq(HttpMethod.POST),
@@ -104,7 +105,7 @@ public class ChallengeManagerServiceTest {
 
     @Test
     public void doGenerateChallenge_withApiResponseErrors_thenFail() throws SignUpException {
-        RegistrationTransaction transaction = new RegistrationTransaction("+85577410541");
+        RegistrationTransaction transaction = new RegistrationTransaction("+85577410541", Purpose.REGISTRATION);
         ArrayList<RestError> errors= new ArrayList<RestError>();
         errors.add(new RestError("401", "401"));
         RestResponseWrapper<OtpResponse> challengeResponse = new RestResponseWrapper<>();
