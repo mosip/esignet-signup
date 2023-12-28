@@ -129,7 +129,7 @@ export const UserInfo = ({ settings, methods }: UserInfoProps) => {
   );
 
   return (
-    <div className="my-10">
+    <div className="my-10 sm:mt-0 sm:mb-10">
       <Step>
         <StepHeader>
           <StepTitle className="relative flex w-full items-center justify-center gap-x-4 text-[26px] font-semibold">
@@ -169,7 +169,7 @@ export const UserInfo = ({ settings, methods }: UserInfoProps) => {
         </StepAlert>
         <StepContent>
           {/* Phone and reCAPTCHA inputs */}
-          <div className="flex flex-col gap-y-6 px-6">
+          <div className="flex flex-col gap-y-6 px-6 sm:px-0">
             <div className="flex flex-col gap-y-6">
               {/* Phone number input */}
               <FormField
