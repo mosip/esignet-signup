@@ -9,11 +9,8 @@ import io.mosip.signup.exception.ChallengeFailedException;
 import io.mosip.signup.exception.InvalidIdentifierException;
 import io.mosip.signup.exception.InvalidTransactionException;
 import io.mosip.signup.services.RegistrationService;
-import io.mosip.signup.util.ActionStatus;
-import io.mosip.signup.util.ErrorConstants;
-import io.mosip.signup.util.SignUpConstants;
+import io.mosip.signup.util.*;
 import org.junit.Before;
-import io.mosip.signup.util.RegistrationStatus;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -63,6 +60,7 @@ public class RegistrationControllerTest {
     @Before
     public void init() {
         generateChallengeRequest = new GenerateChallengeRequest();
+        generateChallengeRequest.setPurpose(Purpose.REGISTRATION);
         generateChallengeRequest.setIdentifier("+85577410541");
         ZonedDateTime requestTime = ZonedDateTime.now(ZoneOffset.UTC);
         wrapper = new RequestWrapper<>();
@@ -233,7 +231,7 @@ public class RegistrationControllerTest {
         verifyRequestWrapper.setRequest(verifyChallengeRequest);
 
         String mockTransactionID = "123456789";
-        RegistrationTransaction registrationTransaction = new RegistrationTransaction("");
+        RegistrationTransaction registrationTransaction = new RegistrationTransaction("", Purpose.REGISTRATION);
         registrationTransaction.setChallengeHash("mock");
         registrationTransaction.setIdentifier("mock");
 
@@ -252,7 +250,7 @@ public class RegistrationControllerTest {
     @Test
     public void doVerifyChallenge_withInvalidTransaction_returnErrorResponse() throws Exception {
         String mockTransactionID = "123456789";
-        RegistrationTransaction registrationTransaction = new RegistrationTransaction("");
+        RegistrationTransaction registrationTransaction = new RegistrationTransaction("", Purpose.REGISTRATION);
         registrationTransaction.setChallengeHash("mock");
         registrationTransaction.setIdentifier("mock");
 
@@ -271,7 +269,7 @@ public class RegistrationControllerTest {
     @Test
     public void doVerifyChallenge_withVerifyChallengeRaiseChallengeFailedException_returnErrorResponse() throws Exception {
         String mockTransactionID = "123456789";
-        RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85512123128");
+        RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85512123128", Purpose.REGISTRATION);
         registrationTransaction.setChallengeHash("mock");
         registrationTransaction.setIdentifier("mock");
 
@@ -290,7 +288,7 @@ public class RegistrationControllerTest {
     @Test
     public void doVerifyChallenge_withVerifyChallengeRaiseInvalidIdentifierException_returnErrorResponse() throws Exception {
         String mockTransactionID = "123456789";
-        RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85512123128");
+        RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85512123128", Purpose.REGISTRATION);
         registrationTransaction.setChallengeHash("mock");
         registrationTransaction.setIdentifier("mock");
 
@@ -315,7 +313,7 @@ public class RegistrationControllerTest {
         verifyRequestWrapper.setRequestTime(null);
 
         String mockTransactionID = "123456789";
-        RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85512123128");
+        RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85512123128", Purpose.REGISTRATION);
         registrationTransaction.setChallengeHash("mock");
         registrationTransaction.setIdentifier("mock");
 
@@ -387,9 +385,66 @@ public class RegistrationControllerTest {
     }
 
     @Test
+    public void doGenerateChallenge_withRegistrationPurpose_thenPass() throws Exception {
+        String status = "SUCCESSFUL";
+        GenerateChallengeResponse generateChallengeResponse = new GenerateChallengeResponse(status);
+
+        generateChallengeRequest.setPurpose(Purpose.REGISTRATION);
+        when(registrationService.generateChallenge(generateChallengeRequest, ""))
+                .thenReturn(generateChallengeResponse);
+
+        mockMvc.perform(post("/registration/generate-challenge")
+                        .content(objectMapper.writeValueAsString(wrapper))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.response.status").isNotEmpty())
+                .andExpect(jsonPath("$.response.status").value(status))
+                .andExpect(jsonPath("$.errors").isEmpty());
+    }
+
+    @Test
+    public void doGenerateChallenge_withResetPasswordPurpose_thenPass() throws Exception {
+        String status = "SUCCESSFUL";
+        GenerateChallengeResponse generateChallengeResponse = new GenerateChallengeResponse(status);
+
+        generateChallengeRequest.setPurpose(Purpose.RESET_PASSWORD);
+        when(registrationService.generateChallenge(generateChallengeRequest, ""))
+                .thenReturn(generateChallengeResponse);
+
+        mockMvc.perform(post("/registration/generate-challenge")
+                        .content(objectMapper.writeValueAsString(wrapper))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.response.status").isNotEmpty())
+                .andExpect(jsonPath("$.response.status").value(status))
+                .andExpect(jsonPath("$.errors").isEmpty());
+    }
+
+    @Test
+    public void doGenerateChallenge_withInvalidPurpose_thenFail() throws Exception {
+        String status = "SUCCESSFUL";
+        GenerateChallengeResponse generateChallengeResponse = new GenerateChallengeResponse(status);
+
+        generateChallengeRequest.setPurpose(Purpose.REGISTRATION);
+        when(registrationService.generateChallenge(generateChallengeRequest, ""))
+                .thenReturn(generateChallengeResponse);
+
+        String requestBody = objectMapper.writeValueAsString(wrapper);
+        requestBody = requestBody.replace("REGISTRATION", "Invalid-purpose");
+
+        mockMvc.perform(post("/registration/generate-challenge")
+                        .content(requestBody)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.response").isEmpty())
+                .andExpect(jsonPath("$.errors").isNotEmpty())
+                .andExpect(jsonPath("$.errors[0].errorCode").value(ErrorConstants.INVALID_REQUEST));
+    }
+
+    @Test
     public void doGetRegistrationStatus_returnCompletedResponse() throws Exception {
         String mockTransactionID = "123456789";
-        RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85577410541");
+        RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85577410541", Purpose.REGISTRATION);
         registrationTransaction.setRegistrationStatus(RegistrationStatus.COMPLETED);
         RegistrationStatusResponse response = new RegistrationStatusResponse();
         response.setStatus(registrationTransaction.getRegistrationStatus());
@@ -405,7 +460,7 @@ public class RegistrationControllerTest {
     @Test
     public void doGetRegistrationStatus_returnPendingResponse() throws Exception {
         String mockTransactionID = "123456789";
-        RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85577410541");
+        RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85577410541", Purpose.REGISTRATION);
         registrationTransaction.setRegistrationStatus(RegistrationStatus.PENDING);
         RegistrationStatusResponse response = new RegistrationStatusResponse();
         response.setStatus(registrationTransaction.getRegistrationStatus());
@@ -421,7 +476,7 @@ public class RegistrationControllerTest {
     @Test
     public void doGetRegistrationStatus_returnFailedResponse() throws Exception {
         String mockTransactionID = "123456789";
-        RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85577410541");
+        RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85577410541", Purpose.REGISTRATION);
         registrationTransaction.setRegistrationStatus(RegistrationStatus.FAILED);
         RegistrationStatusResponse response = new RegistrationStatusResponse();
         response.setStatus(registrationTransaction.getRegistrationStatus());

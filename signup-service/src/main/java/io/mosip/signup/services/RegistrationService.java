@@ -6,11 +6,8 @@ import io.mosip.signup.dto.*;
 import io.mosip.signup.exception.ChallengeFailedException;
 import io.mosip.signup.exception.InvalidTransactionException;
 import io.mosip.signup.exception.SignUpException;
-import io.mosip.signup.util.ActionStatus;
-import io.mosip.signup.util.ErrorConstants;
-import io.mosip.signup.util.RegistrationStatus;
+import io.mosip.signup.util.*;
 import io.mosip.signup.exception.CaptchaException;
-import io.mosip.signup.util.SignUpConstants;
 import io.mosip.signup.exception.GenerateChallengeException;
 import io.mosip.signup.helper.NotificationHelper;
 import lombok.extern.slf4j.Slf4j;
@@ -118,7 +115,7 @@ public class RegistrationService {
 
         if(generateChallengeRequest.isRegenerate() == false) {
             transactionId = IdentityProviderUtil.createTransactionId(null);
-            transaction = new RegistrationTransaction(identifier);
+            transaction = new RegistrationTransaction(identifier, generateChallengeRequest.getPurpose());
             //Need to set cookie only when regenerate is false.
             addCookieInResponse(transactionId, unauthenticatedTransactionTimeout);
         }
@@ -183,6 +180,10 @@ public class RegistrationService {
                 !registerRequest.getUsername().equals(registerRequest.getUserInfo().getPhone())) {
             log.error("Transaction {} : given unsupported username in L1", transactionId);
             throw new SignUpException(ErrorConstants.IDENTIFIER_MISMATCH);
+        }
+        if (!transaction.getPurpose().equals(Purpose.REGISTRATION)) {
+            log.error("Transaction {} : is not for Registration Purpose", transactionId);
+            throw new SignUpException(ErrorConstants.UNSUPPORTED_PURPOSE);
         }
         if(registerRequest.getConsent().equals(CONSENT_DISAGREE)) {
             log.error("Transaction {} : disagrees consent", transactionId);
