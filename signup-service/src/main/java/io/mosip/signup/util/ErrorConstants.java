@@ -28,5 +28,6 @@ public class ErrorConstants {
     public static final String GET_UIN_FAILED = "get_uin_failed";
     public static final String INVALID_FULLNAME = "invalid_fullname";
     public static final String TOO_EARLY_ATTEMPT = "too_early_attempt";
+    public static final String UNSUPPORTED_PURPOSE = "unsupported_purpose";
 
 }
