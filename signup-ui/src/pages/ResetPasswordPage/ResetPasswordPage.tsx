@@ -117,7 +117,7 @@ export const ResetPasswordPage = ({ settings }: ResetPasswordPageProps) => {
       case ResetPasswordStep.UserInfo:
         return <UserInfo methods={methods} settings={settings} />;
       case ResetPasswordStep.Otp:
-        return <Otp />;
+        return <Otp methods={methods} settings={settings} />;
       case ResetPasswordStep.ResetPassword:
         return <ResetPassword />;
       case ResetPasswordStep.ResetPasswordStatus:

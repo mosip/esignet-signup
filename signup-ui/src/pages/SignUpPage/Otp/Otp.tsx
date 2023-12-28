@@ -4,6 +4,7 @@ import { Trans, useTranslation } from "react-i18next";
 import PinInput from "react-pin-input";
 import { useTimer } from "react-timer-hook";
 
+import { ResendAttempt } from "~components/resend-attempt";
 import { ActionMessage } from "~components/ui/action-message";
 import { Button } from "~components/ui/button";
 import { FormControl, FormField, FormItem } from "~components/ui/form";
@@ -39,7 +40,6 @@ import {
   stepSelector,
   useSignUpStore,
 } from "../useSignUpStore";
-import { ResendAttempt } from "./components/ResendAttempt";
 
 interface OtpProps {
   settings: SettingsDto;

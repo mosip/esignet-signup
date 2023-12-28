@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
 
 import { ReactComponent as FailedIconSvg } from "~assets/svg/failed-icon.svg";
-import { SIGNUP_ROUTE } from "~constants/routes";
+import { RESET_PASSWORD } from "~constants/routes";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -40,7 +40,7 @@ export const ResetPasswordPopover = () => {
     window.location.href = getSignInRedirectURL(
       settings?.response.configs["signin.redirect-url"],
       fromSignInHash,
-      SIGNUP_ROUTE
+      RESET_PASSWORD
     );
   };
 
