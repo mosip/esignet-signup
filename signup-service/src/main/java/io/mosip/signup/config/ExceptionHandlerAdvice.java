@@ -93,11 +93,7 @@ public class ExceptionHandlerAdvice extends ResponseEntityExceptionHandler {
             }
             return new ResponseEntity<ResponseWrapper>(getResponseWrapper(errors), HttpStatus.OK);
         }
-        if(ex instanceof MissingServletRequestParameterException) {
-            return new ResponseEntity<ResponseWrapper>(getResponseWrapper(INVALID_REQUEST, ex.getMessage()),
-                    HttpStatus.OK);
-        }
-        if(ex instanceof HttpMediaTypeNotAcceptableException) {
+        if(ex instanceof MissingServletRequestParameterException || ex instanceof HttpMessageNotReadableException || ex instanceof HttpMediaTypeNotAcceptableException) {
             return new ResponseEntity<ResponseWrapper>(getResponseWrapper(INVALID_REQUEST, ex.getMessage()),
                     HttpStatus.OK);
         }

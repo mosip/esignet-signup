@@ -1,6 +1,7 @@
 package io.mosip.signup.services;
 
 import io.mosip.signup.dto.RegistrationTransaction;
+import io.mosip.signup.util.Purpose;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,7 +25,7 @@ public class CacheUtilServiceTest {
 
     @Test
     public void test_RegistrationTransaction_cache() {
-        RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85512123123");
+        RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85512123123", Purpose.REGISTRATION);
         registrationTransaction.setChallengeHash("123456-HASH");
 
         Mockito.when(cache.get("mock", RegistrationTransaction.class)).thenReturn(registrationTransaction);
@@ -44,7 +45,7 @@ public class CacheUtilServiceTest {
 
     @Test
     public void setChallengeTransaction_thenPass() {
-        RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85512123123");
+        RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85512123123", Purpose.REGISTRATION);
         Assert.assertEquals(cacheUtilService.setChallengeGeneratedTransaction("mock-transaction", registrationTransaction), registrationTransaction);
         Assert.assertNotNull(cacheUtilService.setChallengeGeneratedTransaction("mock-transaction", registrationTransaction));
     }

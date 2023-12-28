@@ -1,9 +1,13 @@
 package io.mosip.signup.dto;
 
 import io.mosip.esignet.core.util.IdentityProviderUtil;
+import io.mosip.signup.util.ErrorConstants;
+import io.mosip.signup.util.Purpose;
 import io.mosip.signup.util.RegistrationStatus;
 import lombok.Data;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -26,8 +30,9 @@ public class RegistrationTransaction implements Serializable {
     private Map<String, RegistrationStatus> handlesStatus;
     private RegistrationStatus registrationStatus;
     private String locale;
+    private Purpose purpose;
 
-    public RegistrationTransaction(String identifier) {
+    public RegistrationTransaction(String identifier, Purpose purpose) {
         this.identifier = IdentityProviderUtil.generateB64EncodedHash(IdentityProviderUtil.ALGO_SHA3_256,
                 identifier.toLowerCase(Locale.ROOT));
         this.startedAt = LocalDateTime.now(ZoneOffset.UTC);
@@ -38,6 +43,7 @@ public class RegistrationTransaction implements Serializable {
         this.challengeHash = null;
         this.challengeRetryAttempts = 0;
         this.lastRetryAt = null;
+        this.purpose = purpose;
     }
 
     public long getLastRetryToNow() {
