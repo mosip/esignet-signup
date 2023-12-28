@@ -44,6 +44,7 @@ interface Resources {
     continue: string;
     forgot_password: string;
     forgot_password_description: string;
+    registered_mobile_number: string;
     page_under_construction: string;
     page_under_construction_detail: string;
     something_went_wrong: string;

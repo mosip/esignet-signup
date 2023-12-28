@@ -4,7 +4,7 @@ import { useFormContext, UseFormReturn } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
 
-import { SIGNUP_ROUTE } from "~constants/routes";
+import { RESET_PASSWORD } from "~constants/routes";
 import { ActionMessage } from "~components/ui/action-message";
 import { Button } from "~components/ui/button";
 import {
@@ -138,7 +138,7 @@ export const UserInfo = ({ settings, methods }: UserInfoProps) => {
                 href={getSignInRedirectURL(
                   settings?.response.configs["signin.redirect-url"],
                   fromSignInHash,
-                  SIGNUP_ROUTE
+                  RESET_PASSWORD
                 )}
                 className="absolute left-0 cursor-pointer"
               >
