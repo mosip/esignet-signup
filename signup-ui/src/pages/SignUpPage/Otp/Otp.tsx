@@ -168,10 +168,13 @@ export const Otp = ({ methods, settings }: OtpProps) => {
             identifier: `${
               settings.response.configs["identifier.prefix"]
             }${getValues("phone")}`,
-            challengeInfo: {
-              challenge: getValues("otp"),
-              format: "alpha-numeric",
-            },
+            challengeInfo: [
+              {
+                challenge: getValues("otp"),
+                format: "alpha-numeric",
+                type: "OTP",
+              },
+            ],
           },
         };
 

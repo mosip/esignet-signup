@@ -1,6 +1,5 @@
 interface Resources {
   translation: {
-    reset_password: string;
     register: string;
     landing_page_title: string;
     landing_page_description: string;
@@ -44,6 +43,20 @@ interface Resources {
     continue: string;
     forgot_password: string;
     forgot_password_description: string;
+    reset_password: string;
+    reset_password_description: string;
+    new_password: string;
+    new_password_placeholder: string;
+    confirm_new_password: string;
+    confirm_new_password_placeholder: string;
+    reset: string;
+    password_reset_in_progress: string;
+    password_reset_in_progress_detail: string;
+    password_reset_confirmation: string;
+    password_reset_confirmation_detail: string;
+    password_reset_failed: string;
+    password_reset_failed_detail: string;
+    retry: string;
     registered_mobile_number: string;
     page_under_construction: string;
     page_under_construction_detail: string;
@@ -61,6 +74,8 @@ interface Resources {
     terms_and_conditions_content: string;
     privacy_and_policy_content: string;
     privacy_and_policy_title: string;
+    signup_discontinue_prompt: string;
+    reset_password_discontinue_prompt: string;
     footer: {
       powered_by: string;
     };
@@ -77,6 +92,11 @@ interface Resources {
       "already-registered": string;
       timed_out: string;
       request_limit: string;
+      not_registered: string;
+      invalid_identifier: string;
+      invalid_password: string;
+      invalid_request: string;
+      reset_pwd_failed: string;
     };
   };
 }
