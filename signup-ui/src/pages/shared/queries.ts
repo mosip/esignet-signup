@@ -4,6 +4,7 @@ import {
   RegistrationResponseDto,
   RegistrationStatus,
   RegistrationStatusResponseDto,
+  ResetPasswordResponseDto,
   SettingsDto,
 } from "~typings/types";
 
@@ -25,7 +26,7 @@ export const useSettings = (): UseQueryResult<SettingsDto, unknown> => {
 export const useRegistrationStatus = (
   statusRequestAttempt: number,
   statusRequestDelay: number,
-  registration: RegistrationResponseDto
+  registration: RegistrationResponseDto | ResetPasswordResponseDto
 ): UseQueryResult<RegistrationStatusResponseDto, unknown> => {
   return useQuery<RegistrationStatusResponseDto>({
     queryKey: keys.registrationStatus,
