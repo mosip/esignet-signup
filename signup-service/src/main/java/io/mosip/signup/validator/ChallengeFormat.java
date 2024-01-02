@@ -14,9 +14,9 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @Target({FIELD, TYPE_USE})
 @Retention(RUNTIME)
-@Constraint(validatedBy = ChallengeFormatTypeValidator.class)
+@Constraint(validatedBy = ChallengeFormatValidator.class)
 @Documented
-public @interface ChallengeFormatType {
+public @interface ChallengeFormat {
     String message() default ErrorConstants.INVALID_CHALLENGE_FORMAT;
     Class<?>[] groups() default { };
     Class<? extends Payload>[] payload() default { };

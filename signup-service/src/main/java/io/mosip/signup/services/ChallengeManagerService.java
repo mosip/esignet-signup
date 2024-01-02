@@ -27,12 +27,12 @@ public class ChallengeManagerService {
     @Value("${mosip.signup.generate-challenge.endpoint}")
     private String generateChallengeUrl;
 
-    @Value("${mosip.signup.supported.challenge-type:OTP}")
-    private String challengeType;
+    @Value("${mosip.signup.supported.generate-challenge-type:OTP}")
+    private String supportedGenerateChallengeType;
 
 
     public String generateChallenge(RegistrationTransaction transaction) throws SignUpException {
-        switch (challengeType) {
+        switch (supportedGenerateChallengeType) {
             case "OTP" :
                 return generateOTPChallenge(transaction.getChallengeTransactionId());
         }
