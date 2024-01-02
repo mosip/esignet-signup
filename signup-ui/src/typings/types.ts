@@ -47,12 +47,24 @@ const RegisterStatusPossibleErrors = [
 export type RegisterStatusErrors =
   (typeof RegisterStatusPossibleErrors)[number];
 
+const ResetPasswordPossibleErrors = [
+  "invalid_transaction",
+  "not_registered",
+  "invalid_identifier",
+  "invalid_password",
+  "invalid_request",
+  "reset_pwd_failed",
+] as const;
+
+export type ResetPasswordErrors = (typeof ResetPasswordPossibleErrors)[number];
+
 export interface Error {
   errorCode:
     | GenerateChallengeErrors
     | VerifyChallengeErrors
     | RegisterErrors
-    | RegisterStatusErrors;
+    | RegisterStatusErrors
+    | ResetPasswordErrors;
   errorMessage: string;
 }
 
@@ -82,6 +94,7 @@ interface SettingsConfig {
   "status.request.delay": number;
   "popup.timeout": number;
   "signin.redirect-url": string;
+  "identifier.allowed.characters": string;
 }
 
 export interface Settings {
@@ -127,13 +140,23 @@ export type GenerateChallengeResponseDto = BaseResponseDto & {
   } | null;
 };
 
+const ChallengeInfoFormats = [
+  "alpha-numeric",
+  "base64url-encoded-json",
+] as const;
+
+type ChallengeInfoFormatType = (typeof ChallengeInfoFormats)[number];
+
+export interface ChallengeInfoDto {
+  challenge: string;
+  format: ChallengeInfoFormatType;
+  type: string;
+}
+
 export type VerifyChallengeRequestDto = BaseRequestDto & {
   request: {
     identifier: string;
-    challengeInfo: {
-      challenge: string;
-      format: "alpha-numeric";
-    };
+    challengeInfo: ChallengeInfoDto[];
   };
 };
 
@@ -183,5 +206,23 @@ export enum RegistrationWithFailedStatus {
 export type RegistrationStatusResponseDto = BaseResponseDto & {
   response: {
     status: RegistrationWithFailedStatus;
+  } | null;
+};
+
+export type ResetPasswordRequestDto = BaseRequestDto & {
+  request: {
+    identifier: string;
+    password: string;
+  };
+};
+
+export enum ResetPasswordStatus {
+  PENDING = "PENDING",
+  COMPLETED = "COMPLETED",
+}
+
+export type ResetPasswordResponseDto = BaseResponseDto & {
+  response: {
+    status: ResetPasswordStatus;
   } | null;
 };

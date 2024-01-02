@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Resolver, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
@@ -81,7 +81,7 @@ export const ResetPasswordPage = ({ settings }: ResetPasswordPageProps) => {
             new RegExp(settings.response.configs["password.pattern"]),
             t("password_validation")
           )
-          .oneOf([yup.ref("password")], t("password_validation_must_match")),
+          .oneOf([yup.ref("newPassword")], t("password_validation_must_match")),
       }),
       // Step 4 - ResetPasswordStatus
       yup.object({}),
@@ -112,6 +112,28 @@ export const ResetPasswordPage = ({ settings }: ResetPasswordPageProps) => {
     mode: "onBlur",
   });
 
+  const {
+    formState: { isDirty },
+  } = methods;
+
+  useEffect(() => {
+    if (step === ResetPasswordStep.ResetPasswordConfirmation) return;
+
+    const handleTabBeforeUnload = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+
+      return (
+        isDirty && (event.returnValue = t("reset_password_discontinue_prompt"))
+      );
+    };
+
+    window.addEventListener("beforeunload", handleTabBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleTabBeforeUnload);
+    };
+  }, [step]);
+
   const getResetPasswordContent = (step: ResetPasswordStep) => {
     switch (step) {
       case ResetPasswordStep.UserInfo:
@@ -119,9 +141,9 @@ export const ResetPasswordPage = ({ settings }: ResetPasswordPageProps) => {
       case ResetPasswordStep.Otp:
         return <Otp methods={methods} settings={settings} />;
       case ResetPasswordStep.ResetPassword:
-        return <ResetPassword />;
+        return <ResetPassword methods={methods} settings={settings} />;
       case ResetPasswordStep.ResetPasswordStatus:
-        return <ResetPasswordStatus />;
+        return <ResetPasswordStatus settings={settings} />;
       case ResetPasswordStep.ResetPasswordConfirmation:
         return <ResetPasswordConfirmation />;
       default:

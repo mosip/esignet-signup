@@ -6,16 +6,24 @@ import {
   GenerateChallengeResponseDto,
   RegistrationRequestDto,
   RegistrationResponseDto,
+  ResetPasswordRequestDto,
+  ResetPasswordResponseDto,
   VerifyChallengeRequestDto,
   VerifyChallengeResponseDto,
 } from "~typings/types";
 
-import { generateChallenge, register, verifyChallenge } from "./service";
+import {
+  generateChallenge,
+  register,
+  resetPassword,
+  verifyChallenge,
+} from "./service";
 
 export const keys = {
   challengeGeneration: ["challengeGeneration"] as const,
   challengeVerification: ["challengeVerification"] as const,
   registration: ["registration"] as const,
+  resetPassword: ["resetPassword"] as const,
 };
 
 export const useGenerateChallenge = () => {
@@ -53,10 +61,25 @@ export const useRegister = () => {
     RegistrationRequestDto
   >({
     mutationKey: keys.registration,
-    mutationFn: (RegistrationRequestDto: RegistrationRequestDto) =>
-      register(RegistrationRequestDto),
+    mutationFn: (registrationRequestDto: RegistrationRequestDto) =>
+      register(registrationRequestDto),
     gcTime: Infinity,
   });
 
   return { registerMutation };
+};
+
+export const useResetPassword = () => {
+  const resetPasswordMutation = useMutation<
+    ResetPasswordResponseDto,
+    ApiError,
+    ResetPasswordRequestDto
+  >({
+    mutationKey: keys.resetPassword,
+    mutationFn: (resetPasswordRequestDto: ResetPasswordRequestDto) =>
+      resetPassword(resetPasswordRequestDto),
+    gcTime: Infinity,
+  });
+
+  return { resetPasswordMutation };
 };

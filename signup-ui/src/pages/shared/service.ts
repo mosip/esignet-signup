@@ -4,6 +4,7 @@ import {
   RegistrationRequestDto,
   RegistrationStatusResponseDto,
   RegistrationWithFailedStatus,
+  ResetPasswordRequestDto,
   SettingsDto,
   VerifyChallengeRequestDto,
 } from "~typings/types";
@@ -49,3 +50,9 @@ export const getRegistrationStatus =
       return data;
     });
   };
+
+export const resetPassword = async (newUserInfo: ResetPasswordRequestDto) => {
+  return ApiService.post("/reset-password", newUserInfo).then(
+    ({ data }) => data
+  );
+};
