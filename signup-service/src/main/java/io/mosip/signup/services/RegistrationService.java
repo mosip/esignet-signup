@@ -1,5 +1,7 @@
 package io.mosip.signup.services;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.esignet.core.util.IdentityProviderUtil;
 import io.mosip.kernel.core.util.HMACUtils2;
 import io.mosip.signup.dto.*;
@@ -26,10 +28,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static io.mosip.signup.util.SignUpConstants.*;
 
@@ -50,11 +50,17 @@ public class RegistrationService {
     private NotificationHelper notificationHelper;
 
     @Autowired
+    private ObjectMapper objectMapper;
+
+    @Autowired
     HttpServletResponse response;
 
     @Autowired
     @Qualifier("selfTokenRestTemplate")
     private RestTemplate selfTokenRestTemplate;
+
+    @Value("${mosip.signup.supported.challenge.otp.length}")
+    private int otpLength;
 
     @Value("${mosip.signup.id-schema.version}")
     private float idSchemaVersion;
@@ -62,11 +68,17 @@ public class RegistrationService {
     @Value("${mosip.signup.add-identity.request.id}")
     private String addIdentityRequestID;
 
-    @Value("${mosip.signup.add-identity.request.version}")
-    private String addIdentityRequestVersion;
+    @Value("${mosip.signup.update-identity.request.id}")
+    private String updateIdentityRequestID;
 
-    @Value("${mosip.signup.add-identity.endpoint}")
-    private String addIdentityEndpoint;
+    @Value("${mosip.signup.identity.request.version}")
+    private String identityRequestVersion;
+
+    @Value("${mosip.signup.identity.endpoint}")
+    private String identityEndpoint;
+
+    @Value("${mosip.signup.get-identity.endpoint}")
+    private String getIdentityEndpoint;
 
     @Value("${mosip.signup.generate-hash.endpoint}")
     private String generateHashEndpoint;
@@ -145,7 +157,7 @@ public class RegistrationService {
 
         log.debug("Transaction {} : start verify challenge", transactionId);
         RegistrationTransaction transaction = cacheUtilService.getChallengeGeneratedTransaction(transactionId);
-        if(transaction == null){
+        if(transaction == null) {
             log.error("Transaction {} : not found in ChallengeGeneratedTransaction cache", transactionId);
             throw new InvalidTransactionException();
         }
@@ -153,11 +165,25 @@ public class RegistrationService {
             log.error("Transaction {} : contain identifier not the same with identifier user request", transactionId);
             throw new SignUpException(ErrorConstants.IDENTIFIER_MISMATCH);
         }
-        String challengeHash = IdentityProviderUtil.generateB64EncodedHash(IdentityProviderUtil.ALGO_SHA3_256, verifyChallengeRequest.getChallengeInfo().getChallenge());
+
+        for (ChallengeInfo challengeInfo: verifyChallengeRequest.getChallengeInfo()){
+            validateChallengeFormatAndType(challengeInfo);
+        }
+
+        Optional<ChallengeInfo> otpChallengeInfo = verifyChallengeRequest.getChallengeInfo()
+                .stream().filter(challengeInfo -> challengeInfo.getType().equals("OTP")).findFirst();
+
+        if(otpChallengeInfo.isEmpty()) throw new SignUpException(ErrorConstants.INVALID_CHALLENGE);
+
+        String challengeHash = IdentityProviderUtil.generateB64EncodedHash(IdentityProviderUtil.ALGO_SHA3_256,
+                otpChallengeInfo.get().getChallenge());
+
         if(!challengeHash.equals(transaction.getChallengeHash())) {
             log.error("Transaction {} : challenge not match", transactionId);
             throw new ChallengeFailedException();
         }
+
+        fetchAndCheckIdentity(transaction, verifyChallengeRequest);
 
         //After successful verification of the user, change the transactionId
         transactionId = IdentityProviderUtil.createTransactionId(null);
@@ -207,6 +233,66 @@ public class RegistrationService {
         return registration;
     }
 
+    public RegistrationStatusResponse updatePassword(ResetPasswordRequest resetPasswordRequest,
+                                           String transactionId) throws SignUpException{
+
+        log.debug("Transaction {} : start reset password", transactionId);
+        RegistrationTransaction transaction = cacheUtilService.getChallengeVerifiedTransaction(transactionId);
+        if(transaction == null) {
+            log.error("Transaction {} : not found in ChallengeVerifiedTransaction cache", transactionId);
+            throw new InvalidTransactionException();
+        }
+//        if(!IdentityProviderUtil.generateB64EncodedHash(IdentityProviderUtil.ALGO_SHA3_256,
+//                resetPasswordRequest.getIdentifier().toLowerCase(Locale.ROOT)).equals(transaction.getIdentifier())){
+//            log.error("Transaction {} : not found in ChallengeVerifiedTransaction cache", transactionId);
+//            throw new SignUpException(ErrorConstants.IDENTIFIER_MISMATCH);
+//        }
+
+        if(!transaction.isValidIdentifier(resetPasswordRequest.getIdentifier().toLowerCase(Locale.ROOT))) {
+            log.error("generate-challenge failed: invalid identifier");
+            throw new SignUpException(ErrorConstants.IDENTIFIER_MISMATCH);
+        }
+
+        Identity identity = new Identity();
+        identity.setUIN(transaction.getUin());
+        identity.setIDSchemaVersion(idSchemaVersion);
+
+        Password password = generateSaltedHash(resetPasswordRequest.getPassword(), transactionId);
+        identity.setPassword(password);
+
+        IdentityRequest identityRequest = new IdentityRequest();
+        identityRequest.setRegistrationId(transaction.getApplicationId());
+        identityRequest.setIdentity(identity);
+
+        RestRequestWrapper<IdentityRequest> restRequest = new RestRequestWrapper<>();
+        restRequest.setId(updateIdentityRequestID);
+        restRequest.setVersion(identityRequestVersion);
+        restRequest.setRequesttime(IdentityProviderUtil.getUTCDateTime());
+        restRequest.setRequest(identityRequest);
+
+        log.debug("Transaction {} : start reset password", transactionId);
+        HttpEntity<RestRequestWrapper<IdentityRequest>> resReq = new HttpEntity<>(restRequest);
+        RestResponseWrapper<IdentityResponse> restResponseWrapper = selfTokenRestTemplate.exchange(identityEndpoint,
+                HttpMethod.PATCH,
+                resReq,
+                new ParameterizedTypeReference<RestResponseWrapper<IdentityResponse>>() {}).getBody();
+
+        if (restResponseWrapper != null && restResponseWrapper.getErrors() != null &&
+                !CollectionUtils.isEmpty(restResponseWrapper.getErrors())){
+            log.error("Transaction {} : reset password failed with response {}", transactionId, restResponseWrapper);
+            throw new SignUpException(restResponseWrapper.getErrors().get(0).getErrorCode());
+        }
+
+        if (restResponseWrapper == null || restResponseWrapper.getResponse() == null){
+            log.error("Transaction {} : reset password failed with response {}", transactionId, restResponseWrapper);
+            throw new SignUpException(ErrorConstants.RESET_PWD_FAILED);
+        }
+
+        RegistrationStatusResponse resetPassword = new RegistrationStatusResponse();
+        resetPassword.setStatus(RegistrationStatus.PENDING);
+        return resetPassword;
+    }
+
     public RegistrationStatusResponse getRegistrationStatus(String transactionId)
             throws SignUpException {
         if (transactionId == null || transactionId.isEmpty())
@@ -233,6 +319,73 @@ public class RegistrationService {
         return registrationStatusResponse;
     }
 
+    private void fetchAndCheckIdentity(RegistrationTransaction registrationTransaction, VerifyChallengeRequest verifyChallengeRequest) {
+
+        String endpoint = String.format(getIdentityEndpoint, verifyChallengeRequest.getIdentifier());
+        RestResponseWrapper<IdentityResponse> restResponseWrapper = selfTokenRestTemplate
+                .exchange(endpoint, HttpMethod.GET, null,
+                        new ParameterizedTypeReference<RestResponseWrapper<IdentityResponse>>() {}).getBody();
+
+        if (restResponseWrapper == null) throw new SignUpException(ErrorConstants.FETCH_IDENTITY_FAILED);
+
+        switch (registrationTransaction.getPurpose()){
+            case REGISTRATION: checkIdentityExists(restResponseWrapper);
+                break;
+            case RESET_PASSWORD: checkActiveIdentityExists(restResponseWrapper, registrationTransaction,
+                    verifyChallengeRequest);
+                break;
+            default: throw new SignUpException(ErrorConstants.UNSUPPORTED_PURPOSE);
+        }
+    }
+
+    private void checkActiveIdentityExists(RestResponseWrapper<IdentityResponse> restResponseWrapper,
+                                           RegistrationTransaction registrationTransaction,
+                                           VerifyChallengeRequest verifyChallengeRequest){
+        if (restResponseWrapper.getResponse() == null){
+            throw new SignUpException(restResponseWrapper.getErrors()
+                    .stream()
+                    .anyMatch(restError -> restError.getErrorCode().equals("IDR-IDC-007")) ?
+                    ErrorConstants.IDENTIFIER_NOT_FOUND : ErrorConstants.FETCH_IDENTITY_FAILED);
+        }
+
+        if (!restResponseWrapper.getResponse().getStatus().equals(SignUpConstants.ACTIVATED)){
+            throw new SignUpException(ErrorConstants.IDENTITY_INACTIVE);
+        }
+
+        Optional<ChallengeInfo> kbaChallenge = verifyChallengeRequest.getChallengeInfo().stream()
+                .filter(challengeInfo -> challengeInfo.getType().equals("KBA"))
+                .findFirst();
+        if (kbaChallenge.isEmpty()){
+            throw new SignUpException(ErrorConstants.KBA_CHALLENGE_NOT_FOUND);
+        }
+
+        List<LanguageTaggedValue> fullNameFromIdRepo = restResponseWrapper.getResponse().getIdentity()
+                .getFullName().stream()
+                .filter(fullName -> fullName.getLanguage().equals("khm"))
+                .collect(Collectors.toList());
+
+        String jsonObject = new String(Base64.getUrlDecoder().decode(kbaChallenge.get().getChallenge().getBytes()));
+        KnowledgeBaseChallenge knowledgeBaseChallenge = null;
+        try {
+            knowledgeBaseChallenge = objectMapper.readValue(jsonObject, KnowledgeBaseChallenge.class);
+        }catch (JsonProcessingException exception){
+            throw new SignUpException(ErrorConstants.INVALID_KBA_CHALLENGE);
+        }
+
+        if (!knowledgeBaseChallenge.getFullName().equals(fullNameFromIdRepo)){
+            throw new SignUpException(ErrorConstants.KNOWLEDGEBASE_MISMATCH);
+        }else {
+            registrationTransaction.setUin(restResponseWrapper.getResponse().getIdentity().getUIN());
+        }
+
+    }
+
+    private void checkIdentityExists(RestResponseWrapper<IdentityResponse> restResponseWrapper){
+        if (restResponseWrapper.getResponse() != null && restResponseWrapper.getResponse().getStatus().equals("ACTIVATED")){
+            throw new SignUpException(ErrorConstants.IDENTIFIER_ALREADY_REGISTERED);
+        }
+    }
+
     private void saveIdentityData(RegisterRequest registerRequest, String transactionId,
                                   RegistrationTransaction transaction) throws SignUpException{
 
@@ -256,24 +409,27 @@ public class RegistrationService {
         transaction.getHandlesStatus().put(getHandleRequestId(transaction.getApplicationId(),
                 "phone", userInfoMap.getPhone()), RegistrationStatus.PENDING);
 
-        AddIdentityRequest addIdentityRequest = new AddIdentityRequest();
-        addIdentityRequest.setRegistrationId(transaction.getApplicationId());
-        addIdentityRequest.setIdentity(identity);
+        IdentityRequest identityRequest = new IdentityRequest();
+        identityRequest.setRegistrationId(transaction.getApplicationId());
+        identityRequest.setIdentity(identity);
 
-        addIdentity(addIdentityRequest, transactionId);
+        addIdentity(identityRequest, transactionId);
     }
 
-    private void addIdentity(AddIdentityRequest addIdentityRequest, String transactionId) throws SignUpException{
+    private void addIdentity(IdentityRequest identityRequest, String transactionId) throws SignUpException{
 
-        RestRequestWrapper<AddIdentityRequest> restRequest = new RestRequestWrapper<>();
+        RestRequestWrapper<IdentityRequest> restRequest = new RestRequestWrapper<>();
         restRequest.setId(addIdentityRequestID);
-        restRequest.setVersion(addIdentityRequestVersion);
+        restRequest.setVersion(identityRequestVersion);
         restRequest.setRequesttime(IdentityProviderUtil.getUTCDateTime());
-        restRequest.setRequest(addIdentityRequest);
+        restRequest.setRequest(identityRequest);
 
         log.debug("Transaction {} : start add identity", transactionId);
-        HttpEntity<RestRequestWrapper<AddIdentityRequest>> resReq = new HttpEntity<>(restRequest);
-        RestResponseWrapper<AddIdentityResponse> restResponseWrapper = selfTokenRestTemplate.exchange(addIdentityEndpoint, HttpMethod.POST, resReq, new ParameterizedTypeReference<RestResponseWrapper<AddIdentityResponse>>() {}).getBody();
+        HttpEntity<RestRequestWrapper<IdentityRequest>> resReq = new HttpEntity<>(restRequest);
+        RestResponseWrapper<IdentityResponse> restResponseWrapper = selfTokenRestTemplate.exchange(identityEndpoint,
+                HttpMethod.POST,
+                resReq,
+                new ParameterizedTypeReference<RestResponseWrapper<IdentityResponse>>() {}).getBody();
 
         if (restResponseWrapper != null && restResponseWrapper.getResponse() != null &&
                 restResponseWrapper.getResponse().getStatus().equals("ACTIVATED")) {
@@ -373,6 +529,7 @@ public class RegistrationService {
 
     private void addVerifiedCookieInResponse(String transactionId, int maxAge) {
         Cookie cookie = new Cookie(SignUpConstants.VERIFIED_TRANSACTION_ID, transactionId);
+        cookie.setPath("/v1/signup/");
         cookie.setMaxAge(maxAge);
         cookie.setHttpOnly(true);
         cookie.setSecure(true);
@@ -393,5 +550,16 @@ public class RegistrationService {
             log.error("Failed to generate handleRequestId", e);
         }
         return requestId;
+    }
+
+    private void validateChallengeFormatAndType(ChallengeInfo challengeInfo) throws SignUpException{
+        if (challengeInfo.getType().equals("OTP") && !challengeInfo.getFormat().equals("alpha-numeric") &&
+                (challengeInfo.getChallenge().length() != otpLength)){
+            throw new SignUpException(ErrorConstants.CHALLENGE_FORMAT_AND_TYPE_MISMATCH);
+        }
+
+        if (challengeInfo.getType().equals("KBA") && !challengeInfo.getFormat().equals("base64url-encoded-json")){
+            throw new SignUpException(ErrorConstants.CHALLENGE_FORMAT_AND_TYPE_MISMATCH);
+        }
     }
 }

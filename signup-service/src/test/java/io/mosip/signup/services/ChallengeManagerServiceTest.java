@@ -42,7 +42,7 @@ public class ChallengeManagerServiceTest {
     @Before
     public void setUp() {
         ReflectionTestUtils.setField(challengeManagerService, "generateChallengeUrl", generateChallengeUrl);
-        ReflectionTestUtils.setField(challengeManagerService, "challengeType", "OTP");
+        ReflectionTestUtils.setField(challengeManagerService, "supportedGenerateChallengeType", "OTP");
     }
 
 
