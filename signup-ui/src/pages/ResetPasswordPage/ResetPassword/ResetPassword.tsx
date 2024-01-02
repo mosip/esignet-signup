@@ -116,7 +116,7 @@ export const ResetPassword = ({ methods, settings }: ResetPasswordProps) => {
   );
 
   return (
-    <div className="my-10">
+    <div className="my-10 sm:mb-10 sm:mt-0">
       <Step>
         <StepHeader>
           <StepTitle className="relative flex w-full items-center justify-center gap-x-4 text-[26px] font-semibold">
@@ -147,7 +147,7 @@ export const ResetPassword = ({ methods, settings }: ResetPasswordProps) => {
           </ActionMessage>
         </StepAlert>
         <StepContent>
-          <div className="flex flex-col gap-y-6 px-6 py-3">
+          <div className="flex flex-col gap-y-6 px-6 sm:px-0">
             <div className="flex flex-col gap-y-6">
               {/* New Password */}
               <FormField
