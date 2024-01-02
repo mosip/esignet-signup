@@ -5,7 +5,8 @@ import io.mosip.signup.validator.Identifier;
 import lombok.Data;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotEmpty;
+import java.util.List;
 
 @Data
 public class VerifyChallengeRequest {
@@ -13,7 +14,6 @@ public class VerifyChallengeRequest {
     @Identifier
     private String identifier;
 
-    @Valid
-    @NotNull(message = ErrorConstants.INVALID_CHALLENGE_INFO)
-    private ChallengeInfo challengeInfo;
+    @NotEmpty(message = ErrorConstants.INVALID_CHALLENGE_INFO)
+    private List<@Valid ChallengeInfo> challengeInfo;
 }
