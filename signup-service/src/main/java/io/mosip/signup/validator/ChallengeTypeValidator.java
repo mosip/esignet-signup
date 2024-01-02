@@ -6,15 +6,13 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import java.util.List;
 
-public class ChallengeFormatTypeValidator implements ConstraintValidator<ChallengeFormatType, String> {
+public class ChallengeTypeValidator implements ConstraintValidator<ChallengeType, String>{
 
-    @Value("#{${mosip.signup.supported.challenge-format-types}}")
+    @Value("#{${mosip.signup.supported.challenge-types}}")
     private List<String> supportedFormatTypes;
 
     @Override
-    public boolean isValid(String value, ConstraintValidatorContext context) {
-        if(value == null || value.isBlank())
-            return false;
+    public boolean isValid(String value, ConstraintValidatorContext constraintValidatorContext) {
         return supportedFormatTypes.contains(value);
     }
 }

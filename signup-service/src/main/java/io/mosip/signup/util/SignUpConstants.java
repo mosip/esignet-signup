@@ -11,6 +11,5 @@ public class SignUpConstants {
     public static final String EMTPY = "";
     public static final String SEND_OTP_SMS_NOTIFICATION_TEMPLATE_KEY = "mosip.signup.sms-notification-template.send-otp";
     public static final String REGISTRATION_SMS_NOTIFICATION_TEMPLATE_KEY = "mosip.signup.sms-notification-template.registration";
-
-
+    public static final String ACTIVATED = "ACTIVATED";
 }

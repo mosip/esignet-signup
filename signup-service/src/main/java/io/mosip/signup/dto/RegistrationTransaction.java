@@ -31,6 +31,7 @@ public class RegistrationTransaction implements Serializable {
     private RegistrationStatus registrationStatus;
     private String locale;
     private Purpose purpose;
+    private String uin;
 
     public RegistrationTransaction(String identifier, Purpose purpose) {
         this.identifier = IdentityProviderUtil.generateB64EncodedHash(IdentityProviderUtil.ALGO_SHA3_256,
