@@ -176,6 +176,7 @@ export const ResetPassword = ({ methods, settings }: ResetPasswordProps) => {
                       </div>
                       <FormControl>
                         <Input
+                          {...field}
                           type="password"
                           placeholder={t("new_password_placeholder")}
                           className={cn(
@@ -183,7 +184,12 @@ export const ResetPassword = ({ methods, settings }: ResetPasswordProps) => {
                             passwordResetFormError.newPassword &&
                               "border-destructive"
                           )}
-                          {...field}
+                          minLength={
+                            settings.response.configs["password.length.min"]
+                          }
+                          maxLength={
+                            settings.response.configs["password.length.max"]
+                          }
                         />
                       </FormControl>
                     </div>
@@ -203,6 +209,7 @@ export const ResetPassword = ({ methods, settings }: ResetPasswordProps) => {
                       </div>
                       <FormControl>
                         <Input
+                          {...field}
                           type="password"
                           placeholder={t("confirm_new_password_placeholder")}
                           className={cn(
@@ -210,7 +217,12 @@ export const ResetPassword = ({ methods, settings }: ResetPasswordProps) => {
                             passwordResetFormError.confirmNewPassword &&
                               "border-destructive"
                           )}
-                          {...field}
+                          minLength={
+                            settings.response.configs["password.length.min"]
+                          }
+                          maxLength={
+                            settings.response.configs["password.length.max"]
+                          }
                         />
                       </FormControl>
                     </div>

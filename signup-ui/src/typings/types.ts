@@ -78,23 +78,29 @@ export interface BaseRequestDto {
   request: { [key: string]: any };
 }
 
-interface SettingsConfig {
+export interface SettingsConfig {
   "identifier.pattern": string;
   "identifier.prefix": string;
   "captcha.site.key": string;
   "otp.length": number;
+  "otp.secret": boolean;
   "password.pattern": string;
+  "password.length.max": number;
+  "password.length.min": number;
   "challenge.timeout": number;
   "resend.attempts": number;
   "resend.delay": number;
   "fullname.pattern": string;
-  "status.deferred.response.timeout": number;
-  "status.check.limit": number;
   "status.request.limit": number;
   "status.request.delay": number;
   "popup.timeout": number;
   "signin.redirect-url": string;
   "identifier.allowed.characters": string;
+  "identifier.length.min": number;
+  "identifier.length.max": number;
+  "fullname.allowed.characters": string;
+  "fullname.length.min": number;
+  "fullname.length.max": number;
 }
 
 export interface Settings {
