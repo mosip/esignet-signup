@@ -1,4 +1,10 @@
-import { MouseEvent, useCallback, useRef, useState } from "react";
+import {
+  KeyboardEvent,
+  MouseEvent,
+  useCallback,
+  useRef,
+  useState,
+} from "react";
 import ReCAPTCHA from "react-google-recaptcha";
 import { useFormContext, UseFormReturn } from "react-hook-form";
 import { useTranslation } from "react-i18next";
@@ -32,6 +38,7 @@ import {
   StepTitle,
 } from "~components/ui/step";
 import { cn } from "~utils/cn";
+import { handleInputFilter } from "~utils/input";
 import { getLocale } from "~utils/language";
 import { getSignInRedirectURL } from "~utils/link";
 import { useGenerateChallenge } from "~pages/shared/mutations";
@@ -87,6 +94,18 @@ export const UserInfo = ({ settings, methods }: UserInfoProps) => {
     setValue("captchaToken", "", { shouldValidate: true });
   };
 
+  const handleUsernameInput = (event: KeyboardEvent<HTMLInputElement>) =>
+    handleInputFilter(
+      event,
+      settings.response.configs["identifier.allowed.characters"]
+    );
+
+  const handleFullNameInput = (event: KeyboardEvent<HTMLInputElement>) =>
+    handleInputFilter(
+      event,
+      settings.response.configs["fullname.allowed.characters"]
+    );
+
   const handleContinue = useCallback(
     async (e: MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
@@ -129,7 +148,7 @@ export const UserInfo = ({ settings, methods }: UserInfoProps) => {
   );
 
   return (
-    <div className="my-10 sm:mt-0 sm:mb-10">
+    <div className="my-10 sm:mb-10 sm:mt-0">
       <Step>
         <StepHeader>
           <StepTitle className="relative flex w-full items-center justify-center gap-x-4 text-[26px] font-semibold">
@@ -196,6 +215,17 @@ export const UserInfo = ({ settings, methods }: UserInfoProps) => {
                               type="tel"
                               placeholder={t("enter_your_number_placeholder")}
                               className="h-[inherit] border-none outline-none"
+                              minLength={
+                                settings.response.configs[
+                                  "identifier.length.min"
+                                ]
+                              }
+                              maxLength={
+                                settings.response.configs[
+                                  "identifier.length.max"
+                                ]
+                              }
+                              onKeyDown={handleUsernameInput}
                             />
                           </div>
                         </div>
@@ -217,12 +247,19 @@ export const UserInfo = ({ settings, methods }: UserInfoProps) => {
                       </div>
                       <FormControl>
                         <Input
+                          {...field}
                           placeholder={t("full_name_placeholder")}
                           className={cn(
                             "h-[52px] py-6",
                             UserInfoFormErrors.fullname && "border-destructive"
                           )}
-                          {...field}
+                          minLength={
+                            settings.response.configs["fullname.length.min"]
+                          }
+                          maxLength={
+                            settings.response.configs["fullname.length.max"]
+                          }
+                          onKeyDown={handleFullNameInput}
                         />
                       </FormControl>
                     </div>

@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { KeyboardEvent, useCallback, useState } from "react";
 import { PopoverTrigger } from "@radix-ui/react-popover";
 import { UseFormReturn } from "react-hook-form";
 import { useTranslation } from "react-i18next";
@@ -24,6 +24,7 @@ import {
   StepTitle,
 } from "~components/ui/step";
 import { cn } from "~utils/cn";
+import { handleInputFilter } from "~utils/input";
 import { useRegister } from "~pages/shared/mutations";
 import { RegistrationRequestDto, SettingsDto } from "~typings/types";
 
@@ -125,6 +126,12 @@ export const AccountSetup = ({ settings, methods }: AccountSetupProps) => {
     setOpenTermConditionModal(true);
   }
 
+  const handleFullNameInput = (event: KeyboardEvent<HTMLInputElement>) =>
+    handleInputFilter(
+      event,
+      settings.response.configs["fullname.allowed.characters"]
+    );
+
   return (
     <div className="my-10 sm:my-0">
       <Step>
@@ -178,12 +185,19 @@ export const AccountSetup = ({ settings, methods }: AccountSetupProps) => {
                     </div>
                     <FormControl>
                       <Input
-                        placeholder={t("full_name_placeholder")}
+                        {...field}
                         className={cn(
                           "h-[52px] py-6",
                           formErrors.fullNameInKhmer && "border-destructive"
                         )}
-                        {...field}
+                        placeholder={t("full_name_placeholder")}
+                        minLength={
+                          settings.response.configs["fullname.length.min"]
+                        }
+                        maxLength={
+                          settings.response.configs["fullname.length.max"]
+                        }
+                        onKeyDown={handleFullNameInput}
                       />
                     </FormControl>
                   </div>
@@ -217,13 +231,19 @@ export const AccountSetup = ({ settings, methods }: AccountSetupProps) => {
                     </div>
                     <FormControl>
                       <Input
+                        {...field}
                         type="password"
                         placeholder={t("password_placeholder")}
                         className={cn(
                           "h-[52px] py-6",
                           formErrors.password && "border-destructive"
                         )}
-                        {...field}
+                        minLength={
+                          settings.response.configs["password.length.min"]
+                        }
+                        maxLength={
+                          settings.response.configs["password.length.max"]
+                        }
                       />
                     </FormControl>
                   </div>
@@ -240,13 +260,19 @@ export const AccountSetup = ({ settings, methods }: AccountSetupProps) => {
                     <FormLabel>{t("confirm_password")}</FormLabel>
                     <FormControl>
                       <Input
+                        {...field}
                         type="password"
                         placeholder={t("confirm_password_placeholder")}
                         className={cn(
                           "h-[52px] py-6",
                           formErrors.confirmPassword && "border-destructive"
                         )}
-                        {...field}
+                        minLength={
+                          settings.response.configs["password.length.min"]
+                        }
+                        maxLength={
+                          settings.response.configs["password.length.max"]
+                        }
                       />
                     </FormControl>
                   </div>

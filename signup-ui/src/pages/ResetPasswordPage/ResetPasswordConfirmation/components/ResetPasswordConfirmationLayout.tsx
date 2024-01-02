@@ -3,11 +3,11 @@ import { useLocation } from "react-router-dom";
 
 import { ReactComponent as FailedIconSvg } from "~assets/svg/failed-icon.svg";
 import { ReactComponent as SuccessIconSvg } from "~assets/svg/success-icon.svg";
+import { RESET_PASSWORD, ROOT_ROUTE, SIGNUP_ROUTE } from "~constants/routes";
 import { Button } from "~components/ui/button";
 import { Step, StepContent } from "~components/ui/step";
 import { getSignInRedirectURL } from "~utils/link";
 import { useSettings } from "~pages/shared/queries";
-import { RESET_PASSWORD } from "~constants/routes";
 
 interface ResetPasswordConfirmationLayoutProps {
   status: "success" | "failed";

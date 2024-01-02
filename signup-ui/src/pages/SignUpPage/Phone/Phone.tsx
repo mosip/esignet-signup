@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { KeyboardEvent, useCallback, useEffect, useRef, useState } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
 import { useFormContext, UseFormReturn } from "react-hook-form";
 import { useTranslation } from "react-i18next";
@@ -23,6 +23,7 @@ import {
   StepTitle,
 } from "~components/ui/step";
 import { cn } from "~utils/cn";
+import { handleInputFilter } from "~utils/input";
 import { getLocale } from "~utils/language";
 import { getSignInRedirectURL } from "~utils/link";
 import { useGenerateChallenge } from "~pages/shared/mutations";
@@ -85,6 +86,12 @@ export const Phone = ({ settings, methods }: PhoneProps) => {
     setValue("captchaToken", "", { shouldValidate: true });
   };
 
+  const handleUsernameInput = (event: KeyboardEvent<HTMLInputElement>) =>
+    handleInputFilter(
+      event,
+      settings.response.configs["identifier.allowed.characters"]
+    );
+
   const handleContinue = useCallback(
     async (e: any) => {
       e.preventDefault();
@@ -130,6 +137,7 @@ export const Phone = ({ settings, methods }: PhoneProps) => {
     },
     [generateChallengeMutation, getValues, setStep, trigger, setValue]
   );
+
   return (
     <Step>
       <StepHeader className="px-0 sm:px-[18px] sm:pb-[25px] sm:pt-[33px]">
@@ -194,6 +202,13 @@ export const Phone = ({ settings, methods }: PhoneProps) => {
                             type="tel"
                             placeholder={t("enter_your_number_placeholder")}
                             className="h-[inherit] border-none outline-none"
+                            minLength={
+                              settings.response.configs["identifier.length.min"]
+                            }
+                            maxLength={
+                              settings.response.configs["identifier.length.max"]
+                            }
+                            onKeyDown={handleUsernameInput}
                           />
                         </div>
                       </div>
