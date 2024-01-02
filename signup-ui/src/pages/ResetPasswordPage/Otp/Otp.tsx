@@ -20,6 +20,8 @@ import {
 } from "~components/ui/step";
 import { getLocale } from "~utils/language";
 import { maskPhoneNumber } from "~utils/phone";
+import { base64FullName } from "~utils/fullName";
+
 import { convertTime, getTimeoutTime } from "~utils/timer";
 import {
   useGenerateChallenge,
@@ -169,10 +171,18 @@ export const Otp = ({ methods, settings }: OtpProps) => {
             identifier: `${
               settings.response.configs["identifier.prefix"]
             }${getValues("username")}`,
-            challengeInfo: {
-              challenge: getValues("otp"),
-              format: "alpha-numeric",
-            },
+            challengeInfo: [
+              {
+                challenge: getValues("otp"),
+                format: "alpha-numeric",
+                type: "OTP"
+              },
+              {
+                challenge: base64FullName(getValues("fullname"), "khm"),
+                format: "base64url-encoded-json",
+                type: "KBA"
+              }
+            ],
           },
         };
 
