@@ -1,11 +1,18 @@
 import { useCallback, useMemo } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { AsYouType, isValidPhoneNumber } from "libphonenumber-js";
 import { Resolver, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import * as yup from "yup";
 
 import { Form } from "~components/ui/form";
+import {
+  validateCaptchaToken,
+  validateConfirmPassword,
+  validateFullName,
+  validateOtp,
+  validatePassword,
+  validateUsername,
+} from "~pages/shared/validation";
 import { SettingsDto } from "~typings/types";
 
 import { AccountRegistrationStatus } from "./AccountRegistrationStatus/AccountRegistrationStatus";
@@ -50,59 +57,33 @@ export const SignUpPage = ({ settings }: SignUpPageProps) => {
     )
   );
 
-  const validationSchema = useMemo(() => {
-    return [
+  const validationSchema = useMemo(
+    () => [
       // Step 1 - Phone Validation
       yup.object({
-        phone: yup
-          .string()
-          .required(t("username_validation"))
-          .matches(/^[^0].*$/, t("username_validation"))
-          .matches(
-            new RegExp(settings.response.configs["identifier.pattern"]),
-            t("username_validation")
-          ),
-        captchaToken: yup.string().required(t("captcha_token_validation")),
+        phone: validateUsername(settings, t),
+        captchaToken: validateCaptchaToken(t),
       }),
       // Step 2 - OTP Validation
       yup.object({
-        otp: yup
-          .string()
-          .matches(
-            new RegExp(`^\\d{${settings.response.configs["otp.length"]}}$`)
-          ),
+        otp: validateOtp(settings),
       }),
       // Step 3 - Status Validation
       yup.object({}),
       // Step 4 - Account Setup Validation
       yup.object({
         username: yup.string(),
-        fullNameInKhmer: yup
-          .string()
-          .matches(
-            new RegExp(settings.response.configs["fullname.pattern"]),
-            t("full_name_validation")
-          ),
-        password: yup
-          .string()
-          .matches(
-            new RegExp(settings.response.configs["password.pattern"]),
-            t("password_validation")
-          ),
-        confirmPassword: yup
-          .string()
-          .matches(
-            new RegExp(settings.response.configs["password.pattern"]),
-            t("password_validation")
-          )
-          .oneOf([yup.ref("password")], t("password_validation_must_match")),
+        fullNameInKhmer: validateFullName(settings, t),
+        password: validatePassword(settings, t),
+        confirmPassword: validateConfirmPassword("password", settings, t),
         consent: yup.bool().oneOf([true], t("terms_and_conditions_validation")),
       }),
       // Step 5 - Register Status Validation
       yup.object({}),
       yup.object({}),
-    ];
-  }, [settings, t]);
+    ],
+    [settings, t]
+  );
 
   const currentValidationSchema = validationSchema[step];
 

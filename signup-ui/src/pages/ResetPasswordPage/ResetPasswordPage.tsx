@@ -5,6 +5,14 @@ import { useTranslation } from "react-i18next";
 import * as yup from "yup";
 
 import { Form } from "~components/ui/form";
+import {
+  validateCaptchaToken,
+  validateConfirmPassword,
+  validateFullName,
+  validateOtp,
+  validatePassword,
+  validateUsername,
+} from "~pages/shared/validation";
 import { ResetPasswordForm, SettingsDto } from "~typings/types";
 
 import Otp from "./Otp";
@@ -41,47 +49,18 @@ export const ResetPasswordPage = ({ settings }: ResetPasswordPageProps) => {
     () => [
       // Step 1 - UserInfo
       yup.object({
-        username: yup
-          .string()
-          .required(t("username_validation"))
-          .matches(/^[^0].*$/, t("username_validation"))
-          .matches(
-            new RegExp(settings.response.configs["identifier.pattern"]),
-            t("username_validation")
-          ),
-        fullname: yup
-          .string()
-          .required(t("full_name_validation"))
-          .matches(
-            new RegExp(settings.response.configs["fullname.pattern"]),
-            t("full_name_in_lng_validation")
-          ),
-        captchaToken: yup.string().required(t("captcha_token_validation")),
+        username: validateUsername(settings, t),
+        fullname: validateFullName(settings, t),
+        captchaToken: validateCaptchaToken(t),
       }),
       // Step 2 - Otp
       yup.object({
-        otp: yup
-          .string()
-          .matches(
-            new RegExp(`^\\d{${settings.response.configs["otp.length"]}}$`)
-          ),
+        otp: validateOtp(settings),
       }),
       // Step 3 - ResetPassword
       yup.object({
-        newPassword: yup
-          .string()
-          .required(t("password_validation"))
-          .matches(
-            new RegExp(settings.response.configs["password.pattern"]),
-            t("password_validation")
-          ),
-        confirmNewPassword: yup
-          .string()
-          .matches(
-            new RegExp(settings.response.configs["password.pattern"]),
-            t("password_validation")
-          )
-          .oneOf([yup.ref("newPassword")], t("password_validation_must_match")),
+        newPassword: validatePassword(settings, t),
+        confirmNewPassword: validateConfirmPassword("newPassword", settings, t),
       }),
       // Step 4 - ResetPasswordStatus
       yup.object({}),
@@ -117,7 +96,11 @@ export const ResetPasswordPage = ({ settings }: ResetPasswordPageProps) => {
   } = methods;
 
   useEffect(() => {
-    if (step === ResetPasswordStep.ResetPasswordConfirmation) return;
+    if (
+      step === ResetPasswordStep.ResetPasswordConfirmation ||
+      (criticalError && criticalError.errorCode === "invalid_transaction")
+    )
+      return;
 
     const handleTabBeforeUnload = (event: BeforeUnloadEvent) => {
       event.preventDefault();
@@ -132,7 +115,7 @@ export const ResetPasswordPage = ({ settings }: ResetPasswordPageProps) => {
     return () => {
       window.removeEventListener("beforeunload", handleTabBeforeUnload);
     };
-  }, [step]);
+  }, [step, criticalError]);
 
   const getResetPasswordContent = (step: ResetPasswordStep) => {
     switch (step) {
