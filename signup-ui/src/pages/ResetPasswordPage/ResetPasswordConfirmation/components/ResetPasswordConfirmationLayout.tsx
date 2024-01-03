@@ -32,7 +32,7 @@ export const ResetPasswordConfirmationLayout = ({
   };
 
   return (
-    <Step>
+    <Step className="sm:my-24">
       <StepContent>
         <div className="flex flex-col items-center gap-4 py-4">
           {status === "success" ? <SuccessIconSvg /> : <FailedIconSvg />}
