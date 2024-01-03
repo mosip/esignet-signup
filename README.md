@@ -2,9 +2,6 @@
 
 signup-service is part of the esignet modules, but has a separate Helm chart so as to install and manage it in a completely independent namespace.
 
-## Databases
-Refer to [SQL scripts](db_scripts).
-
 ## Build & run (for developers)
 The project requires JDK 11.
 1. Build and install:
