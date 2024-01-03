@@ -231,7 +231,11 @@ export const ResetPassword = ({ methods, settings }: ResetPasswordProps) => {
                 )}
               />
             </div>
-            <Button onClick={handleContinue} disabled={!isUserInfoValid}>
+            <Button
+              onClick={handleContinue}
+              disabled={!isUserInfoValid || resetPasswordMutation.isPending}
+              isLoading={resetPasswordMutation.isPending}
+            >
               {t("reset")}
             </Button>
           </div>
