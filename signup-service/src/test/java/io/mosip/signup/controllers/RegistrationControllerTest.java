@@ -8,6 +8,8 @@ import io.mosip.signup.exception.CaptchaException;
 import io.mosip.signup.exception.ChallengeFailedException;
 import io.mosip.signup.exception.InvalidIdentifierException;
 import io.mosip.signup.exception.InvalidTransactionException;
+import io.mosip.signup.helper.AuditHelper;
+import io.mosip.signup.services.CacheUtilService;
 import io.mosip.signup.services.RegistrationService;
 import io.mosip.signup.util.*;
 import org.junit.Before;
@@ -49,6 +51,12 @@ public class RegistrationControllerTest {
 
     @MockBean
     RegistrationService registrationService;
+
+    @MockBean
+    CacheUtilService cacheUtilService;
+
+    @MockBean
+    AuditHelper auditHelper;
 
     ObjectMapper objectMapper = new ObjectMapper();
 
