@@ -5,10 +5,10 @@ import io.mosip.esignet.core.dto.RequestWrapper;
 import io.mosip.esignet.core.dto.ResponseWrapper;
 import io.mosip.esignet.core.util.IdentityProviderUtil;
 import io.mosip.signup.dto.*;
+import io.mosip.signup.exception.SignUpException;
+import io.mosip.signup.helper.AuditHelper;
 import io.mosip.signup.services.RegistrationService;
-import io.mosip.signup.util.ErrorConstants;
-import io.mosip.signup.util.RegistrationStatus;
-import io.mosip.signup.util.SignUpConstants;
+import io.mosip.signup.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,6 +26,9 @@ public class SignUpController {
 
     @Autowired
     RegistrationService registrationService;
+
+    @Autowired
+    AuditHelper auditHelper;
 
     @Value("#{${mosip.signup.ui.config.key-values}}")
     private Map<String, Object> signUpUIConfigMap;
@@ -45,7 +48,13 @@ public class SignUpController {
                                                                      @Valid @NotBlank(message = ErrorConstants.INVALID_TRANSACTION)
                                                                      @CookieValue(value = SignUpConstants.VERIFIED_TRANSACTION_ID, defaultValue = EMTPY) String transactionId){
         ResponseWrapper<RegistrationStatusResponse> responseWrapper = new ResponseWrapper<>();
-        responseWrapper.setResponse(registrationService.updatePassword(requestWrapper.getRequest(), transactionId));
+        try{
+            responseWrapper.setResponse(registrationService.updatePassword(requestWrapper.getRequest(), transactionId));
+        }catch (SignUpException signUpException){
+            auditHelper.sendAuditTransaction(AuditEvent.RESET_PASSWORD, AuditEventType.ERROR, transactionId, signUpException);
+            throw signUpException;
+        }
+        auditHelper.sendAuditTransaction(AuditEvent.RESET_PASSWORD, AuditEventType.SUCCESS, transactionId, null);
         responseWrapper.setResponseTime(IdentityProviderUtil.getUTCDateTime());
         return responseWrapper;
     }
