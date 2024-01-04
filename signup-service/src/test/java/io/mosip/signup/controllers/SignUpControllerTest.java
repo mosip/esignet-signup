@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.esignet.core.dto.RequestWrapper;
 import io.mosip.signup.dto.RegistrationStatusResponse;
 import io.mosip.signup.dto.ResetPasswordRequest;
+import io.mosip.signup.helper.AuditHelper;
 import io.mosip.signup.services.RegistrationService;
 import io.mosip.signup.util.ActionStatus;
 import io.mosip.signup.util.ErrorConstants;
@@ -45,6 +46,9 @@ public class SignUpControllerTest {
 
     @MockBean
     RegistrationService registrationService;
+
+    @MockBean
+    AuditHelper auditHelper;
 
     ObjectMapper objectMapper = new ObjectMapper();
 
