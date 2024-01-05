@@ -195,7 +195,7 @@ export const Otp = ({ methods, settings }: OtpProps) => {
         return verifyChallengeMutation.mutate(verifyChallengeRequestDto, {
           onSuccess: ({ errors }) => {
             if (errors.length > 0) {
-              if (errors[0].errorCode === "invalid_transaction") {
+              if (["invalid_transaction", "knowledgebase_mismatch"].includes(errors[0].errorCode) ) {
                 setCriticalError(errors[0]);
               } else {
                 setChallengeVerificationError(errors[0]);

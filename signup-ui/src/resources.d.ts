@@ -15,6 +15,7 @@ interface Resources {
     go_back_to_landing_page: string;
     successful: string;
     error: string;
+    invalid: string;
     signup_failed: string;
     mobile_number_verified: string;
     mobile_number_already_registered: string;
