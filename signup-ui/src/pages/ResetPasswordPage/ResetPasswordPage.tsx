@@ -28,6 +28,15 @@ import {
 } from "./useResetPasswordStore";
 import UserInfo from "./UserInfo";
 
+export const resetPasswordFormDefaultValues: ResetPasswordForm = {
+  username: "",
+  fullname: "",
+  captchaToken: "",
+  otp: "",
+  newPassword: "",
+  confirmNewPassword: "",
+};
+
 interface ResetPasswordPageProps {
   settings: SettingsDto;
 }
@@ -71,15 +80,6 @@ export const ResetPasswordPage = ({ settings }: ResetPasswordPageProps) => {
   );
 
   const currentValidationSchema = validationSchema[step];
-
-  const resetPasswordFormDefaultValues: ResetPasswordForm = {
-    username: "",
-    fullname: "",
-    captchaToken: "",
-    otp: "",
-    newPassword: "",
-    confirmNewPassword: "",
-  };
 
   const methods = useForm<ResetPasswordForm>({
     shouldUnregister: false,
