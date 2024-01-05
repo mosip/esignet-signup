@@ -125,7 +125,6 @@ export const Phone = ({ settings, methods }: PhoneProps) => {
             }
 
             if (response && errors.length === 0) {
-              setValue("otp", "", { shouldValidate: true });
               setStep(SignUpStep.Otp);
             }
           },
