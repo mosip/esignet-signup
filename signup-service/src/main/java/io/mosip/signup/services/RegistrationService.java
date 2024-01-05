@@ -242,11 +242,6 @@ public class RegistrationService {
             log.error("Transaction {} : not found in ChallengeVerifiedTransaction cache", transactionId);
             throw new InvalidTransactionException();
         }
-//        if(!IdentityProviderUtil.generateB64EncodedHash(IdentityProviderUtil.ALGO_SHA3_256,
-//                resetPasswordRequest.getIdentifier().toLowerCase(Locale.ROOT)).equals(transaction.getIdentifier())){
-//            log.error("Transaction {} : not found in ChallengeVerifiedTransaction cache", transactionId);
-//            throw new SignUpException(ErrorConstants.IDENTIFIER_MISMATCH);
-//        }
 
         if(!transaction.isValidIdentifier(resetPasswordRequest.getIdentifier().toLowerCase(Locale.ROOT))) {
             log.error("generate-challenge failed: invalid identifier");
@@ -287,6 +282,15 @@ public class RegistrationService {
             log.error("Transaction {} : reset password failed with response {}", transactionId, restResponseWrapper);
             throw new SignUpException(ErrorConstants.RESET_PWD_FAILED);
         }
+
+        transaction.setRegistrationStatus(RegistrationStatus.PENDING);
+        cacheUtilService.setRegisteredTransaction(transactionId, transaction);
+
+        notificationHelper.sendSMSNotificationAsync(resetPasswordRequest.getIdentifier(), transaction.getLocale(),
+                        FORGOT_PASSWORD_SMS_NOTIFICATION_TEMPLATE_KEY, null)
+                .thenAccept(notificationResponseRestResponseWrapper -> {
+                    log.debug("Notification response -> {}", notificationResponseRestResponseWrapper);
+                });
 
         RegistrationStatusResponse resetPassword = new RegistrationStatusResponse();
         resetPassword.setStatus(RegistrationStatus.PENDING);
@@ -553,8 +557,7 @@ public class RegistrationService {
     }
 
     private void validateChallengeFormatAndType(ChallengeInfo challengeInfo) throws SignUpException{
-        if (challengeInfo.getType().equals("OTP") && !challengeInfo.getFormat().equals("alpha-numeric") &&
-                (challengeInfo.getChallenge().length() != otpLength)){
+        if (challengeInfo.getType().equals("OTP") && !challengeInfo.getFormat().equals("alpha-numeric")){
             throw new SignUpException(ErrorConstants.CHALLENGE_FORMAT_AND_TYPE_MISMATCH);
         }
 

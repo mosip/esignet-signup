@@ -86,6 +86,7 @@ public class RegistrationServiceTest {
                 registrationService, "resendDelay", 30);
         ReflectionTestUtils.setField(registrationService, getIdentityEndpoint, getIdentityEndpoint);
         ReflectionTestUtils.setField(registrationService, "objectMapper", new ObjectMapper());
+        ReflectionTestUtils.setField(registrationService, "otpLength", 6);
     }
 
     @Test
@@ -487,6 +488,36 @@ public class RegistrationServiceTest {
                 verifyChallenge(verifyChallengeRequest, mockTransactionId);
         Assert.assertNotNull(verifyChallengeResponse);
         Assert.assertEquals("SUCCESS", verifyChallengeResponse.getStatus());
+    }
+
+    @Test
+    public void doVerifyChallenge_withInvalidFormatForOTPChallenge_thenFail() {
+        ChallengeInfo challengeInfoOTP = new ChallengeInfo();
+        challengeInfoOTP.setFormat("alpha-encoded");
+        challengeInfoOTP.setChallenge("1623");
+        challengeInfoOTP.setType("OTP");
+
+        List<ChallengeInfo> challengeList = new ArrayList<>();
+        challengeList.add(challengeInfoOTP);
+
+        VerifyChallengeRequest verifyChallengeRequest = new VerifyChallengeRequest();
+        verifyChallengeRequest.setIdentifier("123456");
+        verifyChallengeRequest.setChallengeInfo(challengeList);
+
+        String mockTransactionId = "mock-transactionId";
+        RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85512123123", Purpose.RESET_PASSWORD);
+        String challengeHash = IdentityProviderUtil.generateB64EncodedHash(IdentityProviderUtil.ALGO_SHA3_256,
+                challengeInfoOTP.getChallenge());
+        registrationTransaction.setChallengeHash(challengeHash);
+        registrationTransaction.setIdentifier(verifyChallengeRequest.getIdentifier());
+        when(cacheUtilService.getChallengeGeneratedTransaction(mockTransactionId)).thenReturn(registrationTransaction);
+
+        try {
+            registrationService.verifyChallenge(verifyChallengeRequest, mockTransactionId);
+            Assert.fail();
+        } catch (SignUpException signUpException) {
+            Assert.assertEquals("challenge_format_and_type_mismatch", signUpException.getErrorCode());
+        }
     }
 
     @Test
@@ -1532,6 +1563,8 @@ public class RegistrationServiceTest {
                 any(ParameterizedTypeReference.class)))
                 .thenReturn(new ResponseEntity<>(mockIdentityResponseRestResponseWrapper, HttpStatus.OK));
 
+        when(notificationHelper.sendSMSNotificationAsync(any(), any(), any(), any()))
+                .thenReturn(new CompletableFuture<>());
 
         RegistrationStatusResponse registrationStatusResponse = registrationService.updatePassword(resetPasswordRequest,
                 verifiedTransactionId);
