@@ -32,7 +32,7 @@ import {
   VerifyChallengeRequestDto,
 } from "~typings/types";
 
-import { SignUpForm } from "../SignUpPage";
+import { SignUpForm, signUpFormDefaultValues } from "../SignUpPage";
 import {
   setCriticalErrorSelector,
   setStepSelector,
@@ -61,12 +61,16 @@ export const Otp = ({ methods, settings }: OtpProps) => {
       []
     )
   );
-  const { trigger, reset, formState } = methods;
+  const { trigger, reset, resetField, formState } = methods;
   const [resendAttempts, setResendAttempts] = useState<number>(0);
   const { generateChallengeMutation } = useGenerateChallenge();
   const { verifyChallengeMutation } = useVerifyChallenge();
   const [challengeVerificationError, setChallengeVerificationError] =
     useState<Error | null>(null);
+
+  useEffect(() => {
+    resetField("otp", { defaultValue: signUpFormDefaultValues.otp });
+  }, [resetField]);
 
   const {
     totalSeconds: resendOtpTotalSecs,
@@ -148,8 +152,10 @@ export const Otp = ({ methods, settings }: OtpProps) => {
   );
 
   const handleBack = useCallback(() => {
-    if (step === SignUpStep.Otp)
+    if (step === SignUpStep.Otp) {
       setValue("captchaToken", "", { shouldValidate: true });
+      setValue("otp", "", { shouldValidate: true });
+    }
 
     setStep(SignUpStep.Phone);
   }, [step, setStep, setValue]);

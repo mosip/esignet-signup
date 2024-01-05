@@ -137,7 +137,6 @@ export const UserInfo = ({ settings, methods }: UserInfoProps) => {
             }
 
             if (response && errors.length === 0) {
-              setValue("otp", "", { shouldValidate: true });
               setStep(ResetPasswordStep.Otp);
             }
           },

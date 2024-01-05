@@ -18,10 +18,9 @@ import {
   StepHeader,
   StepTitle,
 } from "~components/ui/step";
+import { base64FullName } from "~utils/fullName";
 import { getLocale } from "~utils/language";
 import { maskPhoneNumber } from "~utils/phone";
-import { base64FullName } from "~utils/fullName";
-
 import { convertTime, getTimeoutTime } from "~utils/timer";
 import {
   useGenerateChallenge,
@@ -35,6 +34,7 @@ import {
   VerifyChallengeRequestDto,
 } from "~typings/types";
 
+import { resetPasswordFormDefaultValues } from "../ResetPasswordPage";
 import {
   ResetPasswordStep,
   setCriticalErrorSelector,
@@ -63,7 +63,7 @@ export const Otp = ({ methods, settings }: OtpProps) => {
       []
     )
   );
-  const { trigger, reset, formState } = methods;
+  const { trigger, reset, formState, resetField } = methods;
   const [resendAttempts, setResendAttempts] = useState<number>(0);
   const { generateChallengeMutation } = useGenerateChallenge();
   const { verifyChallengeMutation } = useVerifyChallenge();
@@ -76,6 +76,10 @@ export const Otp = ({ methods, settings }: OtpProps) => {
   } = useTimer({
     expiryTimestamp: getTimeoutTime(settings.response.configs["resend.delay"]),
   });
+
+  useEffect(() => {
+    resetField("otp", { defaultValue: resetPasswordFormDefaultValues.otp });
+  }, [resetField]);
 
   useEffect(() => {
     setResendAttempts(settings.response.configs["resend.attempts"]);
@@ -151,8 +155,10 @@ export const Otp = ({ methods, settings }: OtpProps) => {
   );
 
   const handleBack = useCallback(() => {
-    if (step === ResetPasswordStep.Otp)
+    if (step === ResetPasswordStep.Otp) {
       setValue("captchaToken", "", { shouldValidate: true });
+      setValue("otp", "", { shouldValidate: true });
+    }
 
     setStep(ResetPasswordStep.UserInfo);
   }, [step, setStep, setValue]);
@@ -175,13 +181,13 @@ export const Otp = ({ methods, settings }: OtpProps) => {
               {
                 challenge: getValues("otp"),
                 format: "alpha-numeric",
-                type: "OTP"
+                type: "OTP",
               },
               {
                 challenge: base64FullName(getValues("fullname"), "khm"),
                 format: "base64url-encoded-json",
-                type: "KBA"
-              }
+                type: "KBA",
+              },
             ],
           },
         };
