@@ -41,6 +41,17 @@ export interface SignUpForm {
   consent: false;
 }
 
+export const signUpFormDefaultValues: SignUpForm = {
+  phone: "",
+  captchaToken: "",
+  otp: "",
+  username: "",
+  fullNameInKhmer: "",
+  password: "",
+  confirmPassword: "",
+  consent: false,
+};
+
 interface SignUpPageProps {
   settings: SettingsDto;
 }
@@ -88,17 +99,6 @@ export const SignUpPage = ({ settings }: SignUpPageProps) => {
 
   const currentValidationSchema = validationSchema[step];
 
-  const signUpFormDefaultValues: SignUpForm = {
-    phone: "",
-    captchaToken: "",
-    otp: "",
-    username: "",
-    fullNameInKhmer: "",
-    password: "",
-    confirmPassword: "",
-    consent: false,
-  };
-
   const methods = useForm<SignUpForm>({
     shouldUnregister: false,
     defaultValues: signUpFormDefaultValues,
@@ -106,7 +106,7 @@ export const SignUpPage = ({ settings }: SignUpPageProps) => {
       SignUpForm,
       any
     >,
-    mode: "all",
+    mode: "onBlur",
   });
 
   const getSignUpStepContent = (step: SignUpStep) => {
