@@ -10,6 +10,6 @@ export const base64FullName = (fullName: string, language: string): string => {
         ] 
     };
 
-const buffer = Buffer.from(JSON.stringify(fullNameObject));
-return buffer.toString('base64');
+    const buffer = Buffer.from(JSON.stringify(fullNameObject));
+    return buffer.toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/\=+$/, '');
 }
