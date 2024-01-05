@@ -54,6 +54,7 @@ const ResetPasswordPossibleErrors = [
   "invalid_password",
   "invalid_request",
   "reset_pwd_failed",
+  "knowledgebase_mismatch",
 ] as const;
 
 export type ResetPasswordErrors = (typeof ResetPasswordPossibleErrors)[number];
