@@ -283,6 +283,8 @@ public class RegistrationService {
             throw new SignUpException(ErrorConstants.RESET_PWD_FAILED);
         }
 
+        transaction.getHandlesStatus().put(getHandleRequestId(transaction.getApplicationId(),
+                "phone", resetPasswordRequest.getIdentifier()), RegistrationStatus.PENDING);
         transaction.setRegistrationStatus(RegistrationStatus.PENDING);
         cacheUtilService.setRegisteredTransaction(transactionId, transaction);
 
