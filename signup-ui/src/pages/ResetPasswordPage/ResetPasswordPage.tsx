@@ -137,7 +137,7 @@ export const ResetPasswordPage = ({ settings }: ResetPasswordPageProps) => {
   return (
     <>
       {criticalError &&
-        ["invalid_transaction"].includes(criticalError.errorCode) && (
+        ["invalid_transaction", "knowledgebase_mismatch"].includes(criticalError.errorCode) && (
           <ResetPasswordPopover />
         )}
       <Form {...methods}>
