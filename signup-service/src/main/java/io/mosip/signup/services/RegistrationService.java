@@ -95,6 +95,9 @@ public class RegistrationService {
     @Value("${mosip.signup.challenge.resend-delay}")
     private long resendDelay;
 
+    @Value("${mosip.signup.challenge.timeout}")
+    private long challengeTimeout;
+
     @Value("${mosip.signup.unauthenticated.txn.timeout}")
     private int unauthenticatedTransactionTimeout;
 
@@ -125,6 +128,9 @@ public class RegistrationService {
         String identifier = generateChallengeRequest.getIdentifier();
         RegistrationTransaction transaction = null;
 
+        if(cacheUtilService.isIdentifierBlocked(identifier))
+            throw new SignUpException(ErrorConstants.IDENTIFIER_BLOCKED);
+
         if(generateChallengeRequest.isRegenerate() == false) {
             transactionId = IdentityProviderUtil.createTransactionId(null);
             transaction = new RegistrationTransaction(identifier, generateChallengeRequest.getPurpose());
@@ -143,6 +149,10 @@ public class RegistrationService {
         transaction.increaseAttempt();
         transaction.setLocale(generateChallengeRequest.getLocale());
         cacheUtilService.setChallengeGeneratedTransaction(transactionId, transaction);
+
+        //Resend attempts exhausted, block the identifier for configured time.
+        if(transaction.getChallengeRetryAttempts() >= resendAttempts)
+            cacheUtilService.blockIdentifier(transaction.getIdentifier());
 
         notificationHelper.sendSMSNotificationAsync(generateChallengeRequest.getIdentifier(), transaction.getLocale(),
                         SEND_OTP_SMS_NOTIFICATION_TEMPLATE_KEY, new HashMap<>(){{put("{challenge}", challenge);}})
@@ -177,6 +187,10 @@ public class RegistrationService {
 
         String challengeHash = IdentityProviderUtil.generateB64EncodedHash(IdentityProviderUtil.ALGO_SHA3_256,
                 otpChallengeInfo.get().getChallenge());
+
+        if(transaction.getLastRetryToNow() >= challengeTimeout) {
+            throw new SignUpException(ErrorConstants.CHALLENGE_EXPIRED);
+        }
 
         if(!challengeHash.equals(transaction.getChallengeHash())) {
             log.error("Transaction {} : challenge not match", transactionId);
@@ -496,7 +510,7 @@ public class RegistrationService {
             throw new SignUpException(ErrorConstants.IDENTIFIER_MISMATCH);
         }
 
-        if(transaction.getChallengeRetryAttempts() >= resendAttempts) {
+        if(transaction.getChallengeRetryAttempts() > resendAttempts) {
             log.error("generate-challenge failed: too many attempts");
             throw new GenerateChallengeException(ErrorConstants.TOO_MANY_ATTEMPTS);
         }
