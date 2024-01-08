@@ -1,9 +1,8 @@
 package io.mosip.signup.util;
 
-import java.util.Arrays;
-import java.util.List;
+import java.io.Serializable;
 
-public enum Purpose {
+public enum Purpose implements Serializable {
 
     REGISTRATION,
     RESET_PASSWORD;

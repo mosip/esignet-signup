@@ -1,9 +1,10 @@
 package io.mosip.signup.util;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
-public enum RegistrationStatus {
+public enum RegistrationStatus implements Serializable {
     PENDING,
     COMPLETED,
     FAILED;
