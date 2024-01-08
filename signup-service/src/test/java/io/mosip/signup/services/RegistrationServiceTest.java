@@ -109,6 +109,7 @@ public class RegistrationServiceTest {
         String challengeHash = IdentityProviderUtil.generateB64EncodedHash(IdentityProviderUtil.ALGO_SHA3_256, challengeInfo.getChallenge());
         registrationTransaction.setChallengeHash(challengeHash);
         registrationTransaction.setIdentifier(verifyChallengeRequest.getIdentifier());
+        registrationTransaction.setLastRetryAt(LocalDateTime.now());
         when(cacheUtilService.getChallengeGeneratedTransaction(mockTransactionId)).thenReturn(registrationTransaction);
 
 
@@ -146,6 +147,7 @@ public class RegistrationServiceTest {
         String challengeHash = IdentityProviderUtil.generateB64EncodedHash(IdentityProviderUtil.ALGO_SHA3_256, challengeInfo.getChallenge());
         registrationTransaction.setChallengeHash(challengeHash);
         registrationTransaction.setIdentifier(verifyChallengeRequest.getIdentifier());
+        registrationTransaction.setLastRetryAt(LocalDateTime.now());
         when(cacheUtilService.getChallengeGeneratedTransaction(mockTransactionId)).thenReturn(registrationTransaction);
         RestResponseWrapper<IdentityResponse> restResponseWrapper = new RestResponseWrapper<>();
         IdentityResponse identityResponse = new IdentityResponse();
@@ -188,6 +190,7 @@ public class RegistrationServiceTest {
         String challengeHash = IdentityProviderUtil.generateB64EncodedHash(IdentityProviderUtil.ALGO_SHA3_256, challengeInfo.getChallenge());
         registrationTransaction.setChallengeHash(challengeHash);
         registrationTransaction.setIdentifier(verifyChallengeRequest.getIdentifier());
+        registrationTransaction.setLastRetryAt(LocalDateTime.now());
         when(cacheUtilService.getChallengeGeneratedTransaction(mockTransactionId)).thenReturn(registrationTransaction);
 
         RestResponseWrapper<IdentityResponse> restResponseWrapper = new RestResponseWrapper<>();
@@ -233,6 +236,7 @@ public class RegistrationServiceTest {
         String challengeHash = IdentityProviderUtil.generateB64EncodedHash(IdentityProviderUtil.ALGO_SHA3_256, challengeInfo.getChallenge());
         registrationTransaction.setChallengeHash(challengeHash);
         registrationTransaction.setIdentifier(verifyChallengeRequest.getIdentifier());
+        registrationTransaction.setLastRetryAt(LocalDateTime.now());
         when(cacheUtilService.getChallengeGeneratedTransaction(mockTransactionId)).thenReturn(registrationTransaction);
 
         RestResponseWrapper<IdentityResponse> restResponseWrapper = new RestResponseWrapper<>();
@@ -345,6 +349,7 @@ public class RegistrationServiceTest {
                 challengeInfoOTP.getChallenge());
         registrationTransaction.setChallengeHash(challengeHash);
         registrationTransaction.setIdentifier(verifyChallengeRequest.getIdentifier());
+        registrationTransaction.setLastRetryAt(LocalDateTime.now());
         when(cacheUtilService.getChallengeGeneratedTransaction(mockTransactionId)).thenReturn(registrationTransaction);
 
         RestResponseWrapper<IdentityResponse> restResponseWrapper = new RestResponseWrapper<>();
@@ -403,6 +408,7 @@ public class RegistrationServiceTest {
                 challengeInfoOTP.getChallenge());
         registrationTransaction.setChallengeHash(challengeHash);
         registrationTransaction.setIdentifier(verifyChallengeRequest.getIdentifier());
+        registrationTransaction.setLastRetryAt(LocalDateTime.now());
         when(cacheUtilService.getChallengeGeneratedTransaction(mockTransactionId)).thenReturn(registrationTransaction);
 
         RestResponseWrapper<IdentityResponse> restResponseWrapper = new RestResponseWrapper<>();
@@ -460,6 +466,7 @@ public class RegistrationServiceTest {
         String challengeHash = IdentityProviderUtil.generateB64EncodedHash(IdentityProviderUtil.ALGO_SHA3_256,
                 challengeInfoOTP.getChallenge());
         registrationTransaction.setChallengeHash(challengeHash);
+        registrationTransaction.setLastRetryAt(LocalDateTime.now());
         registrationTransaction.setIdentifier(verifyChallengeRequest.getIdentifier());
         when(cacheUtilService.getChallengeGeneratedTransaction(mockTransactionId)).thenReturn(registrationTransaction);
 
@@ -547,6 +554,7 @@ public class RegistrationServiceTest {
                 challengeInfoOTP.getChallenge());
         registrationTransaction.setChallengeHash(challengeHash);
         registrationTransaction.setIdentifier(verifyChallengeRequest.getIdentifier());
+        registrationTransaction.setLastRetryAt(LocalDateTime.now());
         when(cacheUtilService.getChallengeGeneratedTransaction(mockTransactionId)).thenReturn(registrationTransaction);
 
         RestResponseWrapper<IdentityResponse> restResponseWrapper = new RestResponseWrapper<>();
@@ -597,6 +605,7 @@ public class RegistrationServiceTest {
         String challengeHash = IdentityProviderUtil.generateB64EncodedHash(IdentityProviderUtil.ALGO_SHA3_256,
                 challengeInfoOTP.getChallenge());
         registrationTransaction.setChallengeHash(challengeHash);
+        registrationTransaction.setLastRetryAt(LocalDateTime.now());
         registrationTransaction.setIdentifier(verifyChallengeRequest.getIdentifier());
         when(cacheUtilService.getChallengeGeneratedTransaction(mockTransactionId)).thenReturn(registrationTransaction);
 
@@ -655,6 +664,7 @@ public class RegistrationServiceTest {
                 challengeInfoOTP.getChallenge());
         registrationTransaction.setChallengeHash(challengeHash);
         registrationTransaction.setIdentifier(verifyChallengeRequest.getIdentifier());
+        registrationTransaction.setLastRetryAt(LocalDateTime.now());
         when(cacheUtilService.getChallengeGeneratedTransaction(mockTransactionId)).thenReturn(registrationTransaction);
         when(selfTokenRestTemplate.exchange(
                 eq(getIdentityEndpoint),
@@ -714,6 +724,7 @@ public class RegistrationServiceTest {
         RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85512123123", Purpose.REGISTRATION);
         registrationTransaction.setChallengeHash("failed");
         registrationTransaction.setIdentifier(verifyChallengeRequest.getIdentifier());
+        registrationTransaction.setLastRetryAt(LocalDateTime.now());
         when(cacheUtilService.getChallengeGeneratedTransaction(mockTransactionId)).thenReturn(registrationTransaction);
 
         try {
@@ -1734,6 +1745,36 @@ public class RegistrationServiceTest {
             Assert.fail();
         } catch (SignUpException signUpException) {
             Assert.assertEquals("error_from_another_service", signUpException.getErrorCode());
+        }
+    }
+
+    @Test
+    public void doVerifyChallenge_withExpiredChallenge_thenFail() throws Exception {
+        ChallengeInfo challengeInfo = new ChallengeInfo();
+        challengeInfo.setFormat("alpha-numeric");
+        challengeInfo.setChallenge("123456");
+        challengeInfo.setType("OTP");
+
+        List<ChallengeInfo> challengeList = new ArrayList<>();
+        challengeList.add(challengeInfo);
+
+        VerifyChallengeRequest verifyChallengeRequest = new VerifyChallengeRequest();
+        verifyChallengeRequest.setIdentifier("123456");
+        verifyChallengeRequest.setChallengeInfo(challengeList);
+
+        String challengeHash = IdentityProviderUtil.generateB64EncodedHash(IdentityProviderUtil.ALGO_SHA3_256,
+                challengeInfo.getChallenge());
+        String mockTransactionId = "mock-transactionId";
+        RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85512123123", Purpose.REGISTRATION);
+        registrationTransaction.setChallengeHash(challengeHash);
+        registrationTransaction.setIdentifier(verifyChallengeRequest.getIdentifier());
+        when(cacheUtilService.getChallengeGeneratedTransaction(mockTransactionId)).thenReturn(registrationTransaction);
+
+        try {
+            registrationService.verifyChallenge(verifyChallengeRequest, mockTransactionId);
+            Assert.fail();
+        } catch (SignUpException exception) {
+            Assert.assertEquals(ErrorConstants.CHALLENGE_EXPIRED, exception.getErrorCode());
         }
     }
 }
