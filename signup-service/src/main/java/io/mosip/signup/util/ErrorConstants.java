@@ -18,6 +18,7 @@ public class ErrorConstants {
     public static final String TOO_MANY_ATTEMPTS="too_many_attempts";
     public static final String INVALID_REQUEST="invalid_request";
     public static final String INVALID_CHALLENGE="invalid_challenge";
+    public static final String CHALLENGE_EXPIRED="challenge_expired";
     public static final String INVALID_CHALLENGE_FORMAT="invalid_challenge_format";
     public static final String INVALID_CHALLENGE_TYPE="invalid_challenge_type";
     public static final String INVALID_PHONE_NUMBER = "invalid_phone_number";
@@ -38,4 +39,5 @@ public class ErrorConstants {
     public static final String FETCH_IDENTITY_FAILED = "fetch_identity_failed";
     public static final String CHALLENGE_FORMAT_AND_TYPE_MISMATCH = "challenge_format_and_type_mismatch";
     public static final String KNOWLEDGEBASE_MISMATCH = "knowledgebase_mismatch";
+    public static final String IDENTIFIER_BLOCKED = "identifier_blocked";
 }

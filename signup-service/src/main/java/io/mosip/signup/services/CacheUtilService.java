@@ -1,5 +1,6 @@
 package io.mosip.signup.services;
 
+import io.mosip.esignet.core.util.IdentityProviderUtil;
 import io.mosip.signup.dto.RegistrationTransaction;
 import io.mosip.signup.util.SignUpConstants;
 import lombok.extern.slf4j.Slf4j;
@@ -8,6 +9,8 @@ import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+
+import java.util.Locale;
 
 @Slf4j
 @Service
@@ -36,6 +39,11 @@ public class CacheUtilService {
         return registrationTransaction;
     }
 
+    @Cacheable(value = SignUpConstants.BLOCKED_IDENTIFIER, key = "#identifierHash")
+    public String blockIdentifier(String identifierHash) {
+        return identifierHash;
+    }
+
     //---Getter---
     public RegistrationTransaction getChallengeGeneratedTransaction(String transactionId) {
         return cacheManager.getCache(SignUpConstants.CHALLENGE_GENERATED).get(transactionId, RegistrationTransaction.class);
@@ -47,5 +55,12 @@ public class CacheUtilService {
 
     public RegistrationTransaction getRegisteredTransaction(String transactionId) {
         return cacheManager.getCache(SignUpConstants.REGISTERED_CACHE).get(transactionId, RegistrationTransaction.class);
+    }
+
+    public boolean isIdentifierBlocked(String identifier) {
+        String identifierHash = IdentityProviderUtil.generateB64EncodedHash(IdentityProviderUtil.ALGO_SHA3_256,
+                identifier.toLowerCase(Locale.ROOT));
+        String value = cacheManager.getCache(SignUpConstants.BLOCKED_IDENTIFIER).get(identifierHash, String.class);
+        return value == null ? false : true;
     }
 }
