@@ -84,6 +84,8 @@ public class RegistrationServiceTest {
                 registrationService, "resendAttempts", 3);
         ReflectionTestUtils.setField(
                 registrationService, "resendDelay", 30);
+        ReflectionTestUtils.setField(
+                registrationService, "challengeTimeout", 60);
         ReflectionTestUtils.setField(registrationService, getIdentityEndpoint, getIdentityEndpoint);
         ReflectionTestUtils.setField(registrationService, "objectMapper", new ObjectMapper());
         ReflectionTestUtils.setField(registrationService, "otpLength", 6);
@@ -109,7 +111,7 @@ public class RegistrationServiceTest {
         String challengeHash = IdentityProviderUtil.generateB64EncodedHash(IdentityProviderUtil.ALGO_SHA3_256, challengeInfo.getChallenge());
         registrationTransaction.setChallengeHash(challengeHash);
         registrationTransaction.setIdentifier(verifyChallengeRequest.getIdentifier());
-        registrationTransaction.setLastRetryAt(LocalDateTime.now());
+        registrationTransaction.setLastRetryAt(LocalDateTime.now(ZoneOffset.UTC));
         when(cacheUtilService.getChallengeGeneratedTransaction(mockTransactionId)).thenReturn(registrationTransaction);
 
 
@@ -147,7 +149,7 @@ public class RegistrationServiceTest {
         String challengeHash = IdentityProviderUtil.generateB64EncodedHash(IdentityProviderUtil.ALGO_SHA3_256, challengeInfo.getChallenge());
         registrationTransaction.setChallengeHash(challengeHash);
         registrationTransaction.setIdentifier(verifyChallengeRequest.getIdentifier());
-        registrationTransaction.setLastRetryAt(LocalDateTime.now());
+        registrationTransaction.setLastRetryAt(LocalDateTime.now(ZoneOffset.UTC));
         when(cacheUtilService.getChallengeGeneratedTransaction(mockTransactionId)).thenReturn(registrationTransaction);
         RestResponseWrapper<IdentityResponse> restResponseWrapper = new RestResponseWrapper<>();
         IdentityResponse identityResponse = new IdentityResponse();
@@ -190,7 +192,7 @@ public class RegistrationServiceTest {
         String challengeHash = IdentityProviderUtil.generateB64EncodedHash(IdentityProviderUtil.ALGO_SHA3_256, challengeInfo.getChallenge());
         registrationTransaction.setChallengeHash(challengeHash);
         registrationTransaction.setIdentifier(verifyChallengeRequest.getIdentifier());
-        registrationTransaction.setLastRetryAt(LocalDateTime.now());
+        registrationTransaction.setLastRetryAt(LocalDateTime.now(ZoneOffset.UTC));
         when(cacheUtilService.getChallengeGeneratedTransaction(mockTransactionId)).thenReturn(registrationTransaction);
 
         RestResponseWrapper<IdentityResponse> restResponseWrapper = new RestResponseWrapper<>();
@@ -236,7 +238,7 @@ public class RegistrationServiceTest {
         String challengeHash = IdentityProviderUtil.generateB64EncodedHash(IdentityProviderUtil.ALGO_SHA3_256, challengeInfo.getChallenge());
         registrationTransaction.setChallengeHash(challengeHash);
         registrationTransaction.setIdentifier(verifyChallengeRequest.getIdentifier());
-        registrationTransaction.setLastRetryAt(LocalDateTime.now());
+        registrationTransaction.setLastRetryAt(LocalDateTime.now(ZoneOffset.UTC));
         when(cacheUtilService.getChallengeGeneratedTransaction(mockTransactionId)).thenReturn(registrationTransaction);
 
         RestResponseWrapper<IdentityResponse> restResponseWrapper = new RestResponseWrapper<>();
@@ -282,6 +284,7 @@ public class RegistrationServiceTest {
                 challengeInfoOTP.getChallenge());
         registrationTransaction.setChallengeHash(challengeHash);
         registrationTransaction.setIdentifier(verifyChallengeRequest.getIdentifier());
+        registrationTransaction.setLastRetryAt(LocalDateTime.now(ZoneOffset.UTC));
         when(cacheUtilService.getChallengeGeneratedTransaction(mockTransactionId)).thenReturn(registrationTransaction);
 
         try {
@@ -312,6 +315,7 @@ public class RegistrationServiceTest {
                 challengeInfoKBA.getChallenge());
         registrationTransaction.setChallengeHash(challengeHash);
         registrationTransaction.setIdentifier(verifyChallengeRequest.getIdentifier());
+        registrationTransaction.setLastRetryAt(LocalDateTime.now(ZoneOffset.UTC));
         when(cacheUtilService.getChallengeGeneratedTransaction(mockTransactionId)).thenReturn(registrationTransaction);
 
         try {
@@ -349,7 +353,7 @@ public class RegistrationServiceTest {
                 challengeInfoOTP.getChallenge());
         registrationTransaction.setChallengeHash(challengeHash);
         registrationTransaction.setIdentifier(verifyChallengeRequest.getIdentifier());
-        registrationTransaction.setLastRetryAt(LocalDateTime.now());
+        registrationTransaction.setLastRetryAt(LocalDateTime.now(ZoneOffset.UTC));
         when(cacheUtilService.getChallengeGeneratedTransaction(mockTransactionId)).thenReturn(registrationTransaction);
 
         RestResponseWrapper<IdentityResponse> restResponseWrapper = new RestResponseWrapper<>();
@@ -408,7 +412,7 @@ public class RegistrationServiceTest {
                 challengeInfoOTP.getChallenge());
         registrationTransaction.setChallengeHash(challengeHash);
         registrationTransaction.setIdentifier(verifyChallengeRequest.getIdentifier());
-        registrationTransaction.setLastRetryAt(LocalDateTime.now());
+        registrationTransaction.setLastRetryAt(LocalDateTime.now(ZoneOffset.UTC));
         when(cacheUtilService.getChallengeGeneratedTransaction(mockTransactionId)).thenReturn(registrationTransaction);
 
         RestResponseWrapper<IdentityResponse> restResponseWrapper = new RestResponseWrapper<>();
@@ -466,7 +470,7 @@ public class RegistrationServiceTest {
         String challengeHash = IdentityProviderUtil.generateB64EncodedHash(IdentityProviderUtil.ALGO_SHA3_256,
                 challengeInfoOTP.getChallenge());
         registrationTransaction.setChallengeHash(challengeHash);
-        registrationTransaction.setLastRetryAt(LocalDateTime.now());
+        registrationTransaction.setLastRetryAt(LocalDateTime.now(ZoneOffset.UTC));
         registrationTransaction.setIdentifier(verifyChallengeRequest.getIdentifier());
         when(cacheUtilService.getChallengeGeneratedTransaction(mockTransactionId)).thenReturn(registrationTransaction);
 
@@ -517,6 +521,7 @@ public class RegistrationServiceTest {
                 challengeInfoOTP.getChallenge());
         registrationTransaction.setChallengeHash(challengeHash);
         registrationTransaction.setIdentifier(verifyChallengeRequest.getIdentifier());
+        registrationTransaction.setLastRetryAt(LocalDateTime.now(ZoneOffset.UTC));
         when(cacheUtilService.getChallengeGeneratedTransaction(mockTransactionId)).thenReturn(registrationTransaction);
 
         try {
@@ -554,7 +559,7 @@ public class RegistrationServiceTest {
                 challengeInfoOTP.getChallenge());
         registrationTransaction.setChallengeHash(challengeHash);
         registrationTransaction.setIdentifier(verifyChallengeRequest.getIdentifier());
-        registrationTransaction.setLastRetryAt(LocalDateTime.now());
+        registrationTransaction.setLastRetryAt(LocalDateTime.now(ZoneOffset.UTC));
         when(cacheUtilService.getChallengeGeneratedTransaction(mockTransactionId)).thenReturn(registrationTransaction);
 
         RestResponseWrapper<IdentityResponse> restResponseWrapper = new RestResponseWrapper<>();
@@ -605,7 +610,7 @@ public class RegistrationServiceTest {
         String challengeHash = IdentityProviderUtil.generateB64EncodedHash(IdentityProviderUtil.ALGO_SHA3_256,
                 challengeInfoOTP.getChallenge());
         registrationTransaction.setChallengeHash(challengeHash);
-        registrationTransaction.setLastRetryAt(LocalDateTime.now());
+        registrationTransaction.setLastRetryAt(LocalDateTime.now(ZoneOffset.UTC));
         registrationTransaction.setIdentifier(verifyChallengeRequest.getIdentifier());
         when(cacheUtilService.getChallengeGeneratedTransaction(mockTransactionId)).thenReturn(registrationTransaction);
 
@@ -664,7 +669,7 @@ public class RegistrationServiceTest {
                 challengeInfoOTP.getChallenge());
         registrationTransaction.setChallengeHash(challengeHash);
         registrationTransaction.setIdentifier(verifyChallengeRequest.getIdentifier());
-        registrationTransaction.setLastRetryAt(LocalDateTime.now());
+        registrationTransaction.setLastRetryAt(LocalDateTime.now(ZoneOffset.UTC));
         when(cacheUtilService.getChallengeGeneratedTransaction(mockTransactionId)).thenReturn(registrationTransaction);
         when(selfTokenRestTemplate.exchange(
                 eq(getIdentityEndpoint),
@@ -724,7 +729,7 @@ public class RegistrationServiceTest {
         RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85512123123", Purpose.REGISTRATION);
         registrationTransaction.setChallengeHash("failed");
         registrationTransaction.setIdentifier(verifyChallengeRequest.getIdentifier());
-        registrationTransaction.setLastRetryAt(LocalDateTime.now());
+        registrationTransaction.setLastRetryAt(LocalDateTime.now(ZoneOffset.UTC));
         when(cacheUtilService.getChallengeGeneratedTransaction(mockTransactionId)).thenReturn(registrationTransaction);
 
         try {
@@ -752,6 +757,7 @@ public class RegistrationServiceTest {
         RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85512123123", Purpose.REGISTRATION);
         registrationTransaction.setChallengeHash(challengeInfo.getChallenge());
         registrationTransaction.setIdentifier("failed");
+        registrationTransaction.setLastRetryAt(LocalDateTime.now(ZoneOffset.UTC));
         when(cacheUtilService.getChallengeGeneratedTransaction(mockTransactionId)).thenReturn(registrationTransaction);
 
         try {
@@ -1768,6 +1774,7 @@ public class RegistrationServiceTest {
         RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85512123123", Purpose.REGISTRATION);
         registrationTransaction.setChallengeHash(challengeHash);
         registrationTransaction.setIdentifier(verifyChallengeRequest.getIdentifier());
+        registrationTransaction.setLastRetryAt(LocalDateTime.now(ZoneOffset.UTC).minusMinutes(2));
         when(cacheUtilService.getChallengeGeneratedTransaction(mockTransactionId)).thenReturn(registrationTransaction);
 
         try {
