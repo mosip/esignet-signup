@@ -1,4 +1,11 @@
-import { KeyboardEvent, useCallback, useEffect, useRef, useState } from "react";
+import {
+  KeyboardEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import ReCAPTCHA from "react-google-recaptcha";
 import { useFormContext, UseFormReturn } from "react-hook-form";
 import { useTranslation } from "react-i18next";
@@ -33,7 +40,7 @@ import {
   SettingsDto,
 } from "~typings/types";
 
-import { SignUpForm } from "../SignUpPage";
+import { SignUpForm, signUpFormDefaultValues } from "../SignUpPage";
 import {
   setCriticalErrorSelector,
   setStepSelector,
@@ -65,7 +72,7 @@ export const Phone = ({ settings, methods }: PhoneProps) => {
 
   const {
     trigger,
-    formState: { errors: formError, isValid },
+    formState: { errors: formError, isValid, isDirty },
   } = methods;
 
   useEffect(() => {
@@ -92,9 +99,18 @@ export const Phone = ({ settings, methods }: PhoneProps) => {
       settings.response.configs["identifier.allowed.characters"]
     );
 
+  const disabledContinue =
+    !isValid ||
+    !isDirty ||
+    getValues("phone") === signUpFormDefaultValues.phone ||
+    getValues("captchaToken") === signUpFormDefaultValues.captchaToken;
+
   const handleContinue = useCallback(
     async (e: any) => {
       e.preventDefault();
+
+      if (generateChallengeMutation.isPending) return;
+
       const isStepValid = await trigger();
 
       if (isStepValid) {
@@ -230,7 +246,7 @@ export const Phone = ({ settings, methods }: PhoneProps) => {
           </div>
           <Button
             onClick={handleContinue}
-            disabled={!isValid}
+            disabled={disabledContinue}
             isLoading={generateChallengeMutation.isPending}
           >
             {t("continue")}
