@@ -43,7 +43,7 @@ export const TermsAndPrivacyModal = ({ title, content, isOpen, backdrop, toggleM
           </button>
         </div>
         <div className="p-4 md:p-5 space-y-4">
-          <div className="" dangerouslySetInnerHTML={{__html: content}}></div>
+          <div className="overflow-y-auto max-h-[80vh] term-condition-content" dangerouslySetInnerHTML={{__html: content}}></div>
         </div>
       </AlertDialogContent>
     </AlertDialog>
