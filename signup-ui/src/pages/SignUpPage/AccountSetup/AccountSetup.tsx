@@ -1,4 +1,4 @@
-import { KeyboardEvent, useCallback, useState } from "react";
+import { KeyboardEvent, useCallback, useMemo, useState } from "react";
 import { PopoverTrigger } from "@radix-ui/react-popover";
 import { UseFormReturn } from "react-hook-form";
 import { Trans, useTranslation } from "react-i18next";
@@ -28,7 +28,7 @@ import { handleInputFilter } from "~utils/input";
 import { useRegister } from "~pages/shared/mutations";
 import { RegistrationRequestDto, SettingsDto } from "~typings/types";
 
-import { SignUpForm } from "../SignUpPage";
+import { SignUpForm, signUpFormDefaultValues } from "../SignUpPage";
 import {
   setCriticalErrorSelector,
   setStepSelector,
@@ -58,17 +58,27 @@ export const AccountSetup = ({ settings, methods }: AccountSetupProps) => {
     control,
     trigger,
     getValues,
-    reset,
-    formState: { errors: formErrors, isValid },
+    formState: { errors: formErrors, isValid, isDirty },
   } = methods;
 
   const { registerMutation } = useRegister();
   const [openTermConditionModal, setOpenTermConditionModal] = useState(false);
   const [modalData, setModalData] = useState({ title: "", content: "" });
 
+  const disabledContinue =
+    !isValid ||
+    !isDirty ||
+    getValues("fullNameInKhmer") === signUpFormDefaultValues.fullNameInKhmer ||
+    getValues("password") === signUpFormDefaultValues.password ||
+    getValues("confirmPassword") === signUpFormDefaultValues.confirmPassword ||
+    getValues("consent") === signUpFormDefaultValues.consent;
+
   const handleContinue = useCallback(
     async (e: any) => {
       e.preventDefault();
+
+      if (registerMutation.isPending) return;
+
       const isStepValid = await trigger();
 
       if (isStepValid) {
@@ -330,7 +340,7 @@ export const AccountSetup = ({ settings, methods }: AccountSetupProps) => {
               type="submit"
               className="w-full"
               onClick={handleContinue}
-              disabled={!isValid}
+              disabled={disabledContinue}
               isLoading={registerMutation.isPending}
             >
               {t("continue")}

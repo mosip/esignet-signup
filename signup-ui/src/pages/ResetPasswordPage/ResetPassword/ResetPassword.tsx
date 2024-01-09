@@ -1,4 +1,4 @@
-import { MouseEvent, useCallback, useState } from "react";
+import { MouseEvent, useCallback, useMemo, useState } from "react";
 import { useFormContext, UseFormReturn } from "react-hook-form";
 import { Trans, useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
@@ -38,6 +38,7 @@ import {
   SettingsDto,
 } from "~typings/types";
 
+import { resetPasswordFormDefaultValues } from "../ResetPasswordPage";
 import {
   ResetPasswordStep,
   setCriticalErrorSelector,
@@ -54,7 +55,6 @@ interface ResetPasswordProps {
 export const ResetPassword = ({ methods, settings }: ResetPasswordProps) => {
   const { t } = useTranslation();
 
-  const { hash: fromSignInHash } = useLocation();
   const { control, setValue, getValues } = useFormContext();
   const [passwordResetError, setPasswordResetError] = useState<Error | null>(
     null
@@ -72,7 +72,11 @@ export const ResetPassword = ({ methods, settings }: ResetPasswordProps) => {
 
   const {
     trigger,
-    formState: { errors: passwordResetFormError, isValid: isUserInfoValid },
+    formState: {
+      errors: passwordResetFormError,
+      isValid: isResetPasswordValid,
+      isDirty: isResetPasswordDirty,
+    },
   } = methods;
 
   const { resetPasswordMutation } = useResetPassword();
@@ -82,9 +86,19 @@ export const ResetPassword = ({ methods, settings }: ResetPasswordProps) => {
     setStep(ResetPasswordStep.Otp);
   }, [step, setStep, setValue]);
 
+  const disabledContinue =
+    !isResetPasswordValid ||
+    !isResetPasswordDirty ||
+    getValues("newPassword") === resetPasswordFormDefaultValues.newPassword ||
+    getValues("confirmNewPassword") ===
+      resetPasswordFormDefaultValues.confirmNewPassword;
+
   const handleContinue = useCallback(
     async (e: MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
+
+      if (resetPasswordMutation.isPending) return;
+
       const isStepValid = await trigger();
 
       if (isStepValid) {
@@ -112,7 +126,7 @@ export const ResetPassword = ({ methods, settings }: ResetPasswordProps) => {
         });
       }
     },
-    []
+    [resetPasswordMutation]
   );
 
   return (
@@ -233,7 +247,7 @@ export const ResetPassword = ({ methods, settings }: ResetPasswordProps) => {
             </div>
             <Button
               onClick={handleContinue}
-              disabled={!isUserInfoValid || resetPasswordMutation.isPending}
+              disabled={disabledContinue}
               isLoading={resetPasswordMutation.isPending}
             >
               {t("reset")}

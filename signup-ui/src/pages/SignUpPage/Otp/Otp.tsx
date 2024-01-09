@@ -163,6 +163,9 @@ export const Otp = ({ methods, settings }: OtpProps) => {
   const handleContinue = useCallback(
     async (e: any) => {
       e.preventDefault();
+
+      if (verifyChallengeMutation.isPending) return;
+
       const isStepValid = await trigger();
 
       if (isStepValid) {
