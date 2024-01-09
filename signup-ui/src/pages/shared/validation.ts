@@ -6,13 +6,17 @@ import { SettingsDto } from "~typings/types";
 export const validateUsername = (settings: SettingsDto, t: TFunction) =>
   yup
     .string()
-    .required(t("username_validation"))
-    .matches(/^[^0].*$/, t("username_validation"))
-    .test("isUsernameValid", t("username_validation"), (value) =>
-      new RegExp(settings.response.configs["identifier.pattern"]).test(
+    .trim()
+    .matches(/^[^0].*$/, {
+      message: t("username_validation"),
+      excludeEmptyString: true,
+    })
+    .test("isUsernameValid", t("username_validation"), (value) => {
+      if (value === "") return true;
+      return new RegExp(settings.response.configs["identifier.pattern"]).test(
         `${settings.response.configs["identifier.prefix"]}${value}`
-      )
-    );
+      );
+    });
 
 export const validateCaptchaToken = (t: TFunction) =>
   yup.string().required(t("captcha_token_validation"));
@@ -20,11 +24,11 @@ export const validateCaptchaToken = (t: TFunction) =>
 export const validateFullName = (settings: SettingsDto, t: TFunction) =>
   yup
     .string()
-    .required(t("full_name_validation"))
-    .matches(
-      new RegExp(settings.response.configs["fullname.pattern"]),
-      t("full_name_in_lng_validation")
-    );
+    .trim()
+    .matches(new RegExp(settings.response.configs["fullname.pattern"]), {
+      message: t("full_name_in_lng_validation"),
+      excludeEmptyString: true,
+    });
 
 export const validateOtp = (settings: SettingsDto) =>
   yup
@@ -34,11 +38,11 @@ export const validateOtp = (settings: SettingsDto) =>
 export const validatePassword = (settings: SettingsDto, t: TFunction) =>
   yup
     .string()
-    .required(t("password_validation"))
-    .matches(
-      new RegExp(settings.response.configs["password.pattern"]),
-      t("password_validation")
-    );
+    .trim()
+    .matches(new RegExp(settings.response.configs["password.pattern"]), {
+      message: t("password_validation"),
+      excludeEmptyString: true,
+    });
 
 export const validateConfirmPassword = (
   passwordRef: string,
@@ -47,8 +51,9 @@ export const validateConfirmPassword = (
 ) =>
   yup
     .string()
-    .matches(
-      new RegExp(settings.response.configs["password.pattern"]),
-      t("password_validation")
-    )
-    .oneOf([yup.ref(passwordRef)], t("password_validation_must_match"));
+    .trim()
+    .matches(new RegExp(settings.response.configs["password.pattern"]), {
+      message: t("password_validation"),
+      excludeEmptyString: true,
+    })
+    .oneOf([yup.ref(passwordRef), ""], t("password_validation_must_match"));

@@ -166,6 +166,9 @@ export const Otp = ({ methods, settings }: OtpProps) => {
   const handleContinue = useCallback(
     async (e: any) => {
       e.preventDefault();
+
+      if (verifyChallengeMutation.isPending) return;
+
       const isStepValid = await trigger();
 
       if (isStepValid) {
@@ -195,7 +198,11 @@ export const Otp = ({ methods, settings }: OtpProps) => {
         return verifyChallengeMutation.mutate(verifyChallengeRequestDto, {
           onSuccess: ({ errors }) => {
             if (errors.length > 0) {
-              if (["invalid_transaction", "knowledgebase_mismatch"].includes(errors[0].errorCode) ) {
+              if (
+                ["invalid_transaction", "knowledgebase_mismatch"].includes(
+                  errors[0].errorCode
+                )
+              ) {
                 setCriticalError(errors[0]);
               } else {
                 setChallengeVerificationError(errors[0]);
