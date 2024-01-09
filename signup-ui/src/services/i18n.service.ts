@@ -30,6 +30,7 @@ i18n
   .init({
     debug: false,
     fallbackLng: (window as any)._env_.DEFAULT_LANG,
+    lng: (window as any)._env_.DEFAULT_LANG,
     interpolation: {
       escapeValue: false, // not needed for react as it escapes by default
     },
