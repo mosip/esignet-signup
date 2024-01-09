@@ -2,6 +2,7 @@ import {
   KeyboardEvent,
   MouseEvent,
   useCallback,
+  useMemo,
   useRef,
   useState,
 } from "react";
@@ -49,6 +50,7 @@ import {
   SettingsDto,
 } from "~typings/types";
 
+import { resetPasswordFormDefaultValues } from "../ResetPasswordPage";
 import {
   ResetPasswordStep,
   setCriticalErrorSelector,
@@ -72,7 +74,11 @@ export const UserInfo = ({ settings, methods }: UserInfoProps) => {
 
   const {
     trigger,
-    formState: { errors: UserInfoFormErrors, isValid: isUserInfoValid },
+    formState: {
+      errors: UserInfoFormErrors,
+      isValid: isUserInfoValid,
+      isDirty: isUserInfoDirty,
+    },
   } = methods;
 
   const { setStep, setCriticalError } = useResetPasswordStore(
@@ -106,9 +112,19 @@ export const UserInfo = ({ settings, methods }: UserInfoProps) => {
       settings.response.configs["fullname.allowed.characters"]
     );
 
+  const disabledContinue =
+    !isUserInfoValid ||
+    !isUserInfoDirty ||
+    getValues("username") === resetPasswordFormDefaultValues.username ||
+    getValues("fullname") === resetPasswordFormDefaultValues.fullname ||
+    getValues("captchaToken") === resetPasswordFormDefaultValues.captchaToken;
+
   const handleContinue = useCallback(
     async (e: MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
+
+      if (generateChallengeMutation.isPending) return;
+
       const isStepValid = await trigger();
 
       if (isStepValid) {
@@ -143,7 +159,7 @@ export const UserInfo = ({ settings, methods }: UserInfoProps) => {
         });
       }
     },
-    []
+    [generateChallengeMutation]
   );
 
   return (
@@ -280,7 +296,7 @@ export const UserInfo = ({ settings, methods }: UserInfoProps) => {
             <Button
               onClick={handleContinue}
               isLoading={generateChallengeMutation.isPending}
-              disabled={!isUserInfoValid || generateChallengeMutation.isPending}
+              disabled={disabledContinue}
             >
               {t("continue")}
             </Button>
