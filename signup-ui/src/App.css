@@ -105,4 +105,22 @@ body {
   .input{
     height: 52px;
   }
+
+  .term-condition-content {
+    h4 {
+      @apply text-xl font-semibold text-gray-900 dark:text-white mb-2;
+    }
+    p {
+      @apply pb-3;
+    }
+    ul {
+      @apply list-disc list-inside pb-5;
+    }
+    ol {
+      @apply space-y-4 list-decimal list-inside;
+    }
+    ol li ul {
+      @apply ps-5 mt-2 space-y-1 list-disc list-inside;
+    }
+  }
 }
