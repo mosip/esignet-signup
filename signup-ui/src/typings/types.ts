@@ -85,6 +85,7 @@ export interface SettingsConfig {
   "captcha.site.key": string;
   "otp.length": number;
   "otp.secret": boolean;
+  "otp.blocked": number;
   "password.pattern": string;
   "password.length.max": number;
   "password.length.min": number;
