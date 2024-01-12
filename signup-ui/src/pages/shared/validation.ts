@@ -24,7 +24,8 @@ export const validateCaptchaToken = (t: TFunction) =>
 export const validateFullName = (settings: SettingsDto, t: TFunction) =>
   yup
     .string()
-    .trim()
+    .strict(true)
+    .trim(t("full_name_in_lng_validation"))
     .matches(new RegExp(settings.response.configs["fullname.pattern"]), {
       message: t("full_name_in_lng_validation"),
       excludeEmptyString: true,
