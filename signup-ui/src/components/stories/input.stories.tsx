@@ -21,6 +21,13 @@ export const Default: Story = {
     placeholder: "Email",
   },
 };
+export const Password: Story = {
+  render: (args) => <Input {...args} />,
+  args: {
+    type: "password",
+    placeholder: "Password",
+  },
+};
 export const Disabled: Story = {
   render: (args) => <Input disabled {...args} />,
   args: { ...Default.args },

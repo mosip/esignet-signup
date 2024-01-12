@@ -107,7 +107,7 @@
     "prop-types": "^15.8.1",
     "react-dev-inspector": "^2.0.0",
     "storybook": "^7.6.0",
-    "tailwindcss": "^3.3.5",
+    "tailwindcss": "^3.4.1",
     "tailwindcss-dir": "^4.0.0",
     "tsconfig-paths-webpack-plugin": "^4.1.0",
     "type-fest": "^4.6.0",
