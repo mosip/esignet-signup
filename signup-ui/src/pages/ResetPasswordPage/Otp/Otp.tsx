@@ -138,7 +138,11 @@ export const Otp = ({ methods, settings }: OtpProps) => {
             );
 
             if (errors && errors.length > 0) {
-              setChallengeVerificationError(errors[0]);
+              if (errors[0].errorCode === "invalid_transaction") {
+                setCriticalError(errors[0]);
+              } else {
+                setChallengeVerificationError(errors[0]);
+              }
             }
           },
         });
