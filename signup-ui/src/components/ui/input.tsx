@@ -19,28 +19,40 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 
     return (
       <div className="relative h-full">
-        <input
-          type={inputType}
+        <div
           className={cn(
-            "flex h-12 w-full rounded-md border border-input bg-transparent px-3 py-2 ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-[hsla(0,0%,51%)] focus-visible:outline-none disabled:cursor-not-allowed disabled:bg-muted-light-gray",
-            className
+            "h-full",
+            "has-[input.border-destructive]:border-destructive",
+            type === "password" && "flex rounded-md border-[1px] border-input"
           )}
-          ref={ref}
-          {...props}
-        />
-        {type === "password" && (
-          <button
-            type="button"
-            className="absolute right-3 top-1/2 -translate-y-1/2"
-            onClick={togglePasswordVisibility}
-          >
-            {showPassword ? (
-              <Icons.eyeOff className="h-5 w-5 text-gray-500" />
-            ) : (
-              <Icons.eye className="h-5 w-5 text-gray-500" />
+        >
+          <input
+            type={inputType}
+            className={cn(
+              "flex h-12 w-full bg-transparent py-2 ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-[hsla(0,0%,51%)] focus-visible:outline-none disabled:cursor-not-allowed disabled:bg-muted-light-gray",
+              {
+                "rounded-md border border-input px-3": type !== "password",
+                "pl-3": type === "password",
+              },
+              className
             )}
-          </button>
-        )}
+            ref={ref}
+            {...props}
+          />
+          {type === "password" && (
+            <button
+              type="button"
+              className="flex h-full self-center px-3"
+              onClick={togglePasswordVisibility}
+            >
+              {showPassword ? (
+                <Icons.eyeOff className="h-5 w-5 text-gray-500" />
+              ) : (
+                <Icons.eye className="h-5 w-5 text-gray-500" />
+              )}
+            </button>
+          )}
+        </div>
       </div>
     );
   }
