@@ -3,6 +3,7 @@ import { useFormContext, UseFormReturn } from "react-hook-form";
 import { Trans, useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
 
+import { LabelPopover } from "~components/label-popover";
 import { ActionMessage } from "~components/ui/action-message";
 import { Button } from "~components/ui/button";
 import {
@@ -14,12 +15,6 @@ import {
 } from "~components/ui/form";
 import { Icons } from "~components/ui/icons";
 import { Input } from "~components/ui/input";
-import {
-  Popover,
-  PopoverArrow,
-  PopoverContent,
-  PopoverTrigger,
-} from "~components/ui/popover";
 import {
   Step,
   StepAlert,
@@ -172,21 +167,19 @@ export const ResetPassword = ({ methods, settings }: ResetPasswordProps) => {
                     <div className="space-y-2">
                       <div className="flex items-center gap-1">
                         <FormLabel>{t("new_password")}</FormLabel>
-                        <Popover>
-                          <PopoverTrigger asChild>
+                        <LabelPopover
+                          icon={
                             <Icons.info className="h-4 w-4 cursor-pointer" />
-                          </PopoverTrigger>
-                          <PopoverContent side="right" className="w-full">
-                            <Trans
-                              i18nKey="password_rules"
-                              components={{
-                                ul: <ul className="list-inside list-disc" />,
-                                li: <li />,
-                              }}
-                            />
-                            <PopoverArrow className="fill-[#FFFFFF] stroke-[#BCBCBC]" />
-                          </PopoverContent>
-                        </Popover>
+                          }
+                        >
+                          <Trans
+                            i18nKey="password_rules"
+                            components={{
+                              ul: <ul className="list-inside list-disc" />,
+                              li: <li />,
+                            }}
+                          />
+                        </LabelPopover>
                       </div>
                       <FormControl>
                         <Input
