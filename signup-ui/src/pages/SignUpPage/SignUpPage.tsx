@@ -87,7 +87,7 @@ export const SignUpPage = ({ settings }: SignUpPageProps) => {
         username: yup.string(),
         fullNameInKhmer: validateFullName(settings, t),
         password: validatePassword(settings, t),
-        confirmPassword: validateConfirmPassword("password", settings, t),
+        confirmPassword: validateConfirmPassword("password", settings, t, true),
         consent: yup.bool().oneOf([true], t("terms_and_conditions_validation")),
       }),
       // Step 5 - Register Status Validation
@@ -131,7 +131,7 @@ export const SignUpPage = ({ settings }: SignUpPageProps) => {
   return (
     <>
       {criticalError &&
-        ["invalid_transaction"].includes(criticalError.errorCode) && (
+        ["invalid_transaction", "identifier_already_registered"].includes(criticalError.errorCode) && (
           <SignUpPopover />
         )}
       <Form {...methods}>
