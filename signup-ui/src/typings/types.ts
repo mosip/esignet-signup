@@ -26,6 +26,7 @@ const VerifyChallengePossibleErrors = [
   "invalid_challenge_format",
   "unknown_error",
   "already-registered",
+  "identifier_already_registered"
 ] as const;
 
 export type VerifyChallengeErrors =

@@ -66,10 +66,12 @@ interface Resources {
     attempts_left: string;
     captcha_token_validation: string;
     username_validation: string;
+    username_lead_zero_validation: string;
     full_name_validation: string;
     full_name_in_lng_validation: string;
     password_validation: string;
     password_validation_must_match: string;
+    register_password_validation_must_match: string;
     terms_and_conditions_validation: string;
     terms_and_conditions_title: string;
     terms_and_conditions_content: string;
@@ -91,6 +93,8 @@ interface Resources {
       invalid_challenge_type: string;
       invalid_challenge_format: string;
       "already-registered": string;
+      identifier_already_registered: string;
+      challenge_expired: string;
       timed_out: string;
       request_limit: string;
       not_registered: string;

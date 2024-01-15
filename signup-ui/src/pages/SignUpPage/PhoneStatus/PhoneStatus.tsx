@@ -61,7 +61,7 @@ export const PhoneStatus = ({ methods }: PhoneStatusProps) => {
 
   if (
     challengeVerification.errors.length > 0 &&
-    challengeVerification.errors[0].errorCode === "already-registered"
+    ["already-registered", "identifier_already_registered"].includes(challengeVerification.errors[0].errorCode)
   ) {
     return (
       <Step>

@@ -8,7 +8,7 @@ export const validateUsername = (settings: SettingsDto, t: TFunction) =>
     .string()
     .trim()
     .matches(/^[^0].*$/, {
-      message: t("username_validation"),
+      message: t("username_lead_zero_validation"),
       excludeEmptyString: true,
     })
     .test("isUsernameValid", t("username_validation"), (value) => {
@@ -48,7 +48,8 @@ export const validatePassword = (settings: SettingsDto, t: TFunction) =>
 export const validateConfirmPassword = (
   passwordRef: string,
   settings: SettingsDto,
-  t: TFunction
+  t: TFunction,
+  isRegister: boolean
 ) =>
   yup
     .string()
@@ -57,4 +58,4 @@ export const validateConfirmPassword = (
       message: t("password_validation"),
       excludeEmptyString: true,
     })
-    .oneOf([yup.ref(passwordRef), ""], t("password_validation_must_match"));
+    .oneOf([yup.ref(passwordRef), ""], isRegister ? t("password_validation_must_match") : t("password_validation_must_match"));
