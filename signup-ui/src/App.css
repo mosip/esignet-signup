@@ -1,0 +1,126 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import "@fontsource-variable/inter";
+@import "@fontsource-variable/kantumruy-pro";
+
+body {
+  background: #f7f9fd 0% 0% no-repeat padding-box;
+}
+
+@layer base {
+  :root {
+    --font-inter: "Inter";
+    --font-kantumruypro: "Kantumruy Pro Variable";
+
+    --background: 220 60% 98%;
+    --foreground: 222.2 47.4% 11.2%;
+
+    --muted: 0 0% 80%;
+    --muted-foreground: 204 10% 10%;
+    --muted-neutral-gray: 0 0% 51%;
+    --muted-dark-gray: 0 0% 29%;
+    --muted-light-gray: 0 0% 95%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 47.4% 11.2%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 0 0% 44%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 47.4% 11.2%;
+
+    --step: 0 0% 100%;
+    --step-foreground: 222.2 47.4% 11.2%;
+
+    --primary: 21 83% 55%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+
+    --accent: 0 0% 100%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --destructive: 0 68% 50%;
+    --destructive-foreground: 0 52% 96%;
+
+    --ring: 215 20.2% 65.1%;
+
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 224 71% 4%;
+    --foreground: 213 31% 91%;
+
+    --muted: 223 47% 11%;
+    --muted-foreground: 215.4 16.3% 56.9%;
+
+    --accent: 216 34% 17%;
+    --accent-foreground: 210 40% 98%;
+
+    --popover: 224 71% 4%;
+    --popover-foreground: 215 20.2% 65.1%;
+
+    --border: 216 34% 17%;
+    --input: 216 34% 17%;
+
+    --card: 224 71% 4%;
+    --card-foreground: 213 31% 91%;
+
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 1.2%;
+
+    --secondary: 222.2 47.4% 11.2%;
+    --secondary-foreground: 210 40% 98%;
+
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 210 40% 98%;
+
+    --ring: 216 34% 17%;
+
+    --radius: 0.5rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings:
+      "rlig" 1,
+      "calt" 1;
+  }
+}
+
+@layer components {
+  .recaptcha {
+    transform: scale(1);
+  }
+  .input{
+    height: 52px;
+  }
+
+  .term-condition-content {
+    h4 {
+      @apply text-xl font-semibold text-gray-900 dark:text-white mb-2;
+    }
+    p {
+      @apply pb-3;
+    }
+    ul {
+      @apply list-disc list-inside pb-5;
+    }
+    ol {
+      @apply space-y-4 list-decimal list-inside;
+    }
+    ol li ul {
+      @apply ps-5 mt-2 space-y-1 list-disc list-inside;
+    }
+  }
+}
