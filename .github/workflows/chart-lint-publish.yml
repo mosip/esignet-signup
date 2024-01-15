@@ -39,6 +39,7 @@ on:
       - develop
       - MOSIP*
       - release*
+      - ES-*
     paths:
       - 'charts/**'
 
