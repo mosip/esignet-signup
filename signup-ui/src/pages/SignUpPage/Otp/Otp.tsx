@@ -194,7 +194,7 @@ export const Otp = ({ methods, settings }: OtpProps) => {
         return verifyChallengeMutation.mutate(verifyChallengeRequestDto, {
           onSuccess: ({ errors }) => {
             if (errors.length > 0) {
-              if (errors[0].errorCode === "already-registered") {
+              if (["already-registered", "identifier_already_registered"].includes(errors[0].errorCode)) {
                 setStep(SignUpStep.PhoneStatus);
               } else if (errors[0].errorCode === "invalid_transaction") {
                 setCriticalError(errors[0]);

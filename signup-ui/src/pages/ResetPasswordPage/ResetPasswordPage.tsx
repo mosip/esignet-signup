@@ -69,7 +69,7 @@ export const ResetPasswordPage = ({ settings }: ResetPasswordPageProps) => {
       // Step 3 - ResetPassword
       yup.object({
         newPassword: validatePassword(settings, t),
-        confirmNewPassword: validateConfirmPassword("newPassword", settings, t),
+        confirmNewPassword: validateConfirmPassword("newPassword", settings, t, false),
       }),
       // Step 4 - ResetPasswordStatus
       yup.object({}),
