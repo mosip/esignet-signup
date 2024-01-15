@@ -155,8 +155,8 @@ export const Phone = ({ settings, methods }: PhoneProps) => {
 
   return (
     <Step>
-      <StepHeader className="px-0 sm:px-[18px] sm:pb-[25px] sm:pt-[33px]">
-        <StepTitle className="relative flex w-full items-center justify-center gap-x-4 text-base font-semibold leading-5">
+      <StepHeader className="px-6">
+        <StepTitle className="flex w-full items-center justify-center text-base font-semibold leading-5">
           {!!fromSignInHash && (
             <a
               href={getSignInRedirectURL(
@@ -164,12 +164,12 @@ export const Phone = ({ settings, methods }: PhoneProps) => {
                 fromSignInHash,
                 "/signup"
               )}
-              className="absolute left-0 ml-6 cursor-pointer"
+              className="flex-none cursor-pointer"
             >
               <Icons.back />
             </a>
           )}
-          <div className="text-center font-semibold tracking-normal">
+          <div className="grow px-3 xs:px-2 text-center font-semibold tracking-normal">
             {t("enter_your_number")}
           </div>
         </StepTitle>
