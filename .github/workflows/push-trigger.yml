@@ -21,6 +21,7 @@ on:
       - MOSIP*
       - release*
       - feature*
+      - ES-*
 
 jobs:
   build-maven-signup-service:
