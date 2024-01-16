@@ -189,7 +189,9 @@ export const AccountSetup = ({ settings, methods }: AccountSetupProps) => {
                     <div className="flex items-center gap-1">
                       <FormLabel>{t("full_name")}</FormLabel>
                       <LabelPopover
-                        icon={<Icons.info className="h-4 w-4 cursor-pointer" />}
+                        icon={
+                          <Icons.info className="h-4 h-4 cursor-pointer sm:h-3 sm:w-3" />
+                        }
                       >
                         <span>{t("full_name_tooltip")}</span>
                       </LabelPopover>
@@ -225,7 +227,9 @@ export const AccountSetup = ({ settings, methods }: AccountSetupProps) => {
                     <div className="flex items-center gap-1">
                       <FormLabel>{t("password")}</FormLabel>
                       <LabelPopover
-                        icon={<Icons.info className="h-4 w-4 cursor-pointer" />}
+                        icon={
+                          <Icons.info className="h-4 h-4 cursor-pointer sm:h-3 sm:w-3" />
+                        }
                       >
                         <Trans
                           i18nKey="password_rules"
