@@ -219,7 +219,7 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    public void doVerifyChallengeInResetPassword_thenIdRepoResponseAnotherErrorCode_throwIdentifierNotFound() {
+    public void doVerifyChallenge_toResetPassword_thenIdentifierNotFound_WhenIdRepoResponseAnotherErrorCode() {
 
         ChallengeInfo challengeInfo = new ChallengeInfo();
         challengeInfo.setFormat("alpha-numeric");
@@ -265,7 +265,7 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    public void doVerifyChallengeInResetPassword_withOTPMismatchFormat_throwChallengeFormatAndTypeMismatch() {
+    public void doVerifyChallenge_toResetPassword_withOTPMismatchFormat_thenChallengeFormatAndTypeMismatch() {
         ChallengeInfo challengeInfoOTP = new ChallengeInfo();
         challengeInfoOTP.setFormat("alpha-encoded");
         challengeInfoOTP.setChallenge("111111");
@@ -296,7 +296,7 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    public void doVerifyChallengeInResetPassword_withKBAMismatchFormat_throwChallengeFormatAndTypeMismatch() {
+    public void doVerifyChallenge_toResetPassword_withKBAMismatchFormat_thenChallengeFormatAndTypeMismatch() {
         ChallengeInfo challengeInfoKBA = new ChallengeInfo();
         challengeInfoKBA.setFormat("base64url-json");
         challengeInfoKBA.setChallenge("111111");
@@ -327,7 +327,7 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    public void doVerifyChallengeInResetPassword_withInvalidKBAChallenge_throwInvalidKBAChallenge() {
+    public void doVerifyChallenge_toResetPassword_thenInvalidKBAChallenge() {
 
         ChallengeInfo challengeInfoKBA = new ChallengeInfo();
         challengeInfoKBA.setFormat("base64url-encoded-json");
@@ -386,7 +386,7 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    public void doVerifyChallengeInResetPassword_withFullNameMismatch_throwException() {
+    public void doVerifyChallenge_toResetPassword_thenFullNameMismatch() {
 
         ChallengeInfo challengeInfoKBA = new ChallengeInfo();
         challengeInfoKBA.setFormat("base64url-encoded-json");
@@ -445,7 +445,7 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    public void doVerifyChallengeInResetPassword_thenSuccess() {
+    public void doVerifyChallenge_toResetPassword_thenSuccess() {
 
         ChallengeInfo challengeInfoKBA = new ChallengeInfo();
         challengeInfoKBA.setFormat("base64url-encoded-json");
@@ -533,7 +533,7 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    public void doVerifyChallengeInResetPassword_thenIdentityInactive_throwException() {
+    public void doVerifyChallenge_toResetPassword_thenIdentityInactive() {
 
         ChallengeInfo challengeInfoKBA = new ChallengeInfo();
         challengeInfoKBA.setFormat("base64url-encoded-json");
@@ -591,7 +591,7 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    public void doVerifyChallengeInResetPassword_withKBAChallengeNotFound_throwException() {
+    public void doVerifyChallenge_toResetPassword_thenKBAChallengeNotFound() {
 
         ChallengeInfo challengeInfoOTP = new ChallengeInfo();
         challengeInfoOTP.setFormat("alpha-numeric");
@@ -643,7 +643,7 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    public void doVerifyChallengeInResetPassword_thenFetchIdentityFailed_throwException() {
+    public void doVerifyChallenge_toResetPassword_thenFetchIdentityFailed() {
 
         ChallengeInfo challengeInfoKBA = new ChallengeInfo();
         challengeInfoKBA.setFormat("base64url-encoded-json");
@@ -867,47 +867,6 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    public void register_thenUinEndpointResponseNullUIN_throwException() throws Exception{
-        UserInfoMap userInfo = new UserInfoMap();
-        userInfo.setPreferredLang("khm");
-        userInfo.setFullName(List.of(new LanguageTaggedValue("eng", "Panharith AN")));
-        userInfo.setPhone("+855219718732");
-
-        RegisterRequest registerRequest = new RegisterRequest();
-        registerRequest.setUserInfo(userInfo);
-        registerRequest.setUsername("+855219718732");
-        registerRequest.setPassword("123123");
-        registerRequest.setConsent("AGREE");
-
-        String mockTransactionID = "123456789";
-
-        RegistrationTransaction mockRegistrationTransaction = new RegistrationTransaction(registerRequest.getUsername(), Purpose.REGISTRATION);
-        mockRegistrationTransaction.setChallengeHash("123456");
-        mockRegistrationTransaction.setIdentifier(userInfo.getPhone());
-
-        UINResponse uinResponse = new UINResponse();
-        uinResponse.setUIN(null);
-        RestResponseWrapper<UINResponse> mockRestResponseWrapperUINResponse = new RestResponseWrapper<UINResponse>();
-        mockRestResponseWrapperUINResponse.setResponse(uinResponse);
-
-        when(cacheUtilService.getChallengeVerifiedTransaction(mockTransactionID))
-                .thenReturn(mockRegistrationTransaction);
-
-        when(selfTokenRestTemplate.exchange(
-                eq(getUinEndpoint),
-                eq(HttpMethod.GET),
-                eq(null),
-                any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<>(mockRestResponseWrapperUINResponse, HttpStatus.OK));
-
-        try{
-            registrationService.register(registerRequest, mockTransactionID);
-            Assert.fail();
-        }catch (SignUpException signUpException){
-            Assert.assertEquals(ErrorConstants.GET_UIN_FAILED, signUpException.getErrorCode());
-        }
-    }
-
-    @Test
     public void register_thenUinEndpointResponseErrors_throwException() throws Exception {
         UserInfoMap userInfo = new UserInfoMap();
         userInfo.setPreferredLang("khm");
@@ -949,45 +908,6 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    public void register_thenUinEndpointResponseWithNullErrors_throwException() throws Exception{
-        UserInfoMap userInfo = new UserInfoMap();
-        userInfo.setPreferredLang("khm");
-        userInfo.setFullName(List.of(new LanguageTaggedValue("eng", "Panharith AN")));
-        userInfo.setPhone("+855219718732");
-
-        RegisterRequest registerRequest = new RegisterRequest();
-        registerRequest.setUserInfo(userInfo);
-        registerRequest.setUsername("+855219718732");
-        registerRequest.setPassword("123123");
-        registerRequest.setConsent("AGREE");
-
-        String mockTransactionID = "123456789";
-
-        RegistrationTransaction mockRegistrationTransaction = new RegistrationTransaction(registerRequest.getUsername(), Purpose.REGISTRATION);
-        mockRegistrationTransaction.setChallengeHash("123456");
-        mockRegistrationTransaction.setIdentifier(userInfo.getPhone());
-
-        when(cacheUtilService.getChallengeVerifiedTransaction(mockTransactionID))
-                .thenReturn(mockRegistrationTransaction);
-
-        RestResponseWrapper<UINResponse> mockRestResponseWrapperUINResponse = new RestResponseWrapper<>();
-        mockRestResponseWrapperUINResponse.setErrors(null);
-
-        when(selfTokenRestTemplate.exchange(
-                eq(getUinEndpoint),
-                eq(HttpMethod.GET),
-                eq(null),
-                any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<>(mockRestResponseWrapperUINResponse, HttpStatus.OK));
-
-        try{
-            registrationService.register(registerRequest, mockTransactionID);
-            Assert.fail();
-        }catch (SignUpException signUpException){
-            Assert.assertEquals("get_uin_failed", signUpException.getErrorCode());
-        }
-    }
-
-    @Test
     public void register_thenGenerateHashEndpointResponseNullBody_throwException() throws Exception {
         UserInfoMap userInfo = new UserInfoMap();
         userInfo.setPreferredLang("khm");
@@ -1013,6 +933,9 @@ public class RegistrationServiceTest {
         identityResponse.setStatus("ACTIVATED");
         UINResponse uinResponse = new UINResponse();
         uinResponse.setUIN("mockUIN");
+        Password.PasswordHash passwordHash = new Password.PasswordHash();
+        passwordHash.setSalt("mockSalt");
+        passwordHash.setHashValue("mockHashValue");
 
         RestResponseWrapper<UINResponse> mockRestResponseWrapperUINResponse = new RestResponseWrapper<UINResponse>();
         mockRestResponseWrapperUINResponse.setResponse(uinResponse);
@@ -1062,6 +985,9 @@ public class RegistrationServiceTest {
         identityResponse.setStatus("ACTIVATED");
         UINResponse uinResponse = new UINResponse();
         uinResponse.setUIN("mockUIN");
+        Password.PasswordHash passwordHash = new Password.PasswordHash();
+        passwordHash.setSalt("mockSalt");
+        passwordHash.setHashValue("mockHashValue");
 
         RestResponseWrapper<UINResponse> mockRestResponseWrapperUINResponse = new RestResponseWrapper<UINResponse>();
         mockRestResponseWrapperUINResponse.setResponse(uinResponse);
@@ -1086,165 +1012,6 @@ public class RegistrationServiceTest {
             Assert.fail();
         } catch (SignUpException signUpException) {
             Assert.assertEquals("server_error", signUpException.getErrorCode());
-        }
-    }
-
-    @Test
-    public void register_thenGenerateHashEndpointResponseNullErrors_throwException() throws Exception{
-        UserInfoMap userInfo = new UserInfoMap();
-        userInfo.setPreferredLang("khm");
-        userInfo.setFullName(List.of(new LanguageTaggedValue("eng", "Panharith AN")));
-        userInfo.setPhone("+855219718732");
-
-        RegisterRequest registerRequest = new RegisterRequest();
-        registerRequest.setUserInfo(userInfo);
-        registerRequest.setUsername("+855219718732");
-        registerRequest.setPassword("123123");
-        registerRequest.setConsent("AGREE");
-
-        String mockTransactionID = "123456789";
-
-        RegistrationTransaction mockRegistrationTransaction = new RegistrationTransaction(registerRequest.getUsername(), Purpose.REGISTRATION);
-        mockRegistrationTransaction.setChallengeHash("123456");
-        mockRegistrationTransaction.setIdentifier(userInfo.getPhone());
-
-        when(cacheUtilService.getChallengeVerifiedTransaction(mockTransactionID))
-                .thenReturn(mockRegistrationTransaction);
-
-        IdentityResponse identityResponse = new IdentityResponse();
-        identityResponse.setStatus("ACTIVATED");
-        UINResponse uinResponse = new UINResponse();
-        uinResponse.setUIN("mockUIN");
-
-        RestResponseWrapper<UINResponse> mockRestResponseWrapperUINResponse = new RestResponseWrapper<UINResponse>();
-        mockRestResponseWrapperUINResponse.setResponse(uinResponse);
-        RestResponseWrapper<Password.PasswordHash> mockRestResponseWrapperPasswordHash = new RestResponseWrapper<Password.PasswordHash>();
-        mockRestResponseWrapperPasswordHash.setErrors(null);
-
-        when(selfTokenRestTemplate.exchange(
-                eq(getUinEndpoint),
-                eq(HttpMethod.GET),
-                eq(null),
-                any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<>(mockRestResponseWrapperUINResponse, HttpStatus.OK));
-        when(selfTokenRestTemplate.exchange(
-                eq(generateHashEndpoint),
-                eq(HttpMethod.POST),
-                any(HttpEntity.class),
-                any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<>(mockRestResponseWrapperPasswordHash, HttpStatus.OK));
-
-        try{
-            registrationService.register(registerRequest, mockTransactionID);
-            Assert.fail();
-        }catch (SignUpException signUpException){
-            Assert.assertEquals("hash_generate_failed", signUpException.getErrorCode());
-        }
-    }
-
-    @Test
-    public void register_thenGenerateHashEndpointResponseNullSaltedPassword_throwException() throws Exception{
-        UserInfoMap userInfo = new UserInfoMap();
-        userInfo.setPreferredLang("khm");
-        userInfo.setFullName(List.of(new LanguageTaggedValue("eng", "Panharith AN")));
-        userInfo.setPhone("+855219718732");
-
-        RegisterRequest registerRequest = new RegisterRequest();
-        registerRequest.setUserInfo(userInfo);
-        registerRequest.setUsername("+855219718732");
-        registerRequest.setPassword("123123");
-        registerRequest.setConsent("AGREE");
-
-        String mockTransactionID = "123456789";
-
-        RegistrationTransaction mockRegistrationTransaction = new RegistrationTransaction(registerRequest.getUsername(), Purpose.REGISTRATION);
-        mockRegistrationTransaction.setChallengeHash("123456");
-        mockRegistrationTransaction.setIdentifier(userInfo.getPhone());
-
-        when(cacheUtilService.getChallengeVerifiedTransaction(mockTransactionID))
-                .thenReturn(mockRegistrationTransaction);
-
-        IdentityResponse identityResponse = new IdentityResponse();
-        identityResponse.setStatus("ACTIVATED");
-        UINResponse uinResponse = new UINResponse();
-        uinResponse.setUIN("mockUIN");
-        Password.PasswordHash passwordHash = new Password.PasswordHash();
-        passwordHash.setSalt("mockSalt");
-        passwordHash.setHashValue("mockHashValue");
-
-        RestResponseWrapper<UINResponse> mockRestResponseWrapperUINResponse = new RestResponseWrapper<UINResponse>();
-        mockRestResponseWrapperUINResponse.setResponse(uinResponse);
-        RestResponseWrapper<Password.PasswordHash> mockRestResponseWrapperPasswordHash = new RestResponseWrapper<Password.PasswordHash>();
-        mockRestResponseWrapperPasswordHash.setResponse(new Password.PasswordHash());
-
-        when(selfTokenRestTemplate.exchange(
-                eq(getUinEndpoint),
-                eq(HttpMethod.GET),
-                eq(null),
-                any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<>(mockRestResponseWrapperUINResponse, HttpStatus.OK));
-        when(selfTokenRestTemplate.exchange(
-                eq(generateHashEndpoint),
-                eq(HttpMethod.POST),
-                any(HttpEntity.class),
-                any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<>(mockRestResponseWrapperPasswordHash, HttpStatus.OK));
-
-        try{
-            registrationService.register(registerRequest, mockTransactionID);
-            Assert.fail();
-        }catch (SignUpException signUpException){
-            Assert.assertEquals("hash_generate_failed", signUpException.getErrorCode());
-        }
-    }
-
-    @Test
-    public void register_thenGenerateHashEndpointResponseNullSalted_throwException() throws Exception{
-        UserInfoMap userInfo = new UserInfoMap();
-        userInfo.setPreferredLang("khm");
-        userInfo.setFullName(List.of(new LanguageTaggedValue("eng", "Panharith AN")));
-        userInfo.setPhone("+855219718732");
-
-        RegisterRequest registerRequest = new RegisterRequest();
-        registerRequest.setUserInfo(userInfo);
-        registerRequest.setUsername("+855219718732");
-        registerRequest.setPassword("123123");
-        registerRequest.setConsent("AGREE");
-
-        String mockTransactionID = "123456789";
-
-        RegistrationTransaction mockRegistrationTransaction = new RegistrationTransaction(registerRequest.getUsername(), Purpose.REGISTRATION);
-        mockRegistrationTransaction.setChallengeHash("123456");
-        mockRegistrationTransaction.setIdentifier(userInfo.getPhone());
-
-        when(cacheUtilService.getChallengeVerifiedTransaction(mockTransactionID))
-                .thenReturn(mockRegistrationTransaction);
-
-        IdentityResponse identityResponse = new IdentityResponse();
-        identityResponse.setStatus("ACTIVATED");
-        UINResponse uinResponse = new UINResponse();
-        uinResponse.setUIN("mockUIN");
-        Password.PasswordHash passwordHash = new Password.PasswordHash();
-        passwordHash.setSalt(null);
-        passwordHash.setHashValue("mockHashValue");
-
-        RestResponseWrapper<UINResponse> mockRestResponseWrapperUINResponse = new RestResponseWrapper<UINResponse>();
-        mockRestResponseWrapperUINResponse.setResponse(uinResponse);
-        RestResponseWrapper<Password.PasswordHash> mockRestResponseWrapperPasswordHash = new RestResponseWrapper<Password.PasswordHash>();
-        mockRestResponseWrapperPasswordHash.setResponse(passwordHash);
-
-        when(selfTokenRestTemplate.exchange(
-                eq(getUinEndpoint),
-                eq(HttpMethod.GET),
-                eq(null),
-                any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<>(mockRestResponseWrapperUINResponse, HttpStatus.OK));
-        when(selfTokenRestTemplate.exchange(
-                eq(generateHashEndpoint),
-                eq(HttpMethod.POST),
-                any(HttpEntity.class),
-                any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<>(mockRestResponseWrapperPasswordHash, HttpStatus.OK));
-
-        try{
-            registrationService.register(registerRequest, mockTransactionID);
-            Assert.fail();
-        }catch (SignUpException signUpException){
-            Assert.assertEquals("hash_generate_failed", signUpException.getErrorCode());
         }
     }
 
@@ -1308,67 +1075,6 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    public void register_thenAddIdentityEndpointResponseStatusNotEqualsACTIVATED_throwException() throws Exception{
-        UserInfoMap userInfo = new UserInfoMap();
-        userInfo.setPreferredLang("khm");
-        userInfo.setFullName(List.of(new LanguageTaggedValue("eng", "Panharith AN")));
-        userInfo.setPhone("+855219718732");
-
-        RegisterRequest registerRequest = new RegisterRequest();
-        registerRequest.setUserInfo(userInfo);
-        registerRequest.setUsername("+855219718732");
-        registerRequest.setPassword("123123");
-        registerRequest.setConsent("AGREE");
-
-        String mockTransactionID = "123456789";
-
-        RegistrationTransaction mockRegistrationTransaction = new RegistrationTransaction(userInfo.getPhone(), Purpose.REGISTRATION);
-        mockRegistrationTransaction.setChallengeHash("123456");
-        mockRegistrationTransaction.setIdentifier(userInfo.getPhone());
-
-        when(cacheUtilService.getChallengeVerifiedTransaction(mockTransactionID))
-                .thenReturn(mockRegistrationTransaction);
-
-        IdentityResponse identityResponse = new IdentityResponse();
-        identityResponse.setStatus("mock");
-        UINResponse uinResponse = new UINResponse();
-        uinResponse.setUIN("mockUIN");
-        Password.PasswordHash passwordHash = new Password.PasswordHash();
-        passwordHash.setSalt("mockSalt");
-        passwordHash.setHashValue("mockHashValue");
-
-        RestResponseWrapper<IdentityResponse> mockRestResponseWrapperIdentityResponse = new RestResponseWrapper<IdentityResponse>();
-        mockRestResponseWrapperIdentityResponse.setResponse(identityResponse);
-        RestResponseWrapper<UINResponse> mockRestResponseWrapperUINResponse = new RestResponseWrapper<UINResponse>();
-        mockRestResponseWrapperUINResponse.setResponse(uinResponse);
-        RestResponseWrapper<Password.PasswordHash> mockRestResponseWrapperPasswordHash = new RestResponseWrapper<Password.PasswordHash>();
-        mockRestResponseWrapperPasswordHash.setResponse(passwordHash);
-
-        when(selfTokenRestTemplate.exchange(
-                eq(getUinEndpoint),
-                eq(HttpMethod.GET),
-                eq(null),
-                any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<>(mockRestResponseWrapperUINResponse, HttpStatus.OK));
-        when(selfTokenRestTemplate.exchange(
-                eq(generateHashEndpoint),
-                eq(HttpMethod.POST),
-                any(HttpEntity.class),
-                any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<>(mockRestResponseWrapperPasswordHash, HttpStatus.OK));
-        when(selfTokenRestTemplate.exchange(
-                eq(identityEndpoint),
-                eq(HttpMethod.POST),
-                any(HttpEntity.class),
-                any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<>(mockRestResponseWrapperIdentityResponse, HttpStatus.OK));
-
-        try{
-            registrationService.register(registerRequest, mockTransactionID);
-            Assert.fail();
-        }catch (SignUpException signUpException){
-            Assert.assertEquals("add_identity_failed", signUpException.getErrorCode());
-        }
-    }
-
-    @Test
     public void register_thenAddIdentityEndpointResponseErrors_throwException() throws Exception {
         UserInfoMap userInfo = new UserInfoMap();
         userInfo.setPreferredLang("khm");
@@ -1398,10 +1104,10 @@ public class RegistrationServiceTest {
         passwordHash.setSalt("mockSalt");
         passwordHash.setHashValue("mockHashValue");
 
-        RestResponseWrapper<IdentityResponse> mockRestResponseWrapperIdentityResponse = new RestResponseWrapper<IdentityResponse>();
+        RestResponseWrapper<IdentityResponse> mockRestResponseWrapperAddIdentityResponse = new RestResponseWrapper<IdentityResponse>();
         ArrayList<RestError> errors = new ArrayList<>();
         errors.add(new RestError("server_error", "server_error"));
-        mockRestResponseWrapperIdentityResponse.setErrors(errors);
+        mockRestResponseWrapperAddIdentityResponse.setErrors(errors);
         RestResponseWrapper<UINResponse> mockRestResponseWrapperUINResponse = new RestResponseWrapper<UINResponse>();
         mockRestResponseWrapperUINResponse.setResponse(uinResponse);
         RestResponseWrapper<Password.PasswordHash> mockRestResponseWrapperPasswordHash = new RestResponseWrapper<Password.PasswordHash>();
@@ -1421,75 +1127,13 @@ public class RegistrationServiceTest {
                 eq(identityEndpoint),
                 eq(HttpMethod.POST),
                 any(HttpEntity.class),
-                any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<>(mockRestResponseWrapperIdentityResponse, HttpStatus.OK));
+                any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<>(mockRestResponseWrapperAddIdentityResponse, HttpStatus.OK));
 
         try {
             registrationService.register(registerRequest, mockTransactionID);
             Assert.fail();
         } catch (SignUpException signUpException) {
             Assert.assertEquals("server_error", signUpException.getErrorCode());
-        }
-    }
-
-    @Test
-    public void register_thenAddIdentityEndpointResponseNullErrors_throwException() throws Exception{
-        UserInfoMap userInfo = new UserInfoMap();
-        userInfo.setPreferredLang("khm");
-        userInfo.setFullName(List.of(new LanguageTaggedValue("eng", "Panharith AN")));
-        userInfo.setPhone("+855219718732");
-
-        RegisterRequest registerRequest = new RegisterRequest();
-        registerRequest.setUserInfo(userInfo);
-        registerRequest.setUsername("+855219718732");
-        registerRequest.setPassword("123123");
-        registerRequest.setConsent("AGREE");
-
-        String mockTransactionID = "123456789";
-
-        RegistrationTransaction mockRegistrationTransaction = new RegistrationTransaction(registerRequest.getUsername(), Purpose.REGISTRATION);
-        mockRegistrationTransaction.setChallengeHash("123456");
-        mockRegistrationTransaction.setIdentifier(userInfo.getPhone());
-
-        when(cacheUtilService.getChallengeVerifiedTransaction(mockTransactionID))
-                .thenReturn(mockRegistrationTransaction);
-
-        IdentityResponse identityResponse = new IdentityResponse();
-        identityResponse.setStatus("ACTIVATED");
-        UINResponse uinResponse = new UINResponse();
-        uinResponse.setUIN("mockUIN");
-        Password.PasswordHash passwordHash = new Password.PasswordHash();
-        passwordHash.setSalt("mockSalt");
-        passwordHash.setHashValue("mockHashValue");
-
-        RestResponseWrapper<IdentityResponse> mockRestResponseWrapperIdentityResponse = new RestResponseWrapper<IdentityResponse>();
-        mockRestResponseWrapperIdentityResponse.setErrors(null);
-        RestResponseWrapper<UINResponse> mockRestResponseWrapperUINResponse = new RestResponseWrapper<UINResponse>();
-        mockRestResponseWrapperUINResponse.setResponse(uinResponse);
-        RestResponseWrapper<Password.PasswordHash> mockRestResponseWrapperPasswordHash = new RestResponseWrapper<Password.PasswordHash>();
-        mockRestResponseWrapperPasswordHash.setResponse(passwordHash);
-
-        when(selfTokenRestTemplate.exchange(
-                eq(getUinEndpoint),
-                eq(HttpMethod.GET),
-                eq(null),
-                any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<>(mockRestResponseWrapperUINResponse, HttpStatus.OK));
-        when(selfTokenRestTemplate.exchange(
-                eq(generateHashEndpoint),
-                eq(HttpMethod.POST),
-                any(HttpEntity.class),
-                any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<>(mockRestResponseWrapperPasswordHash, HttpStatus.OK));
-        when(selfTokenRestTemplate.exchange(
-                eq(identityEndpoint),
-                eq(HttpMethod.POST),
-                any(HttpEntity.class),
-                any(ParameterizedTypeReference.class)))
-                .thenReturn(new ResponseEntity<>(mockRestResponseWrapperIdentityResponse, HttpStatus.OK));
-
-        try{
-            registrationService.register(registerRequest, mockTransactionID);
-            Assert.fail();
-        }catch (SignUpException signUpException){
-            Assert.assertEquals("add_identity_failed", signUpException.getErrorCode());
         }
     }
 
