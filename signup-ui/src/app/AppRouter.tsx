@@ -16,6 +16,7 @@ import {
   UNDER_CONSTRUCTION,
 } from "~constants/routes";
 import { lazyRetry } from "~utils/lazyRetry";
+import { setupResponseInterceptor } from "~services/api.service";
 
 const SignUpPage = lazy(() => lazyRetry(() => import("~pages/SignUpPage")));
 const ResetPasswordPage = lazy(() =>
