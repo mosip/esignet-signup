@@ -1,7 +1,7 @@
 import { KeyboardEvent, useCallback, useMemo, useState } from "react";
 import { PopoverTrigger } from "@radix-ui/react-popover";
 import { UseFormReturn } from "react-hook-form";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 
 import { Button } from "~components/ui/button";
 import { Checkbox } from "~components/ui/checkbox";
@@ -63,7 +63,7 @@ export const AccountSetup = ({ settings, methods }: AccountSetupProps) => {
 
   const { registerMutation } = useRegister();
   const [openTermConditionModal, setOpenTermConditionModal] = useState(false);
-  const [modalData, setModalData] = useState({title: "", content: ""});
+  const [modalData, setModalData] = useState({ title: "", content: "" });
 
   const disabledContinue =
     !isValid ||
@@ -121,20 +121,26 @@ export const AccountSetup = ({ settings, methods }: AccountSetupProps) => {
 
   const onModalToggle = () => {
     setOpenTermConditionModal(false);
-    setModalData({title: "", content: ""});
-  }
+    setModalData({ title: "", content: "" });
+  };
 
   const onOpenTerm = (e: any) => {
     e.preventDefault();
-    setModalData({title: t("terms_and_conditions_title"), content: t("terms_and_conditions_content")});
+    setModalData({
+      title: t("terms_and_conditions_title"),
+      content: t("terms_and_conditions_content"),
+    });
     setOpenTermConditionModal(true);
-  }
+  };
 
   const onOpenPrivacy = (e: any) => {
     e.preventDefault();
-    setModalData({title: t("privacy_and_policy_title"), content: t("privacy_and_policy_content")});
+    setModalData({
+      title: t("privacy_and_policy_title"),
+      content: t("privacy_and_policy_content"),
+    });
     setOpenTermConditionModal(true);
-  }
+  };
 
   const handleFullNameInput = (event: KeyboardEvent<HTMLInputElement>) =>
     handleInputFilter(
