@@ -49,7 +49,8 @@ public class ChallengeManagerService {
         RestResponseWrapper<OtpResponse> restResponseWrapper = selfTokenRestTemplate
                 .exchange(generateChallengeUrl, HttpMethod.POST,
                         new HttpEntity<>(restRequestWrapper),
-                        new ParameterizedTypeReference<RestResponseWrapper<OtpResponse>>() {}).getBody();
+                        new ParameterizedTypeReference<RestResponseWrapper<OtpResponse>>() {})
+                .getBody();
 
         if (restResponseWrapper != null && restResponseWrapper.getResponse() != null &&
                 !StringUtils.isEmpty(restResponseWrapper.getResponse().getOtp()) &&
