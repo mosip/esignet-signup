@@ -2,25 +2,14 @@
 
 signup-service is part of the esignet modules, but has a separate Helm chart so as to install and manage it in a completely independent namespace.
 
-## Build & run (for developers)
-The project requires JDK 11.
-1. Build and install:
-    ```
-    $ mvn clean install -Dgpg.skip=true
-    ```
-1. Build Docker for a service:
-    ```
-    $ docker build -f Dockerfile
-    ```
-
 ## Installing in k8s cluster using helm
 ### Pre-requisites
 1. Set the kube config file of the Mosip cluster having dependent services is set correctly in PC.
-1. Make sure [DB setup](db_scripts/README.md#install-in-existing-mosip-k8-cluster) is done.
-1. Add / merge below mentioned properties files into existing config branch:
-    * [signup-default.properties](https://github.com/mosip/mosip-config/blob/v1.2.0.1-B3/esignet-default.properties)
-    * [application-default.properties](https://github.com/mosip/mosip-config/blob/v1.2.0.1-B3/application-default.properties)
-1. Below are the dependent services required for signup service integrated with MOSIP IDA:
+2. Make sure [DB setup](db_scripts/README.md#install-in-existing-mosip-k8-cluster) is done.
+3. Add / merge below mentioned properties files into existing config branch:
+   * [signup-default.properties](https://github.com/mosip/mosip-config/blob/v1.2.0.1-B3/esignet-default.properties)
+   * [application-default.properties](https://github.com/mosip/mosip-config/blob/v1.2.0.1-B3/application-default.properties)
+4. Below are the dependent services required for signup service integrated with MOSIP IDA:
    | Chart | Chart version |
    |---|---|
    |[Keycloak](https://github.com/mosip/mosip-infra/tree/v1.2.0.1-B3/deployment/v3/external/iam) | 7.1.18 |
@@ -66,7 +55,7 @@ The project requires JDK 11.
   ```
 
 ## APIs
-API documentation is available [here](https://mosip.stoplight.io/docs/identity-provider/branches/main/6f1syzijynu40-identity-provider).
+API documentation is available [here](https://mosip.stoplight.io/docs/identity-provider/branches/signupV1/t9tvfbteqqokf-e-signet-signup-portal-ap-is).
 
 ## License
 This project is licensed under the terms of [Mozilla Public License 2.0](LICENSE).
