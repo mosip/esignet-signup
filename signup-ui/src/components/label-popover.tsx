@@ -13,18 +13,18 @@ interface LabelPopoverProps {
 export const LabelPopover = ({ icon, children }: LabelPopoverProps) => {
   return (
     <>
-      <div className="block sm:hidden">
+      <div className="flex items-center sm:hidden">
         <Popover>
-          <PopoverTrigger asChild>{icon}</PopoverTrigger>
+          <PopoverTrigger>{icon}</PopoverTrigger>
           <PopoverContent side="right" className="text-xs">
             {children}
             <PopoverArrow className="fill-[#FFFFFF] stroke-[#BCBCBC]" />
           </PopoverContent>
         </Popover>
       </div>
-      <div className="hidden sm:block">
+      <div className="hidden items-center sm:flex">
         <Popover>
-          <PopoverTrigger asChild>{icon}</PopoverTrigger>
+          <PopoverTrigger>{icon}</PopoverTrigger>
           <PopoverContent side="bottom" className="text-xs">
             {children}
             <PopoverArrow className="fill-[#FFFFFF] stroke-[#BCBCBC]" />

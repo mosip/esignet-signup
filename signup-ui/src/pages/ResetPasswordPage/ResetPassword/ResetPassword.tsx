@@ -169,7 +169,10 @@ export const ResetPassword = ({ methods, settings }: ResetPasswordProps) => {
                         <FormLabel>{t("new_password")}</FormLabel>
                         <LabelPopover
                           icon={
-                            <Icons.info className="h-4 h-4 cursor-pointer sm:h-3 sm:w-3" />
+                            <Icons.info
+                              className="h-4 w-4 cursor-pointer sm:h-3 sm:w-3"
+                              alt="info icon"
+                            />
                           }
                         >
                           <Trans
