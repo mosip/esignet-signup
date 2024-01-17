@@ -172,6 +172,8 @@ export const ResetPassword = ({ methods, settings }: ResetPasswordProps) => {
                             <Icons.info
                               className="m-1 h-4 w-4 cursor-pointer sm:h-3 sm:w-3"
                               alt="info icon"
+                              width="100%"
+                              height="100%"
                             />
                           }
                         >
