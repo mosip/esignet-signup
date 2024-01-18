@@ -5,12 +5,12 @@ import {
   PopoverTrigger,
 } from "./ui/popover";
 
-interface LabelPopoverProps {
+interface IconLabelPopoverProps {
   icon: React.ReactNode;
   children: React.ReactNode;
 }
 
-export const LabelPopover = ({ icon, children }: LabelPopoverProps) => {
+export const IconLabelPopover = ({ icon, children }: IconLabelPopoverProps) => {
   return (
     <>
       <div className="flex items-center sm:hidden">

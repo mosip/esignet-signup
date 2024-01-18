@@ -3,7 +3,7 @@ import { useFormContext, UseFormReturn } from "react-hook-form";
 import { Trans, useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
 
-import { LabelPopover } from "~components/label-popover";
+import { IconLabelPopover } from "~components/icon-label-popover";
 import { ActionMessage } from "~components/ui/action-message";
 import { Button } from "~components/ui/button";
 import {
@@ -167,7 +167,7 @@ export const ResetPassword = ({ methods, settings }: ResetPasswordProps) => {
                     <div className="space-y-2">
                       <div className="flex items-center gap-1">
                         <FormLabel>{t("new_password")}</FormLabel>
-                        <LabelPopover
+                        <IconLabelPopover
                           icon={
                             <Icons.info
                               className="m-1 h-4 w-4 cursor-pointer sm:h-3 sm:w-3"
@@ -182,7 +182,7 @@ export const ResetPassword = ({ methods, settings }: ResetPasswordProps) => {
                               li: <li />,
                             }}
                           />
-                        </LabelPopover>
+                        </IconLabelPopover>
                       </div>
                       <FormControl>
                         <Input
