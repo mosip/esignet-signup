@@ -66,7 +66,7 @@ public class ChallengeManagerServiceTest {
     }
 
     @Test
-    public void doGenerateChallenge_withUnsupportedChallengeType_thenPass() throws SignUpException {
+    public void doGenerateChallenge_withUnsupportedChallengeType_thenFail() throws SignUpException {
         RegistrationTransaction transaction = new RegistrationTransaction("+85577410541", Purpose.REGISTRATION);
         ReflectionTestUtils.setField(challengeManagerService, "supportedGenerateChallengeType", "TELEGRAM");
         try{

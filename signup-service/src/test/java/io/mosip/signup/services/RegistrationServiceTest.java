@@ -18,7 +18,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -533,7 +532,7 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    public void doVerifyChallengeInResetPassword_thenIdentityInactive_throwException() {
+    public void doVerifyChallengeInResetPassword_withInactiveIdentity_throwException() {
 
         ChallengeInfo challengeInfoKBA = new ChallengeInfo();
         challengeInfoKBA.setFormat("base64url-encoded-json");
@@ -643,7 +642,7 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    public void doVerifyChallengeInResetPassword_thenFetchIdentityFailed_throwException() {
+    public void doVerifyChallengeInResetPassword_whenFetchIdentityFail_throwException() {
 
         ChallengeInfo challengeInfoKBA = new ChallengeInfo();
         challengeInfoKBA.setFormat("base64url-encoded-json");
@@ -867,7 +866,7 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    public void register_thenUinEndpointResponseNullUIN_throwException() throws Exception{
+    public void register_whenUinEndpointResponseNullUIN_throwException() throws Exception{
         UserInfoMap userInfo = new UserInfoMap();
         userInfo.setPreferredLang("khm");
         userInfo.setFullName(List.of(new LanguageTaggedValue("eng", "Panharith AN")));
@@ -1090,7 +1089,7 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    public void register_thenGenerateHashEndpointResponseNullErrors_throwException() throws Exception{
+    public void register_whenGenerateHashEndpointResponseNullErrors_throwException() throws Exception{
         UserInfoMap userInfo = new UserInfoMap();
         userInfo.setPreferredLang("khm");
         userInfo.setFullName(List.of(new LanguageTaggedValue("eng", "Panharith AN")));
@@ -1141,7 +1140,7 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    public void register_thenGenerateHashEndpointResponseNullSaltedPassword_throwException() throws Exception{
+    public void register_whenGenerateHashEndpointResponseNullSaltedPassword_throwException() throws Exception{
         UserInfoMap userInfo = new UserInfoMap();
         userInfo.setPreferredLang("khm");
         userInfo.setFullName(List.of(new LanguageTaggedValue("eng", "Panharith AN")));
@@ -1195,7 +1194,7 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    public void register_thenGenerateHashEndpointResponseNullSalted_throwException() throws Exception{
+    public void register_whenGenerateHashEndpointResponseNullSalted_throwException() throws Exception{
         UserInfoMap userInfo = new UserInfoMap();
         userInfo.setPreferredLang("khm");
         userInfo.setFullName(List.of(new LanguageTaggedValue("eng", "Panharith AN")));
@@ -1308,7 +1307,7 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    public void register_thenAddIdentityEndpointResponseStatusNotEqualsACTIVATED_throwException() throws Exception{
+    public void register_whenAddIdentityEndpointResponseStatusNotEqualsACTIVATED_throwException() throws Exception{
         UserInfoMap userInfo = new UserInfoMap();
         userInfo.setPreferredLang("khm");
         userInfo.setFullName(List.of(new LanguageTaggedValue("eng", "Panharith AN")));
@@ -1369,7 +1368,7 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    public void register_thenAddIdentityEndpointResponseErrors_throwException() throws Exception {
+    public void register_whenAddIdentityEndpointResponseErrors_throwException() throws Exception {
         UserInfoMap userInfo = new UserInfoMap();
         userInfo.setPreferredLang("khm");
         userInfo.setFullName(List.of(new LanguageTaggedValue("eng", "Panharith AN")));
@@ -1432,7 +1431,7 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    public void register_thenAddIdentityEndpointResponseNullErrors_throwException() throws Exception{
+    public void register_whenAddIdentityEndpointResponseNullErrors_throwException() throws Exception{
         UserInfoMap userInfo = new UserInfoMap();
         userInfo.setPreferredLang("khm");
         userInfo.setFullName(List.of(new LanguageTaggedValue("eng", "Panharith AN")));
