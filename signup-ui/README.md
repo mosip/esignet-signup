@@ -58,6 +58,11 @@ This opens [http://localhost:6006](http://localhost:6006) in the browser. Making
 
 We provide you with `.env.example` file. You can copy and paste the variables described into a self-created `.env.local` file, replacing the required values with your own.
 
+By default, the environment variables are:
+| variable | value |
+| -------- | ----- |
+| `REACT_APP_API_BASE_URL` | http://localhost:8088/v1/signup |
+
 #### Translation
 
 You can add translations using the `locales` folder in the `public` folder. You will need to add the newly added key(s) to `resource.d.ts` so that you can get translation key suggestion.
