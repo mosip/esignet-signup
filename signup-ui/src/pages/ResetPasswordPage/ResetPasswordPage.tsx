@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { isEqual } from "lodash";
 import { Resolver, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import * as yup from "yup";
@@ -69,7 +70,12 @@ export const ResetPasswordPage = ({ settings }: ResetPasswordPageProps) => {
       // Step 3 - ResetPassword
       yup.object({
         newPassword: validatePassword(settings, t),
-        confirmNewPassword: validateConfirmPassword("newPassword", settings, t, false),
+        confirmNewPassword: validateConfirmPassword(
+          "newPassword",
+          settings,
+          t,
+          false
+        ),
       }),
       // Step 4 - ResetPasswordStatus
       yup.object({}),
@@ -92,10 +98,13 @@ export const ResetPasswordPage = ({ settings }: ResetPasswordPageProps) => {
   });
 
   const {
+    getValues,
     formState: { isDirty },
   } = methods;
 
   useEffect(() => {
+    if (isEqual(resetPasswordFormDefaultValues, getValues())) return;
+
     if (
       step === ResetPasswordStep.ResetPasswordConfirmation ||
       (criticalError && criticalError.errorCode === "invalid_transaction")
@@ -115,7 +124,7 @@ export const ResetPasswordPage = ({ settings }: ResetPasswordPageProps) => {
     return () => {
       window.removeEventListener("beforeunload", handleTabBeforeUnload);
     };
-  }, [step, criticalError]);
+  }, [step, criticalError, getValues()]);
 
   const getResetPasswordContent = (step: ResetPasswordStep) => {
     switch (step) {
@@ -137,9 +146,9 @@ export const ResetPasswordPage = ({ settings }: ResetPasswordPageProps) => {
   return (
     <>
       {criticalError &&
-        ["invalid_transaction", "knowledgebase_mismatch"].includes(criticalError.errorCode) && (
-          <ResetPasswordPopover />
-        )}
+        ["invalid_transaction", "knowledgebase_mismatch"].includes(
+          criticalError.errorCode
+        ) && <ResetPasswordPopover />}
       <Form {...methods}>
         <form>{getResetPasswordContent(step)}</form>
       </Form>

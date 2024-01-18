@@ -1,11 +1,14 @@
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useMutationState } from "@tanstack/react-query";
+import { isEqual } from "lodash";
 import { Resolver, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import * as yup from "yup";
 
 import { Button } from "~components/ui/button";
 import { Form } from "~components/ui/form";
+import { keys as mutationKeys } from "~pages/shared/mutations";
 import {
   validateCaptchaToken,
   validateConfirmPassword,
@@ -14,7 +17,7 @@ import {
   validatePassword,
   validateUsername,
 } from "~pages/shared/validation";
-import { SettingsDto } from "~typings/types";
+import { SettingsDto, VerifyChallengeResponseDto } from "~typings/types";
 
 import { AccountRegistrationStatus } from "./AccountRegistrationStatus/AccountRegistrationStatus";
 import AccountSetup from "./AccountSetup";
@@ -109,6 +112,43 @@ export const SignUpPage = ({ settings }: SignUpPageProps) => {
     mode: "onBlur",
   });
 
+  const { getValues } = methods;
+
+  const [challengeVerification] = useMutationState<VerifyChallengeResponseDto>({
+    filters: {
+      mutationKey: mutationKeys.challengeVerification,
+      status: "success",
+    },
+    select: (mutation) => mutation.state.data as VerifyChallengeResponseDto,
+  });
+
+  useEffect(() => {
+    if (isEqual(signUpFormDefaultValues, getValues())) return;
+
+    if (
+      (step === SignUpStep.PhoneStatus &&
+        challengeVerification.errors.length > 0 &&
+        ["already-registered", "identifier_already_registered"].includes(
+          challengeVerification.errors[0].errorCode
+        )) ||
+      step === SignUpStep.AccountRegistrationStatus ||
+      (criticalError && criticalError.errorCode === "invalid_transaction")
+    )
+      return;
+
+    const handleTabBeforeUnload = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+
+      return (event.returnValue = t("reset_password_discontinue_prompt"));
+    };
+
+    window.addEventListener("beforeunload", handleTabBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleTabBeforeUnload);
+    };
+  }, [step, criticalError, getValues()]);
+
   const getSignUpStepContent = (step: SignUpStep) => {
     switch (step) {
       case SignUpStep.Phone:
@@ -131,9 +171,9 @@ export const SignUpPage = ({ settings }: SignUpPageProps) => {
   return (
     <>
       {criticalError &&
-        ["invalid_transaction", "identifier_already_registered"].includes(criticalError.errorCode) && (
-          <SignUpPopover />
-        )}
+        ["invalid_transaction", "identifier_already_registered"].includes(
+          criticalError.errorCode
+        ) && <SignUpPopover />}
       <Form {...methods}>
         <form>{getSignUpStepContent(step)}</form>
       </Form>
