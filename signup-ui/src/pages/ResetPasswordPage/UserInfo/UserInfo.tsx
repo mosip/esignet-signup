@@ -24,12 +24,6 @@ import {
 import { Icons } from "~components/ui/icons";
 import { Input } from "~components/ui/input";
 import {
-  Popover,
-  PopoverArrow,
-  PopoverContent,
-  PopoverTrigger,
-} from "~components/ui/popover";
-import {
   Step,
   StepAlert,
   StepContent,

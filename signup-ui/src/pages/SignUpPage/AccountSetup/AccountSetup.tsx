@@ -1,8 +1,8 @@
 import { KeyboardEvent, useCallback, useMemo, useState } from "react";
-import { PopoverTrigger } from "@radix-ui/react-popover";
 import { UseFormReturn } from "react-hook-form";
 import { Trans, useTranslation } from "react-i18next";
 
+import { IconLabelPopover } from "~components/icon-label-popover";
 import { Button } from "~components/ui/button";
 import { Checkbox } from "~components/ui/checkbox";
 import {
@@ -14,7 +14,6 @@ import {
 } from "~components/ui/form";
 import { Icons } from "~components/ui/icons";
 import { Input } from "~components/ui/input";
-import { Popover, PopoverArrow, PopoverContent } from "~components/ui/popover";
 import {
   Step,
   StepContent,
@@ -189,15 +188,16 @@ export const AccountSetup = ({ settings, methods }: AccountSetupProps) => {
                   <div className="space-y-2">
                     <div className="flex items-center gap-1">
                       <FormLabel>{t("full_name")}</FormLabel>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <Icons.info className="h-4 w-4 cursor-pointer" />
-                        </PopoverTrigger>
-                        <PopoverContent side="right">
-                          {t("full_name_tooltip")}
-                          <PopoverArrow className="fill-[#FFFFFF] stroke-[#BCBCBC]" />
-                        </PopoverContent>
-                      </Popover>
+                      <IconLabelPopover
+                        icon={
+                          <Icons.info
+                            className="m-1 h-4 w-4 cursor-pointer sm:h-3 sm:w-3"
+                            alt="info icon"
+                          />
+                        }
+                      >
+                        <span>{t("full_name_tooltip")}</span>
+                      </IconLabelPopover>
                     </div>
                     <FormControl>
                       <Input
@@ -229,21 +229,22 @@ export const AccountSetup = ({ settings, methods }: AccountSetupProps) => {
                   <div className="space-y-2">
                     <div className="flex items-center gap-1">
                       <FormLabel>{t("password")}</FormLabel>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <Icons.info className="h-4 w-4 cursor-pointer" />
-                        </PopoverTrigger>
-                        <PopoverContent side="right" className="w-full">
-                          <Trans
-                            i18nKey="password_rules"
-                            components={{
-                              ul: <ul className="list-inside list-disc" />,
-                              li: <li />,
-                            }}
+                      <IconLabelPopover
+                        icon={
+                          <Icons.info
+                            className="m-1 h-4 w-4 cursor-pointer sm:h-3 sm:w-3"
+                            alt="info icon"
                           />
-                          <PopoverArrow className="fill-[#FFFFFF] stroke-[#BCBCBC]" />
-                        </PopoverContent>
-                      </Popover>
+                        }
+                      >
+                        <Trans
+                          i18nKey="password_rules"
+                          components={{
+                            ul: <ul className="list-inside list-disc" />,
+                            li: <li />,
+                          }}
+                        />
+                      </IconLabelPopover>
                     </div>
                     <FormControl>
                       <Input
