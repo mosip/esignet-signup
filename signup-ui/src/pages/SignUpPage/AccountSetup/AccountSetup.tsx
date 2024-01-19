@@ -233,7 +233,7 @@ export const AccountSetup = ({ settings, methods }: AccountSetupProps) => {
                         <PopoverTrigger asChild>
                           <Icons.info className="h-4 w-4 cursor-pointer" />
                         </PopoverTrigger>
-                        <PopoverContent side="right" className="w-full">
+                        <PopoverContent side="right">
                           <Trans
                             i18nKey="password_rules"
                             components={{
