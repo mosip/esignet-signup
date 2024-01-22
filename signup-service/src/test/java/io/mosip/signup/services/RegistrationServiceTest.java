@@ -385,7 +385,7 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    public void doVerifyChallengeInResetPassword_withFullNameMismatch_throwException() {
+    public void doVerifyChallengeInResetPassword_withFullNameMismatch_throwKnowledgeBaseMismatch() {
 
         ChallengeInfo challengeInfoKBA = new ChallengeInfo();
         challengeInfoKBA.setFormat("base64url-encoded-json");
@@ -501,7 +501,7 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    public void doVerifyChallenge_withInvalidFormatForOTPChallenge_thenFail() {
+    public void doVerifyChallenge_withInvalidFormatForOTPChallenge_throwChallengeFormatAndTypeMismatch() {
         ChallengeInfo challengeInfoOTP = new ChallengeInfo();
         challengeInfoOTP.setFormat("alpha-encoded");
         challengeInfoOTP.setChallenge("1623");
@@ -532,7 +532,7 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    public void doVerifyChallengeInResetPassword_withInactiveIdentity_throwException() {
+    public void doVerifyChallengeInResetPassword_withInactiveIdentity_throwIdentityInactive() {
 
         ChallengeInfo challengeInfoKBA = new ChallengeInfo();
         challengeInfoKBA.setFormat("base64url-encoded-json");
@@ -590,7 +590,7 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    public void doVerifyChallengeInResetPassword_withKBAChallengeNotFound_throwException() {
+    public void doVerifyChallengeInResetPassword_withKBAChallengeNotFound_throwIdentityInactive() {
 
         ChallengeInfo challengeInfoOTP = new ChallengeInfo();
         challengeInfoOTP.setFormat("alpha-numeric");
@@ -687,7 +687,7 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    public void doVerifyChallenge_withNullTransaction_thenFail() throws Exception {
+    public void doVerifyChallenge_withNullTransaction_thenFail() throws SignUpException {
         ChallengeInfo challengeInfo = new ChallengeInfo();
         challengeInfo.setFormat("alpha-numeric");
         challengeInfo.setChallenge("123456");
@@ -711,7 +711,7 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    public void doVerifyChallenge_withChallengeNotMatch_thenFail() throws Exception {
+    public void doVerifyChallenge_withChallengeNotMatch_thenFail() throws SignUpException {
         ChallengeInfo challengeInfo = new ChallengeInfo();
         challengeInfo.setFormat("alpha-numeric");
         challengeInfo.setChallenge("123456");
@@ -740,7 +740,7 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    public void doVerifyChallenge_withIdentifierNotMatch_throwsException() throws Exception {
+    public void doVerifyChallenge_withIdentifierNotMatch_throwsIdentifierMismatch() throws SignUpException {
         ChallengeInfo challengeInfo = new ChallengeInfo();
         challengeInfo.setFormat("alpha-numeric");
         challengeInfo.setChallenge("123456");
@@ -769,7 +769,7 @@ public class RegistrationServiceTest {
 
     // ## register---------------------------------
     @Test
-    public void register_thenPass() throws Exception {
+    public void register_thenPass() throws SignUpException {
         UserInfoMap userInfo = new UserInfoMap();
         userInfo.setPreferredLang("khm");
         userInfo.setFullName(List.of(new LanguageTaggedValue("eng", "Panharith AN")));
@@ -830,7 +830,7 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    public void register_whenUinEndpointResponseNullBody_throwException() throws Exception {
+    public void register_whenUinEndpointResponseNullBody_throwGetUINFailed() throws SignUpException {
         UserInfoMap userInfo = new UserInfoMap();
         userInfo.setPreferredLang("khm");
         userInfo.setFullName(List.of(new LanguageTaggedValue("eng", "Panharith AN")));
@@ -866,7 +866,7 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    public void register_whenUinEndpointResponseNullUIN_throwException() throws Exception{
+    public void register_whenUinEndpointResponseNullUIN_throwGetUINFailed() throws SignUpException{
         UserInfoMap userInfo = new UserInfoMap();
         userInfo.setPreferredLang("khm");
         userInfo.setFullName(List.of(new LanguageTaggedValue("eng", "Panharith AN")));
@@ -907,7 +907,7 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    public void register_whenUinEndpointResponseErrors_throwException() throws Exception {
+    public void register_whenUinEndpointResponseErrors_throwServerError() throws SignUpException {
         UserInfoMap userInfo = new UserInfoMap();
         userInfo.setPreferredLang("khm");
         userInfo.setFullName(List.of(new LanguageTaggedValue("eng", "Panharith AN")));
@@ -948,7 +948,7 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    public void register_whenUinEndpointResponseWithNullErrors_throwException() throws Exception{
+    public void register_whenUinEndpointResponseWithNullErrors_throwGetUINFailed() throws SignUpException{
         UserInfoMap userInfo = new UserInfoMap();
         userInfo.setPreferredLang("khm");
         userInfo.setFullName(List.of(new LanguageTaggedValue("eng", "Panharith AN")));
@@ -987,7 +987,7 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    public void register_whenGenerateHashEndpointResponseNullBody_throwException() throws Exception {
+    public void register_whenGenerateHashEndpointResponseNullBody_throwHashGenerateFailed() throws SignUpException {
         UserInfoMap userInfo = new UserInfoMap();
         userInfo.setPreferredLang("khm");
         userInfo.setFullName(List.of(new LanguageTaggedValue("eng", "Panharith AN")));
@@ -1036,7 +1036,7 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    public void register_whenGenerateHashEndpointResponseErrors_throwException() throws Exception {
+    public void register_whenGenerateHashEndpointResponseErrors_throwServerError() throws SignUpException {
         UserInfoMap userInfo = new UserInfoMap();
         userInfo.setPreferredLang("khm");
         userInfo.setFullName(List.of(new LanguageTaggedValue("eng", "Panharith AN")));
@@ -1089,7 +1089,7 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    public void register_whenGenerateHashEndpointResponseNullErrors_throwException() throws Exception{
+    public void register_whenGenerateHashEndpointResponseNullErrors_throwHashGenerateFailed() throws SignUpException{
         UserInfoMap userInfo = new UserInfoMap();
         userInfo.setPreferredLang("khm");
         userInfo.setFullName(List.of(new LanguageTaggedValue("eng", "Panharith AN")));
@@ -1140,7 +1140,7 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    public void register_whenGenerateHashEndpointResponseNullSaltedPassword_throwException() throws Exception{
+    public void register_whenGenerateHashEndpointResponseNullSaltedPassword_throwHashGenerateFailed() throws SignUpException{
         UserInfoMap userInfo = new UserInfoMap();
         userInfo.setPreferredLang("khm");
         userInfo.setFullName(List.of(new LanguageTaggedValue("eng", "Panharith AN")));
@@ -1194,7 +1194,7 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    public void register_whenGenerateHashEndpointResponseNullSalted_throwException() throws Exception{
+    public void register_whenGenerateHashEndpointResponseNullSalt_throwHashGenerateFailed() throws SignUpException{
         UserInfoMap userInfo = new UserInfoMap();
         userInfo.setPreferredLang("khm");
         userInfo.setFullName(List.of(new LanguageTaggedValue("eng", "Panharith AN")));
@@ -1248,7 +1248,7 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    public void register_whenAddIdentityEndpointResponseNullBody_throwException() throws Exception {
+    public void register_whenAddIdentityEndpointResponseNullBody_throwAddIdentityFailed() throws SignUpException {
         UserInfoMap userInfo = new UserInfoMap();
         userInfo.setPreferredLang("khm");
         userInfo.setFullName(List.of(new LanguageTaggedValue("eng", "Panharith AN")));
@@ -1307,7 +1307,7 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    public void register_whenAddIdentityEndpointResponseStatusNotEqualsACTIVATED_throwException() throws Exception{
+    public void register_whenAddIdentityEndpointResponseStatusNotEqualsACTIVATED_throwAddIdentityFailed() throws SignUpException{
         UserInfoMap userInfo = new UserInfoMap();
         userInfo.setPreferredLang("khm");
         userInfo.setFullName(List.of(new LanguageTaggedValue("eng", "Panharith AN")));
@@ -1368,7 +1368,7 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    public void register_whenAddIdentityEndpointResponseErrors_throwException() throws Exception {
+    public void register_whenAddIdentityEndpointResponseErrors_throwServerError() throws SignUpException {
         UserInfoMap userInfo = new UserInfoMap();
         userInfo.setPreferredLang("khm");
         userInfo.setFullName(List.of(new LanguageTaggedValue("eng", "Panharith AN")));
@@ -1431,7 +1431,7 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    public void register_whenAddIdentityEndpointResponseNullErrors_throwException() throws Exception{
+    public void register_whenAddIdentityEndpointResponseNullErrors_throwAddIdentityFailed() throws SignUpException{
         UserInfoMap userInfo = new UserInfoMap();
         userInfo.setPreferredLang("khm");
         userInfo.setFullName(List.of(new LanguageTaggedValue("eng", "Panharith AN")));
@@ -1493,7 +1493,7 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    public void register_withInvalidTransaction_throwException() throws Exception {
+    public void register_withInvalidTransaction_throwInvalidTransaction() throws SignUpException {
         UserInfoMap userInfo = new UserInfoMap();
         userInfo.setPreferredLang("khm");
         userInfo.setFullName(List.of(new LanguageTaggedValue("eng", "Panharith AN")));
@@ -1516,7 +1516,7 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    public void register_withInvalidUsername_throwException() throws Exception {
+    public void register_withInvalidUsername_throwIdentifierMismatch() throws SignUpException {
         UserInfoMap userInfo = new UserInfoMap();
         userInfo.setPreferredLang("khm");
         userInfo.setFullName(List.of(new LanguageTaggedValue("eng", "Panharith AN")));
@@ -1546,7 +1546,7 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    public void register_withInvalidConsent_throwException() throws Exception {
+    public void register_withInvalidConsent_throwConsentRequired() throws SignUpException {
         UserInfoMap userInfo = new UserInfoMap();
         userInfo.setPreferredLang("khm");
         userInfo.setFullName(List.of(new LanguageTaggedValue("eng", "Panharith AN")));
@@ -1576,7 +1576,7 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    public void register_with_ResetPasswordPurposeTransaction_throwException() throws Exception {
+    public void register_with_ResetPasswordPurposeTransaction_throwUnsupportedPurpose() throws SignUpException {
         UserInfoMap userInfo = new UserInfoMap();
         userInfo.setPreferredLang("khm");
         userInfo.setFullName(List.of(new LanguageTaggedValue("eng", "Panharith AN")));
@@ -1654,7 +1654,7 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    public void doGenerateChallenge_regenerateWithInvalidTransactionId_thenFail() throws SignUpException {
+    public void doGenerateChallenge_regenerateWithInvalidTransactionId_throwInvalidTransaction() throws SignUpException {
         String identifier = "+85577410541";
         GenerateChallengeRequest generateChallengeRequest = new GenerateChallengeRequest();
         generateChallengeRequest.setIdentifier(identifier);
@@ -1677,7 +1677,7 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    public void doGenerateChallenge_withInvalidCaptcha_thenFail() throws EsignetException {
+    public void doGenerateChallenge_withInvalidCaptcha_throwInvalidCaptcha() throws EsignetException {
         String identifier = "12345678";
         GenerateChallengeRequest generateChallengeRequest = new GenerateChallengeRequest();
         generateChallengeRequest.setIdentifier(identifier);
@@ -1693,7 +1693,7 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    public void doGenerateChallenge_withInvalidTransactionId_thenFail() throws SignUpException {
+    public void doGenerateChallenge_withInvalidTransactionId_throwInvalidTransaction() throws SignUpException {
         String identifier = "+85577410541";
         GenerateChallengeRequest generateChallengeRequest = new GenerateChallengeRequest();
         generateChallengeRequest.setIdentifier(identifier);
@@ -1715,7 +1715,7 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    public void doGenerateChallenge_withIdentifierNotMatchTransactionId_thenFail() throws SignUpException {
+    public void doGenerateChallenge_withIdentifierNotMatchTransactionId_throwIdentifierMismatch() throws SignUpException {
         String identifier = "+85577410541";
         String other_identifier = "+85577410542";
         GenerateChallengeRequest generateChallengeRequest = new GenerateChallengeRequest();
@@ -1738,7 +1738,7 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    public void doGenerateChallenge_withTooManyAttemptTransactionId_thenFail() throws SignUpException {
+    public void doGenerateChallenge_withTooManyAttemptTransactionId_throwTooManyAttempts() throws SignUpException {
         String identifier = "+85577410541";
         GenerateChallengeRequest generateChallengeRequest = new GenerateChallengeRequest();
         generateChallengeRequest.setIdentifier(identifier);
@@ -1761,7 +1761,7 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    public void doGenerateChallenge_withToEarlyAttemptTransactionId_thenFail() throws SignUpException {
+    public void doGenerateChallenge_withToEarlyAttemptTransactionId_throwTooEarlyAttempt() throws SignUpException {
         String identifier = "+85577410541";
         GenerateChallengeRequest generateChallengeRequest = new GenerateChallengeRequest();
         generateChallengeRequest.setIdentifier(identifier);
@@ -1867,7 +1867,7 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    public void doGetRegistrationStatus_withInvalidTransaction_thenFail() {
+    public void doGetRegistrationStatus_withInvalidTransaction_throwInvalidTransaction() {
         String transactionId = "TRAN-1234";
         try {
             RegistrationStatusResponse registrationStatusResponse = registrationService.getRegistrationStatus(transactionId);
@@ -1878,7 +1878,7 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    public void doGetRegistrationStatus_withEmptyTransactionId_thenFail() {
+    public void doGetRegistrationStatus_withEmptyTransactionId_throwInvalidTransaction() {
         try {
             RegistrationStatusResponse registrationStatusResponse = registrationService.getRegistrationStatus("");
             Assert.fail();
@@ -1888,7 +1888,7 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    public void doGetRegistrationStatus_withNullTransactionId_thenFail() {
+    public void doGetRegistrationStatus_withNullTransactionId_throwInvalidTransaction() {
         try {
             RegistrationStatusResponse registrationStatusResponse = registrationService.getRegistrationStatus(null);
             Assert.fail();
@@ -1960,7 +1960,7 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    public void doUpdatePassword_withIdentifierMismatch_thenFail() {
+    public void doUpdatePassword_withIdentifierMismatch_throwIdentifierMismatch() {
 
         String verifiedTransactionId = "VERIFIED_TRANSACTION_ID";
         ResetPasswordRequest resetPasswordRequest = new ResetPasswordRequest();
@@ -1980,7 +1980,7 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    public void doUpdatePassword_whenIdentityEndpointResponseIsNull_thenFail() {
+    public void doUpdatePassword_whenIdentityEndpointResponseIsNull_throwResetPasswordFailed() {
 
         String verifiedTransactionId = "VERIFIED_TRANSACTION_ID";
         ResetPasswordRequest resetPasswordRequest = new ResetPasswordRequest();
@@ -2020,7 +2020,7 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    public void doUpdatePassword_whenIdentityEndpointReturnInvalidResponse_thenFail() {
+    public void doUpdatePassword_whenIdentityEndpointReturnInvalidResponse_throwResetPasswordFailed() {
 
         String verifiedTransactionId = "VERIFIED_TRANSACTION_ID";
         ResetPasswordRequest resetPasswordRequest = new ResetPasswordRequest();
@@ -2063,7 +2063,7 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    public void doUpdatePassword_whenIdentityEndpointReturnsError_thenFail() {
+    public void doUpdatePassword_whenIdentityEndpointReturnsError_throwErrorFromAnotherService() {
         String verifiedTransactionId = "VERIFIED_TRANSACTION_ID";
         ResetPasswordRequest resetPasswordRequest = new ResetPasswordRequest();
         resetPasswordRequest.setPassword("Password@2002");
@@ -2110,7 +2110,7 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    public void doVerifyChallenge_withExpiredChallenge_thenFail() throws Exception {
+    public void doVerifyChallenge_withExpiredChallenge_throwChallengeExpired() throws SignUpException {
         ChallengeInfo challengeInfo = new ChallengeInfo();
         challengeInfo.setFormat("alpha-numeric");
         challengeInfo.setChallenge("123456");
