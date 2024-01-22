@@ -151,7 +151,7 @@ public class RegistrationService {
         cacheUtilService.setChallengeGeneratedTransaction(transactionId, transaction);
 
         //Resend attempts exhausted, block the identifier for configured time.
-        if(transaction.getChallengeRetryAttempts() >= resendAttempts)
+        if(transaction.getChallengeRetryAttempts() > resendAttempts + 1)
             cacheUtilService.blockIdentifier(transaction.getIdentifier());
 
         notificationHelper.sendSMSNotificationAsync(generateChallengeRequest.getIdentifier(), transaction.getLocale(),
