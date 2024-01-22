@@ -21,11 +21,6 @@ public class GoogleRecaptchaValidatorService implements CaptchaValidator {
     @Value("${mosip.signup.send-challenge.captcha-required}")
     private boolean requiredCaptcha;
 
-    @Bean
-    public RestTemplate restTemplate() {
-        return new RestTemplate();
-    }
-
     @Value("${mosip.signup.captcha-validator.url}")
     private String captchaVerifyUrl;
 

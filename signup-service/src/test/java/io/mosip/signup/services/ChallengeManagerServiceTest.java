@@ -1,9 +1,9 @@
 package io.mosip.signup.services;
 
-import io.mosip.signup.dto.OtpResponse;
-import io.mosip.signup.dto.RegistrationTransaction;
-import io.mosip.signup.dto.RestError;
-import io.mosip.signup.dto.RestResponseWrapper;
+import brave.Response;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.type.TypeFactory;
+import io.mosip.signup.dto.*;
 import io.mosip.signup.exception.SignUpException;
 import io.mosip.signup.util.Purpose;
 import org.junit.Assert;
@@ -37,6 +37,8 @@ public class ChallengeManagerServiceTest {
     @Mock
     RestTemplate selfTokenRestTemplate;
 
+    ObjectMapper objectMapper = new ObjectMapper();
+
     private String generateChallengeUrl = "https://api.net/v1/otpmanager/otp/generate";
 
     @Before
@@ -44,7 +46,6 @@ public class ChallengeManagerServiceTest {
         ReflectionTestUtils.setField(challengeManagerService, "generateChallengeUrl", generateChallengeUrl);
         ReflectionTestUtils.setField(challengeManagerService, "supportedGenerateChallengeType", "OTP");
     }
-
 
     @Test
     public void doGenerateChallenge_allValid_thenPass() throws SignUpException {
@@ -65,6 +66,18 @@ public class ChallengeManagerServiceTest {
     }
 
     @Test
+    public void doGenerateChallenge_withUnsupportedChallengeType_thenFail() throws SignUpException {
+        RegistrationTransaction transaction = new RegistrationTransaction("+85577410541", Purpose.REGISTRATION);
+        ReflectionTestUtils.setField(challengeManagerService, "supportedGenerateChallengeType", "TELEGRAM");
+        try{
+            challengeManagerService.generateChallenge(transaction);
+            Assert.fail();
+        } catch (SignUpException ex){
+            Assert.assertEquals("unsupported_challenge_type", ex.getErrorCode());
+        }
+    }
+
+    @Test
     public void doGenerateChallenge_withApiResponseEmptyChallenge_thenFail() throws SignUpException {
         RegistrationTransaction transaction = new RegistrationTransaction("+85577410541", Purpose.REGISTRATION);
         RestResponseWrapper<OtpResponse> challengeResponse = new RestResponseWrapper<>();
@@ -77,6 +90,25 @@ public class ChallengeManagerServiceTest {
                 eq(HttpMethod.POST),
                 any(HttpEntity.class),
                 any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<>(challengeResponse, HttpStatus.OK));
+
+        try {
+            challengeManagerService.generateChallenge(transaction);
+            Assert.fail();
+        } catch (SignUpException ex) {
+            Assert.assertEquals("generate_challenge_failed", ex.getErrorCode());
+        }
+    }
+
+    @Test
+    public void doGenerateChallenge_withApiResponseNullChallenge_thenFail() throws SignUpException, IOException {
+        RegistrationTransaction transaction = new RegistrationTransaction("+85577410541", Purpose.REGISTRATION);
+        RestResponseWrapper<OtpResponse> challengeResponse = objectMapper.readValue("{\"id\":\"string\",\"version\":\"string\",\"responsetime\":\"2023-11-14T10:59:16.574Z\",\"metadata\":null,\"response\":{\"otp\": \"null\"},\"errors\":null}", TypeFactory.defaultInstance().constructParametricType(RestResponseWrapper.class, OtpResponse.class));
+
+        when(selfTokenRestTemplate.exchange(
+                eq(generateChallengeUrl),
+                eq(HttpMethod.POST),
+                any(),
+                any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<RestResponseWrapper<OtpResponse>>(challengeResponse, HttpStatus.OK));
 
         try {
             challengeManagerService.generateChallenge(transaction);

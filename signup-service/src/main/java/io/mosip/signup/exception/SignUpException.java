@@ -5,8 +5,6 @@ import io.mosip.signup.util.ErrorConstants;
 
 public class SignUpException extends EsignetException {
 
-    public SignUpException() {super(ErrorConstants.UNKNOWN_ERROR);}
-
     public SignUpException(String errorCode){
         super(errorCode);
     }
