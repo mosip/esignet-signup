@@ -2020,7 +2020,7 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    public void doUpdatePassword_whenFail_whenIdentityEndpointResponseContainResponseNull() {
+    public void doUpdatePassword_whenIdentityEndpointReturnInvalidResponse_thenFail() {
 
         String verifiedTransactionId = "VERIFIED_TRANSACTION_ID";
         ResetPasswordRequest resetPasswordRequest = new ResetPasswordRequest();
@@ -2063,7 +2063,7 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    public void doUpdatePassword_whenFail_whenIdentityEndpointResponseErrors() {
+    public void doUpdatePassword_whenIdentityEndpointReturnsError_thenFail() {
         String verifiedTransactionId = "VERIFIED_TRANSACTION_ID";
         ResetPasswordRequest resetPasswordRequest = new ResetPasswordRequest();
         resetPasswordRequest.setPassword("Password@2002");
