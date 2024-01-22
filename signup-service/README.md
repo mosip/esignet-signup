@@ -1,6 +1,6 @@
 ## SignUp Service
 
-Signup service is a spring boot application with endpoints to 
+Signup service is a spring boot application with endpoints to
 
 1. Generate Challenge (Only OTP supported)
 2. Verify Challenge
@@ -12,7 +12,7 @@ Signup service connects to MOSIP IDRepo Identity service to register the verifie
 ID Repo identity service publishes the registered identity to MOSIP IDA. This enables authentication with the registered
 username and password with eSignet.
 
-Publishing registered/updated identity to MOSIP IDA is an async process. Hence, status endpoint is configured to check 
+Publishing registered/updated identity to MOSIP IDA is an async process. Hence, status endpoint is configured to check
 the latest status from server after every configured interval from signup UI.
 
 ### Signup service uses spring cache to store the transaction details.
@@ -42,7 +42,16 @@ The project requires JDK 11.
     ```
     $ mvn clean install -Dgpg.skip=true
     ```
-1. Build Docker for a service:
+2. Build Docker for a service:
     ```
     $ docker build -f Dockerfile
     ```
+3. Run with IntelliJ IDEA
+
+   3.1 Right click on parent POM file (pom.xml) and click on button "Add as Maven Project".
+
+   3.2 Download kernel-auth-adapter-1.2.1-es-SNAPSHOT.jar file from [here](https://oss.sonatype.org/#nexus-search;gav~io.mosip.kernel~kernel-auth-adapter~~~~kw,versionexpand).
+
+   3.3 Add that file to "signup-service" in Project Structure settings of IntelliJ, and Apply.
+
+   3.4 right click on file signup-service/src/main/java/io/mosip/signup/SignUpServiceApplication.java and click on Run
