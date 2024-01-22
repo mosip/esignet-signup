@@ -1980,7 +1980,7 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    public void doUpdatePassword_whenFail_whenIdentityEndpointResponseNull() {
+    public void doUpdatePassword_whenIdentityEndpointResponseIsNull_thenFail() {
 
         String verifiedTransactionId = "VERIFIED_TRANSACTION_ID";
         ResetPasswordRequest resetPasswordRequest = new ResetPasswordRequest();
