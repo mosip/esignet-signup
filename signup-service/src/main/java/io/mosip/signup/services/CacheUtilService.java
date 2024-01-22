@@ -2,6 +2,7 @@ package io.mosip.signup.services;
 
 import io.mosip.esignet.core.util.IdentityProviderUtil;
 import io.mosip.signup.dto.RegistrationTransaction;
+import io.mosip.signup.helper.CryptoHelper;
 import io.mosip.signup.util.SignUpConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +45,16 @@ public class CacheUtilService {
         return identifierHash;
     }
 
+    @Cacheable(value = SignUpConstants.KEYSTORE, key = "#key")
+    public String setSecretKey(String key, String secretKey) {
+        return secretKey;
+    }
+
+    @Cacheable(value = SignUpConstants.KEY_ALIAS, key = "#alias")
+    public String setSecretKeyBasedOnAlias(String alias, String secretKey) {
+        return secretKey;
+    }
+
     //---Getter---
     public RegistrationTransaction getChallengeGeneratedTransaction(String transactionId) {
         return cacheManager.getCache(SignUpConstants.CHALLENGE_GENERATED).get(transactionId, RegistrationTransaction.class);
@@ -62,5 +73,13 @@ public class CacheUtilService {
                 identifier.toLowerCase(Locale.ROOT));
         String value = cacheManager.getCache(SignUpConstants.BLOCKED_IDENTIFIER).get(identifierHash, String.class);
         return value == null ? false : true;
+    }
+
+    public String getSecretKey() {
+        return cacheManager.getCache(SignUpConstants.KEYSTORE).get(CryptoHelper.CACHE_KEY, String.class);
+    }
+
+    public String getSecretKey(String alias) {
+        return cacheManager.getCache(SignUpConstants.KEY_ALIAS).get(alias, String.class);
     }
 }

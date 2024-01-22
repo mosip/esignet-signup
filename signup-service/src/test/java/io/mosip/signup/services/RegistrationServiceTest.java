@@ -6,6 +6,7 @@ import io.mosip.signup.dto.*;
 import io.mosip.signup.exception.*;
 import io.mosip.signup.exception.ChallengeFailedException;
 import io.mosip.signup.exception.InvalidTransactionException;
+import io.mosip.signup.helper.CryptoHelper;
 import io.mosip.signup.helper.NotificationHelper;
 import io.mosip.signup.util.ErrorConstants;
 import io.mosip.signup.util.Purpose;
@@ -68,6 +69,9 @@ public class RegistrationServiceTest {
 
     @Mock
     NotificationHelper notificationHelper;
+
+    @Mock
+    CryptoHelper cryptoHelper;
 
     private final String identityEndpoint = "identityEndpoint";
     private final String generateHashEndpoint = "generateHashEndpoint";

@@ -8,6 +8,7 @@ import io.mosip.signup.dto.*;
 import io.mosip.signup.exception.ChallengeFailedException;
 import io.mosip.signup.exception.InvalidTransactionException;
 import io.mosip.signup.exception.SignUpException;
+import io.mosip.signup.helper.CryptoHelper;
 import io.mosip.signup.util.*;
 import io.mosip.signup.exception.CaptchaException;
 import io.mosip.signup.exception.GenerateChallengeException;
@@ -23,6 +24,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
+
+import javax.crypto.SecretKey;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
@@ -58,6 +61,9 @@ public class RegistrationService {
     @Autowired
     @Qualifier("selfTokenRestTemplate")
     private RestTemplate selfTokenRestTemplate;
+
+    @Autowired
+    private CryptoHelper cryptoHelper;
 
     @Value("${mosip.signup.supported.challenge.otp.length}")
     private int otpLength;
@@ -101,7 +107,7 @@ public class RegistrationService {
     @Value("${mosip.signup.unauthenticated.txn.timeout}")
     private int unauthenticatedTransactionTimeout;
 
-    @Value("${mosip.signup.register.txn.timeout}")
+    @Value("${mosip.signup.verified.txn.timeout}")
     private int registerTransactionTimeout;
 
     @Value("${mosip.signup.status-check.txn.timeout}")
@@ -197,7 +203,7 @@ public class RegistrationService {
             throw new ChallengeFailedException();
         }
 
-        fetchAndCheckIdentity(transaction, verifyChallengeRequest);
+        fetchAndCheckIdentity(transactionId, transaction, verifyChallengeRequest);
 
         //After successful verification of the user, change the transactionId
         transactionId = IdentityProviderUtil.createTransactionId(null);
@@ -263,7 +269,7 @@ public class RegistrationService {
         }
 
         Identity identity = new Identity();
-        identity.setUIN(transaction.getUin());
+        identity.setUIN(cryptoHelper.symmetricDecrypt(transaction.getUin()));
         identity.setIDSchemaVersion(idSchemaVersion);
 
         Password password = generateSaltedHash(resetPasswordRequest.getPassword(), transactionId);
@@ -339,7 +345,8 @@ public class RegistrationService {
         return registrationStatusResponse;
     }
 
-    private void fetchAndCheckIdentity(RegistrationTransaction registrationTransaction, VerifyChallengeRequest verifyChallengeRequest) {
+    private void fetchAndCheckIdentity(String transactionId, RegistrationTransaction registrationTransaction,
+                                       VerifyChallengeRequest verifyChallengeRequest) {
 
         String endpoint = String.format(getIdentityEndpoint, verifyChallengeRequest.getIdentifier());
         RestResponseWrapper<IdentityResponse> restResponseWrapper = selfTokenRestTemplate
@@ -351,14 +358,15 @@ public class RegistrationService {
         switch (registrationTransaction.getPurpose()){
             case REGISTRATION: checkIdentityExists(restResponseWrapper);
                 break;
-            case RESET_PASSWORD: checkActiveIdentityExists(restResponseWrapper, registrationTransaction,
+            case RESET_PASSWORD: checkActiveIdentityExists(transactionId, restResponseWrapper, registrationTransaction,
                     verifyChallengeRequest);
                 break;
             default: throw new SignUpException(ErrorConstants.UNSUPPORTED_PURPOSE);
         }
     }
 
-    private void checkActiveIdentityExists(RestResponseWrapper<IdentityResponse> restResponseWrapper,
+    private void checkActiveIdentityExists(String transactionId,
+                                           RestResponseWrapper<IdentityResponse> restResponseWrapper,
                                            RegistrationTransaction registrationTransaction,
                                            VerifyChallengeRequest verifyChallengeRequest){
         if (restResponseWrapper.getResponse() == null){
@@ -394,9 +402,12 @@ public class RegistrationService {
 
         if (!knowledgeBaseChallenge.getFullName().equals(fullNameFromIdRepo)){
             throw new SignUpException(ErrorConstants.KNOWLEDGEBASE_MISMATCH);
-        }else {
-            registrationTransaction.setUin(restResponseWrapper.getResponse().getIdentity().getUIN());
         }
+
+        //set UIN in the cache to be further used for update UIN endpoint
+        SecretKey secretKey = cryptoHelper.getSecretKey();
+        registrationTransaction.setUin(cryptoHelper.symmetricEncrypt(transactionId,
+                restResponseWrapper.getResponse().getIdentity().getUIN(), secretKey));
 
     }
 
