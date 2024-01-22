@@ -1274,6 +1274,32 @@ public class RegistrationServiceTest {
     }
 
     @Test
+    public void doGenerateChallenge_withRetryAttemptsOver3time_thenFail() throws SignUpException{
+        String identifier = "+85577410541";
+        GenerateChallengeRequest generateChallengeRequest = new GenerateChallengeRequest();
+        generateChallengeRequest.setIdentifier(identifier);
+        generateChallengeRequest.setCaptchaToken("mock-captcha");
+        generateChallengeRequest.setRegenerate(true);
+        String transactionId = "TRAN-1234";
+        RegistrationTransaction transaction = new RegistrationTransaction(identifier, Purpose.REGISTRATION);
+        transaction.setLastRetryAt(LocalDateTime.now(ZoneOffset.UTC).minusSeconds(40));
+        transaction.setChallengeRetryAttempts(3);
+
+        when(cacheUtilService.getChallengeGeneratedTransaction(transactionId)).thenReturn(transaction);
+        when(challengeManagerService.generateChallenge(transaction)).thenReturn("1111");
+        when(googleRecaptchaValidatorService.validateCaptcha(
+                generateChallengeRequest.getCaptchaToken())).thenReturn(true);
+        when(notificationHelper.sendSMSNotificationAsync(any(), any(), any(), any()))
+                .thenReturn(new CompletableFuture<>());
+
+        GenerateChallengeResponse generateChallengeResponse =
+                registrationService.generateChallenge(
+                        generateChallengeRequest, transactionId);
+        Assert.assertNotNull(generateChallengeResponse);
+        Assert.assertEquals("SUCCESS", generateChallengeResponse.getStatus());
+    }
+
+    @Test
     public void doGenerateChallenge_withTransactionId_thenPass() throws SignUpException {
         String identifier = "+85577410541";
         GenerateChallengeRequest generateChallengeRequest = new GenerateChallengeRequest();
