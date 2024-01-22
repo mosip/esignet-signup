@@ -68,6 +68,7 @@ interface Resources {
     username_validation: string;
     username_lead_zero_validation: string;
     full_name_validation: string;
+    full_name_all_spaces_validation: string;
     full_name_in_lng_validation: string;
     password_validation: string;
     password_validation_must_match: string;

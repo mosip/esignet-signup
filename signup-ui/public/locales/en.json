@@ -67,6 +67,7 @@
   "username_validation": "Enter a valid username",
   "username_lead_zero_validation": "Number cannot start with zero. Enter a valid mobile number.",
   "full_name_validation": "Please enter a valid name",
+  "full_name_all_spaces_validation": "Please enter a valid name.",
   "full_name_in_lng_validation": "Full Name has to be in Khmer only.",
   "password_validation": "Password does not meet the password policy. Click on \"i\" to know more.",
   "password_validation_must_match": "New Password and Confirm New Password do not match.",

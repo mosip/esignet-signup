@@ -25,7 +25,7 @@ export const validateFullName = (settings: SettingsDto, t: TFunction) =>
   yup
     .string()
     .strict(true)
-    .trim(t("full_name_in_lng_validation"))
+    .trim(t("full_name_all_spaces_validation"))
     .matches(new RegExp(settings.response.configs["fullname.pattern"]), {
       message: t("full_name_in_lng_validation"),
       excludeEmptyString: true,
@@ -58,4 +58,9 @@ export const validateConfirmPassword = (
       message: t("password_validation"),
       excludeEmptyString: true,
     })
-    .oneOf([yup.ref(passwordRef), ""], isRegister ? t("password_validation_must_match") : t("password_validation_must_match"));
+    .oneOf(
+      [yup.ref(passwordRef), ""],
+      isRegister
+        ? t("password_validation_must_match")
+        : t("password_validation_must_match")
+    );
