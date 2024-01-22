@@ -16,6 +16,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Base64;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
@@ -38,7 +39,9 @@ public class NotificationHelper {
             (String number, String locale, String templateKey, Map<String, String> params){
 
         locale = locale != null ? locale : "khm";
-        String message = environment.getProperty(templateKey + "." + locale);
+        String message = locale.equalsIgnoreCase("eng") ?
+                environment.getProperty(templateKey + "." + locale) :
+                new String(Base64.getDecoder().decode(environment.getProperty(templateKey + "." + locale)));
 
         if(params != null){
             for (Map.Entry<String, String> entry: params.entrySet()){
