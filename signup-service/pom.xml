@@ -15,7 +15,7 @@
 
 	<groupId>io.mosip.signup</groupId>
 	<artifactId>signup-service</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0-SNAPSHOT</version>
 	<name>signup-service</name>
 	<description>Sign Up Service</description>
 	<url>https://github.com/DGTDept/esignet-signup</url>
@@ -115,7 +115,7 @@
 		<dependency>
 			<groupId>io.mosip.esignet</groupId>
 			<artifactId>esignet-core</artifactId>
-			<version>1.1.0</version>
+			<version>1.3.0-SNAPSHOT</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.springframework.boot</groupId>
@@ -151,12 +151,12 @@
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-core</artifactId>
-			<version>1.2.0.1-B1</version>
+			<version>1.2.0.1-B2</version>
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-logger-logback</artifactId>
-			<version>1.2.0.1-B1</version>
+			<version>1.2.0.1-B2</version>
 			<exclusions>
 				<exclusion>
 					<groupId>io.mosip.kernel</groupId>
@@ -172,7 +172,7 @@
 		<dependency>
 			<groupId>io.mosip.esignet</groupId>
 			<artifactId>esignet-integration-api</artifactId>
-			<version>1.1.0</version>
+			<version>1.3.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.mockito</groupId>
