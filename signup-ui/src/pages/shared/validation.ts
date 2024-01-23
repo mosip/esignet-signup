@@ -58,4 +58,9 @@ export const validateConfirmPassword = (
       message: t("password_validation"),
       excludeEmptyString: true,
     })
-    .oneOf([yup.ref(passwordRef), ""], isRegister ? t("register_password_validation_must_match") : t("password_validation_must_match"));
+    .oneOf(
+      [yup.ref(passwordRef), ""],
+      isRegister
+        ? t("register_password_validation_must_match")
+        : t("password_validation_must_match")
+    );
