@@ -70,7 +70,7 @@ public class SignUpControllerTest {
                 .andExpect(jsonPath("$['response']['configs']['fullname.pattern']").value("^[\\u1780-\\u17FF\\u19E0-\\u19FF\\u1A00-\\u1A9F\\u0020]{1,30}$"))
                 .andExpect(jsonPath("$['response']['configs']['status.request.delay']").value(20))
                 .andExpect(jsonPath("$['response']['configs']['status.request.limit']").value(10))
-                .andExpect(jsonPath("$['response']['configs']['signin.redirect-url']").value("https://esignet.camdgc-dev.mosip.net/authorize"))
+                .andExpect(jsonPath("$['response']['configs']['signin.redirect-url']").value("https://esignet.dev.mosip.net/authorize"))
                 .andExpect(jsonPath("$.errors").isEmpty());
     }
 
