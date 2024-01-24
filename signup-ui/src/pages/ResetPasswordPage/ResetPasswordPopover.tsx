@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
-import { useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import { ReactComponent as FailedIconSvg } from "~assets/svg/failed-icon.svg";
 import { RESET_PASSWORD } from "~constants/routes";
@@ -20,9 +20,11 @@ import {
   criticalErrorSelector,
   useResetPasswordStore,
 } from "./useResetPasswordStore";
+import { ResetPasswordPossibleInvalid } from "~typings/types";
 
 export const ResetPasswordPopover = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const { data: settings } = useSettings();
 
   const { criticalError } = useResetPasswordStore(
@@ -37,11 +39,16 @@ export const ResetPasswordPopover = () => {
 
   const handleAction = (e: any) => {
     e.preventDefault();
-    window.location.href = getSignInRedirectURL(
-      settings?.response.configs["signin.redirect-url"],
-      fromSignInHash,
-      RESET_PASSWORD
-    );
+    if(ResetPasswordPossibleInvalid.includes(criticalError?.errorCode!!)) {
+      navigate(0)
+    } else {
+      window.location.href = getSignInRedirectURL(
+        settings?.response.configs["signin.redirect-url"],
+        fromSignInHash,
+        RESET_PASSWORD
+      );
+    }
+
   };
 
   return (
@@ -51,7 +58,7 @@ export const ResetPasswordPopover = () => {
           <AlertDialogTitle className="flex flex-col items-center justify-center gap-y-4">
             <>
               <FailedIconSvg />
-              {["knowledgebase_mismatch"].includes(criticalError?.errorCode!!) ? t("invalid") : t("error")}
+              {ResetPasswordPossibleInvalid.includes(criticalError?.errorCode!!) ? t("invalid") : t("error")}
             </>
           </AlertDialogTitle>
           <AlertDialogDescription className="break-all text-center text-muted-dark-gray">
@@ -63,7 +70,7 @@ export const ResetPasswordPopover = () => {
             onClick={handleAction}
             className="w-full bg-primary"
           >
-            {["knowledgebase_mismatch"].includes(criticalError?.errorCode!!) ? t("retry") : t("okay")}
+            {ResetPasswordPossibleInvalid.includes(criticalError?.errorCode!!) ? t("retry") : t("okay")}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
