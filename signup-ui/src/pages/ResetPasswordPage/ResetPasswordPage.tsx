@@ -14,7 +14,7 @@ import {
   validatePassword,
   validateUsername,
 } from "~pages/shared/validation";
-import { ResetPasswordForm, SettingsDto } from "~typings/types";
+import { ResetPasswordForm, ResetPasswordPossibleInvalid, SettingsDto } from "~typings/types";
 
 import Otp from "./Otp";
 import ResetPassword from "./ResetPassword";
@@ -108,7 +108,7 @@ export const ResetPasswordPage = ({ settings }: ResetPasswordPageProps) => {
     if (
       step === ResetPasswordStep.ResetPasswordConfirmation ||
       (criticalError &&
-        ["invalid_transaction", "knowledgebase_mismatch"].includes(
+        ["invalid_transaction", ...ResetPasswordPossibleInvalid].includes(
           criticalError.errorCode
         ))
     )
@@ -149,7 +149,7 @@ export const ResetPasswordPage = ({ settings }: ResetPasswordPageProps) => {
   return (
     <>
       {criticalError &&
-        ["invalid_transaction", "knowledgebase_mismatch"].includes(
+        ["invalid_transaction", ...ResetPasswordPossibleInvalid].includes(
           criticalError.errorCode
         ) && <ResetPasswordPopover />}
       <Form {...methods}>
