@@ -405,9 +405,7 @@ public class RegistrationService {
         }
 
         //set UIN in the cache to be further used for update UIN endpoint
-        SecretKey secretKey = cryptoHelper.getSecretKey();
-        registrationTransaction.setUin(cryptoHelper.symmetricEncrypt(transactionId,
-                restResponseWrapper.getResponse().getIdentity().getUIN(), secretKey));
+        registrationTransaction.setUin(cryptoHelper.symmetricEncrypt(restResponseWrapper.getResponse().getIdentity().getUIN()));
 
     }
 

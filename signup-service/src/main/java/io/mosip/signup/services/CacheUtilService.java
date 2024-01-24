@@ -50,9 +50,9 @@ public class CacheUtilService {
         return secretKey;
     }
 
-    @Cacheable(value = SignUpConstants.KEY_ALIAS, key = "#alias")
-    public String setSecretKeyBasedOnAlias(String alias, String secretKey) {
-        return secretKey;
+    @Cacheable(value = SignUpConstants.KEY_ALIAS, key = "#key")
+    public String setActiveKeyAlias(String key, String alias) {
+        return alias;
     }
 
     //---Getter---
@@ -75,11 +75,11 @@ public class CacheUtilService {
         return value == null ? false : true;
     }
 
-    public String getSecretKey() {
-        return cacheManager.getCache(SignUpConstants.KEYSTORE).get(CryptoHelper.CACHE_KEY, String.class);
+    public String getSecretKey(String keyAlias) {
+        return cacheManager.getCache(SignUpConstants.KEYSTORE).get(keyAlias, String.class);
     }
 
-    public String getSecretKey(String alias) {
-        return cacheManager.getCache(SignUpConstants.KEY_ALIAS).get(alias, String.class);
+    public String getActiveKeyAlias() {
+        return cacheManager.getCache(SignUpConstants.KEY_ALIAS).get(CryptoHelper.ALIAS_CACHE_KEY, String.class);
     }
 }
