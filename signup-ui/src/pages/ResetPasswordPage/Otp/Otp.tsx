@@ -204,7 +204,7 @@ export const Otp = ({ methods, settings }: OtpProps) => {
           onSuccess: ({ errors }) => {
             if (errors.length > 0) {
               if (
-                ResetPasswordPossibleInvalid.includes(
+                ["invalid_transaction", ...ResetPasswordPossibleInvalid].includes(
                   errors[0].errorCode
                 )
               ) {
