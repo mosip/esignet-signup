@@ -8,10 +8,10 @@ export const validateUsername = (settings: SettingsDto, t: TFunction) =>
     .string()
     .trim()
     .matches(/^[^0].*$/, {
-      message: t("username_lead_zero_validation"),
+      message: "username_lead_zero_validation",
       excludeEmptyString: true,
     })
-    .test("isUsernameValid", t("username_validation"), (value) => {
+    .test("isUsernameValid", "username_validation", (value) => {
       if (value === "") return true;
       return new RegExp(settings.response.configs["identifier.pattern"]).test(
         `${settings.response.configs["identifier.prefix"]}${value}`
@@ -19,15 +19,15 @@ export const validateUsername = (settings: SettingsDto, t: TFunction) =>
     });
 
 export const validateCaptchaToken = (t: TFunction) =>
-  yup.string().required(t("captcha_token_validation"));
+  yup.string().required("captcha_token_validation");
 
 export const validateFullName = (settings: SettingsDto, t: TFunction) =>
   yup
     .string()
     .strict(true)
-    .trim(t("full_name_all_spaces_validation"))
+    .trim("full_name_all_spaces_validation")
     .matches(new RegExp(settings.response.configs["fullname.pattern"]), {
-      message: t("full_name_in_lng_validation"),
+      message: "full_name_in_lng_validation",
       excludeEmptyString: true,
     });
 
@@ -41,7 +41,7 @@ export const validatePassword = (settings: SettingsDto, t: TFunction) =>
     .string()
     .trim()
     .matches(new RegExp(settings.response.configs["password.pattern"]), {
-      message: t("password_validation"),
+      message: "password_validation",
       excludeEmptyString: true,
     });
 
@@ -55,12 +55,12 @@ export const validateConfirmPassword = (
     .string()
     .trim()
     .matches(new RegExp(settings.response.configs["password.pattern"]), {
-      message: t("password_validation"),
+      message: "password_validation",
       excludeEmptyString: true,
     })
     .oneOf(
       [yup.ref(passwordRef), ""],
       isRegister
-        ? t("register_password_validation_must_match")
-        : t("password_validation_must_match")
+        ? "register_password_validation_must_match"
+        : "password_validation_must_match"
     );
