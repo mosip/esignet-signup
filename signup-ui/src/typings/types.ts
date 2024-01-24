@@ -48,6 +48,14 @@ const RegisterStatusPossibleErrors = [
 export type RegisterStatusErrors =
   (typeof RegisterStatusPossibleErrors)[number];
 
+export const ResetPasswordPossibleInvalid = [
+  "knowledgebase_mismatch",
+  "identifier_not_found",
+  "invalid_kba_challenge",
+  "challenge_format_and_type_mismatch",
+  "kba_challenge_not_found"
+];
+
 const ResetPasswordPossibleErrors = [
   "invalid_transaction",
   "not_registered",
@@ -56,6 +64,10 @@ const ResetPasswordPossibleErrors = [
   "invalid_request",
   "reset_pwd_failed",
   "knowledgebase_mismatch",
+  "identifier_not_found",
+  "invalid_kba_challenge",
+  "challenge_format_and_type_mismatch",
+  "kba_challenge_not_found",
 ] as const;
 
 export type ResetPasswordErrors = (typeof ResetPasswordPossibleErrors)[number];

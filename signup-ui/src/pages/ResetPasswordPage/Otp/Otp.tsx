@@ -32,6 +32,7 @@ import {
   ResetPasswordForm,
   SettingsDto,
   VerifyChallengeRequestDto,
+  ResetPasswordPossibleInvalid,
 } from "~typings/types";
 
 import { resetPasswordFormDefaultValues } from "../ResetPasswordPage";
@@ -203,7 +204,7 @@ export const Otp = ({ methods, settings }: OtpProps) => {
           onSuccess: ({ errors }) => {
             if (errors.length > 0) {
               if (
-                ["invalid_transaction", "knowledgebase_mismatch"].includes(
+                ["invalid_transaction", ...ResetPasswordPossibleInvalid].includes(
                   errors[0].errorCode
                 )
               ) {
