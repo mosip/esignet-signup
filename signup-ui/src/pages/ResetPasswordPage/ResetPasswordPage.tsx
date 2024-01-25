@@ -59,9 +59,9 @@ export const ResetPasswordPage = ({ settings }: ResetPasswordPageProps) => {
     () => [
       // Step 1 - UserInfo
       yup.object({
-        username: validateUsername(settings, t),
-        fullname: validateFullName(settings, t),
-        captchaToken: validateCaptchaToken(t),
+        username: validateUsername(settings),
+        fullname: validateFullName(settings),
+        captchaToken: validateCaptchaToken(),
       }),
       // Step 2 - Otp
       yup.object({
@@ -69,11 +69,10 @@ export const ResetPasswordPage = ({ settings }: ResetPasswordPageProps) => {
       }),
       // Step 3 - ResetPassword
       yup.object({
-        newPassword: validatePassword(settings, t),
+        newPassword: validatePassword(settings),
         confirmNewPassword: validateConfirmPassword(
           "newPassword",
           settings,
-          t,
           false
         ),
       }),

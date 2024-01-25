@@ -3,7 +3,7 @@ import * as yup from "yup";
 
 import { SettingsDto } from "~typings/types";
 
-export const validateUsername = (settings: SettingsDto, t: TFunction) =>
+export const validateUsername = (settings: SettingsDto) =>
   yup
     .string()
     .trim()
@@ -18,10 +18,10 @@ export const validateUsername = (settings: SettingsDto, t: TFunction) =>
       );
     });
 
-export const validateCaptchaToken = (t: TFunction) =>
+export const validateCaptchaToken = () =>
   yup.string().required("captcha_token_validation");
 
-export const validateFullName = (settings: SettingsDto, t: TFunction) =>
+export const validateFullName = (settings: SettingsDto) =>
   yup
     .string()
     .strict(true)
@@ -36,7 +36,7 @@ export const validateOtp = (settings: SettingsDto) =>
     .string()
     .matches(new RegExp(`^\\d{${settings.response.configs["otp.length"]}}$`));
 
-export const validatePassword = (settings: SettingsDto, t: TFunction) =>
+export const validatePassword = (settings: SettingsDto) =>
   yup
     .string()
     .trim()
@@ -48,7 +48,6 @@ export const validatePassword = (settings: SettingsDto, t: TFunction) =>
 export const validateConfirmPassword = (
   passwordRef: string,
   settings: SettingsDto,
-  t: TFunction,
   isRegister: boolean
 ) =>
   yup
