@@ -9,6 +9,7 @@ import {
   FormProvider,
   useFormContext,
 } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 
 import { Label } from "~components/ui/label";
 import { cn } from "~utils/cn";
@@ -146,7 +147,10 @@ const FormMessage = React.forwardRef<
   React.HTMLAttributes<HTMLParagraphElement>
 >(({ className, children, ...props }, ref) => {
   const { error, formMessageId } = useFormField();
-  const body = error ? String(error?.message) : children;
+  const { t } = useTranslation();
+
+  // @ts-ignore
+  const body: React.ReactNode = error ? t(String(error.message)) : children;
 
   if (!body) {
     return null;

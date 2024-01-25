@@ -14,7 +14,7 @@ import {
   validatePassword,
   validateUsername,
 } from "~pages/shared/validation";
-import { ResetPasswordForm, SettingsDto } from "~typings/types";
+import { ResetPasswordForm, ResetPasswordPossibleInvalid, SettingsDto } from "~typings/types";
 
 import Otp from "./Otp";
 import ResetPassword from "./ResetPassword";
@@ -59,9 +59,9 @@ export const ResetPasswordPage = ({ settings }: ResetPasswordPageProps) => {
     () => [
       // Step 1 - UserInfo
       yup.object({
-        username: validateUsername(settings, t),
-        fullname: validateFullName(settings, t),
-        captchaToken: validateCaptchaToken(t),
+        username: validateUsername(settings),
+        fullname: validateFullName(settings),
+        captchaToken: validateCaptchaToken(),
       }),
       // Step 2 - Otp
       yup.object({
@@ -69,11 +69,10 @@ export const ResetPasswordPage = ({ settings }: ResetPasswordPageProps) => {
       }),
       // Step 3 - ResetPassword
       yup.object({
-        newPassword: validatePassword(settings, t),
+        newPassword: validatePassword(settings),
         confirmNewPassword: validateConfirmPassword(
           "newPassword",
           settings,
-          t,
           false
         ),
       }),
@@ -108,7 +107,7 @@ export const ResetPasswordPage = ({ settings }: ResetPasswordPageProps) => {
     if (
       step === ResetPasswordStep.ResetPasswordConfirmation ||
       (criticalError &&
-        ["invalid_transaction", "knowledgebase_mismatch"].includes(
+        ["invalid_transaction", ...ResetPasswordPossibleInvalid].includes(
           criticalError.errorCode
         ))
     )
@@ -149,7 +148,7 @@ export const ResetPasswordPage = ({ settings }: ResetPasswordPageProps) => {
   return (
     <>
       {criticalError &&
-        ["invalid_transaction", "knowledgebase_mismatch"].includes(
+        ["invalid_transaction", ...ResetPasswordPossibleInvalid].includes(
           criticalError.errorCode
         ) && <ResetPasswordPopover />}
       <Form {...methods}>

@@ -76,8 +76,8 @@ export const SignUpPage = ({ settings }: SignUpPageProps) => {
     () => [
       // Step 1 - Phone Validation
       yup.object({
-        phone: validateUsername(settings, t),
-        captchaToken: validateCaptchaToken(t),
+        phone: validateUsername(settings),
+        captchaToken: validateCaptchaToken(),
       }),
       // Step 2 - OTP Validation
       yup.object({
@@ -88,9 +88,9 @@ export const SignUpPage = ({ settings }: SignUpPageProps) => {
       // Step 4 - Account Setup Validation
       yup.object({
         username: yup.string(),
-        fullNameInKhmer: validateFullName(settings, t),
-        password: validatePassword(settings, t),
-        confirmPassword: validateConfirmPassword("password", settings, t, true),
+        fullNameInKhmer: validateFullName(settings),
+        password: validatePassword(settings),
+        confirmPassword: validateConfirmPassword("password", settings, true),
         consent: yup.bool().oneOf([true], t("terms_and_conditions_validation")),
       }),
       // Step 5 - Register Status Validation
