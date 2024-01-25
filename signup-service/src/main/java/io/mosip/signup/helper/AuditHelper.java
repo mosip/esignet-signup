@@ -45,7 +45,7 @@ public class AuditHelper {
         restRequestWrapper.setRequesttime(getUTCDateTime());
 
         String description = signUpException != null ?
-                ExceptionUtils.getStackTrace(signUpException) : null;
+                ExceptionUtils.getStackTrace(signUpException) : auditEvent.toString() + " " + eventType.toString();
         if (description != null && description.length() > auditDescriptionMaxLength) {
             description = description.substring(0, auditDescriptionMaxLength);
         }
