@@ -1,39 +1,54 @@
 package io.mosip.signup.helper;
 
 import io.mosip.esignet.core.util.IdentityProviderUtil;
+import io.mosip.kernel.core.util.UUIDUtils;
 import io.mosip.signup.exception.SignUpException;
 import io.mosip.signup.services.CacheUtilService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.*;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+
+import static io.mosip.kernel.core.util.UUIDUtils.NAMESPACE_OID;
 
 @Slf4j
 @Component
 public class CryptoHelper {
 
-    private static final String AES_TRANSFORMATION = "AES/CFB/PKCS5Padding";
-    public static final String CACHE_KEY = "aes";
+    public static final String ALIAS_CACHE_KEY = "CURRENT_ACTIVE_ALIAS";
+
+    @Value("${mosip.signup.cache.symmetric-algorithm-name}")
+    private String symmetricAlgorithm;
+
+    @Value("${mosip.signup.cache.symmetric-key.algorithm-name:AES}")
+    private String symmetricKeyAlgorithm;
+
+    @Value("${mosip.signup.cache.symmetric-key.size:256}")
+    private int symmetricKeySize;
 
     @Autowired
     private CacheUtilService cacheUtilService;
 
-    public String symmetricEncrypt(String transactionId, String data, SecretKey secretKey) {
+    public String symmetricEncrypt(String data) {
         try {
-            Cipher cipher = Cipher.getInstance(AES_TRANSFORMATION);
+
+            String keyAlias = getActiveKeyAlias();
+            SecretKey secretKey = getSecretKey(keyAlias);
+
+            Cipher cipher = Cipher.getInstance(symmetricAlgorithm);
             byte[] initializationVector = IdentityProviderUtil.generateSalt(cipher.getBlockSize());
             byte[] secretDataBytes = data.getBytes(StandardCharsets.UTF_8);
             cipher.init(Cipher.ENCRYPT_MODE, secretKey, new IvParameterSpec(initializationVector));
             byte[] encryptedBytes = cipher.doFinal(secretDataBytes, 0, secretDataBytes.length);
 
-            String keyAlias = getKeyAlias(transactionId);
             byte[] keyAliasBytes = keyAlias.getBytes();
-            cacheUtilService.setSecretKeyBasedOnAlias(keyAlias, IdentityProviderUtil.b64Encode(secretKey.getEncoded()));
 
             byte[] output = new byte[cipher.getOutputSize(secretDataBytes.length)+cipher.getBlockSize()+keyAliasBytes.length];
             System.arraycopy(encryptedBytes, 0, output, 0, encryptedBytes.length);
@@ -49,12 +64,12 @@ public class CryptoHelper {
 
     public String symmetricDecrypt(String encryptedData) {
         try {
-            Cipher cipher = Cipher.getInstance(AES_TRANSFORMATION);
+            Cipher cipher = Cipher.getInstance(symmetricAlgorithm);
 
             byte[] data = IdentityProviderUtil.b64Decode(encryptedData);
-            byte[] keyAlias = Arrays.copyOfRange(data, data.length - 10, data.length);
-            byte[] iv = Arrays.copyOfRange(data, data.length-(cipher.getBlockSize()+10), data.length-10);
-            byte[] encryptedBytes = Arrays.copyOfRange(data, 0, data.length-(cipher.getBlockSize()+10));
+            byte[] keyAlias = Arrays.copyOfRange(data, data.length-36, data.length);
+            byte[] iv = Arrays.copyOfRange(data, data.length-(cipher.getBlockSize()+36), data.length-36);
+            byte[] encryptedBytes = Arrays.copyOfRange(data, 0, data.length-(cipher.getBlockSize()+36));
 
             String encodedSecretKey = cacheUtilService.getSecretKey(new String(keyAlias));
             cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(IdentityProviderUtil.b64Decode(encodedSecretKey), "AES"),
@@ -67,23 +82,31 @@ public class CryptoHelper {
     }
 
 
-    public SecretKey getSecretKey() {
-        String encodedSecretKey = cacheUtilService.getSecretKey();
-        try {
-            if(encodedSecretKey == null) {
-                KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
-                keyGenerator.init(256);
-                cacheUtilService.setSecretKey(CACHE_KEY, IdentityProviderUtil.b64Encode(keyGenerator.generateKey().getEncoded()));
-                encodedSecretKey = cacheUtilService.getSecretKey();
-            }
-            return new SecretKeySpec(IdentityProviderUtil.b64Decode(encodedSecretKey), "AES");
-        } catch (Exception e) {
-            log.error("Error getting secret key", e);
-            throw new SignUpException("crypto_error");
-        }
+    public SecretKey getSecretKey(String alias) {
+        String encodedSecretKey = cacheUtilService.getSecretKey(alias);
+        return new SecretKeySpec(IdentityProviderUtil.b64Decode(encodedSecretKey), "AES");
     }
 
-    private String getKeyAlias(String transactionId) {
-        return transactionId.substring(transactionId.length()-10);
+    private String getActiveKeyAlias() {
+        String alias = cacheUtilService.getActiveKeyAlias();
+        if(alias != null)
+            return alias;
+
+        log.debug("No active alias found, generating new alias and AES key.");
+        alias = UUIDUtils.getUUID(NAMESPACE_OID, "signup-service").toString();
+        generateSecretKey(alias);
+        return alias;
+    }
+
+    private void generateSecretKey(String alias) {
+        try {
+            KeyGenerator keyGenerator = KeyGenerator.getInstance(symmetricKeyAlgorithm);
+            keyGenerator.init(symmetricKeySize);
+            cacheUtilService.setSecretKey(alias, IdentityProviderUtil.b64Encode(keyGenerator.generateKey().getEncoded()));
+            cacheUtilService.setActiveKeyAlias(ALIAS_CACHE_KEY, alias);
+        } catch (NoSuchAlgorithmException e) {
+            log.error("Error generating secret key", e);
+            throw new SignUpException("crypto_error");
+        }
     }
 }
