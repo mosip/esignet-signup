@@ -9,7 +9,7 @@ interface ResendAttemptProps {
 export const ResendAttempt = ({
   currentAttempts,
   totalAttempts,
-  attemptRetryAfter = 5,
+  attemptRetryAfter = 300,
 }: ResendAttemptProps) => {
   const { t } = useTranslation();
   return (
@@ -19,7 +19,7 @@ export const ResendAttempt = ({
           {t("attempts_left", {
             attemptLeft: currentAttempts,
             totalAttempt: totalAttempts,
-            attemptRetryAfter: attemptRetryAfter,
+            attemptRetryAfter: attemptRetryAfter / 60,
           })}
         </div>
       )}
