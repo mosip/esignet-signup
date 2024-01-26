@@ -125,14 +125,9 @@ export const Otp = ({ methods, settings }: OtpProps) => {
         };
 
         return generateChallengeMutation.mutate(generateChallengeRequestDto, {
-          onSuccess: ({ errors }) => {
+          onSuccess: ({ response, errors }) => {
             pinInputRef.current?.clear();
             setValue("otp", "", { shouldValidate: true });
-
-            setResendAttempts((resendAttempt) => resendAttempt - 1);
-            restartResendOtpTotalSecs(
-              getTimeoutTime(settings.response.configs["resend.delay"])
-            );
 
             if (errors && errors.length > 0) {
               if (errors[0].errorCode === "invalid_transaction") {
@@ -140,6 +135,13 @@ export const Otp = ({ methods, settings }: OtpProps) => {
               } else {
                 setChallengeVerificationError(errors[0]);
               }
+            }
+
+            if (errors.length === 0 && response?.status === "SUCCESS") {
+              setResendAttempts((resendAttempt) => resendAttempt - 1);
+              restartResendOtpTotalSecs(
+                getTimeoutTime(settings.response.configs["resend.delay"])
+              );
             }
           },
         });
@@ -194,7 +196,12 @@ export const Otp = ({ methods, settings }: OtpProps) => {
         return verifyChallengeMutation.mutate(verifyChallengeRequestDto, {
           onSuccess: ({ errors }) => {
             if (errors.length > 0) {
-              if (["already-registered", "identifier_already_registered"].includes(errors[0].errorCode)) {
+              if (
+                [
+                  "already-registered",
+                  "identifier_already_registered",
+                ].includes(errors[0].errorCode)
+              ) {
                 setStep(SignUpStep.PhoneStatus);
               } else if (errors[0].errorCode === "invalid_transaction") {
                 setCriticalError(errors[0]);
