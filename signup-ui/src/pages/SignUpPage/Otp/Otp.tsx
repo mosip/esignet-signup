@@ -346,9 +346,10 @@ export const Otp = ({ methods, settings }: OtpProps) => {
                 currentAttempts={resendAttempts}
                 totalAttempts={settings.response.configs["resend.attempts"]}
                 attemptRetryAfter={settings.response.configs["otp.blocked"]}
+                showRetry={resendAttempts === 0 && resendOtpTotalSecs === 0}
               />
             )}
-            {resendAttempts === 0 && (
+            {resendAttempts === 0 && resendOtpTotalSecs === 0 && (
               <Button
                 variant="link"
                 className="m-4 h-4 text-sm"
