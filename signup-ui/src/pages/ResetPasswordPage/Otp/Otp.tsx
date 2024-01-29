@@ -30,9 +30,9 @@ import {
   Error,
   GenerateChallengeRequestDto,
   ResetPasswordForm,
+  ResetPasswordPossibleInvalid,
   SettingsDto,
   VerifyChallengeRequestDto,
-  ResetPasswordPossibleInvalid,
 } from "~typings/types";
 
 import { resetPasswordFormDefaultValues } from "../ResetPasswordPage";
@@ -129,14 +129,9 @@ export const Otp = ({ methods, settings }: OtpProps) => {
         };
 
         return generateChallengeMutation.mutate(generateChallengeRequestDto, {
-          onSuccess: ({ errors }) => {
+          onSuccess: ({ response, errors }) => {
             pinInputRef.current?.clear();
             setValue("otp", "", { shouldValidate: true });
-
-            setResendAttempts((resendAttempt) => resendAttempt - 1);
-            restartResendOtpTotalSecs(
-              getTimeoutTime(settings.response.configs["resend.delay"])
-            );
 
             if (errors && errors.length > 0) {
               if (errors[0].errorCode === "invalid_transaction") {
@@ -144,6 +139,13 @@ export const Otp = ({ methods, settings }: OtpProps) => {
               } else {
                 setChallengeVerificationError(errors[0]);
               }
+            }
+
+            if (errors.length === 0 && response?.status === "SUCCESS") {
+              setResendAttempts((resendAttempt) => resendAttempt - 1);
+              restartResendOtpTotalSecs(
+                getTimeoutTime(settings.response.configs["resend.delay"])
+              );
             }
           },
         });
@@ -204,9 +206,10 @@ export const Otp = ({ methods, settings }: OtpProps) => {
           onSuccess: ({ errors }) => {
             if (errors.length > 0) {
               if (
-                ["invalid_transaction", ...ResetPasswordPossibleInvalid].includes(
-                  errors[0].errorCode
-                )
+                [
+                  "invalid_transaction",
+                  ...ResetPasswordPossibleInvalid,
+                ].includes(errors[0].errorCode)
               ) {
                 setCriticalError(errors[0]);
               } else {
@@ -349,9 +352,10 @@ export const Otp = ({ methods, settings }: OtpProps) => {
                 currentAttempts={resendAttempts}
                 totalAttempts={settings.response.configs["resend.attempts"]}
                 attemptRetryAfter={settings.response.configs["otp.blocked"]}
+                showRetry={resendAttempts === 0 && resendOtpTotalSecs === 0}
               />
             )}
-            {resendAttempts === 0 && (
+            {resendAttempts === 0 && resendOtpTotalSecs === 0 && (
               <Button
                 variant="link"
                 className="m-4 h-4 px-12 text-sm"
