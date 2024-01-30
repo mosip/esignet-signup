@@ -8,6 +8,7 @@ public class ErrorConstants {
     public static final String INVALID_PASSWORD = "invalid_password";
     public static final String INVALID_USERINFO = "invalid_username";
     public static final String INVALID_CONSENT = "invalid_consent";
+    public static final String INVALID_PURPOSE ="invalid_purpose";
     public static final String IDENTIFIER_MISMATCH = "identifier_mismatch";
     public static final String CONSENT_REQUIRED = "consent_required";
     public static final String INVALID_TRANSACTION="invalid_transaction";
