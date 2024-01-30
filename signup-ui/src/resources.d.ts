@@ -64,6 +64,7 @@ interface Resources {
     something_went_wrong: string;
     something_went_wrong_detail: string;
     attempts_left: string;
+    attempts_left_and_retry: string;
     captcha_token_validation: string;
     username_validation: string;
     username_lead_zero_validation: string;
@@ -103,6 +104,8 @@ interface Resources {
       invalid_password: string;
       invalid_request: string;
       reset_pwd_failed: string;
+      identifier_blocked: string;
+      unsupported_purpose: string;
     };
   };
 }
