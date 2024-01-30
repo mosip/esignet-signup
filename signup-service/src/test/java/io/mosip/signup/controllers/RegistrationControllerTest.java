@@ -520,6 +520,23 @@ public class RegistrationControllerTest {
     }
 
     @Test
+    public void doGenerateChallenge_withNullPurpose_returnErrorResponse() throws Exception {
+        String status = "SUCCESSFUL";
+        GenerateChallengeResponse generateChallengeResponse = new GenerateChallengeResponse(status);
+        generateChallengeRequest.setPurpose(null);
+        when(registrationService.generateChallenge(generateChallengeRequest, ""))
+                .thenReturn(generateChallengeResponse);
+
+        mockMvc.perform(post("/registration/generate-challenge")
+                        .content(objectMapper.writeValueAsString(wrapper))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.response").isEmpty())
+                .andExpect(jsonPath("$.errors").isNotEmpty())
+                .andExpect(jsonPath("$.errors[0].errorCode").value(ErrorConstants.INVALID_PURPOSE));
+    }
+
+    @Test
     public void doGenerateChallenge_withResetPasswordPurpose_thenPass() throws Exception {
         String status = "SUCCESSFUL";
         GenerateChallengeResponse generateChallengeResponse = new GenerateChallengeResponse(status);
