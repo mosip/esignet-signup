@@ -104,6 +104,8 @@ interface Resources {
       invalid_password: string;
       invalid_request: string;
       reset_pwd_failed: string;
+      identifier_blocked: string;
+      unsupported_purpose: string;
     };
   };
 }
