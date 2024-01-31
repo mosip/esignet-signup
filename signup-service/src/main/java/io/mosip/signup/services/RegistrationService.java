@@ -31,6 +31,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -157,8 +159,8 @@ public class RegistrationService {
         cacheUtilService.setChallengeGeneratedTransaction(transactionId, transaction);
 
         //Resend attempts exhausted, block the identifier for configured time.
-        if(transaction.getChallengeRetryAttempts() > resendAttempts + 1)
-            cacheUtilService.blockIdentifier(transaction.getIdentifier());
+        if(transaction.getChallengeRetryAttempts() > resendAttempts)
+            cacheUtilService.blockIdentifier(transaction.getIdentifier(), "blocked");
 
         notificationHelper.sendSMSNotificationAsync(generateChallengeRequest.getIdentifier(), transaction.getLocale(),
                         SEND_OTP_SMS_NOTIFICATION_TEMPLATE_KEY, new HashMap<>(){{put("{challenge}", challenge);}})
@@ -274,6 +276,7 @@ public class RegistrationService {
 
         Password password = generateSaltedHash(resetPasswordRequest.getPassword(), transactionId);
         identity.setPassword(password);
+        identity.setUpdatedAt(LocalDateTime.now(ZoneOffset.UTC).toEpochSecond(ZoneOffset.UTC));
 
         IdentityRequest identityRequest = new IdentityRequest();
         identityRequest.setRegistrationId(transaction.getApplicationId());
@@ -426,6 +429,8 @@ public class RegistrationService {
         identity.setFullName(userInfoMap.getFullName());
         identity.setIDSchemaVersion(idSchemaVersion);
         identity.setRegistrationType("L1");
+        identity.setPhoneVerified(true);
+        identity.setUpdatedAt(LocalDateTime.now(ZoneOffset.UTC).toEpochSecond(ZoneOffset.UTC));
 
         String uin = getUniqueIdentifier(transactionId);
         identity.setUIN(uin);
