@@ -15,5 +15,6 @@ public class GenerateChallengeRequest {
     private String locale;
     private boolean regenerate;
 
+    @io.mosip.signup.validator.Purpose
     private Purpose purpose;
 }
