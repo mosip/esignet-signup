@@ -16,6 +16,7 @@ import java.util.Locale;
 @Slf4j
 @Service
 public class CacheUtilService {
+
     @Autowired
     CacheManager cacheManager;
 
@@ -40,9 +41,9 @@ public class CacheUtilService {
         return registrationTransaction;
     }
 
-    @Cacheable(value = SignUpConstants.BLOCKED_IDENTIFIER, key = "#identifierHash")
-    public String blockIdentifier(String identifierHash) {
-        return identifierHash;
+    @Cacheable(value = SignUpConstants.BLOCKED_IDENTIFIER, key = "#key")
+    public String blockIdentifier(String key, String value) {
+        return value;
     }
 
     @Cacheable(value = SignUpConstants.KEYSTORE, key = "#key")
@@ -71,8 +72,7 @@ public class CacheUtilService {
     public boolean isIdentifierBlocked(String identifier) {
         String identifierHash = IdentityProviderUtil.generateB64EncodedHash(IdentityProviderUtil.ALGO_SHA3_256,
                 identifier.toLowerCase(Locale.ROOT));
-        String value = cacheManager.getCache(SignUpConstants.BLOCKED_IDENTIFIER).get(identifierHash, String.class);
-        return value == null ? false : true;
+        return cacheManager.getCache(SignUpConstants.BLOCKED_IDENTIFIER).get(identifierHash, String.class) != null;
     }
 
     public String getSecretKey(String keyAlias) {

@@ -33,4 +33,10 @@ public class Identity implements Serializable {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<String> selectedHandles;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Boolean phoneVerified;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Long updatedAt;
 }

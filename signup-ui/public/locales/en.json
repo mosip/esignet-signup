@@ -62,7 +62,8 @@
   "page_under_construction_detail": "Our experts are working hard to make this page available. Meanwhile, we request you to please visit after some time.",
   "something_went_wrong": "Something went wrong!",
   "something_went_wrong_detail": "Our experts are working hard to make things working again.",
-  "attempts_left": "{attemptLeft, plural, =0 {0 of {totalAttempt} attempts left. Please try again after {attemptRetryAfter} minutes.} other {{attemptLeft} of {totalAttempt} attempts left}}",
+  "attempts_left": "{attemptLeft, plural, =0 {0 of {totalAttempt} attempts left} other {{attemptLeft} of {totalAttempt} attempts left}}",
+  "attempts_left_and_retry": "{attemptLeft, plural, =0 {0 of {totalAttempt} attempts left. Please try again after {attemptRetryAfter} minutes.} other {{attemptLeft} of {totalAttempt} attempts left}}",
   "captcha_token_validation": "Please verify that you are a human.",
   "username_validation": "Enter a valid username",
   "username_lead_zero_validation": "Number cannot start with zero. Enter a valid mobile number.",
@@ -83,7 +84,7 @@
     "powered_by": "Powered by"
   },
   "error_response": {
-    "invalid_transaction": "Invalid Transaction or Transaction Expired",
+    "invalid_transaction": "The transaction has timed out. Please try again.",
     "invalid_otp_channel": "Invalid OTP Channel Provided",
     "invalid_captcha": "Invalid captcha found.",
     "send_otp_failed": "Send OTP failed",
@@ -128,6 +129,8 @@
     "fetch_identity_failed": "Fetch Identifier Failed",
     "challenge_format_and_type_mismatch": "Challenge format and type mismatch",
     "knowledgebase_mismatch": "Invalid number or name. Please enter a registered mobile number and full name.",
+    "identifier_blocked": "Identifier blocked for 5 minutes",
+    "unsupported_purpose": "Invalid Request",
     "IDR-IDC-001": "Missing Input Parameter",
     "IDR-IDC-002": "Invalid Input Parameter",
     "IDR-IDC-003": "Invalid Request",
