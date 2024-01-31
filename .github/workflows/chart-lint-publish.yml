@@ -6,7 +6,7 @@ on:
   pull_request:
     types: [opened, reopened, synchronize]
     paths:
-      - './helm/**'
+      - 'helm/**'
   workflow_dispatch:
     inputs:
       IGNORE_CHARTS:
@@ -41,7 +41,7 @@ on:
       - release*
       - ES-*
     paths:
-      - './helm/**'
+      - 'helm/**'
 
 jobs:
   chart-lint-publish:
