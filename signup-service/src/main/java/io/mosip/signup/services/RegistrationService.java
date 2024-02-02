@@ -25,7 +25,6 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
-import javax.crypto.SecretKey;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
@@ -208,11 +207,11 @@ public class RegistrationService {
         fetchAndCheckIdentity(transactionId, transaction, verifyChallengeRequest);
 
         //After successful verification of the user, change the transactionId
-        transactionId = IdentityProviderUtil.createTransactionId(null);
-        addVerifiedCookieInResponse(transactionId, registerTransactionTimeout+statusCheckTransactionTimeout);
+        String verifiedTransactionId = IdentityProviderUtil.createTransactionId(null);
+        addVerifiedCookieInResponse(verifiedTransactionId, registerTransactionTimeout+statusCheckTransactionTimeout);
 
-        cacheUtilService.setChallengeVerifiedTransaction(transactionId, transaction);
-        log.debug("Transaction {} : verify challenge status {}", transactionId, ActionStatus.SUCCESS);
+        cacheUtilService.setChallengeVerifiedTransaction(transactionId, verifiedTransactionId, transaction);
+        log.debug("Transaction {} : verify challenge status {}", verifiedTransactionId, ActionStatus.SUCCESS);
         return new VerifyChallengeResponse(ActionStatus.SUCCESS);
     }
 
@@ -241,7 +240,7 @@ public class RegistrationService {
         saveIdentityData(registerRequest, transactionId, transaction);
 
         transaction.setRegistrationStatus(RegistrationStatus.PENDING);
-        cacheUtilService.setRegisteredTransaction(transactionId, transaction);
+        cacheUtilService.setStatusCheckTransaction(transactionId, transaction);
 
         notificationHelper.sendSMSNotificationAsync(registerRequest.getUserInfo().getPhone(), transaction.getLocale(),
                         REGISTRATION_SMS_NOTIFICATION_TEMPLATE_KEY, null)
@@ -309,7 +308,7 @@ public class RegistrationService {
         transaction.getHandlesStatus().put(getHandleRequestId(transaction.getApplicationId(),
                 "phone", resetPasswordRequest.getIdentifier()), RegistrationStatus.PENDING);
         transaction.setRegistrationStatus(RegistrationStatus.PENDING);
-        cacheUtilService.setRegisteredTransaction(transactionId, transaction);
+        cacheUtilService.setStatusCheckTransaction(transactionId, transaction);
 
         notificationHelper.sendSMSNotificationAsync(resetPasswordRequest.getIdentifier(), transaction.getLocale(),
                         FORGOT_PASSWORD_SMS_NOTIFICATION_TEMPLATE_KEY, null)
@@ -327,7 +326,7 @@ public class RegistrationService {
         if (transactionId == null || transactionId.isEmpty())
             throw new InvalidTransactionException();
 
-        RegistrationTransaction registrationTransaction = cacheUtilService.getRegisteredTransaction(
+        RegistrationTransaction registrationTransaction = cacheUtilService.getStatusCheckTransaction(
                 transactionId);
         if (registrationTransaction == null)
             throw new InvalidTransactionException();
@@ -340,9 +339,10 @@ public class RegistrationService {
                 registrationTransaction.getHandlesStatus().put(handleRequestId, registrationStatus);
                 //TODO This is temporary fix, we need to remove this field later from registrationTransaction DTO.
                 registrationTransaction.setRegistrationStatus(registrationStatus);
+                cacheUtilService.setStatusCheckTransaction(transactionId, registrationTransaction);
             }
         }
-        registrationTransaction = cacheUtilService.setRegisteredTransaction(transactionId, registrationTransaction);
+        registrationTransaction = cacheUtilService.getStatusCheckTransaction(transactionId);
         RegistrationStatusResponse registrationStatusResponse = new RegistrationStatusResponse();
         registrationStatusResponse.setStatus(registrationTransaction.getRegistrationStatus());
         return registrationStatusResponse;
