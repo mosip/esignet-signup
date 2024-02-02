@@ -33,14 +33,14 @@ public class CacheUtilServiceTest {
 
         Assert.assertEquals(cacheUtilService.setChallengeGeneratedTransaction("mock",
                 registrationTransaction), registrationTransaction);
-        Assert.assertEquals(cacheUtilService.setChallengeVerifiedTransaction("mock",
+        Assert.assertEquals(cacheUtilService.setChallengeVerifiedTransaction("mock", "vmock",
                 registrationTransaction), registrationTransaction);
-        Assert.assertEquals(cacheUtilService.setRegisteredTransaction("mock",
+        Assert.assertEquals(cacheUtilService.setStatusCheckTransaction("mock",
                 registrationTransaction), registrationTransaction);
 
         Assert.assertNotNull(cacheUtilService.getChallengeGeneratedTransaction("mock"));
         Assert.assertNotNull(cacheUtilService.getChallengeVerifiedTransaction("mock"));
-        Assert.assertNotNull(cacheUtilService.getRegisteredTransaction("mock"));
+        Assert.assertNotNull(cacheUtilService.getStatusCheckTransaction("mock"));
     }
 
     @Test
