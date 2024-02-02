@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -28,16 +29,16 @@ public class CacheUtilService {
     }
 
     @CacheEvict(value = SignUpConstants.CHALLENGE_GENERATED, key = "#transactionId")
-    @Cacheable(value = SignUpConstants.CHALLENGE_VERIFIED, key = "#transactionId")
-    public RegistrationTransaction setChallengeVerifiedTransaction(String transactionId,
+    @Cacheable(value = SignUpConstants.CHALLENGE_VERIFIED, key = "#verifiedTransactionId")
+    public RegistrationTransaction setChallengeVerifiedTransaction(String transactionId, String verifiedTransactionId,
                                                                    RegistrationTransaction registrationTransaction) {
         return registrationTransaction;
     }
 
     @CacheEvict(value = SignUpConstants.CHALLENGE_VERIFIED, key = "#transactionId")
-    @Cacheable(value = SignUpConstants.REGISTERED_CACHE, key = "#transactionId")
-    public RegistrationTransaction setRegisteredTransaction(String transactionId,
-                                                 RegistrationTransaction registrationTransaction) {
+    @CachePut(value = SignUpConstants.STATUS_CHECK, key = "#transactionId")
+    public RegistrationTransaction setStatusCheckTransaction(String transactionId,
+                                                             RegistrationTransaction registrationTransaction) {
         return registrationTransaction;
     }
 
@@ -65,8 +66,8 @@ public class CacheUtilService {
         return cacheManager.getCache(SignUpConstants.CHALLENGE_VERIFIED).get(transactionId, RegistrationTransaction.class);
     }
 
-    public RegistrationTransaction getRegisteredTransaction(String transactionId) {
-        return cacheManager.getCache(SignUpConstants.REGISTERED_CACHE).get(transactionId, RegistrationTransaction.class);
+    public RegistrationTransaction getStatusCheckTransaction(String transactionId) {
+        return cacheManager.getCache(SignUpConstants.STATUS_CHECK).get(transactionId, RegistrationTransaction.class);
     }
 
     public boolean isIdentifierBlocked(String identifier) {

@@ -1862,8 +1862,8 @@ public class RegistrationServiceTest {
         String transactionId = "TRAN-1234";
         RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85577410541", Purpose.REGISTRATION);
         registrationTransaction.setRegistrationStatus(RegistrationStatus.COMPLETED);
-        when(cacheUtilService.getRegisteredTransaction(transactionId)).thenReturn(registrationTransaction);
-        when(cacheUtilService.setRegisteredTransaction(transactionId, registrationTransaction)).thenReturn(registrationTransaction);
+        when(cacheUtilService.getStatusCheckTransaction(transactionId)).thenReturn(registrationTransaction);
+        when(cacheUtilService.setStatusCheckTransaction(transactionId, registrationTransaction)).thenReturn(registrationTransaction);
         RegistrationStatusResponse registrationStatusResponse = registrationService.getRegistrationStatus(transactionId);
 
         Assert.assertNotNull(registrationStatusResponse);
@@ -1875,8 +1875,8 @@ public class RegistrationServiceTest {
         String transactionId = "TRAN-1234";
         RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85577410541", Purpose.REGISTRATION);
         registrationTransaction.setRegistrationStatus(RegistrationStatus.PENDING);
-        when(cacheUtilService.getRegisteredTransaction(transactionId)).thenReturn(registrationTransaction);
-        when(cacheUtilService.setRegisteredTransaction(transactionId, registrationTransaction)).thenReturn(registrationTransaction);
+        when(cacheUtilService.getStatusCheckTransaction(transactionId)).thenReturn(registrationTransaction);
+        when(cacheUtilService.setStatusCheckTransaction(transactionId, registrationTransaction)).thenReturn(registrationTransaction);
         RegistrationStatusResponse registrationStatusResponse = registrationService.getRegistrationStatus(transactionId);
 
         Assert.assertNotNull(registrationStatusResponse);
@@ -1888,8 +1888,8 @@ public class RegistrationServiceTest {
         String transactionId = "TRAN-1234";
         RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85577410541", Purpose.REGISTRATION);
         registrationTransaction.setRegistrationStatus(RegistrationStatus.FAILED);
-        when(cacheUtilService.getRegisteredTransaction(transactionId)).thenReturn(registrationTransaction);
-        when(cacheUtilService.setRegisteredTransaction(transactionId, registrationTransaction)).thenReturn(registrationTransaction);
+        when(cacheUtilService.getStatusCheckTransaction(transactionId)).thenReturn(registrationTransaction);
+        when(cacheUtilService.setStatusCheckTransaction(transactionId, registrationTransaction)).thenReturn(registrationTransaction);
         RegistrationStatusResponse registrationStatusResponse = registrationService.getRegistrationStatus(transactionId);
 
         Assert.assertNotNull(registrationStatusResponse);
