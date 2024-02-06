@@ -118,7 +118,7 @@
     "already-registered": "Already Registered",
     "timed_out": "Timedout",
     "timeout_transaction": "Transaction Timeout",
-    "request_limit": "Request Limit",
+    "request_limit": "It is taking time to fetch your account status. Please try login after 5 minutes.",
     "not_registered": "Not Registered",
     "reset_pwd_failed": "Reset Password Failed",
     "identifier_already_registered": "Identifier already registered",
