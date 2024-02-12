@@ -2,6 +2,7 @@ package io.mosip.signup.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.micrometer.core.annotation.Timed;
 import io.mosip.esignet.core.util.IdentityProviderUtil;
 import io.mosip.kernel.core.util.HMACUtils2;
 import io.mosip.signup.dto.*;
@@ -146,7 +147,7 @@ public class RegistrationService {
         }
         else {
             transaction = cacheUtilService.getChallengeGeneratedTransaction(transactionId);
-            validateTransaction(transaction, identifier);
+            validateTransaction(transaction, identifier, generateChallengeRequest);
         }
 
         // generate Challenge
@@ -155,11 +156,11 @@ public class RegistrationService {
         transaction.setChallengeHash(challengeHash);
         transaction.increaseAttempt();
         transaction.setLocale(generateChallengeRequest.getLocale());
-        cacheUtilService.setChallengeGeneratedTransaction(transactionId, transaction);
+        cacheUtilService.createUpdateChallengeGeneratedTransaction(transactionId, transaction);
 
         //Resend attempts exhausted, block the identifier for configured time.
         if(transaction.getChallengeRetryAttempts() > resendAttempts)
-            cacheUtilService.blockIdentifier(transaction.getIdentifier(), "blocked");
+            cacheUtilService.blockIdentifier(transactionId, transaction.getIdentifier(), "blocked");
 
         notificationHelper.sendSMSNotificationAsync(generateChallengeRequest.getIdentifier(), transaction.getLocale(),
                         SEND_OTP_SMS_NOTIFICATION_TEMPLATE_KEY, new HashMap<>(){{put("{challenge}", challenge);}})
@@ -265,8 +266,13 @@ public class RegistrationService {
         }
 
         if(!transaction.isValidIdentifier(resetPasswordRequest.getIdentifier().toLowerCase(Locale.ROOT))) {
-            log.error("generate-challenge failed: invalid identifier");
+            log.error("reset password failed: invalid identifier");
             throw new SignUpException(ErrorConstants.IDENTIFIER_MISMATCH);
+        }
+
+        if(!transaction.getPurpose().equals(Purpose.RESET_PASSWORD)) {
+            log.error("reset password failed: purpose mismatch in transaction");
+            throw new SignUpException(ErrorConstants.UNSUPPORTED_PURPOSE);
         }
 
         Identity identity = new Identity();
@@ -339,7 +345,7 @@ public class RegistrationService {
                 registrationTransaction.getHandlesStatus().put(handleRequestId, registrationStatus);
                 //TODO This is temporary fix, we need to remove this field later from registrationTransaction DTO.
                 registrationTransaction.setRegistrationStatus(registrationStatus);
-                cacheUtilService.setStatusCheckTransaction(transactionId, registrationTransaction);
+                cacheUtilService.updateStatusCheckTransaction(transactionId, registrationTransaction);
             }
         }
         registrationTransaction = cacheUtilService.getStatusCheckTransaction(transactionId);
@@ -450,6 +456,7 @@ public class RegistrationService {
         addIdentity(identityRequest, transactionId);
     }
 
+    @Timed(value = "addidentity.api.timer", percentiles = {0.95, 0.99})
     private void addIdentity(IdentityRequest identityRequest, String transactionId) throws SignUpException{
 
         RestRequestWrapper<IdentityRequest> restRequest = new RestRequestWrapper<>();
@@ -475,6 +482,7 @@ public class RegistrationService {
                 restResponseWrapper.getErrors().get(0).getErrorCode() : ErrorConstants.ADD_IDENTITY_FAILED);
     }
 
+    @Timed(value = "generatehash.api.timer", percentiles = {0.95, 0.99})
     private Password generateSaltedHash(String password, String transactionId) throws SignUpException{
 
         RestRequestWrapper<Password.PasswordPlaintext> restRequestWrapper = new RestRequestWrapper<>();
@@ -497,6 +505,7 @@ public class RegistrationService {
                 restResponseWrapper.getErrors().get(0).getErrorCode() : ErrorConstants.HASH_GENERATE_FAILED);
     }
 
+    @Timed(value = "getuin.api.timer", percentiles = {0.95, 0.99})
     private String getUniqueIdentifier(String transactionId) throws SignUpException {
 
         RestResponseWrapper<UINResponse> restResponseWrapper = selfTokenRestTemplate.exchange(getUinEndpoint,
@@ -513,7 +522,8 @@ public class RegistrationService {
                 restResponseWrapper.getErrors().get(0).getErrorCode() : ErrorConstants.GET_UIN_FAILED);
     }
 
-    private void validateTransaction(RegistrationTransaction transaction, String identifier) {
+    private void validateTransaction(RegistrationTransaction transaction, String identifier,
+                                     GenerateChallengeRequest generateChallengeRequest) {
         if(transaction == null) {
             log.error("generate-challenge failed: validate transaction null");
             throw new InvalidTransactionException();
@@ -533,8 +543,14 @@ public class RegistrationService {
             log.error("generate-challenge failed: too early attempts");
             throw new GenerateChallengeException(ErrorConstants.TOO_EARLY_ATTEMPT);
         }
+
+        if(!transaction.getPurpose().equals(generateChallengeRequest.getPurpose())) {
+            log.error("generate-challenge failed: purpose mismatch");
+            throw new GenerateChallengeException(ErrorConstants.INVALID_PURPOSE);
+        }
     }
 
+    @Timed(value = "getstatus.api.timer", percentiles = {0.95, 0.99})
     private RegistrationStatus getRegistrationStatusFromServer(String applicationId) {
         RestResponseWrapper<Map<String,String>> restResponseWrapper = selfTokenRestTemplate.exchange(getRegistrationStatusEndpoint,
                 HttpMethod.GET, null,
