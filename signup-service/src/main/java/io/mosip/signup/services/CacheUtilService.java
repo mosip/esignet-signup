@@ -22,11 +22,6 @@ public class CacheUtilService {
     CacheManager cacheManager;
 
     //---Setter---
-    @Cacheable(value = SignUpConstants.CHALLENGE_GENERATED, key = "#transactionId")
-    public RegistrationTransaction setChallengeGeneratedTransaction(String transactionId,
-                                                                    RegistrationTransaction registrationTransaction) {
-        return registrationTransaction;
-    }
 
     @CacheEvict(value = SignUpConstants.CHALLENGE_GENERATED, key = "#transactionId")
     @Cacheable(value = SignUpConstants.CHALLENGE_VERIFIED, key = "#verifiedTransactionId")
@@ -36,14 +31,15 @@ public class CacheUtilService {
     }
 
     @CacheEvict(value = SignUpConstants.CHALLENGE_VERIFIED, key = "#transactionId")
-    @CachePut(value = SignUpConstants.STATUS_CHECK, key = "#transactionId")
+    @Cacheable(value = SignUpConstants.STATUS_CHECK, key = "#transactionId")
     public RegistrationTransaction setStatusCheckTransaction(String transactionId,
                                                              RegistrationTransaction registrationTransaction) {
         return registrationTransaction;
     }
 
+    @CacheEvict(value = SignUpConstants.CHALLENGE_GENERATED, key = "#transactionId")
     @Cacheable(value = SignUpConstants.BLOCKED_IDENTIFIER, key = "#key")
-    public String blockIdentifier(String key, String value) {
+    public String blockIdentifier(String transactionId, String key, String value) {
         return value;
     }
 
@@ -52,9 +48,24 @@ public class CacheUtilService {
         return secretKey;
     }
 
-    @Cacheable(value = SignUpConstants.KEY_ALIAS, key = "#key")
+    @CachePut(value = SignUpConstants.KEY_ALIAS, key = "#key")
     public String setActiveKeyAlias(String key, String alias) {
         return alias;
+    }
+
+
+    //----- cache update is separated
+    //----- we are not using @cacheput as @cacheput extends the TTL on cache entry
+
+    public RegistrationTransaction createUpdateChallengeGeneratedTransaction(String transactionId,
+                                                                       RegistrationTransaction registrationTransaction) {
+        cacheManager.getCache(SignUpConstants.CHALLENGE_GENERATED).put(transactionId, registrationTransaction);
+        return registrationTransaction;
+    }
+
+    public void updateStatusCheckTransaction(String transactionId,
+                                                    RegistrationTransaction registrationTransaction) {
+        cacheManager.getCache(SignUpConstants.STATUS_CHECK).put(transactionId, registrationTransaction);
     }
 
     //---Getter---

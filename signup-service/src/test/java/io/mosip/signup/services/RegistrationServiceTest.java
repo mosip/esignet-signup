@@ -1639,6 +1639,7 @@ public class RegistrationServiceTest {
         generateChallengeRequest.setIdentifier(identifier);
         generateChallengeRequest.setCaptchaToken("mock-captcha");
         generateChallengeRequest.setRegenerate(true);
+        generateChallengeRequest.setPurpose(Purpose.REGISTRATION);
         String transactionId = "TRAN-1234";
         RegistrationTransaction transaction = new RegistrationTransaction(identifier, Purpose.REGISTRATION);
         transaction.setLastRetryAt(LocalDateTime.now(ZoneOffset.UTC).minusSeconds(40));
@@ -1665,6 +1666,7 @@ public class RegistrationServiceTest {
         generateChallengeRequest.setIdentifier(identifier);
         generateChallengeRequest.setCaptchaToken("mock-captcha");
         generateChallengeRequest.setRegenerate(true);
+        generateChallengeRequest.setPurpose(Purpose.REGISTRATION);
         String transactionId = "TRAN-1234";
         RegistrationTransaction transaction = new RegistrationTransaction(identifier, Purpose.REGISTRATION);
         transaction.setLastRetryAt(LocalDateTime.now(ZoneOffset.UTC).minusSeconds(40));

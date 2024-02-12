@@ -1,6 +1,7 @@
 package io.mosip.signup.controllers;
 
 
+import io.micrometer.core.annotation.Timed;
 import io.mosip.esignet.core.dto.RequestWrapper;
 import io.mosip.esignet.core.dto.ResponseWrapper;
 import io.mosip.esignet.core.util.IdentityProviderUtil;
@@ -43,6 +44,7 @@ public class SignUpController {
         return responseWrapper;
     }
 
+    @Timed(value = "resetpwd.timer", percentiles = {0.95, 0.99})
     @PostMapping("/reset-password")
     public ResponseWrapper<RegistrationStatusResponse> resetPassword(@Valid @RequestBody RequestWrapper<ResetPasswordRequest> requestWrapper,
                                                                      @Valid @NotBlank(message = ErrorConstants.INVALID_TRANSACTION)
