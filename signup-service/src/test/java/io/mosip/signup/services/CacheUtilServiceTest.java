@@ -31,7 +31,7 @@ public class CacheUtilServiceTest {
         Mockito.when(cache.get("mock", RegistrationTransaction.class)).thenReturn(registrationTransaction);
         Mockito.when(cacheManager.getCache(Mockito.anyString())).thenReturn(cache);
 
-        Assert.assertEquals(cacheUtilService.setChallengeGeneratedTransaction("mock",
+        Assert.assertEquals(cacheUtilService.createUpdateChallengeGeneratedTransaction("mock",
                 registrationTransaction), registrationTransaction);
         Assert.assertEquals(cacheUtilService.setChallengeVerifiedTransaction("mock", "vmock",
                 registrationTransaction), registrationTransaction);
@@ -45,8 +45,9 @@ public class CacheUtilServiceTest {
 
     @Test
     public void setChallengeTransaction_thenPass() {
+        Mockito.when(cacheManager.getCache(Mockito.anyString())).thenReturn(cache);
         RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85512123123", Purpose.REGISTRATION);
-        Assert.assertEquals(cacheUtilService.setChallengeGeneratedTransaction("mock-transaction", registrationTransaction), registrationTransaction);
-        Assert.assertNotNull(cacheUtilService.setChallengeGeneratedTransaction("mock-transaction", registrationTransaction));
+        Assert.assertEquals(cacheUtilService.createUpdateChallengeGeneratedTransaction("mock-transaction", registrationTransaction), registrationTransaction);
+        Assert.assertNotNull(cacheUtilService.createUpdateChallengeGeneratedTransaction("mock-transaction", registrationTransaction));
     }
 }

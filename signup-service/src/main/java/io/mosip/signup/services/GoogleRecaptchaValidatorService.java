@@ -1,5 +1,6 @@
 package io.mosip.signup.services;
 
+import io.micrometer.core.annotation.Timed;
 import io.mosip.esignet.api.spi.CaptchaValidator;
 import io.mosip.signup.dto.ReCaptchaResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +31,7 @@ public class GoogleRecaptchaValidatorService implements CaptchaValidator {
     @Autowired
     private RestTemplate restTemplate;
 
+    @Timed(value = "validatecaptcha.api.timer", percentiles = {0.95, 0.99})
     @Override
     public boolean validateCaptcha(String captchaToken) {
 
