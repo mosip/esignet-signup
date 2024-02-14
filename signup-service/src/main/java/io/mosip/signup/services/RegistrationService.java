@@ -118,6 +118,8 @@ public class RegistrationService {
     @Value("${mosip.signup.get-registration-status.endpoint}")
     private String getRegistrationStatusEndpoint;
 
+    private final String notificationLogging = "Notification response -> {}";
+
     /**
      * Generate and regenerate challenge based on the "regenerate" flag in the request.
      * if regenerate is false - always creates a new transaction and set-cookie header is sent in the response.
@@ -139,7 +141,7 @@ public class RegistrationService {
         if(cacheUtilService.isIdentifierBlocked(identifier))
             throw new SignUpException(ErrorConstants.IDENTIFIER_BLOCKED);
 
-        if(generateChallengeRequest.isRegenerate() == false) {
+        if(!generateChallengeRequest.isRegenerate()) {
             transactionId = IdentityProviderUtil.createTransactionId(null);
             transaction = new RegistrationTransaction(identifier, generateChallengeRequest.getPurpose());
             //Need to set cookie only when regenerate is false.
@@ -162,11 +164,13 @@ public class RegistrationService {
         if(transaction.getChallengeRetryAttempts() > resendAttempts)
             cacheUtilService.blockIdentifier(transactionId, transaction.getIdentifier(), "blocked");
 
+        HashMap<String, String> hashMap = new LinkedHashMap<>();
+        hashMap.put("{challenge}", challenge);
         notificationHelper.sendSMSNotificationAsync(generateChallengeRequest.getIdentifier(), transaction.getLocale(),
-                        SEND_OTP_SMS_NOTIFICATION_TEMPLATE_KEY, new HashMap<>(){{put("{challenge}", challenge);}})
-                .thenAccept(notificationResponseRestResponseWrapper -> {
-                    log.debug("Notification response -> {}", notificationResponseRestResponseWrapper);
-                });
+                        SEND_OTP_SMS_NOTIFICATION_TEMPLATE_KEY, hashMap)
+                .thenAccept(notificationResponseRestResponseWrapper ->
+                    log.debug(notificationLogging, notificationResponseRestResponseWrapper)
+                );
         return new GenerateChallengeResponse(ActionStatus.SUCCESS);
     }
 
@@ -245,9 +249,9 @@ public class RegistrationService {
 
         notificationHelper.sendSMSNotificationAsync(registerRequest.getUserInfo().getPhone(), transaction.getLocale(),
                         REGISTRATION_SMS_NOTIFICATION_TEMPLATE_KEY, null)
-                .thenAccept(notificationResponseRestResponseWrapper -> {
-                    log.debug("Notification response -> {}", notificationResponseRestResponseWrapper);
-                });
+                .thenAccept(notificationResponseRestResponseWrapper ->
+                    log.debug(notificationLogging, notificationResponseRestResponseWrapper)
+                );
 
         RegisterResponse registration = new RegisterResponse();
         registration.setStatus(ActionStatus.PENDING);
@@ -318,9 +322,9 @@ public class RegistrationService {
 
         notificationHelper.sendSMSNotificationAsync(resetPasswordRequest.getIdentifier(), transaction.getLocale(),
                         FORGOT_PASSWORD_SMS_NOTIFICATION_TEMPLATE_KEY, null)
-                .thenAccept(notificationResponseRestResponseWrapper -> {
-                    log.debug("Notification response -> {}", notificationResponseRestResponseWrapper);
-                });
+                .thenAccept(notificationResponseRestResponseWrapper ->
+                    log.debug(notificationLogging, notificationResponseRestResponseWrapper)
+                );
 
         RegistrationStatusResponse resetPassword = new RegistrationStatusResponse();
         resetPassword.setStatus(RegistrationStatus.PENDING);
@@ -445,7 +449,7 @@ public class RegistrationService {
         identity.setPassword(password);
 
         //By default, phone is set as the selected handle.
-        identity.setSelectedHandles(Arrays.asList("phone"));
+        identity.setSelectedHandles(List.of("phone"));
         transaction.getHandlesStatus().put(getHandleRequestId(transaction.getApplicationId(),
                 "phone", userInfoMap.getPhone()), RegistrationStatus.PENDING);
 
