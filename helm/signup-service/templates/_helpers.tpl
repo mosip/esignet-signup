@@ -57,4 +57,15 @@ Return podAnnotations
 {{- end }}
 {{- end -}}
 
+User
+{{/*
+Baseurl for artifactory service
+*/}}
+{{- define "artifactory.baseUrl" -}}
+{{ printf "http://artifactory.artifactory:%s" (.Values.service.port | toString) }}
+{{- end -}}
+
+
+
+
 
