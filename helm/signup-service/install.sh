@@ -90,7 +90,7 @@ function installing_signup() {
   fi
 
   echo Installing signup
-  helm -n $NS install signup mosip/signup --version $CHART_VERSION $ENABLE_INSECURE
+  helm -n $NS install signup /home/techno-376/IdeaProjects/esignet-signup/helm/signup-service --version $CHART_VERSION $ENABLE_INSECURE
 
   kubectl -n $NS  get deploy -o name |  xargs -n1 -t  kubectl -n $NS rollout status
 
