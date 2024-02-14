@@ -587,6 +587,8 @@ public class RegistrationService {
 
         Cookie unsetCookie = new Cookie(SignUpConstants.TRANSACTION_ID, "");
         unsetCookie.setMaxAge(0);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
         response.addCookie(unsetCookie);
     }
 
