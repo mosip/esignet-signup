@@ -43,7 +43,7 @@ public class NotificationHelper {
                 environment.getProperty(templateKey + "." + locale) :
                 new String(Base64.getDecoder().decode(environment.getProperty(templateKey + "." + locale)));
 
-        if(params != null){
+        if(params != null && message != null){
             for (Map.Entry<String, String> entry: params.entrySet()){
                 message = message.replace(entry.getKey(), entry.getValue());
             }
