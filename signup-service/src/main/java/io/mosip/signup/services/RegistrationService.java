@@ -24,6 +24,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.Cookie;
@@ -166,11 +167,14 @@ public class RegistrationService {
 
         HashMap<String, String> hashMap = new LinkedHashMap<>();
         hashMap.put("{challenge}", challenge);
-        notificationHelper.sendSMSNotificationAsync(generateChallengeRequest.getIdentifier(), transaction.getLocale(),
-                        SEND_OTP_SMS_NOTIFICATION_TEMPLATE_KEY, hashMap)
-                .thenAccept(notificationResponseRestResponseWrapper ->
-                    log.debug(notificationLogging, notificationResponseRestResponseWrapper)
-                );
+        RestResponseWrapper<NotificationResponse> notificationResponseRest;
+        try{
+            notificationResponseRest = notificationHelper.sendSMSNotification(generateChallengeRequest.getIdentifier(), transaction.getLocale(),
+                    SEND_OTP_SMS_NOTIFICATION_TEMPLATE_KEY, hashMap);
+            log.debug(notificationLogging, notificationResponseRest);
+        }catch (RestClientException e){
+            log.debug(notificationLogging, "send notification failed");
+        }
         return new GenerateChallengeResponse(ActionStatus.SUCCESS);
     }
 
