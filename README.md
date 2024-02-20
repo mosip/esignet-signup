@@ -43,7 +43,7 @@ mosip.ida.handle-types.regex={ '@phone' : '^\\+91[1-9][0-9]{7,9}@phone$' }
 ```
 mosip.idrepo.credential.request.enable-convention-based-id=true
 
-mosip.idrepo.identity.disable-uin-based-credential-request=true
+mosip.idrepo.identity.disable-uin-based-credential-request=false
 
 mosip.idrepo.vid.disable-support=true
 
