@@ -6,7 +6,6 @@ import { SettingsDto } from "~typings/types";
 export const validateUsername = (settings: SettingsDto) =>
   yup
     .string()
-    .trim()
     .matches(/^[^0].*$/, {
       message: "username_lead_zero_validation",
       excludeEmptyString: true,
