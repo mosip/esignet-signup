@@ -115,7 +115,7 @@ API documentation is available [here](https://mosip.stoplight.io/docs/identity-p
 
 ## Credits
 
-We extend our sincere appreciation to the [Cambodia team](/Credits.md) for their invaluable support to MOSIP by implementing the Signup UI and service module. We are truly impressed by your commitment and outstanding contribution.
+We extend our sincere appreciation to the [Cambodia Digital Government Committee team](/Credits.md) for their invaluable support to MOSIP by implementing the Signup UI and service module. We are truly impressed by your commitment and outstanding contribution.
 
 
 ## License
