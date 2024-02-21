@@ -34,6 +34,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static io.mosip.esignet.core.constants.Constants.UTC_DATETIME_PATTERN;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -64,6 +66,8 @@ public class RegistrationControllerTest {
     private VerifyChallengeRequest verifyChallengeRequest;
     private RequestWrapper verifyRequestWrapper;
     private RequestWrapper wrapper;
+
+    private String locale;
 
     @Before
     public void init() {
@@ -646,9 +650,10 @@ public class RegistrationControllerTest {
 
         RegisterResponse registerResponse = new RegisterResponse();
         registerResponse.setStatus(ActionStatus.PENDING);
-        when(registrationService.register(registerRequest, mockTransactionID)).thenReturn(registerResponse);
+        when(registrationService.register(eq(registerRequest), eq(mockTransactionID), any())).thenReturn(registerResponse);
 
         mockMvc.perform(post("/registration/register")
+                        .header("locale", "khm")
                         .content(objectMapper.writeValueAsString(wrapper))
                         .cookie(new Cookie(SignUpConstants.VERIFIED_TRANSACTION_ID, mockTransactionID))
                         .contentType(MediaType.APPLICATION_JSON))
@@ -1021,7 +1026,7 @@ public class RegistrationControllerTest {
 
         RegisterResponse registerResponse = new RegisterResponse();
         registerResponse.setStatus(ActionStatus.PENDING);
-        when(registrationService.register(registerRequest, mockTransactionID)).thenReturn(registerResponse);
+        when(registrationService.register(registerRequest, mockTransactionID, locale)).thenReturn(registerResponse);
 
         mockMvc.perform(post("/registration/register")
                         .content(objectMapper.writeValueAsString(wrapper))
@@ -1057,9 +1062,10 @@ public class RegistrationControllerTest {
 
         RegisterResponse registerResponse = new RegisterResponse();
         registerResponse.setStatus(ActionStatus.PENDING);
-        when(registrationService.register(registerRequest, mockTransactionID)).thenReturn(registerResponse);
+        when(registrationService.register(eq(registerRequest), eq(mockTransactionID), any(String.class))).thenReturn(registerResponse);
 
         mockMvc.perform(post("/registration/register")
+                        .header("locale", "khm")
                         .content(objectMapper.writeValueAsString(wrapper))
                         .cookie(new Cookie(SignUpConstants.VERIFIED_TRANSACTION_ID, mockTransactionID))
                         .contentType(MediaType.APPLICATION_JSON))
@@ -1091,7 +1097,7 @@ public class RegistrationControllerTest {
 
         RegisterResponse registerResponse = new RegisterResponse();
         registerResponse.setStatus(ActionStatus.PENDING);
-        when(registrationService.register(registerRequest, mockTransactionID)).thenReturn(registerResponse);
+        when(registrationService.register(registerRequest, mockTransactionID, locale)).thenReturn(registerResponse);
 
         mockMvc.perform(post("/registration/register")
                         .content(objectMapper.writeValueAsString(wrapper))
@@ -1129,7 +1135,7 @@ public class RegistrationControllerTest {
 
         RegisterResponse registerResponse = new RegisterResponse();
         registerResponse.setStatus(ActionStatus.PENDING);
-        when(registrationService.register(registerRequest, mockTransactionID)).thenReturn(registerResponse);
+        when(registrationService.register(registerRequest, mockTransactionID, locale)).thenReturn(registerResponse);
 
         mockMvc.perform(post("/registration/register")
                         .content(objectMapper.writeValueAsString(wrapper))
@@ -1166,7 +1172,7 @@ public class RegistrationControllerTest {
 
         RegisterResponse registerResponse = new RegisterResponse();
         registerResponse.setStatus(ActionStatus.PENDING);
-        when(registrationService.register(registerRequest, mockTransactionID)).thenReturn(registerResponse);
+        when(registrationService.register(registerRequest, mockTransactionID, locale)).thenReturn(registerResponse);
 
         mockMvc.perform(post("/registration/register")
                         .content(objectMapper.writeValueAsString(wrapper))
@@ -1203,7 +1209,7 @@ public class RegistrationControllerTest {
 
         RegisterResponse registerResponse = new RegisterResponse();
         registerResponse.setStatus(ActionStatus.PENDING);
-        when(registrationService.register(registerRequest, mockTransactionID)).thenReturn(registerResponse);
+        when(registrationService.register(registerRequest, mockTransactionID, locale)).thenReturn(registerResponse);
 
         mockMvc.perform(post("/registration/register")
                         .content(objectMapper.writeValueAsString(wrapper))
@@ -1238,7 +1244,7 @@ public class RegistrationControllerTest {
 
         RegisterResponse registerResponse = new RegisterResponse();
         registerResponse.setStatus(ActionStatus.PENDING);
-        when(registrationService.register(registerRequest, mockTransactionID)).thenReturn(registerResponse);
+        when(registrationService.register(registerRequest, mockTransactionID, locale)).thenReturn(registerResponse);
 
         mockMvc.perform(post("/registration/register")
                         .content(objectMapper.writeValueAsString(wrapper))
@@ -1275,7 +1281,7 @@ public class RegistrationControllerTest {
 
         RegisterResponse registerResponse = new RegisterResponse();
         registerResponse.setStatus(ActionStatus.PENDING);
-        when(registrationService.register(registerRequest, mockTransactionID)).thenReturn(registerResponse);
+        when(registrationService.register(registerRequest, mockTransactionID, locale)).thenReturn(registerResponse);
 
         mockMvc.perform(post("/registration/register")
                         .content(objectMapper.writeValueAsString(wrapper))
