@@ -1,4 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 
 import { ApiError } from "~typings/core";
 import {
@@ -55,6 +56,9 @@ export const useVerifyChallenge = () => {
 };
 
 export const useRegister = () => {
+  const { i18n } = useTranslation();
+  const local = i18n.language == "km" ? "khm" : "eng";
+
   const registerMutation = useMutation<
     RegistrationResponseDto,
     ApiError,
@@ -62,7 +66,7 @@ export const useRegister = () => {
   >({
     mutationKey: keys.registration,
     mutationFn: (registrationRequestDto: RegistrationRequestDto) =>
-      register(registrationRequestDto),
+      register(registrationRequestDto, local),
     gcTime: Infinity,
   });
 
@@ -70,6 +74,9 @@ export const useRegister = () => {
 };
 
 export const useResetPassword = () => {
+  const { i18n } = useTranslation();
+  const local = i18n.language == "km" ? "khm" : "eng";
+
   const resetPasswordMutation = useMutation<
     ResetPasswordResponseDto,
     ApiError,
@@ -77,7 +84,7 @@ export const useResetPassword = () => {
   >({
     mutationKey: keys.resetPassword,
     mutationFn: (resetPasswordRequestDto: ResetPasswordRequestDto) =>
-      resetPassword(resetPasswordRequestDto),
+      resetPassword(resetPasswordRequestDto, local),
     gcTime: Infinity,
   });
 
