@@ -77,12 +77,13 @@ public class RegistrationController {
     @PostMapping("/register")
     public ResponseWrapper<RegisterResponse> register(@Valid @RequestBody RequestWrapper<RegisterRequest> requestWrapper,
                                                       @Valid @NotBlank(message = ErrorConstants.INVALID_TRANSACTION)
+                                                      @RequestHeader(name = "Locale") String locale,
                                                       @CookieValue(value = SignUpConstants.VERIFIED_TRANSACTION_ID, defaultValue = EMTPY) String transactionId)
             throws SignUpException {
         ResponseWrapper<RegisterResponse> responseWrapper = new ResponseWrapper<>();
         responseWrapper.setResponseTime(IdentityProviderUtil.getUTCDateTime());
         try {
-            responseWrapper.setResponse(registrationService.register(requestWrapper.getRequest(), transactionId));
+            responseWrapper.setResponse(registrationService.register(requestWrapper.getRequest(), transactionId, locale));
         }catch (SignUpException signUpException){
             auditHelper.sendAuditTransaction(AuditEvent.REGISTER, AuditEventType.ERROR, transactionId, signUpException);
             throw signUpException;

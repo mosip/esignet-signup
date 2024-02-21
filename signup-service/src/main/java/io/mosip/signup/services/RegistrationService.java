@@ -224,7 +224,7 @@ public class RegistrationService {
         return new VerifyChallengeResponse(ActionStatus.SUCCESS);
     }
 
-    public RegisterResponse register(RegisterRequest registerRequest, String transactionId) throws SignUpException {
+    public RegisterResponse register(RegisterRequest registerRequest, String transactionId, String locale) throws SignUpException {
 
         log.debug("Transaction {} : start do registration", transactionId);
         RegistrationTransaction transaction = cacheUtilService.getChallengeVerifiedTransaction(transactionId);
@@ -251,7 +251,7 @@ public class RegistrationService {
         transaction.setRegistrationStatus(RegistrationStatus.PENDING);
         cacheUtilService.setStatusCheckTransaction(transactionId, transaction);
 
-        notificationHelper.sendSMSNotificationAsync(registerRequest.getUserInfo().getPhone(), transaction.getLocale(),
+        notificationHelper.sendSMSNotificationAsync(registerRequest.getUserInfo().getPhone(), locale,
                         REGISTRATION_SMS_NOTIFICATION_TEMPLATE_KEY, null)
                 .thenAccept(notificationResponseRestResponseWrapper ->
                     log.debug(notificationLogging, notificationResponseRestResponseWrapper)
@@ -264,7 +264,7 @@ public class RegistrationService {
     }
 
     public RegistrationStatusResponse updatePassword(ResetPasswordRequest resetPasswordRequest,
-                                           String transactionId) throws SignUpException{
+                                           String transactionId, String locale) throws SignUpException{
 
         log.debug("Transaction {} : start reset password", transactionId);
         RegistrationTransaction transaction = cacheUtilService.getChallengeVerifiedTransaction(transactionId);
@@ -324,7 +324,7 @@ public class RegistrationService {
         transaction.setRegistrationStatus(RegistrationStatus.PENDING);
         cacheUtilService.setStatusCheckTransaction(transactionId, transaction);
 
-        notificationHelper.sendSMSNotificationAsync(resetPasswordRequest.getIdentifier(), transaction.getLocale(),
+        notificationHelper.sendSMSNotificationAsync(resetPasswordRequest.getIdentifier(), locale,
                         FORGOT_PASSWORD_SMS_NOTIFICATION_TEMPLATE_KEY, null)
                 .thenAccept(notificationResponseRestResponseWrapper ->
                     log.debug(notificationLogging, notificationResponseRestResponseWrapper)
