@@ -173,7 +173,7 @@ public class RegistrationService {
                     SEND_OTP_SMS_NOTIFICATION_TEMPLATE_KEY, hashMap);
             log.debug(notificationLogging, notificationResponseRest);
         }catch (RestClientException e){
-            log.debug(notificationLogging, "send notification failed");
+            throw new SignUpException(ErrorConstants.OTP_NOTIFICATION_FAILED);
         }
         return new GenerateChallengeResponse(ActionStatus.SUCCESS);
     }
