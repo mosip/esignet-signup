@@ -145,7 +145,7 @@
     "IDR-IDC-011": "Authorization Failed",
     "IDR-IDC-012": "Record already exists in DB",
     "IDR-IDC-013": "Update count limit for the attributes exceeded",
-    "IDR-IDC-014": "Handle record already exists in DB",
+    "IDR-IDC-014": "Username already exist. Please try again with a different username",
     "IDR-IDS-001": "Identity Element hash does not match",
     "IDR-IDS-002": "Biometric/Document hash does not match",
     "IDR-IDS-003": "Failed to either encrypt/decrypt message using Kernel Crypto Manager",
