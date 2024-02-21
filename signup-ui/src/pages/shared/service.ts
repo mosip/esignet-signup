@@ -35,10 +35,10 @@ export const verifyChallenge = async (
 
 export const register = async (
   register: RegistrationRequestDto,
-  local: string
+  locale: string
 ) => {
   return ApiService.post("/registration/register", register, {
-    headers: { local: local },
+    headers: { locale: locale },
   }).then(({ data }) => data);
 };
 
@@ -58,9 +58,9 @@ export const getRegistrationStatus =
 
 export const resetPassword = async (
   newUserInfo: ResetPasswordRequestDto,
-  local: string
+  locale: string
 ) => {
   return ApiService.post("/reset-password", newUserInfo, {
-    headers: { local: local },
+    headers: { local: locale },
   }).then(({ data }) => data);
 };

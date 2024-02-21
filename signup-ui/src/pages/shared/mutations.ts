@@ -57,7 +57,7 @@ export const useVerifyChallenge = () => {
 
 export const useRegister = () => {
   const { i18n } = useTranslation();
-  const local = i18n.language == "km" ? "khm" : "eng";
+  const locale = i18n.language == "km" ? "khm" : "eng";
 
   const registerMutation = useMutation<
     RegistrationResponseDto,
@@ -66,7 +66,7 @@ export const useRegister = () => {
   >({
     mutationKey: keys.registration,
     mutationFn: (registrationRequestDto: RegistrationRequestDto) =>
-      register(registrationRequestDto, local),
+      register(registrationRequestDto, locale),
     gcTime: Infinity,
   });
 
@@ -75,7 +75,7 @@ export const useRegister = () => {
 
 export const useResetPassword = () => {
   const { i18n } = useTranslation();
-  const local = i18n.language == "km" ? "khm" : "eng";
+  const locale = i18n.language == "km" ? "khm" : "eng";
 
   const resetPasswordMutation = useMutation<
     ResetPasswordResponseDto,
@@ -84,7 +84,7 @@ export const useResetPassword = () => {
   >({
     mutationKey: keys.resetPassword,
     mutationFn: (resetPasswordRequestDto: ResetPasswordRequestDto) =>
-      resetPassword(resetPasswordRequestDto, local),
+      resetPassword(resetPasswordRequestDto, locale),
     gcTime: Infinity,
   });
 
