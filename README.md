@@ -111,7 +111,7 @@ mosip.kernel.sms.country.code=+91
  
 
 ## APIs
-API documentation is available [here](https://mosip.stoplight.io/docs/identity-provider/branches/signupV1/t9tvfbteqqokf-e-signet-signup-portal-ap-is).
+API documentation is available [here](docs/esignet-signup-openapi.yaml).
 
 ## Credits
 
