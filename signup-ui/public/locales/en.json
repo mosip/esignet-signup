@@ -130,7 +130,7 @@
     "fetch_identity_failed": "Fetch Identifier Failed",
     "challenge_format_and_type_mismatch": "Challenge format and type mismatch",
     "knowledgebase_mismatch": "Invalid number or name. Please enter a registered mobile number and full name.",
-    "identifier_blocked": "Identifier blocked for 5 minutes",
+    "identifier_blocked": "User is blocked. Please try again after 5 minutes.",
     "unsupported_purpose": "Invalid Request",
     "IDR-IDC-001": "Missing Input Parameter",
     "IDR-IDC-002": "Invalid Input Parameter",
