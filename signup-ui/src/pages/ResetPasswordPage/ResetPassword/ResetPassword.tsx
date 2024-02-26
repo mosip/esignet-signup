@@ -200,6 +200,7 @@ export const ResetPassword = ({ methods, settings }: ResetPasswordProps) => {
                           maxLength={
                             settings.response.configs["password.length.max"]
                           }
+                          onBlur={() => trigger("confirmNewPassword")}
                         />
                       </FormControl>
                     </div>
