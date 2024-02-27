@@ -66,7 +66,7 @@
   "attempts_left_and_retry": "{attemptLeft, plural, =0 {0 of {totalAttempt} attempts left. Please try again after {attemptRetryAfter} minutes.} other {{attemptLeft} of {totalAttempt} attempts left}}",
   "captcha_token_validation": "Please verify that you are a human.",
   "username_validation": "Enter a valid username",
-  "username_lead_zero_validation": "Number cannot start with zero. Enter a valid mobile number.",
+  "username_lead_zero_validation": "Number cannot start with zero. Please enter a valid mobile number",
   "full_name_validation": "Please enter a valid name",
   "full_name_all_spaces_validation": "Please enter a valid name.",
   "full_name_in_lng_validation": "Full Name has to be in Khmer only.",
