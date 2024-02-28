@@ -9,9 +9,40 @@ import { Icons } from "./ui/icons";
 
 export const Language = () => {
   const { i18n } = useTranslation();
+  const ui_locales = "ui_locales";
 
   const handleLanguageChange = (language: string) => {
     i18n.changeLanguage(language);
+
+    // Get the encoded string from the URL  
+    const hashCode = window.location.hash.substring(1);
+
+    // Decode the string
+    const decodedBase64 = atob(hashCode)
+        
+    var urlSearchParams = new URLSearchParams(decodedBase64);
+
+    // Convert the decoded string to JSON
+    var jsonObject: Record<string, string> = {};
+    urlSearchParams.forEach(function (value, key) {
+        jsonObject[key] = value;
+        // Assign the current i18n language to the ui_locales
+        if(key === ui_locales) {
+          jsonObject[key] = language
+        }
+    });
+
+    // Convert the JSON back to decoded string
+    Object.entries(jsonObject).forEach(([key, value]) => {
+      urlSearchParams.set(key, value);
+    });
+
+    // Encode the string
+    const encodedBase64 = btoa(urlSearchParams.toString());
+    const url = window.location.origin + window.location.pathname + "#" + encodedBase64
+
+    // Replace the current url with the modified url due to the language change
+    window.history.replaceState(null, "", url);
   };
 
   return (
