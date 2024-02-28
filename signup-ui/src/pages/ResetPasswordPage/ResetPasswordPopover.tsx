@@ -61,7 +61,7 @@ export const ResetPasswordPopover = () => {
               {ResetPasswordPossibleInvalid.includes(criticalError?.errorCode!!) ? t("invalid") : t("error")}
             </>
           </AlertDialogTitle>
-          <AlertDialogDescription className="break-all text-center text-muted-dark-gray">
+          <AlertDialogDescription className="text-balance text-center text-muted-dark-gray">
             {criticalError && t(`error_response.${criticalError.errorCode}`)}
           </AlertDialogDescription>
         </AlertDialogHeader>
