@@ -6,7 +6,7 @@
 @import "@fontsource-variable/kantumruy-pro";
 
 body {
-  background: #f7f9fd 0% 0% no-repeat padding-box;
+  background: var(--background-body) 0% 0% no-repeat padding-box;
 }
 
 @layer base {
@@ -14,75 +14,75 @@ body {
     --font-inter: "Inter";
     --font-kantumruypro: "Kantumruy Pro Variable";
 
-    --background: 220 60% 98%;
-    --foreground: 222.2 47.4% 11.2%;
+    --background: var(--background-color);
+    --foreground: var(--foreground-color);
 
-    --muted: 0 0% 80%;
-    --muted-foreground: 204 10% 10%;
-    --muted-neutral-gray: 0 0% 51%;
-    --muted-dark-gray: 0 0% 29%;
-    --muted-light-gray: 0 0% 95%;
+    --muted: var(--primary-muted);
+    --muted-foreground: var(--primary-muted-foreground);
+    --muted-neutral-gray: var(--primary-muted-neutral-gray);
+    --muted-dark-gray: var(--primary-muted-neutral-gray);
+    --muted-light-gray: var(--primary-muted-neutral-gray);
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 47.4% 11.2%;
+    --popover: var(--primary-popover);
+    --popover-foreground: var(--primary-popover-foreground);
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 0 0% 44%;
+    --border: var(--primary-border);
+    --input: var(--primary-input);
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 47.4% 11.2%;
+    --card: var(--primary-card);
+    --card-foreground: var(--primary-card-foreground);
 
-    --step: 0 0% 100%;
-    --step-foreground: 222.2 47.4% 11.2%;
+    --step: var(--primary-step);
+    --step-foreground: var(--primary-step-foreground);
 
-    --primary: 21 83% 55%;
-    --primary-foreground: 0 0% 100%;
+    --primary: var(--primary-color);
+    --primary-foreground: var(--primary-foreground-color);
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: var(--secondary-color);
+    --secondary-foreground: var(--secondary-foreground-color);
 
-    --accent: 0 0% 100%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: var(--accent-color);
+    --accent-foreground: var(--accent-foreground-color);
 
-    --destructive: 0 68% 50%;
-    --destructive-foreground: 0 52% 96%;
+    --destructive: var(--destructive-color);
+    --destructive-foreground: var(--destructive-foreground-color);
 
-    --ring: 215 20.2% 65.1%;
+    --ring: var(--ring-color);
 
-    --radius: 0.5rem;
+    --radius: var(--radius-font-size);
   }
 
   .dark {
-    --background: 224 71% 4%;
-    --foreground: 213 31% 91%;
+    --background: var(--background-color);
+    --foreground: var(--foreground-color);
 
-    --muted: 223 47% 11%;
-    --muted-foreground: 215.4 16.3% 56.9%;
+    --muted: var(--primary-muted);
+    --muted-foreground: var(--primary-muted-foreground);
 
-    --accent: 216 34% 17%;
-    --accent-foreground: 210 40% 98%;
+    --accent: var(--accent-color);
+    --accent-foreground: var(--accent-foreground-color);
 
-    --popover: 224 71% 4%;
-    --popover-foreground: 215 20.2% 65.1%;
+    --popover: var(--primary-popover);
+    --popover-foreground: var(--primary-popover-foreground);
 
-    --border: 216 34% 17%;
-    --input: 216 34% 17%;
+    --border: var(--primary-border);
+    --input: var(--primary-input);
 
-    --card: 224 71% 4%;
-    --card-foreground: 213 31% 91%;
+    --card: var(--primary-card);
+    --card-foreground: var(--primary-card-foreground);
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 1.2%;
+    --primary: var(--primary-color);
+    --primary-foreground: var(--primary-foreground-color);
 
-    --secondary: 222.2 47.4% 11.2%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: var(--secondary-color);
+    --secondary-foreground: var(--secondary-foreground-color);
 
-    --destructive: 0 63% 31%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: var(--destructive-color);
+    --destructive-foreground: var(--destructive-foreground-color);
 
-    --ring: 216 34% 17%;
+    --ring: var(--ring-color);
 
-    --radius: 0.5rem;
+    --radius: var(--radius-font-size);
   }
 }
 
