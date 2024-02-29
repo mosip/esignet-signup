@@ -38,6 +38,7 @@ jobs:
 
   sonar_analysis:
     needs: build-maven-signup-service
+    if: "${{  github.event_name != 'pull_request' }}"
     uses: mosip/kattu/.github/workflows/maven-sonar-analysis.yml@master
     with:
       SERVICE_LOCATION: 'signup-service'
