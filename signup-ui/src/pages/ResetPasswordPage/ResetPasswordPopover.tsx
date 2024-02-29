@@ -39,8 +39,8 @@ export const ResetPasswordPopover = () => {
 
   const handleAction = (e: any) => {
     e.preventDefault();
-    if(ResetPasswordPossibleInvalid.includes(criticalError?.errorCode!!)) {
-      navigate(0)
+    if (ResetPasswordPossibleInvalid.includes(criticalError?.errorCode!!)) {
+      document.location.reload();
     } else {
       window.location.href = getSignInRedirectURL(
         settings?.response.configs["signin.redirect-url"],
