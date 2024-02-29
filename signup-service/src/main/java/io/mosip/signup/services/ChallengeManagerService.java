@@ -1,5 +1,6 @@
 package io.mosip.signup.services;
 
+import io.micrometer.core.annotation.Timed;
 import io.mosip.esignet.core.util.IdentityProviderUtil;
 import io.mosip.signup.dto.*;
 import io.mosip.signup.exception.SignUpException;
@@ -32,13 +33,13 @@ public class ChallengeManagerService {
 
 
     public String generateChallenge(RegistrationTransaction transaction) throws SignUpException {
-        switch (supportedGenerateChallengeType) {
-            case "OTP" :
-                return generateOTPChallenge(transaction.getChallengeTransactionId());
+        if (supportedGenerateChallengeType.equals("OTP")) {
+            return generateOTPChallenge(transaction.getChallengeTransactionId());
         }
         throw new SignUpException(ErrorConstants.UNSUPPORTED_CHALLENGE_TYPE);
     }
 
+    @Timed(value = "generateotp.api.timer", percentiles = {0.95, 0.99})
     private String generateOTPChallenge(String challengeTransactionId) {
         OtpRequest otpRequest = new OtpRequest();
         otpRequest.setKey(challengeTransactionId);

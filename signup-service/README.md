@@ -55,3 +55,4 @@ The project requires JDK 11.
    3.3 Add that file to "signup-service" in Project Structure settings of IntelliJ, and Apply.
 
    3.4 right click on file signup-service/src/main/java/io/mosip/signup/SignUpServiceApplication.java and click on Run
+

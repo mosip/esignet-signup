@@ -31,22 +31,23 @@ public class CacheUtilServiceTest {
         Mockito.when(cache.get("mock", RegistrationTransaction.class)).thenReturn(registrationTransaction);
         Mockito.when(cacheManager.getCache(Mockito.anyString())).thenReturn(cache);
 
-        Assert.assertEquals(cacheUtilService.setChallengeGeneratedTransaction("mock",
+        Assert.assertEquals(cacheUtilService.createUpdateChallengeGeneratedTransaction("mock",
                 registrationTransaction), registrationTransaction);
-        Assert.assertEquals(cacheUtilService.setChallengeVerifiedTransaction("mock",
+        Assert.assertEquals(cacheUtilService.setChallengeVerifiedTransaction("mock", "vmock",
                 registrationTransaction), registrationTransaction);
-        Assert.assertEquals(cacheUtilService.setRegisteredTransaction("mock",
+        Assert.assertEquals(cacheUtilService.setStatusCheckTransaction("mock",
                 registrationTransaction), registrationTransaction);
 
         Assert.assertNotNull(cacheUtilService.getChallengeGeneratedTransaction("mock"));
         Assert.assertNotNull(cacheUtilService.getChallengeVerifiedTransaction("mock"));
-        Assert.assertNotNull(cacheUtilService.getRegisteredTransaction("mock"));
+        Assert.assertNotNull(cacheUtilService.getStatusCheckTransaction("mock"));
     }
 
     @Test
     public void setChallengeTransaction_thenPass() {
+        Mockito.when(cacheManager.getCache(Mockito.anyString())).thenReturn(cache);
         RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85512123123", Purpose.REGISTRATION);
-        Assert.assertEquals(cacheUtilService.setChallengeGeneratedTransaction("mock-transaction", registrationTransaction), registrationTransaction);
-        Assert.assertNotNull(cacheUtilService.setChallengeGeneratedTransaction("mock-transaction", registrationTransaction));
+        Assert.assertEquals(cacheUtilService.createUpdateChallengeGeneratedTransaction("mock-transaction", registrationTransaction), registrationTransaction);
+        Assert.assertNotNull(cacheUtilService.createUpdateChallengeGeneratedTransaction("mock-transaction", registrationTransaction));
     }
 }

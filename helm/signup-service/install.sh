@@ -67,6 +67,8 @@ function installing_signup() {
   echo $SIGNUP_CLIENT_SECRET_VALUE
   kubectl patch secret keycloak-client-secrets --namespace=config-server --type=json -p='[{"op": "add", "path": "/data/'$SIGNUP_CLIENT_SECRET_KEY'", "value": "'$SIGNUP_CLIENT_SECRET_VALUE'"}]'
 
+  
+  kubectl -n config-server set env --keys=mosip_signup_client_secret --from secret/keycloak-client-secrets deployment/config-server --prefix=SPRING_CLOUD_CONFIG_SERVER_OVERRIDES_
   kubectl -n config-server set env --keys=mosip-signup-host --from configmap/global deployment/config-server --prefix=SPRING_CLOUD_CONFIG_SERVER_OVERRIDES_
   kubectl -n config-server set env --keys=signup-captcha-site-key --from secret/signup-captcha deployment/config-server --prefix=SPRING_CLOUD_CONFIG_SERVER_OVERRIDES_
   kubectl -n config-server set env --keys=signup-captcha-secret-key --from secret/signup-captcha deployment/config-server --prefix=SPRING_CLOUD_CONFIG_SERVER_OVERRIDES_
@@ -89,7 +91,7 @@ function installing_signup() {
   fi
 
   echo Installing signup
-  helm -n $NS install signup mosip/signup-service --version $CHART_VERSION $ENABLE_INSECURE
+  helm -n $NS install signup mosip/signup --version $CHART_VERSION $ENABLE_INSECURE
 
   kubectl -n $NS  get deploy -o name |  xargs -n1 -t  kubectl -n $NS rollout status
 

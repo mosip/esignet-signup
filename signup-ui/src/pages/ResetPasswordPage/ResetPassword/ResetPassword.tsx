@@ -1,7 +1,7 @@
 import { MouseEvent, useCallback, useMemo, useState } from "react";
 import { useFormContext, UseFormReturn } from "react-hook-form";
 import { Trans, useTranslation } from "react-i18next";
-import { useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import { IconLabelPopover } from "~components/icon-label-popover";
 import { ActionMessage } from "~components/ui/action-message";
@@ -49,6 +49,7 @@ interface ResetPasswordProps {
 
 export const ResetPassword = ({ methods, settings }: ResetPasswordProps) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   const { control, setValue, getValues } = useFormContext();
   const [passwordResetError, setPasswordResetError] = useState<Error | null>(
@@ -77,9 +78,8 @@ export const ResetPassword = ({ methods, settings }: ResetPasswordProps) => {
   const { resetPasswordMutation } = useResetPassword();
 
   const handleBack = useCallback(() => {
-    setValue("otp", "", { shouldValidate: true });
-    setStep(ResetPasswordStep.Otp);
-  }, [step, setStep, setValue]);
+    navigate(0)
+  }, []);
 
   const disabledContinue =
     !isResetPasswordValid ||

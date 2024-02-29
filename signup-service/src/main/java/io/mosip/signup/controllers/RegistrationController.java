@@ -1,5 +1,7 @@
 package io.mosip.signup.controllers;
 
+import io.micrometer.core.annotation.Counted;
+import io.micrometer.core.annotation.Timed;
 import io.mosip.esignet.core.dto.RequestWrapper;
 import io.mosip.esignet.core.dto.ResponseWrapper;
 import io.mosip.esignet.core.util.IdentityProviderUtil;
@@ -70,6 +72,8 @@ public class RegistrationController {
         return  responseWrapper;
     }
 
+
+    @Timed(value = "register.timer", percentiles = {0.95, 0.99})
     @PostMapping("/register")
     public ResponseWrapper<RegisterResponse> register(@Valid @RequestBody RequestWrapper<RegisterRequest> requestWrapper,
                                                       @Valid @NotBlank(message = ErrorConstants.INVALID_TRANSACTION)

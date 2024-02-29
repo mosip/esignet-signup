@@ -1,12 +1,12 @@
 package io.mosip.signup.services;
 
+import io.micrometer.core.annotation.Timed;
 import io.mosip.esignet.api.spi.CaptchaValidator;
 import io.mosip.signup.dto.ReCaptchaResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -30,6 +30,7 @@ public class GoogleRecaptchaValidatorService implements CaptchaValidator {
     @Autowired
     private RestTemplate restTemplate;
 
+    @Timed(value = "validatecaptcha.api.timer", percentiles = {0.95, 0.99})
     @Override
     public boolean validateCaptcha(String captchaToken) {
 

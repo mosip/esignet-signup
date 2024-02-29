@@ -2,6 +2,7 @@ package io.mosip.signup.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.micrometer.core.annotation.Timed;
 import io.mosip.esignet.core.util.IdentityProviderUtil;
 import io.mosip.kernel.core.util.HMACUtils2;
 import io.mosip.signup.dto.*;
@@ -25,7 +26,6 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
-import javax.crypto.SecretKey;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
@@ -118,6 +118,8 @@ public class RegistrationService {
     @Value("${mosip.signup.get-registration-status.endpoint}")
     private String getRegistrationStatusEndpoint;
 
+    private final String notificationLogging = "Notification response -> {}";
+
     /**
      * Generate and regenerate challenge based on the "regenerate" flag in the request.
      * if regenerate is false - always creates a new transaction and set-cookie header is sent in the response.
@@ -139,7 +141,7 @@ public class RegistrationService {
         if(cacheUtilService.isIdentifierBlocked(identifier))
             throw new SignUpException(ErrorConstants.IDENTIFIER_BLOCKED);
 
-        if(generateChallengeRequest.isRegenerate() == false) {
+        if(!generateChallengeRequest.isRegenerate()) {
             transactionId = IdentityProviderUtil.createTransactionId(null);
             transaction = new RegistrationTransaction(identifier, generateChallengeRequest.getPurpose());
             //Need to set cookie only when regenerate is false.
@@ -147,7 +149,7 @@ public class RegistrationService {
         }
         else {
             transaction = cacheUtilService.getChallengeGeneratedTransaction(transactionId);
-            validateTransaction(transaction, identifier);
+            validateTransaction(transaction, identifier, generateChallengeRequest);
         }
 
         // generate Challenge
@@ -156,17 +158,19 @@ public class RegistrationService {
         transaction.setChallengeHash(challengeHash);
         transaction.increaseAttempt();
         transaction.setLocale(generateChallengeRequest.getLocale());
-        cacheUtilService.setChallengeGeneratedTransaction(transactionId, transaction);
+        cacheUtilService.createUpdateChallengeGeneratedTransaction(transactionId, transaction);
 
         //Resend attempts exhausted, block the identifier for configured time.
         if(transaction.getChallengeRetryAttempts() > resendAttempts)
-            cacheUtilService.blockIdentifier(transaction.getIdentifier(), "blocked");
+            cacheUtilService.blockIdentifier(transactionId, transaction.getIdentifier(), "blocked");
 
+        HashMap<String, String> hashMap = new LinkedHashMap<>();
+        hashMap.put("{challenge}", challenge);
         notificationHelper.sendSMSNotificationAsync(generateChallengeRequest.getIdentifier(), transaction.getLocale(),
-                        SEND_OTP_SMS_NOTIFICATION_TEMPLATE_KEY, new HashMap<>(){{put("{challenge}", challenge);}})
-                .thenAccept(notificationResponseRestResponseWrapper -> {
-                    log.debug("Notification response -> {}", notificationResponseRestResponseWrapper);
-                });
+                        SEND_OTP_SMS_NOTIFICATION_TEMPLATE_KEY, hashMap)
+                .thenAccept(notificationResponseRestResponseWrapper ->
+                    log.debug(notificationLogging, notificationResponseRestResponseWrapper)
+                );
         return new GenerateChallengeResponse(ActionStatus.SUCCESS);
     }
 
@@ -208,11 +212,11 @@ public class RegistrationService {
         fetchAndCheckIdentity(transactionId, transaction, verifyChallengeRequest);
 
         //After successful verification of the user, change the transactionId
-        transactionId = IdentityProviderUtil.createTransactionId(null);
-        addVerifiedCookieInResponse(transactionId, registerTransactionTimeout+statusCheckTransactionTimeout);
+        String verifiedTransactionId = IdentityProviderUtil.createTransactionId(null);
+        addVerifiedCookieInResponse(verifiedTransactionId, registerTransactionTimeout+statusCheckTransactionTimeout);
 
-        cacheUtilService.setChallengeVerifiedTransaction(transactionId, transaction);
-        log.debug("Transaction {} : verify challenge status {}", transactionId, ActionStatus.SUCCESS);
+        cacheUtilService.setChallengeVerifiedTransaction(transactionId, verifiedTransactionId, transaction);
+        log.debug("Transaction {} : verify challenge status {}", verifiedTransactionId, ActionStatus.SUCCESS);
         return new VerifyChallengeResponse(ActionStatus.SUCCESS);
     }
 
@@ -241,13 +245,13 @@ public class RegistrationService {
         saveIdentityData(registerRequest, transactionId, transaction);
 
         transaction.setRegistrationStatus(RegistrationStatus.PENDING);
-        cacheUtilService.setRegisteredTransaction(transactionId, transaction);
+        cacheUtilService.setStatusCheckTransaction(transactionId, transaction);
 
         notificationHelper.sendSMSNotificationAsync(registerRequest.getUserInfo().getPhone(), transaction.getLocale(),
                         REGISTRATION_SMS_NOTIFICATION_TEMPLATE_KEY, null)
-                .thenAccept(notificationResponseRestResponseWrapper -> {
-                    log.debug("Notification response -> {}", notificationResponseRestResponseWrapper);
-                });
+                .thenAccept(notificationResponseRestResponseWrapper ->
+                    log.debug(notificationLogging, notificationResponseRestResponseWrapper)
+                );
 
         RegisterResponse registration = new RegisterResponse();
         registration.setStatus(ActionStatus.PENDING);
@@ -266,8 +270,13 @@ public class RegistrationService {
         }
 
         if(!transaction.isValidIdentifier(resetPasswordRequest.getIdentifier().toLowerCase(Locale.ROOT))) {
-            log.error("generate-challenge failed: invalid identifier");
+            log.error("reset password failed: invalid identifier");
             throw new SignUpException(ErrorConstants.IDENTIFIER_MISMATCH);
+        }
+
+        if(!transaction.getPurpose().equals(Purpose.RESET_PASSWORD)) {
+            log.error("reset password failed: purpose mismatch in transaction");
+            throw new SignUpException(ErrorConstants.UNSUPPORTED_PURPOSE);
         }
 
         Identity identity = new Identity();
@@ -309,13 +318,13 @@ public class RegistrationService {
         transaction.getHandlesStatus().put(getHandleRequestId(transaction.getApplicationId(),
                 "phone", resetPasswordRequest.getIdentifier()), RegistrationStatus.PENDING);
         transaction.setRegistrationStatus(RegistrationStatus.PENDING);
-        cacheUtilService.setRegisteredTransaction(transactionId, transaction);
+        cacheUtilService.setStatusCheckTransaction(transactionId, transaction);
 
         notificationHelper.sendSMSNotificationAsync(resetPasswordRequest.getIdentifier(), transaction.getLocale(),
                         FORGOT_PASSWORD_SMS_NOTIFICATION_TEMPLATE_KEY, null)
-                .thenAccept(notificationResponseRestResponseWrapper -> {
-                    log.debug("Notification response -> {}", notificationResponseRestResponseWrapper);
-                });
+                .thenAccept(notificationResponseRestResponseWrapper ->
+                    log.debug(notificationLogging, notificationResponseRestResponseWrapper)
+                );
 
         RegistrationStatusResponse resetPassword = new RegistrationStatusResponse();
         resetPassword.setStatus(RegistrationStatus.PENDING);
@@ -327,7 +336,7 @@ public class RegistrationService {
         if (transactionId == null || transactionId.isEmpty())
             throw new InvalidTransactionException();
 
-        RegistrationTransaction registrationTransaction = cacheUtilService.getRegisteredTransaction(
+        RegistrationTransaction registrationTransaction = cacheUtilService.getStatusCheckTransaction(
                 transactionId);
         if (registrationTransaction == null)
             throw new InvalidTransactionException();
@@ -340,9 +349,10 @@ public class RegistrationService {
                 registrationTransaction.getHandlesStatus().put(handleRequestId, registrationStatus);
                 //TODO This is temporary fix, we need to remove this field later from registrationTransaction DTO.
                 registrationTransaction.setRegistrationStatus(registrationStatus);
+                cacheUtilService.updateStatusCheckTransaction(transactionId, registrationTransaction);
             }
         }
-        registrationTransaction = cacheUtilService.setRegisteredTransaction(transactionId, registrationTransaction);
+        registrationTransaction = cacheUtilService.getStatusCheckTransaction(transactionId);
         RegistrationStatusResponse registrationStatusResponse = new RegistrationStatusResponse();
         registrationStatusResponse.setStatus(registrationTransaction.getRegistrationStatus());
         return registrationStatusResponse;
@@ -439,7 +449,7 @@ public class RegistrationService {
         identity.setPassword(password);
 
         //By default, phone is set as the selected handle.
-        identity.setSelectedHandles(Arrays.asList("phone"));
+        identity.setSelectedHandles(List.of("phone"));
         transaction.getHandlesStatus().put(getHandleRequestId(transaction.getApplicationId(),
                 "phone", userInfoMap.getPhone()), RegistrationStatus.PENDING);
 
@@ -450,6 +460,7 @@ public class RegistrationService {
         addIdentity(identityRequest, transactionId);
     }
 
+    @Timed(value = "addidentity.api.timer", percentiles = {0.95, 0.99})
     private void addIdentity(IdentityRequest identityRequest, String transactionId) throws SignUpException{
 
         RestRequestWrapper<IdentityRequest> restRequest = new RestRequestWrapper<>();
@@ -475,6 +486,7 @@ public class RegistrationService {
                 restResponseWrapper.getErrors().get(0).getErrorCode() : ErrorConstants.ADD_IDENTITY_FAILED);
     }
 
+    @Timed(value = "generatehash.api.timer", percentiles = {0.95, 0.99})
     private Password generateSaltedHash(String password, String transactionId) throws SignUpException{
 
         RestRequestWrapper<Password.PasswordPlaintext> restRequestWrapper = new RestRequestWrapper<>();
@@ -497,6 +509,7 @@ public class RegistrationService {
                 restResponseWrapper.getErrors().get(0).getErrorCode() : ErrorConstants.HASH_GENERATE_FAILED);
     }
 
+    @Timed(value = "getuin.api.timer", percentiles = {0.95, 0.99})
     private String getUniqueIdentifier(String transactionId) throws SignUpException {
 
         RestResponseWrapper<UINResponse> restResponseWrapper = selfTokenRestTemplate.exchange(getUinEndpoint,
@@ -513,7 +526,8 @@ public class RegistrationService {
                 restResponseWrapper.getErrors().get(0).getErrorCode() : ErrorConstants.GET_UIN_FAILED);
     }
 
-    private void validateTransaction(RegistrationTransaction transaction, String identifier) {
+    private void validateTransaction(RegistrationTransaction transaction, String identifier,
+                                     GenerateChallengeRequest generateChallengeRequest) {
         if(transaction == null) {
             log.error("generate-challenge failed: validate transaction null");
             throw new InvalidTransactionException();
@@ -533,8 +547,14 @@ public class RegistrationService {
             log.error("generate-challenge failed: too early attempts");
             throw new GenerateChallengeException(ErrorConstants.TOO_EARLY_ATTEMPT);
         }
+
+        if(!transaction.getPurpose().equals(generateChallengeRequest.getPurpose())) {
+            log.error("generate-challenge failed: purpose mismatch");
+            throw new GenerateChallengeException(ErrorConstants.INVALID_PURPOSE);
+        }
     }
 
+    @Timed(value = "getstatus.api.timer", percentiles = {0.95, 0.99})
     private RegistrationStatus getRegistrationStatusFromServer(String applicationId) {
         RestResponseWrapper<Map<String,String>> restResponseWrapper = selfTokenRestTemplate.exchange(getRegistrationStatusEndpoint,
                 HttpMethod.GET, null,
@@ -571,6 +591,8 @@ public class RegistrationService {
 
         Cookie unsetCookie = new Cookie(SignUpConstants.TRANSACTION_ID, "");
         unsetCookie.setMaxAge(0);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
         response.addCookie(unsetCookie);
     }
 

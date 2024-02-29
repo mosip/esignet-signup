@@ -22,7 +22,7 @@ public class LanguageValidator implements ConstraintValidator<Language, String> 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext constraintValidatorContext) {
         if(value == null)
-            return this.required ? false : true;
+            return !this.required;
 
         return supportedLanguages.contains(value);
     }
