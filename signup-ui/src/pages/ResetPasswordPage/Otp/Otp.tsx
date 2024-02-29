@@ -71,6 +71,40 @@ export const Otp = ({ methods, settings }: OtpProps) => {
   const [challengeVerificationError, setChallengeVerificationError] =
     useState<Error | null>(null);
 
+  var pinInputStyle: object;
+
+  var pinInputStyles = {
+    margin: "0px 02px",
+    border: "2px solid #C1C1C1",
+    color: "#000000",
+    borderRadius: "8px"
+  }
+
+  if (window.screen.availWidth <= 425) {
+    let inputBoxSizeMd = {
+      width: "48px",
+      height: "48px"
+    }
+    let inputBoxSizeSm = {
+      width: "32px",
+      height: "32px",
+      overflow: "auto"
+    }
+    if (settings.response.configs["otp.length"] <= 6) {
+      pinInputStyle = {...pinInputStyles, ...inputBoxSizeMd}
+    }
+    else {
+      pinInputStyle = {...pinInputStyles, ...inputBoxSizeSm}
+    }
+  }
+  else {
+    let inputBoxSize = {
+      width: "55px",
+      height: "52px"
+    }
+    pinInputStyle = {...pinInputStyles, ...inputBoxSize}
+  }
+  
   const {
     totalSeconds: resendOtpTotalSecs,
     restart: restartResendOtpTotalSecs,
@@ -297,14 +331,7 @@ export const Otp = ({ methods, settings }: OtpProps) => {
                       padding: "5px 0px",
                       fontSize: "24px",
                     }}
-                    inputStyle={{
-                      width: "55px",
-                      height: "52px",
-                      margin: "0px 02px",
-                      border: "2px solid #C1C1C1",
-                      color: "#000000",
-                      borderRadius: "8px",
-                    }}
+                    inputStyle={pinInputStyle}
                     inputFocusStyle={{
                       border: "2px solid #676766",
                     }}
