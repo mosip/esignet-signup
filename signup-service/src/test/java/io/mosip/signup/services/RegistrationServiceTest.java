@@ -27,6 +27,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
@@ -1630,6 +1631,27 @@ public class RegistrationServiceTest {
                         generateChallengeRequest, "");
         Assert.assertNotNull(generateChallengeResponse);
         Assert.assertEquals("SUCCESS", generateChallengeResponse.getStatus());
+    }
+
+    @Test
+    public void doGenerateChallenge_withFailedSendNotification_thenFail() throws SignUpException, IOException {
+        String identifier = "+85577410541";
+        GenerateChallengeRequest generateChallengeRequest = new GenerateChallengeRequest();
+        generateChallengeRequest.setIdentifier(identifier);
+        generateChallengeRequest.setCaptchaToken("mock-captcha");
+        generateChallengeRequest.setRegenerate(false);
+        when(challengeManagerService.generateChallenge(any())).thenReturn("1111");
+        when(googleRecaptchaValidatorService.validateCaptcha(
+                generateChallengeRequest.getCaptchaToken())).thenReturn(true);
+        when(notificationHelper.sendSMSNotification(any(), any(), any(), any()))
+                .thenThrow(new RestClientException("failed to send notification"));
+
+        try{
+            registrationService.generateChallenge(generateChallengeRequest, "");
+            Assert.fail();
+        } catch (SignUpException ex) {
+            Assert.assertEquals("otp_notification_failed", ex.getErrorCode());
+        }
     }
 
     @Test

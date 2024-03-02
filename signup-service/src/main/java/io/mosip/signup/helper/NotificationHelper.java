@@ -33,9 +33,7 @@ public class NotificationHelper {
     @Value("${mosip.signup.send-notification.endpoint}")
     private String sendNotificationEndpoint;
 
-
-    @Async
-    public CompletableFuture<RestResponseWrapper<NotificationResponse>> sendSMSNotificationAsync
+    public RestResponseWrapper<NotificationResponse> sendSMSNotification
             (String number, String locale, String templateKey, Map<String, String> params){
 
         locale = locale != null ? locale : "khm";
@@ -43,8 +41,8 @@ public class NotificationHelper {
                 environment.getProperty(templateKey + "." + locale) :
                 new String(Base64.getDecoder().decode(environment.getProperty(templateKey + "." + locale)));
 
-        if(params != null && message != null){
-            for (Map.Entry<String, String> entry: params.entrySet()){
+        if (params != null && message != null) {
+            for (Map.Entry<String, String> entry : params.entrySet()) {
                 message = message.replace(entry.getKey(), entry.getValue());
             }
         }
@@ -55,10 +53,15 @@ public class NotificationHelper {
         restRequestWrapper.setRequesttime(IdentityProviderUtil.getUTCDateTime());
         restRequestWrapper.setRequest(notificationRequest);
 
-        return CompletableFuture.supplyAsync(() -> selfTokenRestTemplate
-                .exchange(sendNotificationEndpoint,
+        return selfTokenRestTemplate.exchange(sendNotificationEndpoint,
                         HttpMethod.POST,
                         new HttpEntity<>(restRequestWrapper),
-                        new ParameterizedTypeReference<RestResponseWrapper<NotificationResponse>>(){}).getBody());
+                        new ParameterizedTypeReference<RestResponseWrapper<NotificationResponse>>(){}).getBody();
+    }
+
+    @Async
+    public CompletableFuture<RestResponseWrapper<NotificationResponse>> sendSMSNotificationAsync
+            (String number, String locale, String templateKey, Map<String, String> params){
+        return CompletableFuture.supplyAsync(() -> sendSMSNotification(number, locale, templateKey, params));
     }
 }
