@@ -66,7 +66,7 @@
   "attempts_left_and_retry": "{attemptLeft, plural, =0 {ការព្យាយាមនៅសល់ 0 នៃ {totalAttempt}។ សូមព្យាយាមម្តងទៀតនៅ {attemptRetryAfter} នាទីបន្ទាប់។} other {ការព្យាយាមនៅសល់ {attemptLeft} នៃ {totalAttempt}}}",
   "captcha_token_validation": "សូមបញ្ជាក់ថាអ្នកជាមនុស្ស",
   "username_validation": "សូមបញ្ចូលឈ្មោះអ្នកប្រើប្រាស់ត្រឹមត្រូវ",
-  "username_lead_zero_validation": "លេខមិនអាចចាប់ផ្តើមដោយលេខសូន្យបានទេ។បញ្ចូលលេខទូរស័ព្ទដែលត្រឹមត្រូវ។",
+  "username_lead_zero_validation": "លេខមិនអាចចាប់ផ្តើមដោយលេខសូន្យបានទេ។ សូមបញ្ចូលលេខទូរស័ព្ទដែលត្រឹមត្រូវ",
   "full_name_validation": "សូមបញ្ចូលគោត្តនាម-នាមឱ្យបានត្រឹមត្រូវ",
   "full_name_all_spaces_validation": "សូមបញ្ចូលឈ្មោះអ្នកឲ្យបានត្រឹមត្រូវ",
   "full_name_in_lng_validation": "គោត្តនាម-នាមត្រូវតែមានតែអក្សរខ្មែរ",
