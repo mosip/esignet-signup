@@ -17,21 +17,21 @@ unzip -o esignet-signup-i18n-bundle.zip
 
 echo "Pre-requisites download completed."
 
-echo "Replacing public url placeholder with public url"
+# echo "Replacing public url placeholder with public url"
 
 workingDir=$nginx_dir/html
-if [ -z "$SIGNUP_UI_PUBLIC_URL" ]; then
-  rpCmd="s/_PUBLIC_URL_//g"
-  grep -rl '_PUBLIC_URL_' $workingDir | xargs sed -i $rpCmd
-else
-  workingDir=$nginx_dir/${SIGNUP_UI_PUBLIC_URL}
-  mkdir $workingDir
-  mv  -v $nginx_dir/html/* $workingDir/
-  rpCmd="s/_PUBLIC_URL_/\/${SIGNUP_UI_PUBLIC_URL}/g"
-  grep -rl '_PUBLIC_URL_' $workingDir | xargs sed -i $rpCmd
-fi
+# if [ -z "$SIGNUP_UI_PUBLIC_URL" ]; then
+#   rpCmd="s/_PUBLIC_URL_//g"
+#   grep -rl '_PUBLIC_URL_' $workingDir | xargs sed -i $rpCmd
+# else
+#   workingDir=$nginx_dir/${SIGNUP_UI_PUBLIC_URL}
+#   mkdir $workingDir
+#   mv  -v $nginx_dir/html/* $workingDir/
+#   rpCmd="s/_PUBLIC_URL_/\/${SIGNUP_UI_PUBLIC_URL}/g"
+#   grep -rl '_PUBLIC_URL_' $workingDir | xargs sed -i $rpCmd
+# fi
 
-echo "Replacing completed."
+# echo "Replacing completed."
 
 echo "generating env-config file"
 
