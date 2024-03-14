@@ -13,7 +13,7 @@ function Deleting_All() {
 
   helm -n $SOFTHSM_NS delete softhsm-signup
 
-  declare -a module=("signup"
+  declare -a module=("signup-service"
          "signup-ui"
                      )
 
