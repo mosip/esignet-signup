@@ -10,7 +10,7 @@ fi
 function Restarting_All() {
   ROOT_DIR=`pwd`
 
-  declare -a module=("signup"
+  declare -a module=("signup-service"
          "signup-ui"
                      )
 
