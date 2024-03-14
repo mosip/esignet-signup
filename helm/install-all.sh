@@ -13,7 +13,7 @@ function installing_All() {
   helm repo add mosip https://mosip.github.io/mosip-helm
   helm repo update
 
-  declare -a module=("signup"
+  declare -a module=("signup-service"
                  "signup-ui"
                      )
 
