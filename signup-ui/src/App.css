@@ -19,8 +19,8 @@ body {
     --muted: var(--primary-muted);
     --muted-foreground: var(--primary-muted-foreground);
     --muted-neutral-gray: var(--primary-muted-neutral-gray);
-    --muted-dark-gray: var(--primary-muted-neutral-gray);
-    --muted-light-gray: var(--primary-muted-neutral-gray);
+    --muted-dark-gray: var(--primary-muted-dark-gray);
+    --muted-light-gray: var(--primary-muted-light-gray);
 
     --popover: var(--primary-popover);
     --popover-foreground: var(--primary-popover-foreground);
