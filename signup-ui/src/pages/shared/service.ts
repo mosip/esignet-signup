@@ -34,12 +34,9 @@ export const verifyChallenge = async (
 };
 
 export const register = async (
-  register: RegistrationRequestDto,
-  locale: string
+  register: RegistrationRequestDto
 ) => {
-  return ApiService.post("/registration/register", register, {
-    headers: { locale: locale },
-  }).then(({ data }) => data);
+  return ApiService.post("/registration/register", register).then(({ data }) => data);
 };
 
 export const getRegistrationStatus =
@@ -57,10 +54,7 @@ export const getRegistrationStatus =
   };
 
 export const resetPassword = async (
-  newUserInfo: ResetPasswordRequestDto,
-  locale: string
+  newUserInfo: ResetPasswordRequestDto
 ) => {
-  return ApiService.post("/reset-password", newUserInfo, {
-    headers: { local: locale },
-  }).then(({ data }) => data);
+  return ApiService.post("/reset-password", newUserInfo).then(({ data }) => data);
 };

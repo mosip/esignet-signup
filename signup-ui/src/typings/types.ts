@@ -204,6 +204,7 @@ export type RegistrationRequestDto = BaseRequestDto & {
     username: string;
     password: string;
     consent: string;
+    locale: string;
     userInfo: UserInfo;
   };
 };
@@ -235,6 +236,7 @@ export type ResetPasswordRequestDto = BaseRequestDto & {
   request: {
     identifier: string;
     password: string;
+    locale: string;
   };
 };
 
