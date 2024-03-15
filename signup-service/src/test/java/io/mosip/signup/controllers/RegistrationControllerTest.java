@@ -650,7 +650,7 @@ public class RegistrationControllerTest {
 
         RegisterResponse registerResponse = new RegisterResponse();
         registerResponse.setStatus(ActionStatus.PENDING);
-        when(registrationService.register(eq(registerRequest), eq(mockTransactionID), any())).thenReturn(registerResponse);
+        when(registrationService.register(eq(registerRequest), eq(mockTransactionID))).thenReturn(registerResponse);
 
         mockMvc.perform(post("/registration/register")
                         .header("locale", "khm")
@@ -1017,6 +1017,7 @@ public class RegistrationControllerTest {
         registerRequest.setUsername("+85512345678");
         registerRequest.setPassword("Password@2023");
         registerRequest.setConsent("AGREE");
+        registerRequest.setLocale(locale);
 
         RequestWrapper<RegisterRequest> wrapper = new RequestWrapper<RegisterRequest>();
         wrapper.setRequestTime(IdentityProviderUtil.getUTCDateTime());
@@ -1026,7 +1027,7 @@ public class RegistrationControllerTest {
 
         RegisterResponse registerResponse = new RegisterResponse();
         registerResponse.setStatus(ActionStatus.PENDING);
-        when(registrationService.register(registerRequest, mockTransactionID, locale)).thenReturn(registerResponse);
+        when(registrationService.register(registerRequest, mockTransactionID)).thenReturn(registerResponse);
 
         mockMvc.perform(post("/registration/register")
                         .content(objectMapper.writeValueAsString(wrapper))
@@ -1062,7 +1063,7 @@ public class RegistrationControllerTest {
 
         RegisterResponse registerResponse = new RegisterResponse();
         registerResponse.setStatus(ActionStatus.PENDING);
-        when(registrationService.register(eq(registerRequest), eq(mockTransactionID), any(String.class))).thenReturn(registerResponse);
+        when(registrationService.register(eq(registerRequest), eq(mockTransactionID))).thenReturn(registerResponse);
 
         mockMvc.perform(post("/registration/register")
                         .header("locale", "khm")
@@ -1088,6 +1089,7 @@ public class RegistrationControllerTest {
         registerRequest.setUsername("+85512345678");
         registerRequest.setPassword("12345678");
         registerRequest.setConsent("AGREE");
+        registerRequest.setLocale(locale);
 
         RequestWrapper<RegisterRequest> wrapper = new RequestWrapper<RegisterRequest>();
         wrapper.setRequestTime(IdentityProviderUtil.getUTCDateTime());
@@ -1097,7 +1099,7 @@ public class RegistrationControllerTest {
 
         RegisterResponse registerResponse = new RegisterResponse();
         registerResponse.setStatus(ActionStatus.PENDING);
-        when(registrationService.register(registerRequest, mockTransactionID, locale)).thenReturn(registerResponse);
+        when(registrationService.register(registerRequest, mockTransactionID)).thenReturn(registerResponse);
 
         mockMvc.perform(post("/registration/register")
                         .content(objectMapper.writeValueAsString(wrapper))
@@ -1125,6 +1127,7 @@ public class RegistrationControllerTest {
         registerRequest.setUsername("+85512345678");
         registerRequest.setConsent("AGREE");
         registerRequest.setPassword("");
+        registerRequest.setLocale(locale);
 
 
         RequestWrapper<RegisterRequest> wrapper = new RequestWrapper<RegisterRequest>();
@@ -1135,7 +1138,7 @@ public class RegistrationControllerTest {
 
         RegisterResponse registerResponse = new RegisterResponse();
         registerResponse.setStatus(ActionStatus.PENDING);
-        when(registrationService.register(registerRequest, mockTransactionID, locale)).thenReturn(registerResponse);
+        when(registrationService.register(registerRequest, mockTransactionID)).thenReturn(registerResponse);
 
         mockMvc.perform(post("/registration/register")
                         .content(objectMapper.writeValueAsString(wrapper))
@@ -1162,6 +1165,7 @@ public class RegistrationControllerTest {
         registerRequest.setUserInfo(userInfo);
         registerRequest.setUsername("+85512345678");
         registerRequest.setConsent("AGREE");
+        registerRequest.setLocale(locale);
 
 
         RequestWrapper<RegisterRequest> wrapper = new RequestWrapper<RegisterRequest>();
@@ -1172,7 +1176,7 @@ public class RegistrationControllerTest {
 
         RegisterResponse registerResponse = new RegisterResponse();
         registerResponse.setStatus(ActionStatus.PENDING);
-        when(registrationService.register(registerRequest, mockTransactionID, locale)).thenReturn(registerResponse);
+        when(registrationService.register(registerRequest, mockTransactionID)).thenReturn(registerResponse);
 
         mockMvc.perform(post("/registration/register")
                         .content(objectMapper.writeValueAsString(wrapper))
@@ -1200,6 +1204,7 @@ public class RegistrationControllerTest {
         registerRequest.setConsent("AGREE");
         registerRequest.setPassword("Password@2023");
         registerRequest.setUsername("");
+        registerRequest.setLocale(locale);
 
         RequestWrapper<RegisterRequest> wrapper = new RequestWrapper<RegisterRequest>();
         wrapper.setRequestTime(IdentityProviderUtil.getUTCDateTime());
@@ -1209,7 +1214,7 @@ public class RegistrationControllerTest {
 
         RegisterResponse registerResponse = new RegisterResponse();
         registerResponse.setStatus(ActionStatus.PENDING);
-        when(registrationService.register(registerRequest, mockTransactionID, locale)).thenReturn(registerResponse);
+        when(registrationService.register(registerRequest, mockTransactionID)).thenReturn(registerResponse);
 
         mockMvc.perform(post("/registration/register")
                         .content(objectMapper.writeValueAsString(wrapper))
@@ -1235,6 +1240,7 @@ public class RegistrationControllerTest {
         registerRequest.setUserInfo(userInfo);
         registerRequest.setConsent("AGREE");
         registerRequest.setPassword("Password@2023");
+        registerRequest.setLocale(locale);
 
         RequestWrapper<RegisterRequest> wrapper = new RequestWrapper<RegisterRequest>();
         wrapper.setRequestTime(IdentityProviderUtil.getUTCDateTime());
@@ -1244,7 +1250,7 @@ public class RegistrationControllerTest {
 
         RegisterResponse registerResponse = new RegisterResponse();
         registerResponse.setStatus(ActionStatus.PENDING);
-        when(registrationService.register(registerRequest, mockTransactionID, locale)).thenReturn(registerResponse);
+        when(registrationService.register(registerRequest, mockTransactionID)).thenReturn(registerResponse);
 
         mockMvc.perform(post("/registration/register")
                         .content(objectMapper.writeValueAsString(wrapper))
@@ -1272,6 +1278,7 @@ public class RegistrationControllerTest {
         registerRequest.setConsent("AGREE");
         registerRequest.setUsername("+85512345678");
         registerRequest.setPassword("Password@2023");
+        registerRequest.setLocale(locale);
 
         RequestWrapper<RegisterRequest> wrapper = new RequestWrapper<RegisterRequest>();
         wrapper.setRequestTime(IdentityProviderUtil.getUTCDateTime());
@@ -1281,7 +1288,7 @@ public class RegistrationControllerTest {
 
         RegisterResponse registerResponse = new RegisterResponse();
         registerResponse.setStatus(ActionStatus.PENDING);
-        when(registrationService.register(registerRequest, mockTransactionID, locale)).thenReturn(registerResponse);
+        when(registrationService.register(registerRequest, mockTransactionID)).thenReturn(registerResponse);
 
         mockMvc.perform(post("/registration/register")
                         .content(objectMapper.writeValueAsString(wrapper))

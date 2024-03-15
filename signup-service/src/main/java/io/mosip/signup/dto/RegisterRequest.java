@@ -25,4 +25,6 @@ public class RegisterRequest {
 
     @NotNull(message = ErrorConstants.INVALID_USERINFO)
     private @Valid UserInfoMap userInfo;
+
+    private String locale;
 }

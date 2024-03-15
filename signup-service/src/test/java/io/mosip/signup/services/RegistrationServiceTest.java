@@ -788,6 +788,7 @@ public class RegistrationServiceTest {
         registerRequest.setUsername("+855219718732");
         registerRequest.setPassword("123123");
         registerRequest.setConsent("AGREE");
+        registerRequest.setLocale(local);
 
         String mockTransactionID = "123456789";
 
@@ -832,7 +833,7 @@ public class RegistrationServiceTest {
         when(notificationHelper.sendSMSNotificationAsync(any(), any(), any(), any()))
                 .thenReturn(new CompletableFuture<>());
 
-        RegisterResponse registerResponse = registrationService.register(registerRequest, mockTransactionID, local);
+        RegisterResponse registerResponse = registrationService.register(registerRequest, mockTransactionID);
         Assert.assertNotNull(registerResponse);
         Assert.assertEquals("PENDING", registerResponse.getStatus());
     }
@@ -850,6 +851,7 @@ public class RegistrationServiceTest {
         registerRequest.setUsername("+855219718732");
         registerRequest.setPassword("123123");
         registerRequest.setConsent("AGREE");
+        registerRequest.setLocale(locale);
 
         String mockTransactionID = "123456789";
 
@@ -867,7 +869,7 @@ public class RegistrationServiceTest {
                 any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<>(null, HttpStatus.OK));
 
         try {
-            registrationService.register(registerRequest, mockTransactionID, locale);
+            registrationService.register(registerRequest, mockTransactionID);
             Assert.fail();
         } catch (SignUpException signUpException) {
             Assert.assertEquals(ErrorConstants.GET_UIN_FAILED, signUpException.getErrorCode());
@@ -886,6 +888,7 @@ public class RegistrationServiceTest {
         registerRequest.setUsername("+855219718732");
         registerRequest.setPassword("123123");
         registerRequest.setConsent("AGREE");
+        registerRequest.setLocale(locale);
 
         String mockTransactionID = "123456789";
 
@@ -908,7 +911,7 @@ public class RegistrationServiceTest {
                 any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<>(mockRestResponseWrapperUINResponse, HttpStatus.OK));
 
         try{
-            registrationService.register(registerRequest, mockTransactionID, locale);
+            registrationService.register(registerRequest, mockTransactionID);
             Assert.fail();
         }catch (SignUpException signUpException){
             Assert.assertEquals(ErrorConstants.GET_UIN_FAILED, signUpException.getErrorCode());
@@ -950,7 +953,7 @@ public class RegistrationServiceTest {
 
 
         try {
-            registrationService.register(registerRequest, mockTransactionID, locale);
+            registrationService.register(registerRequest, mockTransactionID);
             Assert.fail();
         } catch (SignUpException signUpException) {
             Assert.assertEquals("server_error", signUpException.getErrorCode());
@@ -969,6 +972,7 @@ public class RegistrationServiceTest {
         registerRequest.setUsername("+855219718732");
         registerRequest.setPassword("123123");
         registerRequest.setConsent("AGREE");
+        registerRequest.setLocale(locale);
 
         String mockTransactionID = "123456789";
 
@@ -989,7 +993,7 @@ public class RegistrationServiceTest {
                 any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<>(mockRestResponseWrapperUINResponse, HttpStatus.OK));
 
         try{
-            registrationService.register(registerRequest, mockTransactionID, locale);
+            registrationService.register(registerRequest, mockTransactionID);
             Assert.fail();
         }catch (SignUpException signUpException){
             Assert.assertEquals("get_uin_failed", signUpException.getErrorCode());
@@ -1008,6 +1012,7 @@ public class RegistrationServiceTest {
         registerRequest.setUsername("+855219718732");
         registerRequest.setPassword("123123");
         registerRequest.setConsent("AGREE");
+        registerRequest.setLocale(locale);
 
         String mockTransactionID = "123456789";
 
@@ -1038,7 +1043,7 @@ public class RegistrationServiceTest {
                 any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<>(null, HttpStatus.OK));
 
         try {
-            registrationService.register(registerRequest, mockTransactionID, locale);
+            registrationService.register(registerRequest, mockTransactionID);
             Assert.fail();
         } catch (SignUpException signUpException) {
             Assert.assertEquals(ErrorConstants.HASH_GENERATE_FAILED, signUpException.getErrorCode());
@@ -1057,6 +1062,7 @@ public class RegistrationServiceTest {
         registerRequest.setUsername("+855219718732");
         registerRequest.setPassword("123123");
         registerRequest.setConsent("AGREE");
+        registerRequest.setLocale(locale);
 
         String mockTransactionID = "123456789";
 
@@ -1091,7 +1097,7 @@ public class RegistrationServiceTest {
                 any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<>(mockRestResponseWrapperPasswordHash, HttpStatus.OK));
 
         try {
-            registrationService.register(registerRequest, mockTransactionID, locale);
+            registrationService.register(registerRequest, mockTransactionID);
             Assert.fail();
         } catch (SignUpException signUpException) {
             Assert.assertEquals("server_error", signUpException.getErrorCode());
@@ -1110,6 +1116,7 @@ public class RegistrationServiceTest {
         registerRequest.setUsername("+855219718732");
         registerRequest.setPassword("123123");
         registerRequest.setConsent("AGREE");
+        registerRequest.setLocale(locale);
 
         String mockTransactionID = "123456789";
 
@@ -1142,7 +1149,7 @@ public class RegistrationServiceTest {
                 any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<>(mockRestResponseWrapperPasswordHash, HttpStatus.OK));
 
         try{
-            registrationService.register(registerRequest, mockTransactionID, locale);
+            registrationService.register(registerRequest, mockTransactionID);
             Assert.fail();
         }catch (SignUpException signUpException){
             Assert.assertEquals("hash_generate_failed", signUpException.getErrorCode());
@@ -1161,6 +1168,7 @@ public class RegistrationServiceTest {
         registerRequest.setUsername("+855219718732");
         registerRequest.setPassword("123123");
         registerRequest.setConsent("AGREE");
+        registerRequest.setLocale(locale);
 
         String mockTransactionID = "123456789";
 
@@ -1196,7 +1204,7 @@ public class RegistrationServiceTest {
                 any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<>(mockRestResponseWrapperPasswordHash, HttpStatus.OK));
 
         try{
-            registrationService.register(registerRequest, mockTransactionID, locale);
+            registrationService.register(registerRequest, mockTransactionID);
             Assert.fail();
         }catch (SignUpException signUpException){
             Assert.assertEquals("hash_generate_failed", signUpException.getErrorCode());
@@ -1215,6 +1223,7 @@ public class RegistrationServiceTest {
         registerRequest.setUsername("+855219718732");
         registerRequest.setPassword("123123");
         registerRequest.setConsent("AGREE");
+        registerRequest.setLocale(locale);
 
         String mockTransactionID = "123456789";
 
@@ -1250,7 +1259,7 @@ public class RegistrationServiceTest {
                 any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<>(mockRestResponseWrapperPasswordHash, HttpStatus.OK));
 
         try{
-            registrationService.register(registerRequest, mockTransactionID, locale);
+            registrationService.register(registerRequest, mockTransactionID);
             Assert.fail();
         }catch (SignUpException signUpException){
             Assert.assertEquals("hash_generate_failed", signUpException.getErrorCode());
@@ -1269,6 +1278,7 @@ public class RegistrationServiceTest {
         registerRequest.setUsername("+855219718732");
         registerRequest.setPassword("123123");
         registerRequest.setConsent("AGREE");
+        registerRequest.setLocale(locale);
 
         String mockTransactionID = "123456789";
 
@@ -1309,7 +1319,7 @@ public class RegistrationServiceTest {
                 any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<>(null, HttpStatus.OK));
 
         try {
-            registrationService.register(registerRequest, mockTransactionID, locale);
+            registrationService.register(registerRequest, mockTransactionID);
             Assert.fail();
         } catch (SignUpException signUpException) {
             Assert.assertEquals("add_identity_failed", signUpException.getMessage());
@@ -1328,6 +1338,7 @@ public class RegistrationServiceTest {
         registerRequest.setUsername("+855219718732");
         registerRequest.setPassword("123123");
         registerRequest.setConsent("AGREE");
+        registerRequest.setLocale(locale);
 
         String mockTransactionID = "123456789";
 
@@ -1370,7 +1381,7 @@ public class RegistrationServiceTest {
                 any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<>(mockRestResponseWrapperIdentityResponse, HttpStatus.OK));
 
         try{
-            registrationService.register(registerRequest, mockTransactionID, locale);
+            registrationService.register(registerRequest, mockTransactionID);
             Assert.fail();
         }catch (SignUpException signUpException){
             Assert.assertEquals("add_identity_failed", signUpException.getErrorCode());
@@ -1389,6 +1400,7 @@ public class RegistrationServiceTest {
         registerRequest.setUsername("+855219718732");
         registerRequest.setPassword("123123");
         registerRequest.setConsent("AGREE");
+        registerRequest.setLocale(locale);
 
         String mockTransactionID = "123456789";
 
@@ -1433,7 +1445,7 @@ public class RegistrationServiceTest {
                 any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<>(mockRestResponseWrapperIdentityResponse, HttpStatus.OK));
 
         try {
-            registrationService.register(registerRequest, mockTransactionID, locale);
+            registrationService.register(registerRequest, mockTransactionID);
             Assert.fail();
         } catch (SignUpException signUpException) {
             Assert.assertEquals("server_error", signUpException.getErrorCode());
@@ -1452,6 +1464,7 @@ public class RegistrationServiceTest {
         registerRequest.setUsername("+855219718732");
         registerRequest.setPassword("123123");
         registerRequest.setConsent("AGREE");
+        registerRequest.setLocale(locale);
 
         String mockTransactionID = "123456789";
 
@@ -1495,7 +1508,7 @@ public class RegistrationServiceTest {
                 .thenReturn(new ResponseEntity<>(mockRestResponseWrapperIdentityResponse, HttpStatus.OK));
 
         try{
-            registrationService.register(registerRequest, mockTransactionID, locale);
+            registrationService.register(registerRequest, mockTransactionID);
             Assert.fail();
         }catch (SignUpException signUpException){
             Assert.assertEquals("add_identity_failed", signUpException.getErrorCode());
@@ -1514,11 +1527,12 @@ public class RegistrationServiceTest {
         registerRequest.setUsername("+855219718732");
         registerRequest.setPassword("123123");
         registerRequest.setConsent("AGREE");
+        registerRequest.setLocale(locale);
 
         String mockTransactionID = "123456789";
 
         try {
-            registrationService.register(registerRequest, mockTransactionID, locale);
+            registrationService.register(registerRequest, mockTransactionID);
             Assert.fail();
         } catch (InvalidTransactionException invalidTransactionException) {
             Assert.assertEquals("invalid_transaction", invalidTransactionException.getErrorCode());
@@ -1537,6 +1551,7 @@ public class RegistrationServiceTest {
         registerRequest.setUsername("+855321444123");
         registerRequest.setPassword("123123");
         registerRequest.setConsent("AGREE");
+        registerRequest.setLocale(locale);
 
         String mockTransactionID = "123456789";
 
@@ -1548,7 +1563,7 @@ public class RegistrationServiceTest {
                 .thenReturn(mockRegistrationTransaction);
 
         try {
-            registrationService.register(registerRequest, mockTransactionID, locale);
+            registrationService.register(registerRequest, mockTransactionID);
             Assert.fail();
         } catch (SignUpException signUpException) {
             Assert.assertEquals(ErrorConstants.IDENTIFIER_MISMATCH, signUpException.getErrorCode());
@@ -1567,6 +1582,7 @@ public class RegistrationServiceTest {
         registerRequest.setUsername("+855219718732");
         registerRequest.setPassword("123123");
         registerRequest.setConsent("DISAGREE");
+        registerRequest.setLocale(locale);
 
         String mockTransactionID = "123456789";
 
@@ -1578,7 +1594,7 @@ public class RegistrationServiceTest {
                 .thenReturn(mockRegistrationTransaction);
 
         try {
-            registrationService.register(registerRequest, mockTransactionID, locale);
+            registrationService.register(registerRequest, mockTransactionID);
             Assert.fail();
         } catch (SignUpException signUpException) {
             Assert.assertEquals("consent_required", signUpException.getErrorCode());
@@ -1597,6 +1613,7 @@ public class RegistrationServiceTest {
         registerRequest.setUsername("+855219718732");
         registerRequest.setPassword("123123");
         registerRequest.setConsent("DISAGREE");
+        registerRequest.setLocale(locale);
 
         String mockTransactionID = "123456789";
 
@@ -1610,7 +1627,7 @@ public class RegistrationServiceTest {
                 new SignUpException(ErrorConstants.UNSUPPORTED_PURPOSE));
 
         try {
-            registrationService.register(registerRequest, mockTransactionID, locale);
+            registrationService.register(registerRequest, mockTransactionID);
             Assert.fail();
         } catch (SignUpException ex) {
             Assert.assertEquals(ErrorConstants.UNSUPPORTED_PURPOSE, ex.getErrorCode());
