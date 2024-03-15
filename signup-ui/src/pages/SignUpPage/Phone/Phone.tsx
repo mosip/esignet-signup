@@ -39,6 +39,7 @@ import {
   GenerateChallengeRequestDto,
   SettingsDto,
 } from "~typings/types";
+import { langCodeMappingSelector, useLanguageStore } from "~/useLanguageStore";
 
 import { SignUpForm, signUpFormDefaultValues } from "../SignUpPage";
 import {
@@ -63,6 +64,16 @@ export const Phone = ({ settings, methods }: PhoneProps) => {
       []
     )
   );
+
+  const { langCodeMapping } = useLanguageStore(
+    useCallback(
+      (state) => ({
+        langCodeMapping: langCodeMappingSelector(state),
+      }),
+      []
+    )
+  );
+
   const [hasError, setHasError] = useState<boolean>(false);
   const { control, setValue, getValues } = useFormContext();
   const { generateChallengeMutation } = useGenerateChallenge();
@@ -123,7 +134,7 @@ export const Phone = ({ settings, methods }: PhoneProps) => {
               settings.response.configs["identifier.prefix"]
             }${getValues("phone")}`,
             captchaToken: getValues("captchaToken"),
-            locale: getLocale(i18n.language),
+            locale: getLocale(i18n.language, langCodeMapping),
             regenerate: false,
             purpose: "REGISTRATION",
           },

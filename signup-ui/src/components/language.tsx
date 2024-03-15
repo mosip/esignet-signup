@@ -1,14 +1,29 @@
+import { useCallback } from "react";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { useTranslation } from "react-i18next";
 
 import { ReactComponent as TranslationIcon } from "~assets/svg/translation-icon.svg";
-import { langFontMapping, languages_2Letters } from "~constants/language";
 import { cn } from "~utils/cn";
+import {
+  langFontMappingSelector,
+  languages2LettersSelector,
+  useLanguageStore,
+} from "~/useLanguageStore";
 
 import { Icons } from "./ui/icons";
 
 export const Language = () => {
   const { i18n } = useTranslation();
+  const { languages_2Letters, langFontMapping } = useLanguageStore(
+    useCallback(
+      (state) => ({
+        languages_2Letters: languages2LettersSelector(state),
+        langFontMapping: langFontMappingSelector(state),
+      }),
+      []
+    )
+  );
+
   const ui_locales = "ui_locales";
 
   const handleLanguageChange = (language: string) => {

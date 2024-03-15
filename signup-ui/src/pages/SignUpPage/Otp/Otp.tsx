@@ -31,6 +31,7 @@ import {
   SettingsDto,
   VerifyChallengeRequestDto,
 } from "~typings/types";
+import { langCodeMappingSelector, useLanguageStore } from "~/useLanguageStore";
 
 import { SignUpForm, signUpFormDefaultValues } from "../SignUpPage";
 import {
@@ -57,6 +58,14 @@ export const Otp = ({ methods, settings }: OtpProps) => {
         step: stepSelector(state),
         setStep: setStepSelector(state),
         setCriticalError: setCriticalErrorSelector(state),
+      }),
+      []
+    )
+  );
+  const { langCodeMapping } = useLanguageStore(
+    useCallback(
+      (state) => ({
+        langCodeMapping: langCodeMappingSelector(state),
       }),
       []
     )
@@ -153,7 +162,7 @@ export const Otp = ({ methods, settings }: OtpProps) => {
               settings.response.configs["identifier.prefix"]
             }${getValues("phone")}`,
             captchaToken: getValues("captchaToken"),
-            locale: getLocale(i18n.language),
+            locale: getLocale(i18n.language, langCodeMapping),
             regenerate: true,
             purpose: "REGISTRATION",
           },

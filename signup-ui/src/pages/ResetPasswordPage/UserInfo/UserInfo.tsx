@@ -43,6 +43,7 @@ import {
   ResetPasswordForm,
   SettingsDto,
 } from "~typings/types";
+import { langCodeMappingSelector, useLanguageStore } from "~/useLanguageStore";
 
 import { resetPasswordFormDefaultValues } from "../ResetPasswordPage";
 import {
@@ -84,6 +85,16 @@ export const UserInfo = ({ settings, methods }: UserInfoProps) => {
       []
     )
   );
+
+  const { langCodeMapping } = useLanguageStore(
+    useCallback(
+      (state) => ({
+        langCodeMapping: langCodeMappingSelector(state),
+      }),
+      []
+    )
+  );
+
   const { generateChallengeMutation } = useGenerateChallenge();
 
   const handleReCaptchaChange = (token: string | null) => {
@@ -130,7 +141,7 @@ export const UserInfo = ({ settings, methods }: UserInfoProps) => {
             }${getValues("username")}`,
             fullname: getValues("fullname"),
             captchaToken: getValues("captchaToken"),
-            locale: getLocale(i18n.language),
+            locale: getLocale(i18n.language, langCodeMapping),
             regenerate: false,
             purpose: "RESET_PASSWORD",
           },
