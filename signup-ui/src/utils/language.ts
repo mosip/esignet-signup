@@ -1,6 +1,6 @@
-import { langCodeMapping } from "~constants/language";
+import { StringMap } from "~constants/types";
 
-export const getLocale = (currentLang: string) => {
+export const getLocale = (currentLang: string, langCodeMapping: StringMap) => {
   return (
     Object.keys(langCodeMapping).find(
       (key) =>
