@@ -264,7 +264,7 @@ public class RegistrationService {
     }
 
     public RegistrationStatusResponse updatePassword(ResetPasswordRequest resetPasswordRequest,
-                                           String transactionId, String locale) throws SignUpException{
+                                           String transactionId) throws SignUpException{
 
         log.debug("Transaction {} : start reset password", transactionId);
         RegistrationTransaction transaction = cacheUtilService.getChallengeVerifiedTransaction(transactionId);
@@ -324,7 +324,7 @@ public class RegistrationService {
         transaction.setRegistrationStatus(RegistrationStatus.PENDING);
         cacheUtilService.setStatusCheckTransaction(transactionId, transaction);
 
-        notificationHelper.sendSMSNotificationAsync(resetPasswordRequest.getIdentifier(), locale,
+        notificationHelper.sendSMSNotificationAsync(resetPasswordRequest.getIdentifier(), resetPasswordRequest.getLocale(),
                         FORGOT_PASSWORD_SMS_NOTIFICATION_TEMPLATE_KEY, null)
                 .thenAccept(notificationResponseRestResponseWrapper ->
                     log.debug(notificationLogging, notificationResponseRestResponseWrapper)

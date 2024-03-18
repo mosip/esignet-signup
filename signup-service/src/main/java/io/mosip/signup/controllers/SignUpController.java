@@ -48,11 +48,10 @@ public class SignUpController {
     @PostMapping("/reset-password")
     public ResponseWrapper<RegistrationStatusResponse> resetPassword(@Valid @RequestBody RequestWrapper<ResetPasswordRequest> requestWrapper,
                                                                      @Valid @NotBlank(message = ErrorConstants.INVALID_TRANSACTION)
-                                                                     @RequestHeader(name = "Locale") String locale,
                                                                      @CookieValue(value = SignUpConstants.VERIFIED_TRANSACTION_ID, defaultValue = EMTPY) String transactionId){
         ResponseWrapper<RegistrationStatusResponse> responseWrapper = new ResponseWrapper<>();
         try{
-            responseWrapper.setResponse(registrationService.updatePassword(requestWrapper.getRequest(), transactionId, locale));
+            responseWrapper.setResponse(registrationService.updatePassword(requestWrapper.getRequest(), transactionId));
         }catch (SignUpException signUpException){
             auditHelper.sendAuditTransaction(AuditEvent.RESET_PASSWORD, AuditEventType.ERROR, transactionId, signUpException);
             throw signUpException;

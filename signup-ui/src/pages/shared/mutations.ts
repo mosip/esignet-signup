@@ -67,7 +67,7 @@ export const useRegister = () => {
     mutationKey: keys.registration,
     mutationFn: (registrationRequestDto: RegistrationRequestDto) =>{
       registrationRequestDto.request.locale = locale
-      register(registrationRequestDto)},
+      return register(registrationRequestDto)},
     gcTime: Infinity,
   });
 
@@ -86,7 +86,7 @@ export const useResetPassword = () => {
     mutationKey: keys.resetPassword,
     mutationFn: (resetPasswordRequestDto: ResetPasswordRequestDto) => {
         resetPasswordRequestDto.request.locale = locale
-        resetPassword(resetPasswordRequestDto)},
+        return resetPassword(resetPasswordRequestDto)},
     gcTime: Infinity,
   });
 

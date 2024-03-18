@@ -12,4 +12,6 @@ public class ResetPasswordRequest {
 
     @Password
     private String password;
+
+    private String locale;
 }

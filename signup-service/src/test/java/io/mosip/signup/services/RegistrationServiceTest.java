@@ -1980,6 +1980,7 @@ public class RegistrationServiceTest {
         ResetPasswordRequest resetPasswordRequest = new ResetPasswordRequest();
         resetPasswordRequest.setPassword("Password@2002");
         resetPasswordRequest.setIdentifier("+85512345678");
+        resetPasswordRequest.setLocale(locale);
 
         RegistrationTransaction transaction = new RegistrationTransaction(resetPasswordRequest.getIdentifier(),
                 Purpose.RESET_PASSWORD);
@@ -2015,7 +2016,7 @@ public class RegistrationServiceTest {
                 .thenReturn(new CompletableFuture<>());
 
         RegistrationStatusResponse registrationStatusResponse = registrationService.updatePassword(resetPasswordRequest,
-                verifiedTransactionId, locale);
+                verifiedTransactionId);
         Assert.assertEquals(RegistrationStatus.PENDING, registrationStatusResponse.getStatus());
     }
 
@@ -2026,9 +2027,10 @@ public class RegistrationServiceTest {
         ResetPasswordRequest resetPasswordRequest = new ResetPasswordRequest();
         resetPasswordRequest.setPassword("Password@2002");
         resetPasswordRequest.setIdentifier("+85512345678");
+        resetPasswordRequest.setLocale(locale);
 
         try {
-            registrationService.updatePassword(resetPasswordRequest, verifiedTransactionId, locale);
+            registrationService.updatePassword(resetPasswordRequest, verifiedTransactionId);
             Assert.fail();
         } catch (SignUpException signUpException) {
             Assert.assertEquals("invalid_transaction", signUpException.getErrorCode());
@@ -2042,13 +2044,14 @@ public class RegistrationServiceTest {
         ResetPasswordRequest resetPasswordRequest = new ResetPasswordRequest();
         resetPasswordRequest.setPassword("Password@2002");
         resetPasswordRequest.setIdentifier("+85512345678");
+        resetPasswordRequest.setLocale(locale);
 
         RegistrationTransaction transaction = new RegistrationTransaction("****", Purpose.RESET_PASSWORD);
         transaction.setUin("mockUin");
         when(cacheUtilService.getChallengeVerifiedTransaction(verifiedTransactionId)).thenReturn(transaction);
 
         try {
-            registrationService.updatePassword(resetPasswordRequest, verifiedTransactionId, locale);
+            registrationService.updatePassword(resetPasswordRequest, verifiedTransactionId);
             Assert.fail();
         } catch (SignUpException signUpException) {
             Assert.assertEquals("identifier_mismatch", signUpException.getErrorCode());
@@ -2062,6 +2065,7 @@ public class RegistrationServiceTest {
         ResetPasswordRequest resetPasswordRequest = new ResetPasswordRequest();
         resetPasswordRequest.setPassword("Password@2002");
         resetPasswordRequest.setIdentifier("+85512345678");
+        resetPasswordRequest.setLocale(locale);
 
         RegistrationTransaction transaction = new RegistrationTransaction(resetPasswordRequest.getIdentifier(),
                 Purpose.RESET_PASSWORD);
@@ -2088,7 +2092,7 @@ public class RegistrationServiceTest {
                 .thenReturn(new ResponseEntity<>(null, HttpStatus.OK));
 
         try {
-            registrationService.updatePassword(resetPasswordRequest, verifiedTransactionId, locale);
+            registrationService.updatePassword(resetPasswordRequest, verifiedTransactionId);
             Assert.fail();
         } catch (SignUpException signUpException) {
             Assert.assertEquals("reset_pwd_failed", signUpException.getErrorCode());
@@ -2102,6 +2106,7 @@ public class RegistrationServiceTest {
         ResetPasswordRequest resetPasswordRequest = new ResetPasswordRequest();
         resetPasswordRequest.setPassword("Password@2002");
         resetPasswordRequest.setIdentifier("+85512345678");
+        resetPasswordRequest.setLocale(locale);
 
         RegistrationTransaction transaction = new RegistrationTransaction(resetPasswordRequest.getIdentifier(),
                 Purpose.RESET_PASSWORD);
@@ -2131,7 +2136,7 @@ public class RegistrationServiceTest {
                 .thenReturn(new ResponseEntity<>(mockIdentityResponseRestResponseWrapper, HttpStatus.OK));
 
         try {
-            registrationService.updatePassword(resetPasswordRequest, verifiedTransactionId, locale);
+            registrationService.updatePassword(resetPasswordRequest, verifiedTransactionId);
             Assert.fail();
         } catch (SignUpException signUpException) {
             Assert.assertEquals("reset_pwd_failed", signUpException.getErrorCode());
@@ -2144,6 +2149,7 @@ public class RegistrationServiceTest {
         ResetPasswordRequest resetPasswordRequest = new ResetPasswordRequest();
         resetPasswordRequest.setPassword("Password@2002");
         resetPasswordRequest.setIdentifier("+85512345678");
+        resetPasswordRequest.setLocale(locale);
 
         RegistrationTransaction transaction = new RegistrationTransaction(resetPasswordRequest.getIdentifier(),
                 Purpose.RESET_PASSWORD);
@@ -2178,7 +2184,7 @@ public class RegistrationServiceTest {
 
 
         try {
-            registrationService.updatePassword(resetPasswordRequest, verifiedTransactionId, locale);
+            registrationService.updatePassword(resetPasswordRequest, verifiedTransactionId);
             Assert.fail();
         } catch (SignUpException signUpException) {
             Assert.assertEquals("error_from_another_service", signUpException.getErrorCode());

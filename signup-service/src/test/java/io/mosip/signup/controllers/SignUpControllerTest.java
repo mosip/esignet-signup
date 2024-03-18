@@ -90,7 +90,7 @@ public class SignUpControllerTest {
         RegistrationStatusResponse registrationStatusResponse = new RegistrationStatusResponse();
         registrationStatusResponse.setStatus(RegistrationStatus.PENDING);
 
-        when(registrationService.updatePassword(any(), any(), any())).thenReturn(registrationStatusResponse);
+        when(registrationService.updatePassword(any(), any())).thenReturn(registrationStatusResponse);
 
         mockMvc.perform(post("/reset-password")
                         .header("locale", "khm")
@@ -161,7 +161,7 @@ public class SignUpControllerTest {
         RegistrationStatusResponse registrationStatusResponse = new RegistrationStatusResponse();
         registrationStatusResponse.setStatus(RegistrationStatus.PENDING);
 
-        when(registrationService.updatePassword(any(), any(), any())).thenReturn(registrationStatusResponse);
+        when(registrationService.updatePassword(any(), any())).thenReturn(registrationStatusResponse);
 
         mockMvc.perform(post("/reset-password")
                         .content(objectMapper.writeValueAsString(resetPasswordWrapper))
@@ -188,7 +188,7 @@ public class SignUpControllerTest {
         RegistrationStatusResponse registrationStatusResponse = new RegistrationStatusResponse();
         registrationStatusResponse.setStatus(RegistrationStatus.PENDING);
 
-        when(registrationService.updatePassword(any(), any(), any())).thenReturn(registrationStatusResponse);
+        when(registrationService.updatePassword(any(), any())).thenReturn(registrationStatusResponse);
 
         mockMvc.perform(post("/reset-password")
                         .content(objectMapper.writeValueAsString(resetPasswordWrapper))
@@ -224,7 +224,7 @@ public class SignUpControllerTest {
         RegistrationStatusResponse registrationStatusResponse = new RegistrationStatusResponse();
         registrationStatusResponse.setStatus(RegistrationStatus.PENDING);
 
-        when(registrationService.updatePassword(any(), any(), any())).thenReturn(registrationStatusResponse);
+        when(registrationService.updatePassword(any(), any())).thenReturn(registrationStatusResponse);
 
         mockMvc.perform(post("/reset-password")
                         .content(objectMapper.writeValueAsString(resetPasswordWrapper))
@@ -251,7 +251,7 @@ public class SignUpControllerTest {
         RegistrationStatusResponse registrationStatusResponse = new RegistrationStatusResponse();
         registrationStatusResponse.setStatus(RegistrationStatus.PENDING);
 
-        when(registrationService.updatePassword(any(), any(), any())).thenReturn(registrationStatusResponse);
+        when(registrationService.updatePassword(any(), any())).thenReturn(registrationStatusResponse);
 
         mockMvc.perform(post("/reset-password")
                         .content(objectMapper.writeValueAsString(resetPasswordWrapper))
@@ -278,7 +278,7 @@ public class SignUpControllerTest {
         RegistrationStatusResponse registrationStatusResponse = new RegistrationStatusResponse();
         registrationStatusResponse.setStatus(RegistrationStatus.PENDING);
 
-        when(registrationService.updatePassword(any(), any(), any())).thenReturn(registrationStatusResponse);
+        when(registrationService.updatePassword(any(), any())).thenReturn(registrationStatusResponse);
 
         mockMvc.perform(post("/reset-password")
                         .content(objectMapper.writeValueAsString(resetPasswordWrapper))
