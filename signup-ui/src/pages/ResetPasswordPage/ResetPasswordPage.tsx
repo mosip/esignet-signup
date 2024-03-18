@@ -152,7 +152,7 @@ export const ResetPasswordPage = ({ settings }: ResetPasswordPageProps) => {
           criticalError.errorCode
         ) && <ResetPasswordPopover />}
       <Form {...methods}>
-        <form>{getResetPasswordContent(step)}</form>
+        <form noValidate>{getResetPasswordContent(step)}</form>
       </Form>
     </>
   );
