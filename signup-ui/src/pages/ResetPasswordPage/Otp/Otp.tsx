@@ -34,6 +34,7 @@ import {
   SettingsDto,
   VerifyChallengeRequestDto,
 } from "~typings/types";
+import { langCodeMappingSelector, useLanguageStore } from "~/useLanguageStore";
 
 import { resetPasswordFormDefaultValues } from "../ResetPasswordPage";
 import {
@@ -64,6 +65,16 @@ export const Otp = ({ methods, settings }: OtpProps) => {
       []
     )
   );
+
+  const { langCodeMapping } = useLanguageStore(
+    useCallback(
+      (state) => ({
+        langCodeMapping: langCodeMappingSelector(state),
+      }),
+      []
+    )
+  );
+
   const { trigger, reset, formState, resetField } = methods;
   const [resendAttempts, setResendAttempts] = useState<number>(0);
   const { generateChallengeMutation } = useGenerateChallenge();
@@ -156,7 +167,7 @@ export const Otp = ({ methods, settings }: OtpProps) => {
             }${getValues("username")}`,
             fullname: getValues("fullname"),
             captchaToken: getValues("captchaToken"),
-            locale: getLocale(i18n.language),
+            locale: getLocale(i18n.language, langCodeMapping),
             regenerate: true,
             purpose: "RESET_PASSWORD",
           },
