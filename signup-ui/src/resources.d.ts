@@ -106,6 +106,10 @@ interface Resources {
       reset_pwd_failed: string;
       identifier_blocked: string;
       unsupported_purpose: string;
+      otp_notification_failed: string;
+      otp_server_down: string;
+      registration_failed: string;
+      request_failed: string;
     };
   };
 }
