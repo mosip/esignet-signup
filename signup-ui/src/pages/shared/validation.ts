@@ -38,7 +38,6 @@ export const validateOtp = (settings: SettingsDto) =>
 export const validatePassword = (settings: SettingsDto) =>
   yup
     .string()
-    .trim()
     .matches(new RegExp(settings.response.configs["password.pattern"]), {
       message: "password_validation",
       excludeEmptyString: true,
@@ -51,7 +50,6 @@ export const validateConfirmPassword = (
 ) =>
   yup
     .string()
-    .trim()
     .matches(new RegExp(settings.response.configs["password.pattern"]), {
       message: "password_validation",
       excludeEmptyString: true,
