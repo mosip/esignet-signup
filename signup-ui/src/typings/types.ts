@@ -116,6 +116,7 @@ export interface SettingsConfig {
   "fullname.allowed.characters": string;
   "fullname.length.min": number;
   "fullname.length.max": number;
+  "send-challenge.captcha.required": boolean;
 }
 
 export interface Settings {

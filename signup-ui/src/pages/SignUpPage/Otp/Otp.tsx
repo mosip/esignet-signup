@@ -36,6 +36,7 @@ import { langCodeMappingSelector, useLanguageStore } from "~/useLanguageStore";
 import { SignUpForm, signUpFormDefaultValues } from "../SignUpPage";
 import {
   setCriticalErrorSelector,
+  setResendOtpSelector,
   setStepSelector,
   SignUpStep,
   stepSelector,
@@ -52,12 +53,13 @@ export const Otp = ({ methods, settings }: OtpProps) => {
 
   const pinInputRef = useRef<PinInput | null>(null);
   const { control, getValues, setValue } = useFormContext();
-  const { step, setStep, setCriticalError } = useSignUpStore(
+  const { step, setStep, setCriticalError, setResendOtp } = useSignUpStore(
     useCallback(
       (state) => ({
         step: stepSelector(state),
         setStep: setStepSelector(state),
         setCriticalError: setCriticalErrorSelector(state),
+        setResendOtp: setResendOtpSelector(state),
       }),
       []
     )
@@ -72,6 +74,7 @@ export const Otp = ({ methods, settings }: OtpProps) => {
   );
   const { trigger, reset, resetField, formState } = methods;
   const [resendAttempts, setResendAttempts] = useState<number>(0);
+  const [captchaRequired, setCaptchaRequired] = useState<boolean>(false);
   const { generateChallengeMutation } = useGenerateChallenge();
   const { verifyChallengeMutation } = useVerifyChallenge();
   const [challengeVerificationError, setChallengeVerificationError] =
@@ -124,6 +127,7 @@ export const Otp = ({ methods, settings }: OtpProps) => {
 
   useEffect(() => {
     setResendAttempts(settings.response.configs["resend.attempts"]);
+    setCaptchaRequired(settings.response.configs["send-challenge.captcha.required"]);
   }, [settings.response.configs]);
 
   useEffect(() => {
@@ -154,7 +158,11 @@ export const Otp = ({ methods, settings }: OtpProps) => {
       e.preventDefault();
       if (settings?.response.configs && resendAttempts > 0) {
         setChallengeVerificationError(null);
-
+        if (captchaRequired) {
+          handleBack();
+          setResendOtp(true);
+        }
+        else {
         const generateChallengeRequestDto: GenerateChallengeRequestDto = {
           requestTime: new Date().toISOString(),
           request: {
@@ -189,6 +197,7 @@ export const Otp = ({ methods, settings }: OtpProps) => {
             }
           },
         });
+      }
       }
     },
     [

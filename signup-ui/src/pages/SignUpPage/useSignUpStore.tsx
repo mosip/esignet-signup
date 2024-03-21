@@ -18,6 +18,8 @@ export type SignUpStore = {
   setStep: (step: SignUpStep) => void;
   criticalError: Error | null;
   setCriticalError: (criticalError: Error | null) => void;
+  resendOtp: boolean;
+  setResendOtp: (resendOtp: boolean) => void;
 };
 
 export const useSignUpStore = create<SignUpStore>()(
@@ -34,6 +36,12 @@ export const useSignUpStore = create<SignUpStore>()(
       if (isEqual(current.criticalError, criticalError)) return;
       set((state) => ({ criticalError }));
     },
+    resendOtp: false,
+    setResendOtp: (resendOtp: boolean) => {
+      const current = get();
+      if (isEqual(current.resendOtp, resendOtp)) return;
+      set((state) => ({ resendOtp }));
+    },
   }))
 );
 
@@ -42,6 +50,12 @@ export const stepSelector = (state: SignUpStore): SignUpStore["step"] =>
 
 export const setStepSelector = (state: SignUpStore): SignUpStore["setStep"] =>
   state.setStep;
+
+export const resendOtpSelector = (state: SignUpStore): SignUpStore["resendOtp"] =>
+  state.resendOtp;
+
+export const setResendOtpSelector = (state: SignUpStore): SignUpStore["setResendOtp"] =>
+  state.setResendOtp;
 
 export const criticalErrorSelector = (
   state: SignUpStore
