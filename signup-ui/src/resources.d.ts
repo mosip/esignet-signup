@@ -81,6 +81,7 @@ interface Resources {
     privacy_and_policy_title: string;
     signup_discontinue_prompt: string;
     reset_password_discontinue_prompt: string;
+    captcha_required: string;
     footer: {
       powered_by: string;
     };
@@ -106,6 +107,7 @@ interface Resources {
       reset_pwd_failed: string;
       identifier_blocked: string;
       unsupported_purpose: string;
+      otp_notification_failed: string;
     };
   };
 }

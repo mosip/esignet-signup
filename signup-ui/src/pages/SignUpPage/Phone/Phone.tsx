@@ -43,7 +43,9 @@ import { langCodeMappingSelector, useLanguageStore } from "~/useLanguageStore";
 
 import { SignUpForm, signUpFormDefaultValues } from "../SignUpPage";
 import {
+  resendOtpSelector,
   setCriticalErrorSelector,
+  setResendOtpSelector,
   setStepSelector,
   SignUpStep,
   useSignUpStore,
@@ -55,11 +57,13 @@ interface PhoneProps {
 }
 export const Phone = ({ settings, methods }: PhoneProps) => {
   const { i18n, t } = useTranslation();
-  const { setStep, setCriticalError } = useSignUpStore(
+  const { setStep, setCriticalError, resendOtp, setResendOtp } = useSignUpStore(
     useCallback(
       (state) => ({
         setStep: setStepSelector(state),
         setCriticalError: setCriticalErrorSelector(state),
+        resendOtp: resendOtpSelector(state),
+        setResendOtp: setResendOtpSelector(state),
       }),
       []
     )
@@ -153,6 +157,7 @@ export const Phone = ({ settings, methods }: PhoneProps) => {
 
             if (response && errors.length === 0) {
               setStep(SignUpStep.Otp);
+              setResendOtp(false);
             }
           },
           onError: () => {
@@ -180,9 +185,13 @@ export const Phone = ({ settings, methods }: PhoneProps) => {
               <Icons.back />
             </a>
           )}
+          {resendOtp ? 
+          <div className="grow px-3 xs:px-2 text-center font-semibold tracking-normal">
+            {t("captcha_required")}
+          </div> :
           <div className="grow px-3 xs:px-2 text-center font-semibold tracking-normal">
             {t("enter_your_number")}
-          </div>
+          </div>}
         </StepTitle>
       </StepHeader>
       <StepDivider />
@@ -235,6 +244,7 @@ export const Phone = ({ settings, methods }: PhoneProps) => {
                               settings.response.configs["identifier.length.max"]
                             }
                             onKeyDown={handleUsernameInput}
+                            disabled={resendOtp}
                           />
                         </div>
                       </div>
