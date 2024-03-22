@@ -151,6 +151,7 @@ export const Otp = ({ methods, settings }: OtpProps) => {
 
   const handleOtpChange = (otp: string) => {
     setValue("otp", otp, { shouldValidate: true, shouldTouch: true });
+    setChallengeVerificationError(null);
   };
 
   const handleResendOtp = useCallback(
