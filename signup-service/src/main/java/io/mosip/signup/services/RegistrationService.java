@@ -142,7 +142,7 @@ public class RegistrationService {
         if(cacheUtilService.isIdentifierBlocked(identifier))
             throw new SignUpException(ErrorConstants.IDENTIFIER_BLOCKED);
 
-        if(!generateChallengeRequest.isRegenerate()) {
+        if(!generateChallengeRequest.isRegeneratedChallenge()) {
             transactionId = IdentityProviderUtil.createTransactionId(null);
             transaction = new RegistrationTransaction(identifier, generateChallengeRequest.getPurpose());
             //Need to set cookie only when regenerate is false.
