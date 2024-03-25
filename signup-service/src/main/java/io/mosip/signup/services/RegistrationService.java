@@ -263,9 +263,8 @@ public class RegistrationService {
         return registration;
     }
 
-    public RegistrationStatusResponse updatePassword(ResetPasswordRequest resetPasswordRequest,
-                                           String transactionId) throws SignUpException{
-
+    private RegistrationTransaction getTransaction(
+            ResetPasswordRequest resetPasswordRequest, String transactionId) {
         log.debug("Transaction {} : start reset password", transactionId);
         RegistrationTransaction transaction = cacheUtilService.getChallengeVerifiedTransaction(transactionId);
         if(transaction == null) {
@@ -282,7 +281,11 @@ public class RegistrationService {
             log.error("reset password failed: purpose mismatch in transaction");
             throw new SignUpException(ErrorConstants.UNSUPPORTED_PURPOSE);
         }
+        return transaction;
+    }
 
+    private RestRequestWrapper getRestRequestWrapper(RegistrationTransaction transaction, String transactionId,
+                                 ResetPasswordRequest resetPasswordRequest ) {
         Identity identity = new Identity();
         identity.setUIN(cryptoHelper.symmetricDecrypt(transaction.getUin()));
         identity.setIDSchemaVersion(idSchemaVersion);
@@ -301,7 +304,10 @@ public class RegistrationService {
         restRequest.setRequesttime(IdentityProviderUtil.getUTCDateTime());
         restRequest.setRequest(identityRequest);
 
-        log.debug("Transaction {} : start reset password", transactionId);
+        return restRequest;
+    }
+
+    private void validateResetPasswordRequest(RestRequestWrapper restRequest, String transactionId ) {
         HttpEntity<RestRequestWrapper<IdentityRequest>> resReq = new HttpEntity<>(restRequest);
         RestResponseWrapper<IdentityResponse> restResponseWrapper = selfTokenRestTemplate.exchange(identityEndpoint,
                 HttpMethod.PATCH,
@@ -318,6 +324,15 @@ public class RegistrationService {
             log.error("Transaction {} : reset password failed with response {}", transactionId, restResponseWrapper);
             throw new SignUpException(ErrorConstants.RESET_PWD_FAILED);
         }
+    }
+
+    public RegistrationStatusResponse updatePassword(ResetPasswordRequest resetPasswordRequest,
+                                           String transactionId) throws SignUpException{
+        RegistrationTransaction transaction = this.getTransaction(resetPasswordRequest, transactionId);
+        RestRequestWrapper restRequest = this.getRestRequestWrapper(transaction, transactionId, resetPasswordRequest);
+
+        log.debug("Transaction {} : start reset password", transactionId);
+        this.validateResetPasswordRequest(restRequest, transactionId);
 
         transaction.getHandlesStatus().put(getHandleRequestId(transaction.getApplicationId(),
                 "phone", resetPasswordRequest.getIdentifier()), RegistrationStatus.PENDING);
