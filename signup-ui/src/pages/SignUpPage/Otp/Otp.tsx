@@ -331,7 +331,6 @@ export const Otp = ({ methods, settings }: OtpProps) => {
                   <PinInput
                     ref={handlePinInputRef}
                     length={settings.response.configs["otp.length"]}
-                    secret={settings.response.configs["otp.secret"]}
                     secretDelay={200}
                     focus
                     initialValue={field.value}
