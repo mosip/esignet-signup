@@ -14,18 +14,6 @@ chmod 775 $i18n_path/*
 
 cd $i18n_path
 unzip -o esignet-signup-i18n-bundle.zip
-rm esignet-signup-i18n-bundle.zip
-
-#theme bundle
-echo "Downloading theme bundle files"
-wget --no-check-certificate --no-cache --no-cookies $artifactory_url_env/artifactory/libs-release-local/theme/esignet-signup-theme.zip -O $theme_path/esignet-signup-theme.zip
-
-echo "unzip i18n bundle files.."
-chmod 775 $theme_path/*
-
-cd $theme_path
-unzip -o esignet-signup-theme.zip
-rm esignet-signup-theme.zip
 
 echo "Pre-requisites download completed."
 
