@@ -39,7 +39,7 @@ public class ChallengeManagerService {
         throw new SignUpException(ErrorConstants.UNSUPPORTED_CHALLENGE_TYPE);
     }
 
-    @Timed(value = "generateotp.api.timer", percentiles = {0.95, 0.99})
+    @Timed(value = "generateotp.api.timer", percentiles = {0.9, 0.99})
     private String generateOTPChallenge(String challengeTransactionId) {
         OtpRequest otpRequest = new OtpRequest();
         otpRequest.setKey(challengeTransactionId);

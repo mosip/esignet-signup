@@ -473,7 +473,7 @@ public class RegistrationService {
         addIdentity(identityRequest, transactionId);
     }
 
-    @Timed(value = "addidentity.api.timer", percentiles = {0.95, 0.99})
+    @Timed(value = "addidentity.api.timer", percentiles = {0.9, 0.99})
     private void addIdentity(IdentityRequest identityRequest, String transactionId) throws SignUpException{
 
         RestRequestWrapper<IdentityRequest> restRequest = new RestRequestWrapper<>();
@@ -499,7 +499,7 @@ public class RegistrationService {
                 restResponseWrapper.getErrors().get(0).getErrorCode() : ErrorConstants.ADD_IDENTITY_FAILED);
     }
 
-    @Timed(value = "generatehash.api.timer", percentiles = {0.95, 0.99})
+    @Timed(value = "generatehash.api.timer", percentiles = {0.9, 0.99})
     private Password generateSaltedHash(String password, String transactionId) throws SignUpException{
 
         RestRequestWrapper<Password.PasswordPlaintext> restRequestWrapper = new RestRequestWrapper<>();
@@ -522,7 +522,7 @@ public class RegistrationService {
                 restResponseWrapper.getErrors().get(0).getErrorCode() : ErrorConstants.HASH_GENERATE_FAILED);
     }
 
-    @Timed(value = "getuin.api.timer", percentiles = {0.95, 0.99})
+    @Timed(value = "getuin.api.timer", percentiles = {0.9, 0.99})
     private String getUniqueIdentifier(String transactionId) throws SignUpException {
 
         RestResponseWrapper<UINResponse> restResponseWrapper = selfTokenRestTemplate.exchange(getUinEndpoint,
@@ -567,7 +567,7 @@ public class RegistrationService {
         }
     }
 
-    @Timed(value = "getstatus.api.timer", percentiles = {0.95, 0.99})
+    @Timed(value = "getstatus.api.timer", percentiles = {0.9, 0.99})
     private RegistrationStatus getRegistrationStatusFromServer(String applicationId) {
         RestResponseWrapper<Map<String,String>> restResponseWrapper = selfTokenRestTemplate.exchange(getRegistrationStatusEndpoint,
                 HttpMethod.GET, null,
