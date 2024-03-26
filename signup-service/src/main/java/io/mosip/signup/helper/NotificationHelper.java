@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Base64;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
@@ -33,11 +34,13 @@ public class NotificationHelper {
     @Value("${mosip.signup.send-notification.endpoint}")
     private String sendNotificationEndpoint;
 
+    @Value("#{${mosip.signup.supported-languages}}")
+    private List<String> supportedLanguages;
     public RestResponseWrapper<NotificationResponse> sendSMSNotification
             (String number, String locale, String templateKey, Map<String, String> params){
 
-        locale = locale != null ? locale : "khm";
-        String message = locale.equalsIgnoreCase("eng") ?
+        locale = locale != null ? locale : supportedLanguages.get(0);
+        String message = locale.equalsIgnoreCase(supportedLanguages.get(1)) ?
                 environment.getProperty(templateKey + "." + locale) :
                 new String(Base64.getDecoder().decode(environment.getProperty(templateKey + "." + locale)));
 
