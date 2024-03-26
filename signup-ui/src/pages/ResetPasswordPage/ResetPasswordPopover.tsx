@@ -21,6 +21,8 @@ import {
   useResetPasswordStore,
 } from "./useResetPasswordStore";
 import { ResetPasswordPossibleInvalid } from "~typings/types";
+import platform from "platform";
+import { NAVIGATE_DEFECTED_LIST } from "~constants/devices";
 
 export const ResetPasswordPopover = () => {
   const { t } = useTranslation();
@@ -40,7 +42,11 @@ export const ResetPasswordPopover = () => {
   const handleAction = (e: any) => {
     e.preventDefault();
     if (ResetPasswordPossibleInvalid.includes(criticalError?.errorCode!!)) {
-      document.location.reload();
+      if (platform.os && NAVIGATE_DEFECTED_LIST.includes(platform.os.toString())) {
+        document.location.reload();
+      } else {
+        navigate(0)
+      }
     } else {
       window.location.href = getSignInRedirectURL(
         settings?.response.configs["signin.redirect-url"],
