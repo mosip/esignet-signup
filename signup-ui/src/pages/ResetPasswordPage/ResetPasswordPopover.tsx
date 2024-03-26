@@ -21,6 +21,8 @@ import {
   useResetPasswordStore,
 } from "./useResetPasswordStore";
 import { ResetPasswordPossibleInvalid } from "~typings/types";
+import platform from "platform";
+import { NAVIGATE_DEFECTED_LIST } from "~constants/devices";
 
 export const ResetPasswordPopover = () => {
   const { t } = useTranslation();
@@ -39,8 +41,12 @@ export const ResetPasswordPopover = () => {
 
   const handleAction = (e: any) => {
     e.preventDefault();
-    if(ResetPasswordPossibleInvalid.includes(criticalError?.errorCode!!)) {
-      navigate(0)
+    if (ResetPasswordPossibleInvalid.includes(criticalError?.errorCode!!)) {
+      if (platform.os && NAVIGATE_DEFECTED_LIST.includes(platform.os.toString())) {
+        document.location.reload();
+      } else {
+        navigate(0)
+      }
     } else {
       window.location.href = getSignInRedirectURL(
         settings?.response.configs["signin.redirect-url"],
@@ -61,7 +67,7 @@ export const ResetPasswordPopover = () => {
               {ResetPasswordPossibleInvalid.includes(criticalError?.errorCode!!) ? t("invalid") : t("error")}
             </>
           </AlertDialogTitle>
-          <AlertDialogDescription className="break-all text-center text-muted-dark-gray">
+          <AlertDialogDescription className="text-balance text-center text-muted-dark-gray">
             {criticalError && t(`error_response.${criticalError.errorCode}`)}
           </AlertDialogDescription>
         </AlertDialogHeader>
