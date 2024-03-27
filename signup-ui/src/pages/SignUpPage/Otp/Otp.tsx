@@ -360,6 +360,8 @@ export const Otp = ({ methods, settings }: OtpProps) => {
             )}
           />
           <Button
+            id="verify-otp-button"
+            name="verify-otp-button"
             className="w-full p-4 font-semibold"
             onClick={handleContinue}
             disabled={!formState.isValid}
@@ -378,6 +380,8 @@ export const Otp = ({ methods, settings }: OtpProps) => {
               />
             </div>
             <Button
+              id="resend-otp-button"
+              name="resend-otp-button"
               variant="link"
               className="m-1 h-5 text-base font-bold"
               disabled={resendOtpTotalSecs > 0 || resendAttempts === 0}
@@ -396,6 +400,8 @@ export const Otp = ({ methods, settings }: OtpProps) => {
             )}
             {resendAttempts === 0 && resendOtpTotalSecs === 0 && (
               <Button
+                id="landing-page-button"
+                name="landing-page-button"
                 variant="link"
                 className="m-4 h-4 text-sm"
                 onClick={handleExhaustedAttempt}
