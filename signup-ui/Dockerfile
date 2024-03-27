@@ -39,14 +39,8 @@ LABEL build_time=${BUILD_TIME}
 
 # can be passed during Docker build as build time environment for github branch to pickup configuration from.
 ARG container_user=mosip
-
-# can be passed during Docker build as build time environment for github branch to pickup configuration from.
 ARG container_user_group=mosip
-
-# can be passed during Docker build as build time environment for github branch to pickup configuration from.
 ARG container_user_uid=1001
-
-# can be passed during Docker build as build time environment for github branch to pickup configuration from.
 ARG container_user_gid=1001
 
 ARG artifactory_url
@@ -61,26 +55,19 @@ ENV plugins_format=iife
 # set working directory for the user
 WORKDIR /home/${container_user}
 
-# install packages and create user
-RUN groupadd -g ${container_user_gid} ${container_user_group} \
-    && useradd -u ${container_user_uid} -g ${container_user_group} -s /bin/sh -m ${container_user} \
-    && mkdir -p /var/run/nginx /var/tmp/nginx ${i18n_path} ${plugins_path}  ${plugins_path}/temp \
-    && chown -R ${container_user}:${container_user} /usr/share/nginx /var/run/nginx /var/tmp/nginx ${i18n_path} ${plugins_path} ${plugins_path}/temp
-
 ADD configure_start.sh configure_start.sh
-
-RUN chmod +x configure_start.sh
 
 COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
 # copy build files to nginx html directory
 COPY --from=build_signup_ui /build  ${work_dir}
 
-RUN echo "DEFAULT_THEME=$DEFAULT_THEME" >> ${work_dir}/env.env && echo "DEFAULT_LANG=$DEFAULT_LANG" >> ${work_dir}/env.env && echo "DEFAULT_FEVICON=$DEFAULT_FEVICON" >> ${work_dir}/env.env env && echo "DEFAULT_TITLE=$DEFAULT_TITLE" >> ${work_dir}/env.env
-
-RUN chown -R ${container_user}:${container_user} /home/${container_user}
-
-# change permissions of file inside working dir
-RUN chown -R ${container_user}:${container_user} ${work_dir}
+# install packages and create user
+RUN groupadd -g ${container_user_gid} ${container_user_group} \
+    && useradd -u ${container_user_uid} -g ${container_user_group} -s /bin/sh -m ${container_user} \
+    && mkdir -p /var/run/nginx /var/tmp/nginx ${i18n_path} ${plugins_path}  ${plugins_path}/temp \
+    && chown -R ${container_user}:${container_user} /home/${container_user} ${work_dir} /usr/share/nginx /var/run/nginx /var/tmp/nginx ${i18n_path} ${plugins_path} ${plugins_path}/temp \
+    && RUN chmod +x configure_start.sh \
+    && echo "DEFAULT_THEME=$DEFAULT_THEME" >> ${work_dir}/env.env && echo "DEFAULT_LANG=$DEFAULT_LANG" >> ${work_dir}/env.env && echo "DEFAULT_FEVICON=$DEFAULT_FEVICON" >> ${work_dir}/env.env env && echo "DEFAULT_TITLE=$DEFAULT_TITLE" >> ${work_dir}/env.env
 
 # select container user for all tasks
 USER ${container_user_uid}:${container_user_gid}
