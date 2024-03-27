@@ -16,6 +16,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
@@ -34,15 +35,20 @@ public class NotificationHelper {
     @Value("${mosip.signup.send-notification.endpoint}")
     private String sendNotificationEndpoint;
 
-    @Value("#{${mosip.signup.supported-languages}}")
-    private List<String> supportedLanguages;
+    @Value("{${mosip.signup.default-language}")
+    private String defaultLanguage;
+
+    @Value("#{${mosip.signup.sms-notification-template.encoded-langcodes}}")
+    private List<String> encodedLangCodes;
+
     public RestResponseWrapper<NotificationResponse> sendSMSNotification
             (String number, String locale, String templateKey, Map<String, String> params){
 
-        locale = locale != null ? locale : supportedLanguages.get(0);
-        String message = locale.equalsIgnoreCase(supportedLanguages.get(1)) ?
-                environment.getProperty(templateKey + "." + locale) :
-                new String(Base64.getDecoder().decode(environment.getProperty(templateKey + "." + locale)));
+        locale = locale != null ? locale : defaultLanguage;
+
+        String message = encodedLangCodes.contains(locale)?
+                new String(Base64.getDecoder().decode(environment.getProperty(templateKey + "." + locale))):
+                environment.getProperty(templateKey + "." + locale);
 
         if (params != null && message != null) {
             for (Map.Entry<String, String> entry : params.entrySet()) {

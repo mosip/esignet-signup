@@ -1619,7 +1619,7 @@ public class RegistrationServiceTest {
         GenerateChallengeRequest generateChallengeRequest = new GenerateChallengeRequest();
         generateChallengeRequest.setIdentifier(identifier);
         generateChallengeRequest.setCaptchaToken("mock-captcha");
-        generateChallengeRequest.setRegeneratedChallenge(false);
+        generateChallengeRequest.setRegenerateChallenge(false);
         when(challengeManagerService.generateChallenge(any())).thenReturn("1111");
         when(googleRecaptchaValidatorService.validateCaptcha(
                 generateChallengeRequest.getCaptchaToken())).thenReturn(true);
@@ -1639,7 +1639,7 @@ public class RegistrationServiceTest {
         GenerateChallengeRequest generateChallengeRequest = new GenerateChallengeRequest();
         generateChallengeRequest.setIdentifier(identifier);
         generateChallengeRequest.setCaptchaToken("mock-captcha");
-        generateChallengeRequest.setRegeneratedChallenge(false);
+        generateChallengeRequest.setRegenerateChallenge(false);
         when(challengeManagerService.generateChallenge(any())).thenReturn("1111");
         when(googleRecaptchaValidatorService.validateCaptcha(
                 generateChallengeRequest.getCaptchaToken())).thenReturn(true);
@@ -1660,7 +1660,7 @@ public class RegistrationServiceTest {
         GenerateChallengeRequest generateChallengeRequest = new GenerateChallengeRequest();
         generateChallengeRequest.setIdentifier(identifier);
         generateChallengeRequest.setCaptchaToken("mock-captcha");
-        generateChallengeRequest.setRegeneratedChallenge(true);
+        generateChallengeRequest.setRegenerateChallenge(true);
         generateChallengeRequest.setPurpose(Purpose.REGISTRATION);
         String transactionId = "TRAN-1234";
         RegistrationTransaction transaction = new RegistrationTransaction(identifier, Purpose.REGISTRATION);
@@ -1687,7 +1687,7 @@ public class RegistrationServiceTest {
         GenerateChallengeRequest generateChallengeRequest = new GenerateChallengeRequest();
         generateChallengeRequest.setIdentifier(identifier);
         generateChallengeRequest.setCaptchaToken("mock-captcha");
-        generateChallengeRequest.setRegeneratedChallenge(true);
+        generateChallengeRequest.setRegenerateChallenge(true);
         generateChallengeRequest.setPurpose(Purpose.REGISTRATION);
         String transactionId = "TRAN-1234";
         RegistrationTransaction transaction = new RegistrationTransaction(identifier, Purpose.REGISTRATION);
@@ -1713,7 +1713,7 @@ public class RegistrationServiceTest {
         GenerateChallengeRequest generateChallengeRequest = new GenerateChallengeRequest();
         generateChallengeRequest.setIdentifier(identifier);
         generateChallengeRequest.setCaptchaToken("mock-captcha");
-        generateChallengeRequest.setRegeneratedChallenge(true);
+        generateChallengeRequest.setRegenerateChallenge(true);
         String transactionId = "TRAN-12341";
         RegistrationTransaction transaction = new RegistrationTransaction(identifier, Purpose.REGISTRATION);
         transaction.setLastRetryAt(LocalDateTime.now(ZoneOffset.UTC).minusSeconds(40));
@@ -1752,7 +1752,7 @@ public class RegistrationServiceTest {
         GenerateChallengeRequest generateChallengeRequest = new GenerateChallengeRequest();
         generateChallengeRequest.setIdentifier(identifier);
         generateChallengeRequest.setCaptchaToken("mock-captcha");
-        generateChallengeRequest.setRegeneratedChallenge(true);
+        generateChallengeRequest.setRegenerateChallenge(true);
         String transactionId = "TRAN-1234";
         RegistrationTransaction transaction = new RegistrationTransaction(identifier, Purpose.REGISTRATION);
 
@@ -1775,7 +1775,7 @@ public class RegistrationServiceTest {
         GenerateChallengeRequest generateChallengeRequest = new GenerateChallengeRequest();
         generateChallengeRequest.setIdentifier(identifier);
         generateChallengeRequest.setCaptchaToken("mock-captcha");
-        generateChallengeRequest.setRegeneratedChallenge(true);
+        generateChallengeRequest.setRegenerateChallenge(true);
         String transactionId = "TRAN-1234";
         RegistrationTransaction transaction = new RegistrationTransaction(other_identifier, Purpose.REGISTRATION);
 
@@ -1797,7 +1797,7 @@ public class RegistrationServiceTest {
         GenerateChallengeRequest generateChallengeRequest = new GenerateChallengeRequest();
         generateChallengeRequest.setIdentifier(identifier);
         generateChallengeRequest.setCaptchaToken("mock-captcha");
-        generateChallengeRequest.setRegeneratedChallenge(true);
+        generateChallengeRequest.setRegenerateChallenge(true);
         String transactionId = "TRAN-1234";
         RegistrationTransaction transaction = new RegistrationTransaction(identifier, Purpose.REGISTRATION);
         transaction.setChallengeRetryAttempts(4);
@@ -1820,7 +1820,7 @@ public class RegistrationServiceTest {
         GenerateChallengeRequest generateChallengeRequest = new GenerateChallengeRequest();
         generateChallengeRequest.setIdentifier(identifier);
         generateChallengeRequest.setCaptchaToken("mock-captcha");
-        generateChallengeRequest.setRegeneratedChallenge(true);
+        generateChallengeRequest.setRegenerateChallenge(true);
         String transactionId = "TRAN-1234";
         RegistrationTransaction transaction = new RegistrationTransaction(identifier, Purpose.REGISTRATION);
         transaction.increaseAttempt();
@@ -1843,7 +1843,7 @@ public class RegistrationServiceTest {
         GenerateChallengeRequest generateChallengeRequest = new GenerateChallengeRequest();
         generateChallengeRequest.setIdentifier(identifier);
         generateChallengeRequest.setCaptchaToken("mock-captcha");
-        generateChallengeRequest.setRegeneratedChallenge(false);
+        generateChallengeRequest.setRegenerateChallenge(false);
         generateChallengeRequest.setPurpose(Purpose.REGISTRATION);
 
         when(challengeManagerService.generateChallenge(any())).thenReturn("1111");
@@ -1865,7 +1865,7 @@ public class RegistrationServiceTest {
         GenerateChallengeRequest generateChallengeRequest = new GenerateChallengeRequest();
         generateChallengeRequest.setIdentifier(identifier);
         generateChallengeRequest.setCaptchaToken("mock-captcha");
-        generateChallengeRequest.setRegeneratedChallenge(false);
+        generateChallengeRequest.setRegenerateChallenge(false);
         generateChallengeRequest.setPurpose(Purpose.RESET_PASSWORD);
 
         when(challengeManagerService.generateChallenge(any())).thenReturn("1111");

@@ -30,7 +30,7 @@ public class GoogleRecaptchaValidatorService implements CaptchaValidator {
     @Autowired
     private RestTemplate restTemplate;
 
-    @Timed(value = "validatecaptcha.api.timer", percentiles = {0.9, 0.99})
+    @Timed(value = "validatecaptcha.api.timer", percentiles = {0.9})
     @Override
     public boolean validateCaptcha(String captchaToken) {
 
