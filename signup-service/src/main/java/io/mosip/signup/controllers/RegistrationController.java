@@ -73,7 +73,6 @@ public class RegistrationController {
     }
 
 
-    @Timed(value = "register.timer", percentiles = {0.9, 0.99})
     @PostMapping("/register")
     public ResponseWrapper<RegisterResponse> register(@Valid @RequestBody RequestWrapper<RegisterRequest> requestWrapper,
                                                       @Valid @NotBlank(message = ErrorConstants.INVALID_TRANSACTION)

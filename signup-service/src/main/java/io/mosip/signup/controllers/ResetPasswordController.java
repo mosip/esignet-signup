@@ -36,7 +36,6 @@ public class ResetPasswordController {
     @Autowired
     AuditHelper auditHelper;
 
-    @Timed(value = "resetpwd.timer", percentiles = {0.9, 0.99})
     @PostMapping("/reset-password")
     public ResponseWrapper<RegistrationStatusResponse> resetPassword(@Valid @RequestBody RequestWrapper<ResetPasswordRequest> requestWrapper,
                                                                      @Valid @NotBlank(message = ErrorConstants.INVALID_TRANSACTION)
