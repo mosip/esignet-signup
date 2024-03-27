@@ -268,6 +268,7 @@ export const UserInfo = ({ settings, methods }: UserInfoProps) => {
                       <FormControl>
                         <Input
                           {...field}
+                          id="fullname"
                           placeholder={t("full_name_placeholder")}
                           className={cn(
                             "h-[52px] py-6",
@@ -299,6 +300,8 @@ export const UserInfo = ({ settings, methods }: UserInfoProps) => {
               </div>
             </div>
             <Button
+              id="continue-button"
+              name="continue-button"
               onClick={handleContinue}
               isLoading={generateChallengeMutation.isPending}
               disabled={disabledContinue}

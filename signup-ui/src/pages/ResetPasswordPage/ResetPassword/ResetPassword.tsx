@@ -188,6 +188,7 @@ export const ResetPassword = ({ methods, settings }: ResetPasswordProps) => {
                       <FormControl>
                         <Input
                           {...field}
+                          id="newPassword"
                           type="password"
                           placeholder={t("new_password_placeholder")}
                           className={cn(
@@ -225,6 +226,7 @@ export const ResetPassword = ({ methods, settings }: ResetPasswordProps) => {
                       <FormControl>
                         <Input
                           {...field}
+                          id="confirmNewPassword"
                           type="password"
                           placeholder={t("confirm_new_password_placeholder")}
                           className={cn(
@@ -247,6 +249,8 @@ export const ResetPassword = ({ methods, settings }: ResetPasswordProps) => {
               />
             </div>
             <Button
+              id="reset-password-button"
+              name="reset-password-button"
               onClick={handleContinue}
               disabled={disabledContinue}
               isLoading={resetPasswordMutation.isPending}
