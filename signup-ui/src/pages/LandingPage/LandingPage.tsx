@@ -30,11 +30,16 @@ export const LandingPage = () => {
         </div>
         <div className="flex flex-row sm:flex-col items-center gap-x-2 w-full items-center justify-center">
           <Button className="h-[52px] w-[200px] border-primary border-[2px] text-primary hover:text-primary/80 bg-white sm:mb-3 sm:w-full"
+            id="reset-password-button"
+            name="reset-password-button"
             variant="outline"
             onClick={handleResetPassword}>
             {t("reset_password")}
           </Button>
-          <Button className="h-[52px] w-[200px] sm:w-full" onClick={handleRegister}>
+          <Button className="h-[52px] w-[200px] sm:w-full"
+            id="register-button"
+            name="register-button"
+            onClick={handleRegister}>
             {t("register")}
           </Button>
         </div>
