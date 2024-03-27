@@ -64,7 +64,7 @@ export const Language = () => {
     <div className="flex">
       <TranslationIcon className="mr-2 h-9 w-9" />
       <DropdownMenu.Root>
-        <DropdownMenu.Trigger asChild>
+        <DropdownMenu.Trigger id="language-select-button" asChild>
           <span
             className="inline-flex items-center justify-center bg-white text-[14px] outline-none hover:cursor-pointer"
             aria-label="Customise options"
@@ -84,6 +84,7 @@ export const Language = () => {
           >
             {Object.entries(languages_2Letters).map(([key, value]) => (
               <DropdownMenu.Item
+                id={key+"_language"}
                 key={key}
                 className={cn(
                   "group relative flex cursor-pointer select-none items-center py-2 text-[14px] leading-none outline-none first:border-b-[1px] hover:font-bold data-[disabled]:pointer-events-none",

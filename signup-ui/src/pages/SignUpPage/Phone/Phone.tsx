@@ -182,7 +182,7 @@ export const Phone = ({ settings, methods }: PhoneProps) => {
               )}
               className="flex-none cursor-pointer"
             >
-              <Icons.back />
+              <Icons.back id="back-button" name="back-button" />
             </a>
           )}
           {resendOtp ? 
@@ -266,6 +266,8 @@ export const Phone = ({ settings, methods }: PhoneProps) => {
             </div>
           </div>
           <Button
+            id="continue-button"
+            name="continue-button"
             onClick={handleContinue}
             disabled={disabledContinue}
             isLoading={generateChallengeMutation.isPending}

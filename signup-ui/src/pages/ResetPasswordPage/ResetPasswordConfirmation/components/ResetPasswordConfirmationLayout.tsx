@@ -47,7 +47,7 @@ export const ResetPasswordConfirmationLayout = ({
             {message}
           </p>
         </div>
-        <Button className="my-4 h-16 w-full" onClick={handleAction}>
+        <Button id="success-continue-button" className="my-4 h-16 w-full" onClick={handleAction}>
           {status === "success"
             ? fromSignInHash
               ? t("login")

@@ -47,7 +47,7 @@ export const AccountRegistrationStatusLayout = ({
           </div>
           <p className="break-all text-center text-gray-500">{message}</p>
         </div>
-        <Button className="my-4 h-16 w-full" onClick={handleAction}>
+        <Button id="success-continue-button" className="my-4 h-16 w-full" onClick={handleAction}>
           {fromSignInHash ? t("login") : t("okay")}
         </Button>
       </StepContent>

@@ -56,6 +56,8 @@ export const SignUpPopover = () => {
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogAction
+            id="okay-button"
+            name="okay-button"
             onClick={handleAction}
             className="w-full bg-primary"
           >

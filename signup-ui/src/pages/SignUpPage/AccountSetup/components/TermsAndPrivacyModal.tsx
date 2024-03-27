@@ -38,7 +38,7 @@ export const TermsAndPrivacyModal = ({ title, content, isOpen, backdrop, toggleM
           <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-900">
             {title}
           </h3>
-          <button type="button" onClick={toggleModal} className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="static-modal">
+          <button id="close-modal-button" type="button" onClick={toggleModal} className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="static-modal">
             <CloseIconSvg/>
           </button>
         </div>
