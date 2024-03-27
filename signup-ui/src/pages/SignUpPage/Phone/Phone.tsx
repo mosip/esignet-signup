@@ -182,7 +182,7 @@ export const Phone = ({ settings, methods }: PhoneProps) => {
               )}
               className="flex-none cursor-pointer"
             >
-              <Icons.back />
+              <Icons.back id="back-button" name="back-button" />
             </a>
           )}
           {resendOtp ? 

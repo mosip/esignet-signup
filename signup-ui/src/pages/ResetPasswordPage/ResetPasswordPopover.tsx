@@ -67,6 +67,8 @@ export const ResetPasswordPopover = () => {
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogAction
+            id="alert-action-button"
+            name="alert-action-button"
             onClick={handleAction}
             className="w-full bg-primary"
           >

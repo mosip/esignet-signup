@@ -130,6 +130,8 @@ export const ResetPassword = ({ methods, settings }: ResetPasswordProps) => {
         <StepHeader>
           <StepTitle className="relative flex w-full items-center justify-center gap-x-4 text-[26px] font-semibold">
             <Icons.back
+              id="back-button"
+              name="back-button"
               className="absolute left-0 cursor-pointer"
               onClick={handleBack}
             />
@@ -170,6 +172,7 @@ export const ResetPassword = ({ methods, settings }: ResetPasswordProps) => {
                         <IconLabelPopover
                           icon={
                             <Icons.info
+                              id="newPassword-info-icon"
                               className="m-1 h-4 w-4 cursor-pointer sm:h-3 sm:w-3"
                               alt="info icon"
                             />
