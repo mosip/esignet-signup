@@ -36,6 +36,7 @@ public class NotificationHelper {
 
     @Value("#{${mosip.signup.supported-languages}}")
     private List<String> supportedLanguages;
+
     public RestResponseWrapper<NotificationResponse> sendSMSNotification
             (String number, String locale, String templateKey, Map<String, String> params){
 
