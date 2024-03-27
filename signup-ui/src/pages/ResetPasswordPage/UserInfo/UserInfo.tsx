@@ -181,7 +181,7 @@ export const UserInfo = ({ settings, methods }: UserInfoProps) => {
                 )}
                 className="absolute left-0 cursor-pointer"
               >
-                <Icons.back />
+                <Icons.back id="back-button" name="back-button" />
               </a>
             )}
             <div className="text-center font-semibold tracking-normal">

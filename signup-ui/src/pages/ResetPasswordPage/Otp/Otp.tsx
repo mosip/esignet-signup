@@ -286,6 +286,8 @@ export const Otp = ({ methods, settings }: OtpProps) => {
       <StepHeader className="px-0 sm:px-[18px] sm:pb-[25px] sm:pt-[33px]">
         <StepTitle className="relative flex w-full items-center justify-center gap-x-4 text-base font-semibold">
           <Icons.back
+            id="back-button"
+            name="back-button"
             className="absolute left-0 ml-8 cursor-pointer"
             onClick={handleBack}
           />

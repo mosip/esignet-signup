@@ -41,6 +41,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           />
           {type === "password" && (
             <button
+              id={props.id ? `${props.id}-toggle-password` : undefined}
               type="button"
               className="flex h-full self-center px-3"
               onClick={togglePasswordVisibility}

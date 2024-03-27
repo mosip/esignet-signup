@@ -193,6 +193,7 @@ export const AccountSetup = ({ settings, methods }: AccountSetupProps) => {
                       <IconLabelPopover
                         icon={
                           <Icons.info
+                            id="fullName-info-icon"
                             className="m-1 h-4 w-4 cursor-pointer sm:h-3 sm:w-3"
                             alt="info icon"
                           />
@@ -235,6 +236,7 @@ export const AccountSetup = ({ settings, methods }: AccountSetupProps) => {
                       <IconLabelPopover
                         icon={
                           <Icons.info
+                            id="password-info-icon"
                             className="m-1 h-4 w-4 cursor-pointer sm:h-3 sm:w-3"
                             alt="info icon"
                           />
