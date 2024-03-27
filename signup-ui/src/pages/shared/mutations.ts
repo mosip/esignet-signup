@@ -1,5 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
+import { alpha2ToAlpha3T } from "@cospired/i18n-iso-languages"
 
 import { ApiError } from "~typings/core";
 import {
@@ -57,7 +58,7 @@ export const useVerifyChallenge = () => {
 
 export const useRegister = () => {
   const { i18n } = useTranslation();
-  const locale = i18n.language == "km" ? "khm" : "eng";
+  const locale = alpha2ToAlpha3T(i18n.language) ?? "khm";
 
   const registerMutation = useMutation<
     RegistrationResponseDto,
@@ -76,7 +77,7 @@ export const useRegister = () => {
 
 export const useResetPassword = () => {
   const { i18n } = useTranslation();
-  const locale = i18n.language == "km" ? "khm" : "eng";
+  const locale = alpha2ToAlpha3T(i18n.language) ?? "khm";
 
   const resetPasswordMutation = useMutation<
     ResetPasswordResponseDto,
