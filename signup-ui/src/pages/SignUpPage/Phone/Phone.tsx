@@ -266,6 +266,8 @@ export const Phone = ({ settings, methods }: PhoneProps) => {
             </div>
           </div>
           <Button
+            id="continue-button"
+            name="continue-button"
             onClick={handleContinue}
             disabled={disabledContinue}
             isLoading={generateChallengeMutation.isPending}

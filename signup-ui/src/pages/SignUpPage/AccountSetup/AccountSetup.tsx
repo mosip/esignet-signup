@@ -166,6 +166,7 @@ export const AccountSetup = ({ settings, methods }: AccountSetupProps) => {
                     <FormLabel>{t("username")}</FormLabel>
                     <FormControl>
                       <Input
+                        id="username"
                         placeholder={t("username_placeholder")}
                         {...field}
                         value={`${
@@ -201,6 +202,7 @@ export const AccountSetup = ({ settings, methods }: AccountSetupProps) => {
                     </div>
                     <FormControl>
                       <Input
+                        id="fullNameInKhmer"
                         {...field}
                         className={cn(
                           "h-[52px] py-6",
@@ -248,6 +250,7 @@ export const AccountSetup = ({ settings, methods }: AccountSetupProps) => {
                     </div>
                     <FormControl>
                       <Input
+                        id="password"
                         {...field}
                         type="password"
                         placeholder={t("password_placeholder")}
@@ -277,6 +280,7 @@ export const AccountSetup = ({ settings, methods }: AccountSetupProps) => {
                     <FormLabel>{t("confirm_password")}</FormLabel>
                     <FormControl>
                       <Input
+                        id="confirmPassword"
                         {...field}
                         type="password"
                         placeholder={t("confirm_password_placeholder")}
@@ -304,6 +308,7 @@ export const AccountSetup = ({ settings, methods }: AccountSetupProps) => {
                 <FormItem className="flex items-start gap-x-4 space-y-0">
                   <FormControl>
                     <Checkbox
+                      id="consent-button"
                       checked={field.value}
                       onCheckedChange={field.onChange}
                       className="h-5 w-5 rounded-[2px] text-white data-[state=checked]:border-primary data-[state=checked]:bg-primary"
@@ -338,6 +343,8 @@ export const AccountSetup = ({ settings, methods }: AccountSetupProps) => {
               )}
             />
             <Button
+              id="account-setup-submit-button"
+              name="account-setup-submit-button"
               type="submit"
               className="w-full"
               onClick={handleContinue}

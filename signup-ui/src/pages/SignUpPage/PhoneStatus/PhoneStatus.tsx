@@ -76,6 +76,8 @@ export const PhoneStatus = ({ methods }: PhoneStatusProps) => {
             </p>
           </div>
           <Button
+            id="signup-failed-okay-button"
+            name="signup-failed-okay-button"
             className="my-4 h-16 w-full"
             onClick={handleChallengeVerificationErrorRedirect}
           >
@@ -98,7 +100,10 @@ export const PhoneStatus = ({ methods }: PhoneStatusProps) => {
             {t("mobile_number_verified")}
           </p>
         </div>
-        <Button className="my-4 h-16 w-full" onClick={handleContinue}>
+        <Button
+          id="mobile-number-verified-continue-button"
+          name="mobile-number-verified-continue-button"
+          className="my-4 h-16 w-full" onClick={handleContinue}>
           {t("continue")}
         </Button>
       </StepContent>
