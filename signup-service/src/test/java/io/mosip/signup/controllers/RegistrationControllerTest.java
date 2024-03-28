@@ -653,7 +653,6 @@ public class RegistrationControllerTest {
         when(registrationService.register(eq(registerRequest), eq(mockTransactionID))).thenReturn(registerResponse);
 
         mockMvc.perform(post("/registration/register")
-                        .header("locale", "khm")
                         .content(objectMapper.writeValueAsString(wrapper))
                         .cookie(new Cookie(SignUpConstants.VERIFIED_TRANSACTION_ID, mockTransactionID))
                         .contentType(MediaType.APPLICATION_JSON))
@@ -1066,7 +1065,6 @@ public class RegistrationControllerTest {
         when(registrationService.register(eq(registerRequest), eq(mockTransactionID))).thenReturn(registerResponse);
 
         mockMvc.perform(post("/registration/register")
-                        .header("locale", "khm")
                         .content(objectMapper.writeValueAsString(wrapper))
                         .cookie(new Cookie(SignUpConstants.VERIFIED_TRANSACTION_ID, mockTransactionID))
                         .contentType(MediaType.APPLICATION_JSON))

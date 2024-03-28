@@ -93,7 +93,6 @@ public class SignUpControllerTest {
         when(registrationService.updatePassword(any(), any())).thenReturn(registrationStatusResponse);
 
         mockMvc.perform(post("/reset-password")
-                        .header("locale", "khm")
                         .content(objectMapper.writeValueAsString(resetPasswordWrapper))
                         .cookie(new Cookie(SignUpConstants.TRANSACTION_ID, mockTransactionID))
                         .contentType(MediaType.APPLICATION_JSON))
