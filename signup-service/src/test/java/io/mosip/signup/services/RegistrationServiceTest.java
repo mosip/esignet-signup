@@ -33,6 +33,7 @@ import org.springframework.web.client.RestTemplate;
 import java.io.IOException;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
@@ -44,6 +45,7 @@ import javax.servlet.http.HttpServletResponse;
 import io.mosip.esignet.core.exception.EsignetException;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 @RunWith(SpringRunner.class)
@@ -78,13 +80,18 @@ public class RegistrationServiceTest {
     private final String generateHashEndpoint = "generateHashEndpoint";
     private final String getIdentityEndpoint = "getIdentityEndpoint";
     private final String getUinEndpoint = "getUinEndpoint";
+
+    private final String getRegistrationStatusEndpoint = "getRegistrationStatusEndpoint";
+
     private String locale = "khm";
+
 
     @Before
     public void setUp() {
         ReflectionTestUtils.setField(registrationService, identityEndpoint, identityEndpoint);
         ReflectionTestUtils.setField(registrationService, generateHashEndpoint, generateHashEndpoint);
         ReflectionTestUtils.setField(registrationService, getUinEndpoint, getUinEndpoint);
+        ReflectionTestUtils.setField(registrationService, getRegistrationStatusEndpoint, getRegistrationStatusEndpoint);
         ReflectionTestUtils.setField(
                 registrationService, "resendAttempts", 3);
         ReflectionTestUtils.setField(
@@ -2330,5 +2337,173 @@ public class RegistrationServiceTest {
         } catch (SignUpException exception) {
             Assert.assertEquals(ErrorConstants.CHALLENGE_EXPIRED, exception.getErrorCode());
         }
+    }
+
+    @Test
+    public void doGetRegistrationStatusFromServer_withApplicationID_thenReturnPending() {
+        String transactionId = "TRAN-1234";
+        RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85577410541", Purpose.REGISTRATION);
+        registrationTransaction.setRegistrationStatus(RegistrationStatus.COMPLETED);
+        Map<String, RegistrationStatus> handlesStatus = new LinkedHashMap<>();
+        handlesStatus.put(transactionId, RegistrationStatus.PENDING);
+        registrationTransaction.setHandlesStatus(handlesStatus);
+        RestResponseWrapper<Map<String,String>> mockRestResponseWrapper = new RestResponseWrapper<>();
+        Map<String,String> response = new LinkedHashMap<>();
+        response.put("statusCode", "ISSUED");
+        mockRestResponseWrapper.setResponse(response);
+
+        when(cacheUtilService.getStatusCheckTransaction(transactionId)).thenReturn(registrationTransaction);
+        when(cacheUtilService.setStatusCheckTransaction(transactionId, registrationTransaction)).thenReturn(registrationTransaction);
+        when(selfTokenRestTemplate.exchange(
+                eq(getRegistrationStatusEndpoint),
+                eq(HttpMethod.GET),
+                eq(null),
+                any(ParameterizedTypeReference.class),
+                any(String.class)))
+                .thenReturn(new ResponseEntity<>(mockRestResponseWrapper, HttpStatus.OK));
+
+        RegistrationStatusResponse registrationStatusResponse = registrationService.getRegistrationStatus(transactionId);
+
+        Assert.assertNotNull(registrationStatusResponse);
+        Assert.assertEquals(RegistrationStatus.PENDING, registrationStatusResponse.getStatus());
+    }
+
+    @Test
+    public void doGetRegistrationStatusFromServer_withApplicationID_thenReturnCompleted() {
+        String transactionId = "TRAN-1234";
+        RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85577410541", Purpose.REGISTRATION);
+        registrationTransaction.setRegistrationStatus(RegistrationStatus.COMPLETED);
+        Map<String, RegistrationStatus> handlesStatus = new LinkedHashMap<>();
+        handlesStatus.put(transactionId, RegistrationStatus.PENDING);
+        registrationTransaction.setHandlesStatus(handlesStatus);
+        RestResponseWrapper<Map<String,String>> mockRestResponseWrapper = new RestResponseWrapper<>();
+        Map<String,String> response = new LinkedHashMap<>();
+        response.put("statusCode", "STORED");
+        mockRestResponseWrapper.setResponse(response);
+
+        when(cacheUtilService.getStatusCheckTransaction(transactionId)).thenReturn(registrationTransaction);
+        when(cacheUtilService.setStatusCheckTransaction(transactionId, registrationTransaction)).thenReturn(registrationTransaction);
+        when(selfTokenRestTemplate.exchange(
+                eq(getRegistrationStatusEndpoint),
+                eq(HttpMethod.GET),
+                eq(null),
+                any(ParameterizedTypeReference.class),
+                any(String.class)))
+                .thenReturn(new ResponseEntity<>(mockRestResponseWrapper, HttpStatus.OK));
+
+        RegistrationStatusResponse registrationStatusResponse = registrationService.getRegistrationStatus(transactionId);
+
+        Assert.assertNotNull(registrationStatusResponse);
+        Assert.assertEquals(RegistrationStatus.COMPLETED, registrationStatusResponse.getStatus());
+    }
+
+    @Test
+    public void doGetRegistrationStatusFromServer_withApplicationID_thenReturnFailed() {
+        String transactionId = "TRAN-1234";
+        RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85577410541", Purpose.REGISTRATION);
+        registrationTransaction.setRegistrationStatus(RegistrationStatus.COMPLETED);
+        Map<String, RegistrationStatus> handlesStatus = new LinkedHashMap<>();
+        handlesStatus.put(transactionId, RegistrationStatus.PENDING);
+        registrationTransaction.setHandlesStatus(handlesStatus);
+        RestResponseWrapper<Map<String,String>> mockRestResponseWrapper = new RestResponseWrapper<>();
+        Map<String,String> response = new LinkedHashMap<>();
+        response.put("statusCode", "FAILED");
+        mockRestResponseWrapper.setResponse(response);
+
+        when(cacheUtilService.getStatusCheckTransaction(transactionId)).thenReturn(registrationTransaction);
+        when(cacheUtilService.setStatusCheckTransaction(transactionId, registrationTransaction)).thenReturn(registrationTransaction);
+        when(selfTokenRestTemplate.exchange(
+                eq(getRegistrationStatusEndpoint),
+                eq(HttpMethod.GET),
+                eq(null),
+                any(ParameterizedTypeReference.class),
+                any(String.class)))
+                .thenReturn(new ResponseEntity<>(mockRestResponseWrapper, HttpStatus.OK));
+
+        RegistrationStatusResponse registrationStatusResponse = registrationService.getRegistrationStatus(transactionId);
+
+        Assert.assertNotNull(registrationStatusResponse);
+        Assert.assertEquals(RegistrationStatus.FAILED, registrationStatusResponse.getStatus());
+    }
+
+    @Test
+    public void doGetRegistrationStatusFromServer_withNullRegistrationStatus_thenReturnPending() {
+        String transactionId = "TRAN-1234";
+        RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85577410541", Purpose.REGISTRATION);
+        registrationTransaction.setRegistrationStatus(RegistrationStatus.COMPLETED);
+        Map<String, RegistrationStatus> handlesStatus = new LinkedHashMap<>();
+        handlesStatus.put(transactionId, RegistrationStatus.PENDING);
+        registrationTransaction.setHandlesStatus(handlesStatus);
+
+        when(cacheUtilService.getStatusCheckTransaction(transactionId)).thenReturn(registrationTransaction);
+        when(cacheUtilService.setStatusCheckTransaction(transactionId, registrationTransaction)).thenReturn(registrationTransaction);
+        when(selfTokenRestTemplate.exchange(
+                eq(getRegistrationStatusEndpoint),
+                eq(HttpMethod.GET),
+                eq(null),
+                any(ParameterizedTypeReference.class),
+                any(String.class)))
+                .thenReturn(new ResponseEntity<>(null, HttpStatus.OK));
+
+        RegistrationStatusResponse registrationStatusResponse = registrationService.getRegistrationStatus(transactionId);
+
+        Assert.assertNotNull(registrationStatusResponse);
+        Assert.assertEquals(RegistrationStatus.PENDING, registrationStatusResponse.getStatus());
+    }
+
+    @Test
+    public void doGetRegistrationStatusFromServer_withNullResponseBodyRegistrationStatus_thenReturnPending() {
+        String transactionId = "TRAN-1234";
+        RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85577410541", Purpose.REGISTRATION);
+        registrationTransaction.setRegistrationStatus(RegistrationStatus.COMPLETED);
+        Map<String, RegistrationStatus> handlesStatus = new LinkedHashMap<>();
+        handlesStatus.put(transactionId, RegistrationStatus.PENDING);
+        registrationTransaction.setHandlesStatus(handlesStatus);
+        RestResponseWrapper<Map<String,String>> mockRestResponseWrapper = new RestResponseWrapper<>();
+        mockRestResponseWrapper.setResponse(null);
+
+        when(cacheUtilService.getStatusCheckTransaction(transactionId)).thenReturn(registrationTransaction);
+        when(cacheUtilService.setStatusCheckTransaction(transactionId, registrationTransaction)).thenReturn(registrationTransaction);
+        when(selfTokenRestTemplate.exchange(
+                eq(getRegistrationStatusEndpoint),
+                eq(HttpMethod.GET),
+                eq(null),
+                any(ParameterizedTypeReference.class),
+                any(String.class)))
+                .thenReturn(new ResponseEntity<>(mockRestResponseWrapper, HttpStatus.OK));
+
+        RegistrationStatusResponse registrationStatusResponse = registrationService.getRegistrationStatus(transactionId);
+
+        Assert.assertNotNull(registrationStatusResponse);
+        Assert.assertEquals(RegistrationStatus.PENDING, registrationStatusResponse.getStatus());
+    }
+
+    @Test
+    public void doGetRegistrationStatusFromServer_withEmptyStatusCode_thenReturnPending() {
+        String transactionId = "TRAN-1234";
+        RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85577410541", Purpose.REGISTRATION);
+        registrationTransaction.setRegistrationStatus(RegistrationStatus.COMPLETED);
+        Map<String, RegistrationStatus> handlesStatus = new LinkedHashMap<>();
+        handlesStatus.put(transactionId, RegistrationStatus.PENDING);
+        registrationTransaction.setHandlesStatus(handlesStatus);
+        RestResponseWrapper<Map<String,String>> mockRestResponseWrapper = new RestResponseWrapper<>();
+        Map<String,String> response = new LinkedHashMap<>();
+        response.put("statusCode", "");
+        mockRestResponseWrapper.setResponse(response);
+
+        when(cacheUtilService.getStatusCheckTransaction(transactionId)).thenReturn(registrationTransaction);
+        when(cacheUtilService.setStatusCheckTransaction(transactionId, registrationTransaction)).thenReturn(registrationTransaction);
+        when(selfTokenRestTemplate.exchange(
+                eq(getRegistrationStatusEndpoint),
+                eq(HttpMethod.GET),
+                eq(null),
+                any(ParameterizedTypeReference.class),
+                any(String.class)))
+                .thenReturn(new ResponseEntity<>(mockRestResponseWrapper, HttpStatus.OK));
+
+        RegistrationStatusResponse registrationStatusResponse = registrationService.getRegistrationStatus(transactionId);
+
+        Assert.assertNotNull(registrationStatusResponse);
+        Assert.assertEquals(RegistrationStatus.PENDING, registrationStatusResponse.getStatus());
     }
 }
