@@ -31,10 +31,12 @@ import {
   SettingsDto,
   VerifyChallengeRequestDto,
 } from "~typings/types";
+import { langCodeMappingSelector, useLanguageStore } from "~/useLanguageStore";
 
 import { SignUpForm, signUpFormDefaultValues } from "../SignUpPage";
 import {
   setCriticalErrorSelector,
+  setResendOtpSelector,
   setStepSelector,
   SignUpStep,
   stepSelector,
@@ -51,18 +53,28 @@ export const Otp = ({ methods, settings }: OtpProps) => {
 
   const pinInputRef = useRef<PinInput | null>(null);
   const { control, getValues, setValue } = useFormContext();
-  const { step, setStep, setCriticalError } = useSignUpStore(
+  const { step, setStep, setCriticalError, setResendOtp } = useSignUpStore(
     useCallback(
       (state) => ({
         step: stepSelector(state),
         setStep: setStepSelector(state),
         setCriticalError: setCriticalErrorSelector(state),
+        setResendOtp: setResendOtpSelector(state),
+      }),
+      []
+    )
+  );
+  const { langCodeMapping } = useLanguageStore(
+    useCallback(
+      (state) => ({
+        langCodeMapping: langCodeMappingSelector(state),
       }),
       []
     )
   );
   const { trigger, reset, resetField, formState } = methods;
   const [resendAttempts, setResendAttempts] = useState<number>(0);
+  const [captchaRequired, setCaptchaRequired] = useState<boolean>(false);
   const { generateChallengeMutation } = useGenerateChallenge();
   const { verifyChallengeMutation } = useVerifyChallenge();
   const [challengeVerificationError, setChallengeVerificationError] =
@@ -115,6 +127,7 @@ export const Otp = ({ methods, settings }: OtpProps) => {
 
   useEffect(() => {
     setResendAttempts(settings.response.configs["resend.attempts"]);
+    setCaptchaRequired(settings.response.configs["send-challenge.captcha.required"]);
   }, [settings.response.configs]);
 
   useEffect(() => {
@@ -145,7 +158,11 @@ export const Otp = ({ methods, settings }: OtpProps) => {
       e.preventDefault();
       if (settings?.response.configs && resendAttempts > 0) {
         setChallengeVerificationError(null);
-
+        if (captchaRequired) {
+          handleBack();
+          setResendOtp(true);
+        }
+        else {
         const generateChallengeRequestDto: GenerateChallengeRequestDto = {
           requestTime: new Date().toISOString(),
           request: {
@@ -153,7 +170,7 @@ export const Otp = ({ methods, settings }: OtpProps) => {
               settings.response.configs["identifier.prefix"]
             }${getValues("phone")}`,
             captchaToken: getValues("captchaToken"),
-            locale: getLocale(i18n.language),
+            locale: getLocale(i18n.language, langCodeMapping),
             regenerate: true,
             purpose: "REGISTRATION",
           },
@@ -180,6 +197,7 @@ export const Otp = ({ methods, settings }: OtpProps) => {
             }
           },
         });
+      }
       }
     },
     [
@@ -268,6 +286,8 @@ export const Otp = ({ methods, settings }: OtpProps) => {
       <StepHeader className="px-0 sm:px-[18px] sm:pb-[25px] sm:pt-[33px]">
         <StepTitle className="relative flex w-full items-center justify-center gap-x-4 text-base font-semibold">
           <Icons.back
+            id="back-button"
+            name="back-button"
             className="absolute left-0 ml-8 cursor-pointer"
             onClick={handleBack}
           />
@@ -313,7 +333,6 @@ export const Otp = ({ methods, settings }: OtpProps) => {
                   <PinInput
                     ref={handlePinInputRef}
                     length={settings.response.configs["otp.length"]}
-                    secret
                     secretDelay={200}
                     focus
                     initialValue={field.value}
@@ -343,6 +362,8 @@ export const Otp = ({ methods, settings }: OtpProps) => {
             )}
           />
           <Button
+            id="verify-otp-button"
+            name="verify-otp-button"
             className="w-full p-4 font-semibold"
             onClick={handleContinue}
             disabled={!formState.isValid}
@@ -361,6 +382,8 @@ export const Otp = ({ methods, settings }: OtpProps) => {
               />
             </div>
             <Button
+              id="resend-otp-button"
+              name="resend-otp-button"
               variant="link"
               className="m-1 h-5 text-base font-bold"
               disabled={resendOtpTotalSecs > 0 || resendAttempts === 0}
@@ -379,6 +402,8 @@ export const Otp = ({ methods, settings }: OtpProps) => {
             )}
             {resendAttempts === 0 && resendOtpTotalSecs === 0 && (
               <Button
+                id="landing-page-button"
+                name="landing-page-button"
                 variant="link"
                 className="m-4 h-4 text-sm"
                 onClick={handleExhaustedAttempt}

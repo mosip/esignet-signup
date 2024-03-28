@@ -1,6 +1,7 @@
 package io.mosip.signup.dto;
 
 import io.mosip.signup.util.ErrorConstants;
+import io.mosip.signup.validator.Language;
 import io.mosip.signup.validator.Password;
 import io.mosip.signup.validator.Username;
 import lombok.Data;
@@ -25,4 +26,7 @@ public class RegisterRequest {
 
     @NotNull(message = ErrorConstants.INVALID_USERINFO)
     private @Valid UserInfoMap userInfo;
+
+    @Language(required = false)
+    private String locale;
 }

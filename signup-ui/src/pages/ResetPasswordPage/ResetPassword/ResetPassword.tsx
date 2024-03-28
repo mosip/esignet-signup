@@ -104,6 +104,7 @@ export const ResetPassword = ({ methods, settings }: ResetPasswordProps) => {
               settings.response.configs["identifier.prefix"]
             }${getValues("username")}`,
             password: getValues("newPassword"),
+            locale: null
           },
         };
 
@@ -130,6 +131,8 @@ export const ResetPassword = ({ methods, settings }: ResetPasswordProps) => {
         <StepHeader>
           <StepTitle className="relative flex w-full items-center justify-center gap-x-4 text-[26px] font-semibold">
             <Icons.back
+              id="back-button"
+              name="back-button"
               className="absolute left-0 cursor-pointer"
               onClick={handleBack}
             />
@@ -170,6 +173,7 @@ export const ResetPassword = ({ methods, settings }: ResetPasswordProps) => {
                         <IconLabelPopover
                           icon={
                             <Icons.info
+                              id="newPassword-info-icon"
                               className="m-1 h-4 w-4 cursor-pointer sm:h-3 sm:w-3"
                               alt="info icon"
                             />
@@ -187,6 +191,7 @@ export const ResetPassword = ({ methods, settings }: ResetPasswordProps) => {
                       <FormControl>
                         <Input
                           {...field}
+                          id="newPassword"
                           type="password"
                           placeholder={t("new_password_placeholder")}
                           className={cn(
@@ -200,7 +205,10 @@ export const ResetPassword = ({ methods, settings }: ResetPasswordProps) => {
                           maxLength={
                             settings.response.configs["password.length.max"]
                           }
-                          onBlur={() => trigger("confirmNewPassword")}
+                          onBlur={() => {
+                            trigger("newPassword")
+                            trigger("confirmNewPassword")
+                          }}
                         />
                       </FormControl>
                     </div>
@@ -221,6 +229,7 @@ export const ResetPassword = ({ methods, settings }: ResetPasswordProps) => {
                       <FormControl>
                         <Input
                           {...field}
+                          id="confirmNewPassword"
                           type="password"
                           placeholder={t("confirm_new_password_placeholder")}
                           className={cn(
@@ -243,6 +252,8 @@ export const ResetPassword = ({ methods, settings }: ResetPasswordProps) => {
               />
             </div>
             <Button
+              id="reset-password-button"
+              name="reset-password-button"
               onClick={handleContinue}
               disabled={disabledContinue}
               isLoading={resetPasswordMutation.isPending}

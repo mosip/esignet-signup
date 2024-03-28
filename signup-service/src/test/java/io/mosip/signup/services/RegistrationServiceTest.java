@@ -80,7 +80,11 @@ public class RegistrationServiceTest {
     private final String generateHashEndpoint = "generateHashEndpoint";
     private final String getIdentityEndpoint = "getIdentityEndpoint";
     private final String getUinEndpoint = "getUinEndpoint";
+
     private final String getRegistrationStatusEndpoint = "getRegistrationStatusEndpoint";
+
+    private String locale = "khm";
+
 
     @Before
     public void setUp() {
@@ -779,6 +783,8 @@ public class RegistrationServiceTest {
     // ## register---------------------------------
     @Test
     public void register_thenPass() throws SignUpException {
+        String local = "khm";
+
         UserInfoMap userInfo = new UserInfoMap();
         userInfo.setPreferredLang("khm");
         userInfo.setFullName(List.of(new LanguageTaggedValue("eng", "Panharith AN")));
@@ -789,6 +795,70 @@ public class RegistrationServiceTest {
         registerRequest.setUsername("+855219718732");
         registerRequest.setPassword("123123");
         registerRequest.setConsent("AGREE");
+        registerRequest.setLocale(local);
+
+        String mockTransactionID = "123456789";
+
+        RegistrationTransaction mockRegistrationTransaction = new RegistrationTransaction(userInfo.getPhone(), Purpose.REGISTRATION);
+        mockRegistrationTransaction.setChallengeHash("123456");
+        mockRegistrationTransaction.setIdentifier(userInfo.getPhone());
+
+        when(cacheUtilService.getChallengeVerifiedTransaction(mockTransactionID))
+                .thenReturn(mockRegistrationTransaction);
+
+        IdentityResponse identityResponse = new IdentityResponse();
+        identityResponse.setStatus("ACTIVATED");
+        UINResponse uinResponse = new UINResponse();
+        uinResponse.setUIN("mockUIN");
+        Password.PasswordHash passwordHash = new Password.PasswordHash();
+        passwordHash.setSalt("mockSalt");
+        passwordHash.setHashValue("mockHashValue");
+
+        RestResponseWrapper<IdentityResponse> mockRestResponseWrapperAddIdentityResponse = new RestResponseWrapper<IdentityResponse>();
+        mockRestResponseWrapperAddIdentityResponse.setResponse(identityResponse);
+        RestResponseWrapper<UINResponse> mockRestResponseWrapperUINResponse = new RestResponseWrapper<UINResponse>();
+        mockRestResponseWrapperUINResponse.setResponse(uinResponse);
+        RestResponseWrapper<Password.PasswordHash> mockRestResponseWrapperPasswordHash = new RestResponseWrapper<Password.PasswordHash>();
+        mockRestResponseWrapperPasswordHash.setResponse(passwordHash);
+
+        when(selfTokenRestTemplate.exchange(
+                eq(getUinEndpoint),
+                eq(HttpMethod.GET),
+                eq(null),
+                any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<>(mockRestResponseWrapperUINResponse, HttpStatus.OK));
+        when(selfTokenRestTemplate.exchange(
+                eq(generateHashEndpoint),
+                eq(HttpMethod.POST),
+                any(HttpEntity.class),
+                any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<>(mockRestResponseWrapperPasswordHash, HttpStatus.OK));
+        when(selfTokenRestTemplate.exchange(
+                eq(identityEndpoint),
+                eq(HttpMethod.POST),
+                any(HttpEntity.class),
+                any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<>(mockRestResponseWrapperAddIdentityResponse, HttpStatus.OK));
+
+        when(notificationHelper.sendSMSNotificationAsync(any(), any(), any(), any()))
+                .thenReturn(new CompletableFuture<>());
+
+        RegisterResponse registerResponse = registrationService.register(registerRequest, mockTransactionID);
+        Assert.assertNotNull(registerResponse);
+        Assert.assertEquals("PENDING", registerResponse.getStatus());
+    }
+
+    @Test
+    public void register_withNullLocale_thenPass() throws SignUpException {
+
+        UserInfoMap userInfo = new UserInfoMap();
+        userInfo.setPreferredLang("khm");
+        userInfo.setFullName(List.of(new LanguageTaggedValue("eng", "Panharith AN")));
+        userInfo.setPhone("+855219718732");
+
+        RegisterRequest registerRequest = new RegisterRequest();
+        registerRequest.setUserInfo(userInfo);
+        registerRequest.setUsername("+855219718732");
+        registerRequest.setPassword("123123");
+        registerRequest.setConsent("AGREE");
+        registerRequest.setLocale(null);
 
         String mockTransactionID = "123456789";
 
@@ -840,6 +910,7 @@ public class RegistrationServiceTest {
 
     @Test
     public void register_whenUinEndpointResponseNullBody_throwGetUINFailed() throws SignUpException {
+        String locale = "eng";
         UserInfoMap userInfo = new UserInfoMap();
         userInfo.setPreferredLang("khm");
         userInfo.setFullName(List.of(new LanguageTaggedValue("eng", "Panharith AN")));
@@ -850,6 +921,7 @@ public class RegistrationServiceTest {
         registerRequest.setUsername("+855219718732");
         registerRequest.setPassword("123123");
         registerRequest.setConsent("AGREE");
+        registerRequest.setLocale(locale);
 
         String mockTransactionID = "123456789";
 
@@ -886,6 +958,7 @@ public class RegistrationServiceTest {
         registerRequest.setUsername("+855219718732");
         registerRequest.setPassword("123123");
         registerRequest.setConsent("AGREE");
+        registerRequest.setLocale(locale);
 
         String mockTransactionID = "123456789";
 
@@ -948,6 +1021,7 @@ public class RegistrationServiceTest {
                 eq(null),
                 any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<>(mockRestResponseWrapperUINResponse, HttpStatus.OK));
 
+
         try {
             registrationService.register(registerRequest, mockTransactionID);
             Assert.fail();
@@ -968,6 +1042,7 @@ public class RegistrationServiceTest {
         registerRequest.setUsername("+855219718732");
         registerRequest.setPassword("123123");
         registerRequest.setConsent("AGREE");
+        registerRequest.setLocale(locale);
 
         String mockTransactionID = "123456789";
 
@@ -1007,6 +1082,7 @@ public class RegistrationServiceTest {
         registerRequest.setUsername("+855219718732");
         registerRequest.setPassword("123123");
         registerRequest.setConsent("AGREE");
+        registerRequest.setLocale(locale);
 
         String mockTransactionID = "123456789";
 
@@ -1056,6 +1132,7 @@ public class RegistrationServiceTest {
         registerRequest.setUsername("+855219718732");
         registerRequest.setPassword("123123");
         registerRequest.setConsent("AGREE");
+        registerRequest.setLocale(locale);
 
         String mockTransactionID = "123456789";
 
@@ -1109,6 +1186,7 @@ public class RegistrationServiceTest {
         registerRequest.setUsername("+855219718732");
         registerRequest.setPassword("123123");
         registerRequest.setConsent("AGREE");
+        registerRequest.setLocale(locale);
 
         String mockTransactionID = "123456789";
 
@@ -1160,6 +1238,7 @@ public class RegistrationServiceTest {
         registerRequest.setUsername("+855219718732");
         registerRequest.setPassword("123123");
         registerRequest.setConsent("AGREE");
+        registerRequest.setLocale(locale);
 
         String mockTransactionID = "123456789";
 
@@ -1214,6 +1293,7 @@ public class RegistrationServiceTest {
         registerRequest.setUsername("+855219718732");
         registerRequest.setPassword("123123");
         registerRequest.setConsent("AGREE");
+        registerRequest.setLocale(locale);
 
         String mockTransactionID = "123456789";
 
@@ -1268,6 +1348,7 @@ public class RegistrationServiceTest {
         registerRequest.setUsername("+855219718732");
         registerRequest.setPassword("123123");
         registerRequest.setConsent("AGREE");
+        registerRequest.setLocale(locale);
 
         String mockTransactionID = "123456789";
 
@@ -1327,6 +1408,7 @@ public class RegistrationServiceTest {
         registerRequest.setUsername("+855219718732");
         registerRequest.setPassword("123123");
         registerRequest.setConsent("AGREE");
+        registerRequest.setLocale(locale);
 
         String mockTransactionID = "123456789";
 
@@ -1388,6 +1470,7 @@ public class RegistrationServiceTest {
         registerRequest.setUsername("+855219718732");
         registerRequest.setPassword("123123");
         registerRequest.setConsent("AGREE");
+        registerRequest.setLocale(locale);
 
         String mockTransactionID = "123456789";
 
@@ -1451,6 +1534,7 @@ public class RegistrationServiceTest {
         registerRequest.setUsername("+855219718732");
         registerRequest.setPassword("123123");
         registerRequest.setConsent("AGREE");
+        registerRequest.setLocale(locale);
 
         String mockTransactionID = "123456789";
 
@@ -1513,6 +1597,7 @@ public class RegistrationServiceTest {
         registerRequest.setUsername("+855219718732");
         registerRequest.setPassword("123123");
         registerRequest.setConsent("AGREE");
+        registerRequest.setLocale(locale);
 
         String mockTransactionID = "123456789";
 
@@ -1536,6 +1621,7 @@ public class RegistrationServiceTest {
         registerRequest.setUsername("+855321444123");
         registerRequest.setPassword("123123");
         registerRequest.setConsent("AGREE");
+        registerRequest.setLocale(locale);
 
         String mockTransactionID = "123456789";
 
@@ -1566,6 +1652,7 @@ public class RegistrationServiceTest {
         registerRequest.setUsername("+855219718732");
         registerRequest.setPassword("123123");
         registerRequest.setConsent("DISAGREE");
+        registerRequest.setLocale(locale);
 
         String mockTransactionID = "123456789";
 
@@ -1596,6 +1683,7 @@ public class RegistrationServiceTest {
         registerRequest.setUsername("+855219718732");
         registerRequest.setPassword("123123");
         registerRequest.setConsent("DISAGREE");
+        registerRequest.setLocale(locale);
 
         String mockTransactionID = "123456789";
 
@@ -1962,6 +2050,54 @@ public class RegistrationServiceTest {
         ResetPasswordRequest resetPasswordRequest = new ResetPasswordRequest();
         resetPasswordRequest.setPassword("Password@2002");
         resetPasswordRequest.setIdentifier("+85512345678");
+        resetPasswordRequest.setLocale(locale);
+
+        RegistrationTransaction transaction = new RegistrationTransaction(resetPasswordRequest.getIdentifier(),
+                Purpose.RESET_PASSWORD);
+        transaction.setUin("mockUin");
+
+        Password.PasswordHash passwordHash = new Password.PasswordHash();
+        passwordHash.setSalt("mockSalt");
+        passwordHash.setHashValue("mockHashValue");
+        RestResponseWrapper<Password.PasswordHash> mockPasswordHashRestResponseWrapper = new RestResponseWrapper<>();
+        mockPasswordHashRestResponseWrapper.setResponse(passwordHash);
+
+        RestResponseWrapper<IdentityResponse> mockIdentityResponseRestResponseWrapper = new RestResponseWrapper<>();
+        IdentityResponse mockIdentityResponse = new IdentityResponse();
+        mockIdentityResponseRestResponseWrapper.setResponse(mockIdentityResponse);
+        mockIdentityResponse.setStatus(SignUpConstants.ACTIVATED);
+        mockIdentityResponseRestResponseWrapper.setErrors(new ArrayList<>());
+
+        when(cacheUtilService.getChallengeVerifiedTransaction(verifiedTransactionId)).thenReturn(transaction);
+        when(selfTokenRestTemplate.exchange(
+                eq(generateHashEndpoint),
+                eq(HttpMethod.POST),
+                any(HttpEntity.class),
+                any(ParameterizedTypeReference.class)))
+                .thenReturn(new ResponseEntity<>(mockPasswordHashRestResponseWrapper, HttpStatus.OK));
+        when(selfTokenRestTemplate.exchange(
+                eq(identityEndpoint),
+                eq(HttpMethod.PATCH),
+                any(HttpEntity.class),
+                any(ParameterizedTypeReference.class)))
+                .thenReturn(new ResponseEntity<>(mockIdentityResponseRestResponseWrapper, HttpStatus.OK));
+
+        when(notificationHelper.sendSMSNotificationAsync(any(), any(), any(), any()))
+                .thenReturn(new CompletableFuture<>());
+
+        RegistrationStatusResponse registrationStatusResponse = registrationService.updatePassword(resetPasswordRequest,
+                verifiedTransactionId);
+        Assert.assertEquals(RegistrationStatus.PENDING, registrationStatusResponse.getStatus());
+    }
+
+    @Test
+    public void doUpdatePassword_withNullLocale_thenSuccess() {
+
+        String verifiedTransactionId = "VERIFIED_TRANSACTION_ID";
+        ResetPasswordRequest resetPasswordRequest = new ResetPasswordRequest();
+        resetPasswordRequest.setPassword("Password@2002");
+        resetPasswordRequest.setIdentifier("+85512345678");
+        resetPasswordRequest.setLocale(null);
 
         RegistrationTransaction transaction = new RegistrationTransaction(resetPasswordRequest.getIdentifier(),
                 Purpose.RESET_PASSWORD);
@@ -2008,6 +2144,7 @@ public class RegistrationServiceTest {
         ResetPasswordRequest resetPasswordRequest = new ResetPasswordRequest();
         resetPasswordRequest.setPassword("Password@2002");
         resetPasswordRequest.setIdentifier("+85512345678");
+        resetPasswordRequest.setLocale(locale);
 
         try {
             registrationService.updatePassword(resetPasswordRequest, verifiedTransactionId);
@@ -2024,6 +2161,7 @@ public class RegistrationServiceTest {
         ResetPasswordRequest resetPasswordRequest = new ResetPasswordRequest();
         resetPasswordRequest.setPassword("Password@2002");
         resetPasswordRequest.setIdentifier("+85512345678");
+        resetPasswordRequest.setLocale(locale);
 
         RegistrationTransaction transaction = new RegistrationTransaction("****", Purpose.RESET_PASSWORD);
         transaction.setUin("mockUin");
@@ -2044,6 +2182,7 @@ public class RegistrationServiceTest {
         ResetPasswordRequest resetPasswordRequest = new ResetPasswordRequest();
         resetPasswordRequest.setPassword("Password@2002");
         resetPasswordRequest.setIdentifier("+85512345678");
+        resetPasswordRequest.setLocale(locale);
 
         RegistrationTransaction transaction = new RegistrationTransaction(resetPasswordRequest.getIdentifier(),
                 Purpose.RESET_PASSWORD);
@@ -2084,6 +2223,7 @@ public class RegistrationServiceTest {
         ResetPasswordRequest resetPasswordRequest = new ResetPasswordRequest();
         resetPasswordRequest.setPassword("Password@2002");
         resetPasswordRequest.setIdentifier("+85512345678");
+        resetPasswordRequest.setLocale(locale);
 
         RegistrationTransaction transaction = new RegistrationTransaction(resetPasswordRequest.getIdentifier(),
                 Purpose.RESET_PASSWORD);
@@ -2126,6 +2266,7 @@ public class RegistrationServiceTest {
         ResetPasswordRequest resetPasswordRequest = new ResetPasswordRequest();
         resetPasswordRequest.setPassword("Password@2002");
         resetPasswordRequest.setIdentifier("+85512345678");
+        resetPasswordRequest.setLocale(locale);
 
         RegistrationTransaction transaction = new RegistrationTransaction(resetPasswordRequest.getIdentifier(),
                 Purpose.RESET_PASSWORD);

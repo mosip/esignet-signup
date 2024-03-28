@@ -175,7 +175,7 @@ export const SignUpPage = ({ settings }: SignUpPageProps) => {
           criticalError.errorCode
         ) && <SignUpPopover />}
       <Form {...methods}>
-        <form>{getSignUpStepContent(step)}</form>
+        <form noValidate>{getSignUpStepContent(step)}</form>
       </Form>
     </>
   );

@@ -1,14 +1,29 @@
+import { useCallback } from "react";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { useTranslation } from "react-i18next";
 
 import { ReactComponent as TranslationIcon } from "~assets/svg/translation-icon.svg";
-import { langFontMapping, languages_2Letters } from "~constants/language";
 import { cn } from "~utils/cn";
+import {
+  langFontMappingSelector,
+  languages2LettersSelector,
+  useLanguageStore,
+} from "~/useLanguageStore";
 
 import { Icons } from "./ui/icons";
 
 export const Language = () => {
   const { i18n } = useTranslation();
+  const { languages_2Letters, langFontMapping } = useLanguageStore(
+    useCallback(
+      (state) => ({
+        languages_2Letters: languages2LettersSelector(state),
+        langFontMapping: langFontMappingSelector(state),
+      }),
+      []
+    )
+  );
+
   const ui_locales = "ui_locales";
 
   const handleLanguageChange = (language: string) => {
@@ -49,7 +64,7 @@ export const Language = () => {
     <div className="flex">
       <TranslationIcon className="mr-2 h-9 w-9" />
       <DropdownMenu.Root>
-        <DropdownMenu.Trigger asChild>
+        <DropdownMenu.Trigger id="language-select-button" asChild>
           <span
             className="inline-flex items-center justify-center bg-white text-[14px] outline-none hover:cursor-pointer"
             aria-label="Customise options"
@@ -69,6 +84,7 @@ export const Language = () => {
           >
             {Object.entries(languages_2Letters).map(([key, value]) => (
               <DropdownMenu.Item
+                id={key+"_language"}
                 key={key}
                 className={cn(
                   "group relative flex cursor-pointer select-none items-center py-2 text-[14px] leading-none outline-none first:border-b-[1px] hover:font-bold data-[disabled]:pointer-events-none",

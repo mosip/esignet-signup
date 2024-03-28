@@ -1,0 +1,695 @@
+openapi: 3.1.0
+info:
+  version: '1.0'
+  title: e-Signet Signup Portal APIs
+  summary: Signup portal for e-Signet one-login system.
+  description: ''
+  contact:
+    name: MOSIP Team
+    email: info@mosip.io
+    url: 'https://www.mosip.io/'
+  license:
+    url: 'https://www.mozilla.org/en-US/MPL/2.0/'
+    name: MPL-2.0
+servers:
+  - url: 'https://camdgc-dev.mosip.net/v1/signup'
+paths:
+  /settings:
+    get:
+      tags:
+        - UI
+      summary: UI Settings Endpoint
+      description: |-
+        Endpoint to get the configurations required by the signup UI.
+
+        All these UI configurations should be taken from the configurations.
+      operationId: get-details
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  responseTime:
+                    type: string
+                  response:
+                    type: object
+                    properties:
+                      configs:
+                        $ref: '#/components/schemas/UIConfigMap'
+                        description: Its key-value pairs of ui configuration.
+                  errors:
+                    type:
+                      - array
+                      - 'null'
+                    description: List of errors in case of request validation / processing failure in the server.
+                    items:
+                      type: object
+                      properties:
+                        errorCode:
+                          type: string
+                        errorMessage:
+                          type: string
+              examples:
+                Example 1:
+                  value:
+                    responseTime: string
+                    response:
+                      configs:
+                        identifier.pattern: string
+                        identifier.prefix: string
+                        captcha.site.key: string
+                        otp.length: 0
+                        otp.secret: true
+                        password.pattern: string
+                        challenge.timeout: 0
+                        resend.attempts: 0
+                        resend.delay: 0
+                        fullname.pattern: string
+                        status.request.delay: 0
+                        status.request.limit: 0
+                        popup.timeout: 0
+                        identifier.allowed.characters: string
+                        identifier.length.min: 0
+                        identifier.length.max: 0
+                        fullname.allowed.characters: string
+                        fullname.length.min: 0
+                        fullname.length.max: 0
+                        otp.blocked: 0
+                    errors:
+                      - errorCode: string
+                        errorMessage: string
+      servers:
+        - url: 'https://camdgc-dev.mosip.net/v1/signup'
+  /registration/generate-challenge:
+    post:
+      tags:
+        - UI
+      summary: Generate Challenge Endpoint
+      description: |-
+        Endpoint to generate challenge for the input identifier of the user. 
+        For eg: if the provided identifier is phone number, OTP is sent to phone. If the identifier is email, OTP is mailed to the given emailID.
+
+        TransactionId is created and stored in the cache to maintain the state of the challenge specific to input user identifier.
+
+        1. Should identify if the provided identifier is phone number or emailID.
+        2. Response header should set-cookie with transactionId
+        3. On success, return status as SUCCESS
+        4. In Failure, response is set to null, errors list if set with specific errorCode.
+        5. if regenerate is true, then a valid transactionId is excepted in the cookie to re-generate the challenge in the existing transaction.
+        6. Purpose of the challenge is set on starting of new transaction. Challenge generated for "Registration" should be used only for registration process.
+        And challenge generated for RESET_PASSWORD should be used only to reset password.
+      operationId: post-send-otp
+      parameters:
+        - name: X-XSRF-TOKEN
+          in: header
+          description: CSRF token as set in cookie key 'XSRF-TOKEN'
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                requestTime:
+                  type: string
+                  format: date-time
+                request:
+                  type: object
+                  properties:
+                    identifier:
+                      type: string
+                      description: Phone number to which the OTP should be triggered.
+                    captchaToken:
+                      type: string
+                      description: 'Captcha token, if enabled.'
+                    locale:
+                      type: string
+                      description: |-
+                        Locale to be used to send the challege in the notification to the user.
+                        If not provided default notification language is considered.
+                    regenerate:
+                      type: boolean
+                      description: |-
+                        True - when we should resend the challenge for existing transaction.
+                        False - when a new transaction has to be started.
+                        Default value is False.
+                    purpose:
+                      type: string
+                      enum:
+                        - REGISTRATION
+                        - RESET_PASSWORD
+                      description: Marks the purpose of this challenge in the transaction.
+                  required:
+                    - identifier
+                    - captchaToken
+                    - purpose
+              required:
+                - requestTime
+                - request
+            examples:
+              Example 1:
+                value:
+                  requestTime: '2011-10-05T14:48:00.000Z'
+                  request:
+                    identifier: string
+                    captchaToken: string
+                    locale: string
+                    regenerate: true
+                    purpose: REGISTRATION
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  responseTime:
+                    type: string
+                  response:
+                    type: object
+                    description: 'If successful otp details, or null if failed to deliver OTP.'
+                    properties:
+                      status:
+                        const: SUCCESS
+                        description: Transaction Identifier.
+                  errors:
+                    type: array
+                    description: List of Errors in case of request validation / processing failure in the server.
+                    items:
+                      type: object
+                      properties:
+                        errorCode:
+                          type: string
+                          enum:
+                            - invalid_transaction
+                            - invalid_otp_channel
+                            - invalid_captcha
+                            - send_otp_failed
+                            - active_otp_found
+                            - unknown_error
+                        errorMessage:
+                          type: string
+              examples:
+                Example 1:
+                  value:
+                    responseTime: '2023-11-03T11:03:30.000Z'
+                    response:
+                      status: SUCCESS
+                    errors: []
+          headers:
+            set-cookie:
+              schema:
+                type: string
+                example: 'Set-Cookie: TRANSACTION_ID=2GFKHGAEyyx6lEhB4ObBzpPuaTrTlKy3BK0Izl3taug; Max-Age=600; Secure; HttpOnly'
+              description: Transaction Id is set in the cookie
+      servers:
+        - url: 'https://camdgc-dev.mosip.net/v1/signup'
+  /registration/verify-challenge:
+    post:
+      tags:
+        - UI
+      summary: Challenge Verification Endpoint
+      description: |-
+        Endpoint to verify with the provided challenge w.r.t the transaction ID.
+
+        1. TransactionId from the cookie is validated.
+        2. validate the challenge.
+        3. identifier in the request MUST match the identifier stored in the cache.
+        3. On success, return status as SUCCESS
+        4. In Failure, response is set to null, errors list if set with specific errorCode.
+
+        TransactionId and setting the same in the new cookie, post successful challenge verification.
+        Old cookie is removed by setting age to 0.
+      operationId: post-verify-challenge
+      parameters:
+        - name: X-XSRF-TOKEN
+          in: header
+          description: CSRF token as set in cookie key 'XSRF-TOKEN'
+          required: true
+          schema:
+            type: string
+        - name: TRANSACTION_ID
+          in: cookie
+          description: Transaction Id set after successful generate-challenge response
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                requestTime:
+                  type: string
+                  format: date-time
+                request:
+                  type: object
+                  properties:
+                    identifier:
+                      type: string
+                    challengeInfo:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/ChallengeInfo'
+                  required:
+                    - identifier
+                    - challengeInfo
+              required:
+                - requestTime
+                - request
+            examples:
+              Example 1:
+                value:
+                  requestTime: '2011-10-05T14:48:00.000Z'
+                  request:
+                    identifier: string
+                    challengeInfo:
+                      - challenge: string
+                        format: alpha-numeric
+                        type: OTP
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  responseTime:
+                    type: string
+                  response:
+                    type: object
+                    properties:
+                      status:
+                        const: SUCCESS
+                        description: Transaction Identifier.
+                  errors:
+                    type: array
+                    description: List of Errors in case of request validation / processing failure in Idp server.
+                    items:
+                      type: object
+                      properties:
+                        errorCode:
+                          type: string
+                          enum:
+                            - invalid_transaction
+                            - challenge_failed
+                            - invalid_challenge_type
+                            - invalid_challenge_format
+                            - unknown_error
+                            - already-registered
+                        errorMessage:
+                          type: string
+              examples:
+                Example 1:
+                  value:
+                    responseTime: '2023-11-03T11:03:49.770Z'
+                    response:
+                      status: SUCCESS
+                    errors: []
+          headers:
+            set-cookie:
+              schema:
+                type: string
+              description: Verified transaction Id to be set after successful challenge verification
+      servers:
+        - url: 'https://camdgc-dev.mosip.net/v1/signup'
+  /registration/register:
+    post:
+      tags:
+        - UI
+      summary: Register Endpoint
+      description: |-
+        Endpoint to register the individual.
+
+        1. username is with country code including + symbol if present.
+        2. if username is phone number, the same should be set as value to "phone" field.
+        3. Fields with no value should be set to null in userInfo.
+
+        Note: We should clearly convey that username contains country code in the UI after registration.
+      operationId: post-register
+      parameters:
+        - name: X-XSRF-TOKEN
+          in: header
+          description: CSRF token as set in cookie key 'XSRF-TOKEN'
+          required: true
+          schema:
+            type: string
+        - name: VERIFIED_TRANSACTION_ID
+          in: cookie
+          description: Transaction Id set after successful verify-challenge response
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                requestTime:
+                  type: string
+                  format: date-time
+                request:
+                  type: object
+                  properties:
+                    username:
+                      type: string
+                      description: Unique identifier to be registered.
+                    password:
+                      type: string
+                    consent:
+                      type: string
+                    userInfo:
+                      $ref: '#/components/schemas/UserInfoMap'
+                      description: 'This is a map, every key-value here is a field published in the identity-schema.'
+                  required:
+                    - username
+                    - password
+                    - consent
+                    - userInfo
+              required:
+                - requestTime
+                - request
+            examples:
+              Example 1:
+                value:
+                  requestTime: '2023-11-03T11:03:49.770Z'
+                  request:
+                    username: '85534567890'
+                    password: <plain-password>
+                    consent: AGREE
+                    userInfo:
+                      fullName:
+                        - language: khm
+                          value: អានុសា
+                      phone: '+85534567890'
+                      preferredLang: eng
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  responseTime:
+                    type: string
+                  response:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        enum:
+                          - PENDING
+                          - COMPLETED
+                  errors:
+                    type: array
+                    description: List of Errors in case of request validation / processing failure in the server.
+                    items:
+                      type: object
+                      properties:
+                        errorCode:
+                          type: string
+                          enum:
+                            - invalid_transaction
+                            - unknown_error
+                        errorMessage:
+                          type: string
+              examples:
+                Example 1:
+                  value:
+                    responseTime: '2023-11-03T11:03:49.770Z'
+                    response:
+                      status: PENDING
+                    errors: []
+      servers:
+        - url: 'https://camdgc-dev.mosip.net/v1/signup'
+  /registration/status:
+    get:
+      tags:
+        - UI
+      summary: Registration Status Endpoint
+      description: |-
+        Endpoint to get the latest registration/reset-password status.
+
+        1. validate the verified_transaction id in the cookie.
+        2. check status of each handle registered.
+        3. Once the status of all the registered handles are in end statuses (Completed / Failed). Mark the 
+        transaction as completed.
+        4. Return back the final status in the response.
+      operationId: get-registration-status
+      parameters:
+        - name: X-XSRF-TOKEN
+          in: header
+          description: CSRF token as set in cookie key 'XSRF-TOKEN'
+          required: true
+          schema:
+            type: string
+        - name: VERIFIED_TRANSACTION_ID
+          in: cookie
+          description: Transaction Id set after successful verify-challenge response
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  responseTime:
+                    type: string
+                  response:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        enum:
+                          - PENDING
+                          - COMPLETED
+                          - FAILED
+                  errors:
+                    type: array
+                    description: List of Errors in case of request validation / processing failure in the server.
+                    items:
+                      type: object
+                      properties:
+                        errorCode:
+                          type: string
+                          enum:
+                            - invalid_transaction
+                            - unknown_error
+                        errorMessage:
+                          type: string
+              examples:
+                Example 1:
+                  value:
+                    responseTime: '2023-11-03T11:03:49.770Z'
+                    response:
+                      status: COMPLETED
+                    errors: []
+      servers:
+        - url: 'https://camdgc-dev.mosip.net/v1/signup'
+  /reset-password:
+    post:
+      tags:
+        - UI
+      summary: Reset password Endpoint
+      description: |-
+        Endpoint to reset password for already registered users.
+
+
+        1. TransactionId from the cookie is validated.
+        2. identifier in the request MUST match the identifier stored in the cache.
+        3. Retrieve the identity from credential-service using the identifier.
+        4. Fetch the uin from the retrieved identity and use to call the updateIdentity endpoint.
+        5. Generate password hash for the provided new password.
+        6. On success, return status as PENDING
+        7. In Failure, response is set to null, errors list if set with specific errorCode.
+
+        registration/status endpoint should be invoked to get the latest status of the pwd reset.
+      operationId: post-reset-password
+      parameters:
+        - name: X-XSRF-TOKEN
+          in: header
+          description: CSRF token as set in cookie key 'XSRF-TOKEN'
+          required: true
+          schema:
+            type: string
+        - name: VERIFIED_TRANSACTION_ID
+          in: cookie
+          description: Transaction Id set after successful verify-challenge response
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                requestTime:
+                  type: string
+                  pattern: 'yyyy-MM-dd''T''HH:mm:ss.SSS''Z'''
+                request:
+                  type: object
+                  properties:
+                    identifier:
+                      type: string
+                    password:
+                      type: string
+                  required:
+                    - identifier
+                    - password
+              required:
+                - requestTime
+                - request
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  responseTime:
+                    type: string
+                  response:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        enum:
+                          - PENDING
+                          - COMPLETED
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        errorCode:
+                          type: string
+                          enum:
+                            - invalid_transaction
+                            - invalid_identifier
+                            - invalid_password
+                            - invalid_request
+                            - reset_pwd_failed
+                        errorMessage:
+                          type: string
+      servers:
+        - url: 'https://camdgc-dev.mosip.net/v1/signup'
+tags:
+  - name: UI
+    description: UI related API.
+components:
+  securitySchemes:
+    Authorization-Bearer:
+      type: http
+      scheme: bearer
+  schemas:
+    UIConfigMap:
+      type: object
+      title: UIConfigMap
+      description: Key-value pairs as configured in signup server.
+      properties:
+        identifier.pattern:
+          type: string
+        identifier.prefix:
+          type: string
+        captcha.site.key:
+          type: string
+        otp.length:
+          type: integer
+        otp.secret:
+          type: boolean
+        password.pattern:
+          type: string
+        challenge.timeout:
+          type: integer
+        resend.attempts:
+          type: integer
+        resend.delay:
+          type: integer
+        fullname.pattern:
+          type: string
+        status.request.delay:
+          type: integer
+        status.request.limit:
+          type: integer
+        popup.timeout:
+          type: integer
+        identifier.allowed.characters:
+          type: string
+        identifier.length.min:
+          type: integer
+        identifier.length.max:
+          type: integer
+        fullname.allowed.characters:
+          type: string
+        fullname.length.min:
+          type: integer
+        fullname.length.max:
+          type: integer
+        otp.blocked:
+          type: integer
+          description: 'Number of seconds, a mobile number will not be allowed to register.'
+    ChallengeInfo:
+      type: object
+      title: ChallengeInfo
+      description: Model to take any type of challenge from the end user as part of challenge verification request.
+      properties:
+        challenge:
+          type: string
+          description: Actual challenge as string.
+        format:
+          type: string
+          enum:
+            - alpha-numeric
+            - base64url-encoded-json
+          description: Format of the challenge provided.
+        type:
+          type: string
+          enum:
+            - OTP
+            - KBA
+      required:
+        - challenge
+        - format
+        - type
+    UserInfoMap:
+      type: object
+      title: UserInfoMap
+      properties:
+        fullName:
+          type: array
+          items:
+            $ref: '#/components/schemas/LanguageTaggedValue'
+        phone:
+          type: string
+        preferredLang:
+          type: string
+      required:
+        - fullName
+        - phone
+    LanguageTaggedValue:
+      type: object
+      title: LanguageTaggedValue
+      properties:
+        language:
+          type: string
+        value:
+          type: string
