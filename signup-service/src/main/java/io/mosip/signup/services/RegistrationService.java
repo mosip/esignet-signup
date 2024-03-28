@@ -251,7 +251,9 @@ public class RegistrationService {
         transaction.setRegistrationStatus(RegistrationStatus.PENDING);
         cacheUtilService.setStatusCheckTransaction(transactionId, transaction);
 
-        notificationHelper.sendSMSNotificationAsync(registerRequest.getUserInfo().getPhone(), transaction.getLocale(),
+        String locale = registerRequest.getLocale() == null ? transaction.getLocale() : registerRequest.getLocale();
+
+        notificationHelper.sendSMSNotificationAsync(registerRequest.getUserInfo().getPhone(), locale,
                         REGISTRATION_SMS_NOTIFICATION_TEMPLATE_KEY, null)
                 .thenAccept(notificationResponseRestResponseWrapper ->
                     log.debug(notificationLogging, notificationResponseRestResponseWrapper)
@@ -324,7 +326,9 @@ public class RegistrationService {
         transaction.setRegistrationStatus(RegistrationStatus.PENDING);
         cacheUtilService.setStatusCheckTransaction(transactionId, transaction);
 
-        notificationHelper.sendSMSNotificationAsync(resetPasswordRequest.getIdentifier(), transaction.getLocale(),
+        String locale = resetPasswordRequest.getLocale() == null ? transaction.getLocale() : resetPasswordRequest.getLocale();
+
+        notificationHelper.sendSMSNotificationAsync(resetPasswordRequest.getIdentifier(), locale,
                         FORGOT_PASSWORD_SMS_NOTIFICATION_TEMPLATE_KEY, null)
                 .thenAccept(notificationResponseRestResponseWrapper ->
                     log.debug(notificationLogging, notificationResponseRestResponseWrapper)

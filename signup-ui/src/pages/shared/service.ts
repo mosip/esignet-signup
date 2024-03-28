@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+
 import { ApiService } from "~services/api.service";
 import {
   GenerateChallengeRequestDto,
@@ -31,10 +33,10 @@ export const verifyChallenge = async (
   ).then(({ data }) => data);
 };
 
-export const register = async (register: RegistrationRequestDto) => {
-  return ApiService.post("/registration/register", register).then(
-    ({ data }) => data
-  );
+export const register = async (
+  register: RegistrationRequestDto
+) => {
+  return ApiService.post("/registration/register", register).then(({ data }) => data);
 };
 
 export const getRegistrationStatus =
@@ -51,8 +53,8 @@ export const getRegistrationStatus =
     });
   };
 
-export const resetPassword = async (newUserInfo: ResetPasswordRequestDto) => {
-  return ApiService.post("/reset-password", newUserInfo).then(
-    ({ data }) => data
-  );
+export const resetPassword = async (
+  newUserInfo: ResetPasswordRequestDto
+) => {
+  return ApiService.post("/reset-password", newUserInfo).then(({ data }) => data);
 };
