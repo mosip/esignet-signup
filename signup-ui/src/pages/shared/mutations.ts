@@ -1,4 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
+import { alpha2ToAlpha3T } from "@cospired/i18n-iso-languages"
 
 import { ApiError } from "~typings/core";
 import {
@@ -55,14 +57,18 @@ export const useVerifyChallenge = () => {
 };
 
 export const useRegister = () => {
+  const { i18n } = useTranslation();
+  const locale = alpha2ToAlpha3T(i18n.language) ?? "khm";
+
   const registerMutation = useMutation<
     RegistrationResponseDto,
     ApiError,
     RegistrationRequestDto
   >({
     mutationKey: keys.registration,
-    mutationFn: (registrationRequestDto: RegistrationRequestDto) =>
-      register(registrationRequestDto),
+    mutationFn: (registrationRequestDto: RegistrationRequestDto) =>{
+      registrationRequestDto.request.locale = locale
+      return register(registrationRequestDto)},
     gcTime: Infinity,
   });
 
@@ -70,14 +76,18 @@ export const useRegister = () => {
 };
 
 export const useResetPassword = () => {
+  const { i18n } = useTranslation();
+  const locale = alpha2ToAlpha3T(i18n.language) ?? "khm";
+
   const resetPasswordMutation = useMutation<
     ResetPasswordResponseDto,
     ApiError,
     ResetPasswordRequestDto
   >({
     mutationKey: keys.resetPassword,
-    mutationFn: (resetPasswordRequestDto: ResetPasswordRequestDto) =>
-      resetPassword(resetPasswordRequestDto),
+    mutationFn: (resetPasswordRequestDto: ResetPasswordRequestDto) => {
+        resetPasswordRequestDto.request.locale = locale
+        return resetPassword(resetPasswordRequestDto)},
     gcTime: Infinity,
   });
 

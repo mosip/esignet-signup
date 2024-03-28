@@ -98,6 +98,7 @@ export const AccountSetup = ({ settings, methods }: AccountSetupProps) => {
               }${getValues("phone")}`,
               preferredLang: "eng",
             },
+            locale: null
           },
         };
 

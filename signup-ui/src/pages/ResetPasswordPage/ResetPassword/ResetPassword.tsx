@@ -104,6 +104,7 @@ export const ResetPassword = ({ methods, settings }: ResetPasswordProps) => {
               settings.response.configs["identifier.prefix"]
             }${getValues("username")}`,
             password: getValues("newPassword"),
+            locale: null
           },
         };
 
