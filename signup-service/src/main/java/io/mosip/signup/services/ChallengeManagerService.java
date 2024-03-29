@@ -31,9 +31,11 @@ public class ChallengeManagerService {
     @Value("${mosip.signup.supported.generate-challenge-type:OTP}")
     private String supportedGenerateChallengeType;
 
+    @Value("mosip.signup.supported.generate-challenge-type")
+    private String generateChallengeType;
 
     public String generateChallenge(RegistrationTransaction transaction) throws SignUpException {
-        if (supportedGenerateChallengeType.equals("OTP")) {
+        if (supportedGenerateChallengeType.equals(generateChallengeType)) {
             return generateOTPChallenge(transaction.getChallengeTransactionId());
         }
         throw new SignUpException(ErrorConstants.UNSUPPORTED_CHALLENGE_TYPE);

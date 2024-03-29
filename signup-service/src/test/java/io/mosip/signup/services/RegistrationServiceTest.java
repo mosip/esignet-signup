@@ -78,6 +78,7 @@ public class RegistrationServiceTest {
     private final String generateHashEndpoint = "generateHashEndpoint";
     private final String getIdentityEndpoint = "getIdentityEndpoint";
     private final String getUinEndpoint = "getUinEndpoint";
+    private final String generateChallengeType = "OTP";
 
     @Before
     public void setUp() {
@@ -93,6 +94,7 @@ public class RegistrationServiceTest {
         ReflectionTestUtils.setField(registrationService, getIdentityEndpoint, getIdentityEndpoint);
         ReflectionTestUtils.setField(registrationService, "objectMapper", new ObjectMapper());
         ReflectionTestUtils.setField(registrationService, "otpLength", 6);
+        ReflectionTestUtils.setField(registrationService, "generateChallengeType", generateChallengeType);
     }
 
     @Test

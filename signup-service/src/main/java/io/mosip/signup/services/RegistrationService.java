@@ -119,6 +119,9 @@ public class RegistrationService {
     @Value("${mosip.signup.get-registration-status.endpoint}")
     private String getRegistrationStatusEndpoint;
 
+    @Value("mosip.signup.supported.generate-challenge-type")
+    private String generateChallengeType;
+
     private final String notificationLogging = "Notification response -> {}";
 
     /**
@@ -197,7 +200,7 @@ public class RegistrationService {
         }
 
         Optional<ChallengeInfo> otpChallengeInfo = verifyChallengeRequest.getChallengeInfo()
-                .stream().filter(challengeInfo -> challengeInfo.getType().equals("OTP")).findFirst();
+                .stream().filter(challengeInfo -> challengeInfo.getType().equals(generateChallengeType)).findFirst();
 
         if(otpChallengeInfo.isEmpty()) throw new SignUpException(ErrorConstants.INVALID_CHALLENGE);
 
@@ -613,7 +616,7 @@ public class RegistrationService {
     }
 
     private void validateChallengeFormatAndType(ChallengeInfo challengeInfo) throws SignUpException{
-        if (challengeInfo.getType().equals("OTP") && !challengeInfo.getFormat().equals("alpha-numeric")){
+        if (challengeInfo.getType().equals(generateChallengeType) && !challengeInfo.getFormat().equals("alpha-numeric")){
             throw new SignUpException(ErrorConstants.CHALLENGE_FORMAT_AND_TYPE_MISMATCH);
         }
 
