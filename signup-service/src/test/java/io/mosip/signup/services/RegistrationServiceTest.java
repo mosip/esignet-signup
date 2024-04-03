@@ -1,6 +1,7 @@
 package io.mosip.signup.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.mosip.esignet.core.dto.ResponseWrapper;
 import io.mosip.esignet.core.util.IdentityProviderUtil;
 import io.mosip.signup.dto.*;
 import io.mosip.signup.exception.*;
@@ -33,12 +34,15 @@ import org.springframework.web.client.RestTemplate;
 import java.io.IOException;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+
+import javax.persistence.Id;
 import javax.servlet.http.HttpServletResponse;
 
 import io.mosip.esignet.core.exception.EsignetException;
@@ -52,6 +56,9 @@ public class RegistrationServiceTest {
 
     @InjectMocks
     RegistrationService registrationService;
+
+    @Mock
+    CallEndpointService callEndpointService;
 
     @Mock
     CacheUtilService cacheUtilService;
@@ -116,8 +123,11 @@ public class RegistrationServiceTest {
         registrationTransaction.setChallengeHash(challengeHash);
         registrationTransaction.setIdentifier(verifyChallengeRequest.getIdentifier());
         registrationTransaction.setLastRetryAt(LocalDateTime.now(ZoneOffset.UTC));
-        when(cacheUtilService.getChallengeGeneratedTransaction(mockTransactionId)).thenReturn(registrationTransaction);
 
+        RestResponseWrapper<IdentityResponse> restResponseWrapper = new RestResponseWrapper<>();
+        ResponseEntity<RestResponseWrapper> responseEntityOfGetIdentityEndpoint = new ResponseEntity<>(restResponseWrapper,HttpStatus.OK);
+
+        when(cacheUtilService.getChallengeGeneratedTransaction(mockTransactionId)).thenReturn(registrationTransaction);
 
         when(selfTokenRestTemplate.exchange(
                 eq(getIdentityEndpoint),
@@ -126,6 +136,7 @@ public class RegistrationServiceTest {
                 any(ParameterizedTypeReference.class)))
                 .thenReturn(new ResponseEntity<>(new RestResponseWrapper<>(), HttpStatus.OK));
 
+        when(callEndpointService.callEndpoint(any(),any(), eq(getIdentityEndpoint), any())).thenReturn(responseEntityOfGetIdentityEndpoint.getBody());
 
         VerifyChallengeResponse verifyChallengeResponse = registrationService.
                 verifyChallenge(verifyChallengeRequest, mockTransactionId);
@@ -167,6 +178,8 @@ public class RegistrationServiceTest {
                 any(ParameterizedTypeReference.class)))
                 .thenReturn(new ResponseEntity<>(restResponseWrapper, HttpStatus.OK));
 
+        ResponseEntity<RestResponseWrapper> responseEntityOfGetIdentityEndpoint = new ResponseEntity<>(restResponseWrapper,HttpStatus.OK);
+        when(callEndpointService.callEndpoint(any(),any(), eq(getIdentityEndpoint), any())).thenReturn(responseEntityOfGetIdentityEndpoint.getBody());
 
         try {
             registrationService.verifyChallenge(verifyChallengeRequest, mockTransactionId);
@@ -213,6 +226,8 @@ public class RegistrationServiceTest {
                 any(ParameterizedTypeReference.class)))
                 .thenReturn(new ResponseEntity<>(restResponseWrapper, HttpStatus.OK));
 
+        ResponseEntity<RestResponseWrapper> responseEntityOfGetIdentityEndpoint = new ResponseEntity<>(restResponseWrapper,HttpStatus.OK);
+        when(callEndpointService.callEndpoint(any(),any(), eq(getIdentityEndpoint), any())).thenReturn(responseEntityOfGetIdentityEndpoint.getBody());
 
         try {
             registrationService.verifyChallenge(verifyChallengeRequest, mockTransactionId);
@@ -380,6 +395,8 @@ public class RegistrationServiceTest {
                 any(ParameterizedTypeReference.class)))
                 .thenReturn(new ResponseEntity<>(restResponseWrapper, HttpStatus.OK));
 
+        ResponseEntity<RestResponseWrapper> responseEntityOfGetIdentityEndpoint = new ResponseEntity<>(restResponseWrapper,HttpStatus.OK);
+        when(callEndpointService.callEndpoint(any(),any(), eq(getIdentityEndpoint), any())).thenReturn(responseEntityOfGetIdentityEndpoint.getBody());
 
         try {
             registrationService.verifyChallenge(verifyChallengeRequest, mockTransactionId);
@@ -439,6 +456,8 @@ public class RegistrationServiceTest {
                 any(ParameterizedTypeReference.class)))
                 .thenReturn(new ResponseEntity<>(restResponseWrapper, HttpStatus.OK));
 
+        ResponseEntity<RestResponseWrapper> responseEntityOfGetIdentityEndpoint = new ResponseEntity<>(restResponseWrapper,HttpStatus.OK);
+        when(callEndpointService.callEndpoint(any(),any(), eq(getIdentityEndpoint), any())).thenReturn(responseEntityOfGetIdentityEndpoint.getBody());
 
         try {
             registrationService.verifyChallenge(verifyChallengeRequest, mockTransactionId);
@@ -498,6 +517,8 @@ public class RegistrationServiceTest {
                 any(ParameterizedTypeReference.class)))
                 .thenReturn(new ResponseEntity<>(restResponseWrapper, HttpStatus.OK));
 
+        ResponseEntity<RestResponseWrapper> responseEntityOfGetIdentityEndpoint = new ResponseEntity<>(restResponseWrapper,HttpStatus.OK);
+        when(callEndpointService.callEndpoint(any(),any(), eq(getIdentityEndpoint), any())).thenReturn(responseEntityOfGetIdentityEndpoint.getBody());
 
         VerifyChallengeResponse verifyChallengeResponse = registrationService.
                 verifyChallenge(verifyChallengeRequest, mockTransactionId);
@@ -586,6 +607,9 @@ public class RegistrationServiceTest {
                 any(ParameterizedTypeReference.class)))
                 .thenReturn(new ResponseEntity<>(restResponseWrapper, HttpStatus.OK));
 
+        ResponseEntity<RestResponseWrapper> responseEntityOfGetIdentityEndpoint = new ResponseEntity<>(restResponseWrapper,HttpStatus.OK);
+        when(callEndpointService.callEndpoint(any(),any(), eq(getIdentityEndpoint), any())).thenReturn(responseEntityOfGetIdentityEndpoint.getBody());
+
         try {
             registrationService.verifyChallenge(verifyChallengeRequest, mockTransactionId);
             Assert.fail();
@@ -637,6 +661,9 @@ public class RegistrationServiceTest {
                 eq(null),
                 any(ParameterizedTypeReference.class)))
                 .thenReturn(new ResponseEntity<>(restResponseWrapper, HttpStatus.OK));
+
+        ResponseEntity<RestResponseWrapper> responseEntityOfGetIdentityEndpoint = new ResponseEntity<>(restResponseWrapper,HttpStatus.OK);
+        when(callEndpointService.callEndpoint(any(),any(), eq(getIdentityEndpoint), any())).thenReturn(responseEntityOfGetIdentityEndpoint.getBody());
 
         try {
             registrationService.verifyChallenge(verifyChallengeRequest, mockTransactionId);
@@ -795,20 +822,27 @@ public class RegistrationServiceTest {
         when(cacheUtilService.getChallengeVerifiedTransaction(mockTransactionID))
                 .thenReturn(mockRegistrationTransaction);
 
-        IdentityResponse identityResponse = new IdentityResponse();
-        identityResponse.setStatus("ACTIVATED");
+//        IdentityResponse identityResponse = new IdentityResponse();
+//        identityResponse.setStatus("ACTIVATED");
+        HashMap<String, String> identityResponse = new HashMap<>();
+        identityResponse.put("status", "ACTIVATED");
+
         UINResponse uinResponse = new UINResponse();
         uinResponse.setUIN("mockUIN");
         Password.PasswordHash passwordHash = new Password.PasswordHash();
         passwordHash.setSalt("mockSalt");
         passwordHash.setHashValue("mockHashValue");
 
-        RestResponseWrapper<IdentityResponse> mockRestResponseWrapperAddIdentityResponse = new RestResponseWrapper<IdentityResponse>();
+        RestResponseWrapper<HashMap<String, String>> mockRestResponseWrapperAddIdentityResponse = new RestResponseWrapper<>();
         mockRestResponseWrapperAddIdentityResponse.setResponse(identityResponse);
         RestResponseWrapper<UINResponse> mockRestResponseWrapperUINResponse = new RestResponseWrapper<UINResponse>();
         mockRestResponseWrapperUINResponse.setResponse(uinResponse);
         RestResponseWrapper<Password.PasswordHash> mockRestResponseWrapperPasswordHash = new RestResponseWrapper<Password.PasswordHash>();
         mockRestResponseWrapperPasswordHash.setResponse(passwordHash);
+
+
+
+        ResponseEntity<RestResponseWrapper> responseEntity = new ResponseEntity<>(mockRestResponseWrapperPasswordHash,HttpStatus.OK);
 
         when(selfTokenRestTemplate.exchange(
                 eq(getUinEndpoint),
@@ -820,14 +854,27 @@ public class RegistrationServiceTest {
                 eq(HttpMethod.POST),
                 any(HttpEntity.class),
                 any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<>(mockRestResponseWrapperPasswordHash, HttpStatus.OK));
-        when(selfTokenRestTemplate.exchange(
-                eq(identityEndpoint),
-                eq(HttpMethod.POST),
-                any(HttpEntity.class),
-                any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<>(mockRestResponseWrapperAddIdentityResponse, HttpStatus.OK));
+//        when(selfTokenRestTemplate.exchange(
+//                eq(identityEndpoint),
+//                eq(HttpMethod.POST),
+//                any(HttpEntity.class),
+//                any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<>(mockRestResponseWrapperAddIdentityResponse, HttpStatus.OK));
 
         when(notificationHelper.sendSMSNotificationAsync(any(), any(), any(), any()))
                 .thenReturn(new CompletableFuture<>());
+
+        ResponseEntity<RestResponseWrapper> restResponseWrapperWithIdentityResponse =
+                new ResponseEntity<RestResponseWrapper>(mockRestResponseWrapperAddIdentityResponse, HttpStatus.OK);
+
+        when(callEndpointService.callEndpoint(any(),any(), eq(identityEndpoint), any())).thenReturn(
+                restResponseWrapperWithIdentityResponse.getBody());
+
+        when(callEndpointService.callEndpoint(any(),any(), eq(generateHashEndpoint), any())).thenReturn(responseEntity.getBody());
+
+        ResponseEntity<RestResponseWrapper> responseEntityOfGetUinEndpoint =
+                new ResponseEntity<>(mockRestResponseWrapperUINResponse,HttpStatus.OK);
+        when(callEndpointService.callEndpoint(any(),any(), eq(getUinEndpoint), any())).thenReturn(
+                responseEntityOfGetUinEndpoint.getBody());
 
         RegisterResponse registerResponse = registrationService.register(registerRequest, mockTransactionID);
         Assert.assertNotNull(registerResponse);
@@ -944,6 +991,11 @@ public class RegistrationServiceTest {
                 eq(null),
                 any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<>(mockRestResponseWrapperUINResponse, HttpStatus.OK));
 
+        ResponseEntity<RestResponseWrapper> responseEntityOfGetUinEndpoint =
+                new ResponseEntity<>(mockRestResponseWrapperUINResponse,HttpStatus.OK);
+        when(callEndpointService.callEndpoint(any(),any(), eq(getUinEndpoint), any())).thenReturn(
+                responseEntityOfGetUinEndpoint.getBody());
+
         try {
             registrationService.register(registerRequest, mockTransactionID);
             Assert.fail();
@@ -1032,6 +1084,11 @@ public class RegistrationServiceTest {
                 any(HttpEntity.class),
                 any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<>(null, HttpStatus.OK));
 
+        ResponseEntity<RestResponseWrapper> responseEntityOfGetUinEndpoint =
+                new ResponseEntity<>(mockRestResponseWrapperUINResponse,HttpStatus.OK);
+        when(callEndpointService.callEndpoint(any(),any(), eq(getUinEndpoint), any())).thenReturn(
+                responseEntityOfGetUinEndpoint.getBody());
+
         try {
             registrationService.register(registerRequest, mockTransactionID);
             Assert.fail();
@@ -1074,6 +1131,8 @@ public class RegistrationServiceTest {
         errors.add(new RestError("server_error", "server_error"));
         mockRestResponseWrapperPasswordHash.setErrors(errors);
 
+        ResponseEntity<RestResponseWrapper> responseEntity = new ResponseEntity<>(mockRestResponseWrapperPasswordHash,HttpStatus.OK);
+
         when(selfTokenRestTemplate.exchange(
                 eq(getUinEndpoint),
                 eq(HttpMethod.GET),
@@ -1084,6 +1143,13 @@ public class RegistrationServiceTest {
                 eq(HttpMethod.POST),
                 any(HttpEntity.class),
                 any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<>(mockRestResponseWrapperPasswordHash, HttpStatus.OK));
+        
+        when(callEndpointService.callEndpoint(any(),any(), eq(generateHashEndpoint), any())).thenReturn(responseEntity.getBody());
+
+        ResponseEntity<RestResponseWrapper> responseEntityOfGetUinEndpoint =
+                new ResponseEntity<>(mockRestResponseWrapperUINResponse,HttpStatus.OK);
+        when(callEndpointService.callEndpoint(any(),any(), eq(getUinEndpoint), any())).thenReturn(
+                responseEntityOfGetUinEndpoint.getBody());
 
         try {
             registrationService.register(registerRequest, mockTransactionID);
@@ -1135,6 +1201,11 @@ public class RegistrationServiceTest {
                 eq(HttpMethod.POST),
                 any(HttpEntity.class),
                 any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<>(mockRestResponseWrapperPasswordHash, HttpStatus.OK));
+
+        ResponseEntity<RestResponseWrapper> responseEntityOfGetUinEndpoint =
+                new ResponseEntity<>(mockRestResponseWrapperUINResponse,HttpStatus.OK);
+        when(callEndpointService.callEndpoint(any(),any(), eq(getUinEndpoint), any())).thenReturn(
+                responseEntityOfGetUinEndpoint.getBody());
 
         try{
             registrationService.register(registerRequest, mockTransactionID);
@@ -1190,6 +1261,11 @@ public class RegistrationServiceTest {
                 any(HttpEntity.class),
                 any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<>(mockRestResponseWrapperPasswordHash, HttpStatus.OK));
 
+        ResponseEntity<RestResponseWrapper> responseEntityOfGetUinEndpoint =
+                new ResponseEntity<>(mockRestResponseWrapperUINResponse,HttpStatus.OK);
+        when(callEndpointService.callEndpoint(any(),any(), eq(getUinEndpoint), any())).thenReturn(
+                responseEntityOfGetUinEndpoint.getBody());
+
         try{
             registrationService.register(registerRequest, mockTransactionID);
             Assert.fail();
@@ -1244,6 +1320,11 @@ public class RegistrationServiceTest {
                 any(HttpEntity.class),
                 any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<>(mockRestResponseWrapperPasswordHash, HttpStatus.OK));
 
+        ResponseEntity<RestResponseWrapper> responseEntityOfGetUinEndpoint =
+                new ResponseEntity<>(mockRestResponseWrapperUINResponse,HttpStatus.OK);
+        when(callEndpointService.callEndpoint(any(),any(), eq(getUinEndpoint), any())).thenReturn(
+                responseEntityOfGetUinEndpoint.getBody());
+
         try{
             registrationService.register(registerRequest, mockTransactionID);
             Assert.fail();
@@ -1287,6 +1368,8 @@ public class RegistrationServiceTest {
         RestResponseWrapper<Password.PasswordHash> mockRestResponseWrapperPasswordHash = new RestResponseWrapper<Password.PasswordHash>();
         mockRestResponseWrapperPasswordHash.setResponse(passwordHash);
 
+        ResponseEntity<RestResponseWrapper> responseEntity = new ResponseEntity<>(mockRestResponseWrapperPasswordHash,HttpStatus.OK);
+
         when(selfTokenRestTemplate.exchange(
                 eq(getUinEndpoint),
                 eq(HttpMethod.GET),
@@ -1302,6 +1385,13 @@ public class RegistrationServiceTest {
                 eq(HttpMethod.POST),
                 any(HttpEntity.class),
                 any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<>(null, HttpStatus.OK));
+
+        when(callEndpointService.callEndpoint(any(),any(), eq(generateHashEndpoint), any())).thenReturn(responseEntity.getBody());
+
+        ResponseEntity<RestResponseWrapper> responseEntityOfGetUinEndpoint =
+                new ResponseEntity<>(mockRestResponseWrapperUINResponse,HttpStatus.OK);
+        when(callEndpointService.callEndpoint(any(),any(), eq(getUinEndpoint), any())).thenReturn(
+                responseEntityOfGetUinEndpoint.getBody());
 
         try {
             registrationService.register(registerRequest, mockTransactionID);
@@ -1348,6 +1438,8 @@ public class RegistrationServiceTest {
         RestResponseWrapper<Password.PasswordHash> mockRestResponseWrapperPasswordHash = new RestResponseWrapper<Password.PasswordHash>();
         mockRestResponseWrapperPasswordHash.setResponse(passwordHash);
 
+        ResponseEntity<RestResponseWrapper> responseEntity = new ResponseEntity<>(mockRestResponseWrapperPasswordHash,HttpStatus.OK);
+
         when(selfTokenRestTemplate.exchange(
                 eq(getUinEndpoint),
                 eq(HttpMethod.GET),
@@ -1363,6 +1455,13 @@ public class RegistrationServiceTest {
                 eq(HttpMethod.POST),
                 any(HttpEntity.class),
                 any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<>(mockRestResponseWrapperIdentityResponse, HttpStatus.OK));
+
+        when(callEndpointService.callEndpoint(any(),any(), eq(generateHashEndpoint), any())).thenReturn(responseEntity.getBody());
+
+        ResponseEntity<RestResponseWrapper> responseEntityOfGetUinEndpoint =
+                new ResponseEntity<>(mockRestResponseWrapperUINResponse,HttpStatus.OK);
+        when(callEndpointService.callEndpoint(any(),any(), eq(getUinEndpoint), any())).thenReturn(
+                responseEntityOfGetUinEndpoint.getBody());
 
         try{
             registrationService.register(registerRequest, mockTransactionID);
@@ -1427,11 +1526,14 @@ public class RegistrationServiceTest {
                 any(HttpEntity.class),
                 any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<>(mockRestResponseWrapperIdentityResponse, HttpStatus.OK));
 
+        when(callEndpointService.callEndpoint(any(), any(), any(), any())).thenThrow(
+                new SignUpException(ErrorConstants.ADD_IDENTITY_FAILED));
+
         try {
             registrationService.register(registerRequest, mockTransactionID);
             Assert.fail();
         } catch (SignUpException signUpException) {
-            Assert.assertEquals("server_error", signUpException.getErrorCode());
+            Assert.assertEquals(ErrorConstants.ADD_IDENTITY_FAILED, signUpException.getErrorCode());
         }
     }
 
@@ -1472,6 +1574,8 @@ public class RegistrationServiceTest {
         RestResponseWrapper<Password.PasswordHash> mockRestResponseWrapperPasswordHash = new RestResponseWrapper<Password.PasswordHash>();
         mockRestResponseWrapperPasswordHash.setResponse(passwordHash);
 
+        ResponseEntity<RestResponseWrapper> responseEntity = new ResponseEntity<>(mockRestResponseWrapperPasswordHash,HttpStatus.OK);
+
         when(selfTokenRestTemplate.exchange(
                 eq(getUinEndpoint),
                 eq(HttpMethod.GET),
@@ -1488,6 +1592,13 @@ public class RegistrationServiceTest {
                 any(HttpEntity.class),
                 any(ParameterizedTypeReference.class)))
                 .thenReturn(new ResponseEntity<>(mockRestResponseWrapperIdentityResponse, HttpStatus.OK));
+
+        when(callEndpointService.callEndpoint(any(),any(), eq(generateHashEndpoint), any())).thenReturn(responseEntity.getBody());
+
+        ResponseEntity<RestResponseWrapper> responseEntityOfGetUinEndpoint =
+                new ResponseEntity<>(mockRestResponseWrapperUINResponse,HttpStatus.OK);
+        when(callEndpointService.callEndpoint(any(),any(), eq(getUinEndpoint), any())).thenReturn(
+                responseEntityOfGetUinEndpoint.getBody());
 
         try{
             registrationService.register(registerRequest, mockTransactionID);
@@ -1975,6 +2086,9 @@ public class RegistrationServiceTest {
         mockIdentityResponse.setStatus(SignUpConstants.ACTIVATED);
         mockIdentityResponseRestResponseWrapper.setErrors(new ArrayList<>());
 
+        ResponseEntity<RestResponseWrapper> responseEntity = new ResponseEntity<>(mockPasswordHashRestResponseWrapper,HttpStatus.OK);
+        ResponseEntity<RestResponseWrapper> responseEntityOfIdentityEndpoint = new ResponseEntity<>(mockIdentityResponseRestResponseWrapper,HttpStatus.OK);
+
         when(cacheUtilService.getChallengeVerifiedTransaction(verifiedTransactionId)).thenReturn(transaction);
         when(selfTokenRestTemplate.exchange(
                 eq(generateHashEndpoint),
@@ -1991,6 +2105,9 @@ public class RegistrationServiceTest {
 
         when(notificationHelper.sendSMSNotificationAsync(any(), any(), any(), any()))
                 .thenReturn(new CompletableFuture<>());
+
+        when(callEndpointService.callEndpoint(any(),any(), eq(generateHashEndpoint), any())).thenReturn(responseEntity.getBody());
+        when(callEndpointService.callEndpoint(any(),any(), eq(identityEndpoint), any())).thenReturn(responseEntityOfIdentityEndpoint.getBody());
 
         RegistrationStatusResponse registrationStatusResponse = registrationService.updatePassword(resetPasswordRequest,
                 verifiedTransactionId);
@@ -2051,6 +2168,8 @@ public class RegistrationServiceTest {
         RestResponseWrapper<Password.PasswordHash> mockPasswordHashRestResponseWrapper = new RestResponseWrapper<>();
         mockPasswordHashRestResponseWrapper.setResponse(passwordHash);
 
+        ResponseEntity<RestResponseWrapper> responseEntity = new ResponseEntity<>(mockPasswordHashRestResponseWrapper,HttpStatus.OK);
+
         when(cacheUtilService.getChallengeVerifiedTransaction(verifiedTransactionId)).thenReturn(transaction);
         when(selfTokenRestTemplate.exchange(
                 eq(generateHashEndpoint),
@@ -2064,6 +2183,8 @@ public class RegistrationServiceTest {
                 any(HttpEntity.class),
                 any(ParameterizedTypeReference.class)))
                 .thenReturn(new ResponseEntity<>(null, HttpStatus.OK));
+
+        when(callEndpointService.callEndpoint(any(),any(), eq(generateHashEndpoint), any())).thenReturn(responseEntity.getBody());
 
         try {
             registrationService.updatePassword(resetPasswordRequest, verifiedTransactionId);
@@ -2094,6 +2215,8 @@ public class RegistrationServiceTest {
         RestResponseWrapper<IdentityResponse> mockIdentityResponseRestResponseWrapper = new RestResponseWrapper<>();
         mockIdentityResponseRestResponseWrapper.setResponse(null);
 
+        ResponseEntity<RestResponseWrapper> responseEntity = new ResponseEntity<>(mockPasswordHashRestResponseWrapper,HttpStatus.OK);
+
         when(cacheUtilService.getChallengeVerifiedTransaction(verifiedTransactionId)).thenReturn(transaction);
         when(selfTokenRestTemplate.exchange(
                 eq(generateHashEndpoint),
@@ -2107,6 +2230,8 @@ public class RegistrationServiceTest {
                 any(HttpEntity.class),
                 any(ParameterizedTypeReference.class)))
                 .thenReturn(new ResponseEntity<>(mockIdentityResponseRestResponseWrapper, HttpStatus.OK));
+
+        when(callEndpointService.callEndpoint(any(),any(), eq(generateHashEndpoint), any())).thenReturn(responseEntity.getBody());
 
         try {
             registrationService.updatePassword(resetPasswordRequest, verifiedTransactionId);
@@ -2140,6 +2265,9 @@ public class RegistrationServiceTest {
         restErrorArrayList.add(restError);
         mockIdentityResponseRestResponseWrapper.setErrors(restErrorArrayList);
 
+        ResponseEntity<RestResponseWrapper> responseEntity = new ResponseEntity<>(mockPasswordHashRestResponseWrapper,HttpStatus.OK);
+        ResponseEntity<RestResponseWrapper> responseEntityOfIdentityEndpoint = new ResponseEntity<>(mockIdentityResponseRestResponseWrapper,HttpStatus.OK);
+
         when(cacheUtilService.getChallengeVerifiedTransaction(verifiedTransactionId)).thenReturn(transaction);
         when(selfTokenRestTemplate.exchange(
                 eq(generateHashEndpoint),
@@ -2154,6 +2282,8 @@ public class RegistrationServiceTest {
                 any(ParameterizedTypeReference.class)))
                 .thenReturn(new ResponseEntity<>(mockIdentityResponseRestResponseWrapper, HttpStatus.OK));
 
+        when(callEndpointService.callEndpoint(any(),any(), eq(generateHashEndpoint), any())).thenReturn(responseEntity.getBody());
+        when(callEndpointService.callEndpoint(any(),any(), eq(identityEndpoint), any())).thenReturn(responseEntityOfIdentityEndpoint.getBody());
 
         try {
             registrationService.updatePassword(resetPasswordRequest, verifiedTransactionId);

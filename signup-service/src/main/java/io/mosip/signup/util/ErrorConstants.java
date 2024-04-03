@@ -43,6 +43,6 @@ public class ErrorConstants {
     public static final String IDENTIFIER_BLOCKED = "identifier_blocked";
     public static final String OTP_NOTIFICATION_FAILED = "otp_notification_failed";
     public static final String OTP_SERVER_DOWN = "otp_server_down";
-    public static final String REGISTRATION_FAILED = "registration_failed";
-    public static final String REQUEST_FAILED = "request_failed";
+    public static final String SERVER_UNREACHABLE = "server_unreachable";
+//    public static final String REQUEST_FAILED = "request_failed";
 }
