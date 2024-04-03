@@ -139,7 +139,7 @@
     "IDR-IDC-003": "Invalid Request",
     "IDR-IDC-004": "Unknown error occurred",
     "IDR-IDC-005": "Input Data Validation Failed",
-    "IDR-IDC-006": "Error occured while performing DB operations",
+    "IDR-IDC-006": "Username already exist. Please try again with a different username",
     "IDR-IDC-007": "No Record(s) found",
     "IDR-IDC-008": "4XX - Client Error occured",
     "IDR-IDC-009": "5XX - Server Error occured",
