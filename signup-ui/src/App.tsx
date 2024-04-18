@@ -83,10 +83,6 @@ function App() {
     } catch (error) {
       console.error("Failed to load rtl languages!");
     }
-
-    window.onbeforeunload = function () {
-      return true;
-    };
   }, []);
 
   const { i18n } = useTranslation();

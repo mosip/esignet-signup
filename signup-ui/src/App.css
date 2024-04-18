@@ -8,10 +8,81 @@ body {
   background: var(--background-body) 0% 0% no-repeat padding-box;
 }
 
+.language-icon-color {
+  fill: var(--language-icon-color);
+}
+
+.language-icon-bg-color {
+  fill: var(--language-icon-bg-color);
+}
+
+.brand-logo {
+  content: var(--brand-logo-url);
+  height: 40px;
+}
+
+.brand-only-logo {
+  content: var(--brand-only-logo-url);
+}
+
+.footer-brand-logo {
+  content: var(--footer-brand-logo-url);
+  height: 25px;
+}
+
+.section-background {
+  background: var(--signup-background);
+  background-size: cover;
+}
+
+.section-background .top_left_bg_logo,
+.section-background .top_right_bg_logo,
+.section-background .bottom_right_bg_logo,
+.section-background .bottom_left_bg_logo {
+  width: var(--side-section-bg-with);
+}
+
+.section-background .top_left_bg_logo {
+  display: var(--top-left-bg-logo-display);
+  content: var(--top-left-bg-logo-url);
+}
+
+.section-background .top_right_bg_logo {
+  display: var(--top-right-bg-logo-display);
+  content: var(--top-right-bg-logo-url);
+}
+
+.section-background .bottom_right_bg_logo {
+  display: var(--bottom-right-bg-logo-display);
+  content: var(--bottom-right-bg-logo-url);
+}
+
+.section-background .bottom_left_bg_logo {
+  display: var(--bottom-left-bg-logo-display);
+  content: var(--bottom-left-bg-logo-url);
+}
+
+@media screen and (max-width: 640px) {
+  .section-background .top_left_bg_logo,
+  .section-background .top_right_bg_logo,
+  .section-background .bottom_right_bg_logo,
+  .section-background .bottom_left_bg_logo {
+    display: none;
+  }
+}
+
+.footer-container {
+  padding-top: var(--footer-padding-top);
+  padding-bottom: var(--footer-padding-bottom);
+  color: var(--footer-text-color);
+  font-size: var(--footer-text-size);
+  background-color: var(--footer-bg-color);
+}
+
 @layer base {
   :root {
-    --font-inter: "Inter";
-    --font-kantumruypro: "Kantumruy Pro Variable";
+    --font-inter: var(--font-inter);
+    --font-kantumruypro: var(--font-kantumruypro);
 
     --background: var(--background-color);
     --foreground: var(--foreground-color);
@@ -51,7 +122,7 @@ body {
     --radius: var(--radius-font-size);
   }
 
-  .dark {
+  .camdgc {
     --background: var(--background-color);
     --foreground: var(--foreground-color);
 

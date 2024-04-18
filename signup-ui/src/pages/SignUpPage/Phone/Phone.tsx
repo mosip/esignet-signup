@@ -185,13 +185,15 @@ export const Phone = ({ settings, methods }: PhoneProps) => {
               <Icons.back id="back-button" name="back-button" />
             </a>
           )}
-          {resendOtp ? 
-          <div className="grow px-3 xs:px-2 text-center font-semibold tracking-normal">
-            {t("captcha_required")}
-          </div> :
-          <div className="grow px-3 xs:px-2 text-center font-semibold tracking-normal">
-            {t("enter_your_number")}
-          </div>}
+          {resendOtp ? (
+            <div className="grow px-3 text-center font-semibold tracking-normal xs:px-2">
+              {t("captcha_required")}
+            </div>
+          ) : (
+            <div className="grow px-3 text-center font-semibold tracking-normal xs:px-2">
+              {t("enter_your_number")}
+            </div>
+          )}
         </StepTitle>
       </StepHeader>
       <StepDivider />
@@ -223,7 +225,7 @@ export const Phone = ({ settings, methods }: PhoneProps) => {
                     <FormControl>
                       <div
                         className={cn(
-                          "input flex rounded-md border-[1px] border-input",
+                          "input flex h-[52px] rounded-md border-[1px] border-input",
                           formError.phone && "border-destructive"
                         )}
                       >

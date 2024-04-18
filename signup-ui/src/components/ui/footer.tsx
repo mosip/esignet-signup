@@ -5,15 +5,9 @@ const Footer = () => {
   const { t } = useTranslation();
 
   return (
-    <footer className="sm:fixed bg-neutral-50 z-20 bottom-0 left-0 right-0 border-blue-gray-50 flex w-full flex-row flex-wrap items-center justify-center gap-x-1 gap-y-6 border-t py-[11px] text-center">
-      <span className="text-sm text-[hsl(0,0%,53.7%)]">
-        {t("footer.powered_by")}
-      </span>
-      <img
-        src="/images/footer_logo.png"
-        alt="footer logo"
-        className="h-[25px]"
-      />
+    <footer className="footer-container border-blue-gray-50 bottom-0 left-0 right-0 z-20 flex w-full flex-row flex-wrap items-center justify-center gap-x-1 gap-y-6 border-t bg-neutral-50 py-[11px] text-center sm:fixed">
+      <span className="">{t("footer.powered_by")}</span>
+      <img className="footer-brand-logo" alt={t("logo_alt")} />
     </footer>
   );
 };
