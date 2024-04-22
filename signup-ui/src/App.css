@@ -122,15 +122,18 @@ body {
     --radius: var(--radius-font-size);
   }
 
-  .camdgc {
+  [class="camdgc"] {
+    --font-inter: var(--font-inter);
+    --font-kantumruypro: var(--font-kantumruypro);
+
     --background: var(--background-color);
     --foreground: var(--foreground-color);
 
     --muted: var(--primary-muted);
     --muted-foreground: var(--primary-muted-foreground);
-
-    --accent: var(--accent-color);
-    --accent-foreground: var(--accent-foreground-color);
+    --muted-neutral-gray: var(--primary-muted-neutral-gray);
+    --muted-dark-gray: var(--primary-muted-dark-gray);
+    --muted-light-gray: var(--primary-muted-light-gray);
 
     --popover: var(--primary-popover);
     --popover-foreground: var(--primary-popover-foreground);
@@ -141,11 +144,17 @@ body {
     --card: var(--primary-card);
     --card-foreground: var(--primary-card-foreground);
 
+    --step: var(--primary-step);
+    --step-foreground: var(--primary-step-foreground);
+
     --primary: var(--primary-color);
     --primary-foreground: var(--primary-foreground-color);
 
     --secondary: var(--secondary-color);
     --secondary-foreground: var(--secondary-foreground-color);
+
+    --accent: var(--accent-color);
+    --accent-foreground: var(--accent-foreground-color);
 
     --destructive: var(--destructive-color);
     --destructive-foreground: var(--destructive-foreground-color);
