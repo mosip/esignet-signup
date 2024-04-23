@@ -7,13 +7,13 @@ if [ $# -ge 1 ] ; then
 fi
 
 SOFTHSM_NS=softhsm
-SOFTHSM_CHART_VERSION=12.0.1-B2
+SOFTHSM_CHART_VERSION=12.0.1
 
 echo Create $SOFTHSM_NS namespace
 kubectl create ns $SOFTHSM_NS
 
 NS=signup
-CHART_VERSION=1.0.0
+CHART_VERSION=1.0.1
 
 SIGNUP_HOST=$(kubectl get cm global -o jsonpath={.data.mosip-signup-host})
 
