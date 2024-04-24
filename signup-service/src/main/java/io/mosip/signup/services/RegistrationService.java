@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micrometer.core.annotation.Timed;
 import io.mosip.esignet.core.util.IdentityProviderUtil;
+import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.HMACUtils2;
 import io.mosip.signup.dto.*;
 import io.mosip.signup.exception.ChallengeFailedException;
@@ -15,6 +16,8 @@ import io.mosip.signup.exception.CaptchaException;
 import io.mosip.signup.exception.GenerateChallengeException;
 import io.mosip.signup.helper.NotificationHelper;
 import lombok.extern.slf4j.Slf4j;
+import org.bouncycastle.crypto.generators.Argon2BytesGenerator;
+import org.bouncycastle.crypto.params.Argon2Parameters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,6 +35,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.*;
@@ -118,6 +122,9 @@ public class RegistrationService {
 
     @Value("${mosip.signup.get-registration-status.endpoint}")
     private String getRegistrationStatusEndpoint;
+
+    @Value("#{${mosip.signup.argon2.key-values}}")
+    private Map<String, Integer> argon2Config;
 
     private final String notificationLogging = "Notification response -> {}";
 
@@ -507,6 +514,38 @@ public class RegistrationService {
                 restResponseWrapper.getErrors().get(0).getErrorCode() : ErrorConstants.ADD_IDENTITY_FAILED);
     }
 
+    public String bytetoString(byte[] input) {
+        return org.apache.commons.codec.binary.Base64.encodeBase64String(input);
+    }
+
+    private byte[] generateSalt() {
+        SecureRandom secureRandom = new SecureRandom();
+        byte[] salt = new byte[argon2Config.get("salt_byte_length")];
+        secureRandom.nextBytes(salt);
+        return salt;
+    }
+
+    private static String base64Encoding(byte[] input) {
+        return CryptoUtil.encodeToURLSafeBase64(input);
+    }
+
+    public byte[] generateArgon2idSensitive(String password, byte[] salt) {
+        Argon2Parameters.Builder builder = new Argon2Parameters.Builder(Argon2Parameters.ARGON2_id)
+                .withVersion(Argon2Parameters.ARGON2_VERSION_13) // 19
+                .withIterations(argon2Config.get("iterations"))
+                .withMemoryAsKB(argon2Config.get("memory_limit"))
+                .withParallelism(argon2Config.get("parallelism"))
+                .withSalt(salt);
+
+        byte[] passwordHashBytes = new byte[argon2Config.get("hash_length")];
+        Argon2BytesGenerator generate = new Argon2BytesGenerator();
+        generate.init(builder.build());
+        generate.generateBytes(password.getBytes(StandardCharsets.UTF_8),
+                passwordHashBytes, 0, passwordHashBytes.length);
+
+        return passwordHashBytes;
+    }
+
     private Password generateSaltedHash(String password, String transactionId) throws SignUpException{
 
         RestRequestWrapper<Password.PasswordPlaintext> restRequestWrapper = new RestRequestWrapper<>();
@@ -515,18 +554,11 @@ public class RegistrationService {
 
         HttpEntity<RestRequestWrapper<Password.PasswordPlaintext>> resReq = new HttpEntity<>(restRequestWrapper);
         log.debug("Transaction {} : Generate salted hash started", transactionId);
-        RestResponseWrapper<Password.PasswordHash> restResponseWrapper = selfTokenRestTemplate.exchange(generateHashEndpoint, HttpMethod.POST, resReq, new ParameterizedTypeReference<RestResponseWrapper<Password.PasswordHash>>(){}).getBody();
 
-        if (restResponseWrapper != null && restResponseWrapper.getResponse() != null &&
-                !StringUtils.isEmpty(restResponseWrapper.getResponse().getHashValue()) &&
-                !StringUtils.isEmpty(restResponseWrapper.getResponse().getSalt())) {
-            return new Password(restResponseWrapper.getResponse().getHashValue(),
-                    restResponseWrapper.getResponse().getSalt());
-        }
+        byte[] salt = generateSalt();
+        String encryptionKeyArgon2id = base64Encoding(generateArgon2idSensitive(password, salt));
 
-        log.error("Transaction {} : Generate salted hash failed with response {}", transactionId, restResponseWrapper);
-        throw new SignUpException(restResponseWrapper != null && !CollectionUtils.isEmpty(restResponseWrapper.getErrors()) ?
-                restResponseWrapper.getErrors().get(0).getErrorCode() : ErrorConstants.HASH_GENERATE_FAILED);
+        return new Password(encryptionKeyArgon2id, this.bytetoString(salt));
     }
 
     @Timed(value = "getuin.api.timer", percentiles = {0.9})

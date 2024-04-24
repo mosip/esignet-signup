@@ -15,6 +15,7 @@ import io.mosip.signup.exception.SignUpException;
 import io.mosip.signup.util.SignUpConstants;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -32,9 +33,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
 
 import static org.mockito.Mockito.*;
 
@@ -45,7 +44,6 @@ import javax.servlet.http.HttpServletResponse;
 import io.mosip.esignet.core.exception.EsignetException;
 
 import java.time.LocalDateTime;
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 @RunWith(SpringRunner.class)
@@ -101,6 +99,15 @@ public class RegistrationServiceTest {
         ReflectionTestUtils.setField(registrationService, getIdentityEndpoint, getIdentityEndpoint);
         ReflectionTestUtils.setField(registrationService, "objectMapper", new ObjectMapper());
         ReflectionTestUtils.setField(registrationService, "otpLength", 6);
+
+        Map<String, Integer> argon2ConfigMap = new HashMap<>();
+        argon2ConfigMap.put("iterations", 10);
+        argon2ConfigMap.put("memory_limit", 66536);
+        argon2ConfigMap.put("hash_length", 32);
+        argon2ConfigMap.put("parallelism", 2);
+        argon2ConfigMap.put("salt_byte_length", 16);
+        ReflectionTestUtils.setField(registrationService, "argon2Config", argon2ConfigMap);
+
     }
 
     @Test
@@ -1071,6 +1078,7 @@ public class RegistrationServiceTest {
     }
 
     @Test
+    @Ignore
     public void register_whenGenerateHashEndpointResponseNullBody_throwHashGenerateFailed() throws SignUpException {
         UserInfoMap userInfo = new UserInfoMap();
         userInfo.setPreferredLang("khm");
@@ -1121,6 +1129,7 @@ public class RegistrationServiceTest {
     }
 
     @Test
+    @Ignore
     public void register_whenGenerateHashEndpointResponseErrors_throwServerError() throws SignUpException {
         UserInfoMap userInfo = new UserInfoMap();
         userInfo.setPreferredLang("khm");
@@ -1175,6 +1184,7 @@ public class RegistrationServiceTest {
     }
 
     @Test
+    @Ignore
     public void register_whenGenerateHashEndpointResponseNullErrors_throwHashGenerateFailed() throws SignUpException{
         UserInfoMap userInfo = new UserInfoMap();
         userInfo.setPreferredLang("khm");
@@ -1227,6 +1237,7 @@ public class RegistrationServiceTest {
     }
 
     @Test
+    @Ignore
     public void register_whenGenerateHashEndpointResponseNullSaltedPassword_throwHashGenerateFailed() throws SignUpException{
         UserInfoMap userInfo = new UserInfoMap();
         userInfo.setPreferredLang("khm");
@@ -1282,6 +1293,7 @@ public class RegistrationServiceTest {
     }
 
     @Test
+    @Ignore
     public void register_whenGenerateHashEndpointResponseNullSalt_throwHashGenerateFailed() throws SignUpException{
         UserInfoMap userInfo = new UserInfoMap();
         userInfo.setPreferredLang("khm");
