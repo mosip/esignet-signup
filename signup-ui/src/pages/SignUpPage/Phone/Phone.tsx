@@ -139,7 +139,7 @@ export const Phone = ({ settings, methods }: PhoneProps) => {
             }${getValues("phone")}`,
             captchaToken: getValues("captchaToken"),
             locale: getLocale(i18n.language, langCodeMapping),
-            regenerate: false,
+            regenerateChallenge: false,
             purpose: "REGISTRATION",
           },
         };
