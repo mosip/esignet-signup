@@ -137,7 +137,7 @@ type BaseChallengeGenerationRequest = {
   identifier: string;
   captchaToken: string;
   locale: string;
-  regenerate: boolean;
+  regenerateChallenge: boolean;
 };
 
 type RegistrationChallengeGenerationRequest = BaseChallengeGenerationRequest & {

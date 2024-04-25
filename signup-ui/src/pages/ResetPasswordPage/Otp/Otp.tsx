@@ -169,7 +169,7 @@ export const Otp = ({ methods, settings }: OtpProps) => {
             fullname: getValues("fullname"),
             captchaToken: getValues("captchaToken"),
             locale: getLocale(i18n.language, langCodeMapping),
-            regenerate: true,
+            regenerateChallenge: true,
             purpose: "RESET_PASSWORD",
           },
         };

@@ -171,7 +171,7 @@ export const Otp = ({ methods, settings }: OtpProps) => {
             }${getValues("phone")}`,
             captchaToken: getValues("captchaToken"),
             locale: getLocale(i18n.language, langCodeMapping),
-            regenerate: true,
+            regenerateChallenge: true,
             purpose: "REGISTRATION",
           },
         };
