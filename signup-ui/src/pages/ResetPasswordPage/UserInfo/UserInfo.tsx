@@ -142,7 +142,7 @@ export const UserInfo = ({ settings, methods }: UserInfoProps) => {
             fullname: getValues("fullname"),
             captchaToken: getValues("captchaToken"),
             locale: getLocale(i18n.language, langCodeMapping),
-            regenerate: false,
+            regenerateChallenge: false,
             purpose: "RESET_PASSWORD",
           },
         };
