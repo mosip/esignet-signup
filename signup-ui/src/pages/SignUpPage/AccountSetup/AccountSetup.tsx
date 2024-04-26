@@ -267,6 +267,10 @@ export const AccountSetup = ({ settings, methods }: AccountSetupProps) => {
                         maxLength={
                           settings.response.configs["password.length.max"]
                         }
+                        onBlur={() => {
+                          trigger("password")
+                          trigger("confirmPassword")
+                        }}
                       />
                     </FormControl>
                   </div>
