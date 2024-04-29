@@ -4,10 +4,15 @@ export const handleInputFilter = (
   event: KeyboardEvent<HTMLInputElement>,
   condition: string
 ) => {
-  const allowedKeys = ["Backspace", "Delete", "ArrowLeft", "ArrowRight", "a"];
+  const allowedKeys = ["Backspace", "Delete", "ArrowLeft", "ArrowRight", "a", "c", "v"];
 
   // Allow select all key: Ctrl + "a"
-  if (event.key === "a" && !event.ctrlKey) {
+  // Allow copy key: Ctrl + "c"
+  // Allow paste key: Ctrl + "v"
+  if (
+    (event.key === "a" || event.key === "c" || event.key === "v") &&
+    !event.ctrlKey
+  ) {
     event.preventDefault();
     return;
   }
