@@ -89,7 +89,7 @@ export const Otp = ({ methods, settings }: OtpProps) => {
     borderRadius: "8px"
   }
 
-  if (window.screen.availWidth <= 425) {
+  if (window.screen.availWidth <= 430) {
     let inputBoxSizeMd = {
       width: "48px",
       height: "48px"
