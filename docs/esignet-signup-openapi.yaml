@@ -131,7 +131,7 @@ paths:
                   properties:
                     identifier:
                       type: string
-                      description: an unique Identifier against which a challange can be generated for verification. Ex. Phonenumber, .
+                      description: A unique Identifier against which a challange can be generated for verification. Ex. Phonenumber
                     captchaToken:
                       type: string
                       description: 'Captcha token, if enabled.'
@@ -268,12 +268,12 @@ paths:
                   properties:
                     identifier:
                       type: string
-                      description: an unique Identifier against which a challange can be generated for verification. Ex. Phonenumber
+                      description: A unique Identifier against which a challange can be generated for verification. Ex. Phonenumber
                     challengeInfo:
                       type: array
                       items:
                         $ref: '#/components/schemas/ChallengeInfo'
-                      description: 'List of Challenges generated'
+                      description: List of Challenges generated
                   required:
                     - identifier
                     - challengeInfo
@@ -307,7 +307,7 @@ paths:
                     properties:
                       status:
                         const: SUCCESS
-                        description: status of challenge verification.
+                        description: Status of challenge verification.
                   errors:
                     type: array
                     description: List of Errors in case of request validation / processing failure in Idp server.
@@ -387,10 +387,10 @@ paths:
                       description: Unique identifier to be registered.
                     password:
                       type: string
-                      description: password associated with the username
+                      description: Password associated with the username
                     consent:
                       type: string
-                      description: consent to store the user info.
+                      description: Consent to store the user info.
                     userInfo:
                       $ref: '#/components/schemas/UserInfoMap'
                       description: 'This is a map, every key-value here is a field published in the identity-schema.'
