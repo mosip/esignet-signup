@@ -1,9 +1,11 @@
 openapi: 3.1.0
+x-stoplight:
+  id: l36f6e80xmxu6
 info:
   version: '1.0'
   title: e-Signet Signup Portal APIs
   summary: Signup portal for e-Signet one-login system.
-  description: ''
+  description: 'Signup portal for e-Signet one-login system.'
   contact:
     name: MOSIP Team
     email: info@mosip.io
@@ -34,6 +36,8 @@ paths:
                 properties:
                   responseTime:
                     type: string
+                    format: date-time
+                    description: Current date and time when the request is sent
                   response:
                     type: object
                     properties:
@@ -55,34 +59,36 @@ paths:
               examples:
                 Example 1:
                   value:
-                    responseTime: string
+                    responseTime: '2011-10-05T14:48:00.000Z'
                     response:
                       configs:
-                        identifier.pattern: string
-                        identifier.prefix: string
-                        captcha.site.key: string
-                        otp.length: 0
+                        identifier.pattern: '^\\+855[1-9]\\d{7,8}$'
+                        identifier.prefix: '+855'
+                        captcha.site.key: '6LeFAAAAAMaOuSNQxj3VDbERZcyc_1UO_9xT'
+                        otp.length: 6
                         otp.secret: true
-                        password.pattern: string
-                        challenge.timeout: 0
-                        resend.attempts: 0
-                        resend.delay: 0
-                        fullname.pattern: string
-                        status.request.delay: 0
-                        status.request.limit: 0
-                        popup.timeout: 0
-                        identifier.allowed.characters: string
-                        identifier.length.min: 0
-                        identifier.length.max: 0
-                        fullname.allowed.characters: string
-                        fullname.length.min: 0
-                        fullname.length.max: 0
-                        otp.blocked: 0
+                        password.pattern: '^(?\u003d.*[0-9])(?\u003d.{8,20})[a-zA-Z0-9\\x5F\\W]{8,20}$'
+                        challenge.timeout: 30
+                        resend.attempts: 4
+                        resend.delay: 30
+                        fullname.pattern: '^[\\u1780-\\u17FF\\u19E0-\\u19FF\\u1A00-\\u1A9F\\u0020]{1,30}$'
+                        status.request.delay: 20
+                        status.request.limit: 10
+                        popup.timeout: 50
+                        identifier.allowed.characters: '^[0-9]+'
+                        identifier.length.min: 8
+                        identifier.length.max: 9
+                        fullname.allowed.characters: '^[\\u1780-\\u17FF\\u19E0-\\u19FF\\u1A00-\\u1A9F\\u0020]'
+                        fullname.length.min: 1
+                        fullname.length.max: 30
+                        otp.blocked: 120
                     errors:
                       - errorCode: string
                         errorMessage: string
       servers:
         - url: 'https://camdgc-dev.mosip.net/v1/signup'
+      x-stoplight:
+        id: iqwzualbyfy72
   /registration/generate-challenge:
     post:
       tags:
@@ -119,12 +125,13 @@ paths:
                 requestTime:
                   type: string
                   format: date-time
+                  description: Current date and time when the request is sent
                 request:
                   type: object
                   properties:
                     identifier:
                       type: string
-                      description: Phone number to which the OTP should be triggered.
+                      description: A unique Identifier against which a challange can be generated for verification. Ex. Phonenumber
                     captchaToken:
                       type: string
                       description: 'Captcha token, if enabled.'
@@ -157,9 +164,9 @@ paths:
                 value:
                   requestTime: '2011-10-05T14:48:00.000Z'
                   request:
-                    identifier: string
-                    captchaToken: string
-                    locale: string
+                    identifier: '+8557357xxxxx'
+                    captchaToken: 'asdncjdnsdchd'
+                    locale: 'eng'
                     regenerate: true
                     purpose: REGISTRATION
       responses:
@@ -172,6 +179,8 @@ paths:
                 properties:
                   responseTime:
                     type: string
+                    format: date-time
+                    description: Current date and time when the request is sent
                   response:
                     type: object
                     description: 'If successful otp details, or null if failed to deliver OTP.'
@@ -211,6 +220,8 @@ paths:
               description: Transaction Id is set in the cookie
       servers:
         - url: 'https://camdgc-dev.mosip.net/v1/signup'
+      x-stoplight:
+        id: k52hhc2a9v6hm
   /registration/verify-challenge:
     post:
       tags:
@@ -251,15 +262,18 @@ paths:
                 requestTime:
                   type: string
                   format: date-time
+                  description: Current date and time when the request is sent
                 request:
                   type: object
                   properties:
                     identifier:
                       type: string
+                      description: A unique Identifier against which a challange can be generated for verification. Ex. Phonenumber
                     challengeInfo:
                       type: array
                       items:
                         $ref: '#/components/schemas/ChallengeInfo'
+                      description: List of Challenges generated
                   required:
                     - identifier
                     - challengeInfo
@@ -286,12 +300,14 @@ paths:
                 properties:
                   responseTime:
                     type: string
+                    format: date-time
+                    description: Current date and time when the request is sent
                   response:
                     type: object
                     properties:
                       status:
                         const: SUCCESS
-                        description: Transaction Identifier.
+                        description: Status of challenge verification.
                   errors:
                     type: array
                     description: List of Errors in case of request validation / processing failure in Idp server.
@@ -323,6 +339,8 @@ paths:
               description: Verified transaction Id to be set after successful challenge verification
       servers:
         - url: 'https://camdgc-dev.mosip.net/v1/signup'
+      x-stoplight:
+        id: yk3rilzb5ovjh
   /registration/register:
     post:
       tags:
@@ -360,6 +378,7 @@ paths:
                 requestTime:
                   type: string
                   format: date-time
+                  description: Current date and time when the request is sent
                 request:
                   type: object
                   properties:
@@ -368,8 +387,10 @@ paths:
                       description: Unique identifier to be registered.
                     password:
                       type: string
+                      description: Password associated with the username
                     consent:
                       type: string
+                      description: Consent to store the user info.
                     userInfo:
                       $ref: '#/components/schemas/UserInfoMap'
                       description: 'This is a map, every key-value here is a field published in the identity-schema.'
@@ -405,6 +426,8 @@ paths:
                 properties:
                   responseTime:
                     type: string
+                    format: date-time
+                    description: Current date and time when the request is sent
                   response:
                     type: object
                     properties:
@@ -413,6 +436,7 @@ paths:
                         enum:
                           - PENDING
                           - COMPLETED
+                        description: Status of registration
                   errors:
                     type: array
                     description: List of Errors in case of request validation / processing failure in the server.
@@ -435,6 +459,8 @@ paths:
                     errors: []
       servers:
         - url: 'https://camdgc-dev.mosip.net/v1/signup'
+      x-stoplight:
+        id: tto4uhnfs5fce
   /registration/status:
     get:
       tags:
@@ -472,6 +498,8 @@ paths:
                 properties:
                   responseTime:
                     type: string
+                    format: date-time
+                    description: Current date and time when the request is sent
                   response:
                     type: object
                     properties:
@@ -481,6 +509,7 @@ paths:
                           - PENDING
                           - COMPLETED
                           - FAILED
+                        description: Status of registration
                   errors:
                     type: array
                     description: List of Errors in case of request validation / processing failure in the server.
@@ -503,6 +532,8 @@ paths:
                     errors: []
       servers:
         - url: 'https://camdgc-dev.mosip.net/v1/signup'
+      x-stoplight:
+        id: e94ykanhb9w47
   /reset-password:
     post:
       tags:
@@ -543,7 +574,8 @@ paths:
               properties:
                 requestTime:
                   type: string
-                  pattern: 'yyyy-MM-dd''T''HH:mm:ss.SSS''Z'''
+                  format: date-time
+                  description: Current date and time when the request is sent
                 request:
                   type: object
                   properties:
@@ -567,6 +599,8 @@ paths:
                 properties:
                   responseTime:
                     type: string
+                    format: date-time
+                    description: Current date and time when the request is sent
                   response:
                     type: object
                     properties:
@@ -592,6 +626,8 @@ paths:
                           type: string
       servers:
         - url: 'https://camdgc-dev.mosip.net/v1/signup'
+      x-stoplight:
+        id: z0mw2fe1c4r2s
 tags:
   - name: UI
     description: UI related API.
@@ -647,6 +683,8 @@ components:
         otp.blocked:
           type: integer
           description: 'Number of seconds, a mobile number will not be allowed to register.'
+      x-stoplight:
+        id: clomx4fbeh96t
     ChallengeInfo:
       type: object
       title: ChallengeInfo
@@ -670,6 +708,8 @@ components:
         - challenge
         - format
         - type
+      x-stoplight:
+        id: e2mi1vwfjee9m
     UserInfoMap:
       type: object
       title: UserInfoMap
@@ -685,6 +725,8 @@ components:
       required:
         - fullName
         - phone
+      x-stoplight:
+        id: fb0hz6wfdi42d
     LanguageTaggedValue:
       type: object
       title: LanguageTaggedValue
@@ -693,3 +735,5 @@ components:
           type: string
         value:
           type: string
+      x-stoplight:
+        id: 81kwphp9rhbt1
