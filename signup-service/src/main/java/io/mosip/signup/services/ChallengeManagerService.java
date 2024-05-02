@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.RestClientException;
 
 @Service
 @Slf4j
@@ -39,7 +40,7 @@ public class ChallengeManagerService {
         throw new SignUpException(ErrorConstants.UNSUPPORTED_CHALLENGE_TYPE);
     }
 
-    @Timed(value = "generateotp.api.timer", percentiles = {0.95, 0.99})
+    @Timed(value = "generateotp.api.timer", percentiles = {0.9})
     private String generateOTPChallenge(String challengeTransactionId) {
         OtpRequest otpRequest = new OtpRequest();
         otpRequest.setKey(challengeTransactionId);
@@ -47,20 +48,26 @@ public class ChallengeManagerService {
         restRequestWrapper.setRequesttime(IdentityProviderUtil.getUTCDateTime());
         restRequestWrapper.setRequest(otpRequest);
 
-        RestResponseWrapper<OtpResponse> restResponseWrapper = selfTokenRestTemplate
-                .exchange(generateChallengeUrl, HttpMethod.POST,
-                        new HttpEntity<>(restRequestWrapper),
-                        new ParameterizedTypeReference<RestResponseWrapper<OtpResponse>>() {})
-                .getBody();
+        try {
+            RestResponseWrapper<OtpResponse> restResponseWrapper = selfTokenRestTemplate
+                    .exchange(generateChallengeUrl, HttpMethod.POST,
+                            new HttpEntity<>(restRequestWrapper),
+                            new ParameterizedTypeReference<RestResponseWrapper<OtpResponse>>() {
+                            })
+                    .getBody();
 
-        if (restResponseWrapper != null && restResponseWrapper.getResponse() != null &&
-                !StringUtils.isEmpty(restResponseWrapper.getResponse().getOtp()) &&
-                !restResponseWrapper.getResponse().getOtp().equals("null")) {
-            return restResponseWrapper.getResponse().getOtp();
+            if (restResponseWrapper != null && restResponseWrapper.getResponse() != null &&
+                    !StringUtils.isEmpty(restResponseWrapper.getResponse().getOtp()) &&
+                    !restResponseWrapper.getResponse().getOtp().equals("null")) {
+                return restResponseWrapper.getResponse().getOtp();
+            }
+
+            log.error("Generate OTP failed with response {}", restResponseWrapper);
+            throw new SignUpException(restResponseWrapper != null && !CollectionUtils.isEmpty(restResponseWrapper.getErrors()) ?
+                    restResponseWrapper.getErrors().get(0).getErrorCode() : ErrorConstants.GENERATE_CHALLENGE_FAILED);
+        } catch (RestClientException e) {
+            log.error("Endpoint {} is unreachable.", generateChallengeUrl);
+            throw new SignUpException(ErrorConstants.SERVER_UNREACHABLE);
         }
-
-        log.error("Generate OTP failed with response {}", restResponseWrapper);
-        throw new SignUpException(restResponseWrapper != null && !CollectionUtils.isEmpty(restResponseWrapper.getErrors()) ?
-                restResponseWrapper.getErrors().get(0).getErrorCode() : ErrorConstants.GENERATE_CHALLENGE_FAILED);
     }
 }

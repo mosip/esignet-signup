@@ -43,4 +43,5 @@ public class ErrorConstants {
     public static final String KNOWLEDGEBASE_MISMATCH = "knowledgebase_mismatch";
     public static final String IDENTIFIER_BLOCKED = "identifier_blocked";
     public static final String OTP_NOTIFICATION_FAILED = "otp_notification_failed";
+    public static final String SERVER_UNREACHABLE = "server_unreachable";
 }

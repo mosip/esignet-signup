@@ -13,7 +13,7 @@ public class GenerateChallengeRequest {
     private String captchaToken;
     @Language(required = false)
     private String locale;
-    private boolean regenerate;
+    private boolean regenerateChallenge;
 
     @io.mosip.signup.validator.Purpose
     private Purpose purpose;

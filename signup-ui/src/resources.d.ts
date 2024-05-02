@@ -108,6 +108,7 @@ interface Resources {
       identifier_blocked: string;
       unsupported_purpose: string;
       otp_notification_failed: string;
+      server_unreachable: string;
     };
   };
 }
