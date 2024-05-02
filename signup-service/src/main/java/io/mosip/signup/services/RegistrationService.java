@@ -101,7 +101,7 @@ public class RegistrationService {
     @Value("${mosip.signup.challenge.resend-attempt}")
     private int resendAttempts;
 
-    @Value("${mosip.signup.verification.resend-attempt}")
+    @Value("${mosip.signup.verification.attempt}")
     private int verificationAttempts;
 
     @Value("${mosip.signup.challenge.resend-delay}")
