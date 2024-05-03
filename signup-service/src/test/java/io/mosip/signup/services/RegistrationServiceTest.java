@@ -95,6 +95,8 @@ public class RegistrationServiceTest {
         ReflectionTestUtils.setField(
                 registrationService, "resendAttempts", 3);
         ReflectionTestUtils.setField(
+                registrationService, "verificationAttempts", 3);
+        ReflectionTestUtils.setField(
                 registrationService, "resendDelay", 30);
         ReflectionTestUtils.setField(
                 registrationService, "challengeTimeout", 60);
@@ -141,6 +143,36 @@ public class RegistrationServiceTest {
         Assert.assertEquals("SUCCESS", verifyChallengeResponse.getStatus());
     }
 
+    @Test
+    public void doVerifyChallenge_withExceededVerifyAttempt_thenFail() throws SignUpException {
+        ReflectionTestUtils.setField(registrationService, "verificationAttempts", 3);
+        ChallengeInfo challengeInfo = new ChallengeInfo();
+        challengeInfo.setFormat("alpha-numeric");
+        challengeInfo.setChallenge("123456");
+        challengeInfo.setType("OTP");
+
+        List<ChallengeInfo> challengeList = new ArrayList<>();
+        challengeList.add(challengeInfo);
+
+        VerifyChallengeRequest verifyChallengeRequest = new VerifyChallengeRequest();
+        verifyChallengeRequest.setIdentifier("123456");
+        verifyChallengeRequest.setChallengeInfo(challengeList);
+
+        String mockTransactionId = "mock-transactionId";
+        RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85512123123", Purpose.REGISTRATION);
+        registrationTransaction.setChallengeHash("failed");
+        registrationTransaction.setIdentifier(verifyChallengeRequest.getIdentifier());
+        registrationTransaction.setLastRetryAt(LocalDateTime.now(ZoneOffset.UTC));
+        registrationTransaction.setVerificationAttempts(4);
+        when(cacheUtilService.getChallengeGeneratedTransaction(mockTransactionId)).thenReturn(registrationTransaction);
+
+        try {
+            registrationService.verifyChallenge(verifyChallengeRequest, mockTransactionId);
+            Assert.fail();
+        } catch (SignUpException signUpException) {
+            Assert.assertEquals(ErrorConstants.TOO_MANY_VERIFY_ATTEMPTS, signUpException.getErrorCode());
+        }
+    }
     @Test
     public void doVerifyChallenge_whenIdentifierAlreadyRegisterError_throwIdentityAlreadyRegister() {
 

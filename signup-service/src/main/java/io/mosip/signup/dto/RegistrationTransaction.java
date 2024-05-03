@@ -57,9 +57,8 @@ public class RegistrationTransaction implements Serializable {
         this.lastRetryAt = LocalDateTime.now(ZoneOffset.UTC);
     }
 
-    public void increaseVerificationAttempt() {
+    public void incrementVerificationAttempt() {
         this.verificationAttempts += 1;
-        this.lastRetryAt = LocalDateTime.now(ZoneOffset.UTC);
     }
 
     public boolean isValidIdentifier(String inputIdentifier) {
