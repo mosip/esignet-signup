@@ -116,6 +116,7 @@ export interface SettingsConfig {
   "fullname.allowed.characters": string;
   "fullname.length.min": number;
   "fullname.length.max": number;
+  "send-challenge.captcha.required": boolean;
 }
 
 export interface Settings {
@@ -136,7 +137,7 @@ type BaseChallengeGenerationRequest = {
   identifier: string;
   captchaToken: string;
   locale: string;
-  regenerate: boolean;
+  regenerateChallenge: boolean;
 };
 
 type RegistrationChallengeGenerationRequest = BaseChallengeGenerationRequest & {
@@ -203,6 +204,7 @@ export type RegistrationRequestDto = BaseRequestDto & {
     username: string;
     password: string;
     consent: string;
+    locale: string | null;
     userInfo: UserInfo;
   };
 };
@@ -234,6 +236,7 @@ export type ResetPasswordRequestDto = BaseRequestDto & {
   request: {
     identifier: string;
     password: string;
+    locale: string | null;
   };
 };
 

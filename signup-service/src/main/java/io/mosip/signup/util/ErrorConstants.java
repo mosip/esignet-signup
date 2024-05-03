@@ -41,4 +41,5 @@ public class ErrorConstants {
     public static final String CHALLENGE_FORMAT_AND_TYPE_MISMATCH = "challenge_format_and_type_mismatch";
     public static final String KNOWLEDGEBASE_MISMATCH = "knowledgebase_mismatch";
     public static final String IDENTIFIER_BLOCKED = "identifier_blocked";
+    public static final String OTP_NOTIFICATION_FAILED = "otp_notification_failed";
 }

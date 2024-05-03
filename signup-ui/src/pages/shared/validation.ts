@@ -6,7 +6,6 @@ import { SettingsDto } from "~typings/types";
 export const validateUsername = (settings: SettingsDto) =>
   yup
     .string()
-    .trim()
     .matches(/^[^0].*$/, {
       message: "username_lead_zero_validation",
       excludeEmptyString: true,
@@ -39,7 +38,6 @@ export const validateOtp = (settings: SettingsDto) =>
 export const validatePassword = (settings: SettingsDto) =>
   yup
     .string()
-    .trim()
     .matches(new RegExp(settings.response.configs["password.pattern"]), {
       message: "password_validation",
       excludeEmptyString: true,
@@ -52,7 +50,6 @@ export const validateConfirmPassword = (
 ) =>
   yup
     .string()
-    .trim()
     .matches(new RegExp(settings.response.configs["password.pattern"]), {
       message: "password_validation",
       excludeEmptyString: true,

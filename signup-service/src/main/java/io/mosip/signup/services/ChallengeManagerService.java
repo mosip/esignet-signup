@@ -33,14 +33,13 @@ public class ChallengeManagerService {
 
 
     public String generateChallenge(RegistrationTransaction transaction) throws SignUpException {
-        switch (supportedGenerateChallengeType) {
-            case "OTP" :
-                return generateOTPChallenge(transaction.getChallengeTransactionId());
+        if (supportedGenerateChallengeType.equals("OTP")) {
+            return generateOTPChallenge(transaction.getChallengeTransactionId());
         }
         throw new SignUpException(ErrorConstants.UNSUPPORTED_CHALLENGE_TYPE);
     }
 
-    @Timed(value = "generateotp.api.timer", percentiles = {0.95, 0.99})
+    @Timed(value = "generateotp.api.timer", percentiles = {0.9})
     private String generateOTPChallenge(String challengeTransactionId) {
         OtpRequest otpRequest = new OtpRequest();
         otpRequest.setKey(challengeTransactionId);

@@ -43,6 +43,7 @@ import {
   ResetPasswordForm,
   SettingsDto,
 } from "~typings/types";
+import { langCodeMappingSelector, useLanguageStore } from "~/useLanguageStore";
 
 import { resetPasswordFormDefaultValues } from "../ResetPasswordPage";
 import {
@@ -84,6 +85,16 @@ export const UserInfo = ({ settings, methods }: UserInfoProps) => {
       []
     )
   );
+
+  const { langCodeMapping } = useLanguageStore(
+    useCallback(
+      (state) => ({
+        langCodeMapping: langCodeMappingSelector(state),
+      }),
+      []
+    )
+  );
+
   const { generateChallengeMutation } = useGenerateChallenge();
 
   const handleReCaptchaChange = (token: string | null) => {
@@ -130,8 +141,8 @@ export const UserInfo = ({ settings, methods }: UserInfoProps) => {
             }${getValues("username")}`,
             fullname: getValues("fullname"),
             captchaToken: getValues("captchaToken"),
-            locale: getLocale(i18n.language),
-            regenerate: false,
+            locale: getLocale(i18n.language, langCodeMapping),
+            regenerateChallenge: false,
             purpose: "RESET_PASSWORD",
           },
         };
@@ -170,7 +181,7 @@ export const UserInfo = ({ settings, methods }: UserInfoProps) => {
                 )}
                 className="absolute left-0 cursor-pointer"
               >
-                <Icons.back />
+                <Icons.back id="back-button" name="back-button" />
               </a>
             )}
             <div className="text-center font-semibold tracking-normal">
@@ -257,6 +268,7 @@ export const UserInfo = ({ settings, methods }: UserInfoProps) => {
                       <FormControl>
                         <Input
                           {...field}
+                          id="fullname"
                           placeholder={t("full_name_placeholder")}
                           className={cn(
                             "h-[52px] py-6",
@@ -288,6 +300,8 @@ export const UserInfo = ({ settings, methods }: UserInfoProps) => {
               </div>
             </div>
             <Button
+              id="continue-button"
+              name="continue-button"
               onClick={handleContinue}
               isLoading={generateChallengeMutation.isPending}
               disabled={disabledContinue}

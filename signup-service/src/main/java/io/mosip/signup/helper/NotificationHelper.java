@@ -16,7 +16,9 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Arrays;
 import java.util.Base64;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
@@ -33,18 +35,23 @@ public class NotificationHelper {
     @Value("${mosip.signup.send-notification.endpoint}")
     private String sendNotificationEndpoint;
 
+    @Value("{${mosip.signup.default-language}")
+    private String defaultLanguage;
 
-    @Async
-    public CompletableFuture<RestResponseWrapper<NotificationResponse>> sendSMSNotificationAsync
+    @Value("#{${mosip.signup.sms-notification-template.encoded-langcodes}}")
+    private List<String> encodedLangCodes;
+
+    public RestResponseWrapper<NotificationResponse> sendSMSNotification
             (String number, String locale, String templateKey, Map<String, String> params){
 
-        locale = locale != null ? locale : "khm";
-        String message = locale.equalsIgnoreCase("eng") ?
-                environment.getProperty(templateKey + "." + locale) :
-                new String(Base64.getDecoder().decode(environment.getProperty(templateKey + "." + locale)));
+        locale = locale != null ? locale : defaultLanguage;
 
-        if(params != null){
-            for (Map.Entry<String, String> entry: params.entrySet()){
+        String message = encodedLangCodes.contains(locale)?
+                new String(Base64.getDecoder().decode(environment.getProperty(templateKey + "." + locale))):
+                environment.getProperty(templateKey + "." + locale);
+
+        if (params != null && message != null) {
+            for (Map.Entry<String, String> entry : params.entrySet()) {
                 message = message.replace(entry.getKey(), entry.getValue());
             }
         }
@@ -55,10 +62,15 @@ public class NotificationHelper {
         restRequestWrapper.setRequesttime(IdentityProviderUtil.getUTCDateTime());
         restRequestWrapper.setRequest(notificationRequest);
 
-        return CompletableFuture.supplyAsync(() -> selfTokenRestTemplate
-                .exchange(sendNotificationEndpoint,
+        return selfTokenRestTemplate.exchange(sendNotificationEndpoint,
                         HttpMethod.POST,
                         new HttpEntity<>(restRequestWrapper),
-                        new ParameterizedTypeReference<RestResponseWrapper<NotificationResponse>>(){}).getBody());
+                        new ParameterizedTypeReference<RestResponseWrapper<NotificationResponse>>(){}).getBody();
+    }
+
+    @Async
+    public CompletableFuture<RestResponseWrapper<NotificationResponse>> sendSMSNotificationAsync
+            (String number, String locale, String templateKey, Map<String, String> params){
+        return CompletableFuture.supplyAsync(() -> sendSMSNotification(number, locale, templateKey, params));
     }
 }

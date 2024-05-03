@@ -13,6 +13,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.Locale;
+import java.util.Objects;
 
 @Slf4j
 @Service
@@ -59,39 +60,39 @@ public class CacheUtilService {
 
     public RegistrationTransaction createUpdateChallengeGeneratedTransaction(String transactionId,
                                                                        RegistrationTransaction registrationTransaction) {
-        cacheManager.getCache(SignUpConstants.CHALLENGE_GENERATED).put(transactionId, registrationTransaction);
+        cacheManager.getCache(SignUpConstants.CHALLENGE_GENERATED).put(transactionId, registrationTransaction); //NOSONAR getCache() will not be returning null here.
         return registrationTransaction;
     }
 
     public void updateStatusCheckTransaction(String transactionId,
                                                     RegistrationTransaction registrationTransaction) {
-        cacheManager.getCache(SignUpConstants.STATUS_CHECK).put(transactionId, registrationTransaction);
+        cacheManager.getCache(SignUpConstants.STATUS_CHECK).put(transactionId, registrationTransaction);    //NOSONAR getCache() will not be returning null here.
     }
 
     //---Getter---
     public RegistrationTransaction getChallengeGeneratedTransaction(String transactionId) {
-        return cacheManager.getCache(SignUpConstants.CHALLENGE_GENERATED).get(transactionId, RegistrationTransaction.class);
+return cacheManager.getCache(SignUpConstants.CHALLENGE_GENERATED).get(transactionId, RegistrationTransaction.class);    //NOSONAR getCache() will not be returning null here.
     }
 
     public RegistrationTransaction getChallengeVerifiedTransaction(String transactionId) {
-        return cacheManager.getCache(SignUpConstants.CHALLENGE_VERIFIED).get(transactionId, RegistrationTransaction.class);
+        return cacheManager.getCache(SignUpConstants.CHALLENGE_VERIFIED).get(transactionId, RegistrationTransaction.class); //NOSONAR getCache() will not be returning null here.
     }
 
     public RegistrationTransaction getStatusCheckTransaction(String transactionId) {
-        return cacheManager.getCache(SignUpConstants.STATUS_CHECK).get(transactionId, RegistrationTransaction.class);
+        return cacheManager.getCache(SignUpConstants.STATUS_CHECK).get(transactionId, RegistrationTransaction.class);	//NOSONAR getCache() will not be returning null here.
     }
 
     public boolean isIdentifierBlocked(String identifier) {
         String identifierHash = IdentityProviderUtil.generateB64EncodedHash(IdentityProviderUtil.ALGO_SHA3_256,
                 identifier.toLowerCase(Locale.ROOT));
-        return cacheManager.getCache(SignUpConstants.BLOCKED_IDENTIFIER).get(identifierHash, String.class) != null;
+        return cacheManager.getCache(SignUpConstants.BLOCKED_IDENTIFIER).get(identifierHash, String.class) != null;	//NOSONAR getCache() will not be returning null here.
     }
 
     public String getSecretKey(String keyAlias) {
-        return cacheManager.getCache(SignUpConstants.KEYSTORE).get(keyAlias, String.class);
+        return cacheManager.getCache(SignUpConstants.KEYSTORE).get(keyAlias, String.class);	//NOSONAR getCache() will not be returning null here.
     }
 
     public String getActiveKeyAlias() {
-        return cacheManager.getCache(SignUpConstants.KEY_ALIAS).get(CryptoHelper.ALIAS_CACHE_KEY, String.class);
+        return cacheManager.getCache(SignUpConstants.KEY_ALIAS).get(CryptoHelper.ALIAS_CACHE_KEY, String.class);	//NOSONAR getCache() will not be returning null here.
     }
 }

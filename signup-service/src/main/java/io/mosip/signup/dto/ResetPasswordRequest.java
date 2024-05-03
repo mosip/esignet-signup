@@ -1,6 +1,7 @@
 package io.mosip.signup.dto;
 
 import io.mosip.signup.validator.Identifier;
+import io.mosip.signup.validator.Language;
 import io.mosip.signup.validator.Password;
 import lombok.Data;
 
@@ -12,4 +13,7 @@ public class ResetPasswordRequest {
 
     @Password
     private String password;
+
+    @Language(required = false)
+    private String locale;
 }
