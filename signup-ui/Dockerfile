@@ -55,6 +55,7 @@ ENV nginx_dir=/usr/share/nginx
 ENV work_dir=${nginx_dir}/html
 ENV i18n_path=${work_dir}/locales
 ENV theme_path=${work_dir}/theme
+ENV image_path=${work_dir}/images
 ENV plugins_path=${nginx_dir}/html/plugins
 ENV plugins_format=iife
 

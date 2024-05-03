@@ -27,6 +27,18 @@ cd $theme_path
 unzip -o esignet-signup-theme.zip
 rm esignet-signup-theme.zip
 
+#image bundle
+echo "Downloading image bundle files"
+wget --no-check-certificate --no-cache --no-cookies $artifactory_url_env/artifactory/libs-release-local/image/esignet-signup-image.zip -O $image_path/esignet-signup-image.zip
+
+echo "unzip image bundle files.."
+chmod 775 $image_path/*
+
+cd $image_path
+unzip -o esignet-signup-image.zip
+rm esignet-signup-image.zip
+
+
 echo "Pre-requisites download completed."
 
 workingDir=$nginx_dir/html
