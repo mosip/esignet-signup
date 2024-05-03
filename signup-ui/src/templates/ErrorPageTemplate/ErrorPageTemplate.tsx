@@ -1,3 +1,5 @@
+import { PageLayout } from "~layouts/PageLayout";
+
 interface ErrorPageTemplateProps {
   title: string;
   description: string;
@@ -10,7 +12,10 @@ export const ErrorPageTemplate = ({
   image,
 }: ErrorPageTemplateProps) => {
   return (
-    <div className="flex h-[calc(100vh-14vh)] w-full items-center justify-center p-16 px-32 sm:px-[30px]">
+    <PageLayout
+      className="h-[calc(100vh-13vh)] w-full items-center justify-center p-16 px-32 sm:px-[30px]"
+      childClassName="h-full"
+    >
       <div className="flex h-full w-full flex-col items-center justify-center gap-y-12 rounded-xl bg-white shadow-lg sm:shadow-none">
         {image}
         <div className="flex flex-col items-center gap-y-2">
@@ -18,6 +23,6 @@ export const ErrorPageTemplate = ({
           <p className="text-center text-gray-500">{description}</p>
         </div>
       </div>
-    </div>
+    </PageLayout>
   );
 };

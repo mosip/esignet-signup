@@ -8,13 +8,13 @@ import ErrorPageTemplate from "~templates/ErrorPageTemplate";
 export const SomethingWentWrongPage = () => {
   const { t } = useTranslation();
 
-  const {
-    state: { code },
-  } = useLocation();
+  const { state } = useLocation();
 
   return (
     <ErrorPageTemplate
-      title={code ? getReasonPhrase(code) : t("something_went_wrong")}
+      title={
+        state?.code ? getReasonPhrase(state?.code) : t("something_went_wrong")
+      }
       description={t("something_went_wrong_detail")}
       image={<SomethingWentWrongSvg />}
     />
