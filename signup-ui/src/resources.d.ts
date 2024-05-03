@@ -1,5 +1,6 @@
 interface Resources {
   translation: {
+    logo_alt: string;
     register: string;
     landing_page_title: string;
     landing_page_description: string;
@@ -108,6 +109,7 @@ interface Resources {
       identifier_blocked: string;
       unsupported_purpose: string;
       otp_notification_failed: string;
+      server_unreachable: string;
     };
   };
 }

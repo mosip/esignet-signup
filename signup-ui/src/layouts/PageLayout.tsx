@@ -1,19 +1,37 @@
 interface PageLayoutProps {
   children: React.ReactNode;
+  className?: string;
+  childClassName?: string;
 }
 
-export const PageLayout = ({ children }: PageLayoutProps) => {
+export const PageLayout = ({
+  children,
+  childClassName,
+  className,
+}: PageLayoutProps) => {
   return (
-    <div className="relative flex flex-1 items-center justify-center sm:flex-none">
+    <div
+      className={`section-background relative flex ${
+        className
+          ? className
+          : "flex-1 items-center justify-center sm:flex-none"
+      }`}
+    >
       <img
-        className="absolute left-1 top-1 block sm:hidden"
-        src="/images/top.png"
+        className="top_left_bg_logo absolute left-1 top-1"
         alt="top left background"
       />
-      <div className="z-10 w-full">{children}</div>
       <img
-        className="absolute bottom-1 right-1 block sm:hidden"
-        src="/images/bottom.png"
+        className="top_right_bg_logo absolute right-1 top-1"
+        alt="top right background"
+      />
+      <div className={`z-10 w-full ${childClassName}`}>{children}</div>
+      <img
+        className="bottom_left_bg_logo absolute bottom-1 left-1"
+        alt="bottom left background"
+      />
+      <img
+        className="bottom_right_bg_logo absolute bottom-1 right-1"
         alt="bottom right background"
       />
     </div>

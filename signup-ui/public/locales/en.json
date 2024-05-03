@@ -1,4 +1,5 @@
 {
+  "logo_alt": "eSignet Signup",
   "register": "Register",
   "landing_page_title": "Oops! The page you are looking for does not exist.",
   "landing_page_description": "Please try navigating using the options below.",
@@ -133,6 +134,7 @@
     "knowledgebase_mismatch": "Invalid number or name. Please enter a registered mobile number and full name.",
     "identifier_blocked": "User is blocked. Please try again after 5 minutes.",
     "unsupported_purpose": "Invalid Request",
+    "server_unreachable": "We are unable to process your request, please try again later.",
     "otp_notification_failed": "Failed to send the otp",
     "IDR-IDC-001": "Missing Input Parameter",
     "IDR-IDC-002": "Invalid Input Parameter",
