@@ -100,6 +100,9 @@ public class RegistrationService {
     @Value("${mosip.signup.challenge.resend-attempt}")
     private int resendAttempts;
 
+    @Value("${mosip.signup.challenge.verification-attempt}")
+    private int verificationAttempts;
+
     @Value("${mosip.signup.challenge.resend-delay}")
     private long resendDelay;
 
@@ -148,6 +151,7 @@ public class RegistrationService {
         else {
             transaction = cacheUtilService.getChallengeGeneratedTransaction(transactionId);
             validateTransaction(transaction, identifier, generateChallengeRequest);
+            transaction.setVerificationAttempts(0);
         }
 
         // generate Challenge
@@ -193,14 +197,17 @@ public class RegistrationService {
 
         if(otpChallengeInfo.isEmpty()) throw new SignUpException(ErrorConstants.INVALID_CHALLENGE);
 
-        String challengeHash = IdentityProviderUtil.generateB64EncodedHash(IdentityProviderUtil.ALGO_SHA3_256,
-                otpChallengeInfo.get().getChallenge());
-
         if(transaction.getLastRetryToNow() >= challengeTimeout) {
             throw new SignUpException(ErrorConstants.CHALLENGE_EXPIRED);
         }
+        if(transaction.getVerificationAttempts() >= verificationAttempts){
+            throw new SignUpException(ErrorConstants.TOO_MANY_VERIFY_ATTEMPTS);
+        }
 
+        String challengeHash = IdentityProviderUtil.generateB64EncodedHash(IdentityProviderUtil.ALGO_SHA3_256,
+                otpChallengeInfo.get().getChallenge());
         if(!challengeHash.equals(transaction.getChallengeHash())) {
+            transaction.incrementVerificationAttempt();
             log.error("Transaction {} : challenge not match", transactionId);
             throw new ChallengeFailedException();
         }
