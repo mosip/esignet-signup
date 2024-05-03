@@ -3,17 +3,24 @@ import { Inspector, InspectParams } from "react-dev-inspector";
 
 import "./App.css";
 
+import { useCallback, useEffect } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { BrowserRouter } from "react-router-dom";
 
-import { langFontMapping } from "~constants/language";
 import { HttpError } from "~services/api.service";
+import langConfigService from "~services/langConfig.service";
 
 import { AppRouter } from "./app/AppRouter";
+import {
+  langFontMappingSelector,
+  setLangCodeMappingSelector,
+  setLangFontMappingSelector,
+  setLanguages2LettersSelector,
+  setRtlLanguagesSelector,
+  useLanguageStore,
+} from "./useLanguageStore";
 
-import NavBar from "~components/ui/nav-bar";
-import Footer from "~components/ui/footer";
 // Create a client
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -32,6 +39,51 @@ const queryClient = new QueryClient({
 
 function App() {
   const isDev = process.env.NODE_ENV === "development";
+
+  const {
+    langFontMapping,
+    setLanguages2Letters,
+    setRtlLanguages,
+    setLangCodeMapping,
+    setLangFontMapping,
+  } = useLanguageStore(
+    useCallback(
+      (state) => ({
+        langFontMapping: langFontMappingSelector(state),
+        setLanguages2Letters: setLanguages2LettersSelector(state),
+        setRtlLanguages: setRtlLanguagesSelector(state),
+        setLangCodeMapping: setLangCodeMappingSelector(state),
+        setLangFontMapping: setLangFontMappingSelector(state),
+      }),
+      []
+    )
+  );
+
+  useEffect(() => {
+    try {
+      langConfigService.getLocaleConfiguration().then((response: any) => {
+        let lookup: { [key: string]: number } = {};
+        let supportedLanguages = response.languages_2Letters;
+        let langData = [];
+        for (let lang in supportedLanguages) {
+          //check to avoid duplication language labels
+          if (!(supportedLanguages[lang] in lookup)) {
+            lookup[supportedLanguages[lang]] = 1;
+            langData.push({
+              label: supportedLanguages[lang],
+              value: lang,
+            });
+          }
+        }
+        setLangCodeMapping(response.langCodeMapping);
+        setLanguages2Letters(response.languages_2Letters);
+        setRtlLanguages(response.rtlLanguages);
+        setLangFontMapping(response.langFontMapping);
+      });
+    } catch (error) {
+      console.error("Failed to load rtl languages!");
+    }
+  }, []);
 
   const { i18n } = useTranslation();
 
