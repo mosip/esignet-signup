@@ -1,6 +1,5 @@
 interface Resources {
   translation: {
-    logo_alt: string;
     register: string;
     landing_page_title: string;
     landing_page_description: string;
