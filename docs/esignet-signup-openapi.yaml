@@ -14,7 +14,7 @@ info:
     url: 'https://www.mozilla.org/en-US/MPL/2.0/'
     name: MPL-2.0
 servers:
-  - url: 'https://camdgc-dev.mosip.net/v1/signup'
+  - url: 'https://signup.collab.mosip.net/v1/signup'
 paths:
   /settings:
     get:
@@ -86,7 +86,7 @@ paths:
                       - errorCode: string
                         errorMessage: string
       servers:
-        - url: 'https://camdgc-dev.mosip.net/v1/signup'
+        - url: 'https://signup.collab.mosip.net/v1/signup'
       x-stoplight:
         id: iqwzualbyfy72
   /registration/generate-challenge:
@@ -219,7 +219,7 @@ paths:
                 example: 'Set-Cookie: TRANSACTION_ID=2GFKHGAEyyx6lEhB4ObBzpPuaTrTlKy3BK0Izl3taug; Max-Age=600; Secure; HttpOnly'
               description: Transaction Id is set in the cookie
       servers:
-        - url: 'https://camdgc-dev.mosip.net/v1/signup'
+        - url: 'https://signup.collab.mosip.net/v1/signup'
       x-stoplight:
         id: k52hhc2a9v6hm
   /registration/verify-challenge:
@@ -338,7 +338,7 @@ paths:
                 type: string
               description: Verified transaction Id to be set after successful challenge verification
       servers:
-        - url: 'https://camdgc-dev.mosip.net/v1/signup'
+        - url: 'https://signup.collab.mosip.net/v1/signup'
       x-stoplight:
         id: yk3rilzb5ovjh
   /registration/register:
@@ -458,7 +458,7 @@ paths:
                       status: PENDING
                     errors: []
       servers:
-        - url: 'https://camdgc-dev.mosip.net/v1/signup'
+        - url: 'https://signup.collab.mosip.net/v1/signup'
       x-stoplight:
         id: tto4uhnfs5fce
   /registration/status:
@@ -531,7 +531,7 @@ paths:
                       status: COMPLETED
                     errors: []
       servers:
-        - url: 'https://camdgc-dev.mosip.net/v1/signup'
+        - url: 'https://signup.collab.mosip.net/v1/signup'
       x-stoplight:
         id: e94ykanhb9w47
   /reset-password:
@@ -625,7 +625,7 @@ paths:
                         errorMessage:
                           type: string
       servers:
-        - url: 'https://camdgc-dev.mosip.net/v1/signup'
+        - url: 'https://signup.collab.mosip.net/v1/signup'
       x-stoplight:
         id: z0mw2fe1c4r2s
 tags:
