@@ -188,6 +188,15 @@ export type VerifyChallengeResponseDto = BaseResponseDto & {
   } | null;
 };
 
+// TODO: will remove when real DTO is available
+// mock dto for terms and condition
+export type TermsAndConditionDto = BaseResponseDto & {
+  response: {
+    status: string;
+    message: string;
+  } | null;
+};
+
 export interface LanguageTaggedValue {
   language: string;
   value: string;

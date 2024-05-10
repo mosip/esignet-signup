@@ -1,0 +1,1 @@
+export { EkycVerificationPageContainer as default } from "./EkycVerificationPageContainer";
