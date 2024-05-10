@@ -10,7 +10,7 @@
   --brand-only-logo-url: url("/logo.png");
   --brand-logo-url: url("/images/brand_logo.png");
 
-  --signup-background: url("/images/section-bg.png") no-repeat;
+  --signup-background: #ffffff;
   --side-section-bg-with: 320px;
   --top-left-bg-logo-url: url("/images/top.png");
   --top-left-bg-logo-display: block;
@@ -22,9 +22,9 @@
   --bottom-right-bg-logo-display: block;
 
   --footer-brand-logo-url: url("/images/footer_logo.png");
-  --footer-text-color: #ffffff;
+  --footer-text-color: #898989;
   --footer-text-size: 14px;
-  --footer-bg-color: #004282;
+  --footer-bg-color: #ffffff;
   --footer-padding-top: 15px;
   --footer-padding-bottom: 15px;
 

@@ -1,6 +1,4 @@
-import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
-import { useLocation } from "react-router-dom";
 
 import {
   AlertDialog,
@@ -14,7 +12,6 @@ import {
 } from "~components/ui/alert-dialog";
 import { buttonVariants } from "~components/ui/button";
 import { cn } from "~utils/cn";
-import { getSignInRedirectURL } from "~utils/link";
 
 interface CancelAlertPopoverProps {
   description: string;
@@ -33,7 +30,7 @@ export const CancelAlertPopover = ({
 
   return (
     <AlertDialog open={true}>
-      <AlertDialogContent>
+      <AlertDialogContent className="rounded-lg">
         <AlertDialogHeader className="m-2">
           <AlertDialogTitle className="flex flex-col items-center justify-center gap-y-4">
             {t("title")}
@@ -42,7 +39,7 @@ export const CancelAlertPopover = ({
             {t(description, { relyingParty: "Health Service" })}
           </AlertDialogDescription>
         </AlertDialogHeader>
-        <AlertDialogFooter>
+        <AlertDialogFooter className="sm:flex-col-reverse sm:space-x-0 sm:gap-y-2">
           <AlertDialogCancel
             id="dismiss-button"
             name="dismiss-button"
