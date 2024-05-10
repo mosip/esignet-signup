@@ -8,6 +8,7 @@ import {
   RegistrationWithFailedStatus,
   ResetPasswordRequestDto,
   SettingsDto,
+  TermsAndConditionDto,
   VerifyChallengeRequestDto,
 } from "~typings/types";
 
@@ -58,3 +59,10 @@ export const resetPassword = async (
 ) => {
   return ApiService.post("/reset-password", newUserInfo).then(({ data }) => data);
 };
+
+// TODO: remove when the real endpoint is available
+// currently a mock endpoint
+export const getTermsAndConditions =
+  async (): Promise<TermsAndConditionDto> => {
+    return ApiService.get(`/ekyc-verify/tnc`).then(({ data }) => data);
+  };

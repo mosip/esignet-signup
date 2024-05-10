@@ -1,5 +1,11 @@
 export const ROOT_ROUTE = "/";
 export const SIGNUP_ROUTE = "/signup";
 export const RESET_PASSWORD = "/reset-password";
+export const EKYC_VERIFICATION = "/ekyc-verification";
+export const KYC_PROVIDER_LIST = "/ekyc-verification/kyc-provider-list";
+export const TERMS_CONDITION = "/ekyc-verification/terms-and-condition";
+export const LOADING_SCREEN = "/ekyc-verification/loading-screen";
+export const VERIFICATION_SCREEN = "/ekyc-verification/verification-screen";
+export const VIDEO_PREVIEW = "/ekyc-verification/video-preview";
 export const SOMETHING_WENT_WRONG = "/something-went-wrong";
 export const UNDER_CONSTRUCTION = "/under-construction";

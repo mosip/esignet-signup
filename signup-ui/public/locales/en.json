@@ -85,6 +85,19 @@
   "footer": {
     "powered_by": "Powered by"
   },
+  "terms_and_conditions": {
+    "header": "Terms & Conditions",
+    "sub_header": "Please read the terms and conditions carefully.",
+    "agree_text": "I agree to the terms and conditions as set out by the user agreement.",
+    "cancel_button": "Cancel",
+    "proceed_button": "Proceed"
+  },
+  "cancel_alert_popover": {
+    "title": "Attention!",
+    "description": "{relyingParty} requires access in order to proceed further, do you still wish to discontinue?",
+    "stay": "Stay",
+    "discontinue": "Discontinue"
+  },
   "error_response": {
     "invalid_transaction": "The transaction has timed out. Please try again.",
     "invalid_otp_channel": "Invalid OTP Channel Provided",

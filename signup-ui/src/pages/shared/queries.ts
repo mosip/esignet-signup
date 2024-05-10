@@ -6,11 +6,13 @@ import {
   RegistrationStatusResponseDto,
   ResetPasswordResponseDto,
   SettingsDto,
+  TermsAndConditionDto,
 } from "~typings/types";
 
-import { getRegistrationStatus, getSettings } from "./service";
+import { getRegistrationStatus, getSettings, getTermsAndConditions } from "./service";
 
 export const keys = {
+  termsAndConditions: ["termsAndConditions"] as const,
   settings: ["settings"] as const,
   registrationStatus: ["registrationStatus"] as const,
 };
@@ -39,3 +41,11 @@ export const useRegistrationStatus = (
       registration.response.status === RegistrationStatus.PENDING,
   });
 };
+
+export const useTermsAndConditions = (): UseQueryResult<TermsAndConditionDto, unknown>  => {
+  return useQuery<TermsAndConditionDto>({
+    queryKey: keys.termsAndConditions,
+    queryFn: () => getTermsAndConditions(),
+    staleTime: Infinity,
+  });
+}

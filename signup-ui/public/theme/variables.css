@@ -1,10 +1,34 @@
 :root {
+  --font-inter: "Inter";
+  --font-kantumruypro: "Kantumruy Pro Variable";
   --background-body:  #f7f9fd;
   --background-color:  200 60% 98%;
-
   --foreground-color:  222.2 47.4% 11.2%;
-  --primary-muted: 0 0% 80%;
 
+  --language-icon-color: #ffffff;
+  --language-icon-bg-color: #004282;
+  --brand-only-logo-url: url("/logo.png");
+  --brand-logo-url: url("/images/brand_logo.png");
+
+  --signup-background: url("/images/section-bg.png") no-repeat;
+  --side-section-bg-with: 320px;
+  --top-left-bg-logo-url: url("/images/top.png");
+  --top-left-bg-logo-display: block;
+  --bottom-left-bg-logo-url: url("/images/bg_bottom_left.png");
+  --bottom-left-bg-logo-display: none;
+  --top-right-bg-logo-url: url("/images/bg_bottom_left.png");
+  --top-right-bg-logo-display: none;
+  --bottom-right-bg-logo-url: url("/images/bottom.png");
+  --bottom-right-bg-logo-display: block;
+
+  --footer-brand-logo-url: url("/images/footer_logo.png");
+  --footer-text-color: #ffffff;
+  --footer-text-size: 14px;
+  --footer-bg-color: #004282;
+  --footer-padding-top: 15px;
+  --footer-padding-bottom: 15px;
+
+  --primary-muted: 0 0% 80%;
   --primary-muted-foreground: 204 10% 10%;
   --primary-muted-neutral-gray: 0 0% 51%;
   --primary-muted-dark-gray: 0 0% 29%;
