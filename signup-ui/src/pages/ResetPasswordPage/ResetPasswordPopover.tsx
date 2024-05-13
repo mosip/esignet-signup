@@ -22,7 +22,6 @@ import {
 } from "./useResetPasswordStore";
 import { ResetPasswordPossibleInvalid } from "~typings/types";
 import platform from "platform";
-import { NAVIGATE_DEFECTED_LIST } from "~constants/devices";
 
 export const ResetPasswordPopover = () => {
   const { t } = useTranslation();
@@ -42,7 +41,7 @@ export const ResetPasswordPopover = () => {
   const handleAction = (e: any) => {
     e.preventDefault();
     if (ResetPasswordPossibleInvalid.includes(criticalError?.errorCode!!)) {
-      if (platform.os && NAVIGATE_DEFECTED_LIST.includes(platform.os.toString())) {
+      if (platform.os && platform.os?.family === "iOS") {
         document.location.reload();
       } else {
         navigate(0)
