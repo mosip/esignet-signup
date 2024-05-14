@@ -85,6 +85,13 @@
   "footer": {
     "powered_by": "Powered by"
   },
+  "video_preview": {
+    "header": "Key Information",
+    "cancel_button": "Cancel",
+    "proceed_button": "Proceed",
+    "permission_denied_header": "Camera Permission Denied",
+    "permission_denied_description": "You have to given camera permission otherwise we can't move forward"
+  },
   "terms_and_conditions": {
     "header": "Terms & Conditions",
     "sub_header": "Please read the terms and conditions carefully.",

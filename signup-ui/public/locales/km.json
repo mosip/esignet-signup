@@ -85,6 +85,13 @@
   "footer": {
     "powered_by": "ដំណើរការដោយ"
   },
+  "video_preview": {
+    "header": "ព័ត៌មានសំខាន់",
+    "cancel_button": "បោះបង់",
+    "proceed_button": "បន្ត",
+    "permission_denied_header": "ការអនុញ្ញាតកាមេរ៉ាត្រូវបានបដិសេធ",
+    "permission_denied_description": "អ្នក​ត្រូវ​តែ​ផ្តល់​ការ​អនុញ្ញាត​ពី​កាមេរ៉ា បើ​មិន​ដូច្នេះ​ទេ យើង​មិន​អាច​ឈាន​ទៅ​មុខ​បាន​ទេ។"
+  },
   "terms_and_conditions": {
     "header": "លក្ខខណ្ឌ",
     "sub_header": "សូមអានលក្ខខណ្ឌដោយប្រុងប្រយ័ត្ន។",
