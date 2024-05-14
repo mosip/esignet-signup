@@ -78,7 +78,7 @@ export const VideoPreview = () => {
   useEffect(() => {
     // checking camera permission in every 1 second
     setInterval(cameraPermissionCheck, 1000);
-  }, []);
+  }, [permissionGranted]);
 
   // check the camera permission, if camera permission granted then set the state
   // it will work for chrome & firefox as well
