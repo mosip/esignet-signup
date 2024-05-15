@@ -139,7 +139,7 @@ export const Phone = ({ settings, methods }: PhoneProps) => {
             }${getValues("phone")}`,
             captchaToken: getValues("captchaToken"),
             locale: getLocale(i18n.language, langCodeMapping),
-            regenerateChallenge: false,
+            regenerateChallenge: resendOtp ? true : false,
             purpose: "REGISTRATION",
           },
         };
@@ -153,6 +153,8 @@ export const Phone = ({ settings, methods }: PhoneProps) => {
                 setError(errors[0]);
                 setHasError(true);
               }
+              _reCaptchaRef.current?.reset();
+              setValue("captchaToken", "", { shouldValidate: true });
             }
 
             if (response && errors.length === 0) {
