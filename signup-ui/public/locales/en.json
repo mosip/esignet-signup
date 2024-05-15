@@ -87,6 +87,29 @@
   "footer": {
     "powered_by": "Powered by"
   },
+  "verificationSteps": {
+    "title": "Complete your eKYC verification with the below simple steps",
+    "chooseAnEkycProvider": {
+      "label": "Choose an eKYC provider",
+      "content": "Select an eKYC service provider that aligns with your requirements."
+    },
+    "termsAndConditions": {
+      "label": "Terms & Conditions",
+      "content": "Review the policy terms & conditions."
+    },
+    "preVerificationGuide": {
+      "label": "Pre-verification guide",
+      "content": "Key instructions for a seamless eKYC experience."
+    },
+    "identityVerification": {
+      "label": "Identity verification",
+      "content": "This step verifies the individual’s physical presence during the identity verification process as well as verification of the individual’s identity with their physical ID."
+    },
+    "reviewConsent": {
+      "label": "Review Consent",
+      "content": "Review and approve consent before sharing with the service provider."
+    }
+  },
   "eykc_loading": {
     "header": "Alert!",
     "description": "Oops! It looks like you’re using an unsupported browser. Please consider upgrading to the latest version of the browser for the best experience. Thank you for your understanding"

@@ -92,6 +92,29 @@ interface Resources {
     footer: {
       powered_by: string;
     };
+    verificationSteps: {
+      title: string;
+      chooseAnEkycProvider: {
+        label: string;
+        content: string;
+      };
+      termsAndConditions: {
+        label: string;
+        content: string;
+      };
+      preVerificationGuide: {
+        label: string;
+        content: string;
+      };
+      identityVerification: {
+        label: string;
+        content: string;
+      };
+      reviewConsent: {
+        label: string;
+        content: string;
+      };
+    };
     error_response: {
       invalid_transaction: string;
       invalid_otp_channel: string;

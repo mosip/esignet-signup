@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import { Button } from "~components/ui/button";
@@ -16,34 +17,35 @@ interface StepItemWithContent extends StepItem {
   content: string;
 }
 
-const steps = [
-  {
-    label: "Choose an eKYC provider",
-    content:
-      "Select an eKYC service provider that aligns with your requirements.",
-  },
-  {
-    label: "Terms & Conditions",
-    content: "Review the policy terms & conditions.",
-  },
-  {
-    label: "Pre-verification guide",
-    content: "Key instructions for a seamless eKYC experience.",
-  },
-  {
-    label: "Identity verification",
-    content:
-      "This step verifies the individual’s physical presence during the identity verification process as well as verification of the individual’s identity with their physical ID.",
-  },
-  {
-    label: "Review Consent",
-    content:
-      "Review and approve consent before sharing with the service provider.",
-  },
-] as StepItemWithContent[];
-
 export const VerificationSteps = () => {
   const { t } = useTranslation();
+
+  const steps = useMemo(
+    () =>
+      [
+        {
+          label: t("verificationSteps.chooseAnEkycProvider.label"),
+          content: t("verificationSteps.chooseAnEkycProvider.content"),
+        },
+        {
+          label: t("verificationSteps.termsAndConditions.label"),
+          content: t("verificationSteps.termsAndConditions.content"),
+        },
+        {
+          label: t("verificationSteps.preVerificationGuide.label"),
+          content: t("verificationSteps.preVerificationGuide.content"),
+        },
+        {
+          label: t("verificationSteps.identityVerification.label"),
+          content: t("verificationSteps.identityVerification.content"),
+        },
+        {
+          label: t("verificationSteps.reviewConsent.label"),
+          content: t("verificationSteps.reviewConsent.content"),
+        },
+      ] as StepItemWithContent[],
+    [t]
+  );
 
   /**
    * Handle cancel button click, show the cancel alert popover
@@ -65,7 +67,7 @@ export const VerificationSteps = () => {
     <Step className="2xl:max-w-6xl lg:max-w-3xl">
       <StepHeader className="block px-0 sm:px-[18px] sm:pb-[25px] sm:pt-[33px]">
         <StepTitle className="text-left text-[22px] font-semibold">
-          Complete your eKYC verification with the below simple steps
+          {t("verificationSteps.title")}
         </StepTitle>
       </StepHeader>
       <StepDivider />
@@ -103,7 +105,7 @@ export const VerificationSteps = () => {
               id="cancel-tnc-button"
               name="cancel-tnc-button"
               variant="outline"
-              className="w-full border-primary p-4 font-semibold text-primary"
+              className="w-full border-primary p-4 font-semibold text-primary hover:text-primary"
               onClick={handleCancel}
             >
               {t("cancel_button")}
