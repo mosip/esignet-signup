@@ -82,6 +82,8 @@
   "privacy_and_policy_title": "Privacy & Policy",
   "signup_discontinue_prompt": "Are you sure you want to discontinue the sign up process?",
   "reset_password_discontinue_prompt": "Are you sure you want to discontinue the reset password process?",
+  "cancel_button": "Cancel",
+  "proceed_button": "Proceed",
   "footer": {
     "powered_by": "Powered by"
   },

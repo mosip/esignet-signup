@@ -82,6 +82,8 @@ interface Resources {
     privacy_and_policy_title: string;
     signup_discontinue_prompt: string;
     reset_password_discontinue_prompt: string;
+    cancel_button: string;
+    proceed_button: string;
     captcha_required: string;
     eykc_loading: {
       header: string;

@@ -1,7 +1,11 @@
+import { useTranslation } from "react-i18next";
+
+import { Button } from "~components/ui/button";
 import {
   Step,
   StepContent,
   StepDivider,
+  StepFooter,
   StepHeader,
   StepTitle,
 } from "~components/ui/step";
@@ -39,6 +43,24 @@ const steps = [
 ] as StepItemWithContent[];
 
 export const VerificationSteps = () => {
+  const { t } = useTranslation();
+
+  /**
+   * Handle cancel button click, show the cancel alert popover
+   * @param e event
+   */
+  const handleCancel = (e: any) => {
+    e.preventDefault();
+  };
+
+  /**
+   * Handle the proceed button click, move forward to video previe page
+   * @param e event
+   */
+  const handleContinue = (e: any) => {
+    e.preventDefault();
+  };
+
   return (
     <Step className="2xl:max-w-6xl lg:max-w-3xl">
       <StepHeader className="block px-0 sm:px-[18px] sm:pb-[25px] sm:pt-[33px]">
@@ -73,6 +95,30 @@ export const VerificationSteps = () => {
           </Stepper>
         </div>
       </StepContent>
+      <StepDivider />
+      <StepFooter className="p-5">
+        <div className="w-full">
+          <div className="float-right flex w-[50%] flex-row items-center justify-center gap-x-4">
+            <Button
+              id="cancel-tnc-button"
+              name="cancel-tnc-button"
+              variant="outline"
+              className="w-full border-primary p-4 font-semibold text-primary"
+              onClick={handleCancel}
+            >
+              {t("cancel_button")}
+            </Button>
+            <Button
+              id="proceed-tnc-button"
+              name="proceed-tnc-button"
+              className="w-full p-4 font-semibold"
+              onClick={handleContinue}
+            >
+              {t("proceed_button")}
+            </Button>
+          </div>
+        </div>
+      </StepFooter>
     </Step>
   );
 };
