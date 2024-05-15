@@ -13,6 +13,9 @@ import {
 import { StepItem, Stepper, Step as StepperStep } from "~components/ui/stepper";
 import { cn } from "~utils/cn";
 
+import { checkBrowserCameraPermission } from "./utils/checkBrowserCameraPermission";
+import { checkBrowserCompatible } from "./utils/checkBrowserCompatible";
+
 interface StepItemWithContent extends StepItem {
   content: string;
 }
@@ -59,8 +62,18 @@ export const VerificationSteps = () => {
    * Handle the proceed button click, move forward to video previe page
    * @param e event
    */
-  const handleContinue = (e: any) => {
+  const handleContinue = async (e: any) => {
     e.preventDefault();
+
+    const browserCompatible = checkBrowserCompatible();
+    const permCompatible = await checkBrowserCameraPermission();
+    if (browserCompatible && permCompatible) {
+      console.log("proceed");
+      // redirect user to the list of EKYC screen
+    } else {
+      console.log("failed");
+      // redirect user to the loading screen
+    }
   };
 
   return (
