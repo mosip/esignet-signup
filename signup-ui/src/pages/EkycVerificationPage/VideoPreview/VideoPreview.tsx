@@ -112,7 +112,7 @@ export const VideoPreview = () => {
           </div>
         )}
         {!permissionGranted && (
-          <Step className="mx-10 md:mx-0 md:rounded-2xl md:shadow sm:mx-0 sm:rounded-2xl sm:shadow">
+          <Step className="md:mx-0 md:rounded-2xl md:shadow sm:mx-0 sm:rounded-2xl sm:shadow xl:h-full 2xl:h-full">
             <StepHeader className="px-0 py-5 sm:pb-[25px] sm:pt-[33px]">
               <StepTitle className="relative flex w-full items-center justify-center gap-x-4 text-base font-semibold">
                 <div
@@ -142,8 +142,8 @@ export const VideoPreview = () => {
           handleDismiss={handleDismiss}
         />
       )}
-      <div className="mt-10 flex flex-row items-start justify-center gap-x-1">
-        <Step className="mx-10 md:rounded-2xl md:shadow sm:rounded-2xl sm:shadow">
+      <div className="m-3 mt-10 sm:mb-20 flex flex-row items-stretch justify-center gap-x-1">
+        <Step className="mx-10 lg:mx-4 md:rounded-2xl md:shadow sm:rounded-2xl sm:shadow">
           <StepHeader className="px-0 py-5 sm:pb-[25px] sm:pt-[33px]">
             <StepTitle className="relative flex w-full items-center justify-center gap-x-4 text-base font-semibold">
               <div
