@@ -17,6 +17,10 @@ export type ResetPasswordStore = {
   setStep: (step: ResetPasswordStep) => void;
   criticalError: Error | null;
   setCriticalError: (criticalError: Error | null) => void;
+  resendOtp: boolean;
+  setResendOtp: (resendOtp: boolean) => void;
+  resendAttempts: any;
+  setResendAttempts: (resendAttempts: any) => void;
 };
 
 export const useResetPasswordStore = create<ResetPasswordStore>()(
@@ -32,6 +36,18 @@ export const useResetPasswordStore = create<ResetPasswordStore>()(
       const current = get();
       if (isEqual(current.criticalError, criticalError)) return;
       set((state) => ({ criticalError }));
+    },
+    resendOtp: false,
+    setResendOtp: (resendOtp: boolean) => {
+      const current = get();
+      if (isEqual(current.resendOtp, resendOtp)) return;
+      set((state) => ({ resendOtp }));
+    },
+    resendAttempts: null,
+    setResendAttempts: (resendAttempts: any) => {
+      const current = get();
+      if (isEqual(current.resendAttempts, resendAttempts)) return;
+      set((state) => ({ resendAttempts }));
     },
   }))
 );
@@ -51,3 +67,15 @@ export const criticalErrorSelector = (
 export const setCriticalErrorSelector = (
   state: ResetPasswordStore
 ): ResetPasswordStore["setCriticalError"] => state.setCriticalError;
+
+export const resendOtpSelector = (state: ResetPasswordStore): ResetPasswordStore["resendOtp"] =>
+  state.resendOtp;
+
+export const setResendOtpSelector = (state: ResetPasswordStore): ResetPasswordStore["setResendOtp"] =>
+  state.setResendOtp;
+
+export const resendAttemptsSelector = (state: ResetPasswordStore): ResetPasswordStore["resendAttempts"] =>
+  state.resendAttempts;
+
+export const setResendAttemptsSelector = (state: ResetPasswordStore): ResetPasswordStore["setResendAttempts"] =>
+  state.setResendAttempts;
