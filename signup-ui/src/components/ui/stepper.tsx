@@ -4,10 +4,15 @@ import * as React from "react";
 import { cva } from "class-variance-authority";
 import { CheckIcon, Loader2, LucideIcon, X } from "lucide-react";
 
+
+
 import { cn } from "~utils/cn";
+
+
 
 import { Button } from "./button";
 import { Collapsible, CollapsibleContent } from "./collapsible";
+
 
 // <---------- CONTEXT ---------->
 
@@ -158,8 +163,8 @@ interface StepOptions {
   orientation?: "vertical" | "horizontal";
   state?: "loading" | "error";
   responsive?: boolean;
-  checkIcon?: IconType | string;
-  errorIcon?: IconType | string;
+  checkIcon?: string | IconType;
+  errorIcon?: string | IconType;
   onClickStep?: (step: number, setStep: (step: number) => void) => void;
   mobileBreakpoint?: string;
   variant?: "circle" | "circle-alt" | "line";
@@ -380,8 +385,8 @@ interface StepProps extends React.HTMLAttributes<HTMLLIElement> {
   description?: string;
   icon?: IconType;
   state?: "loading" | "error";
-  checkIcon?: IconType | string;
-  errorIcon?: IconType | string;
+  checkIcon?: string | IconType;
+  errorIcon?: string | IconType;
   isCompletedStep?: boolean;
   isKeepError?: boolean;
   onClickStep?: (step: number, setStep: (step: number) => void) => void;
@@ -833,8 +838,8 @@ interface StepIconProps {
   isKeepError?: boolean;
   icon?: IconType;
   index?: number;
-  checkIcon?: IconType | string;
-  errorIcon?: IconType | string;
+  checkIcon?: string | IconType;
+  errorIcon?: string | IconType;
 }
 
 const StepIcon = React.forwardRef<HTMLDivElement, StepIconProps>(
