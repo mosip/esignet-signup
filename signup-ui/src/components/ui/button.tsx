@@ -2,8 +2,9 @@ import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
 
-import { cn } from "~utils/cn";
 
+
+import { cn } from "~utils/cn";
 import LoadingIndicator from "~/common/LoadingIndicator";
 
 const buttonVariants = cva(
@@ -18,6 +19,7 @@ const buttonVariants = cva(
           "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
         secondary:
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+        ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-none disabled:text-[hsla(0,0%,68%)] disabled:bg-transparent",
       },
       size: {
@@ -61,11 +63,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         {...props}
       >
-        {isLoading ? (
-          <LoadingIndicator />
-        ) : (
-          <>{children}</>
-        )}
+        {isLoading ? <LoadingIndicator /> : <>{children}</>}
       </Comp>
     );
   }

@@ -1,4 +1,19 @@
+import { useEffect } from "react";
+
+import { useBrowserPermCheck } from "~hooks/useBrowserPermCheck";
+
+import { UnsupportedBrowserPerm } from "./components/UnsupportedBrowserPerm";
+
 export const LoadingScreen = () => {
-    return <h1>Loading Screen</h1>;
-  };
-  
+  const { isBrowserPermCompatible } = useBrowserPermCheck();
+  console.log(
+    "🚀 ~ LoadingScreen ~ isBrowserPermCompatible:",
+    isBrowserPermCompatible
+  );
+
+  if (isBrowserPermCompatible) {
+    // return
+  }
+
+  return <UnsupportedBrowserPerm />;
+};
