@@ -51,6 +51,8 @@ import {
   setCriticalErrorSelector,
   setStepSelector,
   useResetPasswordStore,
+  resendOtpSelector,
+  setResendOtpSelector
 } from "../useResetPasswordStore";
 
 interface UserInfoProps {
@@ -76,11 +78,13 @@ export const UserInfo = ({ settings, methods }: UserInfoProps) => {
     },
   } = methods;
 
-  const { setStep, setCriticalError } = useResetPasswordStore(
+  const { setStep, setCriticalError, resendOtp, setResendOtp } = useResetPasswordStore(
     useCallback(
       (state) => ({
         setStep: setStepSelector(state),
         setCriticalError: setCriticalErrorSelector(state),
+        resendOtp: resendOtpSelector(state),
+        setResendOtp: setResendOtpSelector(state),
       }),
       []
     )
@@ -142,7 +146,7 @@ export const UserInfo = ({ settings, methods }: UserInfoProps) => {
             fullname: getValues("fullname"),
             captchaToken: getValues("captchaToken"),
             locale: getLocale(i18n.language, langCodeMapping),
-            regenerateChallenge: false,
+            regenerateChallenge: resendOtp ? true : false,
             purpose: "RESET_PASSWORD",
           },
         };
@@ -155,6 +159,8 @@ export const UserInfo = ({ settings, methods }: UserInfoProps) => {
               } else {
                 setChallengeGenerationError(errors[0]);
               }
+              _reCaptchaRef.current?.reset();
+              setValue("captchaToken", "", { shouldValidate: true });
             }
 
             if (response && errors.length === 0) {
@@ -246,6 +252,7 @@ export const UserInfo = ({ settings, methods }: UserInfoProps) => {
                                 ]
                               }
                               onKeyDown={handleUsernameInput}
+                              disabled={resendOtp}
                             />
                           </div>
                         </div>
@@ -281,6 +288,7 @@ export const UserInfo = ({ settings, methods }: UserInfoProps) => {
                             settings.response.configs["fullname.length.max"]
                           }
                           onKeyDown={handleFullNameInput}
+                          disabled={resendOtp}
                         />
                       </FormControl>
                     </div>
