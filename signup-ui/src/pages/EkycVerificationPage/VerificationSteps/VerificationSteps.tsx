@@ -90,7 +90,7 @@ export const VerificationSteps = () => {
 
   return (
     <Step className="2xl:max-w-6xl lg:max-w-3xl">
-      <StepHeader className="block px-0 sm:px-[18px] sm:pb-[25px] sm:pt-[33px]">
+      <StepHeader className="block sm:px-[18px] sm:pb-[25px] sm:pt-[33px]">
         <StepTitle className="text-left text-[22px] font-semibold">
           {t("verificationSteps.title")}
         </StepTitle>
