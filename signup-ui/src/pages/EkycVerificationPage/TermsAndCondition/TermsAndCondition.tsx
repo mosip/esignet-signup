@@ -88,71 +88,73 @@ export const TermsAndCondition = () => {
           handleDismiss={handleDismiss}
         />
       )}
-      <Step className="max-w-[644px]">
-        <StepHeader className="px-0 py-5 sm:pb-[25px] sm:pt-[33px]">
-          <StepTitle className="relative flex w-full items-center justify-center gap-x-4 text-base font-semibold">
-            <div
-              className="ml-5 w-full text-[22px] font-semibold"
-              id="tnc-header"
-            >
-              {t("header")}
+      <div className="m-3 sm:mb-20 flex flex-row justify-center">
+        <Step className="max-w-[644px] md:rounded-2xl md:shadow sm:rounded-2xl sm:shadow">
+          <StepHeader className="px-0 py-5 sm:pb-[25px] sm:pt-[33px]">
+            <StepTitle className="relative flex w-full items-center justify-center gap-x-4 text-base font-semibold">
+              <div
+                className="ml-5 w-full text-[22px] font-semibold"
+                id="tnc-header"
+              >
+                {t("header")}
+              </div>
+            </StepTitle>
+            <StepDescription className="w-full text-start tracking-normal">
+              <div className="ml-5 text-muted-neutral-gray" id="tnc-sub-header">
+                {t("sub_header")}
+              </div>
+            </StepDescription>
+          </StepHeader>
+          <StepDivider />
+          <StepContent className="px-6 py-5">
+            {isLoading && <div>Still Loading</div>}
+            {!isLoading && !isSuccess && <div>Failed to Load</div>}
+            {isSuccess && (
+              <div
+                id="tnc-content"
+                className="scrollable-div flex text-justify text-sm sm:p-0"
+                dangerouslySetInnerHTML={{
+                  __html: tnc.response?.message ?? "Hello",
+                }}
+              ></div>
+            )}
+          </StepContent>
+          <StepAlert>
+            <ActionMessage className="justify-start bg-[#FFF6F2]">
+              <Checkbox
+                id="consent-button"
+                checked={agreeTerms}
+                onCheckedChange={changeAgreeTerms}
+                className="h-5 w-5 rounded-[2px] text-white data-[state=checked]:border-primary data-[state=checked]:bg-primary"
+              />
+              <p className="ml-2 truncate text-xs font-bold">{t("agree_text")}</p>
+            </ActionMessage>
+          </StepAlert>
+          <StepDivider />
+          <StepFooter className="p-5">
+            <div className="flex w-full flex-row items-center justify-center gap-x-4">
+              <Button
+                id="cancel-tnc-button"
+                name="cancel-tnc-button"
+                variant="outline"
+                className="w-full p-4 font-semibold"
+                onClick={handleCancel}
+              >
+                {t("cancel_button")}
+              </Button>
+              <Button
+                id="proceed-tnc-button"
+                name="proceed-tnc-button"
+                className="w-full p-4 font-semibold"
+                onClick={handleContinue}
+                disabled={!agreeTerms}
+              >
+                {t("proceed_button")}
+              </Button>
             </div>
-          </StepTitle>
-          <StepDescription className="w-full text-start tracking-normal">
-            <div className="ml-5 text-muted-neutral-gray" id="tnc-sub-header">
-              {t("sub_header")}
-            </div>
-          </StepDescription>
-        </StepHeader>
-        <StepDivider />
-        <StepContent className="px-6 py-5">
-          {isLoading && <div>Still Loading</div>}
-          {!isLoading && !isSuccess && <div>Failed to Load</div>}
-          {isSuccess && (
-            <div
-              id="tnc-content"
-              className="scrollable-div flex text-justify text-sm sm:p-0"
-              dangerouslySetInnerHTML={{
-                __html: tnc.response?.message ?? "Hello",
-              }}
-            ></div>
-          )}
-        </StepContent>
-        <StepAlert>
-          <ActionMessage className="justify-start bg-[#FFF6F2]">
-            <Checkbox
-              id="consent-button"
-              checked={agreeTerms}
-              onCheckedChange={changeAgreeTerms}
-              className="h-5 w-5 rounded-[2px] text-white data-[state=checked]:border-primary data-[state=checked]:bg-primary"
-            />
-            <p className="ml-2 truncate text-xs font-bold">{t("agree_text")}</p>
-          </ActionMessage>
-        </StepAlert>
-        <StepDivider />
-        <StepFooter className="p-5">
-          <div className="flex w-full flex-row items-center justify-center gap-x-4">
-            <Button
-              id="cancel-tnc-button"
-              name="cancel-tnc-button"
-              variant="outline"
-              className="w-full p-4 font-semibold"
-              onClick={handleCancel}
-            >
-              {t("cancel_button")}
-            </Button>
-            <Button
-              id="proceed-tnc-button"
-              name="proceed-tnc-button"
-              className="w-full p-4 font-semibold"
-              onClick={handleContinue}
-              disabled={!agreeTerms}
-            >
-              {t("proceed_button")}
-            </Button>
-          </div>
-        </StepFooter>
-      </Step>
+          </StepFooter>
+        </Step>
+      </div>
     </>
   );
 };
