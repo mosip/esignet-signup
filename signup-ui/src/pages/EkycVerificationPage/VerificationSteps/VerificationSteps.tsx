@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import { Button } from "~components/ui/button";
@@ -13,6 +13,11 @@ import {
 import { StepItem, Stepper, Step as StepperStep } from "~components/ui/stepper";
 import { cn } from "~utils/cn";
 
+import {
+  EkycVerificationStep,
+  setStepSelector,
+  useEkycVerificationStore,
+} from "../useEkycVerificationStore";
 import { checkBrowserCameraPermission } from "./utils/checkBrowserCameraPermission";
 import { checkBrowserCompatible } from "./utils/checkBrowserCompatible";
 
@@ -22,6 +27,15 @@ interface StepItemWithContent extends StepItem {
 
 export const VerificationSteps = () => {
   const { t } = useTranslation();
+
+  const { setStep } = useEkycVerificationStore(
+    useCallback(
+      (state) => ({
+        setStep: setStepSelector(state),
+      }),
+      []
+    )
+  );
 
   const steps = useMemo(
     () =>
@@ -68,11 +82,9 @@ export const VerificationSteps = () => {
     const browserCompatible = checkBrowserCompatible();
     const permCompatible = await checkBrowserCameraPermission();
     if (browserCompatible && permCompatible) {
-      console.log("proceed");
-      // redirect user to the list of EKYC screen
+      setStep(EkycVerificationStep.LoadingScreen);
     } else {
-      console.log("failed");
-      // redirect user to the loading screen
+      setStep(EkycVerificationStep.KycProviderList);
     }
   };
 
