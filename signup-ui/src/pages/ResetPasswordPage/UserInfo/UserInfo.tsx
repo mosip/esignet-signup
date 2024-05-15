@@ -178,7 +178,7 @@ export const UserInfo = ({ settings, methods }: UserInfoProps) => {
     <div className="my-10 sm:mb-10 sm:mt-0">
       <Step>
         <StepHeader>
-          <StepTitle className="relative flex w-full items-center justify-center gap-x-4 text-[26px] font-semibold">
+          <StepTitle className="relative flex w-full items-center justify-center gap-x-4 font-semibold">
             {!!fromSignInHash && (
               <a
                 href={getSignInRedirectURL(
@@ -191,17 +191,17 @@ export const UserInfo = ({ settings, methods }: UserInfoProps) => {
                 <Icons.back id="back-button" name="back-button" />
               </a>
             )}
-            {!resendOtp && (
-              <div className="text-center font-semibold tracking-normal">
+            {resendOtp ? (
+              <div className="grow px-3 text-center text-[16px] font-semibold tracking-normal xs:px-2">
+                {t("captcha_required")}
+              </div>
+            ) : (
+              <div className="text-center text-[26px] font-semibold tracking-normal">
                 {t("forgot_password")}
               </div>
             )}
           </StepTitle>
-          {resendOtp ? (
-            <div className="grow px-3 text-center font-semibold tracking-normal xs:px-2">
-              {t("captcha_required")}
-            </div>
-          ) : (
+          {!resendOtp && (
             <StepDescription>
               {t("forgot_password_description")}
             </StepDescription>
