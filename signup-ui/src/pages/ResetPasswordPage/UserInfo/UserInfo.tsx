@@ -47,8 +47,10 @@ import { langCodeMappingSelector, useLanguageStore } from "~/useLanguageStore";
 
 import { resetPasswordFormDefaultValues } from "../ResetPasswordPage";
 import {
+  resendOtpSelector,
   ResetPasswordStep,
   setCriticalErrorSelector,
+  setResendOtpSelector,
   setStepSelector,
   useResetPasswordStore,
 } from "../useResetPasswordStore";
@@ -76,15 +78,18 @@ export const UserInfo = ({ settings, methods }: UserInfoProps) => {
     },
   } = methods;
 
-  const { setStep, setCriticalError } = useResetPasswordStore(
-    useCallback(
-      (state) => ({
-        setStep: setStepSelector(state),
-        setCriticalError: setCriticalErrorSelector(state),
-      }),
-      []
-    )
-  );
+  const { setStep, setCriticalError, resendOtp, setResendOtp } =
+    useResetPasswordStore(
+      useCallback(
+        (state) => ({
+          setStep: setStepSelector(state),
+          setCriticalError: setCriticalErrorSelector(state),
+          resendOtp: resendOtpSelector(state),
+          setResendOtp: setResendOtpSelector(state),
+        }),
+        []
+      )
+    );
 
   const { langCodeMapping } = useLanguageStore(
     useCallback(
@@ -142,7 +147,7 @@ export const UserInfo = ({ settings, methods }: UserInfoProps) => {
             fullname: getValues("fullname"),
             captchaToken: getValues("captchaToken"),
             locale: getLocale(i18n.language, langCodeMapping),
-            regenerateChallenge: false,
+            regenerateChallenge: resendOtp ? true : false,
             purpose: "RESET_PASSWORD",
           },
         };
@@ -155,6 +160,8 @@ export const UserInfo = ({ settings, methods }: UserInfoProps) => {
               } else {
                 setChallengeGenerationError(errors[0]);
               }
+              _reCaptchaRef.current?.reset();
+              setValue("captchaToken", "", { shouldValidate: true });
             }
 
             if (response && errors.length === 0) {
@@ -171,7 +178,7 @@ export const UserInfo = ({ settings, methods }: UserInfoProps) => {
     <div className="my-10 sm:mb-10 sm:mt-0">
       <Step>
         <StepHeader>
-          <StepTitle className="relative flex w-full items-center justify-center gap-x-4 text-[26px] font-semibold">
+          <StepTitle className="relative flex w-full items-center justify-center gap-x-4 font-semibold">
             {!!fromSignInHash && (
               <a
                 href={getSignInRedirectURL(
@@ -184,11 +191,21 @@ export const UserInfo = ({ settings, methods }: UserInfoProps) => {
                 <Icons.back id="back-button" name="back-button" />
               </a>
             )}
-            <div className="text-center font-semibold tracking-normal">
-              {t("forgot_password")}
-            </div>
+            {resendOtp ? (
+              <div className="grow px-3 text-center text-[16px] font-semibold tracking-normal xs:px-2">
+                {t("captcha_required")}
+              </div>
+            ) : (
+              <div className="text-center text-[26px] font-semibold tracking-normal">
+                {t("forgot_password")}
+              </div>
+            )}
           </StepTitle>
-          <StepDescription>{t("forgot_password_description")}</StepDescription>
+          {!resendOtp && (
+            <StepDescription>
+              {t("forgot_password_description")}
+            </StepDescription>
+          )}
         </StepHeader>
         <StepDivider />
         <StepAlert className="relative">
@@ -246,6 +263,7 @@ export const UserInfo = ({ settings, methods }: UserInfoProps) => {
                                 ]
                               }
                               onKeyDown={handleUsernameInput}
+                              disabled={resendOtp}
                             />
                           </div>
                         </div>
@@ -281,6 +299,7 @@ export const UserInfo = ({ settings, methods }: UserInfoProps) => {
                             settings.response.configs["fullname.length.max"]
                           }
                           onKeyDown={handleFullNameInput}
+                          disabled={resendOtp}
                         />
                       </FormControl>
                     </div>

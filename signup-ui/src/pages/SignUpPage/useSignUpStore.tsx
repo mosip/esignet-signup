@@ -20,6 +20,8 @@ export type SignUpStore = {
   setCriticalError: (criticalError: Error | null) => void;
   resendOtp: boolean;
   setResendOtp: (resendOtp: boolean) => void;
+  resendAttempts: any;
+  setResendAttempts: (resendAttempts: any) => void;
 };
 
 export const useSignUpStore = create<SignUpStore>()(
@@ -42,6 +44,12 @@ export const useSignUpStore = create<SignUpStore>()(
       if (isEqual(current.resendOtp, resendOtp)) return;
       set((state) => ({ resendOtp }));
     },
+    resendAttempts: null,
+    setResendAttempts: (resendAttempts: any) => {
+      const current = get();
+      if (isEqual(current.resendAttempts, resendAttempts)) return;
+      set((state) => ({ resendAttempts }));
+    },
   }))
 );
 
@@ -56,6 +64,12 @@ export const resendOtpSelector = (state: SignUpStore): SignUpStore["resendOtp"] 
 
 export const setResendOtpSelector = (state: SignUpStore): SignUpStore["setResendOtp"] =>
   state.setResendOtp;
+
+export const resendAttemptsSelector = (state: SignUpStore): SignUpStore["resendAttempts"] =>
+  state.resendAttempts;
+
+export const setResendAttemptsSelector = (state: SignUpStore): SignUpStore["setResendAttempts"] =>
+  state.setResendAttempts;
 
 export const criticalErrorSelector = (
   state: SignUpStore

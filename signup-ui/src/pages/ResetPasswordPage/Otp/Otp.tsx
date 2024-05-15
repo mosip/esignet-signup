@@ -38,8 +38,11 @@ import { langCodeMappingSelector, useLanguageStore } from "~/useLanguageStore";
 
 import { resetPasswordFormDefaultValues } from "../ResetPasswordPage";
 import {
+  resendAttemptsSelector,
   ResetPasswordStep,
   setCriticalErrorSelector,
+  setResendAttemptsSelector,
+  setResendOtpSelector,
   setStepSelector,
   stepSelector,
   useResetPasswordStore,
@@ -55,12 +58,22 @@ export const Otp = ({ methods, settings }: OtpProps) => {
 
   const pinInputRef = useRef<PinInput | null>(null);
   const { control, getValues, setValue } = useFormContext();
-  const { step, setStep, setCriticalError } = useResetPasswordStore(
+  const {
+    step,
+    setStep,
+    setCriticalError,
+    setResendOtp,
+    resendAttempts,
+    setResendAttempts,
+  } = useResetPasswordStore(
     useCallback(
       (state) => ({
         step: stepSelector(state),
         setStep: setStepSelector(state),
         setCriticalError: setCriticalErrorSelector(state),
+        setResendOtp: setResendOtpSelector(state),
+        resendAttempts: resendAttemptsSelector(state),
+        setResendAttempts: setResendAttemptsSelector(state),
       }),
       []
     )
@@ -76,7 +89,7 @@ export const Otp = ({ methods, settings }: OtpProps) => {
   );
 
   const { trigger, reset, formState, resetField } = methods;
-  const [resendAttempts, setResendAttempts] = useState<number>(0);
+  const [captchaRequired, setCaptchaRequired] = useState<boolean>(false);
   const { generateChallengeMutation } = useGenerateChallenge();
   const { verifyChallengeMutation } = useVerifyChallenge();
   const [challengeVerificationError, setChallengeVerificationError] =
@@ -88,34 +101,32 @@ export const Otp = ({ methods, settings }: OtpProps) => {
     margin: "0px 02px",
     border: "2px solid #C1C1C1",
     color: "#000000",
-    borderRadius: "8px"
-  }
+    borderRadius: "8px",
+  };
 
   if (window.screen.availWidth <= 430) {
     let inputBoxSizeMd = {
       width: "48px",
-      height: "48px"
-    }
+      height: "48px",
+    };
     let inputBoxSizeSm = {
       width: "32px",
       height: "32px",
-      overflow: "auto"
-    }
+      overflow: "auto",
+    };
     if (settings.response.configs["otp.length"] <= 6) {
-      pinInputStyle = {...pinInputStyles, ...inputBoxSizeMd}
+      pinInputStyle = { ...pinInputStyles, ...inputBoxSizeMd };
+    } else {
+      pinInputStyle = { ...pinInputStyles, ...inputBoxSizeSm };
     }
-    else {
-      pinInputStyle = {...pinInputStyles, ...inputBoxSizeSm}
-    }
-  }
-  else {
+  } else {
     let inputBoxSize = {
       width: "55px",
-      height: "52px"
-    }
-    pinInputStyle = {...pinInputStyles, ...inputBoxSize}
+      height: "52px",
+    };
+    pinInputStyle = { ...pinInputStyles, ...inputBoxSize };
   }
-  
+
   const {
     totalSeconds: resendOtpTotalSecs,
     restart: restartResendOtpTotalSecs,
@@ -128,7 +139,12 @@ export const Otp = ({ methods, settings }: OtpProps) => {
   }, [resetField]);
 
   useEffect(() => {
-    setResendAttempts(settings.response.configs["resend.attempts"]);
+    if (resendAttempts === null) {
+      setResendAttempts(settings.response.configs["resend.attempts"]);
+    }
+    setCaptchaRequired(
+      settings.response.configs["send-challenge.captcha.required"]
+    );
   }, [settings.response.configs]);
 
   useEffect(() => {
@@ -159,42 +175,45 @@ export const Otp = ({ methods, settings }: OtpProps) => {
       e.preventDefault();
       if (settings?.response.configs && resendAttempts > 0) {
         setChallengeVerificationError(null);
+        if (captchaRequired) {
+          redirectBack(true);
+        } else {
+          const generateChallengeRequestDto: GenerateChallengeRequestDto = {
+            requestTime: new Date().toISOString(),
+            request: {
+              identifier: `${
+                settings.response.configs["identifier.prefix"]
+              }${getValues("username")}`,
+              fullname: getValues("fullname"),
+              captchaToken: getValues("captchaToken"),
+              locale: getLocale(i18n.language, langCodeMapping),
+              regenerateChallenge: true,
+              purpose: "RESET_PASSWORD",
+            },
+          };
 
-        const generateChallengeRequestDto: GenerateChallengeRequestDto = {
-          requestTime: new Date().toISOString(),
-          request: {
-            identifier: `${
-              settings.response.configs["identifier.prefix"]
-            }${getValues("username")}`,
-            fullname: getValues("fullname"),
-            captchaToken: getValues("captchaToken"),
-            locale: getLocale(i18n.language, langCodeMapping),
-            regenerateChallenge: true,
-            purpose: "RESET_PASSWORD",
-          },
-        };
+          return generateChallengeMutation.mutate(generateChallengeRequestDto, {
+            onSuccess: ({ response, errors }) => {
+              pinInputRef.current?.clear();
+              setValue("otp", "", { shouldValidate: true });
 
-        return generateChallengeMutation.mutate(generateChallengeRequestDto, {
-          onSuccess: ({ response, errors }) => {
-            pinInputRef.current?.clear();
-            setValue("otp", "", { shouldValidate: true });
-
-            if (errors && errors.length > 0) {
-              if (errors[0].errorCode === "invalid_transaction") {
-                setCriticalError(errors[0]);
-              } else {
-                setChallengeVerificationError(errors[0]);
+              if (errors && errors.length > 0) {
+                if (errors[0].errorCode === "invalid_transaction") {
+                  setCriticalError(errors[0]);
+                } else {
+                  setChallengeVerificationError(errors[0]);
+                }
               }
-            }
 
-            if (errors.length === 0 && response?.status === "SUCCESS") {
-              setResendAttempts((resendAttempt) => resendAttempt - 1);
-              restartResendOtpTotalSecs(
-                getTimeoutTime(settings.response.configs["resend.delay"])
-              );
-            }
-          },
-        });
+              if (errors.length === 0 && response?.status === "SUCCESS") {
+                setResendAttempts(resendAttempts - 1);
+                restartResendOtpTotalSecs(
+                  getTimeoutTime(settings.response.configs["resend.delay"])
+                );
+              }
+            },
+          });
+        }
       }
     },
     [
@@ -206,14 +225,20 @@ export const Otp = ({ methods, settings }: OtpProps) => {
       restartResendOtpTotalSecs,
     ]
   );
+  const redirectBack = (reset: boolean) => {
+    setResendAttempts(reset ? resendAttempts - 1 : null);
+    setResendOtp(reset);
 
-  const handleBack = useCallback(() => {
     if (step === ResetPasswordStep.Otp) {
       setValue("captchaToken", "", { shouldValidate: true });
       setValue("otp", "", { shouldValidate: true });
     }
 
     setStep(ResetPasswordStep.UserInfo);
+  };
+
+  const handleBack = useCallback(() => {
+    redirectBack(false);
   }, [step, setStep, setValue]);
 
   const handleContinue = useCallback(
@@ -278,6 +303,7 @@ export const Otp = ({ methods, settings }: OtpProps) => {
 
   const handleExhaustedAttempt = () => {
     setStep(ResetPasswordStep.UserInfo);
+    setResendOtp(false);
     reset();
   };
 
