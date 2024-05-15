@@ -47,12 +47,12 @@ import { langCodeMappingSelector, useLanguageStore } from "~/useLanguageStore";
 
 import { resetPasswordFormDefaultValues } from "../ResetPasswordPage";
 import {
+  resendOtpSelector,
   ResetPasswordStep,
   setCriticalErrorSelector,
+  setResendOtpSelector,
   setStepSelector,
   useResetPasswordStore,
-  resendOtpSelector,
-  setResendOtpSelector
 } from "../useResetPasswordStore";
 
 interface UserInfoProps {
@@ -78,17 +78,18 @@ export const UserInfo = ({ settings, methods }: UserInfoProps) => {
     },
   } = methods;
 
-  const { setStep, setCriticalError, resendOtp, setResendOtp } = useResetPasswordStore(
-    useCallback(
-      (state) => ({
-        setStep: setStepSelector(state),
-        setCriticalError: setCriticalErrorSelector(state),
-        resendOtp: resendOtpSelector(state),
-        setResendOtp: setResendOtpSelector(state),
-      }),
-      []
-    )
-  );
+  const { setStep, setCriticalError, resendOtp, setResendOtp } =
+    useResetPasswordStore(
+      useCallback(
+        (state) => ({
+          setStep: setStepSelector(state),
+          setCriticalError: setCriticalErrorSelector(state),
+          resendOtp: resendOtpSelector(state),
+          setResendOtp: setResendOtpSelector(state),
+        }),
+        []
+      )
+    );
 
   const { langCodeMapping } = useLanguageStore(
     useCallback(
@@ -190,11 +191,21 @@ export const UserInfo = ({ settings, methods }: UserInfoProps) => {
                 <Icons.back id="back-button" name="back-button" />
               </a>
             )}
-            <div className="text-center font-semibold tracking-normal">
-              {t("forgot_password")}
-            </div>
+            {!resendOtp && (
+              <div className="text-center font-semibold tracking-normal">
+                {t("forgot_password")}
+              </div>
+            )}
           </StepTitle>
-          <StepDescription>{t("forgot_password_description")}</StepDescription>
+          {resendOtp ? (
+            <div className="grow px-3 text-center font-semibold tracking-normal xs:px-2">
+              {t("captcha_required")}
+            </div>
+          ) : (
+            <StepDescription>
+              {t("forgot_password_description")}
+            </StepDescription>
+          )}
         </StepHeader>
         <StepDivider />
         <StepAlert className="relative">
