@@ -60,6 +60,8 @@
   --ring-color: 215 20.2% 65.1%;
 
   --radius-font-size: 0.5rem;
+
+  --video-preview-border-color: #eb6f2d;
 }
 
 [class="dark"] {

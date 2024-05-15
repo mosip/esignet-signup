@@ -114,6 +114,13 @@
     "header": "Alert!",
     "description": "Oops! It looks like you’re using an unsupported browser. Please consider upgrading to the latest version of the browser for the best experience. Thank you for your understanding"
   },
+  "video_preview": {
+    "header": "Key Information",
+    "cancel_button": "Cancel",
+    "proceed_button": "Proceed",
+    "permission_denied_header": "Camera Permission Denied",
+    "permission_denied_description": "You have to given camera permission otherwise we can't move forward"
+  },
   "terms_and_conditions": {
     "header": "Terms & Conditions",
     "sub_header": "Please read the terms and conditions carefully.",

@@ -17,16 +17,16 @@ interface CancelAlertPopoverProps {
   description: string;
   handleStay: () => void;
   handleDismiss: () => void;
+  keyPrefix?: string;
 }
 
 export const CancelAlertPopover = ({
   description,
   handleStay,
   handleDismiss,
+  keyPrefix = "cancel_alert_popover",
 }: CancelAlertPopoverProps) => {
-  const { t } = useTranslation("translation", {
-    keyPrefix: "cancel_alert_popover",
-  });
+  const { t } = useTranslation("translation", { keyPrefix });
 
   return (
     <AlertDialog open={true}>
@@ -39,7 +39,7 @@ export const CancelAlertPopover = ({
             {t(description, { relyingParty: "Health Service" })}
           </AlertDialogDescription>
         </AlertDialogHeader>
-        <AlertDialogFooter className="sm:flex-col-reverse sm:space-x-0 sm:gap-y-2">
+        <AlertDialogFooter className="sm:flex-col-reverse sm:gap-y-2 sm:space-x-0">
           <AlertDialogCancel
             id="dismiss-button"
             name="dismiss-button"
