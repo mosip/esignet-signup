@@ -83,6 +83,14 @@ interface Resources {
     signup_discontinue_prompt: string;
     reset_password_discontinue_prompt: string;
     captcha_required: string;
+    slot_checking: {
+      header: string;
+      description: string;
+    };
+    slot_unavailable: {
+      header: string;
+      description: string;
+    };
     footer: {
       powered_by: string;
     };

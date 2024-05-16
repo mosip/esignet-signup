@@ -6,15 +6,17 @@ import {
   RegistrationStatusResponseDto,
   ResetPasswordResponseDto,
   SettingsDto,
+  SlotAvailabilityDto,
   TermsAndConditionDto,
 } from "~typings/types";
 
-import { getRegistrationStatus, getSettings, getTermsAndConditions } from "./service";
+import { getRegistrationStatus, getSettings, getSlotAvailability, getTermsAndConditions } from "./service";
 
 export const keys = {
   termsAndConditions: ["termsAndConditions"] as const,
   settings: ["settings"] as const,
   registrationStatus: ["registrationStatus"] as const,
+  slotAvailability: ["slotAvailability" as const]
 };
 
 export const useSettings = (): UseQueryResult<SettingsDto, unknown> => {
@@ -47,5 +49,12 @@ export const useTermsAndConditions = (): UseQueryResult<TermsAndConditionDto, un
     queryKey: keys.termsAndConditions,
     queryFn: () => getTermsAndConditions(),
     staleTime: Infinity,
+  });
+}
+
+export const useSlotAvailability = (): UseQueryResult<SlotAvailabilityDto, unknown>  => {
+  return useQuery<SlotAvailabilityDto>({
+    queryKey: keys.slotAvailability,
+    queryFn: () => getSlotAvailability(),
   });
 }

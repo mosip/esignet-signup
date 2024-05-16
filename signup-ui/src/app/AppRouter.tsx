@@ -20,6 +20,7 @@ import {
   TERMS_CONDITION,
   VERIFICATION_SCREEN,
   VIDEO_PREVIEW,
+  SLOT_CHECKING,
 } from "~constants/routes";
 import { lazyRetry } from "~utils/lazyRetry";
 import { setupResponseInterceptor } from "~services/api.service";
@@ -43,9 +44,9 @@ const TermsAndCondition = lazy(() =>
 const VerificationScreen = lazy(() =>
     lazyRetry(() => import("~pages/EkycVerificationPage/VerificationScreen"))
   );
-  const VerificationSteps = lazy(() =>
-    lazyRetry(() => import("~pages/EkycVerificationPage/VerificationSteps"))
-  );
+const SlotChecking = lazy(() =>
+  lazyRetry(() => import("~pages/EkycVerificationPage/SlotChecking"))
+);
 const VideoPreview = lazy(() => lazyRetry(() => import("~pages/EkycVerificationPage/VideoPreview")));
 const UnderConstructionPage = lazy(() =>
   lazyRetry(() => import("~pages/UnderConstructionPage"))
@@ -81,7 +82,7 @@ export const AppRouter = () => {
             <Route path={VIDEO_PREVIEW} element={<VideoPreview />} />
             <Route path={VERIFICATION_SCREEN} element={<VerificationScreen />} />
             <Route path={LOADING_SCREEN} element={<LoadingScreen />} />
-            <Route path={EKYC_VERIFICATION} element={<VerificationSteps />} />
+            <Route path={SLOT_CHECKING} element={<SlotChecking />} />
           </Route>
           <Route
             path={SOMETHING_WENT_WRONG}

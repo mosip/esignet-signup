@@ -197,6 +197,13 @@ export type TermsAndConditionDto = BaseResponseDto & {
   } | null;
 };
 
+export type SlotAvailabilityDto = BaseResponseDto & {
+  response: {
+    status: string;
+    message: string;
+  } | null;
+};
+
 export interface LanguageTaggedValue {
   language: string;
   value: string;

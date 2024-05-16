@@ -7,5 +7,6 @@ export const TERMS_CONDITION = "/ekyc-verification/terms-and-condition";
 export const LOADING_SCREEN = "/ekyc-verification/loading-screen";
 export const VERIFICATION_SCREEN = "/ekyc-verification/verification-screen";
 export const VIDEO_PREVIEW = "/ekyc-verification/video-preview";
+export const SLOT_CHECKING = "/ekyc-verification/slot-checking";
 export const SOMETHING_WENT_WRONG = "/something-went-wrong";
 export const UNDER_CONSTRUCTION = "/under-construction";

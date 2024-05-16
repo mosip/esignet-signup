@@ -1,5 +1,3 @@
-import { useTranslation } from "react-i18next";
-
 import { ApiService } from "~services/api.service";
 import {
   GenerateChallengeRequestDto,
@@ -66,3 +64,7 @@ export const getTermsAndConditions =
   async (): Promise<TermsAndConditionDto> => {
     return ApiService.get(`/ekyc-verify/tnc`).then(({ data }) => data);
   };
+
+export const getSlotAvailability = async () => {
+  return ApiService.get("slot-availability").then(({ data }) => data);
+};
