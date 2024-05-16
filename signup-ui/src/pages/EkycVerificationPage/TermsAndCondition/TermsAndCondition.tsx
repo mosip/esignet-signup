@@ -136,7 +136,7 @@ export const TermsAndCondition = () => {
               <Button
                 id="cancel-tnc-button"
                 name="cancel-tnc-button"
-                variant="cancel"
+                variant="cancel_outline"
                 className="w-full p-4 font-semibold"
                 onClick={handleCancel}
               >

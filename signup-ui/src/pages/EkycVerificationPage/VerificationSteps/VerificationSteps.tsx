@@ -94,7 +94,6 @@ export const VerificationSteps = () => {
       )}
       <div className="m-3 flex flex-row justify-center">
       <Step className="max-w-[75rem] md:rounded-2xl md:shadow sm:rounded-2xl sm:shadow sm:mt-0 my-5">
-      {/* <Step className="my-5 max-w-[75rem] sm:mt-0"> */}
         <StepHeader className="px-0 py-5 sm:py-[25px]">
           <StepTitle className="relative flex w-full items-center justify-center gap-x-4 text-base font-semibold">
             <div
@@ -117,7 +116,7 @@ export const VerificationSteps = () => {
         <StepFooter className="p-5">
           <div className="flex w-full flex-row items-center justify-end gap-x-4">
             <Button
-              variant="cancel"
+              variant="cancel_outline"
               className="max-w-max px-[6rem] font-semibold sm:px-[3rem] xs:px-[2rem]"
               onClick={handleCancel}
             >

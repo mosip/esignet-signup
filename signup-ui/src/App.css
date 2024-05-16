@@ -83,6 +83,7 @@ body {
   left: 0.9em;
   font-size: 1em;
   font: var(--vertical-stepper-description-font);
+  margin-right: 1.25rem;
 }
 
 .verticalStepper .descriptionContainer {
