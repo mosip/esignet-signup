@@ -88,8 +88,8 @@ export const TermsAndCondition = () => {
           handleDismiss={handleDismiss}
         />
       )}
-      <div className="m-3 sm:mb-20 flex flex-row justify-center">
-        <Step className="max-w-[644px] md:rounded-2xl md:shadow sm:rounded-2xl sm:shadow">
+      <div className="m-3 flex flex-row justify-center">
+        <Step className="max-w-[644px] md:rounded-2xl md:shadow sm:rounded-2xl sm:shadow my-5">
           <StepHeader className="px-0 py-5 sm:pb-[25px] sm:pt-[33px]">
             <StepTitle className="relative flex w-full items-center justify-center gap-x-4 text-base font-semibold">
               <div
@@ -136,7 +136,7 @@ export const TermsAndCondition = () => {
               <Button
                 id="cancel-tnc-button"
                 name="cancel-tnc-button"
-                variant="outline"
+                variant="cancel"
                 className="w-full p-4 font-semibold"
                 onClick={handleCancel}
               >

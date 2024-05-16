@@ -8,7 +8,6 @@ body {
   background: var(--background-body) 0% 0% no-repeat padding-box;
 }
 
-
 .language-icon-color {
   fill: var(--language-icon-color);
 }
@@ -63,6 +62,50 @@ body {
   content: var(--bottom-left-bg-logo-url);
 }
 
+.verticalStepper {
+  padding: 0 !important;
+}
+
+.verticalStepper .middleStepConnector {
+  background-color: var(--vertical-stepper-bg-color) !important;
+  opacity: var(--vertical-stepper-bg-opacity);
+  width: 1.5px;
+}
+
+.verticalStepper .stepConnector {
+  background-color: var(--vertical-stepper-bg-color) !important;
+  opacity: var(--vertical-stepper-bg-opacity);
+}
+
+.verticalContentWrapper .description {
+  position: relative;
+  bottom: 1em;
+  left: 0.9em;
+  font-size: 1em;
+  font: var(--vertical-stepper-description-font);
+}
+
+.verticalStepper .descriptionContainer {
+  display: -webkit-box !important;
+}
+
+.verticalLabelRight .label {
+  padding-left: 0.5em;
+  font: var(--vertical-stepper-label-font);
+}
+
+#stepper-node {
+  background: var(--vertical-stepper-node-bg);
+  opacity: 1;
+}
+
+.cancel_btn, .cancel_btn:hover {
+  border: var(--cancel-button-border);
+  border-radius: var(--cancel-button-border-radius);
+  background: none;
+  color: var(--cancel-button-color) !important;
+}
+
 @media screen and (max-width: 640px) {
   .section-background .top_left_bg_logo,
   .section-background .top_right_bg_logo,
@@ -96,7 +139,7 @@ body {
 }
 
 .scrollable-div::-webkit-scrollbar-thumb {
-  background-color: #D5D5D5;
+  background-color: #d5d5d5;
   border-radius: 8px;
 }
 
