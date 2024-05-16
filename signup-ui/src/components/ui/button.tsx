@@ -62,9 +62,9 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         {...props}
       >
         {isLoading ? (
-          <LoadingIndicator />	
-        ) : (	
-          <>{children}</>	
+          <LoadingIndicator />
+        ) : (
+          <>{children}</>
         )}
       </Comp>
     );

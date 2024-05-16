@@ -2,8 +2,6 @@ import { isEqual } from "lodash";
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 
-
-
 import { Error } from "~typings/types";
 
 export enum EkycVerificationStep {
