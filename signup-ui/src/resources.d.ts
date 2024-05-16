@@ -82,8 +82,6 @@ interface Resources {
     privacy_and_policy_title: string;
     signup_discontinue_prompt: string;
     reset_password_discontinue_prompt: string;
-    cancel_button: string;
-    proceed_button: string;
     captcha_required: string;
     eykc_loading: {
       header: string;
@@ -91,29 +89,6 @@ interface Resources {
     };
     footer: {
       powered_by: string;
-    };
-    verificationSteps: {
-      title: string;
-      chooseAnEkycProvider: {
-        label: string;
-        content: string;
-      };
-      termsAndConditions: {
-        label: string;
-        content: string;
-      };
-      preVerificationGuide: {
-        label: string;
-        content: string;
-      };
-      identityVerification: {
-        label: string;
-        content: string;
-      };
-      reviewConsent: {
-        label: string;
-        content: string;
-      };
     };
     error_response: {
       invalid_transaction: string;

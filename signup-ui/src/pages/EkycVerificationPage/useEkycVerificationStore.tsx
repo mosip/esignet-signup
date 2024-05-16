@@ -7,7 +7,6 @@ import { devtools } from "zustand/middleware";
 import { Error } from "~typings/types";
 
 export enum EkycVerificationStep {
-  ClaimsAttention,
   VerificationSteps,
   KycProviderList,
   TermsAndCondition,

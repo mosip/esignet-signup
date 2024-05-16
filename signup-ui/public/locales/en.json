@@ -82,33 +82,8 @@
   "privacy_and_policy_title": "Privacy & Policy",
   "signup_discontinue_prompt": "Are you sure you want to discontinue the sign up process?",
   "reset_password_discontinue_prompt": "Are you sure you want to discontinue the reset password process?",
-  "cancel_button": "Cancel",
-  "proceed_button": "Proceed",
   "footer": {
     "powered_by": "Powered by"
-  },
-  "verificationSteps": {
-    "title": "Complete your eKYC verification with the below simple steps",
-    "chooseAnEkycProvider": {
-      "label": "Choose an eKYC provider",
-      "content": "Select an eKYC service provider that aligns with your requirements."
-    },
-    "termsAndConditions": {
-      "label": "Terms & Conditions",
-      "content": "Review the policy terms & conditions."
-    },
-    "preVerificationGuide": {
-      "label": "Pre-verification guide",
-      "content": "Key instructions for a seamless eKYC experience."
-    },
-    "identityVerification": {
-      "label": "Identity verification",
-      "content": "This step verifies the individual’s physical presence during the identity verification process as well as verification of the individual’s identity with their physical ID."
-    },
-    "reviewConsent": {
-      "label": "Review Consent",
-      "content": "Review and approve consent before sharing with the service provider."
-    }
   },
   "eykc_loading": {
     "header": "Alert!",
