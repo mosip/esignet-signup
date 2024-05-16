@@ -21,9 +21,12 @@ export const checkBrowserCompatible = () => {
   };
 
   for (const [browser, regex] of Object.entries(browserVersionRegex)) {
-    const match = userAgent.match(regex);
-    if (match) {
-      return compareVersions(match[1], BROWSER_MIN_COMPATIBILITY[browser]);
+    const browserVersionMatch = userAgent.match(regex);
+    if (browserVersionMatch) {
+      return compareVersions(
+        browserVersionMatch[1],
+        BROWSER_MIN_COMPATIBILITY[browser]
+      );
     }
   }
   return false;
