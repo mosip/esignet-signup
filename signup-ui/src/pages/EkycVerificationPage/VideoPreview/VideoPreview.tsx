@@ -173,7 +173,7 @@ export const VideoPreview = () => {
               <Button
                 id="cancel-preview-button"
                 name="cancel-preview-button"
-                variant="outline"
+                variant="cancel_outline"
                 className="w-full p-4 font-semibold"
                 onClick={handleCancel}
               >
