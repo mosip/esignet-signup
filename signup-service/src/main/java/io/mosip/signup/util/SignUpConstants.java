@@ -8,8 +8,11 @@ public class SignUpConstants {
     public static final String BLOCKED_IDENTIFIER = "blocked_identifier";
     public static final String KEYSTORE = "keystore";
     public static final String KEY_ALIAS = "key_alias";
+    public static final String IDENTITY_VERIFIERS = "identity_verifiers";
+    public static final String IDENTITY_VERIFICATION = "identity_verification";
     public static final String TRANSACTION_ID = "TRANSACTION_ID";
     public static final String VERIFIED_TRANSACTION_ID = "VERIFIED_TRANSACTION_ID";
+    public static final String IDV_TRANSACTION_ID = "IDV_TRANSACTION_ID";
     public static final String CONSENT_DISAGREE = "DISAGREE";
     public static final String EMTPY = "";
     public static final String SEND_OTP_SMS_NOTIFICATION_TEMPLATE_KEY = "mosip.signup.sms-notification-template.send-otp";
