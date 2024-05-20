@@ -6,6 +6,7 @@ import {
   RegistrationWithFailedStatus,
   ResetPasswordRequestDto,
   SettingsDto,
+  SlotAvailabilityRequestDto,
   TermsAndConditionDto,
   VerifyChallengeRequestDto,
 } from "~typings/types";
@@ -65,6 +66,10 @@ export const getTermsAndConditions =
     return ApiService.get(`/ekyc-verify/tnc`).then(({ data }) => data);
   };
 
-export const getSlotAvailability = async () => {
-  return ApiService.get("slot-availability").then(({ data }) => data);
+export const checkSlotAvailability = async (
+  slotAvailabilityRequestDto: SlotAvailabilityRequestDto
+) => {
+  return ApiService.post("/identity-verification/slot", slotAvailabilityRequestDto).then(
+    ({ data }) => data
+  );
 };

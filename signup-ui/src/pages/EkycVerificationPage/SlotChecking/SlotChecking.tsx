@@ -1,32 +1,54 @@
-import { useTranslation } from "react-i18next";
+import { useCallback, useEffect } from "react";
 
-import { Icons } from "~components/ui/icons";
-import { Step, StepContent } from "~components/ui/step";
+import { useSlotAvailability } from "~pages/shared/mutations";
+import { SlotAvailabilityRequestDto } from "~typings/types";
 
+import {
+  setCriticalErrorSelector,
+  useEkycVerificationStore,
+} from "../useEkycVerificationStore";
+import { SlotCheckingLoading } from "./components/SlotCheckingLoading";
 import { SlotUnavailableAlert } from "./components/SlotUnavailableAlert";
 
 export const SlotChecking = () => {
-  const { t } = useTranslation();
+  const { slotAvailabilityMutation } = useSlotAvailability();
 
-  const isFailed = true;
-
-  if (isFailed) return <SlotUnavailableAlert />;
-
-  return (
-    <Step>
-      <StepContent className="py-16">
-        <div className="flex flex-col items-center gap-8">
-          <Icons.loader className="h-20 w-20 animate-spin text-primary" />
-          <div>
-            <h1 className="text-center text-2xl font-semibold">
-              {t("slot_checking.header")}
-            </h1>
-            <p className="text-center text-gray-500">
-              {t("slot_checking.description")}
-            </p>
-          </div>
-        </div>
-      </StepContent>
-    </Step>
+  const { setCriticalError } = useEkycVerificationStore(
+    useCallback(
+      (state) => ({
+        setCriticalError: setCriticalErrorSelector(state),
+      }),
+      []
+    )
   );
+
+  useEffect(() => {
+    const slotAvailabilityRequestDto: SlotAvailabilityRequestDto = {
+      requestTime: new Date().toISOString(),
+      request: {
+        verifierId: "12345678",
+        consent: "ACCEPTED",
+        disabilityType: null,
+      },
+    };
+
+    slotAvailabilityMutation.mutate(slotAvailabilityRequestDto, {
+      onSuccess: ({ errors }) => {
+        if (
+          errors.length > 0 &&
+          errors[0].errorCode === "invalid_transaction"
+        ) {
+          setCriticalError(errors[0]);
+        } else {
+          // TODO: Slot Available => Go to Next Step
+        }
+      },
+    });
+  }, []);
+
+  if (slotAvailabilityMutation.isPending) {
+    return <SlotCheckingLoading />;
+  }
+
+  return <SlotUnavailableAlert />;
 };

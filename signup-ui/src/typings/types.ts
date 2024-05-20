@@ -72,13 +72,25 @@ const ResetPasswordPossibleErrors = [
 
 export type ResetPasswordErrors = (typeof ResetPasswordPossibleErrors)[number];
 
+const SlotAvailabilityPossibleErrors = [
+  "invalid_transaction",
+  "invalid_identifier",
+  "invalid_password",
+  "invalid_request",
+  "reset_pwd_failed",
+] as const;
+
+export type SlotAvailabilityErrors =
+  (typeof SlotAvailabilityPossibleErrors)[number];
+
 export interface Error {
   errorCode:
     | GenerateChallengeErrors
     | VerifyChallengeErrors
     | RegisterErrors
     | RegisterStatusErrors
-    | ResetPasswordErrors;
+    | ResetPasswordErrors
+    | SlotAvailabilityErrors;
   errorMessage: string;
 }
 
@@ -265,4 +277,31 @@ export type ResetPasswordResponseDto = BaseResponseDto & {
   response: {
     status: ResetPasswordStatus;
   } | null;
+};
+
+const EKYCConsentOptions = ["ACCEPTED", "DECLINED"] as const;
+
+type EKYCConsentStatus = (typeof EKYCConsentOptions)[number];
+
+const DisabilityOptions = [
+  "VISION",
+  "AUDITORY",
+  "MOBILITY",
+  "NEUROLOGICAL",
+] as const;
+
+type DisabilityType = (typeof DisabilityOptions)[number];
+
+export type SlotAvailabilityRequestDto = BaseRequestDto & {
+  request: {
+    verifierId: string;
+    consent: EKYCConsentStatus;
+    disabilityType: DisabilityType | null;
+  };
+};
+
+export type SlotAvailabilityResponseDto = BaseResponseDto & {
+  response: {
+    status: string;
+  };
 };
