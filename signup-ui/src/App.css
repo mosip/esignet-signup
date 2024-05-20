@@ -80,6 +80,10 @@ body {
   background-color: var(--footer-bg-color);
 }
 
+.pincode-input-container .pincode-input-text {
+  -webkit-text-security: disc;
+}
+
 @layer base {
   :root {
     --font-inter: "Inter";
