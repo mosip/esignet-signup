@@ -117,6 +117,8 @@ export interface SettingsConfig {
   "fullname.length.min": number;
   "fullname.length.max": number;
   "send-challenge.captcha.required": boolean;
+  "signup.oauth-client-id": string;
+  "identity-verification.redirect-url": string;
 }
 
 export interface Settings {
@@ -257,5 +259,18 @@ export enum ResetPasswordStatus {
 export type ResetPasswordResponseDto = BaseResponseDto & {
   response: {
     status: ResetPasswordStatus;
+  } | null;
+};
+
+export type UpdateProcessRequestDto = BaseRequestDto & {
+  request: {
+    authorizationCode: string;
+    state: string;
+  };
+};
+
+export type UpdateProcessResponseDto = BaseResponseDto & {
+  response: {
+    status: object;
   } | null;
 };

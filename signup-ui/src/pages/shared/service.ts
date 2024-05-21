@@ -10,6 +10,7 @@ import {
   SettingsDto,
   TermsAndConditionDto,
   VerifyChallengeRequestDto,
+  UpdateProcessRequestDto
 } from "~typings/types";
 
 export const getSettings = async (): Promise<SettingsDto> => {
@@ -58,6 +59,15 @@ export const resetPassword = async (
   newUserInfo: ResetPasswordRequestDto
 ) => {
   return ApiService.post("/reset-password", newUserInfo).then(({ data }) => data);
+};
+
+export const updateProcess = async (
+  updateProcess: UpdateProcessRequestDto
+) => {
+  return ApiService.post(
+    "/identity-verification/initiate",
+    updateProcess
+  ).then(({ data }) => data);
 };
 
 // TODO: remove when the real endpoint is available
