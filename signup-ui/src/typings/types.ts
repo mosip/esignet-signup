@@ -7,6 +7,12 @@ export interface ResetPasswordForm {
   confirmNewPassword: string;
 }
 
+export interface EkYCVerificationForm {
+  consent: EKYCConsentStatus,
+  disabilityType: DisabilityType,
+  verifierId: string,
+}
+
 const GenerateChallengePossibleErrors = [
   "invalid_transaction",
   "invalid_otp_channel",
@@ -78,6 +84,7 @@ const SlotAvailabilityPossibleErrors = [
   "invalid_password",
   "invalid_request",
   "reset_pwd_failed",
+  "slot_unavailable",
 ] as const;
 
 export type SlotAvailabilityErrors =
@@ -290,13 +297,13 @@ const DisabilityOptions = [
   "NEUROLOGICAL",
 ] as const;
 
-type DisabilityType = (typeof DisabilityOptions)[number];
+type DisabilityType = (typeof DisabilityOptions)[number] | null;
 
 export type SlotAvailabilityRequestDto = BaseRequestDto & {
   request: {
     verifierId: string;
     consent: EKYCConsentStatus;
-    disabilityType: DisabilityType | null;
+    disabilityType: DisabilityType;
   };
 };
 

@@ -7,7 +7,9 @@ import { Step, StepContent } from "~components/ui/step";
 export const SlotUnavailableAlert = () => {
   const { t } = useTranslation();
 
-  const handleContinue = () => {};
+  const handleContinue = (e: any) => {
+    e.preventDefault();
+  };
 
   return (
     <Step>

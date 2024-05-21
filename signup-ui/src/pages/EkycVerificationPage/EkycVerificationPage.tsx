@@ -1,14 +1,17 @@
-import { useCallback } from "react";
-import { useForm } from "react-hook-form";
+import { useCallback, useMemo } from "react";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { Resolver, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { Outlet } from "react-router-dom";
+import * as yup from "yup";
 
 import { Form } from "~components/ui/form";
-import { SettingsDto } from "~typings/types";
+import { EkYCVerificationForm, SettingsDto } from "~typings/types";
 
 import { EkycVerificationPopover } from "./EkycVerificationPopover";
 import {
   criticalErrorSelector,
+  EkycVerificationStep,
   stepSelector,
   useEkycVerificationStore,
 } from "./useEkycVerificationStore";
@@ -16,6 +19,21 @@ import {
 interface EkycVerificationPageProps {
   settings: SettingsDto;
 }
+
+const ekycVerificationFormDefaultValues: EkYCVerificationForm = {
+  consent: "DECLINED",
+  disabilityType: null,
+  verifierId: "",
+};
+
+const EKYC_VERIFICATION_VALIDATION_SCHEMA = {
+  [EkycVerificationStep.VerificationSteps]: yup.object({}),
+  [EkycVerificationStep.KycProviderList]: yup.object({}),
+  [EkycVerificationStep.TermsAndCondition]: yup.object({}),
+  [EkycVerificationStep.VideoPreview]: yup.object({}),
+  [EkycVerificationStep.LoadingScreen]: yup.object({}),
+  [EkycVerificationStep.VerificationScreen]: yup.object({}),
+};
 
 export const EkycVerificationPage = ({
   settings,
@@ -32,7 +50,22 @@ export const EkycVerificationPage = ({
     )
   );
 
-  const methods = useForm();
+  const ekycVerificationValidationSchema = useMemo(
+    () => Object.values(EKYC_VERIFICATION_VALIDATION_SCHEMA),
+    [settings]
+  );
+
+  const currentEkycVerificationValidationSchema =
+    ekycVerificationValidationSchema[step];
+
+  const methods = useForm<EkYCVerificationForm>({
+    shouldUnregister: false,
+    defaultValues: ekycVerificationFormDefaultValues,
+    resolver: yupResolver(
+      currentEkycVerificationValidationSchema
+    ) as unknown as Resolver<EkYCVerificationForm, any>,
+    mode: "onBlur",
+  });
 
   return (
     <>
