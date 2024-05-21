@@ -83,7 +83,6 @@ export const VerificationSteps = () => {
 
     const browserCompatible = checkBrowserCompatible();
     const permCompatible = await checkBrowserCameraPermission();
-    console.log({ browserCompatible, permCompatible });
     if (browserCompatible && permCompatible) {
       setStep(EkycVerificationStep.KycProviderList);
     } else {
