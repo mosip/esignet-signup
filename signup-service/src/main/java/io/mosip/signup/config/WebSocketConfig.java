@@ -1,27 +1,29 @@
 package io.mosip.signup.config;
 
 import io.mosip.signup.services.IdentityVerificationHandshakeHandler;
-import io.mosip.signup.services.IdentityVerificationWebSocketHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.socket.config.annotation.EnableWebSocket;
-import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
-import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
+import org.springframework.messaging.simp.config.MessageBrokerRegistry;
+import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
+import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
+import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
 @Configuration
-@EnableWebSocket
-public class WebSocketConfig implements WebSocketConfigurer {
-
-    @Autowired
-    private IdentityVerificationWebSocketHandler identityVerificationWebSocketHandler;
+@EnableWebSocketMessageBroker
+public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Autowired
     private IdentityVerificationHandshakeHandler identityVerificationHandshakeHandler;
 
     @Override
-    public void registerWebSocketHandlers(WebSocketHandlerRegistry webSocketHandlerRegistry) {
-        webSocketHandlerRegistry.addHandler(identityVerificationWebSocketHandler,"/identity-verification")
-                .setHandshakeHandler(identityVerificationHandshakeHandler);
-        //By default, only same origin requests are allowed
+    public void configureMessageBroker(MessageBrokerRegistry registry) {
+        registry.enableSimpleBroker("/topic");
+        registry.setApplicationDestinationPrefixes("/v1/signup/ws");
+    }
+
+    @Override
+    public void registerStompEndpoints(StompEndpointRegistry registry) {
+        //By default, only same origin requests are allowed, should take the origin from properties
+        registry.addEndpoint("/ws");
     }
 }
