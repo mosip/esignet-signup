@@ -6,10 +6,11 @@ import { Error } from "~typings/types";
 
 export enum EkycVerificationStep {
   VerificationSteps,
+  LoadingScreen,
   KycProviderList,
   TermsAndCondition,
   VideoPreview,
-  LoadingScreen,
+  SlotCheckingScreen,
   VerificationScreen,
 }
 
@@ -22,7 +23,7 @@ export type EkycVerificationStore = {
 
 export const useEkycVerificationStore = create<EkycVerificationStore>()(
   devtools((set, get) => ({
-    step: EkycVerificationStep.TermsAndCondition,
+    step: EkycVerificationStep.VerificationSteps,
     setStep: (step: EkycVerificationStep) => {
       const current = get();
       if (isEqual(current.step, step)) return;
