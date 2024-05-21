@@ -44,6 +44,9 @@ const TermsAndCondition = lazy(() =>
 const VerificationScreen = lazy(() =>
     lazyRetry(() => import("~pages/EkycVerificationPage/VerificationScreen"))
   );
+  const VerificationSteps = lazy(() =>
+    lazyRetry(() => import("~pages/EkycVerificationPage/VerificationSteps"))
+  );
 const SlotChecking = lazy(() =>
   lazyRetry(() => import("~pages/EkycVerificationPage/SlotChecking"))
 );
@@ -82,6 +85,7 @@ export const AppRouter = () => {
             <Route path={VIDEO_PREVIEW} element={<VideoPreview />} />
             <Route path={VERIFICATION_SCREEN} element={<VerificationScreen />} />
             <Route path={LOADING_SCREEN} element={<LoadingScreen />} />
+            <Route path={EKYC_VERIFICATION} element={<VerificationSteps />} />
             <Route path={SLOT_CHECKING} element={<SlotChecking />} />
           </Route>
           <Route

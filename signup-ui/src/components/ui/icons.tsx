@@ -1,7 +1,5 @@
 import * as React from "react";
 
-
-
 import InfoPng from "~assets/png/info-38-2.png";
 import { ReactComponent as ArrowLeft } from "~assets/svg/arrow-left.svg";
 import { ReactComponent as Check } from "~assets/svg/check.svg";
