@@ -24,6 +24,8 @@ import {
   setStepSelector,
   useEkycVerificationStore,
 } from "../useEkycVerificationStore";
+import { checkBrowserCompatible } from "./utils/checkBrowserCompatible";
+import { checkBrowserCameraPermission } from "./utils/checkBrowserCameraPermission";
 
 export const VerificationSteps = () => {
   const { t } = useTranslation("translation", {
@@ -76,9 +78,17 @@ export const VerificationSteps = () => {
     },
   ];
 
-  const handleContinue = (e: any) => {
+  const handleContinue = async (e: any) => {
     e.preventDefault();
-    setStep(EkycVerificationStep.KycProviderList);
+
+    const browserCompatible = checkBrowserCompatible();
+    const permCompatible = await checkBrowserCameraPermission();
+    console.log({ browserCompatible, permCompatible });
+    if (browserCompatible && permCompatible) {
+      setStep(EkycVerificationStep.KycProviderList);
+    } else {
+      setStep(EkycVerificationStep.LoadingScreen);
+    }
   };
 
   const handleCancel = (e: any) => {

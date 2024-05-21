@@ -17,6 +17,7 @@ import KycProviderList from "./KycProviderList";
 import TermsAndCondition from "./TermsAndCondition";
 import VideoPreview from "./VideoPreview";
 import VerificationScreen from "./VerificationScreen";
+import LoadingScreen from "./LoadingScreen";
 
 interface EkycVerificationPageProps {
   settings: SettingsDto;
@@ -58,6 +59,8 @@ export const EkycVerificationPage = ({
     switch (step) {
       case EkycVerificationStep.VerificationSteps:
         return <VerificationSteps />;
+      case EkycVerificationStep.LoadingScreen:
+        return <LoadingScreen />;
       case EkycVerificationStep.KycProviderList:
         return <KycProviderList />;
       case EkycVerificationStep.TermsAndCondition:
