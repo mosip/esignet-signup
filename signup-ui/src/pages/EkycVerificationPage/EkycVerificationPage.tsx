@@ -1,20 +1,23 @@
-import { useCallback, useMemo } from "react";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { Resolver, useForm } from "react-hook-form";
+import { useCallback, useEffect } from "react";
+import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { Outlet } from "react-router-dom";
-import * as yup from "yup";
 
 import { Form } from "~components/ui/form";
 import { EkYCVerificationForm, SettingsDto } from "~typings/types";
 
 import { EkycVerificationPopover } from "./EkycVerificationPopover";
 import {
+  EkycVerificationStep,
   criticalErrorSelector,
   EkycVerificationStep,
   stepSelector,
   useEkycVerificationStore,
 } from "./useEkycVerificationStore";
+import VerificationSteps from "./VerificationSteps";
+import KycProviderList from "./KycProviderList";
+import TermsAndCondition from "./TermsAndCondition";
+import VideoPreview from "./VideoPreview";
+import VerificationScreen from "./VerificationScreen";
 
 interface EkycVerificationPageProps {
   settings: SettingsDto;
@@ -50,22 +53,39 @@ export const EkycVerificationPage = ({
     )
   );
 
-  const ekycVerificationValidationSchema = useMemo(
-    () => Object.values(EKYC_VERIFICATION_VALIDATION_SCHEMA),
-    [settings]
-  );
+  const methods = useForm();
 
-  const currentEkycVerificationValidationSchema =
-    ekycVerificationValidationSchema[step];
+  useEffect(() => {
 
-  const methods = useForm<EkYCVerificationForm>({
-    shouldUnregister: false,
-    defaultValues: ekycVerificationFormDefaultValues,
-    resolver: yupResolver(
-      currentEkycVerificationValidationSchema
-    ) as unknown as Resolver<EkYCVerificationForm, any>,
-    mode: "onBlur",
-  });
+    const handleTabBeforeUnload = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+
+      return (event.returnValue = t("reset_password_discontinue_prompt"));
+    };
+
+    window.addEventListener("beforeunload", handleTabBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleTabBeforeUnload);
+    };
+  }, [step, criticalError]);
+
+  const getEkycVerificationStepContent = (step: EkycVerificationStep) => {
+    switch (step) {
+      case EkycVerificationStep.VerificationSteps:
+        return <VerificationSteps />;
+      case EkycVerificationStep.KycProviderList:
+        return <KycProviderList />;
+      case EkycVerificationStep.TermsAndCondition:
+        return <TermsAndCondition />;
+      case EkycVerificationStep.VideoPreview:
+        return <VideoPreview />;
+      case EkycVerificationStep.VerificationScreen:
+        return <VerificationScreen />;
+      default:
+        return "unknown step";
+    }
+  };
 
   return (
     <>
@@ -75,9 +95,7 @@ export const EkycVerificationPage = ({
         ) && <EkycVerificationPopover />}
 
       <Form {...methods}>
-        <form noValidate>
-          <Outlet />
-        </form>
+        <form noValidate>{getEkycVerificationStepContent(step)}</form>
       </Form>
     </>
   );

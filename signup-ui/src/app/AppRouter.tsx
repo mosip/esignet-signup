@@ -9,18 +9,12 @@ import {
 } from "react-router-dom";
 
 import {
+  EKYC_VERIFICATION,
   RESET_PASSWORD,
   ROOT_ROUTE,
   SIGNUP_ROUTE,
   SOMETHING_WENT_WRONG,
   UNDER_CONSTRUCTION,
-  EKYC_VERIFICATION,
-  KYC_PROVIDER_LIST,
-  LOADING_SCREEN,
-  TERMS_CONDITION,
-  VERIFICATION_SCREEN,
-  VIDEO_PREVIEW,
-  SLOT_CHECKING,
 } from "~constants/routes";
 import { lazyRetry } from "~utils/lazyRetry";
 import { setupResponseInterceptor } from "~services/api.service";
@@ -34,23 +28,6 @@ const EkycVerificationPage = lazy(() =>
   lazyRetry(() => import("~pages/EkycVerificationPage"))
 );
 
-const KycProviderList = lazy(() =>
-  lazyRetry(() => import("~pages/EkycVerificationPage/KycProviderList"))
-);
-const LoadingScreen = lazy(() => lazyRetry(() => import("~pages/EkycVerificationPage/LoadingScreen")));
-const TermsAndCondition = lazy(() =>
-  lazyRetry(() => import("~pages/EkycVerificationPage/TermsAndCondition"))
-);
-const VerificationScreen = lazy(() =>
-    lazyRetry(() => import("~pages/EkycVerificationPage/VerificationScreen"))
-  );
-  const VerificationSteps = lazy(() =>
-    lazyRetry(() => import("~pages/EkycVerificationPage/VerificationSteps"))
-  );
-const SlotChecking = lazy(() =>
-  lazyRetry(() => import("~pages/EkycVerificationPage/SlotChecking"))
-);
-const VideoPreview = lazy(() => lazyRetry(() => import("~pages/EkycVerificationPage/VideoPreview")));
 const UnderConstructionPage = lazy(() =>
   lazyRetry(() => import("~pages/UnderConstructionPage"))
 );
@@ -79,15 +56,7 @@ export const AppRouter = () => {
         <Route element={<AppLayout />}>
           <Route path={SIGNUP_ROUTE} element={<SignUpPage />} />
           <Route path={RESET_PASSWORD} element={<ResetPasswordPage />} />
-          <Route path={EKYC_VERIFICATION} element={<EkycVerificationPage />}>
-            <Route path={KYC_PROVIDER_LIST} element={<KycProviderList />} />
-            <Route path={TERMS_CONDITION} element={<TermsAndCondition />} />
-            <Route path={VIDEO_PREVIEW} element={<VideoPreview />} />
-            <Route path={VERIFICATION_SCREEN} element={<VerificationScreen />} />
-            <Route path={LOADING_SCREEN} element={<LoadingScreen />} />
-            <Route path={EKYC_VERIFICATION} element={<VerificationSteps />} />
-            <Route path={SLOT_CHECKING} element={<SlotChecking />} />
-          </Route>
+          <Route path={EKYC_VERIFICATION} element={<EkycVerificationPage />} />
           <Route
             path={SOMETHING_WENT_WRONG}
             element={<SomethingWentWrongPage />}
