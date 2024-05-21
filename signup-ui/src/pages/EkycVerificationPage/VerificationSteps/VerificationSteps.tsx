@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Stepper from "@keyvaluesystems/react-stepper";
 import { useTranslation } from "react-i18next";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
-import { KYC_PROVIDER_LIST, SIGNUP_ROUTE } from "~constants/routes";
+import { SIGNUP_ROUTE } from "~constants/routes";
 import { Button } from "~components/ui/button";
 import {
   Step,
@@ -17,6 +17,13 @@ import { getSignInRedirectURL } from "~utils/link";
 import { useSettings } from "~pages/shared/queries";
 
 import { CancelAlertPopover } from "../CancelAlertPopover";
+import {
+  EkycVerificationStep,
+  EkycVerificationStore,
+  setCriticalErrorSelector,
+  setStepSelector,
+  useEkycVerificationStore,
+} from "../useEkycVerificationStore";
 
 export const VerificationSteps = () => {
   const { t } = useTranslation("translation", {
@@ -24,10 +31,18 @@ export const VerificationSteps = () => {
   });
   const [cancelButton, setCancelButton] = useState<boolean>(false);
 
+  const { setStep, setCriticalError } = useEkycVerificationStore(
+    useCallback(
+      (state: EkycVerificationStore) => ({
+        setStep: setStepSelector(state),
+        setCriticalError: setCriticalErrorSelector(state),
+      }),
+      []
+    )
+  );
+
   const { hash: fromSignInHash } = useLocation();
   const { data: settings } = useSettings();
-
-  const navigate = useNavigate();
 
   const eKYCSteps = [
     {
@@ -63,7 +78,7 @@ export const VerificationSteps = () => {
 
   const handleContinue = (e: any) => {
     e.preventDefault();
-    navigate(KYC_PROVIDER_LIST);
+    setStep(EkycVerificationStep.KycProviderList);
   };
 
   const handleCancel = (e: any) => {
@@ -82,6 +97,8 @@ export const VerificationSteps = () => {
       SIGNUP_ROUTE
     );
   };
+
+  useEffect(() => {}, [setStep]);
 
   return (
     <>
