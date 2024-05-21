@@ -1,9 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { useTranslation } from "react-i18next";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import Webcam from "react-webcam";
 
-import { SIGNUP_ROUTE, VERIFICATION_SCREEN } from "~constants/routes";
+import { SIGNUP_ROUTE } from "~constants/routes";
 import { Button } from "~components/ui/button";
 import { Icons } from "~components/ui/icons";
 import {
@@ -17,16 +17,34 @@ import {
 import { getSignInRedirectURL } from "~utils/link";
 
 import { CancelAlertPopover } from "../CancelAlertPopover";
+import {
+  EkycVerificationStep,
+  EkycVerificationStore,
+  setCriticalErrorSelector,
+  setStepSelector,
+  useEkycVerificationStore,
+} from "../useEkycVerificationStore";
 
 export const VideoPreview = () => {
-  const { t } = useTranslation("video_preview", {
+  const { t } = useTranslation("translation", {
     keyPrefix: "video_preview",
   });
   const webcamRef = useRef(null);
+ 
+  const { setStep, setCriticalError } = useEkycVerificationStore(
+    useCallback(
+      (state: EkycVerificationStore) => ({
+        setStep: setStepSelector(state),
+        setCriticalError: setCriticalErrorSelector(state),
+      }),
+      []
+    )
+  );
+
+  useEffect(() => {}, [setStep]);
 
   const { hash: fromSignInHash } = useLocation();
 
-  const navigate = useNavigate();
   const [cancelButton, setCancelButton] = useState<boolean>(false);
   const [permissionGranted, setPermissionGranted] = useState(false);
 
@@ -45,7 +63,7 @@ export const VideoPreview = () => {
    */
   const handleContinue = (e: any) => {
     e.preventDefault();
-    navigate(VERIFICATION_SCREEN);
+    setStep(EkycVerificationStep.VerificationScreen)
   };
 
   /**
@@ -173,7 +191,7 @@ export const VideoPreview = () => {
               <Button
                 id="cancel-preview-button"
                 name="cancel-preview-button"
-                variant="outline"
+                variant="cancel_outline"
                 className="w-full p-4 font-semibold"
                 onClick={handleCancel}
               >

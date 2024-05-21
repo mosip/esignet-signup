@@ -1,6 +1,8 @@
 package io.mosip.signup.services;
 
 import io.mosip.esignet.core.util.IdentityProviderUtil;
+import io.mosip.signup.dto.IdentityVerificationTransaction;
+import io.mosip.signup.dto.IdentityVerifierDetail;
 import io.mosip.signup.dto.RegistrationTransaction;
 import io.mosip.signup.helper.CryptoHelper;
 import io.mosip.signup.util.SignUpConstants;
@@ -18,6 +20,8 @@ import java.util.Objects;
 @Slf4j
 @Service
 public class CacheUtilService {
+
+    public static final String COMMON_KEY = "KEY";
 
     @Autowired
     CacheManager cacheManager;
@@ -54,6 +58,16 @@ public class CacheUtilService {
         return alias;
     }
 
+    @Cacheable(value = SignUpConstants.IDENTITY_VERIFIERS, key = "#key")
+    public IdentityVerifierDetail[] setIdentityVerifierDetails(String key, IdentityVerifierDetail[] identityVerifierDetails) {
+        return identityVerifierDetails;
+    }
+
+    @Cacheable(value = SignUpConstants.IDENTITY_VERIFICATION, key = "#transactionId")
+    public IdentityVerificationTransaction setIdentityVerificationTransaction(String transactionId,
+                                                                       IdentityVerificationTransaction identityVerificationTransaction) {
+        return identityVerificationTransaction;
+    }
 
     //----- cache update is separated
     //----- we are not using @cacheput as @cacheput extends the TTL on cache entry
@@ -71,7 +85,7 @@ public class CacheUtilService {
 
     //---Getter---
     public RegistrationTransaction getChallengeGeneratedTransaction(String transactionId) {
-return cacheManager.getCache(SignUpConstants.CHALLENGE_GENERATED).get(transactionId, RegistrationTransaction.class);    //NOSONAR getCache() will not be returning null here.
+        return cacheManager.getCache(SignUpConstants.CHALLENGE_GENERATED).get(transactionId, RegistrationTransaction.class);    //NOSONAR getCache() will not be returning null here.
     }
 
     public RegistrationTransaction getChallengeVerifiedTransaction(String transactionId) {
@@ -94,5 +108,13 @@ return cacheManager.getCache(SignUpConstants.CHALLENGE_GENERATED).get(transactio
 
     public String getActiveKeyAlias() {
         return cacheManager.getCache(SignUpConstants.KEY_ALIAS).get(CryptoHelper.ALIAS_CACHE_KEY, String.class);	//NOSONAR getCache() will not be returning null here.
+    }
+
+    public IdentityVerifierDetail[] getIdentityVerifierDetails() {
+        return cacheManager.getCache(SignUpConstants.IDENTITY_VERIFIERS).get(COMMON_KEY, IdentityVerifierDetail[].class);	//NOSONAR getCache() will not be returning null here.
+    }
+
+    public IdentityVerificationTransaction getIdentityVerificationTransaction(String transactionId) {
+        return cacheManager.getCache(SignUpConstants.IDENTITY_VERIFICATION).get(transactionId, IdentityVerificationTransaction.class); //NOSONAR getCache() will not be returning null here.
     }
 }

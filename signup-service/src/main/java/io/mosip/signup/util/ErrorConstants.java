@@ -44,4 +44,6 @@ public class ErrorConstants {
     public static final String IDENTIFIER_BLOCKED = "identifier_blocked";
     public static final String OTP_NOTIFICATION_FAILED = "otp_notification_failed";
     public static final String SERVER_UNREACHABLE = "server_unreachable";
+
+    public static final String INVALID_IDENTITY_VERIFIER_ID = "invalid_identity_verifier_id";
 }

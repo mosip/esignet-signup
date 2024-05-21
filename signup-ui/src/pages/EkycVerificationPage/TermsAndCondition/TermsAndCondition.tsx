@@ -1,8 +1,8 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router-dom";
 
-import { SIGNUP_ROUTE, VIDEO_PREVIEW } from "~constants/routes";
+import { SIGNUP_ROUTE } from "~constants/routes";
 import { ActionMessage } from "~components/ui/action-message";
 import { Button } from "~components/ui/button";
 import { Checkbox } from "~components/ui/checkbox";
@@ -20,11 +20,30 @@ import { getSignInRedirectURL } from "~utils/link";
 import { useTermsAndConditions } from "~pages/shared/queries";
 
 import { CancelAlertPopover } from "../CancelAlertPopover";
+import {
+  EkycVerificationStep,
+  EkycVerificationStore,
+  setCriticalErrorSelector,
+  setStepSelector,
+  useEkycVerificationStore,
+} from "../useEkycVerificationStore";
 
 export const TermsAndCondition = () => {
   const { i18n, t } = useTranslation("translation", {
     keyPrefix: "terms_and_conditions",
   });
+
+  const { setStep, setCriticalError } = useEkycVerificationStore(
+    useCallback(
+      (state: EkycVerificationStore) => ({
+        setStep: setStepSelector(state),
+        setCriticalError: setCriticalErrorSelector(state),
+      }),
+      []
+    )
+  );
+
+  useEffect(() => {}, [setStep]);
 
   const { hash: fromSignInHash } = useLocation();
 
@@ -33,13 +52,13 @@ export const TermsAndCondition = () => {
   const [cancelButton, setCancelButton] = useState<boolean>(false);
 
   /**
-   * Handle the proceed button click, move forward to video previe page
+   * Handle the proceed button click, move forward to video preview page
    * @param e event
    */
   const handleContinue = (e: any) => {
     e.preventDefault();
     if (agreeTerms) {
-      navigate(VIDEO_PREVIEW);
+      setStep(EkycVerificationStep.VideoPreview);
     }
   };
 
@@ -88,8 +107,8 @@ export const TermsAndCondition = () => {
           handleDismiss={handleDismiss}
         />
       )}
-      <div className="m-3 sm:mb-20 flex flex-row justify-center">
-        <Step className="max-w-[644px] md:rounded-2xl md:shadow sm:rounded-2xl sm:shadow">
+      <div className="m-3 flex flex-row justify-center">
+        <Step className="my-5 max-w-[644px] md:rounded-2xl md:shadow sm:rounded-2xl sm:shadow">
           <StepHeader className="px-0 py-5 sm:pb-[25px] sm:pt-[33px]">
             <StepTitle className="relative flex w-full items-center justify-center gap-x-4 text-base font-semibold">
               <div
@@ -136,7 +155,7 @@ export const TermsAndCondition = () => {
               <Button
                 id="cancel-tnc-button"
                 name="cancel-tnc-button"
-                variant="outline"
+                variant="cancel_outline"
                 className="w-full p-4 font-semibold"
                 onClick={handleCancel}
               >
