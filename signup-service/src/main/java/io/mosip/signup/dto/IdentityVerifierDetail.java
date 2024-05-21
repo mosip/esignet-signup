@@ -10,9 +10,11 @@ public class IdentityVerifierDetail implements Serializable {
 
     private String id;
     private Map<String, String> displayName;
+    private Map<String, String> description;
     private String processType;
     private boolean active;
     private String logoUrl;
     private boolean retryOnFailure;
+    private boolean resumeOnSuccess;
 
 }
