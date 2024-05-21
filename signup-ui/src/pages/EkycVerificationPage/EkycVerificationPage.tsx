@@ -3,20 +3,21 @@ import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
 import { Form } from "~components/ui/form";
-import { SettingsDto } from "~typings/types";
+import { useUpdateProcess } from "~pages/shared/mutations";
+import { SettingsDto, UpdateProcessRequestDto } from "~typings/types";
 
 import { EkycVerificationPopover } from "./EkycVerificationPopover";
+import KycProviderList from "./KycProviderList";
+import TermsAndCondition from "./TermsAndCondition";
 import {
-  EkycVerificationStep,
   criticalErrorSelector,
+  EkycVerificationStep,
   stepSelector,
   useEkycVerificationStore,
 } from "./useEkycVerificationStore";
-import VerificationSteps from "./VerificationSteps";
-import KycProviderList from "./KycProviderList";
-import TermsAndCondition from "./TermsAndCondition";
-import VideoPreview from "./VideoPreview";
 import VerificationScreen from "./VerificationScreen";
+import VerificationSteps from "./VerificationSteps";
+import VideoPreview from "./VideoPreview";
 
 interface EkycVerificationPageProps {
   settings: SettingsDto;
@@ -39,8 +40,44 @@ export const EkycVerificationPage = ({
 
   const methods = useForm();
 
-  useEffect(() => {
+  const hashCode = window.location.hash.substring(1);
 
+  const { updateProcessMutation } = useUpdateProcess();
+
+  useEffect(() => {
+    if (hashCode !== null && hashCode !== undefined) {
+      const decodedBase64 = atob(hashCode);
+
+      const params = new URLSearchParams(decodedBase64);
+
+      const hasState = params.has("state");
+      const hasCode = params.has("code");
+
+      if (hasState && hasCode) {
+        if (updateProcessMutation.isPending) return;
+        const UpdateProcessRequestDto: UpdateProcessRequestDto = {
+          requestTime: new Date().toISOString(),
+          request: {
+            authorizationCode: params?.get("code") ?? "",
+            state: params?.get("state") ?? "",
+          },
+        };
+        return updateProcessMutation.mutate(UpdateProcessRequestDto, {
+          onSuccess: ({ errors }) => {
+            if (errors.length > 0) {
+            }
+
+            if (errors.length === 0) {
+              return;
+            }
+          },
+          onError: () => {},
+        });
+      }
+    }
+  }, []);
+
+  useEffect(() => {
     const handleTabBeforeUnload = (event: BeforeUnloadEvent) => {
       event.preventDefault();
 
