@@ -48,44 +48,44 @@ export const VerificationSteps = () => {
   const hashCode = window.location.hash.substring(1);
 
   useEffect(() => {
-    if (hashCode !== null && hashCode !== undefined) {
-      const decodedBase64 = atob(hashCode);
+    // if (hashCode !== null && hashCode !== undefined) {
+    //   const decodedBase64 = atob(hashCode);
 
-      const params = new URLSearchParams(decodedBase64);
+    //   const params = new URLSearchParams(decodedBase64);
 
-      const hasState = params.has("state");
-      const hasCode = params.has("code");
+    //   const hasState = params.has("state");
+    //   const hasCode = params.has("code");
 
-      const urlObj = new URL(window.location.href);
-      const state = urlObj.searchParams.get("state");
+    //   const urlObj = new URL(window.location.href);
+    //   const state = urlObj.searchParams.get("state");
 
-      if (!hasState && !hasCode) {
-        const buildRedirectURI = () => {
-          const authorizeURI =
-            settings?.response?.configs["signin.redirect-url"];
-          const clientIdURI =
-            settings?.response?.configs["signup.oauth-client-id"];
-          const identityVerificationRedirectURI =
-            settings?.response?.configs["identity-verification.redirect-url"];
+    //   if (!hasState && !hasCode) {
+    //     const buildRedirectURI = () => {
+    //       const authorizeURI =
+    //         settings?.response?.configs["signin.redirect-url"];
+    //       const clientIdURI =
+    //         settings?.response?.configs["signup.oauth-client-id"];
+    //       const identityVerificationRedirectURI =
+    //         settings?.response?.configs["identity-verification.redirect-url"];
 
-          return (
-            authorizeURI +
-            "?state=" +
-            state +
-            "&client_id=" +
-            clientIdURI +
-            "&redirect_uri=" +
-            identityVerificationRedirectURI +
-            "&scope=openid&response_type=code&id_token_hint=" +
-            hashCode
-          );
-        };
+    //       return (
+    //         authorizeURI +
+    //         "?state=" +
+    //         state +
+    //         "&client_id=" +
+    //         clientIdURI +
+    //         "&redirect_uri=" +
+    //         identityVerificationRedirectURI +
+    //         "&scope=openid&response_type=code&id_token_hint=" +
+    //         hashCode
+    //       );
+    //     };
 
-        navigate(buildRedirectURI(), {
-          replace: true,
-        });
-      } else return;
-    }
+    //     navigate(buildRedirectURI(), {
+    //       replace: true,
+    //     });
+    //   } else return;
+    // }
   }, [settings]);
 
   const eKYCSteps = [
