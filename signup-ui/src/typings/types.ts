@@ -26,7 +26,7 @@ const VerifyChallengePossibleErrors = [
   "invalid_challenge_format",
   "unknown_error",
   "already-registered",
-  "identifier_already_registered"
+  "identifier_already_registered",
 ] as const;
 
 export type VerifyChallengeErrors =
@@ -53,7 +53,7 @@ export const ResetPasswordPossibleInvalid = [
   "identifier_not_found",
   "invalid_kba_challenge",
   "challenge_format_and_type_mismatch",
-  "kba_challenge_not_found"
+  "kba_challenge_not_found",
 ];
 
 const ResetPasswordPossibleErrors = [
@@ -197,6 +197,23 @@ export type TermsAndConditionDto = BaseResponseDto & {
     status: string;
     message: string;
   } | null;
+};
+
+export type KycProvidersListDto = BaseResponseDto & {
+  response: {
+    identityVerifiers: KycProvider[];
+  };
+};
+
+export interface KycProvider {
+  id: string;
+  displayName: { [key: string]: string };
+  logoUrl: string;
+  description: string;
+  processType: string;
+  active: boolean;
+  retryOnFailure: boolean;
+  resumeOnSuccess: boolean;
 };
 
 export interface LanguageTaggedValue {

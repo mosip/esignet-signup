@@ -105,6 +105,12 @@
     "stay": "ស្នាក់នៅ",
     "discontinue": "បញ្ឈប់"
   },
+  "kyc_provider": {
+    "header": "សូមជ្រើសរើសអ្នកផ្តល់សេវា eKYC",
+    "search_placeholder": "ស្វែងរក",
+    "cancel_button": "បោះបង់",
+    "proceed_button": "បន្ត"
+  },
   "verification_steps": {
     "header": "បំពេញការផ្ទៀងផ្ទាត់ eKYC របស់អ្នកជាមួយនឹងជំហានសាមញ្ញខាងក្រោម",
     "cancel": "បោះបង់",

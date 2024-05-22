@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { ApiService } from "~services/api.service";
 import {
   GenerateChallengeRequestDto,
+  KycProvidersListDto,
   RegistrationRequestDto,
   RegistrationStatusResponseDto,
   RegistrationWithFailedStatus,
@@ -35,10 +36,10 @@ export const verifyChallenge = async (
   ).then(({ data }) => data);
 };
 
-export const register = async (
-  register: RegistrationRequestDto
-) => {
-  return ApiService.post("/registration/register", register).then(({ data }) => data);
+export const register = async (register: RegistrationRequestDto) => {
+  return ApiService.post("/registration/register", register).then(
+    ({ data }) => data
+  );
 };
 
 export const getRegistrationStatus =
@@ -55,10 +56,10 @@ export const getRegistrationStatus =
     });
   };
 
-export const resetPassword = async (
-  newUserInfo: ResetPasswordRequestDto
-) => {
-  return ApiService.post("/reset-password", newUserInfo).then(({ data }) => data);
+export const resetPassword = async (newUserInfo: ResetPasswordRequestDto) => {
+  return ApiService.post("/reset-password", newUserInfo).then(
+    ({ data }) => data
+  );
 };
 
 export const updateProcess = async (
@@ -76,3 +77,9 @@ export const getTermsAndConditions =
   async (): Promise<TermsAndConditionDto> => {
     return ApiService.get(`/ekyc-verify/tnc`).then(({ data }) => data);
   };
+
+export const getKycProvidersList = async (): Promise<KycProvidersListDto> => {
+  return ApiService.get("/identity-verification/initiate").then(
+    ({ data }) => data
+  );
+};

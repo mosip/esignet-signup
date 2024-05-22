@@ -105,6 +105,12 @@
     "stay": "Stay",
     "discontinue": "Discontinue"
   },
+  "kyc_provider": {
+    "header": "Please select an eKYC service provider",
+    "search_placeholder": "Search",
+    "cancel_button": "Cancel",
+    "proceed_button": "Proceed"
+  },
   "verification_steps": {
     "header": "Complete your eKYC verification with the below simple steps",
     "cancel": "Cancel",
