@@ -85,6 +85,10 @@
   "footer": {
     "powered_by": "Powered by"
   },
+  "eykc_loading": {
+    "header": "Alert!",
+    "description": "Oops! It looks like you’re using an unsupported browser. Please consider upgrading to the latest version of the browser for the best experience. Thank you for your understanding"
+  },
   "video_preview": {
     "header": "Key Information",
     "cancel_button": "Cancel",

@@ -1,4 +1,5 @@
+import { UnsupportedBrowserPerm } from "./components/UnsupportedBrowserPerm";
+
 export const LoadingScreen = () => {
-    return <h1>Loading Screen</h1>;
-  };
-  
+  return <UnsupportedBrowserPerm />;
+};
