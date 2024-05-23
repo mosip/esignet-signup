@@ -109,20 +109,38 @@
     "stay": "Stay",
     "discontinue": "Discontinue"
   },
+  "kyc_provider": {
+    "header": "Please select an eKYC service provider",
+    "search_placeholder": "Search",
+    "cancel_button": "Cancel",
+    "proceed_button": "Proceed"
+  },
   "verification_steps": {
     "header": "Complete your eKYC verification with the below simple steps",
     "cancel": "Cancel",
     "proceed": "Proceed",
-    "Choose an eKYC provider": "Choose an eKYC provider",
-    "Select an eKYC service provider that aligns with your requirements": "Select an eKYC service provider that aligns with your requirements",
-    "Terms & Conditions": "Terms & Conditions",
-    "Review the policy terms & conditions": "Review the policy terms & conditions",
-    "Pre-verification guide": "Pre-verification guide",
-    "Key instructions for a seamless eKYC experience": "Key instructions for a seamless eKYC experience",
-    "Identity verification": "Identity verification",
-    "This step verifies the individual’s physical presence during the identity verification process as well as verification of the individual’s identity with their physical ID": "This step verifies the individual’s physical presence during the identity verification process as well as verification of the individual’s identity with their physical ID",
-    "Review Consent": "Review Consent",
-    "Review and approve consent before sharing with the service provider": "Review and approve consent before sharing with the service provider"
+    "ekycSteps": {
+      "ekyc_provider": {
+        "label": "Choose an eKYC provider",
+        "description": "Select an eKYC service provider that aligns with your requirements"
+      },
+      "terms_&_conditions": {
+        "label": "Terms & Conditions",
+        "description": "Review the policy terms & conditions"
+      },
+      "pre_verification_guide": {
+        "label": "Pre-verification guide",
+        "description": "Key instructions for a seamless eKYC experience"
+      },
+      "identity_verification": {
+        "label": "Identity verification",
+        "description": "This step verifies the individual’s physical presence during the identity verification process as well as verification of the individual’s identity with their physical ID"
+      },
+      "review_consent": {
+        "label": "Review Consent",
+        "description": "Review and approve consent before sharing with the service provider"
+      }
+    }
   },
   "error_response": {
     "invalid_transaction": "The transaction has timed out. Please try again.",

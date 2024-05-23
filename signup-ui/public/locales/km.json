@@ -109,20 +109,38 @@
     "stay": "ស្នាក់នៅ",
     "discontinue": "បញ្ឈប់"
   },
+  "kyc_provider": {
+    "header": "សូមជ្រើសរើសអ្នកផ្តល់សេវា eKYC",
+    "search_placeholder": "ស្វែងរក",
+    "cancel_button": "បោះបង់",
+    "proceed_button": "បន្ត"
+  },
   "verification_steps": {
     "header": "បំពេញការផ្ទៀងផ្ទាត់ eKYC របស់អ្នកជាមួយនឹងជំហានសាមញ្ញខាងក្រោម",
     "cancel": "បោះបង់",
     "proceed": "បន្ត",
-    "Choose an eKYC provider": "ជ្រើសរើសអ្នកផ្តល់សេវា eKYC",
-    "Select an eKYC service provider that aligns with your requirements": "ជ្រើសរើសអ្នកផ្តល់សេវា eKYC ដែលស្របតាមតម្រូវការរបស់អ្នក។",
-    "Terms & Conditions": "លក្ខខណ្ឌ",
-    "Review the policy terms & conditions": "ពិនិត្យមើលលក្ខខណ្ឌគោលនយោបាយ",
-    "Pre-verification guide": "ការណែនាំអំពីការផ្ទៀងផ្ទាត់ជាមុន",
-    "Key instructions for a seamless eKYC experience": "ការណែនាំសំខាន់ៗសម្រាប់បទពិសោធន៍ eKYC ដែលគ្មានថ្នេរ",
-    "Identity verification": "ការផ្ទៀងផ្ទាត់អត្តសញ្ញាណ",
-    "This step verifies the individual’s physical presence during the identity verification process as well as verification of the individual’s identity with their physical ID": "ជំហាននេះផ្ទៀងផ្ទាត់វត្តមានរាងកាយរបស់បុគ្គលក្នុងអំឡុងពេលដំណើរការផ្ទៀងផ្ទាត់អត្តសញ្ញាណ ក៏ដូចជាការផ្ទៀងផ្ទាត់អត្តសញ្ញាណរបស់បុគ្គលនោះជាមួយនឹងលេខសម្គាល់រាងកាយរបស់ពួកគេផងដែរ។",
-    "Review Consent": "ពិនិត្យការយល់ព្រម",
-    "Review and approve consent before sharing with the service provider": "ពិនិត្យ និងអនុម័តការយល់ព្រម មុនពេលចែករំលែកជាមួយអ្នកផ្តល់សេវា"
+    "ekycSteps": {
+      "ekyc_provider": {
+        "label": "ជ្រើសរើសអ្នកផ្តល់សេវា eKYC",
+        "description": "ជ្រើសរើសអ្នកផ្តល់សេវា eKYC ដែលស្របតាមតម្រូវការរបស់អ្នក។"
+      },
+      "terms_&_conditions": {
+        "label": "លក្ខខណ្ឌ",
+        "description": "ពិនិត្យមើលលក្ខខណ្ឌគោលនយោបាយ"
+      },
+      "pre_verification_guide": {
+        "label": "ការណែនាំអំពីការផ្ទៀងផ្ទាត់ជាមុន",
+        "description": "ការណែនាំសំខាន់ៗសម្រាប់បទពិសោធន៍ eKYC ដែលគ្មានថ្នេរ"
+      },
+      "identity_verification": {
+        "label": "ការផ្ទៀងផ្ទាត់អត្តសញ្ញាណ",
+        "description": "ជំហាននេះផ្ទៀងផ្ទាត់វត្តមានរាងកាយរបស់បុគ្គលក្នុងអំឡុងពេលដំណើរការផ្ទៀងផ្ទាត់អត្តសញ្ញាណ ក៏ដូចជាការផ្ទៀងផ្ទាត់អត្តសញ្ញាណរបស់បុគ្គលនោះជាមួយនឹងលេខសម្គាល់រាងកាយរបស់ពួកគេផងដែរ។"
+      },
+      "review_consent": {
+        "label": "ពិនិត្យការយល់ព្រម",
+        "description": "ពិនិត្យ និងអនុម័តការយល់ព្រម មុនពេលចែករំលែកជាមួយអ្នកផ្តល់សេវា"
+      }
+    }
   },
   "error_response": {
     "invalid_transaction": "ប្រតិបត្តិការបានផុតកំណត់។ សូមព្យាយាមម្ដងទៀត។",

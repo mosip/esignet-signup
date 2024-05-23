@@ -23,6 +23,7 @@ import { CancelAlertPopover } from "../CancelAlertPopover";
 import {
   EkycVerificationStep,
   EkycVerificationStore,
+  kycProviderSelector,
   setCriticalErrorSelector,
   setStepSelector,
   useEkycVerificationStore,
@@ -33,17 +34,18 @@ export const TermsAndCondition = () => {
     keyPrefix: "terms_and_conditions",
   });
 
-  const { setStep, setCriticalError } = useEkycVerificationStore(
+  const { setStep, setCriticalError, kycProvider } = useEkycVerificationStore(
     useCallback(
       (state: EkycVerificationStore) => ({
         setStep: setStepSelector(state),
         setCriticalError: setCriticalErrorSelector(state),
+        kycProvider: kycProviderSelector(state),
       }),
       []
     )
   );
 
-  useEffect(() => {}, [setStep]);
+  useEffect(() => {}, [setStep, kycProvider]);
 
   const { hash: fromSignInHash } = useLocation();
 
@@ -98,6 +100,14 @@ export const TermsAndCondition = () => {
 
   const { data: tnc, isLoading, isSuccess } = useTermsAndConditions();
 
+  // dummy message for terms & condition
+  const dummyMessage = {
+    response: {
+      message:
+        "I understand that the data collected about me during registration by the said authority includes different parameters.<br><br>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry’s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.<br> Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry’s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries.<br><br>It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages.",
+    },
+  };
+
   return (
     <>
       {cancelButton && (
@@ -126,17 +136,17 @@ export const TermsAndCondition = () => {
           </StepHeader>
           <StepDivider />
           <StepContent className="px-6 py-5">
-            {isLoading && <div>Still Loading</div>}
+            {/* {isLoading && <div>Still Loading</div>}
             {!isLoading && !isSuccess && <div>Failed to Load</div>}
-            {isSuccess && (
-              <div
-                id="tnc-content"
-                className="scrollable-div flex text-justify text-sm sm:p-0"
-                dangerouslySetInnerHTML={{
-                  __html: tnc.response?.message ?? "Hello",
-                }}
-              ></div>
-            )}
+            {isSuccess && ( */}
+            <div
+              id="tnc-content"
+              className="scrollable-div flex text-justify text-sm sm:p-0"
+              dangerouslySetInnerHTML={{
+                __html: dummyMessage.response?.message ?? "Hello",
+              }}
+            ></div>
+            {/* )} */}
           </StepContent>
           <StepAlert>
             <ActionMessage className="justify-start bg-[#FFF6F2]">
@@ -146,7 +156,9 @@ export const TermsAndCondition = () => {
                 onCheckedChange={changeAgreeTerms}
                 className="h-5 w-5 rounded-[2px] text-white data-[state=checked]:border-primary data-[state=checked]:bg-primary"
               />
-              <p className="ml-2 truncate text-xs font-bold">{t("agree_text")}</p>
+              <p className="ml-2 truncate text-xs font-bold">
+                {t("agree_text")}
+              </p>
             </ActionMessage>
           </StepAlert>
           <StepDivider />
