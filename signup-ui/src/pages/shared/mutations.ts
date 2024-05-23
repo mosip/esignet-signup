@@ -14,6 +14,8 @@ import {
   SlotAvailabilityResponseDto,
   VerifyChallengeRequestDto,
   VerifyChallengeResponseDto,
+  UpdateProcessRequestDto,
+  UpdateProcessResponseDto
 } from "~typings/types";
 
 import {
@@ -22,6 +24,7 @@ import {
   register,
   resetPassword,
   verifyChallenge,
+  updateProcess
 } from "./service";
 
 export const keys = {
@@ -30,6 +33,7 @@ export const keys = {
   registration: ["registration"] as const,
   resetPassword: ["resetPassword"] as const,
   slotAvailability: ["slotAvailability" as const],
+  updateProcess: ["updateProcess"] as const,
 };
 
 export const useGenerateChallenge = () => {
@@ -70,9 +74,10 @@ export const useRegister = () => {
     RegistrationRequestDto
   >({
     mutationKey: keys.registration,
-    mutationFn: (registrationRequestDto: RegistrationRequestDto) =>{
+    mutationFn: (registrationRequestDto: RegistrationRequestDto) => {
       registrationRequestDto.request.locale = locale
-      return register(registrationRequestDto)},
+      return register(registrationRequestDto)
+    },
     gcTime: Infinity,
   });
 
@@ -90,8 +95,9 @@ export const useResetPassword = () => {
   >({
     mutationKey: keys.resetPassword,
     mutationFn: (resetPasswordRequestDto: ResetPasswordRequestDto) => {
-        resetPasswordRequestDto.request.locale = locale
-        return resetPassword(resetPasswordRequestDto)},
+      resetPasswordRequestDto.request.locale = locale
+      return resetPassword(resetPasswordRequestDto)
+    },
     gcTime: Infinity,
   });
 
@@ -111,4 +117,20 @@ export const useSlotAvailability = () => {
   });
 
   return { slotAvailabilityMutation };
+};
+
+export const useUpdateProcess = () => {
+  const updateProcessMutation = useMutation<
+    UpdateProcessResponseDto,
+    ApiError,
+    UpdateProcessRequestDto
+  >({
+    mutationKey: keys.updateProcess,
+    mutationFn: (updateProcessRequestDto: UpdateProcessRequestDto) => {
+      return updateProcess(updateProcessRequestDto)
+    },
+    gcTime: Infinity,
+  });
+
+  return { updateProcessMutation };
 };

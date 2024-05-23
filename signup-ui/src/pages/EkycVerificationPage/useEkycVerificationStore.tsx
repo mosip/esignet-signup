@@ -19,6 +19,23 @@ export type EkycVerificationStore = {
   setStep: (step: EkycVerificationStep) => void;
   criticalError: Error | null;
   setCriticalError: (criticalError: Error | null) => void;
+  kycProvider: any;
+  setKycProvider: (kycProvider: any) => void;
+};
+
+// dummy kycprovider data
+const dummyKycProvider = {
+  id: "Kyc Provider 1",
+  logoUrl: "https://avatars.githubusercontent.com/u/39733477?s=200&v=4",
+  displayName: {
+    en: "Kyc Provider 1",
+    km: "Kyc Provider 1 khmer",
+    "@none": "Default Kyc Provider 1",
+  },
+  active: true,
+  processType: "VIDEO",
+  retryOnFailure: true,
+  resumeOnSuccess: true,
 };
 
 export const useEkycVerificationStore = create<EkycVerificationStore>()(
@@ -34,6 +51,12 @@ export const useEkycVerificationStore = create<EkycVerificationStore>()(
       const current = get();
       if (isEqual(current.criticalError, criticalError)) return;
       set((state) => ({ criticalError }));
+    },
+    kycProvider: dummyKycProvider,
+    setKycProvider: (kycProvider: any) => {
+      const current = get();
+      if (isEqual(current.kycProvider, kycProvider)) return;
+      set((state) => ({ kycProvider }));
     },
   }))
 );
@@ -53,3 +76,11 @@ export const criticalErrorSelector = (
 export const setCriticalErrorSelector = (
   state: EkycVerificationStore
 ): EkycVerificationStore["setCriticalError"] => state.setCriticalError;
+
+export const kycProviderSelector = (
+  state: EkycVerificationStore
+): EkycVerificationStore["kycProvider"] => state.kycProvider;
+
+export const setKycProviderSelector = (
+  state: EkycVerificationStore
+): EkycVerificationStore["setKycProvider"] => state.setKycProvider;

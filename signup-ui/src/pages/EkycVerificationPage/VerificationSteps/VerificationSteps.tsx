@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import Stepper from "@keyvaluesystems/react-stepper";
 import { useTranslation } from "react-i18next";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import { SIGNUP_ROUTE } from "~constants/routes";
 import { Button } from "~components/ui/button";
@@ -42,36 +42,76 @@ export const VerificationSteps = () => {
   );
 
   const { hash: fromSignInHash } = useLocation();
+  const navigate = useNavigate();
   const { data: settings } = useSettings();
+
+  const hashCode = window.location.hash.substring(1);
+
+  useEffect(() => {
+    // if (hashCode !== null && hashCode !== undefined) {
+    //   const decodedBase64 = atob(hashCode);
+
+    //   const params = new URLSearchParams(decodedBase64);
+
+    //   const hasState = params.has("state");
+    //   const hasCode = params.has("code");
+
+    //   const urlObj = new URL(window.location.href);
+    //   const state = urlObj.searchParams.get("state");
+
+    //   if (!hasState && !hasCode) {
+    //     const buildRedirectURI = () => {
+    //       const authorizeURI =
+    //         settings?.response?.configs["signin.redirect-url"];
+    //       const clientIdURI =
+    //         settings?.response?.configs["signup.oauth-client-id"];
+    //       const identityVerificationRedirectURI =
+    //         settings?.response?.configs["identity-verification.redirect-url"];
+
+    //       return (
+    //         authorizeURI +
+    //         "?state=" +
+    //         state +
+    //         "&client_id=" +
+    //         clientIdURI +
+    //         "&redirect_uri=" +
+    //         identityVerificationRedirectURI +
+    //         "&scope=openid&response_type=code&id_token_hint=" +
+    //         hashCode
+    //       );
+    //     };
+
+    //     navigate(buildRedirectURI(), {
+    //       replace: true,
+    //     });
+    //   } else return;
+    // }
+  }, [settings]);
 
   const eKYCSteps = [
     {
-      stepLabel: t("Choose an eKYC provider"),
-      stepDescription: t(
-        "Select an eKYC service provider that aligns with your requirements"
-      ),
+      stepLabel: t("ekycSteps.ekyc_provider.label"),
+      stepDescription: t("ekycSteps.ekyc_provider.description"),
       isCompleted: false,
     },
     {
-      stepLabel: t("Terms & Conditions"),
-      stepDescription: t("Review the policy terms & conditions"),
+      stepLabel: t("ekycSteps.terms_&_conditions.label"),
+      stepDescription: t("ekycSteps.terms_&_conditions.description"),
       isCompleted: false,
     },
     {
-      stepLabel: t("Pre-verification guide"),
-      stepDescription: t("Key instructions for a seamless eKYC experience"),
+      stepLabel: t("ekycSteps.pre_verification_guide.label"),
+      stepDescription: t("ekycSteps.pre_verification_guide.description"),
       isCompleted: false,
     },
     {
-      stepLabel: t("Identity verification"),
-      stepDescription:
-        t("This step verifies the individual’s physical presence during the identity verification process as well as verification of the individual’s identity with their physical ID"),
+      stepLabel: t("ekycSteps.identity_verification.label"),
+      stepDescription: t("ekycSteps.identity_verification.description"),
       isCompleted: false,
     },
     {
-      stepLabel: t("Review Consent"),
-      stepDescription:
-        t("Review and approve consent before sharing with the service provider"),
+      stepLabel: t("ekycSteps.review_consent.label"),
+      stepDescription: t("ekycSteps.review_consent.description"),
       isCompleted: false,
     },
   ];
@@ -110,44 +150,44 @@ export const VerificationSteps = () => {
         />
       )}
       <div className="m-3 flex flex-row justify-center">
-      <Step className="max-w-[75rem] md:rounded-2xl md:shadow sm:rounded-2xl sm:shadow sm:mt-0 my-5">
-        <StepHeader className="px-0 py-5 sm:py-[25px]">
-          <StepTitle className="relative flex w-full items-center justify-center gap-x-4 text-base font-semibold">
-            <div
-              className="ml-5 w-full text-[22px] font-semibold"
-              id="tnc-header"
-            >
-              {t("header")}
+        <Step className="my-5 max-w-[75rem] md:rounded-2xl md:shadow sm:mt-0 sm:rounded-2xl sm:shadow">
+          <StepHeader className="px-0 py-5 sm:py-[25px]">
+            <StepTitle className="relative flex w-full items-center justify-center gap-x-4 text-base font-semibold">
+              <div
+                className="ml-5 w-full text-[22px] font-semibold"
+                id="tnc-header"
+              >
+                {t("header")}
+              </div>
+            </StepTitle>
+          </StepHeader>
+          <StepDivider />
+          <StepContent className="px-5 py-0">
+            <Stepper
+              steps={eKYCSteps}
+              labelPosition="right"
+              showDescriptionsForAllSteps
+            />
+          </StepContent>
+          <StepDivider />
+          <StepFooter className="p-5">
+            <div className="flex w-full flex-row items-center justify-end gap-x-4">
+              <Button
+                variant="cancel_outline"
+                className="max-w-max px-[6rem] font-semibold sm:px-[3rem] xs:px-[2rem]"
+                onClick={handleCancel}
+              >
+                {t("cancel")}
+              </Button>
+              <Button
+                className="max-w-max px-[6rem] font-semibold sm:px-[3rem] xs:px-[2rem]"
+                onClick={handleContinue}
+              >
+                {t("proceed")}
+              </Button>
             </div>
-          </StepTitle>
-        </StepHeader>
-        <StepDivider />
-        <StepContent className="px-5 py-0">
-          <Stepper
-            steps={eKYCSteps}
-            labelPosition="right"
-            showDescriptionsForAllSteps
-          />
-        </StepContent>
-        <StepDivider />
-        <StepFooter className="p-5">
-          <div className="flex w-full flex-row items-center justify-end gap-x-4">
-            <Button
-              variant="cancel_outline"
-              className="max-w-max px-[6rem] font-semibold sm:px-[3rem] xs:px-[2rem]"
-              onClick={handleCancel}
-            >
-              {t("cancel")}
-            </Button>
-            <Button
-              className="max-w-max px-[6rem] font-semibold sm:px-[3rem] xs:px-[2rem]"
-              onClick={handleContinue}
-            >
-              {t("proceed")}
-            </Button>
-          </div>
-        </StepFooter>
-      </Step>
+          </StepFooter>
+        </Step>
       </div>
     </>
   );

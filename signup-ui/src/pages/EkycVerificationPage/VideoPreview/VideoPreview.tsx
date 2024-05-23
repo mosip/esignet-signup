@@ -46,7 +46,7 @@ export const VideoPreview = () => {
   const { hash: fromSignInHash } = useLocation();
 
   const [cancelButton, setCancelButton] = useState<boolean>(false);
-  const [permissionGranted, setPermissionGranted] = useState(false);
+  const [permissionGranted, setPermissionGranted] = useState(true);
 
   // key info list for video preview page
   const keyInfoList = [
