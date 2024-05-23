@@ -87,6 +87,14 @@ interface Resources {
       header: string;
       description: string;
     };
+    slot_checking: {
+      header: string;
+      description: string;
+    };
+    slot_unavailable: {
+      header: string;
+      description: string;
+    };
     footer: {
       powered_by: string;
     };

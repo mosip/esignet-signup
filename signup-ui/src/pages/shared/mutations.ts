@@ -10,6 +10,8 @@ import {
   RegistrationResponseDto,
   ResetPasswordRequestDto,
   ResetPasswordResponseDto,
+  SlotAvailabilityRequestDto,
+  SlotAvailabilityResponseDto,
   VerifyChallengeRequestDto,
   VerifyChallengeResponseDto,
   UpdateProcessRequestDto,
@@ -17,6 +19,7 @@ import {
 } from "~typings/types";
 
 import {
+  checkSlotAvailability,
   generateChallenge,
   register,
   resetPassword,
@@ -29,6 +32,7 @@ export const keys = {
   challengeVerification: ["challengeVerification"] as const,
   registration: ["registration"] as const,
   resetPassword: ["resetPassword"] as const,
+  slotAvailability: ["slotAvailability" as const],
   updateProcess: ["updateProcess"] as const,
 };
 
@@ -98,6 +102,21 @@ export const useResetPassword = () => {
   });
 
   return { resetPasswordMutation };
+};
+
+export const useSlotAvailability = () => {
+  const slotAvailabilityMutation = useMutation<
+    SlotAvailabilityResponseDto,
+    ApiError,
+    SlotAvailabilityRequestDto
+  >({
+    mutationKey: keys.slotAvailability,
+    mutationFn: (slotAvailabilityRequestDto: SlotAvailabilityRequestDto) => {
+      return checkSlotAvailability(slotAvailabilityRequestDto);
+    },
+  });
+
+  return { slotAvailabilityMutation };
 };
 
 export const useUpdateProcess = () => {

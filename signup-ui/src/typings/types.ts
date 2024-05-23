@@ -7,6 +7,12 @@ export interface ResetPasswordForm {
   confirmNewPassword: string;
 }
 
+export interface EkYCVerificationForm {
+  consent: EKYCConsentStatus,
+  disabilityType: DisabilityType,
+  verifierId: string,
+}
+
 const GenerateChallengePossibleErrors = [
   "invalid_transaction",
   "invalid_otp_channel",
@@ -72,13 +78,26 @@ const ResetPasswordPossibleErrors = [
 
 export type ResetPasswordErrors = (typeof ResetPasswordPossibleErrors)[number];
 
+const SlotAvailabilityPossibleErrors = [
+  "invalid_transaction",
+  "invalid_identifier",
+  "invalid_password",
+  "invalid_request",
+  "reset_pwd_failed",
+  "slot_unavailable",
+] as const;
+
+export type SlotAvailabilityErrors =
+  (typeof SlotAvailabilityPossibleErrors)[number];
+
 export interface Error {
   errorCode:
     | GenerateChallengeErrors
     | VerifyChallengeErrors
     | RegisterErrors
     | RegisterStatusErrors
-    | ResetPasswordErrors;
+    | ResetPasswordErrors
+    | SlotAvailabilityErrors;
   errorMessage: string;
 }
 
@@ -199,6 +218,13 @@ export type TermsAndConditionDto = BaseResponseDto & {
   } | null;
 };
 
+export type SlotAvailabilityDto = BaseResponseDto & {
+  response: {
+    status: string;
+    message: string;
+  } | null;
+};
+
 export type KycProvidersListDto = BaseResponseDto & {
   response: {
     identityVerifiers: KycProvider[];
@@ -277,6 +303,33 @@ export type ResetPasswordResponseDto = BaseResponseDto & {
   response: {
     status: ResetPasswordStatus;
   } | null;
+};
+
+const EKYCConsentOptions = ["ACCEPTED", "DECLINED"] as const;
+
+type EKYCConsentStatus = (typeof EKYCConsentOptions)[number];
+
+const DisabilityOptions = [
+  "VISION",
+  "AUDITORY",
+  "MOBILITY",
+  "NEUROLOGICAL",
+] as const;
+
+type DisabilityType = (typeof DisabilityOptions)[number] | null;
+
+export type SlotAvailabilityRequestDto = BaseRequestDto & {
+  request: {
+    verifierId: string;
+    consent: EKYCConsentStatus;
+    disabilityType: DisabilityType;
+  };
+};
+
+export type SlotAvailabilityResponseDto = BaseResponseDto & {
+  response: {
+    status: string;
+  };
 };
 
 export type UpdateProcessRequestDto = BaseRequestDto & {

@@ -18,6 +18,7 @@ import {
 import VerificationScreen from "./VerificationScreen";
 import VerificationSteps from "./VerificationSteps";
 import VideoPreview from "./VideoPreview";
+import SlotChecking from "./SlotChecking";
 import LoadingScreen from "./LoadingScreen";
 
 interface EkycVerificationPageProps {
@@ -104,6 +105,8 @@ export const EkycVerificationPage = ({
         return <TermsAndCondition />;
       case EkycVerificationStep.VideoPreview:
         return <VideoPreview />;
+      case EkycVerificationStep.SlotCheckingScreen:
+        return <SlotChecking />;
       case EkycVerificationStep.VerificationScreen:
         return <VerificationScreen />;
       default:

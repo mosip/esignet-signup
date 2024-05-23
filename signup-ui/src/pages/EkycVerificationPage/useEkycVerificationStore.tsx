@@ -6,10 +6,11 @@ import { Error } from "~typings/types";
 
 export enum EkycVerificationStep {
   VerificationSteps,
+  LoadingScreen,
   KycProviderList,
   TermsAndCondition,
   VideoPreview,
-  LoadingScreen,
+  SlotCheckingScreen,
   VerificationScreen,
 }
 

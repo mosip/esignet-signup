@@ -70,3 +70,4 @@ export const useKycProvidersList = (): UseQueryResult<
     staleTime: Infinity,
   });
 };
+

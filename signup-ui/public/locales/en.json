@@ -89,6 +89,14 @@
     "header": "Alert!",
     "description": "Oops! It looks like you’re using an unsupported browser. Please consider upgrading to the latest version of the browser for the best experience. Thank you for your understanding"
   },
+  "slot_checking": {
+    "header": "Loading!!!",
+    "description": "Kindly wait as we initiate your eKYC"
+  },
+  "slot_unavailable": {
+    "header": "Alert!",
+    "description": "We are experiencing a higher than usual demand, hence we are unable to proceed with the eKYC verification process at this moment. We regret the inconvenience and request you to please try again later. Thank you for your understanding."
+  },
   "video_preview": {
     "header": "Key Information",
     "cancel_button": "Cancel",

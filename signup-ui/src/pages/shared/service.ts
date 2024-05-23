@@ -1,5 +1,3 @@
-import { useTranslation } from "react-i18next";
-
 import { ApiService } from "~services/api.service";
 import {
   GenerateChallengeRequestDto,
@@ -9,6 +7,7 @@ import {
   RegistrationWithFailedStatus,
   ResetPasswordRequestDto,
   SettingsDto,
+  SlotAvailabilityRequestDto,
   TermsAndConditionDto,
   VerifyChallengeRequestDto,
   UpdateProcessRequestDto
@@ -80,6 +79,14 @@ export const getTermsAndConditions =
 
 export const getKycProvidersList = async (): Promise<KycProvidersListDto> => {
   return ApiService.get("/identity-verification/initiate").then(
+    ({ data }) => data
+  );
+};
+
+export const checkSlotAvailability = async (
+  slotAvailabilityRequestDto: SlotAvailabilityRequestDto
+) => {
+  return ApiService.post("/identity-verification/slot", slotAvailabilityRequestDto).then(
     ({ data }) => data
   );
 };

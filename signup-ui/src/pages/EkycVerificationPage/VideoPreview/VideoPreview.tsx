@@ -63,7 +63,7 @@ export const VideoPreview = () => {
    */
   const handleContinue = (e: any) => {
     e.preventDefault();
-    setStep(EkycVerificationStep.VerificationScreen)
+    setStep(EkycVerificationStep.SlotCheckingScreen)
   };
 
   /**
