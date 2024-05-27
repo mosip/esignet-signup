@@ -1,14 +1,11 @@
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 import { SIGNUP_ROUTE } from "~constants/routes";
 import { Button } from "~components/ui/button";
-import {
-  FormControl,
-  FormField,
-  FormItem,
-} from "~components/ui/form";
+import { FormControl, FormField, FormItem } from "~components/ui/form";
+import { Input } from "~components/ui/input";
 import {
   Step,
   StepContent,
@@ -17,22 +14,22 @@ import {
   StepHeader,
   StepTitle,
 } from "~components/ui/step";
-
-import { Input } from "~components/ui/input";
-// import { SearchBox } from "~components/ui/search-box";
 import { getSignInRedirectURL } from "~utils/link";
-import { useKycProvidersList } from "~pages/shared/queries";
+import { useKycProvidersList } from "~pages/shared/mutations";
+import { UpdateProcessRequestDto } from "~typings/types";
+
+import { CancelAlertPopover } from "../CancelAlertPopover";
 import {
   EkycVerificationStep,
   EkycVerificationStore,
-  setCriticalErrorSelector,
-  setStepSelector,
-  setKycProviderSelector,
+  hashCodeSelector,
   kycProviderSelector,
+  kycProvidersListSelector,
+  setCriticalErrorSelector,
+  setKycProviderSelector,
+  setStepSelector,
   useEkycVerificationStore,
 } from "../useEkycVerificationStore";
-
-import { CancelAlertPopover } from "../CancelAlertPopover";
 import { KycProviderCardLayout } from "./components/KycProviderCardLayout";
 
 export const KycProviderList = () => {
@@ -40,13 +37,22 @@ export const KycProviderList = () => {
     keyPrefix: "kyc_provider",
   });
 
-  const { setStep, setCriticalError, setKycProvider, kycProvider } = useEkycVerificationStore(
+  const {
+    setStep,
+    setCriticalError,
+    setKycProvider,
+    kycProvider,
+    providerListStore,
+    hashCode,
+  } = useEkycVerificationStore(
     useCallback(
       (state: EkycVerificationStore) => ({
         setStep: setStepSelector(state),
         setCriticalError: setCriticalErrorSelector(state),
         setKycProvider: setKycProviderSelector(state),
         kycProvider: kycProviderSelector(state),
+        providerListStore: kycProvidersListSelector(state),
+        hashCode: hashCodeSelector(state),
       }),
       []
     )
@@ -56,9 +62,8 @@ export const KycProviderList = () => {
 
   const { hash: fromSignInHash } = useLocation();
 
-  const navigate = useNavigate();
   const [cancelButton, setCancelButton] = useState<boolean>(false);
-  const [KycProvidersList, setKycProvidersList] = useState<any>([]);
+  const [kycProvidersList, setKycProvidersList] = useState<any>([]);
   const [selectedKycProvider, setSelectedKycProvider] = useState<any>(null);
   const searchTextRef = useRef<HTMLInputElement | null>(null);
 
@@ -68,7 +73,7 @@ export const KycProviderList = () => {
    */
   const handleContinue = (e: any) => {
     e.preventDefault();
-    setStep(EkycVerificationStep.TermsAndCondition)
+    setStep(EkycVerificationStep.TermsAndCondition);
   };
 
   /**
@@ -107,27 +112,50 @@ export const KycProviderList = () => {
   const selectingKycProviders = (e: any) => {
     setKycProvider(e);
     setSelectedKycProvider(e.id);
-  }
+  };
 
-  const {
-    data: kycProvidersData,
-    isLoading,
-    isSuccess,
-  } = useKycProvidersList();
+  const { kycProvidersList: kycApiCall } = useKycProvidersList();
+
+  const getKycData = () => {
+    if (hashCode !== null && hashCode !== undefined) {
+      const hasState = hashCode.hasOwnProperty("state");
+      const hasCode = hashCode.hasOwnProperty("code");
+
+      if (hasState && hasCode) {
+        if (kycApiCall.isPending) return;
+        const updateProcessRequestDto: UpdateProcessRequestDto = {
+          requestTime: new Date().toISOString(),
+          request: {
+            authorizationCode: hashCode.code,
+            state: hashCode.state,
+          },
+        };
+
+        return kycApiCall.mutate(updateProcessRequestDto, {
+          onSuccess: ({ response }) => {
+            setKycProvidersList(response?.identityVerifiers);
+            if (response?.identityVerifiers.length === 1) {
+              setKycProvider(response?.identityVerifiers[0]);
+            }
+            return;
+          },
+          onError: () => {},
+        });
+      }
+    }
+  };
 
   useEffect(() => {
     if (kycProvider !== null) {
       setStep(EkycVerificationStep.TermsAndCondition);
     }
 
-    if (isSuccess) {
-      if (kycProvidersData?.response.identityVerifiers.length === 1) {
-        setKycProvider(kycProvidersData?.response.identityVerifiers[0]);
-        setStep(EkycVerificationStep.TermsAndCondition);
-      }
-      setKycProvidersList(kycProvidersData?.response.identityVerifiers);
+    if (!providerListStore || providerListStore.length === 0) {
+      getKycData();
+    } else {
+      setKycProvidersList(providerListStore);
     }
-  }, [kycProvidersData, kycProvider]);
+  }, []);
 
   return (
     <>
@@ -148,7 +176,7 @@ export const KycProviderList = () => {
               >
                 {t("header")}
               </div>
-              {KycProvidersList && KycProvidersList.length > 2 && (
+              {kycProvidersList && kycProvidersList.length > 2 && (
                 <div id="search-box" className="w-full md:mt-2">
                   <FormField
                     name="username"
@@ -174,12 +202,20 @@ export const KycProviderList = () => {
           <StepDivider />
           <StepContent className="px-6 py-5 text-sm">
             <div className="grid grid-cols-3 gap-x-4 gap-y-5 md:grid-cols-2 sm:grid-cols-1 sm:gap-y-3.5">
-              {KycProvidersList?.map(
-                (keyInfo: any, index: number) => (
-                  <div key={index} className="w-full" onClick={() => selectingKycProviders(keyInfo)}>
-                    <KycProviderCardLayout {...keyInfo} selected={selectedKycProvider === keyInfo.id}></KycProviderCardLayout>
-                  </div>
-                )
+              {kycProvidersList?.map((keyInfo: any, index: number) => (
+                <div
+                  key={index}
+                  className="w-full"
+                  onClick={() => selectingKycProviders(keyInfo)}
+                >
+                  <KycProviderCardLayout
+                    {...keyInfo}
+                    selected={selectedKycProvider === keyInfo.id}
+                  ></KycProviderCardLayout>
+                </div>
+              ))}
+              {(!kycProvidersList || kycProvidersList.length === 0) && (
+                <div>{t("no_kyc_provider")}</div>
               )}
             </div>
           </StepContent>

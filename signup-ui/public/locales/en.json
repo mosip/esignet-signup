@@ -108,6 +108,8 @@
     "header": "Terms & Conditions",
     "sub_header": "Please read the terms and conditions carefully.",
     "agree_text": "I agree to the terms and conditions as set out by the user agreement.",
+    "failed_to_load": "Failed to load terms and conditions",
+    "still_loading": "Terms and conditions are still loading. Please wait",
     "cancel_button": "Cancel",
     "proceed_button": "Proceed"
   },
@@ -119,6 +121,7 @@
   },
   "kyc_provider": {
     "header": "Please select an eKYC service provider",
+    "no_kyc_provider": "No eKYC provider found",
     "search_placeholder": "Search",
     "cancel_button": "Cancel",
     "proceed_button": "Proceed"

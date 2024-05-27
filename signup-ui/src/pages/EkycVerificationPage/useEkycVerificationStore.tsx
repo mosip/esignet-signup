@@ -2,7 +2,7 @@ import { isEqual } from "lodash";
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 
-import { Error } from "~typings/types";
+import { Error, KycProvider, SignupHashCode } from "~typings/types";
 
 export enum EkycVerificationStep {
   VerificationSteps,
@@ -19,23 +19,12 @@ export type EkycVerificationStore = {
   setStep: (step: EkycVerificationStep) => void;
   criticalError: Error | null;
   setCriticalError: (criticalError: Error | null) => void;
-  kycProvider: any;
-  setKycProvider: (kycProvider: any) => void;
-};
-
-// dummy kycprovider data
-const dummyKycProvider = {
-  id: "Kyc Provider 1",
-  logoUrl: "https://avatars.githubusercontent.com/u/39733477?s=200&v=4",
-  displayName: {
-    en: "Kyc Provider 1",
-    km: "Kyc Provider 1 khmer",
-    "@none": "Default Kyc Provider 1",
-  },
-  active: true,
-  processType: "VIDEO",
-  retryOnFailure: true,
-  resumeOnSuccess: true,
+  kycProvider: KycProvider | null;
+  setKycProvider: (kycProvider: KycProvider) => void;
+  kycProvidersList: KycProvider[] | null;
+  setKycProvidersList: (kycProvidersList: KycProvider[]) => void;
+  hashCode: SignupHashCode | null;
+  setHashCode: (hashCode: SignupHashCode) => void;
 };
 
 export const useEkycVerificationStore = create<EkycVerificationStore>()(
@@ -52,11 +41,23 @@ export const useEkycVerificationStore = create<EkycVerificationStore>()(
       if (isEqual(current.criticalError, criticalError)) return;
       set((state) => ({ criticalError }));
     },
-    kycProvider: dummyKycProvider,
-    setKycProvider: (kycProvider: any) => {
+    kycProvider: null,
+    setKycProvider: (kycProvider: KycProvider) => {
       const current = get();
       if (isEqual(current.kycProvider, kycProvider)) return;
       set((state) => ({ kycProvider }));
+    },
+    kycProvidersList: [],
+    setKycProvidersList: (kycProvidersList: KycProvider[] | null) => {
+      const current = get();
+      if (isEqual(current.kycProvidersList, kycProvidersList)) return;
+      set((state) => ({ kycProvidersList }));
+    },
+    hashCode: null,
+    setHashCode: (hashCode: SignupHashCode | null) => {
+      const current = get();
+      if (isEqual(current.hashCode, hashCode)) return;
+      set((state) => ({ hashCode }));
     },
   }))
 );
@@ -84,3 +85,19 @@ export const kycProviderSelector = (
 export const setKycProviderSelector = (
   state: EkycVerificationStore
 ): EkycVerificationStore["setKycProvider"] => state.setKycProvider;
+
+export const kycProvidersListSelector = (
+  state: EkycVerificationStore
+): EkycVerificationStore["kycProvidersList"] => state.kycProvidersList;
+
+export const setKycProvidersListSelector = (
+  state: EkycVerificationStore
+): EkycVerificationStore["setKycProvidersList"] => state.setKycProvidersList;
+
+export const hashCodeSelector = (
+  state: EkycVerificationStore
+): EkycVerificationStore["hashCode"] => state.hashCode;
+
+export const setHashCodeSelector = (
+  state: EkycVerificationStore
+): EkycVerificationStore["setHashCode"] => state.setHashCode;
