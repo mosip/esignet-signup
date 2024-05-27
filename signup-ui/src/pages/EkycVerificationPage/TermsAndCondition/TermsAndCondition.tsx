@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
+import purify from "dompurify";
 import { useTranslation } from "react-i18next";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 import { SIGNUP_ROUTE } from "~constants/routes";
 import { ActionMessage } from "~components/ui/action-message";
@@ -18,6 +19,7 @@ import {
 } from "~components/ui/step";
 import { getSignInRedirectURL } from "~utils/link";
 import { useTermsAndConditions } from "~pages/shared/queries";
+import langConfigService from "~services/langConfig.service";
 
 import { CancelAlertPopover } from "../CancelAlertPopover";
 import {
@@ -45,13 +47,13 @@ export const TermsAndCondition = () => {
     )
   );
 
-  useEffect(() => {}, [setStep, kycProvider]);
-
   const { hash: fromSignInHash } = useLocation();
 
-  const navigate = useNavigate();
   const [agreeTerms, setAgreeTerms] = useState<boolean>(false);
   const [cancelButton, setCancelButton] = useState<boolean>(false);
+  const [tncMessage, setTncMessage] = useState<string>("");
+  const [termsAndCondition, setTermsAndCondition] = useState<any>(null);
+  const [langMap, setLangMap] = useState<any>({});
 
   /**
    * Handle the proceed button click, move forward to video preview page
@@ -98,15 +100,45 @@ export const TermsAndCondition = () => {
     );
   };
 
-  const { data: tnc, isLoading, isSuccess } = useTermsAndConditions();
-
-  // dummy message for terms & condition
-  const dummyMessage = {
-    response: {
-      message:
-        "I understand that the data collected about me during registration by the said authority includes different parameters.<br><br>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry’s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.<br> Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry’s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries.<br><br>It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages.",
-    },
+  // sanitizing the html content, through dompurify
+  // then passing it in the dangerouslySetInnerHTML
+  const sanitizeMsg = (message: string) => {
+    return {
+      __html: purify.sanitize(message),
+    };
   };
+
+  const {
+    data: tnc,
+    isLoading,
+    isSuccess,
+  } = useTermsAndConditions(kycProvider ? kycProvider.id : "");
+
+  // checking if kycProvider is set or not,
+  // if not then return to kycProviderList page
+  useEffect(() => {
+    if (kycProvider === null) {
+      setStep(EkycVerificationStep.KycProviderList);
+    }
+    langConfigService.getLangCodeMapping().then((langMap) => {
+      setLangMap(langMap);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (isSuccess) {
+      if (tnc.errors === null || tnc.errors.length === 0) {
+        setTermsAndCondition(tnc.response["terms&Conditions"]);
+      }
+    }
+  }, [isSuccess]);
+
+  useEffect(() => {
+    if (termsAndCondition) {
+      const currLang = langMap[i18n.language];
+      setTncMessage(termsAndCondition[currLang]);
+    }
+  }, [termsAndCondition, i18n.language]);
 
   return (
     <>
@@ -136,17 +168,17 @@ export const TermsAndCondition = () => {
           </StepHeader>
           <StepDivider />
           <StepContent className="px-6 py-5">
-            {/* {isLoading && <div>Still Loading</div>}
-            {!isLoading && !isSuccess && <div>Failed to Load</div>}
-            {isSuccess && ( */}
-            <div
-              id="tnc-content"
-              className="scrollable-div flex text-justify text-sm sm:p-0"
-              dangerouslySetInnerHTML={{
-                __html: dummyMessage.response?.message ?? "Hello",
-              }}
-            ></div>
-            {/* )} */}
+            {(!termsAndCondition || isLoading) && (
+              <div>{t("still_loading")}</div>
+            )}
+            {!isLoading && !isSuccess && <div>{t("failed_to_load")}</div>}
+            {isSuccess && (
+              <div
+                id="tnc-content"
+                className="scrollable-div flex text-justify text-sm sm:p-0"
+                dangerouslySetInnerHTML={sanitizeMsg(tncMessage)}
+              ></div>
+            )}
           </StepContent>
           <StepAlert>
             <ActionMessage className="justify-start bg-[#FFF6F2]">

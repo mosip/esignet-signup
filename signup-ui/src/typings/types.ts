@@ -8,9 +8,9 @@ export interface ResetPasswordForm {
 }
 
 export interface EkYCVerificationForm {
-  consent: EKYCConsentStatus,
-  disabilityType: DisabilityType,
-  verifierId: string,
+  consent: EKYCConsentStatus;
+  disabilityType: DisabilityType;
+  verifierId: string;
 }
 
 const GenerateChallengePossibleErrors = [
@@ -209,13 +209,16 @@ export type VerifyChallengeResponseDto = BaseResponseDto & {
   } | null;
 };
 
-// TODO: will remove when real DTO is available
-// mock dto for terms and condition
-export type TermsAndConditionDto = BaseResponseDto & {
+export type KeyValueStringObject = {
+  [key: string]: string;
+};
+
+export type TermsAndConditionResponseDto = BaseResponseDto & {
   response: {
-    status: string;
-    message: string;
-  } | null;
+    "terms&Conditions": KeyValueStringObject;
+    errors: { [key: string]: KeyValueStringObject } | null;
+    messages: { [key: string]: KeyValueStringObject } | null;
+  };
 };
 
 export type SlotAvailabilityDto = BaseResponseDto & {
@@ -225,7 +228,7 @@ export type SlotAvailabilityDto = BaseResponseDto & {
   } | null;
 };
 
-export type KycProvidersListDto = BaseResponseDto & {
+export type KycProvidersResponseDto = BaseResponseDto & {
   response: {
     identityVerifiers: KycProvider[];
   };
@@ -233,14 +236,19 @@ export type KycProvidersListDto = BaseResponseDto & {
 
 export interface KycProvider {
   id: string;
-  displayName: { [key: string]: string };
+  displayName: KeyValueStringObject;
   logoUrl: string;
   description: string;
   processType: string;
   active: boolean;
   retryOnFailure: boolean;
   resumeOnSuccess: boolean;
-};
+}
+
+export interface SignupHashCode {
+  state: string;
+  code: string;
+}
 
 export interface LanguageTaggedValue {
   language: string;

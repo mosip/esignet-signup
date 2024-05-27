@@ -1,13 +1,12 @@
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
 
 import {
-  KycProvidersListDto,
   RegistrationResponseDto,
   RegistrationStatus,
   RegistrationStatusResponseDto,
   ResetPasswordResponseDto,
   SettingsDto,
-  TermsAndConditionDto,
+  TermsAndConditionResponseDto,
 } from "~typings/types";
 
 import {
@@ -49,25 +48,13 @@ export const useRegistrationStatus = (
   });
 };
 
-export const useTermsAndConditions = (): UseQueryResult<
-  TermsAndConditionDto,
+export const useTermsAndConditions = (kycProviderId: string): UseQueryResult<
+  TermsAndConditionResponseDto,
   unknown
 > => {
-  return useQuery<TermsAndConditionDto>({
-    queryKey: keys.termsAndConditions,
-    queryFn: () => getTermsAndConditions(),
+  return useQuery<TermsAndConditionResponseDto>({
+    queryKey: [...keys.termsAndConditions, kycProviderId],
+    queryFn: () => getTermsAndConditions(kycProviderId),
     staleTime: Infinity,
   });
 };
-
-export const useKycProvidersList = (): UseQueryResult<
-  KycProvidersListDto,
-  unknown
-> => {
-  return useQuery<KycProvidersListDto>({
-    queryKey: keys.kycProvidersList,
-    queryFn: () => getKycProvidersList(),
-    staleTime: Infinity,
-  });
-};
-

@@ -3,23 +3,26 @@ import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
 import { Form } from "~components/ui/form";
-import { useUpdateProcess } from "~pages/shared/mutations";
+import { useKycProvidersList } from "~pages/shared/mutations";
 import { SettingsDto, UpdateProcessRequestDto } from "~typings/types";
 
 import { EkycVerificationPopover } from "./EkycVerificationPopover";
 import KycProviderList from "./KycProviderList";
+import LoadingScreen from "./LoadingScreen";
+import SlotChecking from "./SlotChecking";
 import TermsAndCondition from "./TermsAndCondition";
 import {
   criticalErrorSelector,
   EkycVerificationStep,
+  setHashCodeSelector,
+  setKycProviderSelector,
+  setKycProvidersListSelector,
   stepSelector,
   useEkycVerificationStore,
 } from "./useEkycVerificationStore";
 import VerificationScreen from "./VerificationScreen";
 import VerificationSteps from "./VerificationSteps";
 import VideoPreview from "./VideoPreview";
-import SlotChecking from "./SlotChecking";
-import LoadingScreen from "./LoadingScreen";
 
 interface EkycVerificationPageProps {
   settings: SettingsDto;
@@ -30,11 +33,20 @@ export const EkycVerificationPage = ({
 }: EkycVerificationPageProps) => {
   const { t } = useTranslation();
 
-  const { step, criticalError } = useEkycVerificationStore(
+  const {
+    step,
+    criticalError,
+    setKycProvider,
+    setKycProviderList,
+    setHashCode,
+  } = useEkycVerificationStore(
     useCallback(
       (state) => ({
         step: stepSelector(state),
         criticalError: criticalErrorSelector(state),
+        setKycProvider: setKycProviderSelector(state),
+        setKycProviderList: setKycProvidersListSelector(state),
+        setHashCode: setHashCodeSelector(state),
       }),
       []
     )
@@ -44,11 +56,12 @@ export const EkycVerificationPage = ({
 
   const hashCode = window.location.hash.substring(1);
 
-  const { updateProcessMutation } = useUpdateProcess();
+  const { kycProvidersList } = useKycProvidersList();
 
   useEffect(() => {
     if (hashCode !== null && hashCode !== undefined) {
-      const decodedBase64 = atob(hashCode);
+      const decodedBase64 = JSON.parse(atob(hashCode));
+      setHashCode(decodedBase64);
 
       const params = new URLSearchParams(decodedBase64);
 
@@ -56,7 +69,7 @@ export const EkycVerificationPage = ({
       const hasCode = params.has("code");
 
       if (hasState && hasCode) {
-        if (updateProcessMutation.isPending) return;
+        if (kycProvidersList.isPending) return;
         const UpdateProcessRequestDto: UpdateProcessRequestDto = {
           requestTime: new Date().toISOString(),
           request: {
@@ -64,16 +77,16 @@ export const EkycVerificationPage = ({
             state: params?.get("state") ?? "",
           },
         };
-        return updateProcessMutation.mutate(UpdateProcessRequestDto, {
-          onSuccess: ({ errors }) => {
-            if (errors.length > 0) {
-            }
-
-            if (errors.length === 0) {
+        return kycProvidersList.mutate(UpdateProcessRequestDto, {
+          onSuccess: ({ response, errors }) => {
+            if (!errors || errors.length === 0) {
+              setKycProviderList(response?.identityVerifiers);
+              if (response?.identityVerifiers.length === 1) {
+                setKycProvider(response?.identityVerifiers[0]);
+              }
               return;
             }
           },
-          onError: () => {},
         });
       }
     }
