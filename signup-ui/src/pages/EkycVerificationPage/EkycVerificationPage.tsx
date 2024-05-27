@@ -60,8 +60,7 @@ export const EkycVerificationPage = ({
 
   useEffect(() => {
     if (hashCode !== null && hashCode !== undefined) {
-      const decodedBase64 = JSON.parse(atob(hashCode));
-      setHashCode(decodedBase64);
+      const decodedBase64 = atob(hashCode);
 
       const params = new URLSearchParams(decodedBase64);
 
@@ -69,6 +68,11 @@ export const EkycVerificationPage = ({
       const hasCode = params.has("code");
 
       if (hasState && hasCode) {
+        setHashCode({
+          state: params.get("state") ?? "",
+          code: params.get("code") ?? ""
+        });
+
         if (kycProvidersList.isPending) return;
         const UpdateProcessRequestDto: UpdateProcessRequestDto = {
           requestTime: new Date().toISOString(),

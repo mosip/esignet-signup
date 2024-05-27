@@ -51,7 +51,7 @@ export const VerificationSteps = () => {
 
   useEffect(() => {
     if (hashCode !== null && hashCode !== undefined) {
-      const decodedBase64 = JSON.parse(atob(hashCode));
+      const decodedBase64 = atob(hashCode);
       const params = new URLSearchParams(decodedBase64);
       const hasState = params.has("state");
       const hasCode = params.has("code");
