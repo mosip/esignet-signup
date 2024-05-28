@@ -5,6 +5,9 @@ import io.mosip.signup.dto.NotificationRequest;
 import io.mosip.signup.dto.NotificationResponse;
 import io.mosip.signup.dto.RestRequestWrapper;
 import io.mosip.signup.dto.RestResponseWrapper;
+import io.mosip.signup.exception.SignUpException;
+import io.mosip.signup.util.ErrorConstants;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,6 +17,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
@@ -22,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
+@Slf4j
 @Component
 public class NotificationHelper {
 
@@ -41,7 +46,7 @@ public class NotificationHelper {
     @Value("#{${mosip.signup.sms-notification-template.encoded-langcodes}}")
     private List<String> encodedLangCodes;
 
-    public RestResponseWrapper<NotificationResponse> sendSMSNotification
+    public void sendSMSNotification
             (String number, String locale, String templateKey, Map<String, String> params){
 
         locale = locale != null ? locale : defaultLanguage;
@@ -62,15 +67,20 @@ public class NotificationHelper {
         restRequestWrapper.setRequesttime(IdentityProviderUtil.getUTCDateTime());
         restRequestWrapper.setRequest(notificationRequest);
 
-        return selfTokenRestTemplate.exchange(sendNotificationEndpoint,
-                        HttpMethod.POST,
-                        new HttpEntity<>(restRequestWrapper),
-                        new ParameterizedTypeReference<RestResponseWrapper<NotificationResponse>>(){}).getBody();
+        try {
+            RestResponseWrapper<NotificationResponse> responseWrapper = selfTokenRestTemplate.exchange(sendNotificationEndpoint,
+                    HttpMethod.POST,
+                    new HttpEntity<>(restRequestWrapper),
+                    new ParameterizedTypeReference<RestResponseWrapper<NotificationResponse>>(){}).getBody();
+            log.debug("Notification response -> {}", responseWrapper);
+        } catch (RestClientException e){
+            throw new SignUpException(ErrorConstants.OTP_NOTIFICATION_FAILED);
+        }
     }
 
     @Async
-    public CompletableFuture<RestResponseWrapper<NotificationResponse>> sendSMSNotificationAsync
+    public void sendSMSNotificationAsync
             (String number, String locale, String templateKey, Map<String, String> params){
-        return CompletableFuture.supplyAsync(() -> sendSMSNotification(number, locale, templateKey, params));
+        sendSMSNotification(number, locale, templateKey, params);
     }
 }

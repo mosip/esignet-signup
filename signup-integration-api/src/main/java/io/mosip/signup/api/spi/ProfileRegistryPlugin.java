@@ -1,9 +1,11 @@
 package io.mosip.signup.api.spi;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import io.mosip.signup.api.dto.ProfileDto;
 import io.mosip.signup.api.dto.ProfileResult;
 import io.mosip.signup.api.exception.InvalidProfileException;
 import io.mosip.signup.api.exception.ProfileException;
+import io.mosip.signup.api.util.ProfileCreateUpdateStatus;
 
 public interface ProfileRegistryPlugin {
 
@@ -28,17 +30,21 @@ public interface ProfileRegistryPlugin {
      */
     ProfileResult updateProfile(String requestId, ProfileDto profileDto) throws ProfileException;
 
-    /*
-     * Method to get profile status for the input individualId
-     * Profile status may differ from one ID registry to the other.
-     * esignet-signup service accepted status are ACTIVE, INACTIVE
+    /**
+     *
+     * @param requestId
+     * @return
+     * @throws ProfileException
      */
-    ProfileResult getProfileStatus(String requestId, String individualId) throws ProfileException;
+    ProfileCreateUpdateStatus getProfileCreateUpdateStatus(String requestId) throws ProfileException;
 
     /*
      * Method to get the profile, usually used to check the existence of the profile based on the
      * input individual ID.
      */
     ProfileDto getProfile(String individualId) throws ProfileException;
+
+
+    boolean isMatch(JsonNode identity, JsonNode inputChallenge);
 }
 

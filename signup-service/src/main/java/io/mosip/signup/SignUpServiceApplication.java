@@ -12,7 +12,8 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @SpringBootApplication(scanBasePackages = "io.mosip.signup.*," +
         "io.mosip.esignet.core.config.RedisCacheConfig," +
         "io.mosip.esignet.core.config.SimpleCacheConfig,"+
-        "${mosip.auth.adapter.impl.basepackage}",
+        "${mosip.auth.adapter.impl.basepackage},"+
+        "io.mosip.idrepository.signup.integration",
         scanBasePackageClasses = {SimpleCacheConfig.class, RedisCacheConfig.class})
 public class SignUpServiceApplication {
 
