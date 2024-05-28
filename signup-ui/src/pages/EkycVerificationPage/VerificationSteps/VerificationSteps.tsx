@@ -58,21 +58,19 @@ export const VerificationSteps = () => {
       const urlObj = new URL(window.location.href);
       const state = urlObj.searchParams.get("state");
       if (!hasState && !hasCode) {
-        const authorizeURI =
-          settings?.response?.configs["signin.redirect-url"] ?? "";
+        const authorizeURI = settings?.response?.configs["signin.redirect-url"];
         const clientIdURI =
-          settings?.response?.configs["signup.oauth-client-id"] ?? "";
+          settings?.response?.configs["signup.oauth-client-id"];
         const identityVerificationRedirectURI =
-          settings?.response?.configs["identity-verification.redirect-url"] ??
-          "";
+          settings?.response?.configs["identity-verification.redirect-url"];
 
         const paramObj = {
-          state: state,
-          client_id: clientIdURI,
-          redirect_uri: identityVerificationRedirectURI,
+          state: state ?? "",
+          client_id: clientIdURI ?? "",
+          redirect_uri: identityVerificationRedirectURI ?? "",
           scope: "openid",
           response_type: "code",
-          id_token_hint: hashCode,
+          id_token_hint: hashCode ?? "",
         };
 
         const redirectParams = new URLSearchParams(paramObj).toString();
