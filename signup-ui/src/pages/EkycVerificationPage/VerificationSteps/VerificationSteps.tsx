@@ -58,29 +58,53 @@ export const VerificationSteps = () => {
       const urlObj = new URL(window.location.href);
       const state = urlObj.searchParams.get("state");
       if (!hasState && !hasCode) {
-        const buildRedirectURI = () => {
-          const authorizeURI =
-            settings?.response?.configs["signin.redirect-url"];
-          const clientIdURI =
-            settings?.response?.configs["signup.oauth-client-id"];
-          const identityVerificationRedirectURI =
-            settings?.response?.configs["identity-verification.redirect-url"];
-          return (
-            authorizeURI +
-            "?state=" +
-            state +
-            "&client_id=" +
-            clientIdURI +
-            "&redirect_uri=" +
-            identityVerificationRedirectURI +
-            "&scope=openid&response_type=code&id_token_hint=" +
-            hashCode
-          );
+        const authorizeURI =
+          settings?.response?.configs["signin.redirect-url"] ?? "";
+        const clientIdURI =
+          settings?.response?.configs["signup.oauth-client-id"] ?? "";
+        const identityVerificationRedirectURI =
+          settings?.response?.configs["identity-verification.redirect-url"] ??
+          "";
+
+        const paramObj = {
+          state: state,
+          client_id: clientIdURI,
+          redirect_uri: identityVerificationRedirectURI,
+          scope: "openid",
+          response_type: "code",
+          id_token_hint: hashCode,
         };
-        navigate(buildRedirectURI(), {
-          replace: true,
-        });
-      } else return;
+
+        const redirectParams = new URLSearchParams(paramObj).toString();
+
+        const redirectURI = `${authorizeURI}?${redirectParams}`;
+
+        window.location.replace(redirectURI);
+        // const buildRedirectURI = () => {
+        //   const authorizeURI =
+        //     settings?.response?.configs["signin.redirect-url"];
+        //   const clientIdURI =
+        //     settings?.response?.configs["signup.oauth-client-id"];
+        //   const identityVerificationRedirectURI =
+        //     settings?.response?.configs["identity-verification.redirect-url"];
+        //   return (
+        //     authorizeURI +
+        //     "?state=" +
+        //     state +
+        //     "&client_id=" +
+        //     clientIdURI +
+        //     "&redirect_uri=" +
+        //     identityVerificationRedirectURI +
+        //     "&scope=openid&response_type=code&id_token_hint=" +
+        //     hashCode
+        //   );
+        // };
+        // navigate(redirectURI, {
+        //   replace: true,
+        // });
+      } else {
+        return;
+      }
     }
   }, [settings]);
 
@@ -116,7 +140,8 @@ export const VerificationSteps = () => {
     e.preventDefault();
 
     const browserCompatible = checkBrowserCompatible();
-    const permCompatible = await checkBrowserCameraPermission();
+    const permCompatible = true;
+    // await checkBrowserCameraPermission();
     if (browserCompatible && permCompatible) {
       setStep(EkycVerificationStep.KycProviderList);
     } else {
