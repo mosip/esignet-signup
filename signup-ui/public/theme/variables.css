@@ -1,5 +1,5 @@
 :root {
-  --font-inter: "Roboto";
+  --font-inter: "Inter";
   --font-kantumruypro: "Kantumruy Pro Variable";
   --background-body:  #f7f9fd;
   --background-color:  200 60% 98%;
@@ -64,8 +64,8 @@
 
   --vertical-stepper-bg-color: #eb6f2d;
   --vertical-stepper-bg-opacity: 0.55;
-  --vertical-stepper-description-font: normal normal normal 14px/17px Roboto;
-  --vertical-stepper-label-font: normal normal 600 16px/20px Roboto;
+  --vertical-stepper-description-font: normal normal normal 14px/17px Inter;
+  --vertical-stepper-label-font: normal normal 600 16px/20px Inter;
   --vertical-stepper-node-bg: #eb6f2d;
 
   --cancel-button-border: 2px solid #eb6f2d;
