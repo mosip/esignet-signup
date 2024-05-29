@@ -3,7 +3,6 @@ import purify from "dompurify";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
 
-import { SIGNUP_ROUTE } from "~constants/routes";
 import { ActionMessage } from "~components/ui/action-message";
 import { Button } from "~components/ui/button";
 import { Checkbox } from "~components/ui/checkbox";
@@ -17,11 +16,10 @@ import {
   StepHeader,
   StepTitle,
 } from "~components/ui/step";
-import { getSignInRedirectURL } from "~utils/link";
 import { useTermsAndConditions } from "~pages/shared/queries";
 import langConfigService from "~services/langConfig.service";
+import { CancelPopup } from "~typings/types";
 
-import { CancelAlertPopover } from "../CancelAlertPopover";
 import {
   EkycVerificationStep,
   EkycVerificationStore,
@@ -31,7 +29,11 @@ import {
   useEkycVerificationStore,
 } from "../useEkycVerificationStore";
 
-export const TermsAndCondition = () => {
+interface TermsAndConditionProp {
+  cancelPopup: (cancelProp: CancelPopup) => any;
+}
+
+export const TermsAndCondition = ({ cancelPopup }: TermsAndConditionProp) => {
   const { i18n, t } = useTranslation("translation", {
     keyPrefix: "terms_and_conditions",
   });
@@ -89,17 +91,6 @@ export const TermsAndCondition = () => {
     setCancelButton(false);
   };
 
-  /**
-   * Handle the dismiss button click, redirect to relying party page
-   */
-  const handleDismiss = () => {
-    window.location.href = getSignInRedirectURL(
-      "http://localhost:5000",
-      fromSignInHash,
-      SIGNUP_ROUTE
-    );
-  };
-
   // sanitizing the html content, through dompurify
   // then passing it in the dangerouslySetInnerHTML
   const sanitizeMsg = (message: string) => {
@@ -142,13 +133,7 @@ export const TermsAndCondition = () => {
 
   return (
     <>
-      {cancelButton && (
-        <CancelAlertPopover
-          description={"description"}
-          handleStay={handleStay}
-          handleDismiss={handleDismiss}
-        />
-      )}
+      {cancelPopup({ cancelButton, handleStay })}
       <div className="m-3 flex flex-row justify-center">
         <Step className="my-5 max-w-[644px] md:rounded-2xl md:shadow sm:rounded-2xl sm:shadow">
           <StepHeader className="px-0 py-5 sm:pb-[25px] sm:pt-[33px]">
