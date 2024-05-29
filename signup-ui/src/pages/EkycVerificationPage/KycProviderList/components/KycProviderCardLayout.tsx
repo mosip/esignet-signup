@@ -42,7 +42,7 @@ export const KycProviderCardLayout = ({
         <div
           className={cn(
             "container max-w-lg rounded-lg bg-white p-4 shadow sm:max-w-none sm:rounded-lg sm:shadow cursor-pointer",
-            selected ? "border-2 border-solid border-[#EB6F2D]" : ""
+            selected ? "border-2 border-solid border-[#EB6F2D] check-box" : ""
           )}
         >
           <div className="flex flex-col justify-start">

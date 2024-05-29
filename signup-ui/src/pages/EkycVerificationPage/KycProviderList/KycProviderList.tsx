@@ -2,7 +2,6 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
 
-import { SIGNUP_ROUTE } from "~constants/routes";
 import { Button } from "~components/ui/button";
 import { FormControl, FormField, FormItem } from "~components/ui/form";
 import { Input } from "~components/ui/input";
@@ -14,11 +13,9 @@ import {
   StepHeader,
   StepTitle,
 } from "~components/ui/step";
-import { getSignInRedirectURL } from "~utils/link";
 import { useKycProvidersList } from "~pages/shared/mutations";
-import { UpdateProcessRequestDto } from "~typings/types";
+import { CancelPopup, UpdateProcessRequestDto } from "~typings/types";
 
-import { CancelAlertPopover } from "../CancelAlertPopover";
 import {
   EkycVerificationStep,
   EkycVerificationStore,
@@ -27,12 +24,17 @@ import {
   kycProvidersListSelector,
   setCriticalErrorSelector,
   setKycProviderSelector,
+  setKycProvidersListSelector,
   setStepSelector,
   useEkycVerificationStore,
 } from "../useEkycVerificationStore";
 import { KycProviderCardLayout } from "./components/KycProviderCardLayout";
 
-export const KycProviderList = () => {
+interface KycProviderListProp {
+  cancelPopup: (cancelProp: CancelPopup) => any;
+}
+
+export const KycProviderList = ({ cancelPopup }: KycProviderListProp) => {
   const { t } = useTranslation("translation", {
     keyPrefix: "kyc_provider",
   });
@@ -43,6 +45,7 @@ export const KycProviderList = () => {
     setKycProvider,
     kycProvider,
     providerListStore,
+    setProviderListStore,
     hashCode,
   } = useEkycVerificationStore(
     useCallback(
@@ -52,13 +55,12 @@ export const KycProviderList = () => {
         setKycProvider: setKycProviderSelector(state),
         kycProvider: kycProviderSelector(state),
         providerListStore: kycProvidersListSelector(state),
+        setProviderListStore: setKycProvidersListSelector(state),
         hashCode: hashCodeSelector(state),
       }),
       []
     )
   );
-
-  useEffect(() => {}, [setStep]);
 
   const { hash: fromSignInHash } = useLocation();
 
@@ -93,17 +95,6 @@ export const KycProviderList = () => {
   };
 
   /**
-   * Handle the dismiss button click, redirect to relying party page
-   */
-  const handleDismiss = () => {
-    window.location.href = getSignInRedirectURL(
-      "http://localhost:5000",
-      fromSignInHash,
-      SIGNUP_ROUTE
-    );
-  };
-
-  /**
    * Select KycProvider card and highlight it
    * Also set the selected kycProvider & adding
    * it in the ekyc verification store
@@ -116,6 +107,9 @@ export const KycProviderList = () => {
 
   const { kycProvidersList: kycApiCall } = useKycProvidersList();
 
+  /**
+   * Get the kyc data from the api call
+   */
   const getKycData = () => {
     if (hashCode !== null && hashCode !== undefined) {
       const hasState = hashCode.hasOwnProperty("state");
@@ -145,6 +139,23 @@ export const KycProviderList = () => {
     }
   };
 
+  /**
+   * Filter the kyc providers list based on the search text
+   */
+  const filterKycProvidersList = () => {
+    const val = searchTextRef.current?.value;
+    if (providerListStore === null || providerListStore.length === 0) return;
+    if (val) {
+      const filteredList = providerListStore.filter((item: any) => {
+        const displayName = item.displayName?.en ?? item.displayName["@none"];
+        return displayName.toLowerCase().includes(val.toLowerCase());
+      });
+      setKycProvidersList(filteredList);
+    } else {
+      setKycProvidersList(providerListStore);
+    }
+  };
+
   useEffect(() => {
     if (kycProvider !== null) {
       setStep(EkycVerificationStep.TermsAndCondition);
@@ -159,13 +170,7 @@ export const KycProviderList = () => {
 
   return (
     <>
-      {cancelButton && (
-        <CancelAlertPopover
-          description={"description"}
-          handleStay={handleStay}
-          handleDismiss={handleDismiss}
-        />
-      )}
+      {cancelPopup({ cancelButton, handleStay })}
       <div className="m-3 mt-10 flex flex-row items-stretch justify-center gap-x-1 sm:mb-20">
         <Step className="mx-10 max-w-[70rem] lg:mx-4 md:rounded-2xl md:shadow sm:rounded-2xl sm:shadow">
           <StepHeader className="px-5 py-5 sm:pb-[25px] sm:pt-[33px]">
@@ -176,7 +181,7 @@ export const KycProviderList = () => {
               >
                 {t("header")}
               </div>
-              {kycProvidersList && kycProvidersList.length > 2 && (
+              {providerListStore && providerListStore.length > 2 && (
                 <div id="search-box" className="w-full md:mt-2">
                   <FormField
                     name="username"
@@ -189,6 +194,7 @@ export const KycProviderList = () => {
                               placeholder={t("search_placeholder")}
                               className="py-6"
                               ref={searchTextRef}
+                              onChange={filterKycProvidersList}
                             />
                           </FormControl>
                         </div>

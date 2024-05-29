@@ -152,6 +152,25 @@ body {
   background-color: #a8bbbf;
 }
 
+/* Check mark box in top right corner */
+.check-box {
+  display: inline-block;
+  position: relative;
+}
+
+.check-box::after {
+  content: url("assets/svg/check_white.svg");
+  background: #EB6F2D;
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 4px 6px;
+  border-radius: 0px 5px 0px 8px;
+  border-style: solid;
+  border-color: #EB6F2D;
+
+}
+
 @media (min-width: 768px) {
   /* corner border around video preview */
   .corner-border {

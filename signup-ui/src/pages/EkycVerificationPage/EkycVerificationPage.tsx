@@ -1,11 +1,19 @@
 import { useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
+import { useLocation } from "react-router-dom";
 
+import { SIGNUP_ROUTE } from "~constants/routes";
 import { Form } from "~components/ui/form";
+import { getSignInRedirectURL } from "~utils/link";
 import { useKycProvidersList } from "~pages/shared/mutations";
-import { SettingsDto, UpdateProcessRequestDto } from "~typings/types";
+import {
+  CancelPopup,
+  SettingsDto,
+  UpdateProcessRequestDto,
+} from "~typings/types";
 
+import { CancelAlertPopover } from "./CancelAlertPopover";
 import { EkycVerificationPopover } from "./EkycVerificationPopover";
 import KycProviderList from "./KycProviderList";
 import LoadingScreen from "./LoadingScreen";
@@ -54,6 +62,8 @@ export const EkycVerificationPage = ({
 
   const methods = useForm();
 
+  const { hash: fromSignInHash } = useLocation();
+
   const hashCode = window.location.hash.substring(1);
 
   const { kycProvidersList } = useKycProvidersList();
@@ -70,7 +80,7 @@ export const EkycVerificationPage = ({
       if (hasState && hasCode) {
         setHashCode({
           state: params.get("state") ?? "",
-          code: params.get("code") ?? ""
+          code: params.get("code") ?? "",
         });
 
         if (kycProvidersList.isPending) return;
@@ -97,31 +107,47 @@ export const EkycVerificationPage = ({
   }, []);
 
   useEffect(() => {
-    const handleTabBeforeUnload = (event: BeforeUnloadEvent) => {
-      event.preventDefault();
-
-      return (event.returnValue = t("reset_password_discontinue_prompt"));
+    window.onbeforeunload = () => {
+      return true;
     };
-
-    window.addEventListener("beforeunload", handleTabBeforeUnload);
 
     return () => {
-      window.removeEventListener("beforeunload", handleTabBeforeUnload);
+      window.onbeforeunload = null;
     };
   }, [step, criticalError]);
+
+  const cancelAlertPopoverComp = (cancelProp: CancelPopup) => {
+    const handleDismiss = () => {
+      window.onbeforeunload = null;
+      window.location.href = getSignInRedirectURL(
+        "http://localhost:5000",
+        fromSignInHash,
+        SIGNUP_ROUTE
+      );
+    };
+    return (
+      cancelProp.cancelButton && (
+        <CancelAlertPopover
+          description={"description"}
+          handleStay={cancelProp.handleStay}
+          handleDismiss={handleDismiss}
+        />
+      )
+    );
+  };
 
   const getEkycVerificationStepContent = (step: EkycVerificationStep) => {
     switch (step) {
       case EkycVerificationStep.VerificationSteps:
-        return <VerificationSteps />;
+        return <VerificationSteps cancelPopup={cancelAlertPopoverComp} />;
       case EkycVerificationStep.LoadingScreen:
         return <LoadingScreen />;
       case EkycVerificationStep.KycProviderList:
-        return <KycProviderList />;
+        return <KycProviderList cancelPopup={cancelAlertPopoverComp} />;
       case EkycVerificationStep.TermsAndCondition:
-        return <TermsAndCondition />;
+        return <TermsAndCondition cancelPopup={cancelAlertPopoverComp} />;
       case EkycVerificationStep.VideoPreview:
-        return <VideoPreview />;
+        return <VideoPreview cancelPopup={cancelAlertPopoverComp} />;
       case EkycVerificationStep.SlotCheckingScreen:
         return <SlotChecking />;
       case EkycVerificationStep.VerificationScreen:

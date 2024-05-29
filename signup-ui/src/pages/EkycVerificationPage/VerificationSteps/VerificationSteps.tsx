@@ -1,9 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import Stepper from "@keyvaluesystems/react-stepper";
 import { useTranslation } from "react-i18next";
-import { useLocation } from "react-router-dom";
 
-import { SIGNUP_ROUTE } from "~constants/routes";
 import { Button } from "~components/ui/button";
 import {
   Step,
@@ -13,10 +11,8 @@ import {
   StepHeader,
   StepTitle,
 } from "~components/ui/step";
-import { getSignInRedirectURL } from "~utils/link";
 import { useSettings } from "~pages/shared/queries";
 
-import { CancelAlertPopover } from "../CancelAlertPopover";
 import {
   EkycVerificationStep,
   EkycVerificationStore,
@@ -24,10 +20,14 @@ import {
   setStepSelector,
   useEkycVerificationStore,
 } from "../useEkycVerificationStore";
-import { checkBrowserCameraPermission } from "./utils/checkBrowserCameraPermission";
 import { checkBrowserCompatible } from "./utils/checkBrowserCompatible";
+import { CancelPopup } from "~typings/types";
 
-export const VerificationSteps = () => {
+interface VerificationStepsProp {
+  cancelPopup: (cancelProp: CancelPopup) => any;
+}
+
+export const VerificationSteps = ({ cancelPopup }: VerificationStepsProp) => {
   const { t } = useTranslation("translation", {
     keyPrefix: "verification_steps",
   });
@@ -43,7 +43,6 @@ export const VerificationSteps = () => {
     )
   );
 
-  const { hash: fromSignInHash } = useLocation();
   const { data: settings } = useSettings();
 
   const hashCode = window.location.hash.substring(1);
@@ -133,27 +132,11 @@ export const VerificationSteps = () => {
     setCancelButton(false);
   };
 
-  const handleDismiss = () => {
-    window.location.href = getSignInRedirectURL(
-      settings?.response.configs["signin.redirect-url"],
-      fromSignInHash,
-      SIGNUP_ROUTE
-    );
-  };
-
-  useEffect(() => {}, [setStep]);
-
   return (
     <>
       {hasState && hasCode && (
         <>
-          {cancelButton && (
-            <CancelAlertPopover
-              description={"description"}
-              handleStay={handleStay}
-              handleDismiss={handleDismiss}
-            />
-          )}
+          {cancelPopup({cancelButton, handleStay})}
           <div className="m-3 flex flex-row justify-center">
             <Step className="my-5 max-w-[75rem] md:rounded-2xl md:shadow sm:mt-0 sm:rounded-2xl sm:shadow">
               <StepHeader className="px-0 py-5 sm:py-[25px]">

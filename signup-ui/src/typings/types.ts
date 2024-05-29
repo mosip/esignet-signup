@@ -245,6 +245,11 @@ export interface KycProvider {
   resumeOnSuccess: boolean;
 }
 
+export interface CancelPopup {
+  cancelButton: boolean;
+  handleStay: () => void;
+}
+
 export interface SignupHashCode {
   state: string;
   code: string;
