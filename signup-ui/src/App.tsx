@@ -87,6 +87,10 @@ function App() {
 
   const { i18n } = useTranslation();
 
+  useEffect(() => {
+    document.querySelector(":root")?.classList.add(langFontMapping[i18n.language])
+  }, [langFontMapping, i18n.language])
+
   return (
     <div className={langFontMapping[i18n.language]}>
       {isDev && (
