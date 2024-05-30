@@ -61,7 +61,7 @@ export const SessionAlert = () => {
     return () => {
       clearInterval(interval);
     };
-  }, [getRemainingTime]);
+  });
 
   const handleContinueSession = useCallback(() => {
     activate();
