@@ -2,12 +2,13 @@ package io.mosip.signup.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.esignet.core.dto.RequestWrapper;
+import io.mosip.signup.api.util.ProfileCreateUpdateStatus;
 import io.mosip.signup.dto.RegistrationStatusResponse;
 import io.mosip.signup.dto.ResetPasswordRequest;
 import io.mosip.signup.helper.AuditHelper;
 import io.mosip.signup.services.RegistrationService;
 import io.mosip.signup.util.ErrorConstants;
-import io.mosip.signup.util.RegistrationStatus;
+//import io.mosip.signup.util.RegistrationStatus;
 import io.mosip.signup.util.SignUpConstants;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -62,7 +63,7 @@ public class ResetPasswordControllerTest {
         resetPasswordWrapper.setRequest(resetPasswordRequest);
 
         RegistrationStatusResponse registrationStatusResponse = new RegistrationStatusResponse();
-        registrationStatusResponse.setStatus(RegistrationStatus.PENDING);
+        registrationStatusResponse.setStatus(ProfileCreateUpdateStatus.PENDING);
 
         when(registrationService.updatePassword(any(), any())).thenReturn(registrationStatusResponse);
 
@@ -132,7 +133,7 @@ public class ResetPasswordControllerTest {
         resetPasswordWrapper.setRequest(resetPasswordRequest);
 
         RegistrationStatusResponse registrationStatusResponse = new RegistrationStatusResponse();
-        registrationStatusResponse.setStatus(RegistrationStatus.PENDING);
+        registrationStatusResponse.setStatus(ProfileCreateUpdateStatus.PENDING);
 
         when(registrationService.updatePassword(any(), any())).thenReturn(registrationStatusResponse);
 
@@ -159,7 +160,7 @@ public class ResetPasswordControllerTest {
         resetPasswordWrapper.setRequest(resetPasswordRequest);
 
         RegistrationStatusResponse registrationStatusResponse = new RegistrationStatusResponse();
-        registrationStatusResponse.setStatus(RegistrationStatus.PENDING);
+        registrationStatusResponse.setStatus(ProfileCreateUpdateStatus.PENDING);
 
         when(registrationService.updatePassword(any(), any())).thenReturn(registrationStatusResponse);
 
@@ -195,7 +196,7 @@ public class ResetPasswordControllerTest {
         resetPasswordWrapper.setRequest(resetPasswordRequest);
 
         RegistrationStatusResponse registrationStatusResponse = new RegistrationStatusResponse();
-        registrationStatusResponse.setStatus(RegistrationStatus.PENDING);
+        registrationStatusResponse.setStatus(ProfileCreateUpdateStatus.PENDING);
 
         when(registrationService.updatePassword(any(), any())).thenReturn(registrationStatusResponse);
 
@@ -222,7 +223,7 @@ public class ResetPasswordControllerTest {
         resetPasswordWrapper.setRequest(resetPasswordRequest);
 
         RegistrationStatusResponse registrationStatusResponse = new RegistrationStatusResponse();
-        registrationStatusResponse.setStatus(RegistrationStatus.PENDING);
+        registrationStatusResponse.setStatus(ProfileCreateUpdateStatus.PENDING);
 
         when(registrationService.updatePassword(any(), any())).thenReturn(registrationStatusResponse);
 
@@ -249,7 +250,7 @@ public class ResetPasswordControllerTest {
         resetPasswordWrapper.setRequest(resetPasswordRequest);
 
         RegistrationStatusResponse registrationStatusResponse = new RegistrationStatusResponse();
-        registrationStatusResponse.setStatus(RegistrationStatus.PENDING);
+        registrationStatusResponse.setStatus(ProfileCreateUpdateStatus.PENDING);
 
         when(registrationService.updatePassword(any(), any())).thenReturn(registrationStatusResponse);
 
