@@ -18,7 +18,7 @@ import {
 } from "~components/ui/step";
 import { useTermsAndConditions } from "~pages/shared/queries";
 import langConfigService from "~services/langConfig.service";
-import { CancelPopup } from "~typings/types";
+import { DefaultEkyVerificationProp } from "~typings/types";
 
 import {
   EkycVerificationStep,
@@ -29,11 +29,7 @@ import {
   useEkycVerificationStore,
 } from "../useEkycVerificationStore";
 
-interface TermsAndConditionProp {
-  cancelPopup: (cancelProp: CancelPopup) => any;
-}
-
-export const TermsAndCondition = ({ cancelPopup }: TermsAndConditionProp) => {
+export const TermsAndCondition = ({ cancelPopup, settings }: DefaultEkyVerificationProp) => {
   const { i18n, t } = useTranslation("translation", {
     keyPrefix: "terms_and_conditions",
   });
@@ -48,8 +44,6 @@ export const TermsAndCondition = ({ cancelPopup }: TermsAndConditionProp) => {
       []
     )
   );
-
-  const { hash: fromSignInHash } = useLocation();
 
   const [agreeTerms, setAgreeTerms] = useState<boolean>(false);
   const [cancelButton, setCancelButton] = useState<boolean>(false);
@@ -129,7 +123,7 @@ export const TermsAndCondition = ({ cancelPopup }: TermsAndConditionProp) => {
       const currLang = langMap[i18n.language];
       setTncMessage(termsAndCondition[currLang]);
     }
-  }, [termsAndCondition, i18n.language]);
+  }, [termsAndCondition, i18n.language, langMap]);
 
   return (
     <>

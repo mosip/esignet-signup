@@ -11,7 +11,7 @@ import {
   StepHeader,
   StepTitle,
 } from "~components/ui/step";
-import { useSettings } from "~pages/shared/queries";
+import { DefaultEkyVerificationProp } from "~typings/types";
 
 import {
   EkycVerificationStep,
@@ -21,13 +21,11 @@ import {
   useEkycVerificationStore,
 } from "../useEkycVerificationStore";
 import { checkBrowserCompatible } from "./utils/checkBrowserCompatible";
-import { CancelPopup } from "~typings/types";
 
-interface VerificationStepsProp {
-  cancelPopup: (cancelProp: CancelPopup) => any;
-}
-
-export const VerificationSteps = ({ cancelPopup }: VerificationStepsProp) => {
+export const VerificationSteps = ({
+  cancelPopup,
+  settings,
+}: DefaultEkyVerificationProp) => {
   const { t } = useTranslation("translation", {
     keyPrefix: "verification_steps",
   });
@@ -43,8 +41,6 @@ export const VerificationSteps = ({ cancelPopup }: VerificationStepsProp) => {
     )
   );
 
-  const { data: settings } = useSettings();
-
   const hashCode = window.location.hash.substring(1);
   const decodedBase64 = atob(hashCode);
   const params = new URLSearchParams(decodedBase64);
@@ -56,11 +52,10 @@ export const VerificationSteps = ({ cancelPopup }: VerificationStepsProp) => {
   useEffect(() => {
     if (hashCode !== null && hashCode !== undefined) {
       if (!hasState && !hasCode) {
-        const authorizeURI = settings?.response?.configs["signin.redirect-url"];
-        const clientIdURI =
-          settings?.response?.configs["signup.oauth-client-id"];
+        const authorizeURI = settings?.configs["signin.redirect-url"];
+        const clientIdURI = settings?.configs["signup.oauth-client-id"];
         const identityVerificationRedirectURI =
-          settings?.response?.configs["identity-verification.redirect-url"];
+          settings?.configs["identity-verification.redirect-url"];
 
         const paramObj = {
           state: state ?? "",
@@ -136,7 +131,7 @@ export const VerificationSteps = ({ cancelPopup }: VerificationStepsProp) => {
     <>
       {hasState && hasCode && (
         <>
-          {cancelPopup({cancelButton, handleStay})}
+          {cancelPopup({ cancelButton, handleStay })}
           <div className="m-3 flex flex-row justify-center">
             <Step className="my-5 max-w-[75rem] md:rounded-2xl md:shadow sm:mt-0 sm:rounded-2xl sm:shadow">
               <StepHeader className="px-0 py-5 sm:py-[25px]">

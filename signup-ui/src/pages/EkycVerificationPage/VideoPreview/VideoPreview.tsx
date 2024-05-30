@@ -13,7 +13,7 @@ import {
   StepHeader,
   StepTitle,
 } from "~components/ui/step";
-import { CancelPopup } from "~typings/types";
+import { DefaultEkyVerificationProp } from "~typings/types";
 
 import {
   EkycVerificationStep,
@@ -23,11 +23,7 @@ import {
   useEkycVerificationStore,
 } from "../useEkycVerificationStore";
 
-interface VideoPreviewProp {
-  cancelPopup: (cancelProp: CancelPopup) => any;
-}
-
-export const VideoPreview = ({ cancelPopup }: VideoPreviewProp) => {
+export const VideoPreview = ({ cancelPopup, settings }: DefaultEkyVerificationProp) => {
   const { t } = useTranslation("translation", {
     keyPrefix: "video_preview",
   });
@@ -43,19 +39,11 @@ export const VideoPreview = ({ cancelPopup }: VideoPreviewProp) => {
     )
   );
 
-  const { hash: fromSignInHash } = useLocation();
-
   const [cancelButton, setCancelButton] = useState<boolean>(false);
   const [permissionGranted, setPermissionGranted] = useState(true);
 
   // key info list for video preview page
-  const keyInfoList = [
-    "Please test your camera in the preview on the right",
-    "Please make sure you’re in a well-lit area",
-    "Please take off accessories like glasses or hats",
-    "Please follow instructions on the next screens",
-    "Please ensure you have a stable internet connection",
-  ];
+  const keyInfoList = ["step_1", "step_2", "step_3", "step_4", "step_5"];
 
   /**
    * Handle the proceed button click, move forward to video preview page
@@ -119,21 +107,28 @@ export const VideoPreview = ({ cancelPopup }: VideoPreviewProp) => {
           </div>
         )}
         {!permissionGranted && (
-          <Step className="2xl:h-full xl:h-full md:mx-0 md:rounded-2xl md:shadow sm:mx-0 sm:rounded-2xl sm:shadow">
-            <StepHeader className="px-0 py-5 sm:pb-[25px] sm:pt-[33px]">
-              <StepTitle className="relative flex w-full items-center justify-center gap-x-4 text-base font-semibold">
-                <div
-                  className="ml-5 w-full text-[22px] font-semibold"
-                  id="permission-denied-header"
-                >
+          <Step className="2xl:h-full xl:h-full md:mx-0 md:rounded-2xl sm:mx-0 sm:rounded-2xl md:shadow-none">
+            <StepHeader className="p-0"></StepHeader>
+            <StepContent className="m-6 md:m-0 rounded-[10px] bg-[#F8F8F8] text-sm h-[90%] content-center">
+              <div className="flex flex-col text-center">
+                <Icons.disabledCamera id="camera-disabled" name="camera-disabled" className="mb-6 w-[52px] h-[52px] self-center" />
+                <div className="color-[#313131] text-base font-semibold leading-5 pb-2">
                   {t("permission_denied_header")}
                 </div>
-              </StepTitle>
-            </StepHeader>
-            <StepDivider />
-            <StepContent className="px-6 py-5 text-sm">
-              <div>{t("permission_denied_description")}</div>
+                <div className="color-[#7E7E7E] text-sm font-normal leading-4 pb-5">
+                  {t("permission_denied_description")}
+                </div>
+                <a
+                  href="https://support.google.com/chrome/answer/2693767?hl=en"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-base leading-5 font-semibold text-[#EB6F2D]"
+                >
+                  {t("know_more")}
+                </a>
+              </div>
             </StepContent>
+            <StepFooter className="p-0"></StepFooter>
           </Step>
         )}
       </>
@@ -159,11 +154,11 @@ export const VideoPreview = ({ cancelPopup }: VideoPreviewProp) => {
           <StepContent className="px-6 py-5 text-sm">
             {/* video preview for small screen */}
             <div className="hidden md:block sm:block">{videoPreviewDiv()}</div>
-            <div className="md:mt-8 sm:mt-8">
+            <div className="scrollable-div md:mt-8 sm:mt-8 !h-[250px]">
               {keyInfoList.map((keyInfo, index) => (
                 <div key={index} className="mb-6">
                   <Icons.check className="mr-1 inline-block h-4 w-4 stroke-[4px] text-orange-500" />
-                  <span>{keyInfo}</span>
+                  <span>{t(`keyInfo.${keyInfo}`)}</span>
                 </div>
               ))}
             </div>

@@ -14,7 +14,7 @@ import {
   StepTitle,
 } from "~components/ui/step";
 import { useKycProvidersList } from "~pages/shared/mutations";
-import { CancelPopup, UpdateProcessRequestDto } from "~typings/types";
+import { UpdateProcessRequestDto, DefaultEkyVerificationProp } from "~typings/types";
 
 import {
   EkycVerificationStep,
@@ -30,11 +30,7 @@ import {
 } from "../useEkycVerificationStore";
 import { KycProviderCardLayout } from "./components/KycProviderCardLayout";
 
-interface KycProviderListProp {
-  cancelPopup: (cancelProp: CancelPopup) => any;
-}
-
-export const KycProviderList = ({ cancelPopup }: KycProviderListProp) => {
+export const KycProviderList = ({ cancelPopup, settings }: DefaultEkyVerificationProp) => {
   const { t } = useTranslation("translation", {
     keyPrefix: "kyc_provider",
   });
@@ -61,8 +57,6 @@ export const KycProviderList = ({ cancelPopup }: KycProviderListProp) => {
       []
     )
   );
-
-  const { hash: fromSignInHash } = useLocation();
 
   const [cancelButton, setCancelButton] = useState<boolean>(false);
   const [kycProvidersList, setKycProvidersList] = useState<any>([]);
@@ -147,7 +141,7 @@ export const KycProviderList = ({ cancelPopup }: KycProviderListProp) => {
     if (providerListStore === null || providerListStore.length === 0) return;
     if (val) {
       const filteredList = providerListStore.filter((item: any) => {
-        const displayName = item.displayName?.en ?? item.displayName["@none"];
+        const displayName = item.displayName?.eng ?? item.displayName["@none"];
         return displayName.toLowerCase().includes(val.toLowerCase());
       });
       setKycProvidersList(filteredList);

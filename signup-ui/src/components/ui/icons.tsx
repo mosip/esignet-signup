@@ -2,6 +2,7 @@ import * as React from "react";
 
 import InfoPng from "~assets/png/info-38-2.png";
 import { ReactComponent as ArrowLeft } from "~assets/svg/arrow-left.svg";
+import { ReactComponent as CameraDisabled } from "~assets/svg/camera-disabled.svg";
 import { ReactComponent as Check } from "~assets/svg/check.svg";
 import { ReactComponent as ChevronDown } from "~assets/svg/chevron-down.svg";
 import { ReactComponent as ChevronUp } from "~assets/svg/chevron-up.svg";
@@ -48,4 +49,5 @@ export const Icons = {
       </svg>
     )
   ),
+  disabledCamera: CameraDisabled,
 };

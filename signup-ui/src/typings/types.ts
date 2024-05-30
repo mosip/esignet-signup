@@ -245,6 +245,11 @@ export interface KycProvider {
   resumeOnSuccess: boolean;
 }
 
+export interface DefaultEkyVerificationProp {
+  settings: Settings;
+  cancelPopup: (cancelProp: CancelPopup) => any;
+}
+
 export interface CancelPopup {
   cancelButton: boolean;
   handleStay: () => void;
