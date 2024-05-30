@@ -6,11 +6,13 @@ import com.nimbusds.jose.JWSHeader;
 import com.nimbusds.jose.crypto.RSASSASigner;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
-import com.nimbusds.oauth2.sdk.AuthorizationCode;
-import com.nimbusds.oauth2.sdk.AuthorizationCodeGrant;
-import com.nimbusds.oauth2.sdk.AuthorizationGrant;
+import com.nimbusds.oauth2.sdk.*;
 import com.nimbusds.oauth2.sdk.auth.ClientAuthentication;
 import com.nimbusds.oauth2.sdk.auth.PrivateKeyJWT;
+import com.nimbusds.oauth2.sdk.http.HTTPRequest;
+import com.nimbusds.oauth2.sdk.token.AccessToken;
+import com.nimbusds.openid.connect.sdk.OIDCTokenResponse;
+import com.nimbusds.openid.connect.sdk.OIDCTokenResponseParser;
 import io.mosip.esignet.core.util.IdentityProviderUtil;
 import io.mosip.signup.dto.*;
 import io.mosip.signup.exception.InvalidTransactionException;
@@ -21,12 +23,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ResourceUtils;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.FileInputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.security.KeyStore;
+import java.security.PrivateKey;
+import java.security.interfaces.RSAPrivateKey;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Optional;
@@ -53,6 +61,15 @@ public class IdentityVerificationService {
 
     @Value("${mosip.signup.oauth.issuer-uri}")
     private String oauthIssuerUri;
+
+    @Value("${mosip.signup.private-key-alias}")
+    private String privateKeyAlias;
+
+    @Value("${mosip.signup.p12-file-client-private-key-alias}")
+    private String p12FilePassword;
+
+    @Value("${mosip.signup.p12-file-name}")
+    private String p12FileName;
 
     @Autowired
     private RestTemplate restTemplate;
@@ -147,27 +164,38 @@ public class IdentityVerificationService {
 
     private String fetchAndVerifyAccessToken(String authCode) {
         try {
-            AuthorizationCode code = new AuthorizationCode(authCode);
-            URI callback = new URI(oauthRedirectUri);
-            AuthorizationGrant codeGrant = new AuthorizationCodeGrant(code, callback);
-
             long issuedTime = System.currentTimeMillis();
             JWTClaimsSet.Builder builder = new JWTClaimsSet.Builder()
                     .subject(oauthClientId)
                     .issuer(oauthClientId)
-                    .audience(oauthIssuerUri)
+                    .audience(oauthIssuerUri+"/v1/esignet/oauth/token")
                     .issueTime(new Date(issuedTime))
                     .expirationTime(new Date(issuedTime+(60*1000)));
             JWSHeader jwsHeader = new JWSHeader(JWSAlgorithm.RS256);
             SignedJWT signedJWT = new SignedJWT(jwsHeader, builder.build());
-            //signedJWT.sign(new RSASSASigner()); TODO Read private key from keystore
-            //ClientAuthentication clientAuthentication = new PrivateKeyJWT(signedJWT);
+            PrivateKey privateKey = loadPrivateKey(privateKeyAlias, p12FilePassword);
+            signedJWT.sign(new RSASSASigner((RSAPrivateKey) privateKey));
+
+            // Create a Token Request with the authorization code
+            AuthorizationCode code = new AuthorizationCode(authCode);
+            URI callback = new URI(oauthRedirectUri);
+            URI tokenEndpoint = new URI(oauthIssuerUri+"/v1/esignet/oauth/token");
+            AuthorizationGrant codeGrant = new AuthorizationCodeGrant(code, callback);
+            ClientAuthentication clientAuthentication = new PrivateKeyJWT(signedJWT);
+            TokenRequest request = new TokenRequest(tokenEndpoint,clientAuthentication, codeGrant);
+            HTTPRequest toHTTPRequest = request.toHTTPRequest();
+            TokenResponse tokenResponse= OIDCTokenResponseParser.parse(toHTTPRequest.send());
+            OIDCTokenResponse successResponse = (OIDCTokenResponse) tokenResponse.toSuccessResponse();
+            AccessToken accessToken = successResponse.getOIDCTokens().getAccessToken();
+            log.info("Access token received successfully");
+            return  accessToken.toJSONString();
         } catch (URISyntaxException e) {
             log.error("Failed to exchange authorization grant for tokens", e);
             throw new SignUpException("token_exchange_failed");
+        }catch (Exception e) {
+            log.error("Failed to exchange authorization grant for tokens", e);
+            throw new SignUpException("token_exchange_failed");
         }
-        log.info("Successfully fetched access-token and extracted subject from the access-token");
-        return "subject";
     }
 
     private IdentityVerifierDetail[] getIdentityVerifierDetailsFromConfigServer() {
@@ -177,5 +205,20 @@ public class IdentityVerificationService {
             return cacheUtilService.setIdentityVerifierDetails(CacheUtilService.COMMON_KEY, verifierDetails);
         }
         return verifierDetails;
+    }
+
+    private PrivateKey loadPrivateKey(String alias, String cyptoPassword) {
+        try {
+            File directory = ResourceUtils.getFile("classpath:"+p12FileName);
+            FileInputStream fis = new FileInputStream(directory);
+            KeyStore ks = KeyStore.getInstance("PKCS12");
+            ks.load(fis, cyptoPassword.toCharArray());
+
+            // Retrieve the private key
+            return  (PrivateKey) ks.getKey(alias, cyptoPassword.toCharArray());
+        }catch (Exception e) {
+            log.error("Failed to load private key from keystore", e);
+            throw new SignUpException("private_key_load_failed");
+        }
     }
 }
