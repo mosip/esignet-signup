@@ -22,16 +22,14 @@ import io.mosip.signup.util.SignUpConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ResourceUtils;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileInputStream;
+import java.io.InputStream;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.security.KeyStore;
 import java.security.PrivateKey;
 import java.security.interfaces.RSAPrivateKey;
@@ -62,14 +60,17 @@ public class IdentityVerificationService {
     @Value("${mosip.signup.oauth.issuer-uri}")
     private String oauthIssuerUri;
 
-    @Value("${mosip.signup.private-key-alias}")
+    @Value("${mosip.signup.oauth.key-alias}")
     private String privateKeyAlias;
 
-    @Value("${mosip.signup.p12-file-client-private-key-alias}")
+    @Value("${mosip.signup.oauth.keystore-password}")
     private String p12FilePassword;
 
-    @Value("${mosip.signup.p12-file-name}")
-    private String p12FileName;
+    @Value("${mosip.signup.oauth.keystore-path}")
+    private String p12FilePath;
+
+    @Value("${mosip.signup.oauth.audience}")
+    private String audience;
 
     @Autowired
     private RestTemplate restTemplate;
@@ -179,22 +180,25 @@ public class IdentityVerificationService {
             // Create a Token Request with the authorization code
             AuthorizationCode code = new AuthorizationCode(authCode);
             URI callback = new URI(oauthRedirectUri);
-            URI tokenEndpoint = new URI(oauthIssuerUri+"/v1/esignet/oauth/token");
+            URI tokenEndpoint = new URI(oauthIssuerUri+audience);
             AuthorizationGrant codeGrant = new AuthorizationCodeGrant(code, callback);
             ClientAuthentication clientAuthentication = new PrivateKeyJWT(signedJWT);
             TokenRequest request = new TokenRequest(tokenEndpoint,clientAuthentication, codeGrant);
             HTTPRequest toHTTPRequest = request.toHTTPRequest();
             TokenResponse tokenResponse= OIDCTokenResponseParser.parse(toHTTPRequest.send());
-            OIDCTokenResponse successResponse = (OIDCTokenResponse) tokenResponse.toSuccessResponse();
-            AccessToken accessToken = successResponse.getOIDCTokens().getAccessToken();
-            log.info("Access token received successfully");
-            return  accessToken.toJSONString();
-        } catch (URISyntaxException e) {
-            log.error("Failed to exchange authorization grant for tokens", e);
-            throw new SignUpException("token_exchange_failed");
+            if (tokenResponse.indicatesSuccess()) {
+                OIDCTokenResponse successResponse = (OIDCTokenResponse) tokenResponse.toSuccessResponse();
+                AccessToken accessToken = successResponse.getOIDCTokens().getAccessToken();
+                log.info("Access token received successfully");
+                return accessToken.toJSONString();
+            }
+            else {
+                log.error("Failed to exchange authorization grant for tokens: "+tokenResponse.toErrorResponse().getErrorObject().getDescription());
+                throw new SignUpException(ErrorConstants.TOKEN_EXCHANGE_FAILED);
+            }
         }catch (Exception e) {
             log.error("Failed to exchange authorization grant for tokens", e);
-            throw new SignUpException("token_exchange_failed");
+            throw new SignUpException(ErrorConstants.TOKEN_EXCHANGE_FAILED);
         }
     }
 
@@ -207,18 +211,15 @@ public class IdentityVerificationService {
         return verifierDetails;
     }
 
-    private PrivateKey loadPrivateKey(String alias, String cyptoPassword) {
-        try {
-            File directory = ResourceUtils.getFile("classpath:"+p12FileName);
-            FileInputStream fis = new FileInputStream(directory);
-            KeyStore ks = KeyStore.getInstance("PKCS12");
-            ks.load(fis, cyptoPassword.toCharArray());
-
+    private PrivateKey loadPrivateKey(String alias, String cryptoPassword) {
+        try (InputStream inputStream = new ClassPathResource(p12FilePath).getInputStream()) {
+            KeyStore keyStore = KeyStore.getInstance("PKCS12");
+            keyStore.load(inputStream, cryptoPassword.toCharArray());
             // Retrieve the private key
-            return  (PrivateKey) ks.getKey(alias, cyptoPassword.toCharArray());
-        }catch (Exception e) {
+            return (PrivateKey) keyStore.getKey(alias, cryptoPassword.toCharArray());
+        } catch (Exception e) {
             log.error("Failed to load private key from keystore", e);
-            throw new SignUpException("private_key_load_failed");
+            throw new SignUpException(ErrorConstants.PRIVATE_KEY_LOAD_FAILED);
         }
     }
 }
