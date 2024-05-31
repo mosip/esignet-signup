@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { Step } from "~components/ui/step";
 import { cn } from "~utils/cn";
 
 interface KycProviderCardLayoutProps {
@@ -13,6 +12,7 @@ interface KycProviderCardLayoutProps {
   retryOnFailure: boolean;
   resumeOnSuccess: boolean;
   selected: boolean;
+  langMap: { [key: string]: string };
 }
 
 export const KycProviderCardLayout = ({
@@ -24,25 +24,27 @@ export const KycProviderCardLayout = ({
   retryOnFailure,
   resumeOnSuccess,
   selected,
+  langMap
 }: KycProviderCardLayoutProps) => {
   const { i18n } = useTranslation();
 
-  const [providerName, setProviderName] = useState(displayName[i18n.language]);
+  const [providerName, setProviderName] = useState(displayName[langMap[i18n.language]]);
 
-  i18n.on("languageChanged", () => {
-    setProviderName(displayName[i18n.language]);
-  });
+  useEffect(() => {}, [providerName]);
 
   useEffect(() => {
-  }, [providerName]);
+    if(langMap) {
+      setProviderName(displayName[langMap[i18n.language]]);
+    }
+  }, [langMap, i18n.language]);
 
   return (
     <>
       <div id={id}>
         <div
           className={cn(
-            "container max-w-lg rounded-lg bg-white p-4 shadow sm:max-w-none sm:rounded-lg sm:shadow cursor-pointer",
-            selected ? "border-2 border-solid border-[#EB6F2D] check-box" : ""
+            "container max-w-lg cursor-pointer rounded-lg bg-white p-4 shadow sm:max-w-none sm:rounded-lg sm:shadow border-2 border-solid border-transparent",
+            selected ? "check-box border-[#EB6F2D]" : ""
           )}
         >
           <div className="flex flex-col justify-start">

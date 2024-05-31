@@ -9,6 +9,7 @@ import { getSignInRedirectURL } from "~utils/link";
 import { useKycProvidersList } from "~pages/shared/mutations";
 import {
   CancelPopup,
+  DefaultEkyVerificationProp,
   SettingsDto,
   UpdateProcessRequestDto,
 } from "~typings/types";
@@ -120,7 +121,7 @@ export const EkycVerificationPage = ({
     const handleDismiss = () => {
       window.onbeforeunload = null;
       window.location.href = getSignInRedirectURL(
-        "http://localhost:5000",
+        settings?.response?.configs["signin.redirect-url"],
         fromSignInHash,
         SIGNUP_ROUTE
       );
@@ -136,18 +137,23 @@ export const EkycVerificationPage = ({
     );
   };
 
+  const defaultProps: DefaultEkyVerificationProp = {
+    settings: settings?.response,
+    cancelPopup: cancelAlertPopoverComp,
+  };
+
   const getEkycVerificationStepContent = (step: EkycVerificationStep) => {
     switch (step) {
       case EkycVerificationStep.VerificationSteps:
-        return <VerificationSteps cancelPopup={cancelAlertPopoverComp} />;
+        return <VerificationSteps {...defaultProps} />;
       case EkycVerificationStep.LoadingScreen:
         return <LoadingScreen />;
       case EkycVerificationStep.KycProviderList:
-        return <KycProviderList cancelPopup={cancelAlertPopoverComp} />;
+        return <KycProviderList {...defaultProps} />;
       case EkycVerificationStep.TermsAndCondition:
-        return <TermsAndCondition cancelPopup={cancelAlertPopoverComp} />;
+        return <TermsAndCondition {...defaultProps} />;
       case EkycVerificationStep.VideoPreview:
-        return <VideoPreview cancelPopup={cancelAlertPopoverComp} />;
+        return <VideoPreview {...defaultProps} />;
       case EkycVerificationStep.SlotCheckingScreen:
         return <SlotChecking />;
       case EkycVerificationStep.VerificationScreen:

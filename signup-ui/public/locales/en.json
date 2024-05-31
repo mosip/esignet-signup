@@ -101,8 +101,16 @@
     "header": "Key Information",
     "cancel_button": "Cancel",
     "proceed_button": "Proceed",
-    "permission_denied_header": "Camera Permission Denied",
-    "permission_denied_description": "You have to given camera permission otherwise we can't move forward"
+    "permission_denied_header": "Camera Access Disabled",
+    "permission_denied_description": "Your camera permission is disabled, please tap on Know More to see the steps to enable permission.",
+    "know_more": "Know More",
+    "keyInfo": {
+      "step_1": "Please test your camera in the preview on the right",
+      "step_2": "Please make sure you’re in a well-lit area",
+      "step_3": "Please take off accessories like glasses or hats",
+      "step_4": "Please follow instructions on the next screens",
+      "step_5": "Please ensure you have a stable internet connection"
+    }
   },
   "terms_and_conditions": {
     "header": "Terms & Conditions",

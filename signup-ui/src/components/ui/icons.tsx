@@ -2,6 +2,7 @@ import * as React from "react";
 
 import InfoPng from "~assets/png/info-38-2.png";
 import { ReactComponent as ArrowLeft } from "~assets/svg/arrow-left.svg";
+import { ReactComponent as CameraDisabled } from "~assets/svg/camera-disabled.svg";
 import { ReactComponent as Check } from "~assets/svg/check.svg";
 import { ReactComponent as ChevronDown } from "~assets/svg/chevron-down.svg";
 import { ReactComponent as ChevronUp } from "~assets/svg/chevron-up.svg";
@@ -10,6 +11,8 @@ import { ReactComponent as Eye } from "~assets/svg/eye.svg";
 import { ReactComponent as Failed } from "~assets/svg/failed-icon.svg";
 import { ReactComponent as Loader } from "~assets/svg/loader.svg";
 import { ReactComponent as X } from "~assets/svg/x.svg";
+import { ReactComponent as Close } from "~assets/svg/close-icon.svg";
+import { ReactComponent as Search } from "~assets/svg/search-icon.svg";
 
 export const Icons = {
   back: ArrowLeft,
@@ -48,4 +51,7 @@ export const Icons = {
       </svg>
     )
   ),
+  disabledCamera: CameraDisabled,
+  closeIcon: Close,
+  searchIcon: Search
 };
