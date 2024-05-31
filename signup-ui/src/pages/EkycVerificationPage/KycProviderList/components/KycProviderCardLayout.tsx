@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { cn } from "~utils/cn";
-import langConfigService from "~services/langConfig.service";
 
 interface KycProviderCardLayoutProps {
   id: string;
@@ -13,6 +12,7 @@ interface KycProviderCardLayoutProps {
   retryOnFailure: boolean;
   resumeOnSuccess: boolean;
   selected: boolean;
+  langMap: { [key: string]: string };
 }
 
 export const KycProviderCardLayout = ({
@@ -24,24 +24,20 @@ export const KycProviderCardLayout = ({
   retryOnFailure,
   resumeOnSuccess,
   selected,
+  langMap
 }: KycProviderCardLayoutProps) => {
   const { i18n } = useTranslation();
 
-  const [providerName, setProviderName] = useState(displayName[i18n.language]);
-  const [langMap, setLangMap] = useState({} as { [key: string]: string });
-
-  i18n.on("languageChanged", () => {
-    setProviderName(displayName[langMap[i18n.language]]);
-  });
+  const [providerName, setProviderName] = useState(displayName[langMap[i18n.language]]);
 
   useEffect(() => {}, [providerName]);
 
   useEffect(() => {
-    langConfigService.getLangCodeMapping().then((langMap: any) => {
-      setLangMap(langMap);
+    if(langMap) {
       setProviderName(displayName[langMap[i18n.language]]);
-    });
-  });
+    }
+  }, [langMap, i18n.language]);
+
   return (
     <>
       <div id={id}>

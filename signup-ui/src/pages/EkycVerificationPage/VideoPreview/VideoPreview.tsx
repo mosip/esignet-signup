@@ -118,14 +118,6 @@ export const VideoPreview = ({ cancelPopup, settings }: DefaultEkyVerificationPr
                 <div className="color-[#7E7E7E] text-sm font-normal leading-4 pb-5">
                   {t("permission_denied_description")}
                 </div>
-                <a
-                  href="https://support.google.com/chrome/answer/2693767?hl=en"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-base leading-5 font-semibold text-[#EB6F2D]"
-                >
-                  {t("know_more")}
-                </a>
               </div>
             </StepContent>
             <StepFooter className="p-0"></StepFooter>
