@@ -63,7 +63,7 @@ export const VerificationSteps = ({
           redirect_uri: identityVerificationRedirectURI ?? "",
           scope: "openid",
           response_type: "code",
-          id_token_hint: params.get("id_token_hint)") ?? "",
+          id_token_hint: params.get("id_token_hint") ?? "",
         };
 
         const redirectParams = new URLSearchParams(paramObj).toString();
