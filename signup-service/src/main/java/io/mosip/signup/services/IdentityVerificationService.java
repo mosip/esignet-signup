@@ -191,9 +191,8 @@ public class IdentityVerificationService {
                 AccessToken accessToken = successResponse.getOIDCTokens().getAccessToken();
                 log.info("Access token received successfully");
                 return accessToken.toJSONString();
-            }
-            else {
-                log.error("Failed to exchange authorization grant for tokens: "+tokenResponse.toErrorResponse().getErrorObject().getDescription());
+            } else {
+                log.error("Failed to exchange authorization grant for tokens: "+tokenResponse.toErrorResponse());
                 throw new SignUpException(ErrorConstants.TOKEN_EXCHANGE_FAILED);
             }
         }catch (Exception e) {
