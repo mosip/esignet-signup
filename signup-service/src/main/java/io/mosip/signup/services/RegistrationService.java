@@ -208,8 +208,10 @@ public class RegistrationService {
             profileDto.setActive(true);
             profileDto.setConsent(registerRequest.getConsent());
             profileDto.setIdentity(registerRequest.getUserInfo());
+            profileRegistryPlugin.validate("CREATE", profileDto);
             profileRegistryPlugin.createProfile(transaction.getApplicationId(), profileDto);
-        } catch (ProfileException exception) {
+        }
+        catch (ProfileException exception) {
             throw new SignUpException(exception.getErrorCode());
         }
 
@@ -247,6 +249,7 @@ public class RegistrationService {
             Map<String, String> map = new HashMap<>();
             map.put("password", resetPasswordRequest.getPassword());
             profileDto.setIdentity(objectMapper.valueToTree(map));
+            profileRegistryPlugin.validate("UPDATE", profileDto);
             profileRegistryPlugin.updateProfile(transaction.getApplicationId(), profileDto);
         }catch (ProfileException exception) {
             throw new SignUpException(exception.getErrorCode());
