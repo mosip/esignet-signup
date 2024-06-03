@@ -169,7 +169,7 @@ public class IdentityVerificationService {
             JWTClaimsSet.Builder builder = new JWTClaimsSet.Builder()
                     .subject(oauthClientId)
                     .issuer(oauthClientId)
-                    .audience(oauthIssuerUri+"/v1/esignet/oauth/token")
+                    .audience(oauthIssuerUri+audience)
                     .issueTime(new Date(issuedTime))
                     .expirationTime(new Date(issuedTime+(60*1000)));
             JWSHeader jwsHeader = new JWSHeader(JWSAlgorithm.RS256);
