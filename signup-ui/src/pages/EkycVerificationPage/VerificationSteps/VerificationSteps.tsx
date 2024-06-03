@@ -155,22 +155,22 @@ export const VerificationSteps = ({
               </StepContent>
               <StepDivider />
               <StepFooter className="p-5">
-                <div className="flex w-full flex-row items-center justify-end gap-x-4">
-                  <Button
-                    variant="cancel_outline"
-                    className="max-w-max px-[6rem] font-semibold sm:px-[3rem] xs:px-[2rem]"
-                    onClick={handleCancel}
-                  >
-                    {t("cancel")}
-                  </Button>
-                  <Button
-                    className="max-w-max px-[6rem] font-semibold sm:px-[3rem] xs:px-[2rem]"
-                    onClick={handleContinue}
-                  >
-                    {t("proceed")}
-                  </Button>
-                </div>
-              </StepFooter>
+            <div className="flex w-full flex-row items-center justify-end gap-x-4">
+              <Button
+                variant="cancel_outline"
+                className="px-[6rem] sm:w-full sm:p-4 font-semibold"
+                onClick={handleCancel}
+              >
+                {t("cancel")}
+              </Button>
+              <Button
+                className="px-[6rem] sm:w-full sm:p-4 font-semibold"
+                onClick={handleContinue}
+              >
+                {t("proceed")}
+              </Button>
+            </div>
+          </StepFooter>
             </Step>
           </div>
         </>
