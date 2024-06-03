@@ -234,9 +234,9 @@ export const KycProviderList = ({
           <StepDivider />
           <StepContent className="px-6 py-5 text-sm scrollable-div !h-[408px]">
             <div className="grid grid-cols-3 gap-x-4 gap-y-5 md:grid-cols-2 sm:grid-cols-1 sm:gap-y-3.5 ">
-              {kycProvidersList?.map((keyInfo: any, index: number) => (
+              {kycProvidersList?.map((keyInfo: any) => (
                 <div
-                  key={index}
+                  key={keyInfo.id}
                   className="w-full"
                   onClick={() => selectingKycProviders(keyInfo)}
                 >
