@@ -8,7 +8,6 @@ import io.mosip.signup.dto.ResetPasswordRequest;
 import io.mosip.signup.helper.AuditHelper;
 import io.mosip.signup.services.RegistrationService;
 import io.mosip.signup.util.ErrorConstants;
-//import io.mosip.signup.util.RegistrationStatus;
 import io.mosip.signup.util.SignUpConstants;
 import org.junit.Test;
 import org.junit.runner.RunWith;

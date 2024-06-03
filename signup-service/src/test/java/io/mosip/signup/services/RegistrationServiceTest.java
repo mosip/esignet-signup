@@ -3,7 +3,6 @@ package io.mosip.signup.services;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.mosip.esignet.core.util.IdentityProviderUtil;
 import io.mosip.signup.api.dto.ProfileDto;
 import io.mosip.signup.api.spi.ProfileRegistryPlugin;
@@ -16,7 +15,6 @@ import io.mosip.signup.helper.CryptoHelper;
 import io.mosip.signup.helper.NotificationHelper;
 import io.mosip.signup.util.ErrorConstants;
 import io.mosip.signup.util.Purpose;
-//import io.mosip.signup.util.RegistrationStatus;
 import io.mosip.signup.exception.SignUpException;
 import io.mosip.signup.util.SignUpConstants;
 import org.junit.Assert;
@@ -31,11 +29,9 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
@@ -54,7 +50,7 @@ import io.mosip.esignet.core.exception.EsignetException;
 
 import java.time.LocalDateTime;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
+
 
 @RunWith(SpringRunner.class)
 @ActiveProfiles(value = {"test"})
