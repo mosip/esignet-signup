@@ -64,6 +64,7 @@ export const VerificationSteps = ({
           scope: "openid",
           response_type: "code",
           id_token_hint: params.get("id_token_hint") ?? "",
+          ui_locales: (window as any)._env_.DEFAULT_LANG,
         };
 
         const redirectParams = new URLSearchParams(paramObj).toString();
