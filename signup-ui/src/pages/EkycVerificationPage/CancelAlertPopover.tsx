@@ -30,7 +30,7 @@ export const CancelAlertPopover = ({
 
   return (
     <AlertDialog open={true}>
-      <AlertDialogContent className="rounded-[20px]">
+      <AlertDialogContent className="rounded-[20px] bg-white !w-[90vw] pt-[2.5rem] pb-[2rem]">
         <AlertDialogHeader className="m-2">
           <AlertDialogTitle className="flex flex-col items-center justify-center gap-y-4 text-[1.5em]">
             {t("title")}
@@ -46,7 +46,7 @@ export const CancelAlertPopover = ({
             onClick={handleDismiss}
             className={cn(
               buttonVariants({ variant: "link" }),
-              "border-0 hover:bg-inherit hover:text-primary font-[500]"
+              "border-0 bg-white font-[500] hover:text-primary"
             )}
           >
             {t("discontinue")}

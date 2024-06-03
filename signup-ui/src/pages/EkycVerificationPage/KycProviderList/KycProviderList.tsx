@@ -254,12 +254,12 @@ export const KycProviderList = ({
           </StepContent>
           <StepDivider />
           <StepFooter className="p-5">
-            <div className="flex w-full flex-row items-center justify-end gap-x-4 sm:justify-center">
+            <div className="flex w-full flex-row items-center justify-end gap-x-4">
               <Button
                 id="cancel-preview-button"
                 name="cancel-preview-button"
                 variant="cancel_outline"
-                className="max-w-max font-semibold px-[6rem] sm:px-[3rem] xs:px-[2rem]"
+                className="px-[6rem] font-semibold sm:w-full sm:p-4"
                 onClick={handleCancel}
               >
                 {t("cancel_button")}
@@ -267,7 +267,7 @@ export const KycProviderList = ({
               <Button
                 id="proceed-preview-button"
                 name="proceed-preview-button"
-                className="max-w-max font-semibold px-[6rem] sm:px-[3rem] xs:px-[2rem]"
+                className="px-[6rem] font-semibold sm:w-full sm:p-4"
                 onClick={handleContinue}
                 disabled={!selectedKycProvider}
               >
