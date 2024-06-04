@@ -19,6 +19,7 @@ import {
 import { useTermsAndConditions } from "~pages/shared/queries";
 import langConfigService from "~services/langConfig.service";
 import { DefaultEkyVerificationProp } from "~typings/types";
+import LoadingIndicator from "~/common/LoadingIndicator";
 
 import {
   EkycVerificationStep,
@@ -128,7 +129,9 @@ export const TermsAndCondition = ({ cancelPopup, settings }: DefaultEkyVerificat
   return (
     <>
       {cancelPopup({ cancelButton, handleStay })}
-      <div className="m-3 flex flex-row justify-center">
+      {isLoading && <LoadingIndicator />}
+      {!isLoading && (
+        <div className="m-3 flex flex-row justify-center">
         <Step className="my-5 max-w-[644px] md:rounded-2xl md:shadow sm:rounded-2xl sm:shadow">
           <StepHeader className="px-0 py-5 sm:pb-[25px] sm:pt-[33px]">
             <StepTitle className="relative flex w-full items-center justify-center gap-x-4 text-base font-semibold">
@@ -147,11 +150,8 @@ export const TermsAndCondition = ({ cancelPopup, settings }: DefaultEkyVerificat
           </StepHeader>
           <StepDivider />
           <StepContent className="px-6 py-5">
-            {(!termsAndCondition || isLoading) && (
-              <div>{t("still_loading")}</div>
-            )}
-            {!isLoading && !isSuccess && <div>{t("failed_to_load")}</div>}
-            {isSuccess && (
+            {!termsAndCondition && <div>{t("failed_to_load")}</div>}
+            {termsAndCondition && (
               <div
                 id="tnc-content"
                 className="scrollable-div flex text-justify text-sm sm:p-0"
@@ -165,6 +165,7 @@ export const TermsAndCondition = ({ cancelPopup, settings }: DefaultEkyVerificat
                 id="consent-button"
                 checked={agreeTerms}
                 onCheckedChange={changeAgreeTerms}
+                disabled={!termsAndCondition}
                 className="h-5 w-5 rounded-[2px] text-white data-[state=checked]:border-primary data-[state=checked]:bg-primary"
               />
               <p className="ml-2 truncate text-xs font-bold">
@@ -197,6 +198,7 @@ export const TermsAndCondition = ({ cancelPopup, settings }: DefaultEkyVerificat
           </StepFooter>
         </Step>
       </div>
+      )}
     </>
   );
 };
