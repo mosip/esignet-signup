@@ -22,7 +22,7 @@
     "baseUrl": "."
   },
   "include": [
-    "./src"
+    "./src",
   ],
   "extends": "./tsconfig.paths.json"
 }
