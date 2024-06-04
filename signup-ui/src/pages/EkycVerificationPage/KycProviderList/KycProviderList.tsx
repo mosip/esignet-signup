@@ -18,6 +18,7 @@ import {
   DefaultEkyVerificationProp,
   UpdateProcessRequestDto,
 } from "~typings/types";
+import LoadingIndicator from "~/common/LoadingIndicator";
 
 import {
   EkycVerificationStep,
@@ -69,6 +70,7 @@ export const KycProviderList = ({
   const [selectedKycProvider, setSelectedKycProvider] = useState<any>(null);
   const searchTextRef = useRef<HTMLInputElement | null>(null);
   const [langMap, setLangMap] = useState({} as { [key: string]: string });
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   /**
    * Handle the proceed button click, move forward to video preview page
@@ -127,8 +129,13 @@ export const KycProviderList = ({
         };
 
         return kycApiCall.mutate(updateProcessRequestDto, {
-          onSuccess: ({ response }) => {
+          onSuccess: ({ response, errors }) => {
+            if (errors !== null && errors.length > 0) {
+              setIsLoading(false);
+              return;
+            }
             setKycProvidersList(response?.identityVerifiers);
+            setIsLoading(false);
             if (response?.identityVerifiers.length === 1) {
               setKycProvider(response?.identityVerifiers[0]);
             }
@@ -191,92 +198,96 @@ export const KycProviderList = ({
       getKycData();
     } else {
       setKycProvidersList(providerListStore);
+      setIsLoading(false);
     }
   }, []);
 
   return (
     <>
       {cancelPopup({ cancelButton, handleStay })}
-      <div className="m-3 mt-10 flex flex-row items-stretch justify-center gap-x-1 sm:mb-20">
-        <Step className="mx-10 max-w-[70rem] lg:mx-4 md:rounded-2xl md:shadow sm:rounded-2xl sm:shadow">
-          <StepHeader className="px-5 py-5 sm:pb-[25px] sm:pt-[33px]">
-            <StepTitle className="relative flex w-full flex-row items-center justify-between text-base font-semibold md:flex-col md:justify-center">
-              <div
-                className="w-full text-[22px] font-semibold"
-                id="kyc-provider-header"
-              >
-                {t("header")}
-              </div>
-              {providerListStore && providerListStore.length > 2 && (
-                <div id="search-box" className="w-full md:mt-2">
-                  <FormField
-                    name="username"
-                    render={(field) => (
-                      <FormItem className="space-y-0">
-                        <div className="space-y-2">
-                          <FormControl>
-                            <SearchBox
-                              id="username"
-                              placeholder={t("search_placeholder")}
-                              className="py-6"
-                              searchRef={searchTextRef}
-                              onChange={filterKycProvidersList}
-                            />
-                          </FormControl>
-                        </div>
-                      </FormItem>
-                    )}
-                  />
-                </div>
-              )}
-            </StepTitle>
-          </StepHeader>
-          <StepDivider />
-          <StepContent className="px-6 py-5 text-sm scrollable-div !h-[408px]">
-            <div className="grid grid-cols-3 gap-x-4 gap-y-5 md:grid-cols-2 sm:grid-cols-1 sm:gap-y-3.5 ">
-              {kycProvidersList?.map((keyInfo: any) => (
+      {isLoading && <LoadingIndicator />}
+      {!isLoading && (
+        <div className="m-3 mt-10 flex flex-row items-stretch justify-center gap-x-1 sm:mb-20">
+          <Step className="mx-10 max-w-[70rem] lg:mx-4 md:rounded-2xl md:shadow sm:rounded-2xl sm:shadow">
+            <StepHeader className="px-5 py-5 sm:pb-[25px] sm:pt-[33px]">
+              <StepTitle className="relative flex w-full flex-row items-center justify-between text-base font-semibold md:flex-col md:justify-center">
                 <div
-                  key={keyInfo.id}
-                  className="w-full"
-                  onClick={() => selectingKycProviders(keyInfo)}
+                  className="w-full text-[22px] font-semibold"
+                  id="kyc-provider-header"
                 >
-                  <KycProviderCardLayout
-                    {...keyInfo}
-                    selected={selectedKycProvider === keyInfo.id}
-                    langMap={langMap}
-                  ></KycProviderCardLayout>
+                  {t("header")}
                 </div>
-              ))}
-              {(!kycProvidersList || kycProvidersList.length === 0) && (
-                <div>{t("no_kyc_provider")}</div>
-              )}
-            </div>
-          </StepContent>
-          <StepDivider />
-          <StepFooter className="p-5">
-            <div className="flex w-full flex-row items-center justify-end gap-x-4">
-              <Button
-                id="cancel-preview-button"
-                name="cancel-preview-button"
-                variant="cancel_outline"
-                className="px-[6rem] font-semibold sm:w-full sm:p-4"
-                onClick={handleCancel}
-              >
-                {t("cancel_button")}
-              </Button>
-              <Button
-                id="proceed-preview-button"
-                name="proceed-preview-button"
-                className="px-[6rem] font-semibold sm:w-full sm:p-4"
-                onClick={handleContinue}
-                disabled={!selectedKycProvider}
-              >
-                {t("proceed_button")}
-              </Button>
-            </div>
-          </StepFooter>
-        </Step>
-      </div>
+                {providerListStore && providerListStore.length > 2 && (
+                  <div id="search-box" className="w-full md:mt-2">
+                    <FormField
+                      name="username"
+                      render={(field) => (
+                        <FormItem className="space-y-0">
+                          <div className="space-y-2">
+                            <FormControl>
+                              <SearchBox
+                                id="username"
+                                placeholder={t("search_placeholder")}
+                                className="py-6"
+                                searchRef={searchTextRef}
+                                onChange={filterKycProvidersList}
+                              />
+                            </FormControl>
+                          </div>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                )}
+              </StepTitle>
+            </StepHeader>
+            <StepDivider />
+            <StepContent className="scrollable-div !h-[408px] px-6 py-5 text-sm">
+              <div className="grid grid-cols-3 gap-x-4 gap-y-5 md:grid-cols-2 sm:grid-cols-1 sm:gap-y-3.5 ">
+                {kycProvidersList?.map((keyInfo: any) => (
+                  <div
+                    key={keyInfo.id}
+                    className="w-full"
+                    onClick={() => selectingKycProviders(keyInfo)}
+                  >
+                    <KycProviderCardLayout
+                      {...keyInfo}
+                      selected={selectedKycProvider === keyInfo.id}
+                      langMap={langMap}
+                    ></KycProviderCardLayout>
+                  </div>
+                ))}
+                {(!kycProvidersList || kycProvidersList.length === 0) && (
+                  <div>{t("no_kyc_provider")}</div>
+                )}
+              </div>
+            </StepContent>
+            <StepDivider />
+            <StepFooter className="p-5">
+              <div className="flex w-full flex-row items-center justify-end gap-x-4 sm:justify-center">
+                <Button
+                  id="cancel-preview-button"
+                  name="cancel-preview-button"
+                  variant="cancel_outline"
+                  className="max-w-max px-[6rem] font-semibold sm:px-[3rem] xs:px-[2rem]"
+                  onClick={handleCancel}
+                >
+                  {t("cancel_button")}
+                </Button>
+                <Button
+                  id="proceed-preview-button"
+                  name="proceed-preview-button"
+                  className="max-w-max px-[6rem] font-semibold sm:px-[3rem] xs:px-[2rem]"
+                  onClick={handleContinue}
+                  disabled={!selectedKycProvider}
+                >
+                  {t("proceed_button")}
+                </Button>
+              </div>
+            </StepFooter>
+          </Step>
+        </div>
+      )}
     </>
   );
 };

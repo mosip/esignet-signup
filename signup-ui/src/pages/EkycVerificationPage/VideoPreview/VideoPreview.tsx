@@ -43,7 +43,7 @@ export const VideoPreview = ({ cancelPopup, settings }: DefaultEkyVerificationPr
   const [permissionGranted, setPermissionGranted] = useState(true);
 
   // key info list for video preview page
-  const keyInfoList = ["step_1", "step_2", "step_3", "step_4", "step_5"];
+  const keyInfoList = ["step_1", "step_2", "step_3", "step_4", "step_5", "step_6", "step_7"];
 
   /**
    * Handle the proceed button click, move forward to video preview page
@@ -150,7 +150,7 @@ export const VideoPreview = ({ cancelPopup, settings }: DefaultEkyVerificationPr
               {keyInfoList.map((keyInfo, index) => (
                 <div key={index} className="mb-6">
                   <Icons.check className="mr-1 inline-block h-4 w-4 stroke-[4px] text-orange-500" />
-                  <span>{t(`keyInfo.${keyInfo}`)}</span>
+                  <span>{t(`key_info.${keyInfo}`)}</span>
                 </div>
               ))}
             </div>
