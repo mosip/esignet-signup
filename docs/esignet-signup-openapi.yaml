@@ -1,11 +1,9 @@
 openapi: 3.1.0
-x-stoplight:
-  id: l36f6e80xmxu6
 info:
   version: '1.0'
   title: e-Signet Signup Portal APIs
   summary: Signup portal for e-Signet one-login system.
-  description: 'Signup portal for e-Signet one-login system.'
+  description: Signup portal for e-Signet one-login system.
   contact:
     name: MOSIP Team
     email: info@mosip.io
@@ -36,8 +34,8 @@ paths:
                 properties:
                   responseTime:
                     type: string
-                    format: date-time
                     description: Current date and time when the request is sent
+                    format: date-time
                   response:
                     type: object
                     properties:
@@ -54,8 +52,14 @@ paths:
                       properties:
                         errorCode:
                           type: string
+                          enum:
+                            - invalid_transaction
+                            - unknown_error
                         errorMessage:
                           type: string
+                          enum:
+                            - invalid_transaction
+                            - unknown_error
               examples:
                 Example 1:
                   value:
@@ -64,7 +68,7 @@ paths:
                       configs:
                         identifier.pattern: '^\\+855[1-9]\\d{7,8}$'
                         identifier.prefix: '+855'
-                        captcha.site.key: '6LeFAAAAAMaOuSNQxj3VDbERZcyc_1UO_9xT'
+                        captcha.site.key: 6LeFAAAAAMaOuSNQxj3VDbERZcyc_1UO_9xT
                         otp.length: 6
                         otp.secret: true
                         password.pattern: '^(?\u003d.*[0-9])(?\u003d.{8,20})[a-zA-Z0-9\\x5F\\W]{8,20}$'
@@ -83,12 +87,10 @@ paths:
                         fullname.length.max: 30
                         otp.blocked: 120
                     errors:
-                      - errorCode: string
-                        errorMessage: string
+                      - errorCode: invalid_transaction
+                        errorMessage: invalid_transaction
       servers:
         - url: 'https://signup.collab.mosip.net/v1/signup'
-      x-stoplight:
-        id: iqwzualbyfy72
   /registration/generate-challenge:
     post:
       tags:
@@ -124,8 +126,8 @@ paths:
               properties:
                 requestTime:
                   type: string
-                  format: date-time
                   description: Current date and time when the request is sent
+                  format: date-time
                 request:
                   type: object
                   properties:
@@ -164,9 +166,9 @@ paths:
                 value:
                   requestTime: '2011-10-05T14:48:00.000Z'
                   request:
-                    identifier: '+8557357xxxxx'
-                    captchaToken: 'asdncjdnsdchd'
-                    locale: 'eng'
+                    identifier: +8557357xxxxx
+                    captchaToken: asdncjdnsdchd
+                    locale: eng
                     regenerate: true
                     purpose: REGISTRATION
       responses:
@@ -179,15 +181,15 @@ paths:
                 properties:
                   responseTime:
                     type: string
-                    format: date-time
                     description: Current date and time when the request is sent
+                    format: date-time
                   response:
                     type: object
                     description: 'If successful otp details, or null if failed to deliver OTP.'
                     properties:
                       status:
                         const: SUCCESS
-                        description: Transaction Identifier.
+                        description: Status of challenge verification.
                   errors:
                     type: array
                     description: List of Errors in case of request validation / processing failure in the server.
@@ -205,6 +207,13 @@ paths:
                             - unknown_error
                         errorMessage:
                           type: string
+                          enum:
+                            - invalid_transaction
+                            - invalid_otp_channel
+                            - invalid_captcha
+                            - send_otp_failed
+                            - active_otp_found
+                            - unknown_error
               examples:
                 Example 1:
                   value:
@@ -220,8 +229,6 @@ paths:
               description: Transaction Id is set in the cookie
       servers:
         - url: 'https://signup.collab.mosip.net/v1/signup'
-      x-stoplight:
-        id: k52hhc2a9v6hm
   /registration/verify-challenge:
     post:
       tags:
@@ -261,8 +268,8 @@ paths:
               properties:
                 requestTime:
                   type: string
-                  format: date-time
                   description: Current date and time when the request is sent
+                  format: date-time
                 request:
                   type: object
                   properties:
@@ -271,9 +278,9 @@ paths:
                       description: A unique Identifier against which a challange can be generated for verification. Ex. Phonenumber
                     challengeInfo:
                       type: array
+                      description: List of Challenges generated
                       items:
                         $ref: '#/components/schemas/ChallengeInfo'
-                      description: List of Challenges generated
                   required:
                     - identifier
                     - challengeInfo
@@ -300,8 +307,8 @@ paths:
                 properties:
                   responseTime:
                     type: string
-                    format: date-time
                     description: Current date and time when the request is sent
+                    format: date-time
                   response:
                     type: object
                     properties:
@@ -325,6 +332,13 @@ paths:
                             - already-registered
                         errorMessage:
                           type: string
+                          enum:
+                            - invalid_transaction
+                            - challenge_failed
+                            - invalid_challenge_type
+                            - invalid_challenge_format
+                            - unknown_error
+                            - already-registered
               examples:
                 Example 1:
                   value:
@@ -339,8 +353,6 @@ paths:
               description: Verified transaction Id to be set after successful challenge verification
       servers:
         - url: 'https://signup.collab.mosip.net/v1/signup'
-      x-stoplight:
-        id: yk3rilzb5ovjh
   /registration/register:
     post:
       tags:
@@ -377,8 +389,8 @@ paths:
               properties:
                 requestTime:
                   type: string
-                  format: date-time
                   description: Current date and time when the request is sent
+                  format: date-time
                 request:
                   type: object
                   properties:
@@ -426,8 +438,8 @@ paths:
                 properties:
                   responseTime:
                     type: string
-                    format: date-time
                     description: Current date and time when the request is sent
+                    format: date-time
                   response:
                     type: object
                     properties:
@@ -450,6 +462,9 @@ paths:
                             - unknown_error
                         errorMessage:
                           type: string
+                          enum:
+                            - invalid_transaction
+                            - unknown_error
               examples:
                 Example 1:
                   value:
@@ -459,8 +474,6 @@ paths:
                     errors: []
       servers:
         - url: 'https://signup.collab.mosip.net/v1/signup'
-      x-stoplight:
-        id: tto4uhnfs5fce
   /registration/status:
     get:
       tags:
@@ -498,8 +511,8 @@ paths:
                 properties:
                   responseTime:
                     type: string
-                    format: date-time
                     description: Current date and time when the request is sent
+                    format: date-time
                   response:
                     type: object
                     properties:
@@ -523,6 +536,9 @@ paths:
                             - unknown_error
                         errorMessage:
                           type: string
+                          enum:
+                            - invalid_transaction
+                            - unknown_error
               examples:
                 Example 1:
                   value:
@@ -532,8 +548,6 @@ paths:
                     errors: []
       servers:
         - url: 'https://signup.collab.mosip.net/v1/signup'
-      x-stoplight:
-        id: e94ykanhb9w47
   /reset-password:
     post:
       tags:
@@ -574,8 +588,8 @@ paths:
               properties:
                 requestTime:
                   type: string
-                  format: date-time
                   description: Current date and time when the request is sent
+                  format: date-time
                 request:
                   type: object
                   properties:
@@ -599,8 +613,8 @@ paths:
                 properties:
                   responseTime:
                     type: string
-                    format: date-time
                     description: Current date and time when the request is sent
+                    format: date-time
                   response:
                     type: object
                     properties:
@@ -624,10 +638,14 @@ paths:
                             - reset_pwd_failed
                         errorMessage:
                           type: string
+                          enum:
+                            - invalid_transaction
+                            - invalid_identifier
+                            - invalid_password
+                            - invalid_request
+                            - reset_pwd_failed
       servers:
         - url: 'https://signup.collab.mosip.net/v1/signup'
-      x-stoplight:
-        id: z0mw2fe1c4r2s
 tags:
   - name: UI
     description: UI related API.
@@ -683,8 +701,6 @@ components:
         otp.blocked:
           type: integer
           description: 'Number of seconds, a mobile number will not be allowed to register.'
-      x-stoplight:
-        id: clomx4fbeh96t
     ChallengeInfo:
       type: object
       title: ChallengeInfo
@@ -708,8 +724,6 @@ components:
         - challenge
         - format
         - type
-      x-stoplight:
-        id: e2mi1vwfjee9m
     UserInfoMap:
       type: object
       title: UserInfoMap
@@ -725,8 +739,6 @@ components:
       required:
         - fullName
         - phone
-      x-stoplight:
-        id: fb0hz6wfdi42d
     LanguageTaggedValue:
       type: object
       title: LanguageTaggedValue
@@ -735,5 +747,3 @@ components:
           type: string
         value:
           type: string
-      x-stoplight:
-        id: 81kwphp9rhbt1
