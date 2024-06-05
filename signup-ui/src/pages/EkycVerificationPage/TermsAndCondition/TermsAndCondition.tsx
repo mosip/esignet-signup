@@ -129,7 +129,7 @@ export const TermsAndCondition = ({ cancelPopup, settings }: DefaultEkyVerificat
   return (
     <>
       {cancelPopup({ cancelButton, handleStay })}
-      {isLoading && <LoadingIndicator />}
+      {isLoading && <LoadingIndicator message="please_wait" msgParam="Loading. Please wait....." iconClass="fill-[#eb6f2d]" />}
       {!isLoading && (
         <div className="m-3 flex flex-row justify-center">
         <Step className="my-5 max-w-[644px] md:rounded-2xl md:shadow sm:rounded-2xl sm:shadow">
