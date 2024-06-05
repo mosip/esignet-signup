@@ -1,8 +1,8 @@
 package io.mosip.signup.dto;
 
 import io.mosip.esignet.core.util.IdentityProviderUtil;
+import io.mosip.signup.api.util.ProfileCreateUpdateStatus;
 import io.mosip.signup.util.Purpose;
-import io.mosip.signup.util.RegistrationStatus;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -25,8 +25,8 @@ public class RegistrationTransaction implements Serializable {
     private LocalDateTime lastRetryAt;
     private String challengeTransactionId;
     private String applicationId;
-    private Map<String, RegistrationStatus> handlesStatus;
-    private RegistrationStatus registrationStatus;
+    private Map<String, ProfileCreateUpdateStatus> handlesStatus;
+    private ProfileCreateUpdateStatus registrationStatus;
     private String locale;
     private Purpose purpose;
     private String uin;

@@ -1,5 +1,6 @@
 package io.mosip.signup.dto;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import io.mosip.signup.util.ErrorConstants;
 import io.mosip.signup.validator.Language;
 import io.mosip.signup.validator.Password;
@@ -25,7 +26,7 @@ public class RegisterRequest {
     private String consent;
 
     @NotNull(message = ErrorConstants.INVALID_USERINFO)
-    private @Valid UserInfoMap userInfo;
+    private JsonNode userInfo;
 
     @Language(required = false)
     private String locale;
