@@ -23,7 +23,10 @@ import {
   useEkycVerificationStore,
 } from "../useEkycVerificationStore";
 
-export const VideoPreview = ({ cancelPopup, settings }: DefaultEkyVerificationProp) => {
+export const VideoPreview = ({
+  cancelPopup,
+  settings,
+}: DefaultEkyVerificationProp) => {
   const { t } = useTranslation("translation", {
     keyPrefix: "video_preview",
   });
@@ -41,9 +44,21 @@ export const VideoPreview = ({ cancelPopup, settings }: DefaultEkyVerificationPr
 
   const [cancelButton, setCancelButton] = useState<boolean>(false);
   const [permissionGranted, setPermissionGranted] = useState(true);
+  const [permissionErrMsg, setPermissionErrMsg] = useState({
+    header: "permission_denied_header",
+    description: "permission_denied_description",
+  });
 
   // key info list for video preview page
-  const keyInfoList = ["step_1", "step_2", "step_3", "step_4", "step_5", "step_6", "step_7"];
+  const keyInfoList = [
+    "step_1",
+    "step_2",
+    "step_3",
+    "step_4",
+    "step_5",
+    "step_6",
+    "step_7",
+  ];
 
   /**
    * Handle the proceed button click, move forward to video preview page
@@ -75,19 +90,40 @@ export const VideoPreview = ({ cancelPopup, settings }: DefaultEkyVerificationPr
     setInterval(cameraPermissionCheck, 1000);
   }, [permissionGranted]);
 
+  // if camera permission granted then set the state
+  const cameraPermissionAllowed = (stream: MediaStream) => {
+    if (!permissionGranted) {
+      setPermissionGranted(true);
+    }
+  };
+
+  // if camera permission denied then set the state
+  const cameraPermissionDenied = (error: any) => {
+    if (permissionGranted) {
+      setPermissionGranted(false);
+      if (error.name === "NotReadableError") {
+        if (permissionErrMsg.header !== "not_accessible_header") {
+          setPermissionErrMsg({
+            header: "not_accessible_header",
+            description: "not_accessible_description",
+          });
+        }
+      } else if (permissionErrMsg.header !== "permission_denied_header") {
+        setPermissionErrMsg({
+          header: "permission_denied_header",
+          description: "permission_denied_description",
+        });
+      }
+    }
+  };
+
   // check the camera permission, if camera permission granted then set the state
   // it will work for chrome & firefox as well
   const cameraPermissionCheck = () => {
-    navigator.mediaDevices.enumerateDevices().then((devices) => {
-      let cameraDevice = devices.find((device) => device.kind === "videoinput");
-      if (cameraDevice) {
-        let cameraPermission =
-          cameraDevice.deviceId !== "" && cameraDevice.groupId !== "";
-        if (cameraPermission !== permissionGranted) {
-          setPermissionGranted(cameraPermission);
-        }
-      }
-    });
+    navigator.mediaDevices
+      .getUserMedia({ video: true })
+      .then(cameraPermissionAllowed)
+      .catch(cameraPermissionDenied);
   };
 
   // video preview div, it will show the video preview if camera permission granted
@@ -107,16 +143,20 @@ export const VideoPreview = ({ cancelPopup, settings }: DefaultEkyVerificationPr
           </div>
         )}
         {!permissionGranted && (
-          <Step className="2xl:h-full xl:h-full md:mx-0 md:rounded-2xl sm:mx-0 sm:rounded-2xl md:shadow-none">
+          <Step className="2xl:h-full xl:h-full md:mx-0 md:rounded-2xl md:shadow-none sm:mx-0 sm:rounded-2xl">
             <StepHeader className="p-0"></StepHeader>
-            <StepContent className="m-6 md:m-0 rounded-[10px] bg-[#F8F8F8] text-sm h-[90%] content-center">
+            <StepContent className="m-6 h-[90%] content-center rounded-[10px] bg-[#F8F8F8] text-sm md:m-0">
               <div className="flex flex-col text-center">
-                <Icons.disabledCamera id="camera-disabled" name="camera-disabled" className="mb-6 w-[52px] h-[52px] self-center" />
-                <div className="color-[#313131] text-base font-semibold leading-5 pb-2">
-                  {t("permission_denied_header")}
+                <Icons.disabledCamera
+                  id="camera-disabled"
+                  name="camera-disabled"
+                  className="mb-6 h-[52px] w-[52px] self-center"
+                />
+                <div className="color-[#313131] pb-2 text-base font-semibold leading-5">
+                  {t(permissionErrMsg.header)}
                 </div>
-                <div className="color-[#7E7E7E] text-sm font-normal leading-4 pb-5">
-                  {t("permission_denied_description")}
+                <div className="color-[#7E7E7E] pb-5 text-sm font-normal leading-4">
+                  {t(permissionErrMsg.description)}
                 </div>
               </div>
             </StepContent>
@@ -146,7 +186,7 @@ export const VideoPreview = ({ cancelPopup, settings }: DefaultEkyVerificationPr
           <StepContent className="px-6 py-5 text-sm">
             {/* video preview for small screen */}
             <div className="hidden md:block sm:block">{videoPreviewDiv()}</div>
-            <div className="scrollable-div md:mt-8 sm:mt-8 !h-[250px]">
+            <div className="scrollable-div !h-[250px] md:mt-8 sm:mt-8">
               {keyInfoList.map((keyInfo, index) => (
                 <div key={index} className="mb-6">
                   <Icons.check className="mr-1 inline-block h-4 w-4 stroke-[4px] text-orange-500" />

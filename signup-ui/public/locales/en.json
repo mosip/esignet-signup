@@ -97,13 +97,17 @@
     "header": "Alert!",
     "description": "We are experiencing a higher than usual demand, hence we are unable to proceed with the eKYC verification process at this moment. We regret the inconvenience and request you to please try again later. Thank you for your understanding."
   },
+  "loadingMsgs": {
+    "please_wait": "Loading. Please wait....."
+  },
   "video_preview": {
     "header": "Key Information",
     "cancel_button": "Cancel",
     "proceed_button": "Proceed",
     "permission_denied_header": "Camera Access Disabled",
-    "permission_denied_description": "Your camera permission is disabled, please tap on Know More to see the steps to enable permission.",
-    "know_more": "Know More",
+    "permission_denied_description": "Your camera permission has be disabled. Please enable camera permission from your browser setting..",
+    "not_accessible_header": "Camera Not Accessible",
+    "not_accessible_description": "Your camera is not accessible. Please check your camera accessibility, some other application is accessing your camera right now.",
     "key_info": {
       "step_1": "Verify the functionality of your camera using the video preview on the right",
       "step_2": "Ensure you are positioned in a well-lit area to facilitate clear video capture",

@@ -205,20 +205,20 @@ export const KycProviderList = ({
   return (
     <>
       {cancelPopup({ cancelButton, handleStay })}
-      {isLoading && <LoadingIndicator />}
+      {isLoading && <LoadingIndicator message="please_wait" msgParam="Loading. Please wait....." iconClass="fill-[#eb6f2d]"  />}
       {!isLoading && (
         <div className="m-3 mt-10 flex flex-row items-stretch justify-center gap-x-1 sm:mb-20">
           <Step className="mx-10 max-w-[70rem] lg:mx-4 md:rounded-2xl md:shadow sm:rounded-2xl sm:shadow">
             <StepHeader className="px-5 py-5 sm:pb-[25px] sm:pt-[33px]">
               <StepTitle className="relative flex w-full flex-row items-center justify-between text-base font-semibold md:flex-col md:justify-center">
                 <div
-                  className="w-full text-[22px] font-semibold"
+                  className="w-full text-[22px] leading-[26px] text-[#2B3840] font-semibold"
                   id="kyc-provider-header"
                 >
                   {t("header")}
                 </div>
                 {providerListStore && providerListStore.length > 2 && (
-                  <div id="search-box" className="w-full md:mt-2">
+                  <div id="search-box" className="2xl:w-6/12 xl:w-6/12 md:w-full sm:w-full md:mt-2">
                     <FormField
                       name="username"
                       render={(field) => (

@@ -34,7 +34,7 @@ const SearchBox = React.forwardRef<HTMLInputElement, SearchBoxProps>(
             type="search"
             className={cn(
               "flex h-12 w-full bg-transparent py-2 ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-[hsla(0,0%,51%)] focus-visible:outline-none disabled:cursor-not-allowed disabled:bg-muted-light-gray",
-              "rounded-md border border-input pl-10 pr-6",
+              "rounded-md border border-[#CCCCCC] pl-10 pr-6",
               className
             )}
             ref={searchRef}
