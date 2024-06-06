@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { useTranslation } from "react-i18next";
 
@@ -14,6 +14,7 @@ import { Icons } from "./ui/icons";
 
 export const Language = () => {
   const { i18n } = useTranslation();
+  const langRef = useRef(null);
   const { languages_2Letters, langFontMapping } = useLanguageStore(
     useCallback(
       (state) => ({
@@ -29,22 +30,22 @@ export const Language = () => {
   const handleLanguageChange = (language: string) => {
     i18n.changeLanguage(language);
 
-    // Get the encoded string from the URL  
+    // Get the encoded string from the URL
     const hashCode = window.location.hash.substring(1);
 
     // Decode the string
-    const decodedBase64 = atob(hashCode)
-        
+    const decodedBase64 = atob(hashCode);
+
     var urlSearchParams = new URLSearchParams(decodedBase64);
 
     // Convert the decoded string to JSON
     var jsonObject: Record<string, string> = {};
     urlSearchParams.forEach(function (value, key) {
-        jsonObject[key] = value;
-        // Assign the current i18n language to the ui_locales
-        if(key === ui_locales) {
-          jsonObject[key] = language
-        }
+      jsonObject[key] = value;
+      // Assign the current i18n language to the ui_locales
+      if (key === ui_locales) {
+        jsonObject[key] = language;
+      }
     });
 
     // Convert the JSON back to decoded string
@@ -54,11 +55,31 @@ export const Language = () => {
 
     // Encode the string
     const encodedBase64 = btoa(urlSearchParams.toString());
-    const url = window.location.origin + window.location.pathname + "#" + encodedBase64
+    const url =
+      window.location.origin + window.location.pathname + "#" + encodedBase64;
 
     // Replace the current url with the modified url due to the language change
     window.history.replaceState(null, "", url);
   };
+
+  // setting language dropdown value to current fallback language
+  const setFallbackLng = (lng: string) => {
+    const langToBeSet = languages_2Letters.hasOwnProperty(lng)
+      ? lng
+      : (window as any)._env_.FALLBACK_LANG;
+    handleLanguageChange(langToBeSet);
+  };
+
+  useEffect(() => {
+    // checking if language dropdown value is set or not
+    // if not then use current i18n language to set it
+    const refInterval = setInterval(() => {
+      if (!langRef.current) {
+        clearInterval(refInterval);
+        setFallbackLng(i18n.language);
+      }
+    }, 1000);
+  }, []);
 
   return (
     <div className="flex">
@@ -84,8 +105,9 @@ export const Language = () => {
           >
             {Object.entries(languages_2Letters).map(([key, value]) => (
               <DropdownMenu.Item
-                id={key+"_language"}
+                id={key + "_language"}
                 key={key}
+                ref={langRef}
                 className={cn(
                   "group relative flex cursor-pointer select-none items-center py-2 text-[14px] leading-none outline-none first:border-b-[1px] hover:font-bold data-[disabled]:pointer-events-none",
                   langFontMapping[key],
