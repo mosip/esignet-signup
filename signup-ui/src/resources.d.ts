@@ -87,6 +87,19 @@ interface Resources {
       header: string;
       description: string;
     };
+    session: {
+      alert: {
+        title: string;
+        description: string;
+        countDown: string;
+        continueSession: string;
+      };
+      expired: {
+        title: string;
+        description: string;
+        returnToLogin: string;
+      };
+    };
     slot_checking: {
       header: string;
       description: string;

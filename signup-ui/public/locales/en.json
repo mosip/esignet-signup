@@ -89,6 +89,19 @@
     "header": "Alert!",
     "description": "Oops! It looks like you’re using an unsupported browser. Please consider upgrading to the latest version of the browser for the best experience. Thank you for your understanding"
   },
+  "session": {
+    "alert": {
+      "title": "Alert!",
+      "description": "Your session is about to expire due to inactivity",
+      "countDown": "Session expiring in {remainingTimeBeforePrompt} minutes",
+      "continueSession": "Continue Session"
+    },
+    "expired": {
+      "title": "Session Expired",
+      "description": "Your session has expired due to inactivity. Please click on the below button to return to the login screen.",
+      "returnToLogin": "Return to Login"
+    }
+  },
   "slot_checking": {
     "header": "Loading!!!",
     "description": "Kindly wait as we initiate your eKYC"

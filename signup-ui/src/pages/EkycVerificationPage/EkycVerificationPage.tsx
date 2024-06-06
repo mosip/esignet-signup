@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
 
 import { SIGNUP_ROUTE } from "~constants/routes";
+import { SessionAlert } from "~components/session-alert";
 import { Form } from "~components/ui/form";
 import { getSignInRedirectURL } from "~utils/link";
 import { useKycProvidersList } from "~pages/shared/mutations";
@@ -163,8 +164,23 @@ export const EkycVerificationPage = ({
     }
   };
 
+  const SCREENS_IN_SESSION_TIMEOUT_SCOPE = [
+    EkycVerificationStep.VerificationSteps,
+    EkycVerificationStep.LoadingScreen,
+    EkycVerificationStep.KycProviderList,
+    EkycVerificationStep.TermsAndCondition,
+    EkycVerificationStep.VideoPreview,
+  ];
+
   return (
     <>
+      {
+        <SessionAlert
+          isInSessionTimeoutScope={SCREENS_IN_SESSION_TIMEOUT_SCOPE.includes(
+            step
+          )}
+        />
+      }
       {criticalError &&
         ["invalid_transaction", "identifier_already_registered"].includes(
           criticalError.errorCode

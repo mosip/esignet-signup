@@ -24,6 +24,7 @@ module.exports = {
         foreground: "hsl(var(--foreground))",
         checked: "hsl(var(--checked))",
         disabled: "hsl(var(--disabled))",
+        alert:"hsl(var(--alert))",
         pin: {
           DEFAULT: "hsl(var(--pin))",
           focus: "hsl(var(--pin-focus))",

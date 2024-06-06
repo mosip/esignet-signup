@@ -236,6 +236,8 @@ body {
     --destructive: var(--destructive-color);
     --destructive-foreground: var(--destructive-foreground-color);
 
+    --alert: var(--alert-color);
+
     --ring: var(--ring-color);
 
     --radius: var(--radius-font-size);
@@ -268,6 +270,8 @@ body {
 
     --destructive: var(--destructive-color);
     --destructive-foreground: var(--destructive-foreground-color);
+
+    --alert: var(--alert-color);
 
     --ring: var(--ring-color);
 
@@ -310,6 +314,8 @@ body {
 
     --destructive: var(--destructive-color);
     --destructive-foreground: var(--destructive-foreground-color);
+
+    --alert: var(--alert-color);
 
     --ring: var(--ring-color);
 
