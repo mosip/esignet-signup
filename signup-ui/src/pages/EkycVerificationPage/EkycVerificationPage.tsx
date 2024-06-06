@@ -1,7 +1,9 @@
-import { useCallback, useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useCallback, useEffect, useMemo } from "react";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { Resolver, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
+import * as yup from "yup";
 
 import { SIGNUP_ROUTE } from "~constants/routes";
 import { Form } from "~components/ui/form";
@@ -10,6 +12,7 @@ import { useKycProvidersList } from "~pages/shared/mutations";
 import {
   CancelPopup,
   DefaultEkyVerificationProp,
+  EkYCVerificationForm,
   SettingsDto,
   UpdateProcessRequestDto,
 } from "~typings/types";
@@ -37,6 +40,22 @@ interface EkycVerificationPageProps {
   settings: SettingsDto;
 }
 
+const EkycVerificationFormDefaultValues: EkYCVerificationForm = {
+  verifierId: "",
+};
+
+const EKYC_VERIFICATION_VALIDATION_SCHEMA = {
+  [EkycVerificationStep.VerificationSteps]: yup.object({}),
+  [EkycVerificationStep.LoadingScreen]: yup.object({}),
+  [EkycVerificationStep.KycProviderList]: yup.object({
+    verifierId: yup.string(),
+  }),
+  [EkycVerificationStep.TermsAndCondition]: yup.object({}),
+  [EkycVerificationStep.VideoPreview]: yup.object({}),
+  [EkycVerificationStep.SlotCheckingScreen]: yup.object({}),
+  [EkycVerificationStep.VerificationScreen]: yup.object({}),
+};
+
 export const EkycVerificationPage = ({
   settings,
 }: EkycVerificationPageProps) => {
@@ -61,7 +80,22 @@ export const EkycVerificationPage = ({
     )
   );
 
-  const methods = useForm();
+  const ekycVerificationValidationSchema = useMemo(
+    () => Object.values(EKYC_VERIFICATION_VALIDATION_SCHEMA),
+    []
+  );
+
+  const currentEkycVerificationValidationSchema =
+    ekycVerificationValidationSchema[step];
+
+  const methods = useForm<EkYCVerificationForm>({
+    shouldUnregister: false,
+    defaultValues: EkycVerificationFormDefaultValues,
+    resolver: yupResolver(
+      currentEkycVerificationValidationSchema
+    ) as unknown as Resolver<EkYCVerificationForm, any>,
+    mode: "onBlur",
+  });
 
   const { hash: fromSignInHash } = useLocation();
 
@@ -139,6 +173,7 @@ export const EkycVerificationPage = ({
 
   const defaultProps: DefaultEkyVerificationProp = {
     settings: settings?.response,
+    methods: methods,
     cancelPopup: cancelAlertPopoverComp,
   };
 

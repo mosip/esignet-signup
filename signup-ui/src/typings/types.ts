@@ -1,3 +1,5 @@
+import { UseFormReturn } from "react-hook-form";
+
 export interface ResetPasswordForm {
   username: string;
   fullname: string;
@@ -8,8 +10,6 @@ export interface ResetPasswordForm {
 }
 
 export interface EkYCVerificationForm {
-  consent: EKYCConsentStatus;
-  disabilityType: DisabilityType;
   verifierId: string;
 }
 
@@ -247,6 +247,7 @@ export interface KycProvider {
 
 export interface DefaultEkyVerificationProp {
   settings: Settings;
+  methods: UseFormReturn<EkYCVerificationForm, any, undefined>
   cancelPopup: (cancelProp: CancelPopup) => any;
 }
 

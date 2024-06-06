@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useFormContext } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
 import { Button } from "~components/ui/button";
@@ -37,6 +38,7 @@ import { KycProviderCardLayout } from "./components/KycProviderCardLayout";
 export const KycProviderList = ({
   cancelPopup,
   settings,
+  methods,
 }: DefaultEkyVerificationProp) => {
   const { i18n, t } = useTranslation("translation", {
     keyPrefix: "kyc_provider",
@@ -64,6 +66,8 @@ export const KycProviderList = ({
       []
     )
   );
+
+  const { control,setValue } = useFormContext();
 
   const [cancelButton, setCancelButton] = useState<boolean>(false);
   const [kycProvidersList, setKycProvidersList] = useState<any>([]);
@@ -106,6 +110,7 @@ export const KycProviderList = ({
   const selectingKycProviders = (e: any) => {
     setKycProvider(e);
     setSelectedKycProvider(e.id);
+    setValue("verifierId", e.id)
   };
 
   const { kycProvidersList: kycApiCall } = useKycProvidersList();
@@ -205,20 +210,29 @@ export const KycProviderList = ({
   return (
     <>
       {cancelPopup({ cancelButton, handleStay })}
-      {isLoading && <LoadingIndicator message="please_wait" msgParam="Loading. Please wait....." iconClass="fill-[#eb6f2d]"  />}
+      {isLoading && (
+        <LoadingIndicator
+          message="please_wait"
+          msgParam="Loading. Please wait....."
+          iconClass="fill-[#eb6f2d]"
+        />
+      )}
       {!isLoading && (
         <div className="m-3 mt-10 flex flex-row items-stretch justify-center gap-x-1 sm:mb-20">
           <Step className="mx-10 max-w-[70rem] lg:mx-4 md:rounded-2xl md:shadow sm:rounded-2xl sm:shadow">
             <StepHeader className="px-5 py-5 sm:pb-[25px] sm:pt-[33px]">
               <StepTitle className="relative flex w-full flex-row items-center justify-between text-base font-semibold md:flex-col md:justify-center">
                 <div
-                  className="w-full text-[22px] leading-[26px] text-[#2B3840] font-semibold"
+                  className="w-full text-[22px] font-semibold leading-[26px] text-[#2B3840]"
                   id="kyc-provider-header"
                 >
                   {t("header")}
                 </div>
                 {providerListStore && providerListStore.length > 2 && (
-                  <div id="search-box" className="2xl:w-6/12 xl:w-6/12 md:w-full sm:w-full md:mt-2">
+                  <div
+                    id="search-box"
+                    className="2xl:w-6/12 xl:w-6/12 md:mt-2 md:w-full sm:w-full"
+                  >
                     <FormField
                       name="username"
                       render={(field) => (
@@ -245,17 +259,28 @@ export const KycProviderList = ({
             <StepContent className="scrollable-div !h-[408px] px-6 py-5 text-sm">
               <div className="grid grid-cols-3 gap-x-4 gap-y-5 md:grid-cols-2 sm:grid-cols-1 sm:gap-y-3.5 ">
                 {kycProvidersList?.map((keyInfo: any) => (
-                  <div
-                    key={keyInfo.id}
-                    className="w-full"
-                    onClick={() => selectingKycProviders(keyInfo)}
-                  >
-                    <KycProviderCardLayout
-                      {...keyInfo}
-                      selected={selectedKycProvider === keyInfo.id}
-                      langMap={langMap}
-                    ></KycProviderCardLayout>
-                  </div>
+                  <FormField
+                    name="verifierId"
+                    control={control}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <div
+                            key={keyInfo.id}
+                            className="w-full"
+                            {...field}
+                            onClick={() => selectingKycProviders(keyInfo)}
+                          >
+                            <KycProviderCardLayout
+                              {...keyInfo}
+                              selected={selectedKycProvider === keyInfo.id}
+                              langMap={langMap}
+                            ></KycProviderCardLayout>
+                          </div>
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
                 ))}
                 {(!kycProvidersList || kycProvidersList.length === 0) && (
                   <div>{t("no_kyc_provider")}</div>

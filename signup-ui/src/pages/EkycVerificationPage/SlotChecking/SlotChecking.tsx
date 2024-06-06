@@ -33,8 +33,8 @@ export const SlotChecking = () => {
       requestTime: new Date().toISOString(),
       request: {
         verifierId: getValues("verifierId"),
-        consent: getValues("consent"),
-        disabilityType: getValues("disabilityType"),
+        consent: "ACCEPTED",
+        disabilityType: null,
       },
     };
 
