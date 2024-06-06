@@ -8,10 +8,12 @@ import { compareVersions } from "~utils/browser";
  * It then loops over the regular expressions, and if it finds a match in the user agent string, it compares the extracted version with the minimum compatible version for that browser.
  * If the browser version is greater than or equal to the minimum compatible version, it returns true.
  * If no match is found for any browser, it returns false.
- *
+ * @param {Object} minBrowserCompatibility - An object containing the minimum compatible version for each browser. The default value is BROWSER_MIN_COMPATIBILITY.
  * @returns {boolean} - True if the browser is compatible, false otherwise.
  */
-export const checkBrowserCompatible = () => {
+export const checkBrowserCompatible = (
+  minBrowserCompatibility: { [key: string]: string } = BROWSER_MIN_COMPATIBILITY
+) => {
   const userAgent = navigator.userAgent;
   const browserVersionRegex = {
     chrome: /Chrome\/(\d+\.\d+\.\d+\.\d+)/,
@@ -25,7 +27,7 @@ export const checkBrowserCompatible = () => {
     if (browserVersionMatch) {
       return compareVersions(
         browserVersionMatch[1],
-        BROWSER_MIN_COMPATIBILITY[browser]
+        minBrowserCompatibility[browser]
       );
     }
   }

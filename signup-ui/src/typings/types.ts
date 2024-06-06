@@ -138,6 +138,7 @@ export interface SettingsConfig {
   "send-challenge.captcha.required": boolean;
   "signup.oauth-client-id": string;
   "identity-verification.redirect-url": string;
+  "broswer.minimum-version": { [key: string]: string };
 }
 
 export interface Settings {
