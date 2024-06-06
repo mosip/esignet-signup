@@ -30,7 +30,10 @@ import {
   useEkycVerificationStore,
 } from "../useEkycVerificationStore";
 
-export const TermsAndCondition = ({ cancelPopup, settings }: DefaultEkyVerificationProp) => {
+export const TermsAndCondition = ({
+  cancelPopup,
+  settings,
+}: DefaultEkyVerificationProp) => {
   const { i18n, t } = useTranslation("translation", {
     keyPrefix: "terms_and_conditions",
   });
@@ -129,75 +132,85 @@ export const TermsAndCondition = ({ cancelPopup, settings }: DefaultEkyVerificat
   return (
     <>
       {cancelPopup({ cancelButton, handleStay })}
-      {isLoading && <LoadingIndicator message="please_wait" msgParam="Loading. Please wait....." iconClass="fill-[#eb6f2d]" />}
+      {isLoading && (
+        <LoadingIndicator
+          message="please_wait"
+          msgParam="Loading. Please wait....."
+          iconClass="fill-[#eb6f2d]"
+          divClass="align-loading-center"
+        />
+      )}
       {!isLoading && (
         <div className="m-3 flex flex-row justify-center">
-        <Step className="my-5 max-w-[644px] md:rounded-2xl md:shadow sm:rounded-2xl sm:shadow">
-          <StepHeader className="px-0 py-5 sm:pb-[25px] sm:pt-[33px]">
-            <StepTitle className="relative flex w-full items-center justify-center gap-x-4 text-base font-semibold">
-              <div
-                className="ml-5 w-full text-[22px] font-semibold"
-                id="tnc-header"
-              >
-                {t("header")}
+          <Step className="my-5 max-w-[644px] md:rounded-2xl md:shadow sm:rounded-2xl sm:shadow">
+            <StepHeader className="px-0 py-5 sm:pb-[25px] sm:pt-[33px]">
+              <StepTitle className="relative flex w-full items-center justify-center gap-x-4 text-base font-semibold">
+                <div
+                  className="ml-5 w-full text-[22px] font-semibold"
+                  id="tnc-header"
+                >
+                  {t("header")}
+                </div>
+              </StepTitle>
+              <StepDescription className="w-full text-start tracking-normal">
+                <div
+                  className="ml-5 text-muted-neutral-gray"
+                  id="tnc-sub-header"
+                >
+                  {t("sub_header")}
+                </div>
+              </StepDescription>
+            </StepHeader>
+            <StepDivider />
+            <StepContent className="px-6 py-5">
+              {!termsAndCondition && <div>{t("failed_to_load")}</div>}
+              {termsAndCondition && (
+                <div
+                  id="tnc-content"
+                  className="scrollable-div flex text-justify text-sm sm:p-0"
+                  dangerouslySetInnerHTML={sanitizeMsg(tncMessage)}
+                ></div>
+              )}
+            </StepContent>
+            <StepAlert>
+              <ActionMessage className="justify-start bg-[#FFF6F2]">
+                <Checkbox
+                  id="consent-button"
+                  checked={agreeTerms}
+                  onCheckedChange={changeAgreeTerms}
+                  disabled={!termsAndCondition}
+                  className="h-5 w-5 rounded-[2px] text-white data-[state=checked]:border-primary data-[state=checked]:bg-primary"
+                />
+                <p className="ml-2 truncate text-xs font-bold">
+                  {t("agree_text")}
+                </p>
+              </ActionMessage>
+            </StepAlert>
+            <StepDivider />
+            <StepFooter className="p-5">
+              <div className="flex w-full flex-row items-center justify-center gap-x-4">
+                <Button
+                  id="cancel-tnc-button"
+                  name="cancel-tnc-button"
+                  variant="cancel_outline"
+                  className="w-full p-4 font-semibold"
+                  onClick={handleCancel}
+                >
+                  {t("cancel_button")}
+                </Button>
+                <Button
+                  id="proceed-tnc-button"
+                  name="proceed-tnc-button"
+                  className="w-full p-4 font-semibold"
+                  onClick={handleContinue}
+                  disabled={!agreeTerms}
+                >
+                  {t("proceed_button")}
+                </Button>
               </div>
-            </StepTitle>
-            <StepDescription className="w-full text-start tracking-normal">
-              <div className="ml-5 text-muted-neutral-gray" id="tnc-sub-header">
-                {t("sub_header")}
-              </div>
-            </StepDescription>
-          </StepHeader>
-          <StepDivider />
-          <StepContent className="px-6 py-5">
-            {!termsAndCondition && <div>{t("failed_to_load")}</div>}
-            {termsAndCondition && (
-              <div
-                id="tnc-content"
-                className="scrollable-div flex text-justify text-sm sm:p-0"
-                dangerouslySetInnerHTML={sanitizeMsg(tncMessage)}
-              ></div>
-            )}
-          </StepContent>
-          <StepAlert>
-            <ActionMessage className="justify-start bg-[#FFF6F2]">
-              <Checkbox
-                id="consent-button"
-                checked={agreeTerms}
-                onCheckedChange={changeAgreeTerms}
-                disabled={!termsAndCondition}
-                className="h-5 w-5 rounded-[2px] text-white data-[state=checked]:border-primary data-[state=checked]:bg-primary"
-              />
-              <p className="ml-2 truncate text-xs font-bold">
-                {t("agree_text")}
-              </p>
-            </ActionMessage>
-          </StepAlert>
-          <StepDivider />
-          <StepFooter className="p-5">
-            <div className="flex w-full flex-row items-center justify-center gap-x-4">
-              <Button
-                id="cancel-tnc-button"
-                name="cancel-tnc-button"
-                variant="cancel_outline"
-                className="w-full p-4 font-semibold"
-                onClick={handleCancel}
-              >
-                {t("cancel_button")}
-              </Button>
-              <Button
-                id="proceed-tnc-button"
-                name="proceed-tnc-button"
-                className="w-full p-4 font-semibold"
-                onClick={handleContinue}
-                disabled={!agreeTerms}
-              >
-                {t("proceed_button")}
-              </Button>
-            </div>
-          </StepFooter>
-        </Step>
-      </div>
+            </StepFooter>
+          </Step>
+        </div>
       )}
     </>
   );
