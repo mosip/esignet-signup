@@ -12,6 +12,7 @@ import {
   StepTitle,
 } from "~components/ui/step";
 import { DefaultEkyVerificationProp } from "~typings/types";
+import LoadingIndicator from "~/common/LoadingIndicator";
 
 import {
   EkycVerificationStep,
@@ -109,10 +110,16 @@ export const VerificationSteps = ({
   const handleContinue = async (e: any) => {
     e.preventDefault();
 
-    const browserCompatible = checkBrowserCompatible();
-    const permCompatible = true;
+    // Check if the browser is compatible
+    // with the minimum version from settings config
+    const browserCompatible = checkBrowserCompatible(
+      settings.configs["broswer.minimum-version"]
+    );
+
+    // Removed camera permission check
+    // const permCompatible = true;
     // await checkBrowserCameraPermission();
-    if (browserCompatible && permCompatible) {
+    if (browserCompatible) {
       setStep(EkycVerificationStep.KycProviderList);
     } else {
       setStep(EkycVerificationStep.LoadingScreen);
@@ -130,7 +137,7 @@ export const VerificationSteps = ({
 
   return (
     <>
-      {hasState && hasCode && (
+      {hasState && hasCode ? (
         <>
           {cancelPopup({ cancelButton, handleStay })}
           <div className="m-3 flex flex-row justify-center">
@@ -155,25 +162,31 @@ export const VerificationSteps = ({
               </StepContent>
               <StepDivider />
               <StepFooter className="p-5">
-            <div className="flex w-full flex-row items-center justify-end gap-x-4">
-              <Button
-                variant="cancel_outline"
-                className="px-[6rem] sm:w-full sm:p-4 font-semibold"
-                onClick={handleCancel}
-              >
-                {t("cancel")}
-              </Button>
-              <Button
-                className="px-[6rem] sm:w-full sm:p-4 font-semibold"
-                onClick={handleContinue}
-              >
-                {t("proceed")}
-              </Button>
-            </div>
-          </StepFooter>
+                <div className="flex w-full flex-row items-center justify-end gap-x-4">
+                  <Button
+                    variant="cancel_outline"
+                    className="px-[6rem] font-semibold sm:w-full sm:p-4"
+                    onClick={handleCancel}
+                  >
+                    {t("cancel")}
+                  </Button>
+                  <Button
+                    className="px-[6rem] font-semibold sm:w-full sm:p-4"
+                    onClick={handleContinue}
+                  >
+                    {t("proceed")}
+                  </Button>
+                </div>
+              </StepFooter>
             </Step>
           </div>
         </>
+      ) : (
+        <LoadingIndicator
+          message="please_wait"
+          msgParam="Loading. Please wait....."
+          iconClass="fill-[#EB6F2D]"
+        />
       )}
     </>
   );
