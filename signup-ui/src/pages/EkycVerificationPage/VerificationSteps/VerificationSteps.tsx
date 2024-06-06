@@ -185,7 +185,8 @@ export const VerificationSteps = ({
         <LoadingIndicator
           message="please_wait"
           msgParam="Loading. Please wait....."
-          iconClass="fill-[#EB6F2D]"
+          iconClass="fill-[#eb6f2d]"
+          divClass="align-loading-center"
         />
       )}
     </>
