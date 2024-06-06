@@ -68,7 +68,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"requestTime\": \"{{$isoTimestamp}}\",\n  \"request\": {\n    \"identifier\": \"+855{{randomPhoneNumber}}\",\n    \"captchaToken\": \"<captcha-token>\",\n    \"regenerate\" : false,\n    \"locale\" : \"eng\",\n    \"purpose\" : \"REGISTRATION\"\n  }\n}",
+							"raw": "{\n  \"requestTime\": \"{{$isoTimestamp}}\",\n  \"request\": {\n    \"identifier\": \"+855{{randomPhoneNumber}}\",\n    \"captchaToken\": \"<captcha-token>\",\n    \"regenerateChallenge\" : false,\n    \"locale\" : \"eng\",\n    \"purpose\" : \"REGISTRATION\"\n  }\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -251,7 +251,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"requestTime\": \"{{$isoTimestamp}}\",\n  \"request\": {\n    \"identifier\": \"+855{{randomPhoneNumber}}\",\n    \"captchaToken\": \"<captcha-token>\",\n    \"regenerate\" : false,\n    \"purpose\" : \"RESET_PASSWORD\"\n  }\n}",
+							"raw": "{\n  \"requestTime\": \"{{$isoTimestamp}}\",\n  \"request\": {\n    \"identifier\": \"+855{{randomPhoneNumber}}\",\n    \"captchaToken\": \"<captcha-token>\",\n    \"regenerateChallenge\" : false,\n    \"purpose\" : \"RESET_PASSWORD\"\n  }\n}",
 							"options": {
 								"raw": {
 									"language": "json"
