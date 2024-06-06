@@ -21,7 +21,13 @@ const timeout = 15_000;
 const promptBeforeIdle = 12_000;
 const ON_ACTION_THROTTLE = 500;
 
-export const SessionAlert = () => {
+interface SessionAlertProps {
+  isInSessionTimeoutScope: boolean;
+}
+
+export const SessionAlert = ({
+  isInSessionTimeoutScope,
+}: SessionAlertProps) => {
   const { t } = useTranslation();
 
   const { data: settings } = useSettings();
@@ -78,7 +84,7 @@ export const SessionAlert = () => {
   };
 
   return (
-    <AlertDialog open={openSessionAlert}>
+    <AlertDialog open={openSessionAlert && isInSessionTimeoutScope}>
       <AlertDialogContent className="rounded-2xl ring-0">
         <AlertDialogHeader className="m-2">
           <AlertDialogTitle className="flex flex-col items-center justify-center gap-y-4 text-2xl">

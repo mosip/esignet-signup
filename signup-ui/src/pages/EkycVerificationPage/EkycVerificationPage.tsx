@@ -2,6 +2,7 @@ import { useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
+import { SessionAlert } from "~components/session-alert";
 import { Form } from "~components/ui/form";
 import { useUpdateProcess } from "~pages/shared/mutations";
 import { SettingsDto, UpdateProcessRequestDto } from "~typings/types";
@@ -114,8 +115,23 @@ export const EkycVerificationPage = ({
     }
   };
 
+  const SCREENS_IN_SESSION_TIMEOUT_SCOPE = [
+    EkycVerificationStep.VerificationSteps,
+    EkycVerificationStep.LoadingScreen,
+    EkycVerificationStep.KycProviderList,
+    EkycVerificationStep.TermsAndCondition,
+    EkycVerificationStep.VideoPreview,
+  ];
+
   return (
     <>
+      {
+        <SessionAlert
+          isInSessionTimeoutScope={SCREENS_IN_SESSION_TIMEOUT_SCOPE.includes(
+            step
+          )}
+        />
+      }
       {criticalError &&
         ["invalid_transaction", "identifier_already_registered"].includes(
           criticalError.errorCode
