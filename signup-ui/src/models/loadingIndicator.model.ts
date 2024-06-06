@@ -5,6 +5,7 @@ interface ILoadingIndicator {
     size?: SizeValue;
     msgParam?: string;
     i18nKeyPrefix?: string;
+    iconClass?: string;
 }
 
 export default ILoadingIndicator;

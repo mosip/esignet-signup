@@ -1,16 +1,16 @@
 import { ApiService } from "~services/api.service";
 import {
   GenerateChallengeRequestDto,
-  KycProvidersListDto,
+  KycProvidersResponseDto,
   RegistrationRequestDto,
   RegistrationStatusResponseDto,
   RegistrationWithFailedStatus,
   ResetPasswordRequestDto,
   SettingsDto,
   SlotAvailabilityRequestDto,
-  TermsAndConditionDto,
+  TermsAndConditionResponseDto,
+  UpdateProcessRequestDto,
   VerifyChallengeRequestDto,
-  UpdateProcessRequestDto
 } from "~typings/types";
 
 export const getSettings = async (): Promise<SettingsDto> => {
@@ -61,26 +61,27 @@ export const resetPassword = async (newUserInfo: ResetPasswordRequestDto) => {
   );
 };
 
-export const updateProcess = async (
-  updateProcess: UpdateProcessRequestDto
-) => {
-  return ApiService.post(
-    "/identity-verification/initiate",
-    updateProcess
+export const updateProcess = async (updateProcess: UpdateProcessRequestDto) => {
+  return ApiService.post("/identity-verification/initiate", updateProcess).then(
+    ({ data }) => data
+  );
+};
+
+export const getTermsAndConditions = async (
+  kycProviderId: string
+): Promise<TermsAndConditionResponseDto> => {
+  return ApiService.get(
+    `/identity-verification/identity-verifier/${kycProviderId}`
   ).then(({ data }) => data);
 };
 
-// TODO: remove when the real endpoint is available
-// currently a mock endpoint
-export const getTermsAndConditions =
-  async (): Promise<TermsAndConditionDto> => {
-    return ApiService.get(`/ekyc-verify/tnc`).then(({ data }) => data);
-  };
-
-export const getKycProvidersList = async (): Promise<KycProvidersListDto> => {
-  return ApiService.get("/identity-verification/initiate").then(
-    ({ data }) => data
-  );
+export const getKycProvidersList = async (
+  updateProcessRequestDto: UpdateProcessRequestDto
+): Promise<KycProvidersResponseDto> => {
+  return ApiService.post(
+    "/identity-verification/initiate",
+    updateProcessRequestDto
+  ).then(({ data }) => data);
 };
 
 export const checkSlotAvailability = async (

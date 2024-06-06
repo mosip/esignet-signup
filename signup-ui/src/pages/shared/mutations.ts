@@ -1,30 +1,32 @@
+import { alpha2ToAlpha3T } from "@cospired/i18n-iso-languages";
 import { useMutation } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { alpha2ToAlpha3T } from "@cospired/i18n-iso-languages"
 
 import { ApiError } from "~typings/core";
 import {
   GenerateChallengeRequestDto,
   GenerateChallengeResponseDto,
+  KycProvidersResponseDto,
   RegistrationRequestDto,
   RegistrationResponseDto,
   ResetPasswordRequestDto,
   ResetPasswordResponseDto,
   SlotAvailabilityRequestDto,
   SlotAvailabilityResponseDto,
+  UpdateProcessRequestDto,
+  UpdateProcessResponseDto,
   VerifyChallengeRequestDto,
   VerifyChallengeResponseDto,
-  UpdateProcessRequestDto,
-  UpdateProcessResponseDto
 } from "~typings/types";
 
 import {
   checkSlotAvailability,
   generateChallenge,
+  getKycProvidersList,
   register,
   resetPassword,
+  updateProcess,
   verifyChallenge,
-  updateProcess
 } from "./service";
 
 export const keys = {
@@ -34,6 +36,7 @@ export const keys = {
   resetPassword: ["resetPassword"] as const,
   slotAvailability: ["slotAvailability" as const],
   updateProcess: ["updateProcess"] as const,
+  kycProvidersList: ["kycProvidersList"] as const,
 };
 
 export const useGenerateChallenge = () => {
@@ -75,8 +78,8 @@ export const useRegister = () => {
   >({
     mutationKey: keys.registration,
     mutationFn: (registrationRequestDto: RegistrationRequestDto) => {
-      registrationRequestDto.request.locale = locale
-      return register(registrationRequestDto)
+      registrationRequestDto.request.locale = locale;
+      return register(registrationRequestDto);
     },
     gcTime: Infinity,
   });
@@ -95,8 +98,8 @@ export const useResetPassword = () => {
   >({
     mutationKey: keys.resetPassword,
     mutationFn: (resetPasswordRequestDto: ResetPasswordRequestDto) => {
-      resetPasswordRequestDto.request.locale = locale
-      return resetPassword(resetPasswordRequestDto)
+      resetPasswordRequestDto.request.locale = locale;
+      return resetPassword(resetPasswordRequestDto);
     },
     gcTime: Infinity,
   });
@@ -127,10 +130,25 @@ export const useUpdateProcess = () => {
   >({
     mutationKey: keys.updateProcess,
     mutationFn: (updateProcessRequestDto: UpdateProcessRequestDto) => {
-      return updateProcess(updateProcessRequestDto)
+      return updateProcess(updateProcessRequestDto);
     },
     gcTime: Infinity,
   });
 
   return { updateProcessMutation };
+};
+
+export const useKycProvidersList = () => {
+  const kycProvidersList = useMutation<
+    KycProvidersResponseDto,
+    ApiError,
+    UpdateProcessRequestDto
+  >({
+    mutationKey: keys.kycProvidersList,
+    mutationFn: (updateProcessRequestDto: UpdateProcessRequestDto) =>
+      getKycProvidersList(updateProcessRequestDto),
+    gcTime: Infinity,
+  });
+
+  return { kycProvidersList };
 };

@@ -1,9 +1,8 @@
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
 import Webcam from "react-webcam";
 
-import { SIGNUP_ROUTE } from "~constants/routes";
 import { Button } from "~components/ui/button";
 import { Icons } from "~components/ui/icons";
 import {
@@ -14,9 +13,8 @@ import {
   StepHeader,
   StepTitle,
 } from "~components/ui/step";
-import { getSignInRedirectURL } from "~utils/link";
+import { DefaultEkyVerificationProp } from "~typings/types";
 
-import { CancelAlertPopover } from "../CancelAlertPopover";
 import {
   EkycVerificationStep,
   EkycVerificationStore,
@@ -25,12 +23,15 @@ import {
   useEkycVerificationStore,
 } from "../useEkycVerificationStore";
 
-export const VideoPreview = () => {
+export const VideoPreview = ({
+  cancelPopup,
+  settings,
+}: DefaultEkyVerificationProp) => {
   const { t } = useTranslation("translation", {
     keyPrefix: "video_preview",
   });
   const webcamRef = useRef(null);
- 
+
   const { setStep, setCriticalError } = useEkycVerificationStore(
     useCallback(
       (state: EkycVerificationStore) => ({
@@ -41,21 +42,23 @@ export const VideoPreview = () => {
     )
   );
 
-  useEffect(() => {}, [setStep]);
-
-  const { hash: fromSignInHash } = useLocation();
-
   const [cancelButton, setCancelButton] = useState<boolean>(false);
   const [permissionGranted, setPermissionGranted] = useState(true);
+  const [permissionErrMsg, setPermissionErrMsg] = useState({
+    header: "permission_denied_header",
+    description: "permission_denied_description",
+  });
 
   // key info list for video preview page
   const keyInfoList = [
-    "Please test your camera in the preview on the right",
-    "Please make sure you’re in a well-lit area",
-    "Please take off accessories like glasses or hats",
-    "Please follow instructions on the next screens",
-    "Please ensure you have a stable internet connection",
-  ]
+    "step_1",
+    "step_2",
+    "step_3",
+    "step_4",
+    "step_5",
+    "step_6",
+    "step_7",
+  ];
 
   /**
    * Handle the proceed button click, move forward to video preview page
@@ -63,7 +66,7 @@ export const VideoPreview = () => {
    */
   const handleContinue = (e: any) => {
     e.preventDefault();
-    setStep(EkycVerificationStep.SlotCheckingScreen)
+    setStep(EkycVerificationStep.SlotCheckingScreen);
   };
 
   /**
@@ -82,35 +85,45 @@ export const VideoPreview = () => {
     setCancelButton(false);
   };
 
-  /**
-   * Handle the dismiss button click, redirect to relying party page
-   */
-  const handleDismiss = () => {
-    window.location.href = getSignInRedirectURL(
-      "http://localhost:5000",
-      fromSignInHash,
-      SIGNUP_ROUTE
-    );
-  };
-
   useEffect(() => {
     // checking camera permission in every 1 second
     setInterval(cameraPermissionCheck, 1000);
   }, [permissionGranted]);
 
+  // if camera permission granted then set the state
+  const cameraPermissionAllowed = (stream: MediaStream) => {
+    if (!permissionGranted) {
+      setPermissionGranted(true);
+    }
+  };
+
+  // if camera permission denied then set the state
+  const cameraPermissionDenied = (error: any) => {
+    if (permissionGranted) {
+      setPermissionGranted(false);
+      if (error.name === "NotReadableError") {
+        if (permissionErrMsg.header !== "not_accessible_header") {
+          setPermissionErrMsg({
+            header: "not_accessible_header",
+            description: "not_accessible_description",
+          });
+        }
+      } else if (permissionErrMsg.header !== "permission_denied_header") {
+        setPermissionErrMsg({
+          header: "permission_denied_header",
+          description: "permission_denied_description",
+        });
+      }
+    }
+  };
+
   // check the camera permission, if camera permission granted then set the state
   // it will work for chrome & firefox as well
   const cameraPermissionCheck = () => {
-    navigator.mediaDevices.enumerateDevices().then((devices) => {
-      let cameraDevice = devices.find((device) => device.kind === "videoinput");
-      if (cameraDevice) {
-        let cameraPermission =
-          cameraDevice.deviceId !== "" && cameraDevice.groupId !== "";
-        if (cameraPermission !== permissionGranted) {
-          setPermissionGranted(cameraPermission);
-        }
-      }
-    });
+    navigator.mediaDevices
+      .getUserMedia({ video: true })
+      .then(cameraPermissionAllowed)
+      .catch(cameraPermissionDenied);
   };
 
   // video preview div, it will show the video preview if camera permission granted
@@ -130,21 +143,24 @@ export const VideoPreview = () => {
           </div>
         )}
         {!permissionGranted && (
-          <Step className="md:mx-0 md:rounded-2xl md:shadow sm:mx-0 sm:rounded-2xl sm:shadow xl:h-full 2xl:h-full">
-            <StepHeader className="px-0 py-5 sm:pb-[25px] sm:pt-[33px]">
-              <StepTitle className="relative flex w-full items-center justify-center gap-x-4 text-base font-semibold">
-                <div
-                  className="ml-5 w-full text-[22px] font-semibold"
-                  id="permission-denied-header"
-                >
-                  {t("permission_denied_header")}
+          <Step className="2xl:h-full xl:h-full md:mx-0 md:rounded-2xl md:shadow-none sm:mx-0 sm:rounded-2xl">
+            <StepHeader className="p-0"></StepHeader>
+            <StepContent className="m-6 h-[90%] content-center rounded-[10px] bg-[#F8F8F8] text-sm md:m-0">
+              <div className="flex flex-col text-center">
+                <Icons.disabledCamera
+                  id="camera-disabled"
+                  name="camera-disabled"
+                  className="mb-6 h-[52px] w-[52px] self-center"
+                />
+                <div className="color-[#313131] pb-2 text-base font-semibold leading-5">
+                  {t(permissionErrMsg.header)}
                 </div>
-              </StepTitle>
-            </StepHeader>
-            <StepDivider />
-            <StepContent className="px-6 py-5 text-sm">
-              <div>{t("permission_denied_description")}</div>
+                <div className="color-[#7E7E7E] pb-5 text-sm font-normal leading-4">
+                  {t(permissionErrMsg.description)}
+                </div>
+              </div>
             </StepContent>
+            <StepFooter className="p-0"></StepFooter>
           </Step>
         )}
       </>
@@ -153,14 +169,8 @@ export const VideoPreview = () => {
 
   return (
     <>
-      {cancelButton && (
-        <CancelAlertPopover
-          description={"description"}
-          handleStay={handleStay}
-          handleDismiss={handleDismiss}
-        />
-      )}
-      <div className="m-3 mt-10 sm:mb-20 flex flex-row items-stretch justify-center gap-x-1">
+      {cancelPopup({ cancelButton, handleStay })}
+      <div className="m-3 mt-10 flex flex-row items-stretch justify-center gap-x-1 sm:mb-20">
         <Step className="mx-10 lg:mx-4 md:rounded-2xl md:shadow sm:rounded-2xl sm:shadow">
           <StepHeader className="px-0 py-5 sm:pb-[25px] sm:pt-[33px]">
             <StepTitle className="relative flex w-full items-center justify-center gap-x-4 text-base font-semibold">
@@ -176,11 +186,11 @@ export const VideoPreview = () => {
           <StepContent className="px-6 py-5 text-sm">
             {/* video preview for small screen */}
             <div className="hidden md:block sm:block">{videoPreviewDiv()}</div>
-            <div className="sm:mt-8 md:mt-8">
+            <div className="scrollable-div !h-[250px] md:mt-8 sm:mt-8">
               {keyInfoList.map((keyInfo, index) => (
                 <div key={index} className="mb-6">
                   <Icons.check className="mr-1 inline-block h-4 w-4 stroke-[4px] text-orange-500" />
-                  <span>{keyInfo}</span>
+                  <span>{t(`key_info.${keyInfo}`)}</span>
                 </div>
               ))}
             </div>

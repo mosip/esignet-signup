@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
+import purify from "dompurify";
 import { useTranslation } from "react-i18next";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
-import { SIGNUP_ROUTE } from "~constants/routes";
 import { ActionMessage } from "~components/ui/action-message";
 import { Button } from "~components/ui/button";
 import { Checkbox } from "~components/ui/checkbox";
@@ -16,10 +16,11 @@ import {
   StepHeader,
   StepTitle,
 } from "~components/ui/step";
-import { getSignInRedirectURL } from "~utils/link";
 import { useTermsAndConditions } from "~pages/shared/queries";
+import langConfigService from "~services/langConfig.service";
+import { DefaultEkyVerificationProp } from "~typings/types";
+import LoadingIndicator from "~/common/LoadingIndicator";
 
-import { CancelAlertPopover } from "../CancelAlertPopover";
 import {
   EkycVerificationStep,
   EkycVerificationStore,
@@ -29,7 +30,7 @@ import {
   useEkycVerificationStore,
 } from "../useEkycVerificationStore";
 
-export const TermsAndCondition = () => {
+export const TermsAndCondition = ({ cancelPopup, settings }: DefaultEkyVerificationProp) => {
   const { i18n, t } = useTranslation("translation", {
     keyPrefix: "terms_and_conditions",
   });
@@ -45,13 +46,11 @@ export const TermsAndCondition = () => {
     )
   );
 
-  useEffect(() => {}, [setStep, kycProvider]);
-
-  const { hash: fromSignInHash } = useLocation();
-
-  const navigate = useNavigate();
   const [agreeTerms, setAgreeTerms] = useState<boolean>(false);
   const [cancelButton, setCancelButton] = useState<boolean>(false);
+  const [tncMessage, setTncMessage] = useState<string>("");
+  const [termsAndCondition, setTermsAndCondition] = useState<any>(null);
+  const [langMap, setLangMap] = useState<any>({});
 
   /**
    * Handle the proceed button click, move forward to video preview page
@@ -87,37 +86,52 @@ export const TermsAndCondition = () => {
     setCancelButton(false);
   };
 
-  /**
-   * Handle the dismiss button click, redirect to relying party page
-   */
-  const handleDismiss = () => {
-    window.location.href = getSignInRedirectURL(
-      "http://localhost:5000",
-      fromSignInHash,
-      SIGNUP_ROUTE
-    );
+  // sanitizing the html content, through dompurify
+  // then passing it in the dangerouslySetInnerHTML
+  const sanitizeMsg = (message: string) => {
+    return {
+      __html: purify.sanitize(message),
+    };
   };
 
-  const { data: tnc, isLoading, isSuccess } = useTermsAndConditions();
+  const {
+    data: tnc,
+    isLoading,
+    isSuccess,
+  } = useTermsAndConditions(kycProvider ? kycProvider.id : "");
 
-  // dummy message for terms & condition
-  const dummyMessage = {
-    response: {
-      message:
-        "I understand that the data collected about me during registration by the said authority includes different parameters.<br><br>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry’s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.<br> Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry’s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries.<br><br>It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages.",
-    },
-  };
+  // checking if kycProvider is set or not,
+  // if not then return to kycProviderList page
+  useEffect(() => {
+    if (kycProvider === null) {
+      setStep(EkycVerificationStep.KycProviderList);
+    }
+    langConfigService.getLangCodeMapping().then((langMap) => {
+      setLangMap(langMap);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (isSuccess) {
+      if (tnc.errors === null || tnc.errors.length === 0) {
+        setTermsAndCondition(tnc.response["terms&Conditions"]);
+      }
+    }
+  }, [isSuccess]);
+
+  useEffect(() => {
+    if (termsAndCondition) {
+      const currLang = langMap[i18n.language];
+      setTncMessage(termsAndCondition[currLang]);
+    }
+  }, [termsAndCondition, i18n.language, langMap]);
 
   return (
     <>
-      {cancelButton && (
-        <CancelAlertPopover
-          description={"description"}
-          handleStay={handleStay}
-          handleDismiss={handleDismiss}
-        />
-      )}
-      <div className="m-3 flex flex-row justify-center">
+      {cancelPopup({ cancelButton, handleStay })}
+      {isLoading && <LoadingIndicator message="please_wait" msgParam="Loading. Please wait....." iconClass="fill-[#eb6f2d]" />}
+      {!isLoading && (
+        <div className="m-3 flex flex-row justify-center">
         <Step className="my-5 max-w-[644px] md:rounded-2xl md:shadow sm:rounded-2xl sm:shadow">
           <StepHeader className="px-0 py-5 sm:pb-[25px] sm:pt-[33px]">
             <StepTitle className="relative flex w-full items-center justify-center gap-x-4 text-base font-semibold">
@@ -136,17 +150,14 @@ export const TermsAndCondition = () => {
           </StepHeader>
           <StepDivider />
           <StepContent className="px-6 py-5">
-            {/* {isLoading && <div>Still Loading</div>}
-            {!isLoading && !isSuccess && <div>Failed to Load</div>}
-            {isSuccess && ( */}
-            <div
-              id="tnc-content"
-              className="scrollable-div flex text-justify text-sm sm:p-0"
-              dangerouslySetInnerHTML={{
-                __html: dummyMessage.response?.message ?? "Hello",
-              }}
-            ></div>
-            {/* )} */}
+            {!termsAndCondition && <div>{t("failed_to_load")}</div>}
+            {termsAndCondition && (
+              <div
+                id="tnc-content"
+                className="scrollable-div flex text-justify text-sm sm:p-0"
+                dangerouslySetInnerHTML={sanitizeMsg(tncMessage)}
+              ></div>
+            )}
           </StepContent>
           <StepAlert>
             <ActionMessage className="justify-start bg-[#FFF6F2]">
@@ -154,6 +165,7 @@ export const TermsAndCondition = () => {
                 id="consent-button"
                 checked={agreeTerms}
                 onCheckedChange={changeAgreeTerms}
+                disabled={!termsAndCondition}
                 className="h-5 w-5 rounded-[2px] text-white data-[state=checked]:border-primary data-[state=checked]:bg-primary"
               />
               <p className="ml-2 truncate text-xs font-bold">
@@ -186,6 +198,7 @@ export const TermsAndCondition = () => {
           </StepFooter>
         </Step>
       </div>
+      )}
     </>
   );
 };

@@ -1,26 +1,38 @@
 import { useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
+import { useLocation } from "react-router-dom";
 
+import { SIGNUP_ROUTE } from "~constants/routes";
 import { SessionAlert } from "~components/session-alert";
 import { Form } from "~components/ui/form";
-import { useUpdateProcess } from "~pages/shared/mutations";
-import { SettingsDto, UpdateProcessRequestDto } from "~typings/types";
+import { getSignInRedirectURL } from "~utils/link";
+import { useKycProvidersList } from "~pages/shared/mutations";
+import {
+  CancelPopup,
+  DefaultEkyVerificationProp,
+  SettingsDto,
+  UpdateProcessRequestDto,
+} from "~typings/types";
 
+import { CancelAlertPopover } from "./CancelAlertPopover";
 import { EkycVerificationPopover } from "./EkycVerificationPopover";
 import KycProviderList from "./KycProviderList";
+import LoadingScreen from "./LoadingScreen";
+import SlotChecking from "./SlotChecking";
 import TermsAndCondition from "./TermsAndCondition";
 import {
   criticalErrorSelector,
   EkycVerificationStep,
+  setHashCodeSelector,
+  setKycProviderSelector,
+  setKycProvidersListSelector,
   stepSelector,
   useEkycVerificationStore,
 } from "./useEkycVerificationStore";
 import VerificationScreen from "./VerificationScreen";
 import VerificationSteps from "./VerificationSteps";
 import VideoPreview from "./VideoPreview";
-import SlotChecking from "./SlotChecking";
-import LoadingScreen from "./LoadingScreen";
 
 interface EkycVerificationPageProps {
   settings: SettingsDto;
@@ -31,11 +43,20 @@ export const EkycVerificationPage = ({
 }: EkycVerificationPageProps) => {
   const { t } = useTranslation();
 
-  const { step, criticalError } = useEkycVerificationStore(
+  const {
+    step,
+    criticalError,
+    setKycProvider,
+    setKycProviderList,
+    setHashCode,
+  } = useEkycVerificationStore(
     useCallback(
       (state) => ({
         step: stepSelector(state),
         criticalError: criticalErrorSelector(state),
+        setKycProvider: setKycProviderSelector(state),
+        setKycProviderList: setKycProvidersListSelector(state),
+        setHashCode: setHashCodeSelector(state),
       }),
       []
     )
@@ -43,9 +64,11 @@ export const EkycVerificationPage = ({
 
   const methods = useForm();
 
+  const { hash: fromSignInHash } = useLocation();
+
   const hashCode = window.location.hash.substring(1);
 
-  const { updateProcessMutation } = useUpdateProcess();
+  const { kycProvidersList } = useKycProvidersList();
 
   useEffect(() => {
     if (hashCode !== null && hashCode !== undefined) {
@@ -57,7 +80,12 @@ export const EkycVerificationPage = ({
       const hasCode = params.has("code");
 
       if (hasState && hasCode) {
-        if (updateProcessMutation.isPending) return;
+        setHashCode({
+          state: params.get("state") ?? "",
+          code: params.get("code") ?? "",
+        });
+
+        if (kycProvidersList.isPending) return;
         const UpdateProcessRequestDto: UpdateProcessRequestDto = {
           requestTime: new Date().toISOString(),
           request: {
@@ -65,47 +93,68 @@ export const EkycVerificationPage = ({
             state: params?.get("state") ?? "",
           },
         };
-        return updateProcessMutation.mutate(UpdateProcessRequestDto, {
-          onSuccess: ({ errors }) => {
-            if (errors.length > 0) {
-            }
-
-            if (errors.length === 0) {
+        return kycProvidersList.mutate(UpdateProcessRequestDto, {
+          onSuccess: ({ response, errors }) => {
+            if (!errors || errors.length === 0) {
+              setKycProviderList(response?.identityVerifiers);
+              if (response?.identityVerifiers.length === 1) {
+                setKycProvider(response?.identityVerifiers[0]);
+              }
               return;
             }
           },
-          onError: () => {},
         });
       }
     }
   }, []);
 
   useEffect(() => {
-    const handleTabBeforeUnload = (event: BeforeUnloadEvent) => {
-      event.preventDefault();
-
-      return (event.returnValue = t("reset_password_discontinue_prompt"));
+    window.onbeforeunload = () => {
+      return true;
     };
-
-    window.addEventListener("beforeunload", handleTabBeforeUnload);
 
     return () => {
-      window.removeEventListener("beforeunload", handleTabBeforeUnload);
+      window.onbeforeunload = null;
     };
   }, [step, criticalError]);
+
+  const cancelAlertPopoverComp = (cancelProp: CancelPopup) => {
+    const handleDismiss = () => {
+      window.onbeforeunload = null;
+      window.location.href = getSignInRedirectURL(
+        settings?.response?.configs["signin.redirect-url"],
+        fromSignInHash,
+        SIGNUP_ROUTE
+      );
+    };
+    return (
+      cancelProp.cancelButton && (
+        <CancelAlertPopover
+          description={"description"}
+          handleStay={cancelProp.handleStay}
+          handleDismiss={handleDismiss}
+        />
+      )
+    );
+  };
+
+  const defaultProps: DefaultEkyVerificationProp = {
+    settings: settings?.response,
+    cancelPopup: cancelAlertPopoverComp,
+  };
 
   const getEkycVerificationStepContent = (step: EkycVerificationStep) => {
     switch (step) {
       case EkycVerificationStep.VerificationSteps:
-        return <VerificationSteps />;
+        return <VerificationSteps {...defaultProps} />;
       case EkycVerificationStep.LoadingScreen:
         return <LoadingScreen />;
       case EkycVerificationStep.KycProviderList:
-        return <KycProviderList />;
+        return <KycProviderList {...defaultProps} />;
       case EkycVerificationStep.TermsAndCondition:
-        return <TermsAndCondition />;
+        return <TermsAndCondition {...defaultProps} />;
       case EkycVerificationStep.VideoPreview:
-        return <VideoPreview />;
+        return <VideoPreview {...defaultProps} />;
       case EkycVerificationStep.SlotCheckingScreen:
         return <SlotChecking />;
       case EkycVerificationStep.VerificationScreen:

@@ -14,7 +14,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.mosip.signup</groupId>
 	<artifactId>signup-parent</artifactId>
-	<version>1.0.1-SNAPSHOT</version>
+	<version>1.1.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>esignet-signup</name>
 	<description>Parent project of MOSIP e-Signet</description>
@@ -103,6 +103,7 @@
 
 	<modules>
 		<module>signup-service</module>
+		<module>signup-integration-api</module>
     </modules>
 
 	<profiles>

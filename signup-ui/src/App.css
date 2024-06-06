@@ -84,6 +84,8 @@ body {
   font-size: 1em;
   font: var(--vertical-stepper-description-font);
   margin-right: 1.25rem;
+  text-align: left;
+  overflow-wrap: anywhere;
 }
 
 .verticalStepper .descriptionContainer {
@@ -93,6 +95,8 @@ body {
 .verticalLabelRight .label {
   padding-left: 0.5em;
   font: var(--vertical-stepper-label-font);
+  text-align: left;
+  overflow-wrap: anywhere;
 }
 
 #stepper-node {
@@ -146,6 +150,25 @@ body {
 
 .scrollable-div::-webkit-scrollbar-thumb:hover {
   background-color: #a8bbbf;
+}
+
+/* Check mark box in top right corner */
+.check-box {
+  display: inline-block;
+  position: relative;
+}
+
+.check-box::after {
+  content: url("assets/svg/check_white.svg");
+  background: #EB6F2D;
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 4px 6px;
+  border-radius: 0px 5px 0px 8px;
+  border-style: solid;
+  border-color: #EB6F2D;
+
 }
 
 @media (min-width: 768px) {
