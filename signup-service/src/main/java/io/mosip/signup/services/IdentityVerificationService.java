@@ -211,7 +211,7 @@ public class IdentityVerificationService {
     }
 
     private PrivateKey loadPrivateKey(String alias, String cryptoPassword) {
-        try (InputStream inputStream = new ClassPathResource(p12FilePath).getInputStream()) {
+        try (InputStream inputStream =  getClass().getClassLoader().getResourceAsStream(p12FilePath)) {
             KeyStore keyStore = KeyStore.getInstance("PKCS12");
             keyStore.load(inputStream, cryptoPassword.toCharArray());
             // Retrieve the private key
