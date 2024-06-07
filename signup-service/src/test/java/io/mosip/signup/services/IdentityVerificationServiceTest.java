@@ -1,6 +1,5 @@
 package io.mosip.signup.services;
 
-import com.nimbusds.oauth2.sdk.ParseException;
 import io.mosip.signup.dto.IdentityVerifierDetail;
 import io.mosip.signup.dto.InitiateIdentityVerificationRequest;
 import io.mosip.signup.dto.InitiateIdentityVerificationResponse;
@@ -46,7 +45,7 @@ public class IdentityVerificationServiceTest {
         String oauthIssuerUri="http://localhost:"+port+"/signup.dev.mosio.net";
         ReflectionTestUtils.setField(identityVerificationService, "privateKeyAlias", "privateKeyAlias");
         ReflectionTestUtils.setField(identityVerificationService, "p12FilePath", "keystore.p12");
-        ReflectionTestUtils.setField(identityVerificationService, "audience", "/v1/esignet/oauth/token");
+        ReflectionTestUtils.setField(identityVerificationService, "audience", "http://localhost:"+port+"/signup.dev.mosio.net/v1/esignet/oauth/token");
         ReflectionTestUtils.setField(identityVerificationService, "p12FilePassword", "password");
         ReflectionTestUtils.setField(identityVerificationService, "oauthClientId", "clientId");
         ReflectionTestUtils.setField(identityVerificationService, "oauthRedirectUri", "https://signup.dev.mosip.net/identity-verification");
@@ -60,7 +59,7 @@ public class IdentityVerificationServiceTest {
 
 
     @Test
-    public void initiateIdentityVerification_withValidDetails_thenPass() throws ParseException, IOException {
+    public void initiateIdentityVerification_withValidDetails_thenPass()  {
 
         InitiateIdentityVerificationRequest request = new InitiateIdentityVerificationRequest();
         request.setAuthorizationCode("authCode");
@@ -88,7 +87,7 @@ public class IdentityVerificationServiceTest {
 
 
     @Test
-    public void initiateIdentityVerification_withInValidDetails_thenPass() throws ParseException, IOException {
+    public void initiateIdentityVerification_withInValidDetails_thenFail() {
 
         InitiateIdentityVerificationRequest request = new InitiateIdentityVerificationRequest();
         request.setAuthorizationCode("authCode");
@@ -114,7 +113,7 @@ public class IdentityVerificationServiceTest {
     }
 
     @Test
-    public void initiateIdentityVerification_withInvalidPrivateKeyPassword_thenFail() throws ParseException, IOException {
+    public void initiateIdentityVerification_withInvalidPrivateKeyPassword_thenFail() {
 
         ReflectionTestUtils.setField(identityVerificationService, "p12FilePassword", "wrongpassword");
         InitiateIdentityVerificationRequest request = new InitiateIdentityVerificationRequest();

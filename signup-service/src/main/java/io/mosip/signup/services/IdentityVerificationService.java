@@ -22,7 +22,6 @@ import io.mosip.signup.util.SignUpConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -169,7 +168,7 @@ public class IdentityVerificationService {
             JWTClaimsSet.Builder builder = new JWTClaimsSet.Builder()
                     .subject(oauthClientId)
                     .issuer(oauthClientId)
-                    .audience(oauthIssuerUri+audience)
+                    .audience(audience)
                     .issueTime(new Date(issuedTime))
                     .expirationTime(new Date(issuedTime+(60*1000)));
             JWSHeader jwsHeader = new JWSHeader(JWSAlgorithm.RS256);
@@ -180,7 +179,7 @@ public class IdentityVerificationService {
             // Create a Token Request with the authorization code
             AuthorizationCode code = new AuthorizationCode(authCode);
             URI callback = new URI(oauthRedirectUri);
-            URI tokenEndpoint = new URI(oauthIssuerUri+audience);
+            URI tokenEndpoint = new URI(audience);
             AuthorizationGrant codeGrant = new AuthorizationCodeGrant(code, callback);
             ClientAuthentication clientAuthentication = new PrivateKeyJWT(signedJWT);
             TokenRequest request = new TokenRequest(tokenEndpoint,clientAuthentication, codeGrant);
@@ -191,14 +190,12 @@ public class IdentityVerificationService {
                 AccessToken accessToken = successResponse.getOIDCTokens().getAccessToken();
                 log.info("Access token received successfully");
                 return accessToken.toJSONString();
-            } else {
-                log.error("Failed to exchange authorization grant for tokens: "+tokenResponse.toErrorResponse());
-                throw new SignUpException(ErrorConstants.TOKEN_EXCHANGE_FAILED);
             }
+            log.error("Failed to exchange authorization grant for tokens: "+tokenResponse.toErrorResponse());
         }catch (Exception e) {
             log.error("Failed to exchange authorization grant for tokens", e);
-            throw new SignUpException(ErrorConstants.TOKEN_EXCHANGE_FAILED);
         }
+        throw new SignUpException(ErrorConstants.TOKEN_EXCHANGE_FAILED);
     }
 
     private IdentityVerifierDetail[] getIdentityVerifierDetailsFromConfigServer() {
