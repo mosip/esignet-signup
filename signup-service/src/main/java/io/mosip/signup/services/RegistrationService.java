@@ -216,6 +216,7 @@ public class RegistrationService {
                 otpChallengeInfo.get().getChallenge());
         if(!challengeHash.equals(transaction.getChallengeHash())) {
             transaction.incrementVerificationAttempt();
+            cacheUtilService.createUpdateChallengeGeneratedTransaction(transactionId, transaction);
             log.error("Transaction {} : challenge not match", transactionId);
             throw new ChallengeFailedException();
         }
