@@ -39,20 +39,16 @@ export const SlotChecking = () => {
     };
 
     slotAvailabilityMutation.mutate(slotAvailabilityRequestDto, {
-      onSuccess: ({ response, errors }) => {
-        const isSlotAvailable = errors.length === 0 && response.slotId !== "";
-
+      onSuccess: ({ errors }) => {
         if (errors.length > 0) {
           switch (errors[0].errorCode) {
             case "invalid_transaction":
               setCriticalError(errors[0]);
               break;
-            default:
+            case "slot_unavailable":
               break;
           }
-        }
-
-        if (isSlotAvailable) {
+        } else {
           setStep(EkycVerificationStep.VerificationScreen);
         }
       },
