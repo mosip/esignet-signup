@@ -31,7 +31,7 @@ export const VerificationSteps = ({
     keyPrefix: "verification_steps",
   });
   const [cancelButton, setCancelButton] = useState<boolean>(false);
-
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const { setStep, setCriticalError } = useEkycVerificationStore(
     useCallback(
       (state: EkycVerificationStore) => ({
@@ -52,6 +52,7 @@ export const VerificationSteps = ({
 
   useEffect(() => {
     if (hashCode !== null && hashCode !== undefined) {
+      setIsLoading(true);
       if (!hasState && !hasCode) {
         const authorizeURI = settings?.configs["signin.redirect-url"];
         const clientIdURI = settings?.configs["signup.oauth-client-id"];
@@ -74,6 +75,7 @@ export const VerificationSteps = ({
 
         window.location.replace(redirectURI);
       } else {
+        setIsLoading(false);
         return;
       }
     }
@@ -137,7 +139,7 @@ export const VerificationSteps = ({
 
   return (
     <>
-      {hasState && hasCode ? (
+      {hasState && hasCode && !isLoading ? (
         <>
           {cancelPopup({ cancelButton, handleStay })}
           <div className="m-3 flex flex-row justify-center">
@@ -185,7 +187,7 @@ export const VerificationSteps = ({
         <LoadingIndicator
           message="please_wait"
           msgParam="Loading. Please wait....."
-          iconClass="fill-[#eb6f2d]"
+          iconClass="fill-[#EB6F2D]"
           divClass="align-loading-center"
         />
       )}
