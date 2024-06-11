@@ -3,13 +3,12 @@ import { useTranslation } from "react-i18next";
 import { Button } from "~components/ui/button";
 import { Icons } from "~components/ui/icons";
 import { Step, StepContent } from "~components/ui/step";
+import { useESignetRedirect } from "~hooks/useESignetRedirect";
 
 export const SlotUnavailableAlert = () => {
   const { t } = useTranslation();
 
-  const handleContinue = (e: any) => {
-    e.preventDefault();
-  };
+  const { handleRedirectToSignIn: handleContinue } = useESignetRedirect();
 
   return (
     <Step>
