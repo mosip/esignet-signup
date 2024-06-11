@@ -28,7 +28,7 @@ export const SlotChecking = () => {
   );
 
   useEffect(() => {
-    if (!kycProvider) throw Error("KycProvider should not be null")
+    if (!kycProvider) throw Error("KycProvider should not be null");
     const slotAvailabilityRequestDto: SlotAvailabilityRequestDto = {
       requestTime: new Date().toISOString(),
       request: {
@@ -39,17 +39,21 @@ export const SlotChecking = () => {
     };
 
     slotAvailabilityMutation.mutate(slotAvailabilityRequestDto, {
-      onSuccess: ({ errors }) => {
+      onSuccess: ({ response, errors }) => {
+        const isSlotAvailable = errors.length === 0 && response.slotId !== "";
+
         if (errors.length > 0) {
           switch (errors[0].errorCode) {
             case "invalid_transaction":
               setCriticalError(errors[0]);
               break;
-            case "slot_unavailable":
+            default:
               break;
           }
-        } else {
-          setStep(EkycVerificationStep.VerificationScreen)
+        }
+
+        if (isSlotAvailable) {
+          setStep(EkycVerificationStep.VerificationScreen);
         }
       },
     });

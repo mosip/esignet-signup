@@ -347,7 +347,7 @@ export type SlotAvailabilityRequestDto = BaseRequestDto & {
 
 export type SlotAvailabilityResponseDto = BaseResponseDto & {
   response: {
-    status: string;
+    slotId: string;
   };
 };
 
