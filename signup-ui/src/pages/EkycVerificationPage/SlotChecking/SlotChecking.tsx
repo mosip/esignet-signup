@@ -1,11 +1,11 @@
 import { useCallback, useEffect } from "react";
-import { useFormContext } from "react-hook-form";
 
 import { useSlotAvailability } from "~pages/shared/mutations";
 import { SlotAvailabilityRequestDto } from "~typings/types";
 
 import {
   EkycVerificationStep,
+  kycProviderSelector,
   setCriticalErrorSelector,
   setStepSelector,
   useEkycVerificationStore,
@@ -16,11 +16,10 @@ import { SlotUnavailableAlert } from "./components/SlotUnavailableAlert";
 export const SlotChecking = () => {
   const { slotAvailabilityMutation } = useSlotAvailability();
 
-  const { getValues } = useFormContext();
-
-  const { setStep, setCriticalError } = useEkycVerificationStore(
+  const { kycProvider, setStep, setCriticalError } = useEkycVerificationStore(
     useCallback(
       (state) => ({
+        kycProvider: kycProviderSelector(state),
         setStep: setStepSelector(state),
         setCriticalError: setCriticalErrorSelector(state),
       }),
@@ -29,12 +28,13 @@ export const SlotChecking = () => {
   );
 
   useEffect(() => {
+    if (!kycProvider) throw Error("KycProvider should not be null")
     const slotAvailabilityRequestDto: SlotAvailabilityRequestDto = {
       requestTime: new Date().toISOString(),
       request: {
-        verifierId: getValues("verifierId"),
-        consent: getValues("consent"),
-        disabilityType: getValues("disabilityType"),
+        verifierId: kycProvider.id,
+        consent: "ACCEPTED",
+        disabilityType: null,
       },
     };
 
