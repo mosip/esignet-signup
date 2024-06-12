@@ -67,7 +67,7 @@
   "scripts": {
     "start": "craco start",
     "build": "craco build",
-    "test": "craco test",
+    "test": "craco test --silent=false",
     "eject": "react-scripts eject",
     "lint": "eslint .",
     "lint:fix": "eslint --fix",
@@ -99,8 +99,8 @@
     "@storybook/test": "^7.6.0",
     "@tanstack/react-query-devtools": "^5.8.4",
     "@testing-library/jest-dom": "^6.1.4",
-    "@types/jest": "^29.5.6",
     "@types/dompurify": "^3.0.5",
+    "@types/jest": "^29.5.6",
     "@types/lodash": "^4.14.200",
     "@types/platform": "^1.3.6",
     "@types/react-google-recaptcha": "^2.1.7",
@@ -111,6 +111,7 @@
     "eslint-plugin-jsdoc": "^46.8.2",
     "eslint-plugin-prettier": "^5.0.1",
     "jest-extended": "^4.0.2",
+    "msw": "^2.3.1",
     "postcss": "^8.4.31",
     "prettier": "^3.1.0",
     "prettier-plugin-tailwindcss": "^0.5.7",
@@ -119,8 +120,14 @@
     "storybook": "^7.6.0",
     "tailwindcss": "^3.4.1",
     "tailwindcss-dir": "^4.0.0",
+    "ts-jest": "^29.1.4",
     "tsconfig-paths-webpack-plugin": "^4.1.0",
     "type-fest": "^4.6.0",
     "webpack": "^5.89.0"
+  },
+  "msw": {
+    "workerDirectory": [
+      "public"
+    ]
   }
 }

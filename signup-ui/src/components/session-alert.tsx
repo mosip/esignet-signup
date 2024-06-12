@@ -76,6 +76,7 @@ export const SessionAlert = ({
 
   const handleReturnToLogin = (e: any) => {
     e.preventDefault();
+    window.onbeforeunload = null;
     window.location.href = getSignInRedirectURL(
       settings?.response.configs["signin.redirect-url"],
       fromSignInHash,
@@ -84,8 +85,42 @@ export const SessionAlert = ({
   };
 
   return (
-    <AlertDialog open={openSessionAlert && isInSessionTimeoutScope}>
-      <AlertDialogContent className="rounded-2xl ring-0">
+    <SessionAlertDialog
+      showSessionAlert={openSessionAlert}
+      isInSessionTimeoutScope={isInSessionTimeoutScope}
+      isIdle={isIdle}
+      sessionRemainingTimeout={sessionRemainingTimeout}
+      handleReturnToLogin={handleReturnToLogin}
+      handleContinueSession={handleContinueSession}
+    />
+  );
+};
+
+interface SessionAlertDialogProps {
+  showSessionAlert: boolean;
+  isInSessionTimeoutScope: boolean;
+  isIdle: () => boolean;
+  sessionRemainingTimeout: number;
+  handleReturnToLogin: (e: any) => void;
+  handleContinueSession: () => void;
+}
+
+export const SessionAlertDialog = ({
+  showSessionAlert,
+  isInSessionTimeoutScope,
+  isIdle,
+  sessionRemainingTimeout,
+  handleReturnToLogin,
+  handleContinueSession,
+}: SessionAlertDialogProps) => {
+  const { t } = useTranslation();
+
+  return (
+    <AlertDialog open={showSessionAlert && isInSessionTimeoutScope}>
+      <AlertDialogContent
+        className="rounded-2xl ring-0"
+        data-testid="session-alert-dialog"
+      >
         <AlertDialogHeader className="m-2">
           <AlertDialogTitle className="flex flex-col items-center justify-center gap-y-4 text-2xl">
             <>

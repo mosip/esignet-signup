@@ -1,75 +1,82 @@
-import { cleanup, render, renderHook, screen } from "@testing-library/react";
-import { IIdleTimerProps, useIdleTimer } from "react-idle-timer";
+import { screen } from "@testing-library/react";
 
 import "@testing-library/jest-dom";
 
-import { SessionAlert } from "~components/session-alert";
+import { QueryCache, QueryClient } from "@tanstack/react-query";
+import { MemoryRouter } from "react-router-dom";
 
-let props: IIdleTimerProps;
+import { SessionAlertDialog } from "~components/session-alert";
 
-beforeEach(() => {
-  props = {
-    timeout: undefined,
-    promptTimeout: undefined,
-    element: undefined,
-    events: undefined,
-    timers: undefined,
-    immediateEvents: undefined,
-    onPresenceChange: undefined,
-    onPrompt: undefined,
-    onIdle: undefined,
-    onActive: undefined,
-    onAction: undefined,
-    onMessage: undefined,
-    debounce: undefined,
-    throttle: undefined,
-    eventsThrottle: undefined,
-    startOnMount: undefined,
-    startManually: undefined,
-    stopOnIdle: undefined,
-    crossTab: undefined,
-    name: undefined,
-    syncTimers: undefined,
-    leaderElection: undefined,
-    disabled: undefined,
-  };
-});
-
-const idleTimer = () => {
-  return renderHook(() => useIdleTimer(props));
-};
+import { renderWithClient } from "./utils";
 
 describe("SessionAlert", () => {
+  const queryCache = new QueryCache();
+  const queryClient = new QueryClient({ queryCache });
+
   test("should not render before promptTimeout", () => {
-    // render(<SessionAlert />);
-    // const sessionAlert = screen.getByTestId("session-alert-dialog");
-    // expect(sessionAlert).not.toBeInTheDocument();
-
-    // This is your dummy data
-    const dummyData = "Hello, World!";
-
-    // Render the dummy data in a paragraph element
-    const { getByText } = render(<p>{dummyData}</p>);
-
-    // Use the getByText function to get the element
-    const element = getByText(dummyData);
-
-    // Use toBeInTheDocument to check if the element is in the document
-    expect(element).toBeInTheDocument();
+    renderWithClient(
+      queryClient,
+      <MemoryRouter initialEntries={["/"]}>
+        <SessionAlertDialog
+          showSessionAlert={false}
+          isInSessionTimeoutScope={true}
+          isIdle={() => false}
+          sessionRemainingTimeout={1_000}
+          handleContinueSession={jest.fn()}
+          handleReturnToLogin={jest.fn()}
+        />
+      </MemoryRouter>
+    );
+    expect(screen.queryByTestId("session-alert-dialog")).toBeNull();
   });
 
-  test("should render alert message correctly after promptTimeout", () => {
-    // should have header h2 "សេចក្តីជូនដំណឹង!"
-    // should have description "Session របស់អ្នកហៀបនឹងផុតកំណត់ដោយសារអសកម្ម"
-    // should have the text "Session ផុតកំណត់ក្នុងរយៈពេល 00:07 នាទី"
-    // should have button of "បន្ត session"
+  test("should render alert message correctly after promptTimeout", async () => {
+    renderWithClient(
+      queryClient,
+      <MemoryRouter initialEntries={["/"]}>
+        <SessionAlertDialog
+          showSessionAlert={true}
+          isInSessionTimeoutScope={true}
+          isIdle={() => false}
+          sessionRemainingTimeout={1_000}
+          handleContinueSession={jest.fn()}
+          handleReturnToLogin={jest.fn()}
+        />
+      </MemoryRouter>
+    );
+
+    expect(screen.getByTestId("session-alert-dialog")).toBeInTheDocument();
+
+    expect(screen.getByText("Alert!")).toBeInTheDocument();
+    expect(
+      screen.getByText("Your session is about to expire due to inactivity")
+    ).toBeInTheDocument();
+    expect(screen.getByText("Continue Session")).toBeInTheDocument();
   });
 
   test("should render session timeout message correctly", () => {
-    // should have header h2 "Session ​បាន​ផុតកំណត់"
-    // should have description "Session របស់អ្នកបានផុតកំណត់ដោយសារអសកម្ម។ សូមចុចលើប៊ូតុងខាងក្រោមដើម្បីត្រឡប់ទៅអេក្រង់ចូល"
-    // should have button of "ត្រឡប់ទៅ Login"
-  });
+    renderWithClient(
+      queryClient,
+      <MemoryRouter initialEntries={["/"]}>
+        <SessionAlertDialog
+          showSessionAlert={true}
+          isInSessionTimeoutScope={true}
+          isIdle={() => true}
+          sessionRemainingTimeout={1_000}
+          handleContinueSession={jest.fn()}
+          handleReturnToLogin={jest.fn()}
+        />
+      </MemoryRouter>
+    );
 
-  test("popup message should not popup before time set prompt", () => {});
+    expect(screen.getByTestId("session-alert-dialog")).toBeInTheDocument();
+
+    expect(screen.getByText("Session Expired")).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "Your session has expired due to inactivity. Please click on the below button to return to the login screen."
+      )
+    ).toBeInTheDocument();
+    expect(screen.getByText("Return to Login")).toBeInTheDocument();
+  });
 });
