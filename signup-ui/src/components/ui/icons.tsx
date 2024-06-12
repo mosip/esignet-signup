@@ -6,6 +6,7 @@ import { ReactComponent as CameraDisabled } from "~assets/svg/camera-disabled.sv
 import { ReactComponent as Check } from "~assets/svg/check.svg";
 import { ReactComponent as ChevronDown } from "~assets/svg/chevron-down.svg";
 import { ReactComponent as ChevronUp } from "~assets/svg/chevron-up.svg";
+import { ReactComponent as ChevronUpSolid } from "~assets/svg/chevron-up-solid.svg";
 import { ReactComponent as EyeOff } from "~assets/svg/eye-off.svg";
 import { ReactComponent as Eye } from "~assets/svg/eye.svg";
 import { ReactComponent as Failed } from "~assets/svg/failed-icon.svg";
@@ -19,6 +20,7 @@ export const Icons = {
   check: Check,
   chevronDown: ChevronDown,
   chevronUp: ChevronUp,
+  chevronUpSolid: ChevronUpSolid,
   close: X,
   eye: Eye,
   eyeOff: EyeOff,

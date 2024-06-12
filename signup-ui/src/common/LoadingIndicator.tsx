@@ -27,12 +27,16 @@ const LoadingIndicator = ({
   msgParam = "",
   i18nKeyPrefix = "loadingMsgs",
   iconClass = "",
+  divClass = "",
 }: ILoadingIndicator) => {
   const { t } = useTranslation("translation", { keyPrefix: i18nKeyPrefix });
 
   return (
     <>
-      <div role="status" className="flex items-center justify-center">
+      <div
+        role="status"
+        className={cn("flex items-center justify-center", divClass)}
+      >
         <LoadingIcon
           style={dynamicSize[size]}
           className={cn(

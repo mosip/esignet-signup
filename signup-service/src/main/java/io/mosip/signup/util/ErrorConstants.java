@@ -46,4 +46,8 @@ public class ErrorConstants {
     public static final String SERVER_UNREACHABLE = "server_unreachable";
 
     public static final String INVALID_IDENTITY_VERIFIER_ID = "invalid_identity_verifier_id";
+
+    public static final String TOKEN_EXCHANGE_FAILED="token_exchange_failed";
+
+    public static final String PRIVATE_KEY_LOAD_FAILED="private_key_load_failed";
 }

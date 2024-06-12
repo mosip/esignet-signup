@@ -174,13 +174,14 @@ export const EkycVerificationPage = ({
 
   return (
     <>
-      {
+    {/* TODO: uncomment when needed */}
+      {/* {
         <SessionAlert
           isInSessionTimeoutScope={SCREENS_IN_SESSION_TIMEOUT_SCOPE.includes(
             step
           )}
         />
-      }
+      } */}
       {criticalError &&
         ["invalid_transaction", "identifier_already_registered"].includes(
           criticalError.errorCode

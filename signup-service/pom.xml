@@ -205,6 +205,14 @@
 			<artifactId>spring-messaging</artifactId>
 			<version>5.2.12.RELEASE</version>
 		</dependency>
+
+		<dependency>
+			<groupId>com.squareup.okhttp3</groupId>
+			<artifactId>mockwebserver</artifactId>
+			<version>3.14.9</version>
+			<scope>test</scope>
+		</dependency>
+
 	</dependencies>
 
 	<dependencyManagement>

@@ -50,16 +50,8 @@ export const VideoPreview = ({
   });
 
   // key info list for video preview page
-  const keyInfoList = [
-    "step_1",
-    "step_2",
-    "step_3",
-    "step_4",
-    "step_5",
-    "step_6",
-    "step_7",
-  ];
-
+  const keyInfoList = Object.keys(t("key_info"));
+  
   /**
    * Handle the proceed button click, move forward to video preview page
    * @param e event

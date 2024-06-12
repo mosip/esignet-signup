@@ -100,7 +100,11 @@ export const Language = () => {
         </DropdownMenu.Trigger>
         <DropdownMenu.Portal>
           <DropdownMenu.Content
-            className="data-[side=top]:animate-slideDownAndFade data-[side=right]:animate-slideLeftAndFade data-[side=bottom]:animate-slideUpAndFade data-[side=left]:animate-slideRightAndFade z-50 min-w-[220px] rounded-md bg-white px-3 py-2 shadow-[0px_10px_38px_-10px_rgba(0,0,0,_0.35),_0px_10px_20px_-15px_rgba(0,0,0,_0.2)] will-change-[opacity,transform]"
+            className={cn(
+              "relative  z-50  rounded-md border border-[#BCBCBC] bg-white px-3 py-2 shadow-md outline-0 ",
+              "data-[side=top]:animate-slideDownAndFade data-[side=right]:animate-slideLeftAndFade data-[side=bottom]:animate-slideUpAndFade data-[side=left]:animate-slideRightAndFade",
+              "top-[-0.5rem] min-w-[220px] will-change-[opacity,transform]"
+            )}
             sideOffset={5}
           >
             {Object.entries(languages_2Letters).map(([key, value]) => (
@@ -125,7 +129,9 @@ export const Language = () => {
                 </div>
               </DropdownMenu.Item>
             ))}
-            <DropdownMenu.Arrow className="fill-white" />
+            <DropdownMenu.Arrow asChild>
+              <Icons.chevronUpSolid className="stroke-[#bcbcbc] h-[7px]"/>
+            </DropdownMenu.Arrow>
           </DropdownMenu.Content>
         </DropdownMenu.Portal>
       </DropdownMenu.Root>
