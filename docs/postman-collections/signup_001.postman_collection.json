@@ -288,7 +288,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"requestTime\": \"{{$isoTimestamp}}\",\n    \"request\": {\n        \"identifier\": \"+855{{randomPhoneNumber}}\",\n        \"challengeInfo\": [{\n            \"challenge\": \"111111\",\n            \"format\": \"alpha-numeric\",\n            \"type\" : \"OTP\"\n        },{\n            \"challenge\": \"eyJmdWxsTmFtZSI6W3sibGFuZ3VhZ2UiOiJraG0iLCJ2YWx1ZSI6IuGeluGetuGegOGfkuGemeGen-GemOGfkuGehOGetuGej-GfiyJ9XX0\",\"format\":\"base64url-encoded-json\",\n                \"type\" : \"KBA\"\n        }]\n    }\n}",
+							"raw": "{\n    \"requestTime\": \"{{$isoTimestamp}}\",\n    \"request\": {\n        \"identifier\": \"+855{{randomPhoneNumber}}\",\n        \"challengeInfo\": [{\n            \"challenge\": \"111111\",\n            \"format\": \"alpha-numeric\",\n            \"type\" : \"OTP\"\n        },{\n            \"challenge\": \"eyJmdWxsTmFtZSI6W3sibGFuZ3VhZ2UiOiJraG0iLCJ2YWx1ZSI6IuGeluGetuGegOGfkuGemeGen-GemOGfkuGehOGetuGej-GfiyJ9XX0\",\"format\":\"base64url-encoded-json\",\n                \"type\" : \"KBI\"\n        }]\n    }\n}",
 							"options": {
 								"raw": {
 									"language": "json"

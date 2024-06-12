@@ -435,11 +435,11 @@ public class RegistrationService {
             throw new SignUpException(ErrorConstants.IDENTITY_INACTIVE);
         }
 
-        Optional<ChallengeInfo> kbaChallenge = verifyChallengeRequest.getChallengeInfo().stream()
-                .filter(challengeInfo -> challengeInfo.getType().equals("KBA"))
+        Optional<ChallengeInfo> kbiChallenge = verifyChallengeRequest.getChallengeInfo().stream()
+                .filter(challengeInfo -> challengeInfo.getType().equals("KBI"))
                 .findFirst();
-        if (kbaChallenge.isEmpty()){
-            throw new SignUpException(ErrorConstants.KBA_CHALLENGE_NOT_FOUND);
+        if (kbiChallenge.isEmpty()){
+            throw new SignUpException(ErrorConstants.KBI_CHALLENGE_NOT_FOUND);
         }
 
         List<LanguageTaggedValue> fullNameFromIdRepo = restResponseWrapper.getResponse().getIdentity()
@@ -447,12 +447,12 @@ public class RegistrationService {
                 .filter(fullName -> fullName.getLanguage().equals("khm"))
                 .collect(Collectors.toList());
 
-        String jsonObject = new String(Base64.getUrlDecoder().decode(kbaChallenge.get().getChallenge().getBytes()));
+        String jsonObject = new String(Base64.getUrlDecoder().decode(kbiChallenge.get().getChallenge().getBytes()));
         KnowledgeBaseChallenge knowledgeBaseChallenge = null;
         try {
             knowledgeBaseChallenge = objectMapper.readValue(jsonObject, KnowledgeBaseChallenge.class);
         }catch (JsonProcessingException exception){
-            throw new SignUpException(ErrorConstants.INVALID_KBA_CHALLENGE);
+            throw new SignUpException(ErrorConstants.INVALID_KBI_CHALLENGE);
         }
 
         if (!knowledgeBaseChallenge.getFullName().equals(fullNameFromIdRepo)){
@@ -681,7 +681,7 @@ public class RegistrationService {
             throw new SignUpException(ErrorConstants.CHALLENGE_FORMAT_AND_TYPE_MISMATCH);
         }
 
-        if (challengeInfo.getType().equals("KBA") && !challengeInfo.getFormat().equals("base64url-encoded-json")){
+        if (challengeInfo.getType().equals("KBI") && !challengeInfo.getFormat().equals("base64url-encoded-json")){
             throw new SignUpException(ErrorConstants.CHALLENGE_FORMAT_AND_TYPE_MISMATCH);
         }
     }

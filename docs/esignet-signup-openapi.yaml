@@ -719,7 +719,7 @@ components:
           type: string
           enum:
             - OTP
-            - KBA
+            - KBI
       required:
         - challenge
         - format
