@@ -7,6 +7,13 @@ import io.mosip.signup.exception.SignUpException;
 import io.mosip.signup.util.ErrorConstants;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
+import org.bouncycastle.asn1.x500.X500Name;
+import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
+import org.bouncycastle.cert.X509CertificateHolder;
+import org.bouncycastle.cert.X509v3CertificateBuilder;
+import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
+import org.bouncycastle.operator.ContentSigner;
+import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,10 +25,24 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.DefaultResourceLoader;
+import org.springframework.core.io.Resource;
 import org.springframework.test.util.ReflectionTestUtils;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
-
+import java.math.BigInteger;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.KeyStore;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.Certificate;
+import java.security.cert.X509Certificate;
+import java.util.Date;
 
 
 @RunWith(MockitoJUnitRunner.class)
@@ -36,20 +57,23 @@ public class IdentityVerificationServiceTest {
     private MockWebServer mockWebServer;
 
     @Before
-    public void setUp() throws IOException {
+    public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         mockWebServer = new MockWebServer();
 
         mockWebServer.start();
         int port=mockWebServer.getPort();
-        String oauthIssuerUri="http://localhost:"+port+"/signup.dev.mosio.net";
-        ReflectionTestUtils.setField(identityVerificationService, "privateKeyAlias", "privateKeyAlias");
+        String oauthIssuerUri="http://localhost:"+port+"/signup.dev.mosip.net";
+        ReflectionTestUtils.setField(identityVerificationService, "privateKeyAlias", "signup");
         ReflectionTestUtils.setField(identityVerificationService, "p12FilePath", "keystore.p12");
-        ReflectionTestUtils.setField(identityVerificationService, "audience", "http://localhost:"+port+"/signup.dev.mosio.net/v1/esignet/oauth/token");
-        ReflectionTestUtils.setField(identityVerificationService, "p12FilePassword", "password");
+        ReflectionTestUtils.setField(identityVerificationService, "audience", "http://localhost:"+port+"/signup.dev.mosip.net/v1/esignet/oauth/token");
+        ReflectionTestUtils.setField(identityVerificationService, "p12FilePassword", "mosip");
         ReflectionTestUtils.setField(identityVerificationService, "oauthClientId", "clientId");
         ReflectionTestUtils.setField(identityVerificationService, "oauthRedirectUri", "https://signup.dev.mosip.net/identity-verification");
         ReflectionTestUtils.setField(identityVerificationService, "oauthIssuerUri", oauthIssuerUri);
+        KeyPair keyPair = generateRSAKeyPair();
+        X509Certificate certificate = generateSelfSignedCertificate(keyPair);
+        createAndStoreKeyInP12(keyPair, certificate);
     }
 
     @AfterEach
@@ -59,8 +83,11 @@ public class IdentityVerificationServiceTest {
 
 
     @Test
-    public void initiateIdentityVerification_withValidDetails_thenPass()  {
+    public void initiateIdentityVerification_withValidDetails_thenPass() throws IOException {
 
+        ClassPathResource resource = new ClassPathResource("keystore.p12");
+        Path absolutePath = Paths.get(resource.getURI());
+        ReflectionTestUtils.setField(identityVerificationService, "p12FilePath", absolutePath.toString());
         InitiateIdentityVerificationRequest request = new InitiateIdentityVerificationRequest();
         request.setAuthorizationCode("authCode");
         request.setState("state");
@@ -123,6 +150,45 @@ public class IdentityVerificationServiceTest {
             identityVerificationService.initiateIdentityVerification(request,null);
         }catch (Exception e) {
             Assert.assertEquals(ErrorConstants.TOKEN_EXCHANGE_FAILED, e.getMessage());
+        }
+    }
+
+    private KeyPair generateRSAKeyPair() throws NoSuchAlgorithmException {
+        KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
+        keyGen.initialize(2048);
+        return keyGen.generateKeyPair();
+    }
+
+    private X509Certificate generateSelfSignedCertificate(KeyPair keyPair) throws Exception {
+        long now = System.currentTimeMillis();
+        Date startDate = new Date(now);
+
+        X500Name dnName = new X500Name("CN=Test");
+        BigInteger certSerialNumber = new BigInteger(Long.toString(now));
+        Date endDate = new Date(now + 365 * 24 * 60 * 60 * 1000L);
+
+        // Convert PublicKey to SubjectPublicKeyInfo
+        SubjectPublicKeyInfo publicKeyInfo = SubjectPublicKeyInfo.getInstance(keyPair.getPublic().getEncoded());
+
+        ContentSigner contentSigner = new JcaContentSignerBuilder("SHA256withRSA").build(keyPair.getPrivate());
+        X509v3CertificateBuilder certBuilder = new X509v3CertificateBuilder(dnName, certSerialNumber, startDate, endDate, dnName, publicKeyInfo);
+        X509CertificateHolder certHolder = certBuilder.build(contentSigner);
+
+        return new JcaX509CertificateConverter().getCertificate(certHolder);
+    }
+
+    private void createAndStoreKeyInP12(KeyPair keyPair, X509Certificate certificate) throws Exception {
+        // Initialize a KeyStore of type PKCS12
+        KeyStore keyStore = KeyStore.getInstance("PKCS12");
+        keyStore.load(null, null);
+        keyStore.setKeyEntry("signup", keyPair.getPrivate(), "mosip".toCharArray(), new Certificate[]{certificate});
+        DefaultResourceLoader resourceLoader = new DefaultResourceLoader();
+        Resource resourceDirectory = resourceLoader.getResource("classpath:");
+        File directory = resourceDirectory.getFile();
+        // Create the keystore.p12 file in the resources directory
+        File file = new File(directory, "keystore.p12");
+        try (FileOutputStream fos = new FileOutputStream(file)) {
+            keyStore.store(fos, "mosip".toCharArray());
         }
     }
 }

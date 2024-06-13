@@ -29,6 +29,9 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.io.InputStream;
 import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.KeyStore;
 import java.security.PrivateKey;
 import java.security.interfaces.RSAPrivateKey;
@@ -208,11 +211,14 @@ public class IdentityVerificationService {
     }
 
     private PrivateKey loadPrivateKey(String alias, String cryptoPassword) {
-        try (InputStream inputStream =  getClass().getClassLoader().getResourceAsStream(p12FilePath)) {
-            KeyStore keyStore = KeyStore.getInstance("PKCS12");
-            keyStore.load(inputStream, cryptoPassword.toCharArray());
-            // Retrieve the private key
-            return (PrivateKey) keyStore.getKey(alias, cryptoPassword.toCharArray());
+        try {
+            Path path = Paths.get(p12FilePath);
+            try (InputStream inputStream = Files.newInputStream(path)) {
+                KeyStore keyStore = KeyStore.getInstance("PKCS12");
+                keyStore.load(inputStream, cryptoPassword.toCharArray());
+                // Retrieve the private key
+                return (PrivateKey) keyStore.getKey(alias, cryptoPassword.toCharArray());
+            }
         } catch (Exception e) {
             log.error("Failed to load private key from keystore", e);
             throw new SignUpException(ErrorConstants.PRIVATE_KEY_LOAD_FAILED);
