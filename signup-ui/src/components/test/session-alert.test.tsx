@@ -3,7 +3,6 @@ import { screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 
 import { QueryCache, QueryClient } from "@tanstack/react-query";
-import { MemoryRouter } from "react-router-dom";
 
 import { SessionAlertDialog } from "~components/session-alert";
 
@@ -16,16 +15,14 @@ describe("SessionAlert", () => {
   test("should not render before promptTimeout", () => {
     renderWithClient(
       queryClient,
-      <MemoryRouter initialEntries={["/"]}>
-        <SessionAlertDialog
-          showSessionAlert={false}
-          isInSessionTimeoutScope={true}
-          isIdle={() => false}
-          sessionRemainingTimeout={1_000}
-          handleContinueSession={jest.fn()}
-          handleReturnToLogin={jest.fn()}
-        />
-      </MemoryRouter>
+      <SessionAlertDialog
+        showSessionAlert={false}
+        isInSessionTimeoutScope={true}
+        isIdle={() => false}
+        sessionRemainingTimeout={1_000}
+        handleContinueSession={jest.fn()}
+        handleReturnToLogin={jest.fn()}
+      />
     );
     expect(screen.queryByTestId("session-alert-dialog")).toBeNull();
   });
@@ -33,16 +30,14 @@ describe("SessionAlert", () => {
   test("should render alert message correctly after promptTimeout", async () => {
     renderWithClient(
       queryClient,
-      <MemoryRouter initialEntries={["/"]}>
-        <SessionAlertDialog
-          showSessionAlert={true}
-          isInSessionTimeoutScope={true}
-          isIdle={() => false}
-          sessionRemainingTimeout={1_000}
-          handleContinueSession={jest.fn()}
-          handleReturnToLogin={jest.fn()}
-        />
-      </MemoryRouter>
+      <SessionAlertDialog
+        showSessionAlert={true}
+        isInSessionTimeoutScope={true}
+        isIdle={() => false}
+        sessionRemainingTimeout={1_000}
+        handleContinueSession={jest.fn()}
+        handleReturnToLogin={jest.fn()}
+      />
     );
 
     expect(screen.getByTestId("session-alert-dialog")).toBeInTheDocument();
@@ -57,16 +52,14 @@ describe("SessionAlert", () => {
   test("should render session timeout message correctly", () => {
     renderWithClient(
       queryClient,
-      <MemoryRouter initialEntries={["/"]}>
-        <SessionAlertDialog
-          showSessionAlert={true}
-          isInSessionTimeoutScope={true}
-          isIdle={() => true}
-          sessionRemainingTimeout={1_000}
-          handleContinueSession={jest.fn()}
-          handleReturnToLogin={jest.fn()}
-        />
-      </MemoryRouter>
+      <SessionAlertDialog
+        showSessionAlert={true}
+        isInSessionTimeoutScope={true}
+        isIdle={() => true}
+        sessionRemainingTimeout={1_000}
+        handleContinueSession={jest.fn()}
+        handleReturnToLogin={jest.fn()}
+      />
     );
 
     expect(screen.getByTestId("session-alert-dialog")).toBeInTheDocument();
