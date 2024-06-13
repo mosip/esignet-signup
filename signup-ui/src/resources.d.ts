@@ -72,6 +72,8 @@ interface Resources {
     full_name_validation: string;
     full_name_all_spaces_validation: string;
     full_name_in_lng_validation: string;
+    full_name_min_validation: string;
+    full_name_max_validation: string;
     password_validation: string;
     password_validation_must_match: string;
     register_password_validation_must_match: string;
