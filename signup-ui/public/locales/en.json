@@ -71,6 +71,8 @@
   "full_name_validation": "Please enter a valid name",
   "full_name_all_spaces_validation": "Please enter a valid name.",
   "full_name_in_lng_validation": "Full Name has to be in Khmer only.",
+  "full_name_min_validation": "Full Name has to be greater than or equal to {minLength} characters.",
+  "full_name_max_validation": "Full Name has to be less than or equal to {maxLength} characters.",
   "password_validation": "Password does not meet the password policy. Click on \"i\" to know more.",
   "password_validation_must_match": "New Password and Confirm New Password do not match.",
   "register_password_validation_must_match": "Password and Confirm Password do not match.",
