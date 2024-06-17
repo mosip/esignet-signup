@@ -16,10 +16,10 @@ export const checkBrowserCompatible = (
 ) => {
   const userAgent = navigator.userAgent;
   const browserVersionRegex = {
-    chrome: /Chrome\/(\d+\.\d+\.\d+\.\d+)/,
-    firefox: /Firefox\/(\d+\.\d+)/,
     edge: /Edg\/(\d+\.\d+\.\d+\.\d+)/,
     safari: /Version\/(\d+\.\d+)/,
+    firefox: /Firefox\/(\d+\.\d+)/,
+    chrome: /Chrome\/(\d+\.\d+\.\d+\.\d+)/,
   };
 
   for (const [browser, regex] of Object.entries(browserVersionRegex)) {
