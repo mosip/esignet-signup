@@ -692,7 +692,7 @@ public class RegistrationServiceTest {
         ChallengeInfo challengeInfoKBI = new ChallengeInfo();
         challengeInfoKBI.setFormat("base64url-encoded-json");
         challengeInfoKBI.setChallenge("eyAiZnVsbE5hbWUiOiBbeyJsYW5ndWFnZSI6ImtobSIsICJ2YWx1ZSI6ICLhnoThnpPhn4sg4Z6Y4Z-J4Z-B4Z6E4Z6b4Z624Z6EIn1dIH0");
-        challengeInfoKBI.setType("kbi");
+        challengeInfoKBI.setType("KBI");
 
         ChallengeInfo challengeInfoOTP = new ChallengeInfo();
         challengeInfoOTP.setFormat("alpha-numeric");
