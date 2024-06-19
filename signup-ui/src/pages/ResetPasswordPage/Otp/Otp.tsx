@@ -267,7 +267,7 @@ export const Otp = ({ methods, settings }: OtpProps) => {
               {
                 challenge: base64FullName(getValues("fullname"), "khm"),
                 format: "base64url-encoded-json",
-                type: "KBA",
+                type: "KBI",
               },
             ],
           },

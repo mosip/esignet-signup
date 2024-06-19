@@ -340,14 +340,14 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    public void doVerifyChallengeInResetPassword_withKBAMismatchFormat_throwChallengeFormatAndTypeMismatch() {
-        ChallengeInfo challengeInfoKBA = new ChallengeInfo();
-        challengeInfoKBA.setFormat("base64url-json");
-        challengeInfoKBA.setChallenge("111111");
-        challengeInfoKBA.setType("KBA");
+    public void doVerifyChallengeInResetPassword_withKBIMismatchFormat_throwChallengeFormatAndTypeMismatch() {
+        ChallengeInfo challengeInfoKBI = new ChallengeInfo();
+        challengeInfoKBI.setFormat("base64url-json");
+        challengeInfoKBI.setChallenge("111111");
+        challengeInfoKBI.setType("KBI");
 
         List<ChallengeInfo> challengeList = new ArrayList<>();
-        challengeList.add(challengeInfoKBA);
+        challengeList.add(challengeInfoKBI);
 
         VerifyChallengeRequest verifyChallengeRequest = new VerifyChallengeRequest();
         verifyChallengeRequest.setIdentifier("123456");
@@ -356,7 +356,7 @@ public class RegistrationServiceTest {
         String mockTransactionId = "mock-transactionId";
         RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85512123123", Purpose.RESET_PASSWORD);
         String challengeHash = IdentityProviderUtil.generateB64EncodedHash(IdentityProviderUtil.ALGO_SHA3_256,
-                challengeInfoKBA.getChallenge());
+                challengeInfoKBI.getChallenge());
         registrationTransaction.setChallengeHash(challengeHash);
         registrationTransaction.setIdentifier(verifyChallengeRequest.getIdentifier());
         registrationTransaction.setLastRetryAt(LocalDateTime.now(ZoneOffset.UTC));
@@ -371,12 +371,12 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    public void doVerifyChallengeInResetPassword_withInvalidKBAChallenge_throwInvalidKBAChallenge() {
+    public void doVerifyChallengeInResetPassword_withInvalidKBIChallenge_throwInvalidKBIChallenge() {
 
-        ChallengeInfo challengeInfoKBA = new ChallengeInfo();
-        challengeInfoKBA.setFormat("base64url-encoded-json");
-        challengeInfoKBA.setChallenge("eyAiZnVsbE5hbWUiOiBbeyJsYW5ndWFnZSI6ImtobSIsICJ2YWx1ZSI6ICLhnoThnpPhn4sg4Z6Y4Z==");
-        challengeInfoKBA.setType("KBA");
+        ChallengeInfo challengeInfoKBI = new ChallengeInfo();
+        challengeInfoKBI.setFormat("base64url-encoded-json");
+        challengeInfoKBI.setChallenge("eyAiZnVsbE5hbWUiOiBbeyJsYW5ndWFnZSI6ImtobSIsICJ2YWx1ZSI6ICLhnoThnpPhn4sg4Z6Y4Z==");
+        challengeInfoKBI.setType("KBI");
 
         ChallengeInfo challengeInfoOTP = new ChallengeInfo();
         challengeInfoOTP.setFormat("alpha-numeric");
@@ -384,7 +384,7 @@ public class RegistrationServiceTest {
         challengeInfoOTP.setType("OTP");
 
         List<ChallengeInfo> challengeList = new ArrayList<>();
-        challengeList.add(challengeInfoKBA);
+        challengeList.add(challengeInfoKBI);
         challengeList.add(challengeInfoOTP);
 
         VerifyChallengeRequest verifyChallengeRequest = new VerifyChallengeRequest();
@@ -425,17 +425,17 @@ public class RegistrationServiceTest {
             registrationService.verifyChallenge(verifyChallengeRequest, mockTransactionId);
             Assert.fail();
         } catch (SignUpException signUpException) {
-            Assert.assertEquals("invalid_KBA_challenge", signUpException.getErrorCode());
+            Assert.assertEquals("invalid_KBI_challenge", signUpException.getErrorCode());
         }
     }
 
     @Test
     public void doVerifyChallengeInResetPassword_withFullNameMismatch_throwKnowledgeBaseMismatch() {
 
-        ChallengeInfo challengeInfoKBA = new ChallengeInfo();
-        challengeInfoKBA.setFormat("base64url-encoded-json");
-        challengeInfoKBA.setChallenge("eyAiZnVsbE5hbWUiOiBbeyJsYW5ndWFnZSI6ImtobSIsICJ2YWx1ZSI6ICJNYW5val9raG0ifV0gfQ==");
-        challengeInfoKBA.setType("KBA");
+        ChallengeInfo challengeInfoKBI = new ChallengeInfo();
+        challengeInfoKBI.setFormat("base64url-encoded-json");
+        challengeInfoKBI.setChallenge("eyAiZnVsbE5hbWUiOiBbeyJsYW5ndWFnZSI6ImtobSIsICJ2YWx1ZSI6ICJNYW5val9raG0ifV0gfQ==");
+        challengeInfoKBI.setType("KBI");
 
         ChallengeInfo challengeInfoOTP = new ChallengeInfo();
         challengeInfoOTP.setFormat("alpha-numeric");
@@ -443,7 +443,7 @@ public class RegistrationServiceTest {
         challengeInfoOTP.setType("OTP");
 
         List<ChallengeInfo> challengeList = new ArrayList<>();
-        challengeList.add(challengeInfoKBA);
+        challengeList.add(challengeInfoKBI);
         challengeList.add(challengeInfoOTP);
 
         VerifyChallengeRequest verifyChallengeRequest = new VerifyChallengeRequest();
@@ -491,10 +491,10 @@ public class RegistrationServiceTest {
     @Test
     public void doVerifyChallengeInResetPassword_thenSuccess() {
 
-        ChallengeInfo challengeInfoKBA = new ChallengeInfo();
-        challengeInfoKBA.setFormat("base64url-encoded-json");
-        challengeInfoKBA.setChallenge("eyAiZnVsbE5hbWUiOiBbeyJsYW5ndWFnZSI6ImtobSIsICJ2YWx1ZSI6ICLhnoThnpPhn4sg4Z6Y4Z-J4Z-B4Z6E4Z6b4Z624Z6EIn1dIH0");
-        challengeInfoKBA.setType("KBA");
+        ChallengeInfo challengeInfoKBI = new ChallengeInfo();
+        challengeInfoKBI.setFormat("base64url-encoded-json");
+        challengeInfoKBI.setChallenge("eyAiZnVsbE5hbWUiOiBbeyJsYW5ndWFnZSI6ImtobSIsICJ2YWx1ZSI6ICLhnoThnpPhn4sg4Z6Y4Z-J4Z-B4Z6E4Z6b4Z624Z6EIn1dIH0");
+        challengeInfoKBI.setType("KBI");
 
         ChallengeInfo challengeInfoOTP = new ChallengeInfo();
         challengeInfoOTP.setFormat("alpha-numeric");
@@ -502,7 +502,7 @@ public class RegistrationServiceTest {
         challengeInfoOTP.setType("OTP");
 
         List<ChallengeInfo> challengeList = new ArrayList<>();
-        challengeList.add(challengeInfoKBA);
+        challengeList.add(challengeInfoKBI);
         challengeList.add(challengeInfoOTP);
 
         VerifyChallengeRequest verifyChallengeRequest = new VerifyChallengeRequest();
@@ -579,10 +579,10 @@ public class RegistrationServiceTest {
     @Test
     public void doVerifyChallengeInResetPassword_withInactiveIdentity_throwIdentityInactive() {
 
-        ChallengeInfo challengeInfoKBA = new ChallengeInfo();
-        challengeInfoKBA.setFormat("base64url-encoded-json");
-        challengeInfoKBA.setChallenge("eyAiZnVsbE5hbWUiOiBbeyJsYW5ndWFnZSI6ImtobSIsICJ2YWx1ZSI6ICLhnoThnpPhn4sg4Z6Y4Z-J4Z-B4Z6E4Z6b4Z624Z6EIn1dIH0");
-        challengeInfoKBA.setType("KBA");
+        ChallengeInfo challengeInfoKBI = new ChallengeInfo();
+        challengeInfoKBI.setFormat("base64url-encoded-json");
+        challengeInfoKBI.setChallenge("eyAiZnVsbE5hbWUiOiBbeyJsYW5ndWFnZSI6ImtobSIsICJ2YWx1ZSI6ICLhnoThnpPhn4sg4Z6Y4Z-J4Z-B4Z6E4Z6b4Z624Z6EIn1dIH0");
+        challengeInfoKBI.setType("KBI");
 
         ChallengeInfo challengeInfoOTP = new ChallengeInfo();
         challengeInfoOTP.setFormat("alpha-numeric");
@@ -590,7 +590,7 @@ public class RegistrationServiceTest {
         challengeInfoOTP.setType("OTP");
 
         List<ChallengeInfo> challengeList = new ArrayList<>();
-        challengeList.add(challengeInfoKBA);
+        challengeList.add(challengeInfoKBI);
         challengeList.add(challengeInfoOTP);
 
         VerifyChallengeRequest verifyChallengeRequest = new VerifyChallengeRequest();
@@ -635,7 +635,7 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    public void doVerifyChallengeInResetPassword_withKBAChallengeNotFound_throwIdentityInactive() {
+    public void doVerifyChallengeInResetPassword_withKBIChallengeNotFound_throwIdentityInactive() {
 
         ChallengeInfo challengeInfoOTP = new ChallengeInfo();
         challengeInfoOTP.setFormat("alpha-numeric");
@@ -689,10 +689,10 @@ public class RegistrationServiceTest {
     @Test
     public void doVerifyChallengeInResetPassword_whenGetIdentityNullResponse_throwFetchFailed() {
 
-        ChallengeInfo challengeInfoKBA = new ChallengeInfo();
-        challengeInfoKBA.setFormat("base64url-encoded-json");
-        challengeInfoKBA.setChallenge("eyAiZnVsbE5hbWUiOiBbeyJsYW5ndWFnZSI6ImtobSIsICJ2YWx1ZSI6ICLhnoThnpPhn4sg4Z6Y4Z-J4Z-B4Z6E4Z6b4Z624Z6EIn1dIH0");
-        challengeInfoKBA.setType("KBA");
+        ChallengeInfo challengeInfoKBI = new ChallengeInfo();
+        challengeInfoKBI.setFormat("base64url-encoded-json");
+        challengeInfoKBI.setChallenge("eyAiZnVsbE5hbWUiOiBbeyJsYW5ndWFnZSI6ImtobSIsICJ2YWx1ZSI6ICLhnoThnpPhn4sg4Z6Y4Z-J4Z-B4Z6E4Z6b4Z624Z6EIn1dIH0");
+        challengeInfoKBI.setType("KBI");
 
         ChallengeInfo challengeInfoOTP = new ChallengeInfo();
         challengeInfoOTP.setFormat("alpha-numeric");
@@ -700,7 +700,7 @@ public class RegistrationServiceTest {
         challengeInfoOTP.setType("OTP");
 
         List<ChallengeInfo> challengeList = new ArrayList<>();
-        challengeList.add(challengeInfoKBA);
+        challengeList.add(challengeInfoKBI);
         challengeList.add(challengeInfoOTP);
 
         VerifyChallengeRequest verifyChallengeRequest = new VerifyChallengeRequest();

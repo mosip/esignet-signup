@@ -35,8 +35,8 @@ public class ErrorConstants {
     public static final String UNSUPPORTED_PURPOSE = "unsupported_purpose";
     public static final String IDENTIFIER_ALREADY_REGISTERED = "identifier_already_registered";
     public static final String IDENTIFIER_NOT_FOUND = "identifier_not_found";
-    public static final String INVALID_KBA_CHALLENGE = "invalid_KBA_challenge";
-    public static final String KBA_CHALLENGE_NOT_FOUND = "kba_challenge_not_found";
+    public static final String INVALID_KBI_CHALLENGE = "invalid_KBI_challenge";
+    public static final String KBI_CHALLENGE_NOT_FOUND = "kbi_challenge_not_found";
     public static final String IDENTITY_INACTIVE = "identity_inactive";
     public static final String FETCH_IDENTITY_FAILED = "fetch_identity_failed";
     public static final String CHALLENGE_FORMAT_AND_TYPE_MISMATCH = "challenge_format_and_type_mismatch";
