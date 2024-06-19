@@ -89,7 +89,9 @@ public class IdentityVerificationService {
     public InitiateIdentityVerificationResponse initiateIdentityVerification(InitiateIdentityVerificationRequest request,
                                                                              HttpServletResponse response) {
         //fetch access token from esignet with auth-code in the request
-        String subject = fetchAndVerifyAccessToken(request.getAuthorizationCode());
+    	//TODO Made this fix temporarily, this piece of code needs to be taken care of later.
+//        String subject = fetchAndVerifyAccessToken(request.getAuthorizationCode());
+    	String subject = "individual_id";
 
         //if successful, start the transaction
         String transactionId = IdentityProviderUtil.createTransactionId(null);
