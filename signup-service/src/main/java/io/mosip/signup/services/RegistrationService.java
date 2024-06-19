@@ -650,6 +650,7 @@ public class RegistrationService {
 
     private void addVerifiedCookieInResponse(String transactionId, int maxAge) {
         Cookie cookie = new Cookie(SignUpConstants.VERIFIED_TRANSACTION_ID, transactionId);
+        cookie.setPath("/v1/signup/");
         cookie.setMaxAge(maxAge);
         cookie.setHttpOnly(true);
         cookie.setSecure(true);
