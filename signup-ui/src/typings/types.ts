@@ -341,7 +341,7 @@ export type SlotAvailabilityRequestDto = BaseRequestDto & {
   request: {
     verifierId: string;
     consent: EKYCConsentStatus;
-    disabilityType: DisabilityType;
+    disabilityType?: DisabilityType;
   };
 };
 
