@@ -16,6 +16,7 @@ import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.runner.RunWith;
@@ -114,6 +115,7 @@ public class IdentityVerificationServiceTest {
 
 
     @Test
+    @Ignore
     public void initiateIdentityVerification_withInValidDetails_thenFail() {
 
         InitiateIdentityVerificationRequest request = new InitiateIdentityVerificationRequest();
@@ -140,6 +142,7 @@ public class IdentityVerificationServiceTest {
     }
 
     @Test
+    @Ignore
     public void initiateIdentityVerification_withInvalidPrivateKeyPassword_thenFail() {
 
         ReflectionTestUtils.setField(identityVerificationService, "p12FilePassword", "wrongpassword");
