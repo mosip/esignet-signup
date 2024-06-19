@@ -32,9 +32,9 @@ export const SlotChecking = () => {
     const slotAvailabilityRequestDto: SlotAvailabilityRequestDto = {
       requestTime: new Date().toISOString(),
       request: {
-        verifierId: kycProvider.id,
+        verifierId: kycProvider?.id ?? "",
         consent: "ACCEPTED",
-        disabilityType: null,
+        //disabilityType: "VISION",
       },
     };
 
