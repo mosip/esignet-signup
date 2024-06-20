@@ -12,9 +12,9 @@ export const SlotUnavailableAlert = () => {
 
   return (
     <Step>
-      <StepContent>
+      <StepContent data-testid="slot-unavailable">
         <div className="flex flex-col items-center gap-4 py-4">
-          <Icons.failed />
+          <Icons.failed data-testid="slot-unavailable-failed-icon" />
           <div className="text-center text-lg font-semibold">
             {t("slot_unavailable.header")}
           </div>
