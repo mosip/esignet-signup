@@ -153,7 +153,7 @@ public class IdentityVerificationServiceTest {
 
         ReflectionTestUtils.setField(identityVerificationService, "maxSlotPoolSize", 100);
         String transactionId = "testTransactionId";
-        SlotRequest slotRequest = new SlotRequest(); // Assume this has a valid verifierId set
+        SlotRequest slotRequest = new SlotRequest();
         slotRequest.setVerifierId("testVerifierId");
 
         IdentityVerificationTransaction identityVerificationTransaction = new IdentityVerificationTransaction();
@@ -167,7 +167,7 @@ public class IdentityVerificationServiceTest {
         identityVerifierDetails[0] = identityVerifierDetail;
 
         Mockito.when(cacheUtilService.getIdentityVerifierDetails()).thenReturn(identityVerifierDetails);
-        Mockito.when(cacheUtilService.countEntriesInSlotAllotted()).thenReturn(10L); // Assuming maxSlotPoolSize > 10
+        Mockito.when(cacheUtilService.countEntriesInSlotAllotted()).thenReturn(10L);
         Mockito.when(cacheUtilService.setAllottedIdentityVerificationTransaction(Mockito.anyString(), Mockito.anyString(), Mockito.any())).thenReturn(null); // Assuming maxSlotPoolSize > 10
         HttpServletResponse httpServletResponse = Mockito.mock(HttpServletResponse.class);
         // Execute
@@ -175,7 +175,7 @@ public class IdentityVerificationServiceTest {
 
         Assert.assertNotNull(result);
         Assert.assertNotNull(result);
-        Assert.assertEquals(identityVerificationTransaction.getSlotId(), result.getSlotId()); // Assuming getSlotId() returns transactionId for simplicity
+        Assert.assertEquals(identityVerificationTransaction.getSlotId(), result.getSlotId());
 
     }
 
@@ -191,7 +191,7 @@ public class IdentityVerificationServiceTest {
 
     @Test
     public void getSlotWithInValidVerifierId_thenFail() throws SignatureException {
-        SlotRequest slotRequest = new SlotRequest(); // Assume this has a valid verifierId set
+        SlotRequest slotRequest = new SlotRequest();
         slotRequest.setVerifierId("testVerifierId2");
 
         IdentityVerificationTransaction identityVerificationTransaction = new IdentityVerificationTransaction();
@@ -217,7 +217,7 @@ public class IdentityVerificationServiceTest {
     public void getSlotWithFullSlot_thenFail() throws SignatureException {
 
         ReflectionTestUtils.setField(identityVerificationService, "maxSlotPoolSize", 100L);
-        SlotRequest slotRequest = new SlotRequest(); // Assume this has a valid verifierId set
+        SlotRequest slotRequest = new SlotRequest();
         slotRequest.setVerifierId("testVerifierId");
 
         IdentityVerificationTransaction identityVerificationTransaction = new IdentityVerificationTransaction();
@@ -231,7 +231,7 @@ public class IdentityVerificationServiceTest {
         identityVerifierDetails[0] = identityVerifierDetail;
 
         Mockito.when(cacheUtilService.getIdentityVerifierDetails()).thenReturn(identityVerifierDetails);
-        Mockito.when(cacheUtilService.countEntriesInSlotAllotted()).thenReturn(100L); // Assuming maxSlotPoolSize > 10
+        Mockito.when(cacheUtilService.countEntriesInSlotAllotted()).thenReturn(100L);
         // Execute
         try{
             identityVerificationService.getSlot("transactionId", slotRequest, null);

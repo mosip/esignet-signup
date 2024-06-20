@@ -35,18 +35,18 @@ public class CacheUtilService {
     public long countEntriesInSlotAllotted(){
         String pattern = SignUpConstants.SLOT_ALLOTTED + ":*";
         ScanOptions options = ScanOptions.scanOptions().match(pattern).build();
-        long count = 0;
         try (Cursor<byte[]> cursor = redisTemplate.executeWithStickyConnection(connection ->
                 connection.scan(options))) {
+            long count = 0;
             while (cursor.hasNext()) {
                 cursor.next();
                 count++;
             }
+            return count;
         } catch (Exception e) {
             log.error("Error while counting entries of allotted slot", e);
             throw new SignUpException(ErrorConstants.SLOT_NOT_AVAILABLE);
         }
-        return count;
     }
 
     //---Setter---
