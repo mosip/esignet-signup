@@ -19,4 +19,6 @@ public class SignUpConstants {
     public static final String REGISTRATION_SMS_NOTIFICATION_TEMPLATE_KEY = "mosip.signup.sms-notification-template.registration";
     public static final String FORGOT_PASSWORD_SMS_NOTIFICATION_TEMPLATE_KEY = "mosip.signup.sms-notification-template.forgot-password";
     public static final String ACTIVATED = "ACTIVATED";
+    public static final String SLOT_ALLOTTED = "slot_allotted";
+    public static final String SLOT_ID = "slot_id";
 }

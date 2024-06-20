@@ -4,7 +4,9 @@ import io.mosip.esignet.core.util.IdentityProviderUtil;
 import io.mosip.signup.dto.IdentityVerificationTransaction;
 import io.mosip.signup.dto.IdentityVerifierDetail;
 import io.mosip.signup.dto.RegistrationTransaction;
+import io.mosip.signup.exception.SignUpException;
 import io.mosip.signup.helper.CryptoHelper;
+import io.mosip.signup.util.ErrorConstants;
 import io.mosip.signup.util.SignUpConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +14,11 @@ import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.redis.core.Cursor;
+import org.springframework.data.redis.core.ScanOptions;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
-
 import java.util.Locale;
-import java.util.Objects;
 
 @Slf4j
 @Service
@@ -25,6 +28,26 @@ public class CacheUtilService {
 
     @Autowired
     CacheManager cacheManager;
+
+    @Autowired
+    private StringRedisTemplate redisTemplate;
+
+    public long countEntriesInSlotAllotted(){
+        String pattern = SignUpConstants.SLOT_ALLOTTED + ":*";
+        ScanOptions options = ScanOptions.scanOptions().match(pattern).build();
+        long count = 0;
+        try (Cursor<byte[]> cursor = redisTemplate.executeWithStickyConnection(connection ->
+                connection.scan(options))) {
+            while (cursor.hasNext()) {
+                cursor.next();
+                count++;
+            }
+        } catch (Exception e) {
+            log.error("Error while counting entries of allotted slot", e);
+            throw new SignUpException(ErrorConstants.SLOT_NOT_AVAILABLE);
+        }
+        return count;
+    }
 
     //---Setter---
 
@@ -116,5 +139,16 @@ public class CacheUtilService {
 
     public IdentityVerificationTransaction getIdentityVerificationTransaction(String transactionId) {
         return cacheManager.getCache(SignUpConstants.IDENTITY_VERIFICATION).get(transactionId, IdentityVerificationTransaction.class); //NOSONAR getCache() will not be returning null here.
+    }
+
+    @Cacheable(value = SignUpConstants.SLOT_ALLOTTED, key = "#slotId")
+    @CacheEvict(value = SignUpConstants.IDENTITY_VERIFICATION, key = "#transactionId")
+    public IdentityVerificationTransaction setAllottedIdentityVerificationTransaction(String transactionId, String slotId,
+                                                                              IdentityVerificationTransaction identityVerificationTransaction) {
+        return identityVerificationTransaction;
+    }
+
+    @CacheEvict(value = SignUpConstants.SLOT_ALLOTTED, key = "#transactionId")
+    public void removeAllottedIdentityVerificationTransaction(String transactionId) {
     }
 }

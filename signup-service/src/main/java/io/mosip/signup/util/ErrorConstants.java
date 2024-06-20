@@ -50,4 +50,6 @@ public class ErrorConstants {
     public static final String TOKEN_EXCHANGE_FAILED="token_exchange_failed";
 
     public static final String PRIVATE_KEY_LOAD_FAILED="private_key_load_failed";
+
+    public static final String SLOT_NOT_AVAILABLE="slot_not_available";
 }

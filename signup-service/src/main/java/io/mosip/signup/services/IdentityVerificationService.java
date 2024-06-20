@@ -74,6 +74,9 @@ public class IdentityVerificationService {
     @Value("${mosip.signup.oauth.audience}")
     private String audience;
 
+    @Value("${mosip.signup.slot.max.pool.size}")
+    private long maxSlotPoolSize;
+
     @Autowired
     private RestTemplate restTemplate;
 
@@ -141,28 +144,39 @@ public class IdentityVerificationService {
      * @param slotRequest
      * @return
      */
-    public SlotResponse getSlot(String transactionId, SlotRequest slotRequest) {
-        IdentityVerificationTransaction transaction = cacheUtilService.getIdentityVerificationTransaction(transactionId);
-        if(transaction == null)
+    public SlotResponse  getSlot(String transactionId, SlotRequest slotRequest,HttpServletResponse response) {
+       IdentityVerificationTransaction transaction = cacheUtilService.getIdentityVerificationTransaction(transactionId);
+        if (transaction == null)
             throw new InvalidTransactionException();
 
         IdentityVerifierDetail[] verifierDetails = cacheUtilService.getIdentityVerifierDetails();
         Optional<IdentityVerifierDetail> result = Arrays.stream(verifierDetails)
-                .filter( idv -> idv.isActive() && idv.getId().equals(slotRequest.getVerifierId()))
+                .filter(idv -> idv.isActive() && idv.getId().equals(slotRequest.getVerifierId()))
                 .findFirst();
 
-        if(!result.isPresent())
+        if (!result.isPresent())
             throw new SignUpException(ErrorConstants.INVALID_IDENTITY_VERIFIER_ID);
 
-        //save verifierId in  cache
-        //Check for current queue size
-        //return slot if queue size is less than the upper limit
-        //If not available throw exception
-
-        log.info("Slot available and assigned to the requested transaction {}", transactionId);
-        SlotResponse slotResponse = new SlotResponse();
-        slotResponse.setSlotId(transaction.getSlotId());
-        return slotResponse;
+        try{
+            long currentSlotPoolSize =cacheUtilService.countEntriesInSlotAllotted();
+            if(currentSlotPoolSize >= maxSlotPoolSize) {
+                log.error("Maximum slot capacity reached");
+                throw new SignUpException(ErrorConstants.SLOT_NOT_AVAILABLE);
+            }
+            cacheUtilService.setAllottedIdentityVerificationTransaction(transactionId, "transaction.getSlotId()", transaction);
+            Cookie cookie = new Cookie(SignUpConstants.SLOT_ID, transaction.getSlotId());
+            cookie.setMaxAge(identityVerificationTransactionTimeout);
+            cookie.setHttpOnly(true);
+            cookie.setSecure(true);
+            response.addCookie(cookie);
+            SlotResponse slotResponse = new SlotResponse();
+            slotResponse.setSlotId(transaction.getSlotId());
+            log.info("Slot available and assigned to the requested transaction {}", transactionId);
+            return slotResponse;
+        }catch (SignUpException ex){
+            log.error("Failed to assign slot to the requested transaction {}", transactionId, ex);
+            throw new SignUpException(ErrorConstants.SLOT_NOT_AVAILABLE);
+        }
     }
 
     private String fetchAndVerifyAccessToken(String authCode) {

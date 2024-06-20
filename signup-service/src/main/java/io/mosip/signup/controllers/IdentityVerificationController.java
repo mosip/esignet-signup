@@ -67,9 +67,10 @@ public class IdentityVerificationController {
     @PostMapping("/slot")
     public ResponseWrapper<SlotResponse> getSlot(@Valid @RequestBody RequestWrapper<SlotRequest> requestWrapper,
                                                  @Valid @NotBlank(message = ErrorConstants.INVALID_TRANSACTION)
-                                                 @CookieValue(value = SignUpConstants.IDV_TRANSACTION_ID, defaultValue = EMTPY) String transactionId) {
+                                                 @CookieValue(value = SignUpConstants.IDV_TRANSACTION_ID, defaultValue = EMTPY) String transactionId,
+                                                 HttpServletResponse response) {
         ResponseWrapper<SlotResponse> responseWrapper = new ResponseWrapper<>();
-        responseWrapper.setResponse(identityVerificationService.getSlot(transactionId, requestWrapper.getRequest()));
+        responseWrapper.setResponse(identityVerificationService.getSlot(transactionId, requestWrapper.getRequest(),response));
         auditHelper.sendAuditTransaction(AuditEvent.IDENTITY_VERIFICATION_SLOT, AuditEventType.SUCCESS, transactionId, null);
         responseWrapper.setResponseTime(IdentityProviderUtil.getUTCDateTime());
         return responseWrapper;
