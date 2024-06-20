@@ -28,7 +28,7 @@ export const SlotChecking = () => {
   );
 
   useEffect(() => {
-    if (!kycProvider) throw Error("KycProvider should not be null")
+    if (!kycProvider) throw Error("KycProvider should not be null");
     const slotAvailabilityRequestDto: SlotAvailabilityRequestDto = {
       requestTime: new Date().toISOString(),
       request: {
@@ -49,7 +49,7 @@ export const SlotChecking = () => {
               break;
           }
         } else {
-          setStep(EkycVerificationStep.VerificationScreen)
+          setStep(EkycVerificationStep.VerificationScreen);
         }
       },
     });
