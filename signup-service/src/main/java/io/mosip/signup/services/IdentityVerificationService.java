@@ -194,7 +194,7 @@ public class IdentityVerificationService {
                 log.info("Access token received successfully");
                 return accessToken.toJSONString();
             }
-            log.error("Failed to exchange authorization grant for tokens: "+tokenResponse.toErrorResponse());
+            log.error("Failed to exchange authorization grant for tokens: "+toHTTPRequest.getBody());
         }catch (Exception e) {
             log.error("Failed to exchange authorization grant for tokens", e);
         }
