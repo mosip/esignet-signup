@@ -41,10 +41,13 @@ public class ChallengeManagerServiceTest {
 
     private String generateChallengeUrl = "https://api.net/v1/otpmanager/otp/generate";
 
+    private final String generateChallengeType = "OTP";
+
     @Before
     public void setUp() {
         ReflectionTestUtils.setField(challengeManagerService, "generateChallengeUrl", generateChallengeUrl);
         ReflectionTestUtils.setField(challengeManagerService, "supportedGenerateChallengeType", "OTP");
+        ReflectionTestUtils.setField(challengeManagerService, "generateChallengeType", generateChallengeType);
     }
 
     @Test
