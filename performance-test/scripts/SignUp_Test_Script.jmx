@@ -220,6 +220,11 @@
             <stringProp name="Argument.value">30</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
+          <elementProp name="runTimeFilePath" elementType="Argument">
+            <stringProp name="Argument.name">runTimeFilePath</stringProp>
+            <stringProp name="Argument.value">./bin/RunTimeFiles</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
         </collectionProp>
       </Arguments>
       <hashTree/>
@@ -240,7 +245,7 @@
         <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="Load Names From File" enabled="true">
           <stringProp name="delimiter">,</stringProp>
           <stringProp name="fileEncoding">UTF-8</stringProp>
-          <stringProp name="filename">./fullNames.txt</stringProp>
+          <stringProp name="filename">./support-files/fullNames.txt</stringProp>
           <boolProp name="ignoreFirstLine">true</boolProp>
           <boolProp name="quotedData">false</boolProp>
           <boolProp name="recycle">true</boolProp>
@@ -586,7 +591,7 @@ fw.close();</stringProp>
         <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="Load Names From File" enabled="true">
           <stringProp name="delimiter">,</stringProp>
           <stringProp name="fileEncoding">UTF-8</stringProp>
-          <stringProp name="filename">./fullNames.txt</stringProp>
+          <stringProp name="filename">./support-files/fullNames.txt</stringProp>
           <boolProp name="ignoreFirstLine">true</boolProp>
           <boolProp name="quotedData">false</boolProp>
           <boolProp name="recycle">true</boolProp>
@@ -1049,7 +1054,7 @@ log.info(&quot;Password: &quot; + password)
         <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="Load identifier From File" enabled="true">
           <stringProp name="delimiter">,</stringProp>
           <stringProp name="fileEncoding">UTF-8</stringProp>
-          <stringProp name="filename">./testDataForResetPassword.csv</stringProp>
+          <stringProp name="filename">./bin/RunTimeFiles/testdata_reset_password.csv</stringProp>
           <boolProp name="ignoreFirstLine">false</boolProp>
           <boolProp name="quotedData">false</boolProp>
           <boolProp name="recycle">true</boolProp>
