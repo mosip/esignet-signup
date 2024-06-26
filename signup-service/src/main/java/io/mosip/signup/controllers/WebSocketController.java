@@ -3,6 +3,7 @@ package io.mosip.signup.controllers;
 import io.mosip.signup.dto.IDVProcessFeedback;
 import io.mosip.signup.dto.IdentityVerificationRequest;
 import io.mosip.signup.dto.IdentityVerificationResponse;
+import io.mosip.signup.services.CacheUtilService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
@@ -20,6 +21,9 @@ public class WebSocketController {
 
     @Autowired
     private SimpMessagingTemplate simpMessagingTemplate;
+
+    @Autowired
+    CacheUtilService cacheUtilService;
 
     @KafkaListener(id = "step-status-consumer", autoStartup = "true",
             topics = "ANALYZE_FRAMES_RESULT")
@@ -49,6 +53,9 @@ public class WebSocketController {
 
     @EventListener
     public void onDisconnected(SessionDisconnectEvent disconnectEvent) {
-        log.info("WebSocket Diconnected >>>>>> {}", disconnectEvent.getUser());
+        log.info("WebSocket Disconnected >>>>>> {}", disconnectEvent.getUser());
+        String slotId= disconnectEvent.getSessionId();
+        cacheUtilService.removeAllottedIdentityVerificationTransaction(slotId);
+        log.info("Removed slotId from cache >>>>>> {}", slotId);
     }
 }

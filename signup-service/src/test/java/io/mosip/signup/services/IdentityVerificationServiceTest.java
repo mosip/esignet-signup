@@ -1,8 +1,6 @@
 package io.mosip.signup.services;
 
-import io.mosip.signup.dto.IdentityVerifierDetail;
-import io.mosip.signup.dto.InitiateIdentityVerificationRequest;
-import io.mosip.signup.dto.InitiateIdentityVerificationResponse;
+import io.mosip.signup.dto.*;
 import io.mosip.signup.exception.SignUpException;
 import io.mosip.signup.util.ErrorConstants;
 import okhttp3.mockwebserver.MockResponse;
@@ -37,10 +35,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.KeyStore;
-import java.security.NoSuchAlgorithmException;
+import java.security.*;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.util.Date;
@@ -155,6 +150,99 @@ public class IdentityVerificationServiceTest {
             Assert.assertEquals(ErrorConstants.TOKEN_EXCHANGE_FAILED, e.getMessage());
         }
     }
+
+    @Test
+    public void getSlotWithValidDetails_thenPass() throws SignatureException {
+
+        ReflectionTestUtils.setField(identityVerificationService, "maxSlotPoolSize", 100);
+        String transactionId = "testTransactionId";
+        SlotRequest slotRequest = new SlotRequest();
+        slotRequest.setVerifierId("testVerifierId");
+
+        IdentityVerificationTransaction identityVerificationTransaction = new IdentityVerificationTransaction();
+        identityVerificationTransaction.setSlotId("testSlotId");
+        Mockito.when(cacheUtilService.getIdentityVerificationTransaction(transactionId)).thenReturn(identityVerificationTransaction);
+
+        IdentityVerifierDetail [] identityVerifierDetails = new IdentityVerifierDetail[1];
+        IdentityVerifierDetail identityVerifierDetail = new IdentityVerifierDetail();
+        identityVerifierDetail.setId("testVerifierId");
+        identityVerifierDetail.setActive(true);
+        identityVerifierDetails[0] = identityVerifierDetail;
+
+        Mockito.when(cacheUtilService.getIdentityVerifierDetails()).thenReturn(identityVerifierDetails);
+        Mockito.when(cacheUtilService.countEntriesInSlotAllotted()).thenReturn(10L);
+        Mockito.when(cacheUtilService.setAllottedIdentityVerificationTransaction(Mockito.anyString(), Mockito.anyString(), Mockito.any())).thenReturn(null); // Assuming maxSlotPoolSize > 10
+        HttpServletResponse httpServletResponse = Mockito.mock(HttpServletResponse.class);
+        // Execute
+        SlotResponse result = identityVerificationService.getSlot(transactionId, slotRequest, httpServletResponse);
+
+        Assert.assertNotNull(result);
+        Assert.assertNotNull(result);
+        Assert.assertEquals(identityVerificationTransaction.getSlotId(), result.getSlotId());
+
+    }
+
+    @Test
+    public void getSlotWithInValidTransaction_thenFail() throws SignatureException {
+        Mockito.when(cacheUtilService.getIdentityVerificationTransaction(Mockito.anyString())).thenReturn(null);
+        try{
+            identityVerificationService.getSlot("transactionId", null, null);
+        }catch (SignUpException e){
+            Assert.assertEquals(ErrorConstants.INVALID_TRANSACTION, e.getErrorCode());
+        }
+    }
+
+    @Test
+    public void getSlotWithInValidVerifierId_thenFail() throws SignatureException {
+        SlotRequest slotRequest = new SlotRequest();
+        slotRequest.setVerifierId("testVerifierId2");
+
+        IdentityVerificationTransaction identityVerificationTransaction = new IdentityVerificationTransaction();
+        identityVerificationTransaction.setSlotId("testSlotId");
+        Mockito.when(cacheUtilService.getIdentityVerificationTransaction(Mockito.anyString())).thenReturn(identityVerificationTransaction);
+
+        IdentityVerifierDetail [] identityVerifierDetails = new IdentityVerifierDetail[1];
+        IdentityVerifierDetail identityVerifierDetail = new IdentityVerifierDetail();
+        identityVerifierDetail.setId("testVerifierId");
+        identityVerifierDetail.setActive(true);
+        identityVerifierDetails[0] = identityVerifierDetail;
+
+        Mockito.when(cacheUtilService.getIdentityVerifierDetails()).thenReturn(identityVerifierDetails);
+        try{
+            identityVerificationService.getSlot("transactionId", slotRequest, null);
+        }catch (SignUpException e){
+            Assert.assertEquals(ErrorConstants.INVALID_IDENTITY_VERIFIER_ID, e.getErrorCode());
+        }
+    }
+
+
+    @Test
+    public void getSlotWithFullSlot_thenFail() throws SignatureException {
+
+        ReflectionTestUtils.setField(identityVerificationService, "maxSlotPoolSize", 100L);
+        SlotRequest slotRequest = new SlotRequest();
+        slotRequest.setVerifierId("testVerifierId");
+
+        IdentityVerificationTransaction identityVerificationTransaction = new IdentityVerificationTransaction();
+        identityVerificationTransaction.setSlotId("testSlotId");
+        Mockito.when(cacheUtilService.getIdentityVerificationTransaction(Mockito.anyString())).thenReturn(identityVerificationTransaction);
+
+        IdentityVerifierDetail [] identityVerifierDetails = new IdentityVerifierDetail[1];
+        IdentityVerifierDetail identityVerifierDetail = new IdentityVerifierDetail();
+        identityVerifierDetail.setId("testVerifierId");
+        identityVerifierDetail.setActive(true);
+        identityVerifierDetails[0] = identityVerifierDetail;
+
+        Mockito.when(cacheUtilService.getIdentityVerifierDetails()).thenReturn(identityVerifierDetails);
+        Mockito.when(cacheUtilService.countEntriesInSlotAllotted()).thenReturn(100L);
+        // Execute
+        try{
+            identityVerificationService.getSlot("transactionId", slotRequest, null);
+        }catch (SignUpException e){
+            Assert.assertEquals(ErrorConstants.SLOT_NOT_AVAILABLE, e.getErrorCode());
+        }
+    }
+
 
     private KeyPair generateRSAKeyPair() throws NoSuchAlgorithmException {
         KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
