@@ -107,7 +107,13 @@ export const useResetPassword = () => {
   return { resetPasswordMutation };
 };
 
-export const useSlotAvailability = () => {
+export const useSlotAvailability = ({
+  retryAttempt,
+  retryDelay,
+}: {
+  retryAttempt: number;
+  retryDelay: number;
+}) => {
   const slotAvailabilityMutation = useMutation<
     SlotAvailabilityResponseDto,
     ApiError,
@@ -117,6 +123,8 @@ export const useSlotAvailability = () => {
     mutationFn: (slotAvailabilityRequestDto: SlotAvailabilityRequestDto) => {
       return checkSlotAvailability(slotAvailabilityRequestDto);
     },
+    retry: retryAttempt,
+    retryDelay: retryDelay * 1000,
   });
 
   return { slotAvailabilityMutation };

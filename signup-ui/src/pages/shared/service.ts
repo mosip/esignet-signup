@@ -8,6 +8,7 @@ import {
   ResetPasswordRequestDto,
   SettingsDto,
   SlotAvailabilityRequestDto,
+  SlotAvailabilityResponseDto,
   TermsAndConditionResponseDto,
   UpdateProcessRequestDto,
   VerifyChallengeRequestDto,
@@ -87,7 +88,14 @@ export const getKycProvidersList = async (
 export const checkSlotAvailability = async (
   slotAvailabilityRequestDto: SlotAvailabilityRequestDto
 ) => {
-  return ApiService.post("/identity-verification/slot", slotAvailabilityRequestDto).then(
-    ({ data }) => data
-  );
+  return ApiService.post<SlotAvailabilityResponseDto>(
+    "/identity-verification/slot",
+    slotAvailabilityRequestDto
+  ).then(({ data }) => {
+    if (data.errors.some((error) => error.errorCode === "slot_unavailable")) {
+      throw new Error("No slot available");
+    }
+
+    return data;
+  });
 };

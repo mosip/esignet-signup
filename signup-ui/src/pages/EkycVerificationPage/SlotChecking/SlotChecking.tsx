@@ -14,7 +14,10 @@ import { SlotCheckingLoading } from "./components/SlotCheckingLoading";
 import { SlotUnavailableAlert } from "./components/SlotUnavailableAlert";
 
 export const SlotChecking = () => {
-  const { slotAvailabilityMutation } = useSlotAvailability();
+  const { slotAvailabilityMutation } = useSlotAvailability({
+    retryAttempt: 3,
+    retryDelay: 5,
+  });
 
   const { kycProvider, setStep, setCriticalError } = useEkycVerificationStore(
     useCallback(

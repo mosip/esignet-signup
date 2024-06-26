@@ -1,4 +1,4 @@
 import { getSetting } from "./setting";
-import { getSlot } from "./slot-checking";
+import { checkSlotHandlers } from "./slot-checking";
 
-export const handlers = [...getSetting, ...getSlot];
+export const handlers = [...getSetting, ...checkSlotHandlers];
