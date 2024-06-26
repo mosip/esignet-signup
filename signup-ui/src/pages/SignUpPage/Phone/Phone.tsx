@@ -118,7 +118,8 @@ export const Phone = ({ settings, methods }: PhoneProps) => {
     !isValid ||
     !isDirty ||
     getValues("phone") === signUpFormDefaultValues.phone ||
-    getValues("captchaToken") === signUpFormDefaultValues.captchaToken;
+    (settings.response.configs["send-challenge.captcha.required"] && 
+      getValues("captchaToken") === signUpFormDefaultValues.captchaToken);
 
   const handleContinue = useCallback(
     async (e: any) => {
@@ -258,7 +259,9 @@ export const Phone = ({ settings, methods }: PhoneProps) => {
                 </FormItem>
               )}
             />
-            <div id="captcha" className="flex items-center justify-center">
+            
+            {settings.response.configs["send-challenge.captcha.required"] && (
+              <div id="captcha" className="flex items-center justify-center">
               {/* I'm not a robot checkbox */}
               <ReCAPTCHA
                 ref={_reCaptchaRef}
@@ -268,6 +271,7 @@ export const Phone = ({ settings, methods }: PhoneProps) => {
                 sitekey={settings.response.configs["captcha.site.key"] ?? ""}
               />
             </div>
+            )}
           </div>
           <Button
             id="continue-button"

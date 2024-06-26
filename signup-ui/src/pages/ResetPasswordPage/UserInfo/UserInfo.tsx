@@ -127,7 +127,8 @@ export const UserInfo = ({ settings, methods }: UserInfoProps) => {
     !isUserInfoDirty ||
     getValues("username") === resetPasswordFormDefaultValues.username ||
     getValues("fullname") === resetPasswordFormDefaultValues.fullname ||
-    getValues("captchaToken") === resetPasswordFormDefaultValues.captchaToken;
+    (settings.response.configs["send-challenge.captcha.required"] &&
+    getValues("captchaToken") === resetPasswordFormDefaultValues.captchaToken);
 
   const handleContinue = useCallback(
     async (e: MouseEvent<HTMLButtonElement>) => {
@@ -308,6 +309,7 @@ export const UserInfo = ({ settings, methods }: UserInfoProps) => {
                 )}
               />
               {/* ReCaptcha */}
+              {settings.response.configs["send-challenge.captcha.required"] && (
               <div id="captcha" className="flex items-center justify-center">
                 <ReCAPTCHA
                   ref={_reCaptchaRef}
@@ -317,6 +319,7 @@ export const UserInfo = ({ settings, methods }: UserInfoProps) => {
                   sitekey={settings.response.configs["captcha.site.key"] ?? ""}
                 />
               </div>
+              )}
             </div>
             <Button
               id="continue-button"
