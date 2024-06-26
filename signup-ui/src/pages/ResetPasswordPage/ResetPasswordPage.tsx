@@ -61,7 +61,7 @@ export const ResetPasswordPage = ({ settings }: ResetPasswordPageProps) => {
       yup.object({
         username: validateUsername(settings),
         fullname: validateFullName(settings),
-        captchaToken: validateCaptchaToken(),
+        captchaToken: validateCaptchaToken(settings),
       }),
       // Step 2 - Otp
       yup.object({

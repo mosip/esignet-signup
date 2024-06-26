@@ -77,7 +77,7 @@ export const SignUpPage = ({ settings }: SignUpPageProps) => {
       // Step 1 - Phone Validation
       yup.object({
         phone: validateUsername(settings),
-        captchaToken: validateCaptchaToken(),
+        captchaToken: validateCaptchaToken(settings),
       }),
       // Step 2 - OTP Validation
       yup.object({
