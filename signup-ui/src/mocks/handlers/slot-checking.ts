@@ -17,12 +17,13 @@ const checkSlotHandlerSuccess = http.post(checkSlotAvailabilityEP, async () => {
 
 export const checkSlotHandlerUnavailable = http.post(
   checkSlotAvailabilityEP,
-  async () =>
-    HttpResponse.json({
+  async () => {
+    return HttpResponse.json({
       responseTime: "2024-03-25T18:10:18.520Z",
       response: null,
       errors: [{ errorCode: "slot_unavailable" }],
-    })
+    });
+  }
 );
 
 export const checkSlotHandlers = [checkSlotHandlerSuccess];

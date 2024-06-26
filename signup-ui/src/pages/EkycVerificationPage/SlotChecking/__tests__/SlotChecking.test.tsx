@@ -5,7 +5,10 @@ import { MemoryRouter } from "react-router-dom";
 import { renderWithClient, sleep } from "~utils/test";
 import { useEkycVerificationStore } from "~pages/EkycVerificationPage/useEkycVerificationStore";
 import { KycProvider } from "~typings/types";
-import { checkSlotHandlerUnavailable } from "~/mocks/handlers/slot-checking";
+import {
+  checkSlotHandlerSuccess,
+  checkSlotHandlerUnavailable,
+} from "~/mocks/handlers/slot-checking";
 import { mswServer } from "~/mocks/msw-server";
 
 // import * as mutationHooks from "../../../shared/mutations";
@@ -43,6 +46,28 @@ describe("SlotChecking", () => {
 
   test("should show loading when the slot availability is being checked", async () => {
     // Arrange
+
+    // Act
+    await act(async () =>
+      renderWithClient(
+        queryClient,
+        <MemoryRouter>
+          <SlotChecking />
+        </MemoryRouter>
+      )
+    );
+
+    await sleep(1000);
+
+    // Assert
+    await expect(screen.queryByTestId("slot-checking-content")).not.toBeNull();
+  });
+
+  test("should show alert when the slot is unavailable", async () => {
+    // Arrange
+    // use slot unavailable response
+    mswServer.use(checkSlotHandlerUnavailable);
+
     // Act
     await act(async () =>
       renderWithClient(
@@ -56,31 +81,6 @@ describe("SlotChecking", () => {
     await sleep(3000);
 
     // Assert
-    await expect(
-      await waitFor(() => screen.queryByTestId("slot-checking-content"))
-    ).not.toBeNull();
-  });
-
-  test("should show alert when the slot is unavailable", async () => {
-    // Arrange
-    // use slot unavailable response
-    mswServer.use(checkSlotHandlerUnavailable);
-
-    // Act
-    await act(async () =>
-      renderWithClient(
-        queryClient,
-        <MemoryRouter>
-          <SlotUnavailableAlert />
-        </MemoryRouter>
-      )
-    );
-
-    await sleep(3000);
-
-    // Assert
-    await expect(
-      await waitFor(() => screen.queryByTestId("slot-unavailable"))
-    ).not.toBeNull();
+    await expect(screen.queryByTestId("slot-unavailable")).not.toBeNull();
   });
 });
