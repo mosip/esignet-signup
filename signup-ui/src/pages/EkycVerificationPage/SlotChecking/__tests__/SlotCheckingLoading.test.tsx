@@ -4,7 +4,12 @@ import { SlotCheckingLoading } from "../components/SlotCheckingLoading";
 
 describe("SlotCheckingLoading", () => {
   test("should render loading screen correctly", () => {
+    // Arrange
+
+    // Act
     render(<SlotCheckingLoading />);
+    
+    // Assert
     expect(screen.queryByTestId("slot-checking-content")).not.toBeNull();
     expect(screen.getByTestId("slot-checking-loader")).toBeInTheDocument();
     expect(screen.getByText("Loading!!!")).toBeInTheDocument();

@@ -11,12 +11,17 @@ describe("SlotUnavailableAlert", () => {
   const queryClient = new QueryClient({ queryCache });
 
   test("should render alert when the slot is unavailable correctly", () => {
+    // Arrange
+
+    // Act
     renderWithClient(
       queryClient,
       <MemoryRouter>
         <SlotUnavailableAlert />
       </MemoryRouter>
     );
+
+    // Assert
     expect(screen.queryByTestId("slot-unavailable")).not.toBeNull();
     expect(
       screen.getByTestId("slot-unavailable-failed-icon")
