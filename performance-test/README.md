@@ -1,6 +1,6 @@
 
 ### Contains
-* This folder contains performance helper script and test script of below API endpoint categories.
+* This folder contains performance test script of below API endpoint categories.
     1. Sign Up Service - Reset Password (Preparation)
     2. Scenario -1: Registration
     3. Scenario -2: Reset Password
@@ -65,23 +65,22 @@
 
 ### Execution points for eSignet Sign Up Services API's
 
-*SignUp_Helper_Script.jmx
+*SignUp_Test_Script.jmx
 	
 	* Sign Up Service - Reset Password (Preparation) : This thread contains 3 API's i.e. generate challenge, verify challenge and register API endpoints. Will be generating base64url-encoded json value of the khmer name details with the json body. We will be saving the encoded value with the khmer name in csv file;.
-
-*SignUp_registration_resetPassword_Test_Script.jmx
 	
 	*Scenario -1: Registration:
-		*SignUp_S01_T01_GetCsrf: This thread generated CSRF token
-		*SignUp_S01_T02_GenerateChallenge: This thread contains Generate Challenge endpoint API. We need to pass an identifier value which is nothing but a 8-10 digit phone number with country code as the prefix. We are using a preprocessor from which we are getting the random generated phone number.
-		*SignUp_S01_T03_VerifyChallenge: This thread contains verify challenge API in which we will pass the value of identifier i.e. phone number and transaction id in the headers which will get from the csv file generated in preparation. The file generated can't be used for multiple iterations. We need to increase the expiry time of the transaction id we are getting from the preparation thread group so for that we need to update the mentioned property mosip.signup.unauthenticated.txn.timeout in signup default properties.
-		*SignUp_S01_T04_Register: This thread is for register API endpoint and will use a csv file to pass the value of identifier and verified transaction id. Will use the file generated from the preparation and it can't be used multiple times. We need to increase the expiry time of the transaction id we are getting from the preparation thread group so for that we need to update the mentioned property mosip.signup.register.txn.timeout in signup default properties.
-		*SignUp_S01_T05_Registration: This thread contains Registration Status API endpoint. Will use the file generated from the preparation to pass the transaction id and it can be used multiple times as it will only give the latest status for the transaction id we are passing. The transaction id used has a expiry time which can be configured with the mentioned property mosip.signup.status-check.txn.timeout available in mosip config signup default properties. We need to increase the expiry time of the transaction id we are getting from the preparation thread group so for that we need to update the mentioned property mosip.signup.status-check.txn.timeout in signup default properties.
+		*S01 T01 GetCsrf: This thread generated CSRF token
+		*S01 T02 GenerateChallenge: This thread contains Generate Challenge endpoint API. We need to pass an identifier value which is nothing but a 8-10 digit phone number with country code as the prefix. We are using a preprocessor from which we are getting the random generated phone number.
+		*S01 T03 VerifyChallenge: This thread contains verify challenge API in which we will pass the value of identifier i.e. phone number and transaction id in the headers which will get from the csv file generated in preparation. The file generated can't be used for multiple iterations. We need to increase the expiry time of the transaction id we are getting from the preparation thread group so for that we need to update the mentioned property mosip.signup.unauthenticated.txn.timeout in signup default properties.
+		*S01 T04 Register: This thread is for register API endpoint and will use a csv file to pass the value of identifier and verified transaction id. Will use the file generated from the preparation and it can't be used multiple times. We need to increase the expiry time of the transaction id we are getting from the preparation thread group so for that we need to update the mentioned property mosip.signup.register.txn.timeout in signup default properties.
+		*S01 T05 Registration: This thread contains Registration Status API endpoint. Will use the file generated from the preparation to pass the transaction id and it can be used multiple times as it will only give the latest status for the transaction id we are passing. The transaction id used has a expiry time which can be configured with the mentioned property mosip.signup.status-check.txn.timeout available in mosip config signup default properties. We need to increase the expiry time of the transaction id we are getting from the preparation thread group so for that we need to update the mentioned property mosip.signup.status-check.txn.timeout in signup default properties.
 		
 	*Scenario -2: Registration:
-		*SignUp_S02_T01_GenerateChallenge: This thread contains Generate Challenge endpoint API. We need to pass an identifier value which is nothing but a 8-10 digit phone number with country code as the prefix. We are using a preprocessor from which we are getting the random generated phone number.
-		*SignUp_S02_T02_VerifyChallenge: This thread contains verify challenge API in which we will pass the value of identifier i.e. phone number and transaction id in the headers which will get from the csv file generated in preparation. The file generated can't be used for multiple iterations. We need to increase the expiry time of the transaction id we are getting from the preparation thread group so for that we need to update the mentioned property mosip.signup.unauthenticated.txn.timeout in signup default properties.
-		*SignUp_S02_T03_ResetPassword: This thread contains Reset Password API endpoint. Will use the file generated from the preparation to pass the base64url-encoded json value in the verify challenge. The transaction id generated by verify challenge will passed in reset-password endpoint url.
+		*S02 T01 GenerateChallenge: This thread contains Generate Challenge endpoint API. We need to pass an identifier value which is nothing but a 8-10 digit phone number with country code as the prefix. We are using a preprocessor from which we are getting the random generated phone number.
+		*S02 T02 VerifyChallenge: This thread contains verify challenge API in which we will pass the value of identifier i.e. phone number and transaction id in the headers which will get from the csv file generated in preparation. The file generated can't be used for multiple iterations. We need to increase the expiry time of the transaction id we are getting from the preparation thread group so for that we need to update the mentioned property mosip.signup.unauthenticated.txn.timeout in signup default properties.
+		*S02 T03 ResetPassword: This thread contains Reset Password API endpoint. Will use the file generated from the preparation to pass the base64url-encoded json value in the verify challenge. The transaction id generated by verify challenge will passed in reset-password endpoint url.
+		*S02 T04 Registration: This thread contains Registration status API endpoint. This API checks whether we have successfully reset the password.
 		
 ### Designing the workload model for performance test execution
 * Calculation of number of users depending on Transactions per second (TPS) provided by client
