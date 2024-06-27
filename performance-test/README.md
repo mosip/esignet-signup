@@ -62,6 +62,9 @@
     <version>9.25.6</version>
 </dependency>
 
+	* jmeter-plugins-synthesis-2.2.jar
+		* <!-- https://jmeter-plugins.org/files/packages/jpgc-synthesis-2.2.zip -->
+
 
 ### Execution points for eSignet Sign Up Services API's
 
