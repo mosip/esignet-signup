@@ -127,6 +127,8 @@ export interface SettingsConfig {
   "fullname.pattern": string;
   "status.request.limit": number;
   "status.request.delay": number;
+  "slot.request.limit": number;
+  "slot.request.delay": number;
   "popup.timeout": number;
   "signin.redirect-url": string;
   "identifier.allowed.characters": string;

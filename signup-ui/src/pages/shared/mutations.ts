@@ -34,7 +34,7 @@ export const keys = {
   challengeVerification: ["challengeVerification"] as const,
   registration: ["registration"] as const,
   resetPassword: ["resetPassword"] as const,
-  slotAvailability: ["slotAvailability" as const],
+  slotAvailability: ["slotAvailability"] as const,
   updateProcess: ["updateProcess"] as const,
   kycProvidersList: ["kycProvidersList"] as const,
 };

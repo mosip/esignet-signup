@@ -1,18 +1,13 @@
 import { QueryCache, QueryClient } from "@tanstack/react-query";
-import { act, screen, waitFor } from "@testing-library/react";
+import { act, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 
 import { renderWithClient, sleep } from "~utils/test";
 import { useEkycVerificationStore } from "~pages/EkycVerificationPage/useEkycVerificationStore";
-import { KycProvider } from "~typings/types";
-import {
-  checkSlotHandlerSuccess,
-  checkSlotHandlerUnavailable,
-} from "~/mocks/handlers/slot-checking";
+import { KycProvider, Settings, SettingsDto } from "~typings/types";
+import { checkSlotHandlerUnavailable } from "~/mocks/handlers/slot-checking";
 import { mswServer } from "~/mocks/msw-server";
 
-// import * as mutationHooks from "../../../shared/mutations";
-import { SlotUnavailableAlert } from "../components/SlotUnavailableAlert";
 import { SlotChecking } from "../SlotChecking";
 
 afterEach(() => {
@@ -46,13 +41,25 @@ describe("SlotChecking", () => {
 
   test("should show loading when the slot availability is being checked", async () => {
     // Arrange
+    const settings = {
+      response: {
+        configs: {
+          "slot.request.limit": 2,
+          "slot.request.delay": 1,
+        },
+      },
+    } as SettingsDto;
+    const cancelPopup = jest.fn();
 
     // Act
     await act(async () =>
       renderWithClient(
         queryClient,
         <MemoryRouter>
-          <SlotChecking />
+          <SlotChecking
+            settings={settings.response as Settings}
+            cancelPopup={cancelPopup}
+          />
         </MemoryRouter>
       )
     );
@@ -68,12 +75,25 @@ describe("SlotChecking", () => {
     // use slot unavailable response
     mswServer.use(checkSlotHandlerUnavailable);
 
+    const settings = {
+      response: {
+        configs: {
+          "slot.request.limit": 2,
+          "slot.request.delay": 1,
+        },
+      },
+    } as SettingsDto;
+    const cancelPopup = jest.fn();
+
     // Act
     await act(async () =>
       renderWithClient(
         queryClient,
         <MemoryRouter>
-          <SlotChecking />
+          <SlotChecking
+            settings={settings.response as Settings}
+            cancelPopup={cancelPopup}
+          />
         </MemoryRouter>
       )
     );
