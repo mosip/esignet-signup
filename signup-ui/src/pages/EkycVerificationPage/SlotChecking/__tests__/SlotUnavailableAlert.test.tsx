@@ -1,10 +1,27 @@
-import { render, screen } from "@testing-library/react";
+import { QueryCache, QueryClient } from "@tanstack/react-query";
+import { screen } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
+
+import { renderWithClient } from "~utils/test";
 
 import { SlotUnavailableAlert } from "../components/SlotUnavailableAlert";
 
 describe("SlotUnavailableAlert", () => {
+  const queryCache = new QueryCache();
+  const queryClient = new QueryClient({ queryCache });
+
   test("should render alert when the slot is unavailable correctly", () => {
-    render(<SlotUnavailableAlert />);
+    // Arrange
+
+    // Act
+    renderWithClient(
+      queryClient,
+      <MemoryRouter>
+        <SlotUnavailableAlert />
+      </MemoryRouter>
+    );
+
+    // Assert
     expect(screen.queryByTestId("slot-unavailable")).not.toBeNull();
     expect(
       screen.getByTestId("slot-unavailable-failed-icon")

@@ -1,7 +1,10 @@
 import { useCallback, useEffect } from "react";
 
 import { useSlotAvailability } from "~pages/shared/mutations";
-import { SlotAvailabilityRequestDto } from "~typings/types";
+import {
+  DefaultEkyVerificationProp,
+  SlotAvailabilityRequestDto,
+} from "~typings/types";
 
 import {
   EkycVerificationStep,
@@ -13,8 +16,11 @@ import {
 import { SlotCheckingLoading } from "./components/SlotCheckingLoading";
 import { SlotUnavailableAlert } from "./components/SlotUnavailableAlert";
 
-export const SlotChecking = () => {
-  const { slotAvailabilityMutation } = useSlotAvailability();
+export const SlotChecking = ({ settings }: DefaultEkyVerificationProp) => {
+  const { slotAvailabilityMutation } = useSlotAvailability({
+    retryAttempt: settings.configs["slot.request.limit"],
+    retryDelay: settings.configs["slot.request.delay"],
+  });
 
   const { kycProvider, setStep, setCriticalError } = useEkycVerificationStore(
     useCallback(

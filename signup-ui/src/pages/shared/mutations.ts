@@ -34,7 +34,7 @@ export const keys = {
   challengeVerification: ["challengeVerification"] as const,
   registration: ["registration"] as const,
   resetPassword: ["resetPassword"] as const,
-  slotAvailability: ["slotAvailability" as const],
+  slotAvailability: ["slotAvailability"] as const,
   updateProcess: ["updateProcess"] as const,
   kycProvidersList: ["kycProvidersList"] as const,
 };
@@ -107,7 +107,13 @@ export const useResetPassword = () => {
   return { resetPasswordMutation };
 };
 
-export const useSlotAvailability = () => {
+export const useSlotAvailability = ({
+  retryAttempt,
+  retryDelay,
+}: {
+  retryAttempt: number;
+  retryDelay: number;
+}) => {
   const slotAvailabilityMutation = useMutation<
     SlotAvailabilityResponseDto,
     ApiError,
@@ -117,6 +123,8 @@ export const useSlotAvailability = () => {
     mutationFn: (slotAvailabilityRequestDto: SlotAvailabilityRequestDto) => {
       return checkSlotAvailability(slotAvailabilityRequestDto);
     },
+    retry: retryAttempt,
+    retryDelay: retryDelay * 1000,
   });
 
   return { slotAvailabilityMutation };

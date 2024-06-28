@@ -40,3 +40,9 @@ export const renderWithClient = (
       ),
   };
 };
+
+export const createQueryClientWrapper = (client: QueryClient) => {
+  return ({ children }: { children: React.ReactNode }) => (
+    <QueryClientProvider client={client}>{children}</QueryClientProvider>
+  );
+};

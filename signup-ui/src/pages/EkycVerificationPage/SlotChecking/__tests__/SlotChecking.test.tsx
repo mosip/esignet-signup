@@ -1,12 +1,13 @@
-import { QueryCache, QueryClient, useMutation } from "@tanstack/react-query";
-import { screen } from "@testing-library/react";
+import { QueryCache, QueryClient } from "@tanstack/react-query";
+import { act, screen } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
 
-import { renderWithClient } from "~utils/test";
+import { renderWithClient, sleep } from "~utils/test";
 import { useEkycVerificationStore } from "~pages/EkycVerificationPage/useEkycVerificationStore";
-import { KycProvider } from "~typings/types";
+import { KycProvider, Settings, SettingsDto } from "~typings/types";
+import { checkSlotHandlerUnavailable } from "~/mocks/handlers/slot-checking";
+import { mswServer } from "~/mocks/msw-server";
 
-import * as mutationHooks from "../../../shared/mutations";
-import { SlotUnavailableAlert } from "../components/SlotUnavailableAlert";
 import { SlotChecking } from "../SlotChecking";
 
 afterEach(() => {
@@ -38,27 +39,68 @@ describe("SlotChecking", () => {
     });
   });
 
-  test("should show loading when the slot availability is being checked", () => {
-    jest.spyOn(mutationHooks, "useSlotAvailability").mockReturnValue({
-      slotAvailabilityMutation: {
-        isPending: true,
-        mutate: jest.fn(),
+  test("should show loading when the slot availability is being checked", async () => {
+    // Arrange
+    const settings = {
+      response: {
+        configs: {
+          "slot.request.limit": 2,
+          "slot.request.delay": 1,
+        },
       },
-    } as any);
+    } as SettingsDto;
+    const cancelPopup = jest.fn();
 
-    renderWithClient(queryClient, <SlotChecking />);
-    expect(screen.queryByTestId("slot-checking-content")).not.toBeNull();
+    // Act
+    await act(async () =>
+      renderWithClient(
+        queryClient,
+        <MemoryRouter>
+          <SlotChecking
+            settings={settings.response as Settings}
+            cancelPopup={cancelPopup}
+          />
+        </MemoryRouter>
+      )
+    );
+
+    await sleep(1000);
+
+    // Assert
+    await expect(screen.queryByTestId("slot-checking-content")).not.toBeNull();
   });
 
-  test("should show alert when the slot is unavailable", () => {
-    jest.spyOn(mutationHooks, "useSlotAvailability").mockReturnValue({
-      slotAvailabilityMutation: {
-        isPending: false,
-        mutate: jest.fn(),
-      },
-    } as any);
+  test("should show alert when the slot is unavailable", async () => {
+    // Arrange
+    // use slot unavailable response
+    mswServer.use(checkSlotHandlerUnavailable);
 
-    renderWithClient(queryClient, <SlotUnavailableAlert />);
-    expect(screen.queryByTestId("slot-unavailable")).not.toBeNull();
+    const settings = {
+      response: {
+        configs: {
+          "slot.request.limit": 2,
+          "slot.request.delay": 1,
+        },
+      },
+    } as SettingsDto;
+    const cancelPopup = jest.fn();
+
+    // Act
+    await act(async () =>
+      renderWithClient(
+        queryClient,
+        <MemoryRouter>
+          <SlotChecking
+            settings={settings.response as Settings}
+            cancelPopup={cancelPopup}
+          />
+        </MemoryRouter>
+      )
+    );
+
+    await sleep(3000);
+
+    // Assert
+    await expect(screen.queryByTestId("slot-unavailable")).not.toBeNull();
   });
 });
