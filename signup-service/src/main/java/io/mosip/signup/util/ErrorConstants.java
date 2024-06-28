@@ -47,7 +47,8 @@ public class ErrorConstants {
 
     public static final String INVALID_IDENTITY_VERIFIER_ID = "invalid_identity_verifier_id";
 
-    public static final String TOKEN_EXCHANGE_FAILED="token_exchange_failed";
+    public static final String GRANT_EXCHANGE_FAILED="grant_exchange_failed";
+    public static final String USERINFO_FAILED="userinfo_failed";
 
     public static final String PRIVATE_KEY_LOAD_FAILED="private_key_load_failed";
 

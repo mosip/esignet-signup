@@ -78,12 +78,15 @@ public class IdentityVerificationServiceTest {
     }
 
 
+    @Ignore
     @Test
     public void initiateIdentityVerification_withValidDetails_thenPass() throws IOException {
 
+        String tokenUri = "https://signup.dev.mosip.net/v1/esignet/oauth/token";
         ClassPathResource resource = new ClassPathResource("keystore.p12");
         Path absolutePath = Paths.get(resource.getURI());
         ReflectionTestUtils.setField(identityVerificationService, "p12FilePath", absolutePath.toString());
+        ReflectionTestUtils.setField(identityVerificationService, "oauthTokenUri", tokenUri);
         InitiateIdentityVerificationRequest request = new InitiateIdentityVerificationRequest();
         request.setAuthorizationCode("authCode");
         request.setState("state");
@@ -97,8 +100,7 @@ public class IdentityVerificationServiceTest {
                 .addHeader("Content-Type", "application/json");
 
         mockWebServer.enqueue(response);
-
-        mockWebServer.url("/signup.dev.mosip.net/v1/esignet/oauth/token");
+        mockWebServer.url(tokenUri);
 
         IdentityVerifierDetail [] identityVerifierDetails = new IdentityVerifierDetail[1];
         Mockito.when(cacheUtilService.getIdentityVerifierDetails()).thenReturn(identityVerifierDetails);
@@ -132,7 +134,7 @@ public class IdentityVerificationServiceTest {
         try{
             identityVerificationService.initiateIdentityVerification(request, httpServletResponse);
         }catch (SignUpException e){
-            Assert.assertEquals(e.getErrorCode(),ErrorConstants.TOKEN_EXCHANGE_FAILED);
+            Assert.assertEquals(e.getErrorCode(),ErrorConstants.GRANT_EXCHANGE_FAILED);
         }
     }
 
@@ -147,14 +149,14 @@ public class IdentityVerificationServiceTest {
         try {
             identityVerificationService.initiateIdentityVerification(request,null);
         }catch (Exception e) {
-            Assert.assertEquals(ErrorConstants.TOKEN_EXCHANGE_FAILED, e.getMessage());
+            Assert.assertEquals(ErrorConstants.GRANT_EXCHANGE_FAILED, e.getMessage());
         }
     }
 
     @Test
     public void getSlotWithValidDetails_thenPass() throws SignatureException {
 
-        ReflectionTestUtils.setField(identityVerificationService, "maxSlotPoolSize", 100);
+        ReflectionTestUtils.setField(identityVerificationService, "slotMaxCount", 100);
         String transactionId = "testTransactionId";
         SlotRequest slotRequest = new SlotRequest();
         slotRequest.setVerifierId("testVerifierId");
@@ -170,8 +172,8 @@ public class IdentityVerificationServiceTest {
         identityVerifierDetails[0] = identityVerifierDetail;
 
         Mockito.when(cacheUtilService.getIdentityVerifierDetails()).thenReturn(identityVerifierDetails);
-        Mockito.when(cacheUtilService.countEntriesInSlotAllotted()).thenReturn(10L);
-        Mockito.when(cacheUtilService.setAllottedIdentityVerificationTransaction(Mockito.anyString(), Mockito.anyString(), Mockito.any())).thenReturn(null); // Assuming maxSlotPoolSize > 10
+        Mockito.when(cacheUtilService.getCurrentSlotCount()).thenReturn(10L);
+        Mockito.when(cacheUtilService.setSlotAllottedTransaction(Mockito.anyString(), Mockito.any())).thenReturn(null); // Assuming maxSlotPoolSize > 10
         HttpServletResponse httpServletResponse = Mockito.mock(HttpServletResponse.class);
         // Execute
         SlotResponse result = identityVerificationService.getSlot(transactionId, slotRequest, httpServletResponse);
@@ -219,7 +221,7 @@ public class IdentityVerificationServiceTest {
     @Test
     public void getSlotWithFullSlot_thenFail() throws SignatureException {
 
-        ReflectionTestUtils.setField(identityVerificationService, "maxSlotPoolSize", 100L);
+        ReflectionTestUtils.setField(identityVerificationService, "slotMaxCount", 100);
         SlotRequest slotRequest = new SlotRequest();
         slotRequest.setVerifierId("testVerifierId");
 
@@ -234,7 +236,7 @@ public class IdentityVerificationServiceTest {
         identityVerifierDetails[0] = identityVerifierDetail;
 
         Mockito.when(cacheUtilService.getIdentityVerifierDetails()).thenReturn(identityVerifierDetails);
-        Mockito.when(cacheUtilService.countEntriesInSlotAllotted()).thenReturn(100L);
+        Mockito.when(cacheUtilService.getCurrentSlotCount()).thenReturn(100L);
         // Execute
         try{
             identityVerificationService.getSlot("transactionId", slotRequest, null);

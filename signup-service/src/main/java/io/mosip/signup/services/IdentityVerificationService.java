@@ -9,16 +9,17 @@ import com.nimbusds.jwt.SignedJWT;
 import com.nimbusds.oauth2.sdk.*;
 import com.nimbusds.oauth2.sdk.auth.ClientAuthentication;
 import com.nimbusds.oauth2.sdk.auth.PrivateKeyJWT;
-import com.nimbusds.oauth2.sdk.http.HTTPRequest;
 import com.nimbusds.oauth2.sdk.token.AccessToken;
-import com.nimbusds.openid.connect.sdk.OIDCTokenResponse;
 import com.nimbusds.openid.connect.sdk.OIDCTokenResponseParser;
+import com.nimbusds.openid.connect.sdk.UserInfoRequest;
+import com.nimbusds.openid.connect.sdk.UserInfoResponse;
 import io.mosip.esignet.core.util.IdentityProviderUtil;
 import io.mosip.signup.dto.*;
 import io.mosip.signup.exception.InvalidTransactionException;
 import io.mosip.signup.exception.SignUpException;
 import io.mosip.signup.util.ErrorConstants;
 import io.mosip.signup.util.SignUpConstants;
+import jakarta.json.Json;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -62,6 +63,12 @@ public class IdentityVerificationService {
     @Value("${mosip.signup.oauth.issuer-uri}")
     private String oauthIssuerUri;
 
+    @Value("${mosip.signup.oauth.userinfo-uri}")
+    private String oauthUserinfoUri;
+
+    @Value("${mosip.signup.oauth.token-uri}")
+    private String oauthTokenUri;
+
     @Value("${mosip.signup.oauth.key-alias}")
     private String privateKeyAlias;
 
@@ -74,8 +81,8 @@ public class IdentityVerificationService {
     @Value("${mosip.signup.oauth.audience}")
     private String audience;
 
-    @Value("${mosip.signup.slot.max.pool.size}")
-    private long maxSlotPoolSize;
+    @Value("${mosip.signup.slot.max-count:50}")
+    private int slotMaxCount;
 
     @Autowired
     private RestTemplate restTemplate;
@@ -84,7 +91,9 @@ public class IdentityVerificationService {
     private CacheUtilService cacheUtilService;
 
     /**
-     *
+     * Fetches the access token using the authorization grant and gets userinfo from eSignet.
+     * If valid access token, starts the Identity verification transaction.
+     * Sets cookie with newly generated transaction ID.
      * @param request
      * @param response
      * @return
@@ -92,12 +101,14 @@ public class IdentityVerificationService {
     public InitiateIdentityVerificationResponse initiateIdentityVerification(InitiateIdentityVerificationRequest request,
                                                                              HttpServletResponse response) {
         //fetch access token from esignet with auth-code in the request
-        String subject = fetchAndVerifyAccessToken(request.getAuthorizationCode());
+        AccessToken accessToken = fetchAndVerifyAccessToken(request.getAuthorizationCode());
+        String subject = getUsername(accessToken);
 
         //if successful, start the transaction
         String transactionId = IdentityProviderUtil.createTransactionId(null);
         IdentityVerificationTransaction transaction = new IdentityVerificationTransaction();
-        transaction.setIndividualId(subject);
+        transaction.setAccessToken(accessToken.toJSONString());
+        transaction.setIndividualId(subject); //TODO encrypt
         transaction.setSlotId(IdentityProviderUtil.generateB64EncodedHash(IdentityProviderUtil.ALGO_SHA3_256,
                 transactionId));
         cacheUtilService.setIdentityVerificationTransaction(transactionId, transaction);
@@ -106,10 +117,11 @@ public class IdentityVerificationService {
         cookie.setMaxAge(identityVerificationTransactionTimeout);
         cookie.setHttpOnly(true);
         cookie.setSecure(true);
+        cookie.setPath("/");
         response.addCookie(cookie);
 
         InitiateIdentityVerificationResponse dto = new InitiateIdentityVerificationResponse();
-        dto.setIdentityVerifiers(getIdentityVerifierDetailsFromConfigServer());
+        dto.setIdentityVerifiers(getIdentityVerifierDetails());
         return dto;
     }
 
@@ -124,14 +136,13 @@ public class IdentityVerificationService {
         if(transaction == null)
             throw new InvalidTransactionException();
 
-        IdentityVerifierDetail[] verifierDetails = cacheUtilService.getIdentityVerifierDetails();
+        IdentityVerifierDetail[] verifierDetails = getIdentityVerifierDetails();
         Optional<IdentityVerifierDetail> result = Arrays.stream(verifierDetails)
                 .filter( idv -> idv.isActive() && idv.getId().equals(identityVerifierId))
                 .findFirst();
 
         if(result.isPresent()) {
-            String fileName = String.format(IDV_DETAILS_JSON_FILE_NAME, identityVerifierId);
-            return restTemplate.getForObject(configServerUrl+fileName, JsonNode.class);
+           return getIdentityVerifierMetadata(identityVerifierId);
         }
         log.error("Invalid identity verifier ID provided!");
         throw new SignUpException(ErrorConstants.INVALID_IDENTITY_VERIFIER_ID);
@@ -144,7 +155,7 @@ public class IdentityVerificationService {
      * @param slotRequest
      * @return
      */
-    public SlotResponse  getSlot(String transactionId, SlotRequest slotRequest,HttpServletResponse response) {
+    public SlotResponse  getSlot(String transactionId, SlotRequest slotRequest, HttpServletResponse response) {
        IdentityVerificationTransaction transaction = cacheUtilService.getIdentityVerificationTransaction(transactionId);
         if (transaction == null)
             throw new InvalidTransactionException();
@@ -154,32 +165,61 @@ public class IdentityVerificationService {
                 .filter(idv -> idv.isActive() && idv.getId().equals(slotRequest.getVerifierId()))
                 .findFirst();
 
-        if (!result.isPresent())
+        if (result.isEmpty())
             throw new SignUpException(ErrorConstants.INVALID_IDENTITY_VERIFIER_ID);
 
         try{
-            long currentSlotPoolSize =cacheUtilService.countEntriesInSlotAllotted();
-            if(currentSlotPoolSize >= maxSlotPoolSize) {
-                log.error("Maximum slot capacity reached");
+            if(cacheUtilService.getCurrentSlotCount() >= slotMaxCount) {
+                log.error("**** Maximum slot capacity reached ****");
                 throw new SignUpException(ErrorConstants.SLOT_NOT_AVAILABLE);
             }
-            cacheUtilService.setAllottedIdentityVerificationTransaction(transactionId, "transaction.getSlotId()", transaction);
-            Cookie cookie = new Cookie(SignUpConstants.SLOT_ID, transaction.getSlotId());
-            cookie.setMaxAge(identityVerificationTransactionTimeout);
-            cookie.setHttpOnly(true);
-            cookie.setSecure(true);
-            response.addCookie(cookie);
+
+            cacheUtilService.setSlotAllottedTransaction(transactionId, transaction);
+            addSlotAllottedCookie(transactionId, result.get(), response);
+            cacheUtilService.incrementCurrentSlotCount();
+
+            log.info("Slot available and assigned to the requested transaction {}", transactionId);
             SlotResponse slotResponse = new SlotResponse();
             slotResponse.setSlotId(transaction.getSlotId());
-            log.info("Slot available and assigned to the requested transaction {}", transactionId);
             return slotResponse;
+
         }catch (SignUpException ex){
             log.error("Failed to assign slot to the requested transaction {}", transactionId, ex);
-            throw new SignUpException(ErrorConstants.SLOT_NOT_AVAILABLE);
         }
+        throw new SignUpException(ErrorConstants.SLOT_NOT_AVAILABLE);
     }
 
-    private String fetchAndVerifyAccessToken(String authCode) {
+    private void addSlotAllottedCookie(String transactionId, IdentityVerifierDetail identityVerifierDetail,
+                                       HttpServletResponse response) {
+        Cookie cookie = new Cookie(SignUpConstants.IDV_SLOT_ALLOTTED, transactionId);
+        cookie.setMaxAge(identityVerifierDetail.getProcessDuration() > 0 ? identityVerifierDetail.getProcessDuration() : identityVerificationTransactionTimeout);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+        response.addCookie(cookie);
+
+        Cookie unsetCookie = new Cookie(SignUpConstants.IDV_TRANSACTION_ID, "");
+        unsetCookie.setMaxAge(0);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+        response.addCookie(unsetCookie);
+    }
+
+    private String getUsername(AccessToken accessToken) {
+        try {
+            UserInfoRequest userInfoRequest = new UserInfoRequest(new URI(oauthUserinfoUri), accessToken);
+            UserInfoResponse userInfoResponse = UserInfoResponse.parse(userInfoRequest.toHTTPRequest().send());
+            if(userInfoResponse.indicatesSuccess()) {
+                return userInfoResponse.toSuccessResponse().getUserInfo().getSubject().getValue();
+            }
+            log.error("Failed to fetch userinfo: {} ", userInfoResponse.toErrorResponse());
+        } catch (Exception e) {
+            log.error("Failed to fetch userinfo", e);
+        }
+        throw new SignUpException(ErrorConstants.USERINFO_FAILED);
+    }
+
+
+    private AccessToken fetchAndVerifyAccessToken(String authCode) {
         try {
             long issuedTime = System.currentTimeMillis();
             JWTClaimsSet.Builder builder = new JWTClaimsSet.Builder()
@@ -195,27 +235,23 @@ public class IdentityVerificationService {
 
             // Create a Token Request with the authorization code
             AuthorizationCode code = new AuthorizationCode(authCode);
-            URI callback = new URI(oauthRedirectUri);
-            URI tokenEndpoint = new URI(audience);
-            AuthorizationGrant codeGrant = new AuthorizationCodeGrant(code, callback);
+            AuthorizationGrant codeGrant = new AuthorizationCodeGrant(code, new URI(oauthRedirectUri));
             ClientAuthentication clientAuthentication = new PrivateKeyJWT(signedJWT);
-            TokenRequest request = new TokenRequest(tokenEndpoint,clientAuthentication, codeGrant);
-            HTTPRequest toHTTPRequest = request.toHTTPRequest();
-            TokenResponse tokenResponse= OIDCTokenResponseParser.parse(toHTTPRequest.send());
+            TokenRequest request = new TokenRequest(new URI(oauthTokenUri), clientAuthentication, codeGrant);
+            TokenResponse tokenResponse = OIDCTokenResponseParser.parse(request.toHTTPRequest().send());
             if (tokenResponse.indicatesSuccess()) {
-                OIDCTokenResponse successResponse = (OIDCTokenResponse) tokenResponse.toSuccessResponse();
-                AccessToken accessToken = successResponse.getOIDCTokens().getAccessToken();
                 log.info("Access token received successfully");
-                return accessToken.toJSONString();
+                AccessTokenResponse accessTokenResponse = tokenResponse.toSuccessResponse();
+                return accessTokenResponse.getTokens().getAccessToken();
             }
-            log.error("Failed to exchange authorization grant for tokens: "+toHTTPRequest.getBody());
-        }catch (Exception e) {
+            log.error("Failed to exchange authorization grant for tokens: {} ", tokenResponse.toErrorResponse());
+        } catch (Exception e) {
             log.error("Failed to exchange authorization grant for tokens", e);
         }
-        throw new SignUpException(ErrorConstants.TOKEN_EXCHANGE_FAILED);
+        throw new SignUpException(ErrorConstants.GRANT_EXCHANGE_FAILED);
     }
 
-    private IdentityVerifierDetail[] getIdentityVerifierDetailsFromConfigServer() {
+    private IdentityVerifierDetail[] getIdentityVerifierDetails() {
         IdentityVerifierDetail[] verifierDetails = cacheUtilService.getIdentityVerifierDetails();
         if(verifierDetails == null || verifierDetails.length == 0) {
             verifierDetails = restTemplate.getForObject(configServerUrl+ALL_IDV_DETAILS_JSON_FILE_NAME, IdentityVerifierDetail[].class);
@@ -224,14 +260,24 @@ public class IdentityVerificationService {
         return verifierDetails;
     }
 
-    private PrivateKey loadPrivateKey(String alias, String cryptoPassword) {
+    private JsonNode getIdentityVerifierMetadata(String identityVerifierId) {
+        JsonNode jsonNode = cacheUtilService.getIdentityVerifierMetadata(identityVerifierId);
+        if(jsonNode == null) {
+            String fileName = String.format(IDV_DETAILS_JSON_FILE_NAME, identityVerifierId);
+            jsonNode = restTemplate.getForObject(configServerUrl+fileName, JsonNode.class);
+            return cacheUtilService.setIdentityVerifierMetadata(identityVerifierId, jsonNode);
+        }
+        return jsonNode;
+    }
+
+    private PrivateKey loadPrivateKey(String alias, String password) {
         try {
             Path path = Paths.get(p12FilePath);
             try (InputStream inputStream = Files.newInputStream(path)) {
                 KeyStore keyStore = KeyStore.getInstance("PKCS12");
-                keyStore.load(inputStream, cryptoPassword.toCharArray());
+                keyStore.load(inputStream, password.toCharArray());
                 // Retrieve the private key
-                return (PrivateKey) keyStore.getKey(alias, cryptoPassword.toCharArray());
+                return (PrivateKey) keyStore.getKey(alias, password.toCharArray());
             }
         } catch (Exception e) {
             log.error("Failed to load private key from keystore", e);

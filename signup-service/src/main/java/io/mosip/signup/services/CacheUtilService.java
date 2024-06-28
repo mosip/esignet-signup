@@ -1,5 +1,6 @@
 package io.mosip.signup.services;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import io.mosip.esignet.core.util.IdentityProviderUtil;
 import io.mosip.signup.dto.IdentityVerificationTransaction;
 import io.mosip.signup.dto.IdentityVerifierDetail;
@@ -15,10 +16,13 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.Cursor;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import java.util.Locale;
+
+import static io.mosip.signup.util.SignUpConstants.CURRENT_SLOTS;
 
 @Slf4j
 @Service
@@ -30,24 +34,7 @@ public class CacheUtilService {
     CacheManager cacheManager;
 
     @Autowired
-    private StringRedisTemplate redisTemplate;
-
-    public long countEntriesInSlotAllotted(){
-        String pattern = SignUpConstants.SLOT_ALLOTTED + ":*";
-        ScanOptions options = ScanOptions.scanOptions().match(pattern).build();
-        try (Cursor<byte[]> cursor = redisTemplate.executeWithStickyConnection(connection ->
-                connection.scan(options))) {
-            long count = 0;
-            while (cursor.hasNext()) {
-                cursor.next();
-                count++;
-            }
-            return count;
-        } catch (Exception e) {
-            log.error("Error while counting entries of allotted slot", e);
-            throw new SignUpException(ErrorConstants.SLOT_NOT_AVAILABLE);
-        }
-    }
+    private RedisTemplate<String, Long> redisTemplate;
 
     //---Setter---
 
@@ -90,6 +77,11 @@ public class CacheUtilService {
     public IdentityVerificationTransaction setIdentityVerificationTransaction(String transactionId,
                                                                        IdentityVerificationTransaction identityVerificationTransaction) {
         return identityVerificationTransaction;
+    }
+
+    @Cacheable(value = SignUpConstants.IDENTITY_VERIFIER_METADATA, key = "#identityVerifierId")
+    public JsonNode setIdentityVerifierMetadata(String identityVerifierId, JsonNode jsonNode) {
+        return jsonNode;
     }
 
     //----- cache update is separated
@@ -141,14 +133,36 @@ public class CacheUtilService {
         return cacheManager.getCache(SignUpConstants.IDENTITY_VERIFICATION).get(transactionId, IdentityVerificationTransaction.class); //NOSONAR getCache() will not be returning null here.
     }
 
-    @Cacheable(value = SignUpConstants.SLOT_ALLOTTED, key = "#slotId")
+    @Cacheable(value = SignUpConstants.SLOT_ALLOTTED, key = "#transactionId")
     @CacheEvict(value = SignUpConstants.IDENTITY_VERIFICATION, key = "#transactionId")
-    public IdentityVerificationTransaction setAllottedIdentityVerificationTransaction(String transactionId, String slotId,
+    public IdentityVerificationTransaction setSlotAllottedTransaction(String transactionId,
                                                                               IdentityVerificationTransaction identityVerificationTransaction) {
         return identityVerificationTransaction;
     }
 
     @CacheEvict(value = SignUpConstants.SLOT_ALLOTTED, key = "#transactionId")
-    public void removeAllottedIdentityVerificationTransaction(String transactionId) {
+    public void evictSlotAllottedTransaction(String transactionId) {
+    }
+
+    public IdentityVerificationTransaction getSlotAllottedTransaction(String transactionId) {
+        return cacheManager.getCache(SignUpConstants.IDV_SLOT_ALLOTTED).get(transactionId, IdentityVerificationTransaction.class); //NOSONAR getCache() will not be returning null here.
+    }
+
+    public JsonNode getIdentityVerifierMetadata(String identityVerifierId) {
+        return cacheManager.getCache(SignUpConstants.IDENTITY_VERIFIER_METADATA).get(identityVerifierId, JsonNode.class); //NOSONAR getCache() will not be returning null here.
+    }
+
+    public long getCurrentSlotCount() {
+        Long count = redisTemplate.opsForValue().get(CURRENT_SLOTS);
+        log.debug("Current allotted slot count : {}", count);
+        return count == null ? 0 : count;
+    }
+
+    public void incrementCurrentSlotCount() {
+        redisTemplate.opsForValue().increment(CURRENT_SLOTS);
+    }
+
+    public void decrementCurrentSlotCount() {
+        redisTemplate.opsForValue().decrement(CURRENT_SLOTS);
     }
 }

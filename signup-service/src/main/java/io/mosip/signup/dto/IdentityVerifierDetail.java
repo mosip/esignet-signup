@@ -16,5 +16,6 @@ public class IdentityVerifierDetail implements Serializable {
     private String logoUrl;
     private boolean retryOnFailure;
     private boolean resumeOnSuccess;
+    private int processDuration; //in seconds
 
 }
