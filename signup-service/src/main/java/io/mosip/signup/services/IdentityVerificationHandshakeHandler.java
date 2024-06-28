@@ -28,9 +28,11 @@ public class IdentityVerificationHandshakeHandler extends DefaultHandshakeHandle
     @Override
     protected Principal determineUser(ServerHttpRequest request, WebSocketHandler wsHandler,
                                       Map<String, Object> attributes) {
+
+        log.info("Started to determine user aka slotId with headers : {}", request.getHeaders());
         HttpHeaders headers = request.getHeaders();
 
-        String cookieName = SignUpConstants.IDV_TRANSACTION_ID+"=";
+        String cookieName = SignUpConstants.IDV_SLOT_ALLOTTED+"=";
         Optional<String> transactionCookie = headers.getOrEmpty(HttpHeaders.COOKIE)
                 .stream()
                 .filter( cookie -> cookie.startsWith(cookieName))
@@ -39,8 +41,8 @@ public class IdentityVerificationHandshakeHandler extends DefaultHandshakeHandle
         if(!transactionCookie.isPresent())
             throw new HandshakeFailureException(ErrorConstants.INVALID_TRANSACTION);
 
-        IdentityVerificationTransaction transaction = cacheUtilService.getIdentityVerificationTransaction(
-                transactionCookie.get().substring(cookieName.length()));
+        String transactionId = transactionCookie.get().substring(cookieName.length());
+        IdentityVerificationTransaction transaction = cacheUtilService.getSlotAllottedTransaction(transactionId);
 
         List<String> values = headers.getOrEmpty("SlotId");
         if(values.isEmpty() || !values.get(0).equals(transaction.getSlotId())) {
@@ -51,7 +53,7 @@ public class IdentityVerificationHandshakeHandler extends DefaultHandshakeHandle
         return new Principal() {
             @Override
             public String getName() {
-                return transaction.getSlotId();
+                return transactionId.concat("##").concat(transaction.getSlotId());
             }
         };
     }

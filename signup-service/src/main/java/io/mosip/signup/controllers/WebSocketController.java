@@ -49,13 +49,14 @@ public class WebSocketController {
     @EventListener
     public void onConnected(SessionConnectedEvent connectedEvent) {
         log.info("WebSocket Connected >>>>>> {}", connectedEvent.getUser());
+        //TODO ??
     }
 
     @EventListener
     public void onDisconnected(SessionDisconnectEvent disconnectEvent) {
         log.info("WebSocket Disconnected >>>>>> {}", disconnectEvent.getUser());
-        String slotId= disconnectEvent.getSessionId();
-        cacheUtilService.removeAllottedIdentityVerificationTransaction(slotId);
-        log.info("Removed slotId from cache >>>>>> {}", slotId);
+        String sessionId = disconnectEvent.getSessionId(); //TODO split based on separator
+        cacheUtilService.decrementCurrentSlotCount();
+        cacheUtilService.evictSlotAllottedTransaction(sessionId.split("##")[1]);
     }
 }
