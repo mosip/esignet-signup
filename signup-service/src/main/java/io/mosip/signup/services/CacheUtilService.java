@@ -15,6 +15,7 @@ import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ScanOptions;
@@ -34,7 +35,7 @@ public class CacheUtilService {
     CacheManager cacheManager;
 
     @Autowired
-    private RedisTemplate<String, Long> redisTemplate;
+    private RedisConnectionFactory redisConnectionFactory;
 
     //---Setter---
 
@@ -153,16 +154,16 @@ public class CacheUtilService {
     }
 
     public long getCurrentSlotCount() {
-        Long count = redisTemplate.opsForValue().get(CURRENT_SLOTS);
+        Long count = cacheManager.getCache("slots").get("current", Long.class);
         log.debug("Current allotted slot count : {}", count);
         return count == null ? 0 : count;
     }
 
     public void incrementCurrentSlotCount() {
-        redisTemplate.opsForValue().increment(CURRENT_SLOTS);
+        redisConnectionFactory.getConnection().incr(CURRENT_SLOTS.getBytes());
     }
 
     public void decrementCurrentSlotCount() {
-        redisTemplate.opsForValue().decrement(CURRENT_SLOTS);
+        redisConnectionFactory.getConnection().decr(CURRENT_SLOTS.getBytes());
     }
 }
