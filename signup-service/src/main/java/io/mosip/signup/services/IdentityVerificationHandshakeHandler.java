@@ -38,7 +38,7 @@ public class IdentityVerificationHandshakeHandler extends DefaultHandshakeHandle
                 .filter( cookie -> cookie.startsWith(cookieName))
                 .findFirst();
 
-        if(!transactionCookie.isPresent())
+        if(transactionCookie.isEmpty())
             throw new HandshakeFailureException(ErrorConstants.INVALID_TRANSACTION);
 
         String transactionId = transactionCookie.get().substring(cookieName.length());
