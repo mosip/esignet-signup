@@ -15,6 +15,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
+import java.util.Objects;
+
 @Slf4j
 @Controller()
 public class WebSocketController {
@@ -48,14 +50,14 @@ public class WebSocketController {
 
     @EventListener
     public void onConnected(SessionConnectedEvent connectedEvent) {
-        log.info("WebSocket Connected >>>>>> {}", connectedEvent.getUser());
+        log.info("WebSocket Connected >>>>>> {}", Objects.requireNonNull(connectedEvent.getUser()).getName());
         //TODO ??
     }
 
     @EventListener
     public void onDisconnected(SessionDisconnectEvent disconnectEvent) {
-        log.info("WebSocket Disconnected >>>>>> {}", disconnectEvent.getUser());
-        String sessionId = disconnectEvent.getSessionId(); //TODO split based on separator
+        String sessionId = Objects.requireNonNull(disconnectEvent.getUser()).getName();
+        log.info("WebSocket Disconnected >>>>>> {}", sessionId);
         cacheUtilService.decrementCurrentSlotCount();
         cacheUtilService.evictSlotAllottedTransaction(sessionId.split("##")[1]);
     }

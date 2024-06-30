@@ -1,5 +1,9 @@
 const stompClient = new StompJs.Client({
-    brokerURL: 'ws://localhost:8088/v1/signup/ws'
+    brokerURL: 'ws://localhost:8088/v1/signup/ws',
+    connectHeaders: {
+        'SlotId': 'value1',
+        'Cookie': 'IDV_SLOT_ALLOTTED=value2',
+      }
 });
 
 stompClient.onConnect = (frame) => {
@@ -45,6 +49,7 @@ function sendName() {
     console.log('Sending message to server');
     stompClient.publish({
         destination: "/v1/signup/ws/process-frame",
+        headers : {'SlotId': 'value1'},
         body: JSON.stringify({'slotId': $("#name").val()})
     });
 }
