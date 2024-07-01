@@ -24,4 +24,5 @@ public class SignUpConstants {
 
     public static final String CURRENT_SLOTS = "slots:current";
     public static final String SLOT_ALLOTTED = "slot_allotted";
+    public static final String SOCKET_USERNAME_SEPARATOR = "##";
 }

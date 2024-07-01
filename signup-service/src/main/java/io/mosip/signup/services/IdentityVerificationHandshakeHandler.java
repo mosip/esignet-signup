@@ -13,9 +13,10 @@ import org.springframework.web.socket.server.HandshakeFailureException;
 import org.springframework.web.socket.server.support.DefaultHandshakeHandler;
 
 import java.security.Principal;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import static io.mosip.signup.util.SignUpConstants.SOCKET_USERNAME_SEPARATOR;
 
 
 @Slf4j
@@ -25,6 +26,9 @@ public class IdentityVerificationHandshakeHandler extends DefaultHandshakeHandle
     @Autowired
     CacheUtilService cacheUtilService;
 
+    private static final String SLOTID_QUERY_PARAM = "slotId=";
+    private static final String SLOT_COOKIE_NAME = SignUpConstants.IDV_SLOT_ALLOTTED+"=";
+
     @Override
     protected Principal determineUser(ServerHttpRequest request, WebSocketHandler wsHandler,
                                       Map<String, Object> attributes) {
@@ -32,28 +36,28 @@ public class IdentityVerificationHandshakeHandler extends DefaultHandshakeHandle
         log.info("Started to determine user aka slotId with headers : {}", request.getHeaders());
         HttpHeaders headers = request.getHeaders();
 
-        String cookieName = SignUpConstants.IDV_SLOT_ALLOTTED+"=";
         Optional<String> transactionCookie = headers.getOrEmpty(HttpHeaders.COOKIE)
                 .stream()
-                .filter( cookie -> cookie.startsWith(cookieName))
+                .filter( cookie -> cookie.startsWith(SLOT_COOKIE_NAME))
                 .findFirst();
 
         if(transactionCookie.isEmpty())
             throw new HandshakeFailureException(ErrorConstants.INVALID_TRANSACTION);
 
-        String transactionId = transactionCookie.get().substring(cookieName.length());
+        String transactionId = transactionCookie.get().substring(SLOT_COOKIE_NAME.length());
         IdentityVerificationTransaction transaction = cacheUtilService.getSlotAllottedTransaction(transactionId);
 
-        List<String> values = headers.getOrEmpty("SlotId");
-        if(values.isEmpty() || !values.get(0).equals(transaction.getSlotId())) {
-            log.error("SlotId in the handshake header doesn't match the slotId in the transaction");
+        String queryParam = request.getURI().getQuery();
+        if(queryParam == null || queryParam.split(SLOTID_QUERY_PARAM).length <= 1 ||
+                !transaction.getSlotId().equals(queryParam.split(SLOTID_QUERY_PARAM)[1])) {
+            log.error("SlotId in the handshake url doesn't match the slotId in the transaction");
             throw new HandshakeFailureException(ErrorConstants.INVALID_TRANSACTION);
         }
 
         return new Principal() {
             @Override
             public String getName() {
-                return transactionId.concat("##").concat(transaction.getSlotId());
+                return transactionId.concat(SOCKET_USERNAME_SEPARATOR).concat(transaction.getSlotId());
             }
         };
     }

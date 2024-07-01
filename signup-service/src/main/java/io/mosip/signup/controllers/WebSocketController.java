@@ -17,6 +17,8 @@ import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 import java.util.Objects;
 
+import static io.mosip.signup.util.SignUpConstants.SOCKET_USERNAME_SEPARATOR;
+
 @Slf4j
 @Controller()
 public class WebSocketController {
@@ -36,6 +38,10 @@ public class WebSocketController {
     @MessageMapping("/process-frame")
     public void processFrames(final @Payload IdentityVerificationRequest identityVerificationRequest) {
         String slot = identityVerificationRequest.getSlotId();
+        // check if its verified slotId?,
+        // transaction expiry
+        // audit or debug logging
+        // based on the provider, send the message to provider, on kafka topic ?
         log.info("Message received from Client >>>>> {}", slot);
 
         IdentityVerificationResponse identityVerificationResponse = new IdentityVerificationResponse();
@@ -56,9 +62,9 @@ public class WebSocketController {
 
     @EventListener
     public void onDisconnected(SessionDisconnectEvent disconnectEvent) {
-        String sessionId = Objects.requireNonNull(disconnectEvent.getUser()).getName();
-        log.info("WebSocket Disconnected >>>>>> {}", sessionId);
+        String username = Objects.requireNonNull(disconnectEvent.getUser()).getName();
+        log.info("WebSocket Disconnected >>>>>> {}", username);
         cacheUtilService.decrementCurrentSlotCount();
-        cacheUtilService.evictSlotAllottedTransaction(sessionId.split("##")[1]);
+        cacheUtilService.evictSlotAllottedTransaction(username.split(SOCKET_USERNAME_SEPARATOR)[1]);
     }
 }
