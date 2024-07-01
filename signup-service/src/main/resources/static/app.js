@@ -1,5 +1,5 @@
 const stompClient = new StompJs.Client({
-    brokerURL: 'ws://localhost:8088/v1/signup/ws?slotId=greetings'
+    brokerURL: 'wss://signup-l2.camdgc-dev1.mosip.net/v1/signup/ws?slotId=greetings'
 });
 
 stompClient.onConnect = (frame) => {
