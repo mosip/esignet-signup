@@ -50,7 +50,7 @@ export const SignUpPopover = () => {
               {t("error")}
             </>
           </AlertDialogTitle>
-          <AlertDialogDescription className="break-all text-center text-muted-dark-gray">
+          <AlertDialogDescription className="text-center text-muted-dark-gray">
             {criticalError && t(`error_response.${criticalError.errorCode}`)}
           </AlertDialogDescription>
         </AlertDialogHeader>
