@@ -1,9 +1,5 @@
 const stompClient = new StompJs.Client({
-    brokerURL: 'ws://localhost:8088/v1/signup/ws',
-    connectHeaders: {
-        'SlotId': 'value1',
-        'Cookie': 'IDV_SLOT_ALLOTTED=value2',
-      }
+    brokerURL: 'ws://localhost:8088/v1/signup/ws?slotId=greetings'
 });
 
 stompClient.onConnect = (frame) => {
