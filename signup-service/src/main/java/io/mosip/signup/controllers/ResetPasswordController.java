@@ -1,13 +1,10 @@
 package io.mosip.signup.controllers;
 
-
-import io.micrometer.core.annotation.Timed;
 import io.mosip.esignet.core.dto.RequestWrapper;
 import io.mosip.esignet.core.dto.ResponseWrapper;
 import io.mosip.esignet.core.util.IdentityProviderUtil;
 import io.mosip.signup.dto.RegistrationStatusResponse;
 import io.mosip.signup.dto.ResetPasswordRequest;
-import io.mosip.signup.dto.SettingsResponse;
 import io.mosip.signup.exception.SignUpException;
 import io.mosip.signup.helper.AuditHelper;
 import io.mosip.signup.services.RegistrationService;
@@ -17,12 +14,10 @@ import io.mosip.signup.util.ErrorConstants;
 import io.mosip.signup.util.SignUpConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
-import java.util.Map;
 
 import static io.mosip.signup.util.SignUpConstants.EMTPY;
 

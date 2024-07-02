@@ -54,10 +54,13 @@ public class IdentityVerificationHandshakeHandler extends DefaultHandshakeHandle
             throw new HandshakeFailureException(ErrorConstants.INVALID_TRANSACTION);
         }
 
+        final String username = transactionId.concat(SOCKET_USERNAME_SEPARATOR).concat(transaction.getSlotId());
+        cacheUtilService.setVerifiedSlotTransaction(transactionId, transaction.getSlotId(), transaction);
+
         return new Principal() {
             @Override
             public String getName() {
-                return transactionId.concat(SOCKET_USERNAME_SEPARATOR).concat(transaction.getSlotId());
+                return username;
             }
         };
     }
