@@ -78,7 +78,7 @@ export const ResetPasswordStatus = ({ settings }: ResetPasswordStatusProps) => {
     <Step>
       <StepContent className="py-16">
         <div className="flex flex-col items-center gap-8">
-          <Icons.loader className="h-20 w-20 animate-spin text-orange-500" />
+          <Icons.loader className="h-20 w-20 animate-spin text-primary" />
           <div>
             <h1 className="text-center text-2xl font-semibold">
               {t("password_reset_in_progress")}
