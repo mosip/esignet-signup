@@ -1,6 +1,5 @@
 package io.mosip.signup.controllers;
 
-import io.mosip.signup.api.dto.IDVProcessFeedback;
 import io.mosip.signup.api.dto.IdentityVerificationDto;
 import io.mosip.signup.api.dto.IdentityVerificationResult;
 import io.mosip.signup.api.spi.IdentityVerifierPlugin;
