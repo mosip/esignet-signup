@@ -1,11 +1,41 @@
-import { forwardRef } from "react";
+import { forwardRef, useCallback, useEffect, useState } from "react";
 
 import { Language } from "~components/language";
+import {
+  EkycVerificationStore,
+  errorBannerMessageSelector,
+  useEkycVerificationStore,
+} from "~pages/EkycVerificationPage/useEkycVerificationStore";
 
 const NavBar = () => {
+  const { errorBannerMessage } = useEkycVerificationStore(
+    useCallback(
+      (state: EkycVerificationStore) => ({
+        errorBannerMessage: errorBannerMessageSelector(state),
+      }),
+      []
+    )
+  );
+
+  const [navbarStyle, setNavbarStyle] = useState(
+    "sticky top-0 z-40 h-[70px] w-full border-gray-500 bg-white px-2 py-2 sm:px-0 shadow-md"
+  );
+
+  useEffect(() => {
+    if (errorBannerMessage !== null && errorBannerMessage !== "") {
+      setNavbarStyle(
+        "sticky top-0 z-40 h-[70px] w-full border-gray-500 bg-white px-2 py-2 sm:px-0"
+      );
+    } else {
+      setNavbarStyle(
+        "sticky top-0 z-40 h-[70px] w-full border-gray-500 bg-white px-2 py-2 sm:px-0 shadow-md"
+      );
+    }
+  }, [errorBannerMessage]);
+
   return (
-    <nav className="sticky top-0 z-40 h-[70px] w-full border-gray-500 bg-white px-2 py-2 shadow-md sm:px-0">
-      <div className="container flex h-full items-center justify-between md:px-[0.5rem] py-2 px-[4rem]">
+    <nav className={navbarStyle}>
+      <div className="container flex h-full items-center justify-between px-[4rem] py-2 md:px-[0.5rem]">
         <div className="ltr:ml-1 ltr:sm:ml-8 rtl:mr-1 rtl:sm:mr-8">
           <img className="brand-logo" alt="brand_logo" />
         </div>

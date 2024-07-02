@@ -104,11 +104,63 @@ body {
   opacity: 1;
 }
 
-.cancel_btn, .cancel_btn:hover {
+.cancel_btn,
+.cancel_btn:hover {
   border: var(--cancel-button-border);
   border-radius: var(--cancel-button-border-radius);
   background: none;
   color: var(--cancel-button-color) !important;
+}
+
+.video-message {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  margin: 1em auto;
+  background-color: var(--video-message-bg-color);
+  color: var(--video-message-text-color);
+  width: var(--video-message-banner-width);
+  padding: var(--video-message-banner-padding);
+  font: var(--video-message-banner-font);
+  border-radius: var(--video-message-banner-border-radius);
+}
+
+.video-border {
+  --s: 40px; /* the size on the corner */
+  --t: 5px; /* the thickness of the border */
+  --g: 10px; /* the gap between the border and image */
+
+  padding: calc(var(--g) + var(--t));
+  outline: var(--t) solid var(--video-preview-border-color); /* the color here */
+  outline-offset: calc(-1 * var(--t));
+  border-radius: 15px;
+
+  /* for chrome browser */
+  -webkit-mask:
+    conic-gradient(at var(--s) var(--s), #0000 75%, #000 0) 0 0 /
+      calc(100% - var(--s)) calc(100% - var(--s)),
+    linear-gradient(#000 0 0) content-box;
+
+  /* for firefox browser */
+  mask:
+    conic-gradient(at var(--s) var(--s), #0000 75%, #000 0) 0 0 /
+      calc(100% - var(--s)) calc(100% - var(--s)),
+    linear-gradient(#000 0 0) content-box;
+  transition: 0.4s;
+}
+
+.no-video-border {
+  width: 100vw;
+  height: calc(100vh - 207px);
+}
+
+.error-banner {
+  padding: var(--error-banner-padding);
+  text-align: var(--error-banner-text-align);
+  color: var(--error-banner-text-color);
+  background-color: var(--error-banner-bg-color);
+  font: var(--error-banner-font);
 }
 
 @media screen and (max-width: 640px) {
@@ -160,15 +212,14 @@ body {
 
 .check-box::after {
   content: url("assets/svg/check_white.svg");
-  background: #EB6F2D;
+  background: #eb6f2d;
   position: absolute;
   top: 0;
   right: 0;
   padding: 4px 6px;
   border-radius: 0px 5px 0px 8px;
   border-style: solid;
-  border-color: #EB6F2D;
-
+  border-color: #eb6f2d;
 }
 
 @media (min-width: 768px) {
@@ -177,24 +228,24 @@ body {
     --s: 40px; /* the size on the corner */
     --t: 5px; /* the thickness of the border */
     --g: 10px; /* the gap between the border and image */
-  
+
     padding: calc(var(--g) + var(--t));
     outline: var(--t) solid var(--video-preview-border-color); /* the color here */
     outline-offset: calc(-1 * var(--t));
     border-radius: 15px;
-  
+
     /* for chrome browser */
     -webkit-mask:
       conic-gradient(at var(--s) var(--s), #0000 75%, #000 0) 0 0 /
         calc(100% - var(--s)) calc(100% - var(--s)),
       linear-gradient(#000 0 0) content-box;
-  
+
     /* for firefox browser */
     mask:
       conic-gradient(at var(--s) var(--s), #0000 75%, #000 0) 0 0 /
         calc(100% - var(--s)) calc(100% - var(--s)),
       linear-gradient(#000 0 0) content-box;
-    transition: .4s;
+    transition: 0.4s;
   }
 }
 
@@ -203,6 +254,7 @@ body {
   position: fixed;
   top: 50%;
   left: 50%;
+  width: max-content;
   transform: translate(-50%, -50%);
   -webkit-transform: translate(-50%, -50%);
   -moz-transform: translate(-50%, -50%);

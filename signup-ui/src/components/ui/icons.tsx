@@ -10,6 +10,7 @@ import { ReactComponent as ChevronUpSolid } from "~assets/svg/chevron-up-solid.s
 import { ReactComponent as EyeOff } from "~assets/svg/eye-off.svg";
 import { ReactComponent as Eye } from "~assets/svg/eye.svg";
 import { ReactComponent as Failed } from "~assets/svg/failed-icon.svg";
+import { ReactComponent as Success } from "~assets/svg/success-icon.svg";
 import { ReactComponent as Loader } from "~assets/svg/loader.svg";
 import { ReactComponent as X } from "~assets/svg/x.svg";
 import { ReactComponent as Close } from "~assets/svg/close-icon.svg";
@@ -25,6 +26,7 @@ export const Icons = {
   eye: Eye,
   eyeOff: EyeOff,
   failed: Failed,
+  success: Success,
   info: React.forwardRef<
     HTMLImageElement,
     React.ImgHTMLAttributes<HTMLImageElement>

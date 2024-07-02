@@ -1,9 +1,9 @@
 :root {
   --font-inter: "Inter";
   --font-kantumruypro: "Kantumruy Pro Variable";
-  --background-body:  #f7f9fd;
-  --background-color:  200 60% 98%;
-  --foreground-color:  222.2 47.4% 11.2%;
+  --background-body: #f7f9fd;
+  --background-color: 200 60% 98%;
+  --foreground-color: 222.2 47.4% 11.2%;
 
   --language-icon-color: #ffffff;
   --language-icon-bg-color: #eb6f2d;
@@ -73,6 +73,19 @@
   --cancel-button-border: 2px solid #eb6f2d;
   --cancel-button-border-radius: 8px;
   --cancel-button-color: #eb6f2d;
+
+  --video-message-bg-color: #505050;
+  --video-message-text-color: #fff;
+  --video-message-banner-width: 610px;
+  --video-message-banner-padding: 0.75em;
+  --video-message-banner-font: normal normal medium 22px/29px Roboto;
+  --video-message-banner-border-radius: 10px;
+
+  --error-banner-padding: 0.75em;
+  --error-banner-text-align: center;
+  --error-banner-text-color: #d52929;
+  --error-banner-bg-color: #faefef;
+  --error-banner-font: normal normal 600 14px/17px Inter;
 }
 
 [class="dark"] {
@@ -184,4 +197,17 @@
   --cancel-button-border: 2px solid #004282;
   --cancel-button-border-radius: 8px;
   --cancel-button-color: #004282;
+
+  --video-message-bg-color: #505050;
+  --video-message-text-color: #fff;
+  --video-message-banner-width: 610px;
+  --video-message-banner-padding: 0.75em;
+  --video-message-banner-font: normal normal medium 22px/29px Roboto;
+  --video-message-banner-border-radius: 10px;
+
+  --error-banner-padding: 0.75em;
+  --error-banner-text-align: center;
+  --error-banner-text-color: #d52929;
+  --error-banner-bg-color: #faefef;
+  --error-banner-font: normal normal 600 14px/17px Inter;
 }
