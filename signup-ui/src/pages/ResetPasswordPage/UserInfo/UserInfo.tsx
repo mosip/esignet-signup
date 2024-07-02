@@ -250,7 +250,7 @@ export const UserInfo = ({ settings, methods }: UserInfoProps) => {
                             <Input
                               {...field}
                               id="phone_input"
-                              type="tel"
+                              type="number"
                               placeholder={t("enter_your_number_placeholder")}
                               className="h-[inherit] border-none outline-none"
                               minLength={
@@ -263,6 +263,7 @@ export const UserInfo = ({ settings, methods }: UserInfoProps) => {
                                   "identifier.length.max"
                                 ]
                               }
+                              onKeyUp={handleUsernameInput}
                               onKeyDown={handleUsernameInput}
                               disabled={resendOtp}
                             />
