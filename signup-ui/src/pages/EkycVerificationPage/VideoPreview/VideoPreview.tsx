@@ -162,8 +162,8 @@ export const VideoPreview = ({
   return (
     <>
       {cancelPopup({ cancelButton, handleStay })}
-      <div className="m-3 mt-10 flex flex-row items-stretch justify-center gap-x-1 sm:mb-20">
-        <Step className="mx-10 lg:mx-4 md:rounded-2xl md:shadow sm:rounded-2xl sm:shadow">
+      <div className="my-4 flex flex-row items-stretch justify-center gap-x-1">
+        <Step className="mx-10 lg:mx-4 md:rounded-2xl md:shadow sm:rounded-2xl sm:shadow sm:mx-0">
           <StepHeader className="px-0 py-5 sm:pb-[25px] sm:pt-[33px]">
             <StepTitle className="relative flex w-full items-center justify-center gap-x-4 text-base font-semibold">
               <div

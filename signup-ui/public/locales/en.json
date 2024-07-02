@@ -180,6 +180,10 @@
       }
     }
   },
+  "verification_screen":{
+    "welcome_message": "Welcome! Initiating Identity verification process in {count} seconds",
+    "focus_on_screen_message": "Please try to focus on the screen"
+  },
   "error_response": {
     "invalid_transaction": "The transaction has timed out. Please try again.",
     "invalid_otp_channel": "Invalid OTP Channel Provided",
