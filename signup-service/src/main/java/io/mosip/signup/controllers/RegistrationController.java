@@ -1,7 +1,5 @@
 package io.mosip.signup.controllers;
 
-import io.micrometer.core.annotation.Counted;
-import io.micrometer.core.annotation.Timed;
 import io.mosip.esignet.core.dto.RequestWrapper;
 import io.mosip.esignet.core.dto.ResponseWrapper;
 import io.mosip.esignet.core.util.IdentityProviderUtil;
