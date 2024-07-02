@@ -1,6 +1,6 @@
 package io.mosip.signup.config;
 
-import io.mosip.signup.dto.IdentityVerificationResponse;
+import io.mosip.signup.api.dto.IdentityVerificationResult;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,14 +34,14 @@ public class KafkaConsumerConfig {
     }
 
     @Bean
-    public ConsumerFactory<String,IdentityVerificationResponse> consumerFactory() {
+    public ConsumerFactory<String, IdentityVerificationResult> consumerFactory() {
         return new DefaultKafkaConsumerFactory<>(consumerConfigurations(),
-                new StringDeserializer(), new JsonDeserializer<>(IdentityVerificationResponse.class));
+                new StringDeserializer(), new JsonDeserializer<>(IdentityVerificationResult.class));
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, IdentityVerificationResponse> kafkaListenerContainerFactory() {
-        final ConcurrentKafkaListenerContainerFactory<String, IdentityVerificationResponse>
+    public ConcurrentKafkaListenerContainerFactory<String, IdentityVerificationResult> kafkaListenerContainerFactory() {
+        final ConcurrentKafkaListenerContainerFactory<String, IdentityVerificationResult>
                 concurrentKafkaListenerContainerFactory = new ConcurrentKafkaListenerContainerFactory<>();
         concurrentKafkaListenerContainerFactory.setConsumerFactory(consumerFactory());
         return concurrentKafkaListenerContainerFactory;

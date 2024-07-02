@@ -1,5 +1,6 @@
 package io.mosip.signup.config;
 
+import io.mosip.signup.api.dto.IdentityVerificationResult;
 import io.mosip.signup.dto.IdentityVerificationRequest;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -33,13 +34,13 @@ public class KafkaProducerConfig {
     }
 
     @Bean
-    public ProducerFactory<String, IdentityVerificationRequest> producerFactory() {
+    public ProducerFactory<String, IdentityVerificationResult> producerFactory() {
         return new DefaultKafkaProducerFactory<>(producerConfigurations(),
-                new StringSerializer(), new JsonSerializer<IdentityVerificationRequest>());
+                new StringSerializer(), new JsonSerializer<IdentityVerificationResult>());
     }
 
     @Bean
-    public KafkaTemplate<String, IdentityVerificationRequest> kafkaTemplate() {
+    public KafkaTemplate<String, IdentityVerificationResult> kafkaTemplate() {
         return new KafkaTemplate<>(producerFactory());
     }
 }
