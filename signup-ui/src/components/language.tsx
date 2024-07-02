@@ -29,22 +29,22 @@ export const Language = () => {
   const handleLanguageChange = (language: string) => {
     i18n.changeLanguage(language);
 
-    // Get the encoded string from the URL  
+    // Get the encoded string from the URL
     const hashCode = window.location.hash.substring(1);
 
     // Decode the string
-    const decodedBase64 = atob(hashCode)
-        
+    const decodedBase64 = atob(hashCode);
+
     var urlSearchParams = new URLSearchParams(decodedBase64);
 
     // Convert the decoded string to JSON
     var jsonObject: Record<string, string> = {};
     urlSearchParams.forEach(function (value, key) {
-        jsonObject[key] = value;
-        // Assign the current i18n language to the ui_locales
-        if(key === ui_locales) {
-          jsonObject[key] = language
-        }
+      jsonObject[key] = value;
+      // Assign the current i18n language to the ui_locales
+      if (key === ui_locales) {
+        jsonObject[key] = language;
+      }
     });
 
     // Convert the JSON back to decoded string
@@ -54,7 +54,8 @@ export const Language = () => {
 
     // Encode the string
     const encodedBase64 = btoa(urlSearchParams.toString());
-    const url = window.location.origin + window.location.pathname + "#" + encodedBase64
+    const url =
+      window.location.origin + window.location.pathname + "#" + encodedBase64;
 
     // Replace the current url with the modified url due to the language change
     window.history.replaceState(null, "", url);
@@ -84,7 +85,7 @@ export const Language = () => {
           >
             {Object.entries(languages_2Letters).map(([key, value]) => (
               <DropdownMenu.Item
-                id={key+"_language"}
+                id={key + "_language"}
                 key={key}
                 className={cn(
                   "group relative flex cursor-pointer select-none items-center py-2 text-[14px] leading-none outline-none first:border-b-[1px] hover:font-bold data-[disabled]:pointer-events-none",
@@ -98,7 +99,7 @@ export const Language = () => {
                 {value}
                 <div className="ml-auto">
                   {i18n.language === key && (
-                    <Icons.check className="h-4 w-4 text-orange-500" />
+                    <Icons.check className="h-4 w-4 text-primary" />
                   )}
                 </div>
               </DropdownMenu.Item>

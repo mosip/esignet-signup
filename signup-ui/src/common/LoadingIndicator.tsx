@@ -1,8 +1,9 @@
 import { useTranslation } from "react-i18next";
 
+import { ReactComponent as LoadingIcon } from "~assets/svg/loading-icon.svg";
+
 import { Sizes } from "../constants/types";
 import ILoadingIndicator from "../models/loadingIndicator.model";
-import { ReactComponent as LoadingIcon } from "~assets/svg/loading-icon.svg";
 
 const dynamicSize: Sizes = {
   small: {
@@ -29,8 +30,11 @@ const LoadingIndicator = ({
 
   return (
     <>
-      <div role="status" className="flex justify-center items-center">
-        <LoadingIcon style={dynamicSize[size]} className="mr-2 rtl:ml-2 w-8 h-8 text-orange-500 animate-spin dark:text-gray-600 fill-secondary"/>
+      <div role="status" className="flex items-center justify-center">
+        <LoadingIcon
+          style={dynamicSize[size]}
+          className="mr-2 h-8 w-8 animate-spin fill-secondary text-primary rtl:ml-2 dark:text-gray-600"
+        />
         <span className="sr-only">Loading...</span>
         {message && t(message, msgParam)}
       </div>
