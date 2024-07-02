@@ -53,4 +53,5 @@ public class ErrorConstants {
     public static final String PRIVATE_KEY_LOAD_FAILED="private_key_load_failed";
 
     public static final String SLOT_NOT_AVAILABLE="slot_not_available";
+    public static final String INVALID_SLOT_ID = "invalid_slot_id";
 }

@@ -175,7 +175,6 @@ public class IdentityVerificationService {
 
             cacheUtilService.setSlotAllottedTransaction(transactionId, transaction);
             addSlotAllottedCookie(transactionId, result.get(), response);
-            cacheUtilService.incrementCurrentSlotCount();
 
             log.info("Slot available and assigned to the requested transaction {}", transactionId);
             SlotResponse slotResponse = new SlotResponse();
@@ -208,9 +207,7 @@ public class IdentityVerificationService {
             UserInfoRequest userInfoRequest = new UserInfoRequest(new URI(oauthUserinfoUri), accessToken);
             UserInfoResponse userInfoResponse = UserInfoResponse.parse(userInfoRequest.toHTTPRequest().send());
             if(userInfoResponse.indicatesSuccess()) {
-                log.info("userinfo response >>> {}", userInfoResponse.toSuccessResponse().getUserInfo());
-                //return userInfoResponse.toSuccessResponse().getUserInfo().getSubject().getValue();
-                return "testuser";
+                return userInfoResponse.toSuccessResponse().getUserInfo().getSubject().getValue();
             }
             log.error("Failed to fetch userinfo: {} ", userInfoResponse.toErrorResponse());
         } catch (Exception e) {
