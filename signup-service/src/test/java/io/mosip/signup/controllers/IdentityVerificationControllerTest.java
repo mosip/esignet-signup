@@ -8,10 +8,7 @@ import io.mosip.signup.dto.*;
 import io.mosip.signup.exception.SignUpException;
 import io.mosip.signup.helper.AuditHelper;
 import io.mosip.signup.services.IdentityVerificationService;
-import io.mosip.signup.util.ActionStatus;
 import io.mosip.signup.util.ErrorConstants;
-import io.mosip.signup.util.SignUpConstants;
-import org.aspectj.weaver.patterns.ConcreteCflowPointcut;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -24,12 +21,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
-
-import java.time.LocalDateTime;
-
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;

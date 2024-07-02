@@ -3,12 +3,10 @@ package io.mosip.signup.services;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.mosip.esignet.core.util.IdentityProviderUtil;
 import io.mosip.signup.dto.IdentityVerificationTransaction;
 import io.mosip.signup.dto.IdentityVerifierDetail;
 import io.mosip.signup.dto.RegistrationTransaction;
 import io.mosip.signup.util.Purpose;
-import io.mosip.signup.util.SignUpConstants;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,7 +17,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 
-import java.util.Locale;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CacheUtilServiceTest {
@@ -142,30 +139,5 @@ public class CacheUtilServiceTest {
         Assert.assertEquals(cacheUtilService.getCurrentSlotCount(),5L);
     }
 
-
-//    @Test
-//    public void testBlockIdentifier() {
-//        String transactionId = "testTransactionId";
-//        String key = "testKey";
-//        String value = "testValue";
-//
-//        Cache blockedIdentifierCache = mock(Cache.class);
-//        Cache challengeGeneratedCache = mock(Cache.class);
-//
-//        Mockito.when(cacheManager.getCache(SignUpConstants.BLOCKED_IDENTIFIER)).thenReturn(blockedIdentifierCache);
-//        Mockito.when(cacheManager.getCache(SignUpConstants.CHALLENGE_GENERATED)).thenReturn(challengeGeneratedCache);
-//
-//        // Simulate cache behavior
-//        when(blockedIdentifierCache.get(key)).thenReturn(new SimpleValueWrapper(null)); // Simulate cache miss
-//
-//        String result = yourService.blockIdentifier(transactionId, key, value);
-//        assertEquals(value, result);
-//
-//        // Verify cache eviction
-//        verify(challengeGeneratedCache).evict(transactionId);
-//
-//        // Verify cacheable behavior
-//        verify(blockedIdentifierCache).putIfAbsent(key, value);
-//    }
 
 }
