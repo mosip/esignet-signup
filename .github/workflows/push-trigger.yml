@@ -38,7 +38,7 @@ jobs:
 
   sonar_analysis:
     needs: build-maven-signup-service
-    uses: mosip/kattu/.github/workflows/maven-sonar-analysis.yml@master
+    uses: mosip/kattu/.github/workflows/maven-sonar-analysis.yml@master-java21
     with:
       SERVICE_LOCATION: 'signup-service'
     secrets:
