@@ -10,7 +10,7 @@ describe("Web socket connection between the front end and back end", () => {
   const queryClient = new QueryClient({ queryCache });
 
   it("should be on", () => {
-    // will add the test implementation once some web socket structure is given
+    // TODO: will add the test implementation once some web socket structure is given
 
     // Arrange
 
@@ -18,6 +18,7 @@ describe("Web socket connection between the front end and back end", () => {
     renderWithClient(queryClient, <VerificationScreen />);
 
     // Assert
+    // the connection should be on
   });
 });
 
@@ -27,88 +28,96 @@ describe("VerificationScreen (vs)", () => {
 
   it("should render correctly", () => {
     // Arrange
-
-    // Act
     renderWithClient(queryClient, <VerificationScreen />);
 
-    const vs = screen.getByTestId("vs");
+    // Act
 
     // Assert
+    const vs = screen.getByTestId("vs");
     expect(vs).toBeInTheDocument();
   });
 
   it("should show onscreen instructions above the video frame sent from eKYC provider", () => {
     // Arrange
+    // TODO: mock instruction of an eKYC provider
 
-    // Act
     renderWithClient(queryClient, <VerificationScreen />);
 
-    const vsOnScreenInstruction = screen.getByTestId("vs-onscreen-instruction");
+    // Act
 
     // Assert
-    expect(vsOnScreenInstruction).not.toBeNull();
+    const vsOnScreenInstruction = screen.getByTestId("vs-onscreen-instruction");
+    expect(vsOnScreenInstruction).toBeInTheDocument();
   });
 
   it("should show liveliness verification screen", () => {
     // Arrange
-
-    // Act
     renderWithClient(queryClient, <VerificationScreen />);
 
-    const vsLiveliness = screen.getByTestId("vs-liveliness");
+    // Act
 
     // Assert
-    expect(vsLiveliness).not.toBeNull();
+    const vsLiveliness = screen.getByTestId("vs-liveliness");
+    expect(vsLiveliness).toBeInTheDocument();
   });
 
   it("should show solid colors across the full screen for color based frame verification", async () => {
     // Arrange
-
-    // Act
     renderWithClient(queryClient, <VerificationScreen />);
 
-    const vsSolidColorScreen = screen.getByTestId("vs-solid-color-screen");
+    // Act
+    // TODO: add wait for x seconds
 
     // Assert
-    expect(vsSolidColorScreen).not.toBeNull();
+    const vsSolidColorScreen = screen.getByTestId("vs-solid-color-screen");
+    expect(vsSolidColorScreen).toBeInTheDocument();
   });
 
   it("should show NID verification screen", () => {
     // Arrange
-
-    // Act
     renderWithClient(queryClient, <VerificationScreen />);
 
-    const vsNID = screen.getByTestId("vs-nid");
+    // Act
 
     // Assert
+    const vsNID = screen.getByTestId("vs-nid");
     expect(vsNID).toBeInTheDocument();
   });
 
   it("should show feedback message when verification fails", () => {
     // Arrange
-
-    // Act
+    // TODO: mock failed verification
     renderWithClient(queryClient, <VerificationScreen />);
 
+    // Act
+
     // Assert
+    const vsFailedVerification = screen.getByTestId("vs-failed-verification");
+    expect(vsFailedVerification).toBeInTheDocument();
   });
 
   it("should show warning message if there is any technical issue", () => {
     // Arrange
-
-    // Act
+    // TODO: mock technical issue: internet connection lost, ...
     renderWithClient(queryClient, <VerificationScreen />);
 
+    // Act
+
     // Assert
+    const vsTechnicalIssueWarningMsg = screen.getByTestId(
+      "vs-technical-issue-warning-msg"
+    );
+    expect(vsTechnicalIssueWarningMsg).toBeInTheDocument();
   });
 
   it("should be redirected to the leading screen when the verification is successful", () => {
     // Arrange
-
-    // Act
+    // TODO: mock successful verification
     renderWithClient(queryClient, <VerificationScreen />);
 
+    // Act
+
     // Assert
+    // to be redirected to and land on the leading screen
   });
 });
