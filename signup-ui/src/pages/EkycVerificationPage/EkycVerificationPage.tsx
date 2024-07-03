@@ -158,7 +158,7 @@ export const EkycVerificationPage = ({
       case EkycVerificationStep.SlotCheckingScreen:
         return <SlotChecking {...defaultProps} />;
       case EkycVerificationStep.VerificationScreen:
-        return <VerificationScreen />;
+        return <VerificationScreen  {...defaultProps} />;
       default:
         return "unknown step";
     }

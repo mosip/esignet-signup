@@ -8,6 +8,11 @@ const API_BASE_URL =
     ? process.env.REACT_APP_API_BASE_URL
     : window.origin + "/v1/signup";
 
+export const WS_BASE_URL =
+  process.env.NODE_ENV === "development"
+  ? `ws://${process.env.REACT_APP_API_BASE_URL?.split("://")[1]}`
+  : `wss://${window.location.host}/v1/signup`;
+
 export class HttpError extends Error {
   code: number;
   constructor(message: string, code: number) {

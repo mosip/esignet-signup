@@ -214,9 +214,9 @@ export const KycProviderList = ({
         />
       )}
       {!isLoading && (
-        <div className="m-3 mt-10 flex flex-row items-stretch justify-center gap-x-1 sm:mb-20">
-          <Step className="mx-10 max-w-[70rem] lg:mx-4 md:rounded-2xl md:shadow sm:rounded-2xl sm:shadow">
-            <StepHeader className="px-5 py-5 sm:pb-[25px] sm:pt-[33px]">
+        <div className="my-4 flex flex-row items-stretch justify-center gap-x-1">
+          <Step className="mx-10 max-w-[70rem] md:rounded-2xl md:shadow sm:rounded-2xl sm:shadow sm:mx-0">
+            <StepHeader className="p-5 sm:pb-[25px] sm:pt-[33px]">
               <StepTitle className="relative flex w-full flex-row items-center justify-between text-base font-semibold md:flex-col md:justify-center">
                 <div
                   className="w-full text-[22px] font-semibold leading-[26px] text-[#2B3840]"
