@@ -37,6 +37,7 @@ jobs:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
 
   sonar_analysis:
+    if: "${{ github.event_name != 'pull_request' }}"
     needs: build-maven-signup-service
     uses: mosip/kattu/.github/workflows/maven-sonar-analysis.yml@master
     with:
@@ -106,7 +107,7 @@ jobs:
   build-maven-signup-integration-api:
     uses: mosip/kattu/.github/workflows/maven-build.yml@master
     with:
-      SERVICE_LOCATION: 'signup-integration-api'
+      SERVICE_LOCATION: .
       BUILD_ARTIFACT: 'signup-integration-api'
     secrets:
       OSSRH_USER: ${{ secrets.OSSRH_USER }}
@@ -120,7 +121,7 @@ jobs:
     needs: build-maven-signup-integration-api
     uses: mosip/kattu/.github/workflows/maven-publish-to-nexus.yml@master
     with:
-      SERVICE_LOCATION: 'signup-integration-api'
+      SERVICE_LOCATION: .
     secrets:
       OSSRH_URL: ${{ secrets.OSSRH_SNAPSHOT_URL }}
       OSSRH_USER: ${{ secrets.OSSRH_USER }}
