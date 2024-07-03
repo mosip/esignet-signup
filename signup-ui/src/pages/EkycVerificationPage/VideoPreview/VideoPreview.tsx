@@ -51,7 +51,7 @@ export const VideoPreview = ({
 
   // key info list for video preview page
   const keyInfoList = Object.keys(t("key_info"));
-  
+
   /**
    * Handle the proceed button click, move forward to video preview page
    * @param e event
@@ -163,7 +163,7 @@ export const VideoPreview = ({
     <>
       {cancelPopup({ cancelButton, handleStay })}
       <div className="my-4 flex flex-row items-stretch justify-center gap-x-1">
-        <Step className="mx-10 lg:mx-4 md:rounded-2xl md:shadow sm:rounded-2xl sm:shadow sm:mx-0">
+        <Step className="mx-10 lg:mx-4 md:rounded-2xl md:shadow sm:mx-0 sm:rounded-2xl sm:shadow">
           <StepHeader className="px-0 py-5 sm:pb-[25px] sm:pt-[33px]">
             <StepTitle className="relative flex w-full items-center justify-center gap-x-4 text-base font-semibold">
               <div
@@ -181,7 +181,7 @@ export const VideoPreview = ({
             <div className="scrollable-div !h-[250px] md:mt-8 sm:mt-8">
               {keyInfoList.map((keyInfo, index) => (
                 <div key={index} className="mb-6">
-                  <Icons.check className="mr-1 inline-block h-4 w-4 stroke-[4px] text-orange-500" />
+                  <Icons.check className="mr-1 inline-block h-4 w-4 stroke-[4px] text-primary" />
                   <span>{t(`key_info.${keyInfo}`)}</span>
                 </div>
               ))}
