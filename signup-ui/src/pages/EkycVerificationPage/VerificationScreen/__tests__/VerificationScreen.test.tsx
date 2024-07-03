@@ -1,4 +1,5 @@
 import { QueryCache, QueryClient } from "@tanstack/react-query";
+import { screen } from "@testing-library/react";
 
 import { renderWithClient } from "~utils/test";
 
@@ -20,9 +21,21 @@ describe("Web socket connection between the front end and back end", () => {
   });
 });
 
-describe("VerificationScreen", () => {
+describe("VerificationScreen (vs)", () => {
   const queryCache = new QueryCache();
   const queryClient = new QueryClient({ queryCache });
+
+  it("should render correctly", () => {
+    // Arrange
+
+    // Act
+    renderWithClient(queryClient, <VerificationScreen />);
+
+    const vs = screen.getByTestId("vs");
+
+    // Assert
+    expect(vs).toBeInTheDocument();
+  });
 
   it("should show onscreen instructions above the video frame sent from eKYC provider", () => {
     // Arrange
@@ -30,16 +43,10 @@ describe("VerificationScreen", () => {
     // Act
     renderWithClient(queryClient, <VerificationScreen />);
 
-    // Assert
-  });
-
-  it("should show solid colors across the full screen for color based frame verification", () => {
-    // Arrange
-
-    // Act
-    renderWithClient(queryClient, <VerificationScreen />);
+    const vsOnScreenInstruction = screen.getByTestId("vs-onscreen-instruction");
 
     // Assert
+    expect(vsOnScreenInstruction).not.toBeNull();
   });
 
   it("should show liveliness verification screen", () => {
@@ -48,7 +55,22 @@ describe("VerificationScreen", () => {
     // Act
     renderWithClient(queryClient, <VerificationScreen />);
 
+    const vsLiveliness = screen.getByTestId("vs-liveliness");
+
     // Assert
+    expect(vsLiveliness).not.toBeNull();
+  });
+
+  it("should show solid colors across the full screen for color based frame verification", async () => {
+    // Arrange
+
+    // Act
+    renderWithClient(queryClient, <VerificationScreen />);
+
+    const vsSolidColorScreen = screen.getByTestId("vs-solid-color-screen");
+
+    // Assert
+    expect(vsSolidColorScreen).not.toBeNull();
   });
 
   it("should show NID verification screen", () => {
@@ -57,7 +79,10 @@ describe("VerificationScreen", () => {
     // Act
     renderWithClient(queryClient, <VerificationScreen />);
 
+    const vsNID = screen.getByTestId("vs-nid");
+
     // Assert
+    expect(vsNID).toBeInTheDocument();
   });
 
   it("should show feedback message when verification fails", () => {
