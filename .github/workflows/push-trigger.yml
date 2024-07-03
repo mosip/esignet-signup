@@ -24,6 +24,32 @@ on:
       - ES-*
 
 jobs:
+  build-maven-signup-integration-api:
+    uses: mosip/kattu/.github/workflows/maven-build.yml@master
+    with:
+      SERVICE_LOCATION: 'signup-integration-api'
+      BUILD_ARTIFACT: 'signup-integration-api'
+    secrets:
+      OSSRH_USER: ${{ secrets.OSSRH_USER }}
+      OSSRH_SECRET: ${{ secrets.OSSRH_SECRET }}
+      OSSRH_TOKEN: ${{ secrets.OSSRH_TOKEN }}
+      GPG_SECRET: ${{ secrets.GPG_SECRET }}
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+
+  publish_to_nexus_signup-integration-api:
+    if: "${{ !contains(github.ref, 'master') && github.event_name != 'pull_request' && github.event_name != 'release' && github.event_name != 'prerelease' && github.event_name != 'publish' }}"
+    needs: build-maven-signup-integration-api
+    uses: mosip/kattu/.github/workflows/maven-publish-to-nexus.yml@master
+    with:
+      SERVICE_LOCATION: 'signup-integration-api'
+    secrets:
+      OSSRH_URL: ${{ secrets.OSSRH_SNAPSHOT_URL }}
+      OSSRH_USER: ${{ secrets.OSSRH_USER }}
+      OSSRH_SECRET: ${{ secrets.OSSRH_SECRET }}
+      OSSRH_TOKEN: ${{ secrets.OSSRH_TOKEN }}
+      GPG_SECRET: ${{ secrets.GPG_SECRET }}
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+      
   build-maven-signup-service:
     uses: mosip/kattu/.github/workflows/maven-build.yml@master
     with:
@@ -103,28 +129,3 @@ jobs:
       RELEASE_DOCKER_HUB: ${{ secrets.RELEASE_DOCKER_HUB }}
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
 
-  build-maven-signup-integration-api:
-    uses: mosip/kattu/.github/workflows/maven-build.yml@master
-    with:
-      SERVICE_LOCATION: 'signup-integration-api'
-      BUILD_ARTIFACT: 'signup-integration-api'
-    secrets:
-      OSSRH_USER: ${{ secrets.OSSRH_USER }}
-      OSSRH_SECRET: ${{ secrets.OSSRH_SECRET }}
-      OSSRH_TOKEN: ${{ secrets.OSSRH_TOKEN }}
-      GPG_SECRET: ${{ secrets.GPG_SECRET }}
-      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
-
-  publish_to_nexus_signup-integration-api:
-    if: "${{ !contains(github.ref, 'master') && github.event_name != 'pull_request' && github.event_name != 'release' && github.event_name != 'prerelease' && github.event_name != 'publish' }}"
-    needs: build-maven-signup-integration-api
-    uses: mosip/kattu/.github/workflows/maven-publish-to-nexus.yml@master
-    with:
-      SERVICE_LOCATION: 'signup-integration-api'
-    secrets:
-      OSSRH_URL: ${{ secrets.OSSRH_SNAPSHOT_URL }}
-      OSSRH_USER: ${{ secrets.OSSRH_USER }}
-      OSSRH_SECRET: ${{ secrets.OSSRH_SECRET }}
-      OSSRH_TOKEN: ${{ secrets.OSSRH_TOKEN }}
-      GPG_SECRET: ${{ secrets.GPG_SECRET }}
-      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}      
