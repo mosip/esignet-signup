@@ -16,6 +16,7 @@ import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 import java.util.Objects;
+import java.util.Optional;
 
 import static io.mosip.signup.util.SignUpConstants.SOCKET_USERNAME_SEPARATOR;
 
@@ -48,7 +49,7 @@ public class WebSocketController {
         identityVerificationResponse.setSlotId(slot);
 
         IDVProcessFeedback idvProcessFeedback = new IDVProcessFeedback();
-        idvProcessFeedback.setCode("turn_left");
+        idvProcessFeedback.setCode(Optional.ofNullable(identityVerificationRequest.getStepCode()).orElse("0"));
         idvProcessFeedback.setType("MESSAGE");
         identityVerificationResponse.setFeedback(idvProcessFeedback);
         simpMessagingTemplate.convertAndSend("/topic/"+slot, identityVerificationResponse);
