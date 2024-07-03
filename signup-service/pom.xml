@@ -18,7 +18,7 @@
 	<version>1.1.0-SNAPSHOT</version>
 	<name>signup-service</name>
 	<description>Sign Up Service</description>
-	<url>https://github.com/DGTDept/esignet-signup</url>
+	<url>https://github.com/mosip/esignet-signup</url>
 
 	<licenses>
 		<license>
@@ -27,9 +27,9 @@
 		</license>
 	</licenses>
 	<scm>
-		<connection>scm:git:git://github.com/DGTDept/esignet-signup.git</connection>
-		<developerConnection>scm:git:ssh://github.com/DGTDept/esignet-signup.git</developerConnection>
-		<url>https://github.com/DGTDept/esignet-signup</url>
+		<connection>scm:git:git://github.com/mosip/esignet-signup.git</connection>
+		<developerConnection>scm:git:ssh://github.com/mosip/esignet-signup.git</developerConnection>
+		<url>https://github.com/mosip/esignet-signup</url>
 		<tag>HEAD</tag>
 	</scm>
 
@@ -38,7 +38,7 @@
 			<name>Mosip</name>
 			<email>mosip.emailnotifier@gmail.com</email>
 			<organization>io.mosip</organization>
-			<organizationUrl>https://github.com/DGTDept/esignet-signup</organizationUrl>
+			<organizationUrl>https://github.com/mosip/esignet-signup</organizationUrl>
 		</developer>
 	</developers>
 	
