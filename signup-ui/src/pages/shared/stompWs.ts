@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Client } from "@stomp/stompjs";
 
 const useStompClient = (url: string, options = {}) => {
-  const [client, setClient] = useState<Client | null>(null);
+  const [client, setClient] = useState<any>(null);
   const [connected, setConnected] = useState<boolean>(false);
 
   useEffect(() => {
@@ -30,15 +30,9 @@ const useStompClient = (url: string, options = {}) => {
     }
   };
 
-  const publish = (
-    destination: string,
-    body: any,
-    stompClient: any
-  ) => {
-    console.log("******************inside publish******************");
-    console.log(client);
+  const publish = (destination: string, body: any) => {
     if (connected) {
-      stompClient.publish({ destination, body });
+      client?.publish({ destination, body });
     } else {
       console.warn("Client not connected yet!");
     }
