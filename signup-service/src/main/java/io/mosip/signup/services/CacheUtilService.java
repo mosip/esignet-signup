@@ -1,6 +1,7 @@
 package io.mosip.signup.services;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.common.primitives.Longs;
 import io.mosip.esignet.core.util.IdentityProviderUtil;
 import io.mosip.signup.dto.IdentityVerificationTransaction;
 import io.mosip.signup.dto.IdentityVerifierDetail;
@@ -15,6 +16,7 @@ import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -23,7 +25,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import java.util.Locale;
 
-import static io.mosip.signup.util.SignUpConstants.CURRENT_SLOTS;
+import static io.mosip.signup.util.SignUpConstants.*;
 
 @Slf4j
 @Service
@@ -141,29 +143,45 @@ public class CacheUtilService {
         return identityVerificationTransaction;
     }
 
+    @Cacheable(value = SignUpConstants.VERIFIED_SLOT, key = "#slotId")
     @CacheEvict(value = SignUpConstants.SLOT_ALLOTTED, key = "#transactionId")
-    public void evictSlotAllottedTransaction(String transactionId) {
+    public IdentityVerificationTransaction setVerifiedSlotTransaction(String transactionId, String slotId,
+                                                                      IdentityVerificationTransaction identityVerificationTransaction) {
+        return identityVerificationTransaction;
+    }
+
+
+    @Caching(evict = {
+            @CacheEvict(value = SignUpConstants.VERIFIED_SLOT, key = "#slotId"),
+            @CacheEvict(value = SignUpConstants.SLOT_ALLOTTED, key = "#transactionId")
+    })
+    public void evictSlotAllottedTransaction(String transactionId, String slotId) {
     }
 
     public IdentityVerificationTransaction getSlotAllottedTransaction(String transactionId) {
-        return cacheManager.getCache(SignUpConstants.IDV_SLOT_ALLOTTED).get(transactionId, IdentityVerificationTransaction.class); //NOSONAR getCache() will not be returning null here.
+        return cacheManager.getCache(SignUpConstants.SLOT_ALLOTTED).get(transactionId, IdentityVerificationTransaction.class); //NOSONAR getCache() will not be returning null here.
+    }
+
+    public IdentityVerificationTransaction getVerifiedSlotTransaction(String slotId) {
+        return cacheManager.getCache(SignUpConstants.VERIFIED_SLOT).get(slotId, IdentityVerificationTransaction.class); //NOSONAR getCache() will not be returning null here.
     }
 
     public JsonNode getIdentityVerifierMetadata(String identityVerifierId) {
         return cacheManager.getCache(SignUpConstants.IDENTITY_VERIFIER_METADATA).get(identityVerifierId, JsonNode.class); //NOSONAR getCache() will not be returning null here.
     }
 
+    public void addToVerifiedSlot(String value) {
+        redisConnectionFactory.getConnection().hSet(SLOTS_CONNECTED.getBytes(), value.getBytes(),
+                Longs.toByteArray(System.currentTimeMillis()));
+    }
+
+    public void removeFromVerifiedSlot(String value) {
+        redisConnectionFactory.getConnection().hDel(SLOTS_CONNECTED.getBytes(), value.getBytes());
+    }
+
     public long getCurrentSlotCount() {
-        Long count = cacheManager.getCache("slots").get("current", Long.class);
+        Long count = redisConnectionFactory.getConnection().hLen(SLOTS_CONNECTED.getBytes());
         log.debug("Current allotted slot count : {}", count);
         return count == null ? 0 : count;
-    }
-
-    public void incrementCurrentSlotCount() {
-        redisConnectionFactory.getConnection().incr(CURRENT_SLOTS.getBytes());
-    }
-
-    public void decrementCurrentSlotCount() {
-        redisConnectionFactory.getConnection().decr(CURRENT_SLOTS.getBytes());
     }
 }
