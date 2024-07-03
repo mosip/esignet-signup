@@ -37,6 +37,7 @@ jobs:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
 
   sonar_analysis:
+    if: "${{ github.event_name != 'pull_request' }}"
     needs: build-maven-signup-service
     uses: mosip/kattu/.github/workflows/maven-sonar-analysis.yml@master
     with:
