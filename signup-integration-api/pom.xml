@@ -10,40 +10,16 @@
         <version>1.1.0-SNAPSHOT</version>
     </parent>
 
-    <groupId>io.mosip.signup</groupId>
     <artifactId>signup-integration-api</artifactId>
     <version>1.1.0-SNAPSHOT</version>
     <name>signup-integration-api</name>
     <description>Sign Up Integration Library</description>
-
-    <licenses>
-        <license>
-            <name>MPL 2.0</name>
-            <url>https://www.mozilla.org/en-US/MPL/2.0/</url>
-        </license>
-    </licenses>
-    <scm>
-        <connection>scm:git:git://github.com/mosip/esignet-signup.git</connection>
-        <developerConnection>scm:git:ssh://github.com/mosip/esignet-signup.git</developerConnection>
-        <url>https://github.com/mosip/esignet-signup</url>
-        <tag>HEAD</tag>
-    </scm>
-
-    <developers>
-        <developer>
-            <name>Mosip</name>
-            <email>mosip.emailnotifier@gmail.com</email>
-            <organization>io.mosip</organization>
-            <organizationUrl>https://github.com/mosip/esignet-signup</organizationUrl>
-        </developer>
-    </developers>
 
     <properties>
         <java.version>11</java.version>
     </properties>
 
     <dependencies>
-
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
