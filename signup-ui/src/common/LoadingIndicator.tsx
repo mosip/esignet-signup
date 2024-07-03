@@ -40,7 +40,7 @@ const LoadingIndicator = ({
         <LoadingIcon
           style={dynamicSize[size]}
           className={cn(
-            "mr-2 h-8 w-8 animate-spin fill-secondary text-orange-500 rtl:ml-2 dark:text-gray-600",
+            "mr-2 h-8 w-8 animate-spin fill-secondary text-primary rtl:ml-2 dark:text-gray-600",
             iconClass
           )}
         />
