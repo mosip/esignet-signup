@@ -1,9 +1,6 @@
 package io.mosip.signup.services;
 
-import io.mosip.signup.api.dto.IDVProcessFeedback;
-import io.mosip.signup.api.dto.IDVProcessStepDetail;
-import io.mosip.signup.api.dto.IdentityVerificationDto;
-import io.mosip.signup.api.dto.IdentityVerificationResult;
+import io.mosip.signup.api.dto.*;
 import io.mosip.signup.api.exception.IdentityVerifierException;
 import io.mosip.signup.api.spi.IdentityVerifierPlugin;
 import io.mosip.signup.api.util.ProcessFeedbackType;
@@ -34,7 +31,7 @@ public class MockIdentityVerifierPlugin extends IdentityVerifierPlugin {
         IdentityVerificationResult identityVerificationResult = new IdentityVerificationResult();
         identityVerificationResult.setId(transactionId);
 
-        if(identityVerificationDto.getStepCode() == null) {
+        if(isStartStep(identityVerificationDto.getStepCode())) {
             IDVProcessStepDetail stepDetail = new IDVProcessStepDetail();
             stepDetail.setCode("liveness_check");
             stepDetail.setFramesPerSecond(3);
@@ -52,7 +49,8 @@ public class MockIdentityVerifierPlugin extends IdentityVerifierPlugin {
     }
 
     @Override
-    public void getVerifiedResult(String transactionId) throws IdentityVerifierException {
-
+    public VerificationResult getVerifiedResult(String transactionId) throws IdentityVerifierException {
+        return null;
     }
+
 }
