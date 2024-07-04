@@ -2,7 +2,7 @@ package io.mosip.signup.api.spi;
 
 import io.mosip.signup.api.dto.IdentityVerificationDto;
 import io.mosip.signup.api.dto.IdentityVerificationResult;
-import io.mosip.signup.api.dto.VerificationResult;
+import io.mosip.signup.api.dto.VerifiedResult;
 import io.mosip.signup.api.exception.IdentityVerifierException;
 import io.mosip.signup.api.util.ProcessType;
 import lombok.extern.slf4j.Slf4j;
@@ -64,5 +64,5 @@ public abstract class IdentityVerifierPlugin {
      * @return
      * @throws IdentityVerifierException
      */
-    public abstract VerificationResult getVerifiedResult(String transactionId) throws IdentityVerifierException;
+    public abstract VerifiedResult getVerifiedResult(String transactionId) throws IdentityVerifierException;
 }

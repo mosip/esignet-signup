@@ -2,6 +2,7 @@ package io.mosip.signup.controllers;
 
 import io.mosip.signup.api.dto.IdentityVerificationDto;
 import io.mosip.signup.api.dto.IdentityVerificationResult;
+import io.mosip.signup.api.dto.VerifiedResult;
 import io.mosip.signup.api.spi.IdentityVerifierPlugin;
 import io.mosip.signup.dto.IdentityVerificationRequest;
 import io.mosip.signup.dto.IdentityVerificationTransaction;
@@ -22,7 +23,6 @@ import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 import javax.validation.Valid;
 import java.util.Objects;
-import java.util.Optional;
 
 import static io.mosip.signup.api.util.ErrorConstants.PLUGIN_NOT_FOUND;
 import static io.mosip.signup.util.SignUpConstants.SOCKET_USERNAME_SEPARATOR;
@@ -60,8 +60,20 @@ public class WebSocketController {
 
     @KafkaListener(id = "step-status-consumer", autoStartup = "true",
             topics = IdentityVerifierPlugin.RESULT_TOPIC)
-    public void consumeStepStatus(final IdentityVerificationResult verificationResult) {
-        simpMessagingTemplate.convertAndSend("/topic/"+verificationResult.getId(), verificationResult);
+    public void consumeStepStatus(final IdentityVerificationResult identityVerificationResult) {
+        simpMessagingTemplate.convertAndSend("/topic/"+identityVerificationResult.getId(), identityVerificationResult);
+
+        IdentityVerifierPlugin plugin = identityVerifierFactory.getIdentityVerifier(identityVerificationResult.getVerifierId());
+        if(plugin == null)
+            throw new SignUpException(PLUGIN_NOT_FOUND);
+
+        if(identityVerificationResult.getStep() != null && plugin.isEndStep(identityVerificationResult.getStep().getCode())) {
+            log.info("Reached the end step for {}", identityVerificationResult.getId());
+
+            VerifiedResult verifiedResult = plugin.getVerifiedResult(identityVerificationResult.getId());
+            log.info("VerifiedResult >> {}", verifiedResult);
+            //TODO update mock-identity-system
+        }
     }
 
     @EventListener

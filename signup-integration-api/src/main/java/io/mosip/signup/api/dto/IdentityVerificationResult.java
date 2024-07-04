@@ -7,6 +7,7 @@ import lombok.Data;
 public class IdentityVerificationResult {
 
     private String id;
+    private String verifierId;
     private IDVProcessStepDetail step;
     private IDVProcessFeedback feedback;
 }
