@@ -250,7 +250,8 @@ export const UserInfo = ({ settings, methods }: UserInfoProps) => {
                             <Input
                               {...field}
                               id="phone_input"
-                              type="number"
+                              type="tel"
+                              pattern={settings.response.configs["identifier.pattern"]}
                               placeholder={t("enter_your_number_placeholder")}
                               className="h-[inherit] border-none outline-none"
                               minLength={

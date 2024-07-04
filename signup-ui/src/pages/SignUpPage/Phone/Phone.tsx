@@ -239,7 +239,8 @@ export const Phone = ({ settings, methods }: PhoneProps) => {
                           <Input
                             {...field}
                             id="phone_input"
-                            type="number"
+                            type="tel"
+                            pattern={settings.response.configs["identifier.pattern"]}
                             placeholder={t("enter_your_number_placeholder")}
                             className="h-[inherit] border-none outline-none"
                             minLength={
