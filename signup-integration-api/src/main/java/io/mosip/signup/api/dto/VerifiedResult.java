@@ -7,7 +7,7 @@ import lombok.Data;
 import java.util.Map;
 
 @Data
-public class VerificationResult {
+public class VerifiedResult {
 
     private VerificationStatus status;
     private Map<String, VerificationDetail> verifiedClaims;
