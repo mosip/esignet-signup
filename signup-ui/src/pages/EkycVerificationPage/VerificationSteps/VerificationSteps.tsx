@@ -142,7 +142,7 @@ export const VerificationSteps = ({
       {hasState && hasCode && !isLoading ? (
         <>
           {cancelPopup({ cancelButton, handleStay })}
-          <div className="m-3 flex flex-row justify-center">
+          <div className="my-4 flex flex-row justify-center">
             <Step className="my-5 max-w-[75rem] md:rounded-2xl md:shadow sm:mt-0 sm:rounded-2xl sm:shadow">
               <StepHeader className="px-0 py-5 sm:py-[25px]">
                 <StepTitle className="relative flex w-full items-center justify-center gap-x-4 text-base font-semibold">

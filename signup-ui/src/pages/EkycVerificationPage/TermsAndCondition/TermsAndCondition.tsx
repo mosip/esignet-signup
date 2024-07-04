@@ -141,8 +141,8 @@ export const TermsAndCondition = ({
         />
       )}
       {!isLoading && (
-        <div className="m-3 flex flex-row justify-center">
-          <Step className="my-5 max-w-[644px] md:rounded-2xl md:shadow sm:rounded-2xl sm:shadow">
+        <div className="m-4 flex flex-row justify-center">
+          <Step className="max-w-[644px] md:rounded-2xl md:shadow sm:rounded-2xl sm:shadow">
             <StepHeader className="px-0 py-5 sm:pb-[25px] sm:pt-[33px]">
               <StepTitle className="relative flex w-full items-center justify-center gap-x-4 text-base font-semibold">
                 <div

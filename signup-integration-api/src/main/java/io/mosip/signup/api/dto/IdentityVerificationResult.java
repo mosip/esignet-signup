@@ -1,11 +1,12 @@
-package io.mosip.signup.dto;
+package io.mosip.signup.api.dto;
+
 
 import lombok.Data;
 
 @Data
-public class IdentityVerificationResponse {
+public class IdentityVerificationResult {
 
-    private String slotId;
+    private String id;
     private IDVProcessStepDetail step;
     private IDVProcessFeedback feedback;
 }

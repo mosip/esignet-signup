@@ -24,6 +24,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         //By default, only same origin requests are allowed, should take the origin from properties
-        registry.addEndpoint("/ws").setHandshakeHandler(identityVerificationHandshakeHandler);
+        registry.addEndpoint("/ws").setAllowedOrigins("*").setHandshakeHandler(identityVerificationHandshakeHandler);
     }
 }

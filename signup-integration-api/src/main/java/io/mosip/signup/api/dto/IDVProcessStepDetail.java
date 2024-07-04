@@ -1,4 +1,4 @@
-package io.mosip.signup.dto;
+package io.mosip.signup.api.dto;
 
 
 import lombok.Data;
