@@ -195,11 +195,11 @@ public class IdentityVerificationService {
         cookie.setSecure(true);
         response.addCookie(cookie);
 
-        Cookie unsetCookie = new Cookie(SignUpConstants.IDV_TRANSACTION_ID, "");
+        /*Cookie unsetCookie = new Cookie(SignUpConstants.IDV_TRANSACTION_ID, "");
         unsetCookie.setMaxAge(0);
         cookie.setHttpOnly(true);
         cookie.setSecure(true);
-        response.addCookie(unsetCookie);
+        response.addCookie(unsetCookie);*/
     }
 
     private String getUsername(AccessToken accessToken) {
