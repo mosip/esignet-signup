@@ -1,6 +1,7 @@
 package io.mosip.signup.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.mosip.esignet.core.util.CaptchaHelper;
 import io.mosip.esignet.core.util.IdentityProviderUtil;
 import io.mosip.signup.dto.*;
 import io.mosip.signup.exception.*;
@@ -69,13 +70,13 @@ public class RegistrationServiceTest {
     HttpServletResponse response;
 
     @Mock
-    GoogleRecaptchaValidatorService googleRecaptchaValidatorService;
-
-    @Mock
     NotificationHelper notificationHelper;
 
     @Mock
     CryptoHelper cryptoHelper;
+
+    @Mock
+    CaptchaHelper captchaHelper;
 
     private final String identityEndpoint = "identityEndpoint";
     private final String generateHashEndpoint = "generateHashEndpoint";
@@ -1745,7 +1746,7 @@ public class RegistrationServiceTest {
         generateChallengeRequest.setCaptchaToken("mock-captcha");
         generateChallengeRequest.setRegenerateChallenge(false);
         when(challengeManagerService.generateChallenge(any())).thenReturn("1111");
-        when(googleRecaptchaValidatorService.validateCaptcha(
+        when(captchaHelper.validateCaptcha(
                 generateChallengeRequest.getCaptchaToken())).thenReturn(true);
         when(notificationHelper.sendSMSNotificationAsync(any(), any(), any(), any()))
                 .thenReturn(new CompletableFuture<>());
@@ -1765,7 +1766,7 @@ public class RegistrationServiceTest {
         generateChallengeRequest.setCaptchaToken("mock-captcha");
         generateChallengeRequest.setRegenerateChallenge(false);
         when(challengeManagerService.generateChallenge(any())).thenReturn("1111");
-        when(googleRecaptchaValidatorService.validateCaptcha(
+        when(captchaHelper.validateCaptcha(
                 generateChallengeRequest.getCaptchaToken())).thenReturn(true);
         when(notificationHelper.sendSMSNotification(any(), any(), any(), any()))
                 .thenThrow(new RestClientException("failed to send notification"));
@@ -1793,7 +1794,7 @@ public class RegistrationServiceTest {
 
         when(cacheUtilService.getChallengeGeneratedTransaction(transactionId)).thenReturn(transaction);
         when(challengeManagerService.generateChallenge(transaction)).thenReturn("1111");
-        when(googleRecaptchaValidatorService.validateCaptcha(
+        when(captchaHelper.validateCaptcha(
                 generateChallengeRequest.getCaptchaToken())).thenReturn(true);
         when(notificationHelper.sendSMSNotificationAsync(any(), any(), any(), any()))
                 .thenReturn(new CompletableFuture<>());
@@ -1819,7 +1820,7 @@ public class RegistrationServiceTest {
 
         when(cacheUtilService.getChallengeGeneratedTransaction(transactionId)).thenReturn(transaction);
         when(challengeManagerService.generateChallenge(transaction)).thenReturn("1111");
-        when(googleRecaptchaValidatorService.validateCaptcha(
+        when(captchaHelper.validateCaptcha(
                 generateChallengeRequest.getCaptchaToken())).thenReturn(true);
         when(notificationHelper.sendSMSNotificationAsync(any(), any(), any(), any()))
                 .thenReturn(new CompletableFuture<>());
@@ -1843,7 +1844,7 @@ public class RegistrationServiceTest {
         transaction.setLastRetryAt(LocalDateTime.now(ZoneOffset.UTC).minusSeconds(40));
 
         when(challengeManagerService.generateChallenge(transaction)).thenReturn("1111");
-        when(googleRecaptchaValidatorService.validateCaptcha(
+        when(captchaHelper.validateCaptcha(
                 generateChallengeRequest.getCaptchaToken())).thenReturn(true);
 
         try {
@@ -1860,7 +1861,7 @@ public class RegistrationServiceTest {
         GenerateChallengeRequest generateChallengeRequest = new GenerateChallengeRequest();
         generateChallengeRequest.setIdentifier(identifier);
         generateChallengeRequest.setCaptchaToken("mock-invalid-captcha");
-        when(googleRecaptchaValidatorService.validateCaptcha(
+        when(captchaHelper.validateCaptcha(
                 generateChallengeRequest.getCaptchaToken())).thenReturn(false);
         try {
             registrationService.generateChallenge(generateChallengeRequest, "");
@@ -1881,7 +1882,7 @@ public class RegistrationServiceTest {
         RegistrationTransaction transaction = new RegistrationTransaction(identifier, Purpose.REGISTRATION);
 
         when(cacheUtilService.getChallengeGeneratedTransaction(transactionId)).thenReturn(null);
-        when(googleRecaptchaValidatorService.validateCaptcha(
+        when(captchaHelper.validateCaptcha(
                 generateChallengeRequest.getCaptchaToken())).thenReturn(true);
 
         try {
@@ -1904,7 +1905,7 @@ public class RegistrationServiceTest {
         RegistrationTransaction transaction = new RegistrationTransaction(other_identifier, Purpose.REGISTRATION);
 
         when(cacheUtilService.getChallengeGeneratedTransaction(transactionId)).thenReturn(transaction);
-        when(googleRecaptchaValidatorService.validateCaptcha(
+        when(captchaHelper.validateCaptcha(
                 generateChallengeRequest.getCaptchaToken())).thenReturn(true);
 
         try {
@@ -1927,7 +1928,7 @@ public class RegistrationServiceTest {
         transaction.setChallengeRetryAttempts(4);
 
         when(cacheUtilService.getChallengeGeneratedTransaction(transactionId)).thenReturn(transaction);
-        when(googleRecaptchaValidatorService.validateCaptcha(
+        when(captchaHelper.validateCaptcha(
                 generateChallengeRequest.getCaptchaToken())).thenReturn(true);
 
         try {
@@ -1950,7 +1951,7 @@ public class RegistrationServiceTest {
         transaction.increaseAttempt();
 
         when(cacheUtilService.getChallengeGeneratedTransaction(transactionId)).thenReturn(transaction);
-        when(googleRecaptchaValidatorService.validateCaptcha(
+        when(captchaHelper.validateCaptcha(
                 generateChallengeRequest.getCaptchaToken())).thenReturn(true);
 
         try {
@@ -1971,7 +1972,7 @@ public class RegistrationServiceTest {
         generateChallengeRequest.setPurpose(Purpose.REGISTRATION);
 
         when(challengeManagerService.generateChallenge(any())).thenReturn("1111");
-        when(googleRecaptchaValidatorService.validateCaptcha(
+        when(captchaHelper.validateCaptcha(
                 generateChallengeRequest.getCaptchaToken())).thenReturn(true);
         when(notificationHelper.sendSMSNotificationAsync(any(), any(), any(), any()))
                 .thenReturn(new CompletableFuture<>());
@@ -1993,7 +1994,7 @@ public class RegistrationServiceTest {
         generateChallengeRequest.setPurpose(Purpose.RESET_PASSWORD);
 
         when(challengeManagerService.generateChallenge(any())).thenReturn("1111");
-        when(googleRecaptchaValidatorService.validateCaptcha(
+        when(captchaHelper.validateCaptcha(
                 generateChallengeRequest.getCaptchaToken())).thenReturn(true);
         when(notificationHelper.sendSMSNotificationAsync(any(), any(), any(), any()))
                 .thenReturn(new CompletableFuture<>());
