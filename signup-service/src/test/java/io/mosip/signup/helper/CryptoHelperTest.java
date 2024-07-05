@@ -27,7 +27,7 @@ public class CryptoHelperTest {
     private Cipher cipher;
 
     @Test
-    public void symmetricEncryptWithValidDetails_thenPass() throws Exception {
+    public void symmetricEncrypt_withValidDetails_thenPass()  {
         // Arrange
         ReflectionTestUtils.setField(cryptoHelper, "symmetricAlgorithm", "AES/CFB/PKCS5Padding");
         String testData = "testData";
@@ -37,13 +37,12 @@ public class CryptoHelperTest {
 
         String result = cryptoHelper.symmetricEncrypt(testData);
 
-        // Assert
         Assert.assertNotNull(result);
         Assert.assertTrue(IdentityProviderUtil.b64Decode(result).length > 0);
     }
 
     @Test
-    public void symmetricEncrypt_withInvaildDetails_thenFail() {
+    public void symmetricEncrypt_withInvalidDetails_thenFail() {
 
         ReflectionTestUtils.setField(cryptoHelper, "symmetricKeyAlgorithm", "AES");
         ReflectionTestUtils.setField(cryptoHelper, "symmetricKeySize", 128);
@@ -61,7 +60,7 @@ public class CryptoHelperTest {
     }
 
     @Test
-    public void symmetricDecrypt_withInValidDetails_thenPass(){
+    public void symmetricDecrypt_withInValidDetails_thenFail(){
 
         ReflectionTestUtils.setField(cryptoHelper, "symmetricAlgorithm", "AES/CFB/PKCS5Padding");
         String testData = "base64EncodedSecretKeyDatabase64EncodedSecretKeyForTesting";

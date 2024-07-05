@@ -61,7 +61,7 @@ public class IdentityVerificationHandshakeHandlerTest {
     }
 
     @Test
-    public void determineUser_withInvalidTransactionId_thenPass() {
+    public void determineUser_withInvalidTransactionId_thenFail() {
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.COOKIE, "IDV_SLOT_ALLOTTED=invalid");
 

@@ -65,12 +65,8 @@ public class IdentityVerificationControllerTest {
         identityVerifierDetail.setId("verifierId");
         IdentityVerifierDetail [] identityVerifierDetails = {identityVerifierDetail};
         initiateIdentityVerificationResponse.setIdentityVerifiers(identityVerifierDetails);
-        HttpServletResponse httpServletResponse = Mockito.mock(HttpServletResponse.class);
         when(identityVerificationService.initiateIdentityVerification(Mockito.any(), Mockito.any()))
                 .thenReturn(initiateIdentityVerificationResponse);
-
-
-
 
         mockMvc.perform(post("/identity-verification/initiate")
                         .content(objectMapper.writeValueAsString(requestWrapper))
@@ -114,7 +110,7 @@ public class IdentityVerificationControllerTest {
     }
 
     @Test
-    public void getIdentityVerifierDetails_withInValidDetails_thenPass() throws Exception {
+    public void getIdentityVerifierDetails_withInValidDetails_thenFail() throws Exception {
 
         when(identityVerificationService.getIdentityVerifierDetails(Mockito.anyString(), Mockito.anyString()))
                 .thenThrow(new SignUpException(ErrorConstants.INVALID_IDENTITY_VERIFIER_ID));
@@ -149,7 +145,7 @@ public class IdentityVerificationControllerTest {
 
 
     @Test
-    public void getSlot_withInValidDetails_thenPass() throws Exception {
+    public void getSlot_withInValidDetails_thenFail() throws Exception {
 
         RequestWrapper requestWrapper = new RequestWrapper();
         SlotRequest slotRequest= new SlotRequest();
