@@ -14,10 +14,11 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @Target({FIELD, TYPE_USE})
 @Retention(RUNTIME)
-@Constraint(validatedBy = PhoneNumberValidator.class)
+@Constraint(validatedBy = UserInfoValidator.class)
 @Documented
-public @interface PhoneNumber {
-    String message() default ErrorConstants.INVALID_PHONE_NUMBER;
+public @interface UserInfo {
+    String message() default ErrorConstants.INVALID_USERINFO;
     Class<?>[] groups() default { };
     Class<? extends Payload>[] payload() default { };
+    String actionName() default "CREATE";
 }
