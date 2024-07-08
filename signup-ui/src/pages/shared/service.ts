@@ -14,6 +14,18 @@ import {
   VerifyChallengeRequestDto,
 } from "~typings/types";
 
+/**
+ * retrieves cookie from the browser 
+ * @param {string} key
+ * @returns cookie value
+ */
+export const getCookie = (key: string): string | any => {
+  console.log(document.cookie);
+  var b = document.cookie.match("(^|;)\\s*" + key + "\\s*=\\s*([^;]+)");
+  console.log(b)
+  return b ? b.pop() : "";
+}
+
 export const getSettings = async (): Promise<SettingsDto> => {
   return ApiService.get<SettingsDto>("/settings").then(({ data }) => data);
 };
@@ -81,7 +93,12 @@ export const getKycProvidersList = async (
 ): Promise<KycProvidersResponseDto> => {
   return ApiService.post(
     "/identity-verification/initiate",
-    updateProcessRequestDto
+    updateProcessRequestDto,
+    {
+      headers:{
+        "X-XSRF-TOKEN": getCookie('XSRF-TOKEN'),
+      }
+    }
   ).then(({ data }) => data);
 };
 

@@ -248,6 +248,47 @@ export interface KycProvider {
   resumeOnSuccess: boolean;
 }
 
+export interface IdvStep {
+  code: string;
+  framesPerSecond: number;
+  durationInSeconds: number;
+  startupDelayInSeconds: number;
+  retryOnTimeout: boolean;
+  retryableErrorCodes: string[];
+}
+
+export type IdvFeedbackType = "MESSAGE" | "ERROR" | "COLOR";
+
+export interface IdvFeedback {
+  type: IdvFeedbackType | string ;
+  code: string;
+}
+
+export interface IdvFrames {
+  frame: string;
+  order: number;
+}
+export interface IdentityVerificationResponseDto {
+  slotId: string;
+  step?: IdvStep | null;
+  feedback?: IdvFeedback | null;
+}
+
+export interface IdentityVerificationRequestDto {
+  slotId: string;
+  stepCode?: string | null;
+  frames?: IdvFrames[];
+}
+
+export interface IdentityVerificationState {
+  stepCode: string | null;
+  fps: number | null;
+  totalDuration: number | null;
+  startupDelay: number | null;
+  feedbackType: string | null;
+  feedbackCode: string | null;
+}
+
 export interface DefaultEkyVerificationProp {
   settings: Settings;
   cancelPopup: (cancelProp: CancelPopup) => any;
