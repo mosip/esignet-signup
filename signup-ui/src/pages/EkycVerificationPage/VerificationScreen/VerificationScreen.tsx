@@ -6,21 +6,23 @@ import { PUBLISH_TOPIC, SUBSCRIBE_TOPIC, WS_URL } from "~constants/routes";
 import { Button } from "~components/ui/button";
 import useStompClient from "~pages/shared/stompWs";
 import { WS_BASE_URL } from "~services/api.service";
-import { DefaultEkyVerificationProp } from "~typings/types";
+import {
+  DefaultEkyVerificationProp,
+  IdentityVerificationRequestDto,
+  IdentityVerificationResponseDto,
+  IdentityVerificationState,
+  IdvFrames,
+} from "~typings/types";
 
 import {
   EkycVerificationStore,
   errorBannerMessageSelector,
   setErrorBannerMessageSelector,
   setIsNoBackgroundSelector,
+  slotIdSelector,
   useEkycVerificationStore,
 } from "../useEkycVerificationStore";
 import { EkycStatusAlert } from "./components/EkycStatusAlert";
-
-type frameObj = {
-  frame: string | null;
-  order: number;
-};
 
 export const VerificationScreen = ({
   cancelPopup,
@@ -35,16 +37,36 @@ export const VerificationScreen = ({
   const [alertConfig, setAlertConfig] = useState<object | null>(null);
   const [colorVerification, setColorVerification] = useState<boolean>(false);
   const [bgColor, setBgColor] = useState<string | null>(null);
-  const [imageFrames, setImageFrames] = useState<frameObj[]>([]);
+  const [imageFrames, setImageFrames] = useState<IdvFrames[]>([]);
+  const [identityVerification, setIdentityVerification] =
+    useState<IdentityVerificationState | null>(null);
   let captureFrameInterval: any = null;
-  const slotId = "123456";
-  // temporary button ref variable
-  const buttonRef = useRef(null);
+
+  // getting stored data from the store
+  const {
+    setIsNoBackground,
+    setErrorBannerMessage,
+    errorBannerMessage,
+    slotId,
+  } = useEkycVerificationStore(
+    useCallback(
+      (state: EkycVerificationStore) => ({
+        setIsNoBackground: setIsNoBackgroundSelector(state),
+        setErrorBannerMessage: setErrorBannerMessageSelector(state),
+        errorBannerMessage: errorBannerMessageSelector(state),
+        slotId: slotIdSelector(state),
+      }),
+      []
+    )
+  );
 
   const webSocketUrl = `${WS_BASE_URL}${WS_URL}?slotId=${slotId}`;
 
   const { client, connected, publish, subscribe } =
     useStompClient(webSocketUrl);
+  // const slotId = "123456";
+  // temporary button ref variable
+  const buttonRef = useRef(null);
 
   // capturing frame from the web camera
   const captureFrame = useCallback(() => {
@@ -64,19 +86,6 @@ export const VerificationScreen = ({
 
   const isError = false;
 
-  // getting stored data from the store
-  const { setIsNoBackground, setErrorBannerMessage, errorBannerMessage } =
-    useEkycVerificationStore(
-      useCallback(
-        (state: EkycVerificationStore) => ({
-          setIsNoBackground: setIsNoBackgroundSelector(state),
-          setErrorBannerMessage: setErrorBannerMessageSelector(state),
-          errorBannerMessage: errorBannerMessageSelector(state),
-        }),
-        []
-      )
-    );
-
   /**
    * Sending message to web socket
    * @param request
@@ -86,20 +95,9 @@ export const VerificationScreen = ({
       "*****************************Sending Message*****************************"
     );
     console.log(request);
-    // request.frames = imageFrames;
+    request.frames = imageFrames;
     publish(PUBLISH_TOPIC, JSON.stringify(request));
     setImageFrames([]);
-
-    if (request.stepCode < 5) {
-      setTimeout(() => {
-        request.stepCode = request.stepCode
-          ? (parseInt(request.stepCode) + 1).toString()
-          : "0";
-        sendMessage(request);
-      }, 10000);
-    } else {
-      client?.deactivate();
-    }
   };
 
   // timer useEffect
@@ -134,21 +132,44 @@ export const VerificationScreen = ({
 
   // stompjs connection established
   const onConnect = () => {
-    const request = {
-      slotId: "123456",
-      stepCode: "0",
+    const request: IdentityVerificationRequestDto = {
+      slotId: slotId ?? "",
+      stepCode: "START",
       frames: [],
     };
+
+    publish(PUBLISH_TOPIC, JSON.stringify(request));
     // as soon as we establish the connection, we will send the process frame request
     sendMessage(request);
+  };
+
+  const checkPreviousState = (
+    res: IdentityVerificationResponseDto
+  ): IdentityVerificationState | null => {
+    let temp = identityVerification;
+    if (res.step?.code !== temp?.stepCode) {
+      temp = {
+        ...temp,
+        stepCode: res.step?.code ?? null,
+        fps: res.step?.framesPerSecond ?? null,
+        totalDuration: res.step?.durationInSeconds ?? null,
+        startupDelay: res.step?.startupDelayInSeconds ?? null,
+        feedbackType: res.feedback?.type ?? null,
+        feedbackCode: res.feedback?.code ?? null,
+      };
+      setIdentityVerification(temp);
+    }
+    return temp;
   };
 
   /**
    * Getting response from the web socket
    * @param response
    */
-  const gettingResponseFromSocket = (response: any) => {
+  const receiveMessage = (response: any) => {
     const res = JSON.parse(response.body);
+    const currentState = checkPreviousState(res);
+
     console.log(
       "******************************Getting Response from Socket******************************"
     );
@@ -211,7 +232,7 @@ export const VerificationScreen = ({
   // then subscribe to the topic and call onConnect
   useEffect(() => {
     if (connected) {
-      subscribe(`${SUBSCRIBE_TOPIC}${slotId}`, gettingResponseFromSocket);
+      subscribe(`${SUBSCRIBE_TOPIC}${slotId}`, receiveMessage);
 
       onConnect();
     }

@@ -29,6 +29,8 @@ export type EkycVerificationStore = {
   setIsNoBackground: (isNoBackground: boolean) => void;
   errorBannerMessage: string | null;
   setErrorBannerMessage: (errorBannerMessage: string | null) => void;
+  slotId: string | null;
+  setSlotId: (slotId: string | null) => void;
 };
 
 export const useEkycVerificationStore = create<EkycVerificationStore>()(
@@ -74,6 +76,12 @@ export const useEkycVerificationStore = create<EkycVerificationStore>()(
       const current = get();
       if (isEqual(current.errorBannerMessage, errorBannerMessage)) return;
       set((state) => ({ errorBannerMessage }));
+    },
+    slotId: null,
+    setSlotId: (slotId: string | null) => {
+      const current = get();
+      if (isEqual(current.slotId, slotId)) return;
+      set((state) => ({ slotId }));
     },
   }))
 );
@@ -133,3 +141,11 @@ export const errorBannerMessageSelector = (
 export const setErrorBannerMessageSelector = (
   state: EkycVerificationStore
 ): EkycVerificationStore["setErrorBannerMessage"] => state.setErrorBannerMessage;
+
+export const slotIdSelector = (
+  state: EkycVerificationStore
+): EkycVerificationStore["slotId"] => state.slotId;
+
+export const setSlotIdSelector = (
+  state: EkycVerificationStore
+): EkycVerificationStore["setSlotId"] => state.setSlotId;
