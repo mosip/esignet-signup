@@ -2,7 +2,7 @@ import { isEqual } from "lodash";
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 
-import { Error, KycProvider, SignupHashCode } from "~typings/types";
+import { Error, KycProvider, KycProviderDetail, SignupHashCode } from "~typings/types";
 
 export enum EkycVerificationStep {
   VerificationSteps,
@@ -21,6 +21,8 @@ export type EkycVerificationStore = {
   setCriticalError: (criticalError: Error | null) => void;
   kycProvider: KycProvider | null;
   setKycProvider: (kycProvider: KycProvider) => void;
+  kycProviderDetail: KycProviderDetail | null;
+  setKycProviderDetail: (kycProviderDetail: KycProviderDetail) => void;
   kycProvidersList: KycProvider[] | null;
   setKycProvidersList: (kycProvidersList: KycProvider[]) => void;
   hashCode: SignupHashCode | null;
@@ -52,6 +54,12 @@ export const useEkycVerificationStore = create<EkycVerificationStore>()(
       const current = get();
       if (isEqual(current.kycProvider, kycProvider)) return;
       set((state) => ({ kycProvider }));
+    },
+    kycProviderDetail: null,
+    setKycProviderDetail: (kycProviderDetail: KycProviderDetail) => {
+      const current = get();
+      if (isEqual(current.kycProviderDetail, kycProviderDetail)) return;
+      set((state) => ({ kycProviderDetail }));
     },
     kycProvidersList: [],
     setKycProvidersList: (kycProvidersList: KycProvider[] | null) => {
@@ -109,6 +117,14 @@ export const kycProviderSelector = (
 export const setKycProviderSelector = (
   state: EkycVerificationStore
 ): EkycVerificationStore["setKycProvider"] => state.setKycProvider;
+
+export const kycProviderDetailSelector = (
+  state: EkycVerificationStore
+): EkycVerificationStore["kycProviderDetail"] => state.kycProviderDetail;
+
+export const setKycProviderDetailSelector = (
+  state: EkycVerificationStore
+): EkycVerificationStore["setKycProviderDetail"] => state.setKycProviderDetail;
 
 export const kycProvidersListSelector = (
   state: EkycVerificationStore

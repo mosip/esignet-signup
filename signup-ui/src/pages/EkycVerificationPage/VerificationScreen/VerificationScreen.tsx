@@ -6,17 +6,23 @@ import { PUBLISH_TOPIC, SUBSCRIBE_TOPIC, WS_URL } from "~constants/routes";
 import { Button } from "~components/ui/button";
 import useStompClient from "~pages/shared/stompWs";
 import { WS_BASE_URL } from "~services/api.service";
+import langConfigService from "~services/langConfig.service";
 import {
   DefaultEkyVerificationProp,
   IdentityVerificationRequestDto,
   IdentityVerificationResponseDto,
   IdentityVerificationState,
+  IdvFeedbackEnum,
   IdvFrames,
+  KeyValueStringObject,
+  KycProviderDetail,
+  KycProviderDetailProp,
 } from "~typings/types";
 
 import {
   EkycVerificationStore,
   errorBannerMessageSelector,
+  kycProviderDetailSelector,
   setErrorBannerMessageSelector,
   setIsNoBackgroundSelector,
   slotIdSelector,
@@ -28,7 +34,7 @@ export const VerificationScreen = ({
   cancelPopup,
   settings,
 }: DefaultEkyVerificationProp) => {
-  const { t } = useTranslation("translation", {
+  const { t, i18n } = useTranslation("translation", {
     keyPrefix: "verification_screen",
   });
   const webcamRef = useRef(null);
@@ -40,7 +46,9 @@ export const VerificationScreen = ({
   const [imageFrames, setImageFrames] = useState<IdvFrames[]>([]);
   const [identityVerification, setIdentityVerification] =
     useState<IdentityVerificationState | null>(null);
+  const [langMap, setLangMap] = useState<any>({});
   let captureFrameInterval: any = null;
+  let publishMessageInterval: any = null;
 
   // getting stored data from the store
   const {
@@ -48,6 +56,7 @@ export const VerificationScreen = ({
     setErrorBannerMessage,
     errorBannerMessage,
     slotId,
+    kycProviderDetail,
   } = useEkycVerificationStore(
     useCallback(
       (state: EkycVerificationStore) => ({
@@ -55,6 +64,7 @@ export const VerificationScreen = ({
         setErrorBannerMessage: setErrorBannerMessageSelector(state),
         errorBannerMessage: errorBannerMessageSelector(state),
         slotId: slotIdSelector(state),
+        kycProviderDetail: kycProviderDetailSelector(state),
       }),
       []
     )
@@ -95,7 +105,9 @@ export const VerificationScreen = ({
       "*****************************Sending Message*****************************"
     );
     console.log(request);
-    request.frames = imageFrames;
+    request.frames = imageFrames.map((frame: IdvFrames) => {
+      return { frame: "", order: frame.order };
+    });
     publish(PUBLISH_TOPIC, JSON.stringify(request));
     setImageFrames([]);
   };
@@ -130,6 +142,27 @@ export const VerificationScreen = ({
         : 1.6,
   };
 
+  const getCurrentLangMsg = (
+    key: KycProviderDetailProp,
+    prop: string
+  ): string => {
+    const currentLang = langMap[i18n.language];
+    // const msg: any = kycProviderDetail?[key]?[prop]?[currentLang];
+    let msg = "default";
+    let temp: KycProviderDetail | KeyValueStringObject | null =
+      kycProviderDetail;
+    if (temp && temp[key]) {
+      temp = temp[key] as KeyValueStringObject;
+      if (temp && temp[prop]) {
+        temp = temp[prop] as KeyValueStringObject;
+        if (temp && temp[currentLang]) {
+          msg = temp[currentLang] as string;
+        }
+      }
+    }
+    return msg;
+  };
+
   // stompjs connection established
   const onConnect = () => {
     const request: IdentityVerificationRequestDto = {
@@ -138,7 +171,7 @@ export const VerificationScreen = ({
       frames: [],
     };
 
-    publish(PUBLISH_TOPIC, JSON.stringify(request));
+    // publish(PUBLISH_TOPIC, JSON.stringify(request));
     // as soon as we establish the connection, we will send the process frame request
     sendMessage(request);
   };
@@ -153,13 +186,62 @@ export const VerificationScreen = ({
         stepCode: res.step?.code ?? null,
         fps: res.step?.framesPerSecond ?? null,
         totalDuration: res.step?.durationInSeconds ?? null,
-        startupDelay: res.step?.startupDelayInSeconds ?? null,
+        startupDelay: res.step?.startupDelayInSeconds ?? 10,
         feedbackType: res.feedback?.type ?? null,
         feedbackCode: res.feedback?.code ?? null,
       };
-      setIdentityVerification(temp);
     }
+    setIdentityVerification(temp);
     return temp;
+  };
+
+  const checkFeedback = (currentStep: IdentityVerificationState) => {
+    switch (currentStep.feedbackType) {
+      case IdvFeedbackEnum.MESSAGE:
+        setMessage(
+          getCurrentLangMsg("messages", currentStep.feedbackCode ?? "default")
+        );
+        break;
+      case IdvFeedbackEnum.COLOR:
+        setColorVerification(true);
+        setBgColor(currentStep.feedbackCode);
+        break;
+      case IdvFeedbackEnum.ERROR:
+        setErrorBannerMessage(
+          getCurrentLangMsg("errors", currentStep.feedbackCode ?? "default")
+        );
+        break;
+      default:
+        break;
+    }
+  };
+
+  const endResponseCheck = (currentStep: IdentityVerificationState) => {
+    if (currentStep.feedbackType === IdvFeedbackEnum.MESSAGE) {
+      setAlertConfig({
+        icon: "success",
+        header: getCurrentLangMsg(
+          "messages",
+          currentStep?.feedbackCode ?? "default"
+        ),
+        subHeader: "Please wait while we finalize the process",
+        footer: null,
+      });
+    } else if (currentStep.feedbackType === IdvFeedbackEnum.ERROR) {
+      setAlertConfig({
+        icon: "fail",
+        header: getCurrentLangMsg(
+          "errors",
+          currentStep?.feedbackCode ?? "default"
+        ),
+        subHeader: "Oops! We were unable to complete the eKYC verification.",
+        footer: (
+          <Button id="retry-button" className="my-4 h-16 w-full">
+            Retry
+          </Button>
+        ),
+      });
+    }
   };
 
   /**
@@ -168,63 +250,57 @@ export const VerificationScreen = ({
    */
   const receiveMessage = (response: any) => {
     const res = JSON.parse(response.body);
+    const previousState = identityVerification;
     const currentState = checkPreviousState(res);
 
     console.log(
       "******************************Getting Response from Socket******************************"
     );
     console.log(res);
-    clearInterval(captureFrameInterval);
-    captureFrameInterval = setInterval(
-      captureFrame,
-      // Math.floor(10000 / res.step.framesPerSecond)
-      Math.floor(10000)
-    );
+    if (currentState) {
+      if (currentState.stepCode === "END") {
+        // when stepcode is end, then it will clear the interval
+        // clearing capture frame & publish message interval
+        clearInterval(captureFrameInterval);
+        clearInterval(publishMessageInterval);
 
-    switch (res.feedback.code) {
-      case "0":
-        // setTimer(res.step.startupDelayInSeconds);
-        setTimer(10);
-        break;
-      case "1":
-        setColorVerification(true);
-        setBgColor("blue");
-        setMessage(t("focus_on_screen_message"));
-        break;
-      case "2":
-        setColorVerification(true);
-        setBgColor("#E68500");
-        break;
-      case "3":
-        setColorVerification(true);
-        setBgColor("rgb(0, 255, 0)");
-        break;
-      case "4":
+        endResponseCheck(currentState);
+      } else if (previousState?.stepCode !== currentState?.stepCode) {
+        // if stepcode is different then it will executed
+        // clearing capture frame & publish message interval
+        clearInterval(captureFrameInterval);
+        clearInterval(publishMessageInterval);
         setColorVerification(false);
-        setMessage("Initiating ID verification");
-        break;
-      case "5":
-        setAlertConfig({
-          icon: "success",
-          header: "Verification Successful!",
-          subHeader: "Please wait while we finalize the process",
-          footer: null,
-        });
-        break;
-      case 7:
-        break;
-      case 9:
-        setAlertConfig({
-          icon: "fail",
-          header: "Verification Unsuccessful!",
-          subHeader: "Oops! We were unable to complete the eKYC verification.",
-          footer: (
-            <Button id="retry-button" className="my-4 h-16 w-full">
-              Retry
-            </Button>
-          ),
-        });
-        break;
+        setMessage("")
+        const request = {
+          slotId: slotId ?? "",
+          stepCode: currentState.stepCode,
+          frames: [],
+        };
+        // adding timer to show
+        setTimer(currentState.startupDelay);
+        // setting delay in startup
+        setTimeout(() => {
+          // setting the framerate to capture images
+          captureFrameInterval = setInterval(
+            captureFrame,
+            Math.floor(10000 / (currentState?.fps ?? 3))
+          );
+          setMessage(
+            getCurrentLangMsg("stepCodes", currentState?.stepCode ?? "default")
+          );
+
+          // sending image frame after every 10 seconds,
+          // currently static, later will change to dynamic
+          publishMessageInterval = setInterval(
+            () => sendMessage(request),
+            10000
+          );
+          checkFeedback(currentState);
+        }, currentState.startupDelay * 1000);
+      } else {
+        checkFeedback(currentState);
+      }
     }
   };
 
@@ -255,6 +331,9 @@ export const VerificationScreen = ({
 
   // useEffect to deactivate the socket connection
   useEffect(() => {
+    langConfigService.getLangCodeMapping().then((langMap) => {
+      setLangMap(langMap);
+    });
     return () => {
       client?.deactivate();
     };

@@ -26,6 +26,7 @@ import {
   EkycVerificationStore,
   kycProviderSelector,
   setCriticalErrorSelector,
+  setKycProviderDetailSelector,
   setStepSelector,
   useEkycVerificationStore,
 } from "../useEkycVerificationStore";
@@ -38,12 +39,13 @@ export const TermsAndCondition = ({
     keyPrefix: "terms_and_conditions",
   });
 
-  const { setStep, setCriticalError, kycProvider } = useEkycVerificationStore(
+  const { setStep, setCriticalError, kycProvider, setKycProviderDetail } = useEkycVerificationStore(
     useCallback(
       (state: EkycVerificationStore) => ({
         setStep: setStepSelector(state),
         setCriticalError: setCriticalErrorSelector(state),
         kycProvider: kycProviderSelector(state),
+        setKycProviderDetail: setKycProviderDetailSelector(state)
       }),
       []
     )
@@ -116,6 +118,8 @@ export const TermsAndCondition = ({
 
   useEffect(() => {
     if (isSuccess) {
+      // setting kyc provider detail in the store
+      setKycProviderDetail(tnc.response);
       if (tnc.errors === null || tnc.errors.length === 0) {
         setTermsAndCondition(tnc.response["terms&Conditions"]);
       }
