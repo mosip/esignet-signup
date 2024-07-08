@@ -12,6 +12,7 @@ import {
   IdentityVerificationRequestDto,
   IdentityVerificationResponseDto,
   IdentityVerificationState,
+  IdvFeedbackEnum,
   IdvFrames,
   KeyValueStringObject,
   KycProviderDetail,
@@ -196,16 +197,16 @@ export const VerificationScreen = ({
 
   const checkFeedback = (currentStep: IdentityVerificationState) => {
     switch (currentStep.feedbackType) {
-      case "MESSAGE":
+      case IdvFeedbackEnum.MESSAGE:
         setMessage(
           getCurrentLangMsg("messages", currentStep.feedbackCode ?? "default")
         );
         break;
-      case "COLOR":
+      case IdvFeedbackEnum.COLOR:
         setColorVerification(true);
         setBgColor(currentStep.feedbackCode);
         break;
-      case "ERROR":
+      case IdvFeedbackEnum.ERROR:
         setErrorBannerMessage(
           getCurrentLangMsg("errors", currentStep.feedbackCode ?? "default")
         );
@@ -216,7 +217,7 @@ export const VerificationScreen = ({
   };
 
   const endResponseCheck = (currentStep: IdentityVerificationState) => {
-    if (currentStep.feedbackType === "MESSAGE") {
+    if (currentStep.feedbackType === IdvFeedbackEnum.MESSAGE) {
       setAlertConfig({
         icon: "success",
         header: getCurrentLangMsg(
@@ -226,7 +227,7 @@ export const VerificationScreen = ({
         subHeader: "Please wait while we finalize the process",
         footer: null,
       });
-    } else if (currentStep.feedbackType === "ERROR") {
+    } else if (currentStep.feedbackType === IdvFeedbackEnum.ERROR) {
       setAlertConfig({
         icon: "fail",
         header: getCurrentLangMsg(

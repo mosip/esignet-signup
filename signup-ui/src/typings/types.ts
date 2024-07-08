@@ -263,7 +263,13 @@ export interface IdvStep {
   retryableErrorCodes: string[];
 }
 
-export type IdvFeedbackType = "MESSAGE" | "ERROR" | "COLOR";
+export enum IdvFeedbackEnum {
+  MESSAGE = "MESSAGE",
+  ERROR = "ERROR",
+  COLOR = "COLOR",
+}
+
+export type IdvFeedbackType = keyof typeof IdvFeedbackEnum;
 
 export interface IdvFeedback {
   type: IdvFeedbackType | string;
