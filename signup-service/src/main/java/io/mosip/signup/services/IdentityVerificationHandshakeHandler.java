@@ -48,7 +48,8 @@ public class IdentityVerificationHandshakeHandler extends DefaultHandshakeHandle
         IdentityVerificationTransaction transaction = cacheUtilService.getSlotAllottedTransaction(transactionId);
 
         String queryParam = request.getURI().getQuery();
-        if(queryParam == null || queryParam.split(SLOTID_QUERY_PARAM).length <= 1 ||
+        log.info("*** queryParam >>> {} with transaction: {}", queryParam, transaction);
+        if(queryParam == null || queryParam.split(SLOTID_QUERY_PARAM).length <= 1 || transaction == null || 
                 !transaction.getSlotId().equals(queryParam.split(SLOTID_QUERY_PARAM)[1])) {
             log.error("SlotId in the handshake url doesn't match the slotId in the transaction");
             throw new HandshakeFailureException(ErrorConstants.INVALID_TRANSACTION);
