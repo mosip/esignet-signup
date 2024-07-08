@@ -1,9 +1,15 @@
 package io.mosip.signup.controllers;
 
-import io.mosip.signup.dto.IDVProcessFeedback;
+import io.mosip.signup.api.dto.IdentityVerificationDto;
+import io.mosip.signup.api.dto.IdentityVerificationResult;
+import io.mosip.signup.api.dto.VerifiedResult;
+import io.mosip.signup.api.spi.IdentityVerifierPlugin;
 import io.mosip.signup.dto.IdentityVerificationRequest;
-import io.mosip.signup.dto.IdentityVerificationResponse;
+import io.mosip.signup.dto.IdentityVerificationTransaction;
+import io.mosip.signup.exception.InvalidTransactionException;
+import io.mosip.signup.exception.SignUpException;
 import io.mosip.signup.services.CacheUtilService;
+import io.mosip.signup.services.IdentityVerifierFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
@@ -15,9 +21,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
+import javax.validation.Valid;
 import java.util.Objects;
 import java.util.Optional;
 
+import static io.mosip.signup.api.util.ErrorConstants.PLUGIN_NOT_FOUND;
 import static io.mosip.signup.util.SignUpConstants.SOCKET_USERNAME_SEPARATOR;
 
 @Slf4j
@@ -30,42 +38,58 @@ public class WebSocketController {
     @Autowired
     CacheUtilService cacheUtilService;
 
-    @KafkaListener(id = "step-status-consumer", autoStartup = "true",
-            topics = "ANALYZE_FRAMES_RESULT")
-    public void consumeStepStatus(final IdentityVerificationResponse response) {
-        simpMessagingTemplate.convertAndSend("/topic/"+response.getSlotId(), response);
-    }
+    @Autowired
+    private IdentityVerifierFactory identityVerifierFactory;
+
 
     @MessageMapping("/process-frame")
-    public void processFrames(final @Payload IdentityVerificationRequest identityVerificationRequest) {
-        String slot = identityVerificationRequest.getSlotId();
-        // check if its verified slotId?,
-        // transaction expiry
-        // audit or debug logging
-        // based on the provider, send the message to provider, on kafka topic ?
-        log.info("Message received from Client >>>>> {}", slot);
+    public void processFrames(final @Valid @Payload IdentityVerificationRequest identityVerificationRequest) {
+        log.info("Process frame invoked with payload : {}", identityVerificationRequest);
+        IdentityVerificationTransaction transaction = cacheUtilService.getVerifiedSlotTransaction(identityVerificationRequest.getSlotId());
+        if(transaction == null)
+            throw new InvalidTransactionException();
 
-        IdentityVerificationResponse identityVerificationResponse = new IdentityVerificationResponse();
-        identityVerificationResponse.setSlotId(slot);
+        IdentityVerifierPlugin plugin = identityVerifierFactory.getIdentityVerifier(transaction.getVerifierId());
+        if(plugin == null)
+            throw new SignUpException(PLUGIN_NOT_FOUND);
 
-        IDVProcessFeedback idvProcessFeedback = new IDVProcessFeedback();
-        idvProcessFeedback.setCode(Optional.ofNullable(identityVerificationRequest.getStepCode()).orElse("0"));
-        idvProcessFeedback.setType("MESSAGE");
-        identityVerificationResponse.setFeedback(idvProcessFeedback);
-        simpMessagingTemplate.convertAndSend("/topic/"+slot, identityVerificationResponse);
+        IdentityVerificationDto dto = new IdentityVerificationDto();
+        dto.setStepCode(identityVerificationRequest.getStepCode());
+        dto.setFrames(identityVerificationRequest.getFrames());
+        plugin.verify(identityVerificationRequest.getSlotId(), dto);
+    }
+
+    @KafkaListener(id = "step-status-consumer", autoStartup = "true",
+            topics = IdentityVerifierPlugin.RESULT_TOPIC)
+    public void consumeStepStatus(final IdentityVerificationResult identityVerificationResult) {
+        simpMessagingTemplate.convertAndSend("/topic/"+identityVerificationResult.getId(), identityVerificationResult);
+
+        IdentityVerifierPlugin plugin = identityVerifierFactory.getIdentityVerifier(identityVerificationResult.getVerifierId());
+        if(plugin == null)
+            throw new SignUpException(PLUGIN_NOT_FOUND);
+
+        if(identityVerificationResult.getStep() != null && plugin.isEndStep(identityVerificationResult.getStep().getCode())) {
+            log.info("Reached the end step for {}", identityVerificationResult.getId());
+
+            VerifiedResult verifiedResult = plugin.getVerifiedResult(identityVerificationResult.getId());
+            log.info("VerifiedResult >> {}", verifiedResult);
+            //TODO update mock-identity-system
+        }
     }
 
     @EventListener
     public void onConnected(SessionConnectedEvent connectedEvent) {
+        final String username = Objects.requireNonNull(connectedEvent.getUser()).getName();
         log.info("WebSocket Connected >>>>>> {}", Objects.requireNonNull(connectedEvent.getUser()).getName());
-        //TODO ??
+        cacheUtilService.addToVerifiedSlot(username);
     }
 
     @EventListener
     public void onDisconnected(SessionDisconnectEvent disconnectEvent) {
         String username = Objects.requireNonNull(disconnectEvent.getUser()).getName();
         log.info("WebSocket Disconnected >>>>>> {}", username);
-        cacheUtilService.decrementCurrentSlotCount();
-        cacheUtilService.evictSlotAllottedTransaction(username.split(SOCKET_USERNAME_SEPARATOR)[1]);
+        cacheUtilService.removeFromVerifiedSlot(username);
+        cacheUtilService.evictSlotAllottedTransaction(username.split(SOCKET_USERNAME_SEPARATOR)[0],
+                username.split(SOCKET_USERNAME_SEPARATOR)[1]);
     }
 }

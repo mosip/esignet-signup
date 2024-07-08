@@ -263,6 +263,7 @@ export const UserInfo = ({ settings, methods }: UserInfoProps) => {
                                   "identifier.length.max"
                                 ]
                               }
+                              onKeyUp={handleUsernameInput}
                               onKeyDown={handleUsernameInput}
                               disabled={resendOtp}
                             />

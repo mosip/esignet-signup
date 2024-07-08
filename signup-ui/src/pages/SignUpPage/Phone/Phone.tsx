@@ -249,6 +249,7 @@ export const Phone = ({ settings, methods }: PhoneProps) => {
                               settings.response.configs["identifier.length.max"]
                             }
                             onKeyDown={handleUsernameInput}
+                            onKeyUp={handleUsernameInput}
                             disabled={resendOtp}
                           />
                         </div>

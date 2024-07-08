@@ -175,7 +175,6 @@ public class IdentityVerificationService {
 
             cacheUtilService.setSlotAllottedTransaction(transactionId, transaction);
             addSlotAllottedCookie(transactionId, result.get(), response);
-            cacheUtilService.incrementCurrentSlotCount();
 
             log.info("Slot available and assigned to the requested transaction {}", transactionId);
             SlotResponse slotResponse = new SlotResponse();
@@ -190,17 +189,17 @@ public class IdentityVerificationService {
 
     private void addSlotAllottedCookie(String transactionId, IdentityVerifierDetail identityVerifierDetail,
                                        HttpServletResponse response) {
+        Cookie unsetCookie = new Cookie(SignUpConstants.IDV_TRANSACTION_ID, "");
+        unsetCookie.setMaxAge(0);
+        unsetCookie.setHttpOnly(true);
+        unsetCookie.setSecure(true);
+        response.addCookie(unsetCookie);
+
         Cookie cookie = new Cookie(SignUpConstants.IDV_SLOT_ALLOTTED, transactionId);
         cookie.setMaxAge(identityVerifierDetail.getProcessDuration() > 0 ? identityVerifierDetail.getProcessDuration() : identityVerificationTransactionTimeout);
         cookie.setHttpOnly(true);
         cookie.setSecure(true);
         response.addCookie(cookie);
-
-        Cookie unsetCookie = new Cookie(SignUpConstants.IDV_TRANSACTION_ID, "");
-        unsetCookie.setMaxAge(0);
-        cookie.setHttpOnly(true);
-        cookie.setSecure(true);
-        response.addCookie(unsetCookie);
     }
 
     private String getUsername(AccessToken accessToken) {
@@ -208,9 +207,7 @@ public class IdentityVerificationService {
             UserInfoRequest userInfoRequest = new UserInfoRequest(new URI(oauthUserinfoUri), accessToken);
             UserInfoResponse userInfoResponse = UserInfoResponse.parse(userInfoRequest.toHTTPRequest().send());
             if(userInfoResponse.indicatesSuccess()) {
-                log.info("userinfo response >>> {}", userInfoResponse.toSuccessResponse().getUserInfo());
-                //return userInfoResponse.toSuccessResponse().getUserInfo().getSubject().getValue();
-                return "testuser";
+                return userInfoResponse.toSuccessResponse().getUserInfo().getSubject().getValue();
             }
             log.error("Failed to fetch userinfo: {} ", userInfoResponse.toErrorResponse());
         } catch (Exception e) {

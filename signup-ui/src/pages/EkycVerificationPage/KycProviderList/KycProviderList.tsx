@@ -252,7 +252,7 @@ export const KycProviderList = ({
               </StepTitle>
             </StepHeader>
             <StepDivider />
-            <StepContent className="scrollable-div !h-[408px] px-6 py-5 text-sm">
+            <StepContent className="scrollable-div !h-[408px] p-5 text-sm">
               <div className="grid grid-cols-3 gap-x-4 gap-y-5 md:grid-cols-2 sm:grid-cols-1 sm:gap-y-3.5 ">
                 {kycProvidersList?.map((keyInfo: any) => (
                   <div
@@ -279,7 +279,7 @@ export const KycProviderList = ({
                   id="cancel-preview-button"
                   name="cancel-preview-button"
                   variant="cancel_outline"
-                  className="max-w-max px-[6rem] font-semibold sm:px-[3rem] xs:px-[2rem]"
+                  className="max-w-max px-[6rem] font-semibold sm:px-[2rem] xs:px-[1.5rem]"
                   onClick={handleCancel}
                 >
                   {t("cancel_button")}
@@ -287,7 +287,7 @@ export const KycProviderList = ({
                 <Button
                   id="proceed-preview-button"
                   name="proceed-preview-button"
-                  className="max-w-max px-[6rem] font-semibold sm:px-[3rem] xs:px-[2rem]"
+                  className="max-w-max px-[6rem] font-semibold sm:px-[2rem] xs:px-[1.5rem]"
                   onClick={handleContinue}
                   disabled={!selectedKycProvider}
                 >

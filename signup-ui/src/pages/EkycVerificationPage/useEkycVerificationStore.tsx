@@ -25,6 +25,10 @@ export type EkycVerificationStore = {
   setKycProvidersList: (kycProvidersList: KycProvider[]) => void;
   hashCode: SignupHashCode | null;
   setHashCode: (hashCode: SignupHashCode) => void;
+  isNoBackground: boolean;
+  setIsNoBackground: (isNoBackground: boolean) => void;
+  errorBannerMessage: string | null;
+  setErrorBannerMessage: (errorBannerMessage: string | null) => void;
 };
 
 export const useEkycVerificationStore = create<EkycVerificationStore>()(
@@ -58,6 +62,18 @@ export const useEkycVerificationStore = create<EkycVerificationStore>()(
       const current = get();
       if (isEqual(current.hashCode, hashCode)) return;
       set((state) => ({ hashCode }));
+    },
+    isNoBackground: false,
+    setIsNoBackground: (isNoBackground: boolean) => {
+      const current = get();
+      if (isEqual(current.isNoBackground, isNoBackground)) return;
+      set((state) => ({ isNoBackground }));
+    },
+    errorBannerMessage: null,
+    setErrorBannerMessage: (errorBannerMessage: string | null) => {
+      const current = get();
+      if (isEqual(current.errorBannerMessage, errorBannerMessage)) return;
+      set((state) => ({ errorBannerMessage }));
     },
   }))
 );
@@ -101,3 +117,19 @@ export const hashCodeSelector = (
 export const setHashCodeSelector = (
   state: EkycVerificationStore
 ): EkycVerificationStore["setHashCode"] => state.setHashCode;
+
+export const isNoBackgroundSelector = (
+  state: EkycVerificationStore
+): EkycVerificationStore["isNoBackground"] => state.isNoBackground;
+
+export const setIsNoBackgroundSelector = (
+  state: EkycVerificationStore
+): EkycVerificationStore["setIsNoBackground"] => state.setIsNoBackground;
+
+export const errorBannerMessageSelector = (
+  state: EkycVerificationStore
+): EkycVerificationStore["errorBannerMessage"] => state.errorBannerMessage;
+
+export const setErrorBannerMessageSelector = (
+  state: EkycVerificationStore
+): EkycVerificationStore["setErrorBannerMessage"] => state.setErrorBannerMessage;

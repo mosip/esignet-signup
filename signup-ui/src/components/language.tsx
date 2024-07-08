@@ -124,13 +124,13 @@ export const Language = () => {
                 {value}
                 <div className="ml-auto">
                   {i18n.language === key && (
-                    <Icons.check className="h-4 w-4 text-orange-500" />
+                    <Icons.check className="h-4 w-4 text-primary" />
                   )}
                 </div>
               </DropdownMenu.Item>
             ))}
             <DropdownMenu.Arrow asChild>
-              <Icons.chevronUpSolid className="stroke-[#bcbcbc] h-[7px]"/>
+              <Icons.chevronUpSolid className="h-[7px] stroke-[#bcbcbc]" />
             </DropdownMenu.Arrow>
           </DropdownMenu.Content>
         </DropdownMenu.Portal>
