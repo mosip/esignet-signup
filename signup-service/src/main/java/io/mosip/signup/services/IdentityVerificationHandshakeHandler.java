@@ -36,15 +36,20 @@ public class IdentityVerificationHandshakeHandler extends DefaultHandshakeHandle
         log.info("Started to determine user aka slotId with headers : {}", request.getHeaders());
         HttpHeaders headers = request.getHeaders();
 
-        Optional<String> transactionCookie = headers.getOrEmpty(HttpHeaders.COOKIE)
-                .stream()
-                .filter( cookie -> cookie.startsWith(SLOT_COOKIE_NAME))
-                .findFirst();
+        log.info("headers.getOrEmpty(HttpHeaders.COOKIE) ; {}", headers.getOrEmpty(HttpHeaders.COOKIE));
+
+        String transactionCookie = "";
+        for(String cookie : headers.getOrEmpty(HttpHeaders.COOKIE)) {
+            log.info("cookie ; {}", cookie);
+            if(cookie.startsWith(SLOT_COOKIE_NAME))
+                transactionCookie = cookie;
+        }
 
         if(transactionCookie.isEmpty())
             throw new HandshakeFailureException(ErrorConstants.INVALID_TRANSACTION);
 
-        String transactionId = transactionCookie.get().substring(SLOT_COOKIE_NAME.length());
+        String transactionId = transactionCookie.substring(SLOT_COOKIE_NAME.length());
+        log.info("cookie  transactionId; {}", transactionId);
         IdentityVerificationTransaction transaction = cacheUtilService.getSlotAllottedTransaction(transactionId);
 
         String queryParam = request.getURI().getQuery();
