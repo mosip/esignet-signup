@@ -13,6 +13,7 @@ import org.springframework.web.socket.server.HandshakeFailureException;
 import org.springframework.web.socket.server.support.DefaultHandshakeHandler;
 
 import java.security.Principal;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
 
@@ -36,19 +37,19 @@ public class IdentityVerificationHandshakeHandler extends DefaultHandshakeHandle
         log.info("Started to determine user aka slotId with headers : {}", request.getHeaders());
         HttpHeaders headers = request.getHeaders();
 
-        log.info("headers.getOrEmpty(HttpHeaders.COOKIE) ; {}", headers.getOrEmpty(HttpHeaders.COOKIE));
-
-        String transactionCookie = "";
+        Optional<String> transactionCookie = Optional.empty();
         for(String cookie : headers.getOrEmpty(HttpHeaders.COOKIE)) {
-            log.info("cookie ; {}", cookie);
-            if(cookie.startsWith(SLOT_COOKIE_NAME))
-                transactionCookie = cookie;
+            String[] result = cookie.split(";");
+            transactionCookie = Arrays.stream(result).filter( v -> v.trim().startsWith(SLOT_COOKIE_NAME)).findFirst();
+            if(transactionCookie.isPresent()) {
+                break;
+            }
         }
 
         if(transactionCookie.isEmpty())
             throw new HandshakeFailureException(ErrorConstants.INVALID_TRANSACTION);
 
-        String transactionId = transactionCookie.substring(SLOT_COOKIE_NAME.length());
+        String transactionId = transactionCookie.get().substring(SLOT_COOKIE_NAME.length());
         log.info("cookie  transactionId; {}", transactionId);
         IdentityVerificationTransaction transaction = cacheUtilService.getSlotAllottedTransaction(transactionId);
 
