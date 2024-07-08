@@ -190,8 +190,14 @@ export const VerificationScreen = ({
         feedbackType: res.feedback?.type ?? null,
         feedbackCode: res.feedback?.code ?? null,
       };
-      setIdentityVerification(temp);
+    } else {
+      temp = {
+        ...temp,
+        feedbackType: res.feedback?.type ?? null,
+        feedbackCode: res.feedback?.code ?? null,
+      };
     }
+    setIdentityVerification(temp);
     return temp;
   };
 
