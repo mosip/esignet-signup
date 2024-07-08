@@ -173,6 +173,7 @@ public class IdentityVerificationService {
                 throw new SignUpException(ErrorConstants.SLOT_NOT_AVAILABLE);
             }
 
+            transaction.setVerifierId(slotRequest.getVerifierId());
             cacheUtilService.setSlotAllottedTransaction(transactionId, transaction);
             addSlotAllottedCookie(transactionId, result.get(), response);
 
