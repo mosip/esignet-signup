@@ -9,7 +9,7 @@ import {
   SettingsDto,
   SlotAvailabilityRequestDto,
   SlotAvailabilityResponseDto,
-  TermsAndConditionResponseDto,
+  KycProviderDetailResponseDto,
   UpdateProcessRequestDto,
   VerifyChallengeRequestDto,
 } from "~typings/types";
@@ -82,7 +82,7 @@ export const updateProcess = async (updateProcess: UpdateProcessRequestDto) => {
 
 export const getTermsAndConditions = async (
   kycProviderId: string
-): Promise<TermsAndConditionResponseDto> => {
+): Promise<KycProviderDetailResponseDto> => {
   return ApiService.get(
     `/identity-verification/identity-verifier/${kycProviderId}`
   ).then(({ data }) => data);

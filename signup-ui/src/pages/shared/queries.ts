@@ -6,7 +6,7 @@ import {
   RegistrationStatusResponseDto,
   ResetPasswordResponseDto,
   SettingsDto,
-  TermsAndConditionResponseDto,
+  KycProviderDetailResponseDto,
 } from "~typings/types";
 
 import {
@@ -49,10 +49,10 @@ export const useRegistrationStatus = (
 };
 
 export const useTermsAndConditions = (kycProviderId: string): UseQueryResult<
-  TermsAndConditionResponseDto,
+  KycProviderDetailResponseDto,
   unknown
 > => {
-  return useQuery<TermsAndConditionResponseDto>({
+  return useQuery<KycProviderDetailResponseDto>({
     queryKey: [...keys.termsAndConditions, kycProviderId],
     queryFn: () => getTermsAndConditions(kycProviderId),
     staleTime: Infinity,

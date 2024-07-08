@@ -213,15 +213,21 @@ export type VerifyChallengeResponseDto = BaseResponseDto & {
 };
 
 export type KeyValueStringObject = {
-  [key: string]: string;
+  [key: string]: string | KeyValueStringObject;
 };
 
-export type TermsAndConditionResponseDto = BaseResponseDto & {
-  response: {
-    "terms&Conditions": KeyValueStringObject;
-    errors: { [key: string]: KeyValueStringObject } | null;
-    messages: { [key: string]: KeyValueStringObject } | null;
-  };
+export type KycProviderDetailProp = "terms&Conditions" | "previewInfo" | "stepCodes" | "errors" | "messages";
+
+export type KycProviderDetail = {
+  "terms&Conditions": KeyValueStringObject;
+  previewInfo?: KeyValueStringObject;
+  stepCodes?: KeyValueStringObject;
+  errors: { [key: string]: KeyValueStringObject } | null;
+  messages: { [key: string]: KeyValueStringObject } | null;
+};
+
+export type KycProviderDetailResponseDto = BaseResponseDto & {
+  response: KycProviderDetail;
 };
 
 export type SlotAvailabilityDto = BaseResponseDto & {
@@ -260,7 +266,7 @@ export interface IdvStep {
 export type IdvFeedbackType = "MESSAGE" | "ERROR" | "COLOR";
 
 export interface IdvFeedback {
-  type: IdvFeedbackType | string ;
+  type: IdvFeedbackType | string;
   code: string;
 }
 
@@ -284,7 +290,7 @@ export interface IdentityVerificationState {
   stepCode: string | null;
   fps: number | null;
   totalDuration: number | null;
-  startupDelay: number | null;
+  startupDelay: number;
   feedbackType: string | null;
   feedbackCode: string | null;
 }
