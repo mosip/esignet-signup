@@ -71,6 +71,8 @@
   "full_name_validation": "សូមបញ្ចូលគោត្តនាម-នាមឱ្យបានត្រឹមត្រូវ",
   "full_name_all_spaces_validation": "សូមបញ្ចូលឈ្មោះអ្នកឲ្យបានត្រឹមត្រូវ",
   "full_name_in_lng_validation": "គោត្តនាម-នាមត្រូវតែមានតែអក្សរខ្មែរ",
+  "full_name_min_validation": "គោត្តនាម-នាមត្រូវតែតិចជាង ឬស្មើនឹង {minLength}តួអក្សរ",
+  "full_name_max_validation": "គោត្តនាម-នាមត្រូវតែច្រើនជាង ឬស្មើនឹង {maxLength}តួអក្សរ",
   "password_validation": "ពាក្យ​សម្ងាត់​មិន​ត្រូវ​តាម​គោលការណ៍​លេខ​សម្ងាត់​ទេ។ ចុចលើ \"i\" ដើម្បីដឹងបន្ថែម។",
   "password_validation_must_match": "ពាក្យសម្ងាត់ថ្មី និងបញ្ជាក់ពាក្យសម្ងាត់ថ្មីមិនត្រូវគ្នាទេ។",
   "register_password_validation_must_match": "ពាក្យសម្ងាត់ និងបញ្ជាក់ពាក្យសម្ងាត់មិនត្រូវគ្នាទេ។",

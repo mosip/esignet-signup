@@ -1,4 +1,4 @@
-import { TFunction } from "i18next";
+import i18next from "i18next";
 import * as yup from "yup";
 
 import { SettingsDto } from "~typings/types";
@@ -26,6 +26,18 @@ export const validateFullName = (settings: SettingsDto) =>
     .string()
     .strict(true)
     .trim("full_name_all_spaces_validation")
+    .min(
+      settings.response.configs["fullname.length.min"],
+      i18next.t("full_name_min_validation", {
+        minLength: settings.response.configs["fullname.length.min"],
+      })
+    )
+    .max(
+      settings.response.configs["fullname.length.max"],
+      i18next.t("full_name_max_validation", {
+        maxLength: settings.response.configs["fullname.length.max"],
+      })
+    )
     .matches(new RegExp(settings.response.configs["fullname.pattern"]), {
       message: "full_name_in_lng_validation",
       excludeEmptyString: true,
