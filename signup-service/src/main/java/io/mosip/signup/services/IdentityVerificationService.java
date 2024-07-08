@@ -174,7 +174,7 @@ public class IdentityVerificationService {
             }
 
             transaction.setVerifierId(slotRequest.getVerifierId());
-            cacheUtilService.setSlotAllottedTransaction(transactionId, transaction);
+            transaction = cacheUtilService.setSlotAllottedTransaction(transactionId, transaction);
             addSlotAllottedCookie(transactionId, result.get(), response);
 
             log.info("Slot available and assigned to the requested transaction {}", transactionId);

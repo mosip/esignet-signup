@@ -136,8 +136,8 @@ public class CacheUtilService {
         return cacheManager.getCache(SignUpConstants.IDENTITY_VERIFICATION).get(transactionId, IdentityVerificationTransaction.class); //NOSONAR getCache() will not be returning null here.
     }
 
+    // @CacheEvict(value = SignUpConstants.IDENTITY_VERIFICATION, key = "#transactionId")
     @Cacheable(value = SignUpConstants.SLOT_ALLOTTED, key = "#transactionId")
-    @CacheEvict(value = SignUpConstants.IDENTITY_VERIFICATION, key = "#transactionId")
     public IdentityVerificationTransaction setSlotAllottedTransaction(String transactionId,
                                                                               IdentityVerificationTransaction identityVerificationTransaction) {
         return identityVerificationTransaction;
