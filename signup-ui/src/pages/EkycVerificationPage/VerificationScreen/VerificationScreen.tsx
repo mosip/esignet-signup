@@ -108,8 +108,8 @@ export const VerificationScreen = ({
     request.frames = imageFrames.map((frame: IdvFrames) => {
       return { frame: "", order: frame.order };
     });
-    publish(PUBLISH_TOPIC, JSON.stringify(request));
     setImageFrames([]);
+    publish(PUBLISH_TOPIC, JSON.stringify(request));
   };
 
   // timer useEffect
@@ -176,20 +176,46 @@ export const VerificationScreen = ({
     sendMessage(request);
   };
 
+  const convertResponseToState = (res: IdentityVerificationResponseDto): IdentityVerificationState => {
+    let temp: IdentityVerificationState = {
+      stepCode: null,
+      fps: null,
+      totalDuration: null,
+      startupDelay: 10,
+      feedbackType: null,
+      feedbackCode: null,
+    };
+    if (res) {
+      temp = {
+        ...temp,
+        ...(res.step?.code && { stepCode: res.step.code }),
+        ...(res.step?.framesPerSecond && { fps: res.step.framesPerSecond }),
+        ...(res.step?.durationInSeconds && { totalDuration: res.step.durationInSeconds }),
+        ...(res.step?.startupDelayInSeconds && { startupDelay: res.step.startupDelayInSeconds }),
+        ...(res.feedback?.type && { feedbackType: res.feedback.type }),
+        ...(res.feedback?.code && { feedbackCode: res.feedback.code }),
+      }
+    }
+    return temp;
+  }
+
   const checkPreviousState = (
     res: IdentityVerificationResponseDto
   ): IdentityVerificationState | null => {
     let temp = identityVerification;
-    if (res.step?.code !== temp?.stepCode) {
+    let tempRes = convertResponseToState(res);
+
+    if (tempRes.stepCode !== temp?.stepCode) {
       temp = {
         ...temp,
-        stepCode: res.step?.code ?? null,
-        fps: res.step?.framesPerSecond ?? null,
-        totalDuration: res.step?.durationInSeconds ?? null,
-        startupDelay: res.step?.startupDelayInSeconds ?? 10,
-        feedbackType: res.feedback?.type ?? null,
-        feedbackCode: res.feedback?.code ?? null,
+        ...tempRes
       };
+    } else {
+      temp = {
+        ...temp,
+        feedbackType: tempRes.feedbackType,
+        feedbackCode: tempRes.feedbackCode
+      }
     }
     setIdentityVerification(temp);
     return temp;
