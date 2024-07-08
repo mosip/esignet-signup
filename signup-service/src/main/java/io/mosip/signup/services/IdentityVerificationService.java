@@ -189,16 +189,18 @@ public class IdentityVerificationService {
 
     private void addSlotAllottedCookie(String transactionId, IdentityVerifierDetail identityVerifierDetail,
                                        HttpServletResponse response) {
-        Cookie unsetCookie = new Cookie(SignUpConstants.IDV_TRANSACTION_ID, "");
+        /*Cookie unsetCookie = new Cookie(SignUpConstants.IDV_TRANSACTION_ID, "");
         unsetCookie.setMaxAge(0);
         unsetCookie.setHttpOnly(true);
         unsetCookie.setSecure(true);
-        response.addCookie(unsetCookie);
+        unsetCookie.setPath("/");
+        response.addCookie(unsetCookie);*/
 
         Cookie cookie = new Cookie(SignUpConstants.IDV_SLOT_ALLOTTED, transactionId);
         cookie.setMaxAge(identityVerifierDetail.getProcessDuration() > 0 ? identityVerifierDetail.getProcessDuration() : identityVerificationTransactionTimeout);
         cookie.setHttpOnly(true);
         cookie.setSecure(true);
+        cookie.setPath("/");
         response.addCookie(cookie);
     }
 
