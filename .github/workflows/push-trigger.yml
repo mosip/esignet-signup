@@ -28,7 +28,7 @@ jobs:
     uses: mosip/kattu/.github/workflows/maven-build.yml@master
     with:
       SERVICE_LOCATION: ./
-      BUILD_ARTIFACT: esignet-signup
+      BUILD_ARTIFACT: signup-service
     secrets:
       OSSRH_USER: ${{ secrets.OSSRH_USER }}
       OSSRH_SECRET: ${{ secrets.OSSRH_SECRET }}
