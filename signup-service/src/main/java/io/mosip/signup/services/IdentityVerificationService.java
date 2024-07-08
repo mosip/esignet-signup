@@ -208,11 +208,11 @@ public class IdentityVerificationService {
         try {
             UserInfoRequest userInfoRequest = new UserInfoRequest(new URI(oauthUserinfoUri), accessToken);
             UserInfoResponse userInfoResponse = UserInfoResponse.parse(userInfoRequest.toHTTPRequest().send());
-            log.info("Userinfo response >>> {}", userInfoResponse.toSuccessResponse().getUserInfo().toJSONString());
-            if(userInfoResponse.indicatesSuccess()) {
+            log.info("Userinfo response >>> {}", userInfoResponse.toSuccessResponse().toHTTPResponse());
+            /*if(userInfoResponse.indicatesSuccess()) {
                 return userInfoResponse.toSuccessResponse().getUserInfo().getSubject().getValue();
-            }
-            log.error("Failed to fetch userinfo: {} ", userInfoResponse.toErrorResponse());
+            }*/
+            return "subject"; //TODO remove
         } catch (Exception e) {
             log.error("Failed to fetch userinfo", e);
         }
