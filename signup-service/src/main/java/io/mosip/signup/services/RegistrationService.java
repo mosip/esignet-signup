@@ -123,6 +123,12 @@ public class RegistrationService {
     @Value("${mosip.signup.get-registration-status.endpoint}")
     private String getRegistrationStatusEndpoint;
 
+    @Value("${mosip.signup.captcha.module-name}")
+    private String moduleName;
+
+    @Value("${mosip.signup.captcha.validator-url}")
+    private String validatorUrl;
+
     private final String notificationLogging = "Notification response -> {}";
 
     /**
