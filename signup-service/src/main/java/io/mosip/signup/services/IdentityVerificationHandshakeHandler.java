@@ -49,7 +49,7 @@ public class IdentityVerificationHandshakeHandler extends DefaultHandshakeHandle
         if(transactionCookie.isEmpty())
             throw new HandshakeFailureException(ErrorConstants.INVALID_TRANSACTION);
 
-        String transactionId = transactionCookie.get().substring(SLOT_COOKIE_NAME.length());
+        String transactionId = transactionCookie.get().substring(SLOT_COOKIE_NAME.length()+1);
         log.info("cookie  transactionId; {}", transactionId);
         IdentityVerificationTransaction transaction = cacheUtilService.getSlotAllottedTransaction(transactionId);
 
