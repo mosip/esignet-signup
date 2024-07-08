@@ -208,6 +208,7 @@ public class IdentityVerificationService {
         try {
             UserInfoRequest userInfoRequest = new UserInfoRequest(new URI(oauthUserinfoUri), accessToken);
             UserInfoResponse userInfoResponse = UserInfoResponse.parse(userInfoRequest.toHTTPRequest().send());
+            log.info("Userinfo response >>> {}", userInfoResponse.toSuccessResponse().getUserInfo().toJSONString());
             if(userInfoResponse.indicatesSuccess()) {
                 return userInfoResponse.toSuccessResponse().getUserInfo().getSubject().getValue();
             }
