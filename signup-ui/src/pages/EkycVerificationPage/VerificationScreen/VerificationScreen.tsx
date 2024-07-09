@@ -80,7 +80,7 @@ export const VerificationScreen = ({
 
   const webSocketUrl = `${WS_BASE_URL}${WS_URL}?slotId=${slotId}`;
 
-  const { client, connected, publish, subscribe } =
+  const { client, connected, publish, subscribe, unsubscribe } =
     useStompClient(webSocketUrl);
   // const slotId = "123456";
   // temporary button ref variable
@@ -306,6 +306,7 @@ export const VerificationScreen = ({
     if (currentStep === null) {
       return;
     }
+    unsubscribe();
     client.deactivate();
     if (
       currentStep.feedbackType === IdvFeedbackEnum.MESSAGE &&
@@ -338,6 +339,7 @@ export const VerificationScreen = ({
   };
 
   const resetEverything = () => {
+    console.log("Resetting Everything");
     // when stepcode is end, then it will clear the interval
     // clearing capture frame & publish message interval
     clearInterval(captureFrameInterval);
@@ -365,6 +367,7 @@ export const VerificationScreen = ({
         console.log("End of the process");
 
         resetEverything();
+        unsubscribe();
         client.deactivate();
 
       } else if (previousState?.stepCode !== currentState?.stepCode) {
@@ -395,12 +398,8 @@ export const VerificationScreen = ({
           // sending image frame after every 10 seconds,
           // currently static, later will change to dynamic
           publishMessageInterval = setInterval(() => {
-            console.log("before sending message");
-            console.log(imageFrames);
             sendMessage(request);
             setImageFrames([]);
-            console.log("after sending message");
-            console.log(imageFrames);
           }, 10000);
           checkFeedback(currentState);
         }, currentState.startupDelay * 1000);
@@ -415,8 +414,6 @@ export const VerificationScreen = ({
   // then subscribe to the topic and call onConnect
   useEffect(() => {
     if (connected) {
-      console.log("Connected to the socket");
-      console.log(new Date());
       subscribe(`${SUBSCRIBE_TOPIC}${slotId}`, receiveMessage);
 
       onConnect();
@@ -440,8 +437,6 @@ export const VerificationScreen = ({
 
   // useEffect to deactivate the socket connection
   useEffect(() => {
-    console.log("Initial useEffect");
-    console.log(new Date());
     langConfigService.getLangCodeMapping().then((langMap) => {
       setLangMap(langMap);
     });
