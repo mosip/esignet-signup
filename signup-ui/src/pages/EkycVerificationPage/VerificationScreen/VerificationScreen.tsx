@@ -43,9 +43,17 @@ export const VerificationScreen = ({
   const [alertConfig, setAlertConfig] = useState<object | null>(null);
   const [colorVerification, setColorVerification] = useState<boolean>(false);
   const [bgColor, setBgColor] = useState<string | null>(null);
-  const [imageFrames, setImageFrames] = useState<IdvFrames[]>([]);
+  // const [imageFrames, setImageFrames] = useState<IdvFrames[]>([]);
+  let imageFrames: IdvFrames[] = [];
   const [identityVerification, setIdentityVerification] =
-    useState<IdentityVerificationState | null>(null);
+    useState<IdentityVerificationState | null>({
+      stepCode: null,
+      fps: null,
+      totalDuration: null,
+      startupDelay: 10,
+      feedbackType: null,
+      feedbackCode: null,
+    });
   const [langMap, setLangMap] = useState<any>({});
   let captureFrameInterval: any = null;
   let publishMessageInterval: any = null;
@@ -89,7 +97,7 @@ export const VerificationScreen = ({
           frame: imageSrc,
           order: frameArray.length,
         });
-        setImageFrames(frameArray);
+        imageFrames = frameArray;
       }
     }
   }, [webcamRef]);
@@ -108,7 +116,7 @@ export const VerificationScreen = ({
     request.frames = imageFrames.map((frame: IdvFrames) => {
       return { frame: "", order: frame.order };
     });
-    setImageFrames([]);
+    imageFrames = []
     publish(PUBLISH_TOPIC, JSON.stringify(request));
   };
 
@@ -176,7 +184,9 @@ export const VerificationScreen = ({
     sendMessage(request);
   };
 
-  const convertResponseToState = (res: IdentityVerificationResponseDto): IdentityVerificationState => {
+  const convertResponseToState = (
+    res: IdentityVerificationResponseDto
+  ): IdentityVerificationState => {
     let temp: IdentityVerificationState = {
       stepCode: null,
       fps: null,
@@ -190,49 +200,62 @@ export const VerificationScreen = ({
         ...temp,
         ...(res.step?.code && { stepCode: res.step.code }),
         ...(res.step?.framesPerSecond && { fps: res.step.framesPerSecond }),
-        ...(res.step?.durationInSeconds && { totalDuration: res.step.durationInSeconds }),
-        ...(res.step?.startupDelayInSeconds && { startupDelay: res.step.startupDelayInSeconds }),
+        ...(res.step?.durationInSeconds && {
+          totalDuration: res.step.durationInSeconds,
+        }),
+        ...(res.step?.startupDelayInSeconds && {
+          startupDelay: res.step.startupDelayInSeconds,
+        }),
         ...(res.feedback?.type && { feedbackType: res.feedback.type }),
         ...(res.feedback?.code && { feedbackCode: res.feedback.code }),
-      }
+      };
     }
+    console.log("Converted Response to State");
+    console.log(temp);
     return temp;
-  }
+  };
 
   const checkPreviousState = (
     res: IdentityVerificationResponseDto
   ): IdentityVerificationState | null => {
-    let temp = identityVerification;
+    let temp: any = identityVerification;
     let tempRes = convertResponseToState(res);
 
-    if (tempRes.stepCode !== temp?.stepCode) {
+    if (tempRes.stepCode !== null && tempRes.stepCode !== temp?.stepCode) {
       temp = {
         ...temp,
-        ...tempRes
+        ...tempRes,
       };
     } else {
       temp = {
         ...temp,
         feedbackType: tempRes.feedbackType,
-        feedbackCode: tempRes.feedbackCode
-      }
+        feedbackCode: tempRes.feedbackCode,
+      };
     }
+    console.log("NEw current state");
+    console.log(temp);
     setIdentityVerification(temp);
     return temp;
   };
 
   const checkFeedback = (currentStep: IdentityVerificationState) => {
+    console.log("Checking Feedback");
+    console.log(currentStep.feedbackCode);
     switch (currentStep.feedbackType) {
       case IdvFeedbackEnum.MESSAGE:
+        console.log("Message Feedback");
         setMessage(
           getCurrentLangMsg("messages", currentStep.feedbackCode ?? "default")
         );
         break;
       case IdvFeedbackEnum.COLOR:
+        console.log("Color Feedback");
         setColorVerification(true);
         setBgColor(currentStep.feedbackCode);
         break;
       case IdvFeedbackEnum.ERROR:
+        console.log("Error Feedback");
         setErrorBannerMessage(
           getCurrentLangMsg("errors", currentStep.feedbackCode ?? "default")
         );
@@ -243,6 +266,7 @@ export const VerificationScreen = ({
   };
 
   const endResponseCheck = (currentStep: IdentityVerificationState) => {
+    console.log("End Response Check");
     if (currentStep.feedbackType === IdvFeedbackEnum.MESSAGE) {
       setAlertConfig({
         icon: "success",
@@ -285,6 +309,8 @@ export const VerificationScreen = ({
     console.log(res);
     if (currentState) {
       if (currentState.stepCode === "END") {
+        console.log("End of the process");
+        
         // when stepcode is end, then it will clear the interval
         // clearing capture frame & publish message interval
         clearInterval(captureFrameInterval);
@@ -292,17 +318,21 @@ export const VerificationScreen = ({
 
         endResponseCheck(currentState);
       } else if (previousState?.stepCode !== currentState?.stepCode) {
+        console.log("Step code changed");
+        
         // if stepcode is different then it will executed
         // clearing capture frame & publish message interval
         clearInterval(captureFrameInterval);
         clearInterval(publishMessageInterval);
         setColorVerification(false);
-        setMessage("")
+        setMessage("");
         const request = {
           slotId: slotId ?? "",
           stepCode: currentState.stepCode,
           frames: [],
         };
+        console.log("Request to send");
+        console.log(request);
         // adding timer to show
         setTimer(currentState.startupDelay);
         // setting delay in startup
@@ -325,6 +355,7 @@ export const VerificationScreen = ({
           checkFeedback(currentState);
         }, currentState.startupDelay * 1000);
       } else {
+        console.log("Step code not changed");
         checkFeedback(currentState);
       }
     }
@@ -334,6 +365,8 @@ export const VerificationScreen = ({
   // then subscribe to the topic and call onConnect
   useEffect(() => {
     if (connected) {
+      console.log("Connected to the socket");
+      console.log(new Date());
       subscribe(`${SUBSCRIBE_TOPIC}${slotId}`, receiveMessage);
 
       onConnect();
@@ -357,6 +390,8 @@ export const VerificationScreen = ({
 
   // useEffect to deactivate the socket connection
   useEffect(() => {
+    console.log("Initial useEffect");
+    console.log(new Date());
     langConfigService.getLangCodeMapping().then((langMap) => {
       setLangMap(langMap);
     });
