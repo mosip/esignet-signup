@@ -254,6 +254,16 @@ export const VerificationScreen = ({
     return temp;
   };
 
+  const endWithSuccess = (successMsgCode: string) => {
+    resetEverything();
+    setAlertConfig({
+      icon: "success",
+      header: getCurrentLangMsg("messages", successMsgCode),
+      subHeader: "Please wait while we finalize the process",
+      footer: null,
+    });
+  };
+
   const checkFeedback = (currentStep: IdentityVerificationState) => {
     console.log("Checking Feedback");
     console.log(currentStep.feedbackCode);
@@ -261,6 +271,14 @@ export const VerificationScreen = ({
     switch (currentStep.feedbackType) {
       case IdvFeedbackEnum.MESSAGE:
         console.log("Message Feedback");
+        if (currentStep.feedbackCode === "success_check") {
+          console.log("Success Feedback");
+          // sending temporary success message
+          endWithSuccess(
+            currentStep?.feedbackCode ?? "Verification Successful"
+          );
+          break;
+        }
         setMessage(
           getCurrentLangMsg("messages", currentStep.feedbackCode ?? "default")
         );
@@ -289,7 +307,10 @@ export const VerificationScreen = ({
       return;
     }
     client.deactivate();
-    if (currentStep.feedbackType === IdvFeedbackEnum.MESSAGE && currentStep.feedbackCode === "success_check") {
+    if (
+      currentStep.feedbackType === IdvFeedbackEnum.MESSAGE &&
+      currentStep.feedbackCode === "success_check"
+    ) {
       setAlertConfig({
         icon: "success",
         header: getCurrentLangMsg(
@@ -344,8 +365,8 @@ export const VerificationScreen = ({
         console.log("End of the process");
 
         resetEverything();
+        client.deactivate();
 
-        endResponseCheck(previousState);
       } else if (previousState?.stepCode !== currentState?.stepCode) {
         console.log("Step code changed");
 
