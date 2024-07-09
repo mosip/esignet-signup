@@ -254,6 +254,16 @@ export const VerificationScreen = ({
     return temp;
   };
 
+  const redirectToConsent = () => {
+    unsubscribe();
+    client.deactivate();
+    const consentUrl = settings?.configs["signin.redirect-url"].replace("authorize", "consent");
+    const encodedIdToken = window.location.hash;
+    window.location.replace(
+      `${consentUrl}${encodedIdToken}`
+    );
+  }
+
   const endWithSuccess = (successMsgCode: string) => {
     resetEverything();
     setAlertConfig({
@@ -262,6 +272,9 @@ export const VerificationScreen = ({
       subHeader: "Please wait while we finalize the process",
       footer: null,
     });
+    setTimeout(() => {
+      redirectToConsent();
+    }, 5000);
   };
 
   const checkFeedback = (currentStep: IdentityVerificationState) => {
