@@ -116,7 +116,7 @@ export const VerificationScreen = ({
     request.frames = imageFrames.map((frame: IdvFrames) => {
       return { frame: "", order: frame.order };
     });
-    imageFrames = []
+    // imageFrames = []
     publish(PUBLISH_TOPIC, JSON.stringify(request));
   };
 
@@ -349,7 +349,10 @@ export const VerificationScreen = ({
           // sending image frame after every 10 seconds,
           // currently static, later will change to dynamic
           publishMessageInterval = setInterval(
-            () => sendMessage(request),
+            () => {
+              sendMessage(request);
+              imageFrames = [];
+            },
             10000
           );
           checkFeedback(currentState);
