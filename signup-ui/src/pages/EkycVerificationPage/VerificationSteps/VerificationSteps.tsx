@@ -52,6 +52,7 @@ export const VerificationSteps = ({
 
   useEffect(() => {
     if (hashCode !== null && hashCode !== undefined) {
+      console.log(hashCode);
       setIsLoading(true);
       if (!hasState && !hasCode) {
         const authorizeURI = settings?.configs["signin.redirect-url"];
