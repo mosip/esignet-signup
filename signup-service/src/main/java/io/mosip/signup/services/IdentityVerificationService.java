@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;
 import com.nimbusds.jose.crypto.RSASSASigner;
+import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import com.nimbusds.oauth2.sdk.*;
@@ -190,12 +191,12 @@ public class IdentityVerificationService {
 
     private void addSlotAllottedCookie(String transactionId, IdentityVerifierDetail identityVerifierDetail,
                                        HttpServletResponse response) {
-        /*Cookie unsetCookie = new Cookie(SignUpConstants.IDV_TRANSACTION_ID, "");
+        Cookie unsetCookie = new Cookie(SignUpConstants.IDV_TRANSACTION_ID, "");
         unsetCookie.setMaxAge(0);
         unsetCookie.setHttpOnly(true);
         unsetCookie.setSecure(true);
         unsetCookie.setPath("/");
-        response.addCookie(unsetCookie);*/
+        response.addCookie(unsetCookie);
 
         Cookie cookie = new Cookie(SignUpConstants.IDV_SLOT_ALLOTTED, transactionId);
         cookie.setMaxAge(identityVerifierDetail.getProcessDuration() > 0 ? identityVerifierDetail.getProcessDuration() : identityVerificationTransactionTimeout);
@@ -209,12 +210,12 @@ public class IdentityVerificationService {
         try {
             UserInfoRequest userInfoRequest = new UserInfoRequest(new URI(oauthUserinfoUri), accessToken);
             UserInfoResponse userInfoResponse = UserInfoResponse.parse(userInfoRequest.toHTTPRequest().send());
-            log.info("Userinfo response >>> {} >>> {}",userInfoResponse.indicatesSuccess(),
-                    userInfoResponse.toSuccessResponse().toHTTPResponse().getBody());
-            /*if(userInfoResponse.indicatesSuccess()) {
-                return userInfoResponse.toSuccessResponse().getUserInfo().getSubject().getValue();
-            }*/
-            return "subject"; //TODO remove
+            log.info("userinfo call completed with response : {}", userInfoResponse.toHTTPResponse().getStatusCode());
+            if(userInfoResponse.indicatesSuccess()) {
+                JWT jwt =  userInfoResponse.toSuccessResponse().toHTTPResponse().getBodyAsJWT();
+                log.debug("userinfo as JWT : {}", jwt);
+                return jwt.getJWTClaimsSet().getSubject();
+            }
         } catch (Exception e) {
             log.error("Failed to fetch userinfo", e);
         }

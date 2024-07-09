@@ -51,7 +51,7 @@ public class IdentityVerificationHandshakeHandler extends DefaultHandshakeHandle
 
         String transactionId = transactionCookie.get().split(SLOT_COOKIE_NAME)[1];
         log.info("cookie  transactionId; {}", transactionId);
-        IdentityVerificationTransaction transaction = cacheUtilService.getSlotAllottedTransaction(transactionId);
+        IdentityVerificationTransaction transaction = cacheUtilService.getSlotAllottedTransaction(transactionId.trim());
 
         String queryParam = request.getURI().getQuery();
         log.info("*** queryParam >>> {} with transaction: {}", queryParam, transaction);
