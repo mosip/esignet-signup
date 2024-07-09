@@ -257,7 +257,7 @@ export const VerificationScreen = ({
   const redirectToConsent = () => {
     unsubscribe();
     client.deactivate();
-    const consentUrl = settings["redirect-url"].replace("authorize", "consent");
+    const consentUrl = settings?.configs["signin.redirect-url"].replace("authorize", "consent");
     const encodedIdToken = window.location.hash;
     window.location.replace(
       `${consentUrl}${encodedIdToken}`
