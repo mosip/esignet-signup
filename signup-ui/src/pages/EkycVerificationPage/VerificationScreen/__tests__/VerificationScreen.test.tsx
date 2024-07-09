@@ -4,10 +4,21 @@ import { screen } from "@testing-library/react";
 import { renderWithClient } from "~utils/test";
 
 import { VerificationScreen } from "../VerificationScreen";
+import { SettingsDto } from "~typings/types";
 
 describe("Web socket connection between the front end and back end", () => {
   const queryCache = new QueryCache();
   const queryClient = new QueryClient({ queryCache });
+
+  const settings = {
+    response: {
+      configs: {
+        "slot.request.limit": 2,
+        "slot.request.delay": 1,
+      },
+    },
+  } as SettingsDto;
+  const cancelPopup = jest.fn();
 
   it("should be on", () => {
     // TODO: will add the test implementation once some web socket structure is given
