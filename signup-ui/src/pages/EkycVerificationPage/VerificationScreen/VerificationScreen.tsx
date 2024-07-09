@@ -43,8 +43,8 @@ export const VerificationScreen = ({
   const [alertConfig, setAlertConfig] = useState<object | null>(null);
   const [colorVerification, setColorVerification] = useState<boolean>(false);
   const [bgColor, setBgColor] = useState<string | null>(null);
-  // const [imageFrames, setImageFrames] = useState<IdvFrames[]>([]);
-  let imageFrames: IdvFrames[] = [];
+  const [imageFrames, setImageFrames] = useState<IdvFrames[]>([]);
+  // let imageFrames: IdvFrames[] = [];
   const [identityVerification, setIdentityVerification] =
     useState<IdentityVerificationState | null>({
       stepCode: null,
@@ -97,7 +97,7 @@ export const VerificationScreen = ({
           frame: imageSrc,
           order: frameArray.length,
         });
-        imageFrames = frameArray;
+        setImageFrames(frameArray);
       }
     }
   }, [webcamRef]);
@@ -115,11 +115,21 @@ export const VerificationScreen = ({
     console.log(request);
     console.log("before mapping");
     console.log(imageFrames);
-    request.frames = imageFrames.map((frame: IdvFrames) => {
-      console.log("inside imageframe maps");
-      console.log(frame);
-      return { frame: "", order: frame.order };
-    });
+    if (imageFrames.length) {
+      request.frames = imageFrames.map((frame: IdvFrames) => {
+        console.log("inside imageframe maps");
+        console.log(frame);
+        return { frame: "", order: frame.order };
+      });
+    } else {
+      console.log(" image frame is empty")
+      request.frames = Array.from(Array(10).keys()).map((i: number) => {
+        return { frame: "", order: i };
+      });
+
+      console.log("request frames");
+      console.log(request.frames);
+    }
     console.log("after mapping");
     console.log(imageFrames);
     // imageFrames = []
@@ -316,7 +326,7 @@ export const VerificationScreen = ({
     if (currentState) {
       if (currentState.stepCode === "END") {
         console.log("End of the process");
-        
+
         // when stepcode is end, then it will clear the interval
         // clearing capture frame & publish message interval
         clearInterval(captureFrameInterval);
@@ -325,7 +335,7 @@ export const VerificationScreen = ({
         endResponseCheck(currentState);
       } else if (previousState?.stepCode !== currentState?.stepCode) {
         console.log("Step code changed");
-        
+
         // if stepcode is different then it will executed
         // clearing capture frame & publish message interval
         clearInterval(captureFrameInterval);
@@ -354,17 +364,14 @@ export const VerificationScreen = ({
 
           // sending image frame after every 10 seconds,
           // currently static, later will change to dynamic
-          publishMessageInterval = setInterval(
-            () => {
-              console.log("before sending message");
-              console.log(imageFrames);
-              sendMessage(request);
-              imageFrames = [];
-              console.log("after sending message");
-              console.log(imageFrames);
-            },
-            10000
-          );
+          publishMessageInterval = setInterval(() => {
+            console.log("before sending message");
+            console.log(imageFrames);
+            sendMessage(request);
+            setImageFrames([]);
+            console.log("after sending message");
+            console.log(imageFrames);
+          }, 10000);
           checkFeedback(currentState);
         }, currentState.startupDelay * 1000);
       } else {
