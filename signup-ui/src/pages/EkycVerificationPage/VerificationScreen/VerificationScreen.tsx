@@ -122,7 +122,7 @@ export const VerificationScreen = ({
         return { frame: "", order: frame.order };
       });
     } else {
-      console.log(" image frame is empty")
+      console.log(" image frame is empty");
       request.frames = Array.from(Array(10).keys()).map((i: number) => {
         return { frame: "", order: i };
       });
@@ -195,7 +195,6 @@ export const VerificationScreen = ({
       frames: [],
     };
 
-    // publish(PUBLISH_TOPIC, JSON.stringify(request));
     // as soon as we establish the connection, we will send the process frame request
     sendMessage(request);
   };
@@ -258,6 +257,7 @@ export const VerificationScreen = ({
   const checkFeedback = (currentStep: IdentityVerificationState) => {
     console.log("Checking Feedback");
     console.log(currentStep.feedbackCode);
+    setErrorBannerMessage(null);
     switch (currentStep.feedbackType) {
       case IdvFeedbackEnum.MESSAGE:
         console.log("Message Feedback");
@@ -269,21 +269,27 @@ export const VerificationScreen = ({
         console.log("Color Feedback");
         setColorVerification(true);
         setBgColor(currentStep.feedbackCode);
+        setMessage(t("focus_on_screen_message"));
         break;
       case IdvFeedbackEnum.ERROR:
         console.log("Error Feedback");
         setErrorBannerMessage(
           getCurrentLangMsg("errors", currentStep.feedbackCode ?? "default")
         );
+        setColorVerification(false);
         break;
       default:
         break;
     }
   };
 
-  const endResponseCheck = (currentStep: IdentityVerificationState) => {
+  const endResponseCheck = (currentStep: IdentityVerificationState | null) => {
     console.log("End Response Check");
-    if (currentStep.feedbackType === IdvFeedbackEnum.MESSAGE) {
+    if (currentStep === null) {
+      return;
+    }
+    client.deactivate();
+    if (currentStep.feedbackType === IdvFeedbackEnum.MESSAGE && currentStep.feedbackCode === "success_check") {
       setAlertConfig({
         icon: "success",
         header: getCurrentLangMsg(
@@ -293,7 +299,7 @@ export const VerificationScreen = ({
         subHeader: "Please wait while we finalize the process",
         footer: null,
       });
-    } else if (currentStep.feedbackType === IdvFeedbackEnum.ERROR) {
+    } else {
       setAlertConfig({
         icon: "fail",
         header: getCurrentLangMsg(
@@ -308,6 +314,16 @@ export const VerificationScreen = ({
         ),
       });
     }
+  };
+
+  const resetEverything = () => {
+    // when stepcode is end, then it will clear the interval
+    // clearing capture frame & publish message interval
+    clearInterval(captureFrameInterval);
+    clearInterval(publishMessageInterval);
+    setErrorBannerMessage(null);
+    setColorVerification(false);
+    setMessage("");
   };
 
   /**
@@ -327,21 +343,14 @@ export const VerificationScreen = ({
       if (currentState.stepCode === "END") {
         console.log("End of the process");
 
-        // when stepcode is end, then it will clear the interval
-        // clearing capture frame & publish message interval
-        clearInterval(captureFrameInterval);
-        clearInterval(publishMessageInterval);
+        resetEverything();
 
-        endResponseCheck(currentState);
+        endResponseCheck(previousState);
       } else if (previousState?.stepCode !== currentState?.stepCode) {
         console.log("Step code changed");
 
-        // if stepcode is different then it will executed
-        // clearing capture frame & publish message interval
-        clearInterval(captureFrameInterval);
-        clearInterval(publishMessageInterval);
-        setColorVerification(false);
-        setMessage("");
+        resetEverything();
+
         const request = {
           slotId: slotId ?? "",
           stepCode: currentState.stepCode,
