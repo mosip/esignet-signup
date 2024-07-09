@@ -3,6 +3,7 @@ package io.mosip.signup.services;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micrometer.core.annotation.Timed;
+import io.mosip.esignet.core.util.CaptchaHelper;
 import io.mosip.esignet.core.util.IdentityProviderUtil;
 import io.mosip.kernel.core.util.HMACUtils2;
 import io.mosip.signup.dto.*;
@@ -47,9 +48,6 @@ public class RegistrationService {
     private CacheUtilService cacheUtilService;
 
     @Autowired
-    private GoogleRecaptchaValidatorService googleRecaptchaValidatorService;
-
-    @Autowired
     private ChallengeManagerService challengeManagerService;
 
     @Autowired
@@ -67,6 +65,9 @@ public class RegistrationService {
 
     @Autowired
     private CryptoHelper cryptoHelper;
+
+    @Autowired
+    private CaptchaHelper captchaHelper;
 
     @Value("${mosip.signup.supported.challenge.otp.length}")
     private int otpLength;
@@ -122,6 +123,12 @@ public class RegistrationService {
     @Value("${mosip.signup.get-registration-status.endpoint}")
     private String getRegistrationStatusEndpoint;
 
+    @Value("${mosip.signup.captcha.module-name}")
+    private String moduleName;
+
+    @Value("${mosip.signup.captcha.validator-url}")
+    private String validatorUrl;
+
     private final String notificationLogging = "Notification response -> {}";
 
     /**
@@ -134,7 +141,7 @@ public class RegistrationService {
      * @throws SignUpException
      */
     public GenerateChallengeResponse generateChallenge(GenerateChallengeRequest generateChallengeRequest, String transactionId) throws SignUpException {
-        if (!googleRecaptchaValidatorService.validateCaptcha(generateChallengeRequest.getCaptchaToken())) {
+        if (!captchaHelper.validateCaptcha(generateChallengeRequest.getCaptchaToken())) {
             log.error("generate-challenge failed: invalid captcha");
             throw new CaptchaException(ErrorConstants.INVALID_CAPTCHA);
         }
