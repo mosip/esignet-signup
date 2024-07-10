@@ -73,6 +73,9 @@
 * After downloading the jar file place it in below folder path.
 	*lib/ext
 
+* Please refer to following link to download JMeter jars.
+	https://mosip.atlassian.net/wiki/spaces/PT/pages/1227751491/Steps+to+set+up+the+local+system#PluginManager
+
 ### Execution points for eSignet Sign Up Services API's
 
 *SignUp_Test_Script.jmx
