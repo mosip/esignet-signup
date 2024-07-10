@@ -531,7 +531,7 @@ vars.put(&quot;identifier&quot;, tempValue);
             <stringProp name="parameters"></stringProp>
             <stringProp name="filename"></stringProp>
             <stringProp name="cacheKey">true</stringProp>
-            <stringProp name="script">def text = &quot;PSWRD@&quot;
+            <stringProp name="script">def text = &quot;Pswrd@&quot;
 def randomNumbers = (new Random().nextInt(1000000000)).toString()
 def password = text + randomNumbers 
 
@@ -562,7 +562,7 @@ def currentDir = System.getProperty(&quot;user.dir&quot;);
 def binDir = new File(currentDir);
 
 //saving to the file
-File f = new File(binDir, &quot;testdata_reset_password.csv&quot;);
+File f = new File(binDir, &quot;testdata_reset_password.txt&quot;);
 FileWriter fw=new FileWriter(f,true);
 BufferedWriter bw=new BufferedWriter(fw);
 bw.write(&quot;${phonenum},${encodedString}&quot;);
@@ -652,6 +652,16 @@ fw.close();</stringProp>
               <boolProp name="Assertion.assume_success">false</boolProp>
               <intProp name="Assertion.test_type">2</intProp>
             </ResponseAssertion>
+            <hashTree/>
+            <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="loadCsrfToken" enabled="true">
+              <stringProp name="RegexExtractor.useHeaders">false</stringProp>
+              <stringProp name="RegexExtractor.refname">loadCsrfToken</stringProp>
+              <stringProp name="RegexExtractor.regex">&quot;token&quot;:&quot;(.*?)&quot;</stringProp>
+              <stringProp name="RegexExtractor.template">$1$</stringProp>
+              <stringProp name="RegexExtractor.default"></stringProp>
+              <stringProp name="RegexExtractor.match_number">1</stringProp>
+              <boolProp name="RegexExtractor.default_empty_value">true</boolProp>
+            </RegexExtractor>
             <hashTree/>
           </hashTree>
         </hashTree>
@@ -1060,7 +1070,7 @@ log.info(&quot;Password: &quot; + password)
         <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="Load identifier From File" enabled="true">
           <stringProp name="delimiter">,</stringProp>
           <stringProp name="fileEncoding">UTF-8</stringProp>
-          <stringProp name="filename">./bin/RunTimeFiles/testdata_reset_password.csv</stringProp>
+          <stringProp name="filename">./bin/runtime-files/testdata_reset_password.txt</stringProp>
           <boolProp name="ignoreFirstLine">false</boolProp>
           <boolProp name="quotedData">false</boolProp>
           <boolProp name="recycle">true</boolProp>
@@ -1121,6 +1131,16 @@ log.info(&quot;Password: &quot; + password)
               <boolProp name="Assertion.assume_success">false</boolProp>
               <intProp name="Assertion.test_type">2</intProp>
             </ResponseAssertion>
+            <hashTree/>
+            <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="loadCsrfToken" enabled="true">
+              <stringProp name="RegexExtractor.useHeaders">false</stringProp>
+              <stringProp name="RegexExtractor.refname">loadCsrfToken</stringProp>
+              <stringProp name="RegexExtractor.regex">&quot;token&quot;:&quot;(.*?)&quot;</stringProp>
+              <stringProp name="RegexExtractor.template">$1$</stringProp>
+              <stringProp name="RegexExtractor.default"></stringProp>
+              <stringProp name="RegexExtractor.match_number">1</stringProp>
+              <boolProp name="RegexExtractor.default_empty_value">true</boolProp>
+            </RegexExtractor>
             <hashTree/>
           </hashTree>
         </hashTree>
