@@ -12,6 +12,8 @@ window._env_.FALLBACK_LANG = window._env_.DEFAULT_LANG ?? "km";
 
 // Check if the URLSearchParams has the key 'ui_locales'
 // If it has, set the value of 'ui_locales' to the DEFAULT_LANG
-if (urlSearchParams.has('ui_locales')) {
-  window._env_.DEFAULT_LANG = urlSearchParams.get('ui_locales').split('-')[0];
+if (urlSearchParams.has("ui_locales")) {
+  window._env_.DEFAULT_LANG = urlSearchParams.get("ui_locales").split("-")[0];
+} else if (!!localStorage.getItem("esignet-signup-language")) {
+  window._env_.DEFAULT_LANG = localStorage.getItem("esignet-signup-language");
 }

@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 
 import { ReactComponent as TranslationIcon } from "~assets/svg/translation-icon.svg";
 import { cn } from "~utils/cn";
+import { replaceUILocales } from "~utils/link";
 import {
   langFontMappingSelector,
   languages2LettersSelector,
@@ -25,34 +26,10 @@ export const Language = () => {
     )
   );
 
-  const ui_locales = "ui_locales";
-
   const handleLanguageChange = (language: string) => {
     i18n.changeLanguage(language);
 
-    // Get the encoded string from the URL
-    const hashCode = window.location.hash.substring(1);
-
-    // Decode the string
-    const decodedBase64 = atob(hashCode);
-
-    var urlSearchParams = new URLSearchParams(decodedBase64);
-
-    // Convert the decoded string to JSON
-    var jsonObject: Record<string, string> = {};
-    urlSearchParams.forEach(function (value, key) {
-      jsonObject[key] = value;
-      // Assign the current i18n language to the ui_locales
-      if (key === ui_locales) {
-        jsonObject[key] = language;
-      }
-    });
-
-    // Convert the JSON back to decoded string
-    Object.entries(jsonObject).forEach(([key, value]) => {
-      urlSearchParams.set(key, value);
-    });
-
+    const urlSearchParams = replaceUILocales(window.location.hash, language);
     // Encode the string
     const encodedBase64 = btoa(urlSearchParams.toString());
     const url =
