@@ -25,6 +25,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -81,7 +82,7 @@ public class RegistrationServiceTest {
     @Mock
     ProfileRegistryPlugin profileRegistryPlugin;
 
-    @Mock
+    @MockBean
     CaptchaHelper captchaHelper;
 
     ObjectMapper objectMapper = new ObjectMapper();
@@ -107,6 +108,8 @@ public class RegistrationServiceTest {
         ReflectionTestUtils.setField(
                 registrationService, "challengeTimeout", 60);
         ReflectionTestUtils.setField(registrationService, "objectMapper", new ObjectMapper());
+        ReflectionTestUtils.setField(registrationService, "captchaRequired", false);
+        ReflectionTestUtils.setField(registrationService, "captchaHelper", captchaHelper);
     }
 
     @Test
@@ -1102,8 +1105,7 @@ public class RegistrationServiceTest {
         when(challengeManagerService.generateChallenge(any())).thenReturn("1111");
         when(captchaHelper.validateCaptcha(
                 generateChallengeRequest.getCaptchaToken())).thenReturn(true);
-//        when(notificationHelper.sendSMSNotification(any(), any(), any(), any()))
-//                .thenThrow(new RestClientException("failed to send notification"));
+        doThrow(new SignUpException("otp_notification_failed")).when(notificationHelper).sendSMSNotification(any(), any(), any(), any());
 
         try{
             registrationService.generateChallenge(generateChallengeRequest, "");
@@ -1191,8 +1193,10 @@ public class RegistrationServiceTest {
         GenerateChallengeRequest generateChallengeRequest = new GenerateChallengeRequest();
         generateChallengeRequest.setIdentifier(identifier);
         generateChallengeRequest.setCaptchaToken("mock-invalid-captcha");
+        ReflectionTestUtils.setField(registrationService, "captchaRequired", true);
         when(captchaHelper.validateCaptcha(
                 generateChallengeRequest.getCaptchaToken())).thenReturn(false);
+        when(challengeManagerService.generateChallenge(any())).thenReturn("1111");
         try {
             registrationService.generateChallenge(generateChallengeRequest, "");
             Assert.fail();

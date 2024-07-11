@@ -51,6 +51,12 @@ public class RegistrationService {
     @Autowired
     private CryptoHelper cryptoHelper;
 
+    @Autowired
+    private CaptchaHelper captchaHelper;
+
+    @Autowired
+    private ProfileRegistryPlugin profileRegistryPlugin;
+
     @Value("${mosip.signup.challenge.resend-attempt}")
     private int resendAttempts;
 
@@ -72,14 +78,8 @@ public class RegistrationService {
     @Value("${mosip.signup.status-check.txn.timeout}")
     private int statusCheckTransactionTimeout;
 
-    @Autowired
-    private ProfileRegistryPlugin profileRegistryPlugin;
-
-    @Value("${mosip.signup.captcha.module-name}")
-    private String moduleName;
-
-    @Value("${mosip.signup.captcha.validator-url}")
-    private String validatorUrl;
+    @Value("${mosip.signup.send-challenge.captcha-required:true}")
+    private boolean captchaRequired;
 
 
     /**
@@ -92,7 +92,7 @@ public class RegistrationService {
      * @throws SignUpException
      */
     public GenerateChallengeResponse generateChallenge(GenerateChallengeRequest generateChallengeRequest, String transactionId) throws SignUpException {
-        if (!captchaHelper.validateCaptcha(generateChallengeRequest.getCaptchaToken())) {
+        if (captchaRequired && !captchaHelper.validateCaptcha(generateChallengeRequest.getCaptchaToken())) {
             log.error("generate-challenge failed: invalid captcha");
             throw new CaptchaException(ErrorConstants.INVALID_CAPTCHA);
         }
@@ -199,8 +199,6 @@ public class RegistrationService {
         }
 
         try {
-            //TODO -- Should take this as part of userInfo
-            ((ObjectNode) registerRequest.getUserInfo()).set("password", objectMapper.valueToTree(registerRequest.getPassword()));
             ProfileDto profileDto = new ProfileDto();
             profileDto.setIndividualId(registerRequest.getUsername());
             profileDto.setActive(true);
@@ -360,6 +358,7 @@ public class RegistrationService {
         cookie.setMaxAge(maxAge); // 60 = 1 minute
         cookie.setHttpOnly(true);
         cookie.setSecure(true);
+        cookie.setPath("/");
         response.addCookie(cookie);
     }
 
@@ -368,12 +367,14 @@ public class RegistrationService {
         cookie.setMaxAge(maxAge);
         cookie.setHttpOnly(true);
         cookie.setSecure(true);
+        cookie.setPath("/");
         response.addCookie(cookie);
 
         Cookie unsetCookie = new Cookie(SignUpConstants.TRANSACTION_ID, "");
         unsetCookie.setMaxAge(0);
         unsetCookie.setHttpOnly(true);
         unsetCookie.setSecure(true);
+        unsetCookie.setPath("/");
         response.addCookie(unsetCookie);
     }
 
