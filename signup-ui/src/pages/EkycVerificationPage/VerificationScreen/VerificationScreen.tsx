@@ -125,26 +125,15 @@ export const VerificationScreen = ({
       "*****************************Sending Message*****************************"
     );
     console.log(request);
-    console.log("before mapping");
-    console.log(imageFrames);
     if (imageFrames.length) {
       request.frames = imageFrames.map((frame: IdvFrames) => {
-        console.log("inside imageframe maps");
-        console.log(frame);
         return { frame: "", order: frame.order };
       });
     } else {
-      console.log(" image frame is empty");
       request.frames = Array.from(Array(10).keys()).map((i: number) => {
         return { frame: "", order: i };
       });
-
-      console.log("request frames");
-      console.log(request.frames);
     }
-    console.log("after mapping");
-    console.log(imageFrames);
-    // imageFrames = []
     publish(PUBLISH_TOPIC, JSON.stringify(request));
   };
 
@@ -243,8 +232,6 @@ export const VerificationScreen = ({
         ...(res.feedback?.code && { feedbackCode: res.feedback.code }),
       };
     }
-    console.log("Converted Response to State");
-    console.log(temp);
     return temp;
   };
 
@@ -266,8 +253,6 @@ export const VerificationScreen = ({
         feedbackCode: tempRes.feedbackCode,
       };
     }
-    console.log("NEw current state");
-    console.log(temp);
     setIdentityVerification(temp);
     return temp;
   };
@@ -301,14 +286,10 @@ export const VerificationScreen = ({
   
 
   const checkFeedback = (currentStep: IdentityVerificationState) => {
-    console.log("Checking Feedback");
-    console.log(currentStep.feedbackCode);
     setErrorBannerMessage(null);
     switch (currentStep.feedbackType) {
       case IdvFeedbackEnum.MESSAGE:
-        console.log("Message Feedback");
         if (currentStep.feedbackCode === "success_check") {
-          console.log("Success Feedback");
           // sending temporary success message
           endWithSuccess(
             currentStep?.feedbackCode ?? "Verification Successful"
@@ -320,13 +301,11 @@ export const VerificationScreen = ({
         );
         break;
       case IdvFeedbackEnum.COLOR:
-        console.log("Color Feedback");
         setColorVerification(true);
         setBgColor(currentStep.feedbackCode);
         setMessage(t("focus_on_screen_message"));
         break;
       case IdvFeedbackEnum.ERROR:
-        console.log("Error Feedback");
         setErrorBannerMessage(
           getCurrentLangMsg("errors", currentStep.feedbackCode ?? "default")
         );
@@ -339,7 +318,6 @@ export const VerificationScreen = ({
   };
 
   const endResponseCheck = (currentStep: IdentityVerificationState | null) => {
-    console.log("End Response Check");
     if (currentStep === null) {
       return;
     }
@@ -380,7 +358,6 @@ export const VerificationScreen = ({
   };
 
   const resetEverything = () => {
-    console.log("Resetting Everything");
     // when stepcode is end, then it will clear the interval
     // clearing capture frame & publish message interval
     clearInterval(captureFrameInterval);
@@ -421,8 +398,6 @@ export const VerificationScreen = ({
           stepCode: currentState.stepCode,
           frames: [],
         };
-        console.log("Request to send");
-        console.log(request);
         // adding timer to show
         setTimer(currentState.startupDelay);
         // setting delay in startup
