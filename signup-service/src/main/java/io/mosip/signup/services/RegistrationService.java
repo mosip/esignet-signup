@@ -2,6 +2,7 @@ package io.mosip.signup.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import io.mosip.esignet.core.util.CaptchaHelper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.mosip.esignet.core.util.IdentityProviderUtil;

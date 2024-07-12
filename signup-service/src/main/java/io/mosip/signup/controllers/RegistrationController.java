@@ -1,5 +1,7 @@
 package io.mosip.signup.controllers;
 
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.mosip.esignet.core.dto.RequestWrapper;
 import io.mosip.esignet.core.dto.ResponseWrapper;
 import io.mosip.esignet.core.util.IdentityProviderUtil;
@@ -13,12 +15,15 @@ import io.mosip.signup.util.SignUpConstants;
 import io.mosip.signup.util.AuditEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 
 import org.springframework.web.bind.annotation.RestController;
+
+import java.beans.PropertyEditorSupport;
 
 import static io.mosip.signup.util.SignUpConstants.EMTPY;
 
@@ -32,6 +37,22 @@ public class RegistrationController {
 
     @Autowired
     AuditHelper auditHelper;
+
+    @InitBinder
+    protected void initBinder(WebDataBinder binder) {
+        if(binder.getTarget() != null && RequestWrapper.class.equals(binder.getTarget().getClass())) {
+            RequestWrapper dto = (RequestWrapper) binder.getTarget();
+            if(RegisterRequest.class.equals(dto.getRequest().getClass())) {
+                RegisterRequest registerRequest = (RegisterRequest) dto.getRequest();
+                //TODO remove this logic after changes in the UI is done to pass password inside userinfo
+                registerRequest.setUserInfo(
+                        ((ObjectNode)registerRequest.getUserInfo()).set("password", JsonNodeFactory.instance.textNode(registerRequest.getPassword()))
+                );
+                ((RequestWrapper) binder.getTarget()).setRequest(registerRequest);
+            }
+        }
+    }
+
 
     @PostMapping("/generate-challenge")
     public ResponseWrapper<GenerateChallengeResponse> generateChallenge (@Valid @RequestBody RequestWrapper<GenerateChallengeRequest> requestWrapper,
