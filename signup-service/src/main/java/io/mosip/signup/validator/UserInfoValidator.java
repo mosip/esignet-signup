@@ -1,6 +1,7 @@
 package io.mosip.signup.validator;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.mosip.esignet.api.util.ErrorConstants;
 import io.mosip.signup.api.dto.ProfileDto;
