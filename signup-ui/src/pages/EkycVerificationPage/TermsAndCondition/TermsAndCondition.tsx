@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import purify from "dompurify";
+import i18next from "i18next";
 import { useTranslation } from "react-i18next";
-import { useLocation } from "react-router-dom";
 
 import { ActionMessage } from "~components/ui/action-message";
 import { Button } from "~components/ui/button";
@@ -16,9 +16,13 @@ import {
   StepHeader,
   StepTitle,
 } from "~components/ui/step";
+import { convertToI18nData } from "~utils/conversion";
 import { useTermsAndConditions } from "~pages/shared/queries";
 import langConfigService from "~services/langConfig.service";
-import { DefaultEkyVerificationProp } from "~typings/types";
+import {
+  DefaultEkyVerificationProp,
+  KeyValueStringObject,
+} from "~typings/types";
 import LoadingIndicator from "~/common/LoadingIndicator";
 
 import {
@@ -39,17 +43,18 @@ export const TermsAndCondition = ({
     keyPrefix: "terms_and_conditions",
   });
 
-  const { setStep, setCriticalError, kycProvider, setKycProviderDetail } = useEkycVerificationStore(
-    useCallback(
-      (state: EkycVerificationStore) => ({
-        setStep: setStepSelector(state),
-        setCriticalError: setCriticalErrorSelector(state),
-        kycProvider: kycProviderSelector(state),
-        setKycProviderDetail: setKycProviderDetailSelector(state)
-      }),
-      []
-    )
-  );
+  const { setStep, setCriticalError, kycProvider, setKycProviderDetail } =
+    useEkycVerificationStore(
+      useCallback(
+        (state: EkycVerificationStore) => ({
+          setStep: setStepSelector(state),
+          setCriticalError: setCriticalErrorSelector(state),
+          kycProvider: kycProviderSelector(state),
+          setKycProviderDetail: setKycProviderDetailSelector(state),
+        }),
+        []
+      )
+    );
 
   const [agreeTerms, setAgreeTerms] = useState<boolean>(false);
   const [cancelButton, setCancelButton] = useState<boolean>(false);
@@ -100,7 +105,7 @@ export const TermsAndCondition = ({
   };
 
   const {
-    data: tnc,
+    data: kycDetail,
     isLoading,
     isSuccess,
   } = useTermsAndConditions(kycProvider ? kycProvider.id : "");
@@ -119,9 +124,22 @@ export const TermsAndCondition = ({
   useEffect(() => {
     if (isSuccess) {
       // setting kyc provider detail in the store
-      setKycProviderDetail(tnc.response);
-      if (tnc.errors === null || tnc.errors.length === 0) {
-        setTermsAndCondition(tnc.response["terms&Conditions"]);
+      setKycProviderDetail(kycDetail.response);
+      if (kycDetail.errors === null || kycDetail.errors.length === 0) {
+        convertToI18nData(kycDetail.response as KeyValueStringObject).then(
+          (data) => {
+            for (const langCode in data) {
+              i18next.addResourceBundle(
+                langCode,
+                "translation",
+                { verification_screen: data[langCode] },
+                true,
+                true
+              );
+            }
+          }
+        );
+        setTermsAndCondition(kycDetail.response["terms&Conditions"]);
       }
     }
   }, [isSuccess]);
