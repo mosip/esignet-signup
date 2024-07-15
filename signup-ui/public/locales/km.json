@@ -184,7 +184,11 @@
   },
   "verification_screen":{
     "welcome_message": "សូមស្វាគមន៍! ចាប់ផ្តើមដំណើរការផ្ទៀងផ្ទាត់អត្តសញ្ញាណនៅក្នុង {count} វិនាទី",
-    "focus_on_screen_message": "សូមព្យាយាមផ្តោតលើអេក្រង់"
+    "focus_on_screen_message": "សូមព្យាយាមផ្តោតលើអេក្រង់",
+    "successful_header": "ការផ្ទៀងផ្ទាត់បានជោគជ័យ!",
+    "successful_subheader": "សូមរង់ចាំខណៈពេលដែលយើងបញ្ចប់ដំណើរការ",
+    "unsuccessful_header": "ការផ្ទៀងផ្ទាត់មិនបានជោគជ័យ!",
+    "unsuccessful_subheader": "ឱ! យើងមិនអាចបញ្ចប់ការផ្ទៀងផ្ទាត់ eKYC បានទេ។"
   },
   "error_response": {
     "invalid_transaction": "ប្រតិបត្តិការបានផុតកំណត់។ សូមព្យាយាមម្ដងទៀត។",

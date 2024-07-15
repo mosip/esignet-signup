@@ -14,15 +14,11 @@ import {
   IdentityVerificationState,
   IdvFeedbackEnum,
   IdvFrames,
-  KeyValueStringObject,
-  KycProviderDetail,
-  KycProviderDetailProp,
 } from "~typings/types";
 
 import {
   EkycVerificationStore,
   errorBannerMessageSelector,
-  kycProviderDetailSelector,
   setErrorBannerMessageSelector,
   setIsNoBackgroundSelector,
   slotIdSelector,
@@ -34,7 +30,7 @@ export const VerificationScreen = ({
   cancelPopup,
   settings,
 }: DefaultEkyVerificationProp) => {
-  const { t, i18n } = useTranslation("translation", {
+  const { t } = useTranslation("translation", {
     keyPrefix: "verification_screen",
   });
   const webcamRef = useRef(null);
@@ -63,7 +59,6 @@ export const VerificationScreen = ({
     setErrorBannerMessage,
     errorBannerMessage,
     slotId,
-    kycProviderDetail,
   } = useEkycVerificationStore(
     useCallback(
       (state: EkycVerificationStore) => ({
@@ -71,7 +66,6 @@ export const VerificationScreen = ({
         setErrorBannerMessage: setErrorBannerMessageSelector(state),
         errorBannerMessage: errorBannerMessageSelector(state),
         slotId: slotIdSelector(state),
-        kycProviderDetail: kycProviderDetailSelector(state),
       }),
       []
     )
@@ -233,8 +227,8 @@ export const VerificationScreen = ({
     resetEverything();
     setAlertConfig({
       icon: "success",
-      header: t(`messages.${successMsgCode}`),
-      subHeader: "Please wait while we finalize the process",
+      header: t("successful_header"),
+      subHeader: t("successful_subheader"),
       footer: null,
     });
     setTimeout(() => {
@@ -281,15 +275,15 @@ export const VerificationScreen = ({
     ) {
       setAlertConfig({
         icon: "success",
-        header: t(`messages.${currentStep.feedbackCode}`),
-        subHeader: "Please wait while we finalize the process",
+        header: t("successful_header"),
+        subHeader: t("successful_subheader"),
         footer: null,
       });
     } else {
       setAlertConfig({
         icon: "fail",
-        header: t(`errors.${currentStep.feedbackCode}`),
-        subHeader: "Oops! We were unable to complete the eKYC verification.",
+        header: t("unsuccessful_header"),
+        subHeader: t("unsuccessful_subheader"),
         footer: (
           <Button id="retry-button" className="my-4 h-16 w-full">
             Retry
