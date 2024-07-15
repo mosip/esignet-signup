@@ -18,6 +18,7 @@ import {
   KycProviderDetail,
   KycProviderDetailProp,
 } from "~typings/types";
+import LoadingIndicator from "~/common/LoadingIndicator";
 
 import {
   EkycVerificationStore,
@@ -44,6 +45,7 @@ export const VerificationScreen = ({
   const [colorVerification, setColorVerification] = useState<boolean>(false);
   const [bgColor, setBgColor] = useState<string | null>(null);
   const [imageFrames, setImageFrames] = useState<IdvFrames[]>([]);
+
   // let imageFrames: IdvFrames[] = [];
   const [identityVerification, setIdentityVerification] =
     useState<IdentityVerificationState | null>({
@@ -257,13 +259,14 @@ export const VerificationScreen = ({
   const redirectToConsent = () => {
     unsubscribe();
     client.deactivate();
-    const consentUrl = settings?.configs["signin.redirect-url"].replace("authorize", "consent");
+    const consentUrl = settings?.configs["signin.redirect-url"].replace(
+      "authorize",
+      "consent"
+    );
     const encodedIdToken = window.location.hash;
     window.onbeforeunload = null;
-    window.location.replace(
-      `${consentUrl}${encodedIdToken}`
-    );
-  }
+    window.location.replace(`${consentUrl}${encodedIdToken}`);
+  };
 
   const endWithSuccess = (successMsgCode: string) => {
     resetEverything();
@@ -383,7 +386,6 @@ export const VerificationScreen = ({
         resetEverything();
         unsubscribe();
         client.deactivate();
-
       } else if (previousState?.stepCode !== currentState?.stepCode) {
         console.log("Step code changed");
 
@@ -463,8 +465,18 @@ export const VerificationScreen = ({
     <EkycStatusAlert config={alertConfig} />
   ) : (
     <div className="sm:pb-[4em]">
-      {!errorBannerMessage && message && (
-        <div className="video-message sm:w-[90vw]">{message}</div>
+      {!connected ? (
+        <div className="video-message sm:w-[90vw]">
+          <LoadingIndicator
+            message="please_wait"
+            msgParam="Loading. Please wait....."
+            iconClass="video-message-loading"
+            divClass=""
+          />
+        </div>
+      ) : (
+        !errorBannerMessage &&
+        message && <div className="video-message sm:w-[90vw]">{message}</div>
       )}
       <div
         className={
