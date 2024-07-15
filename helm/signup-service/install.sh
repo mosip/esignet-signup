@@ -22,7 +22,7 @@ kubectl create ns $NS
 
 function installing_signup() {
   echo Istio label
-  # kubectl label ns $SOFTHSM_NS istio-injection=enabled --overwrite
+  kubectl label ns $SOFTHSM_NS istio-injection=enabled --overwrite
   helm repo add mosip https://mosip.github.io/mosip-helm
   helm repo update
 
@@ -33,7 +33,7 @@ function installing_signup() {
   echo Copy configmaps
   ./copy_cm_func.sh configmap global default config-server
 
-#  echo Copy secrets
+  echo Copy secrets
   ./copy_cm_func.sh secret softhsm-signup softhsm config-server
 
   kubectl -n config-server set env --keys=mosip-signup-host --from configmap/global deployment/config-server --prefix=SPRING_CLOUD_CONFIG_SERVER_OVERRIDES_
@@ -56,10 +56,10 @@ function installing_signup() {
 
   ./copy_cm_func.sh secret signup-misp-onboarder-key signup config-server
 
-#  echo Copy configmaps
+  echo Copy configmaps
   ./copy_cm.sh
 
-#  echo copy secrets
+  echo copy secrets
   ./copy_secrets.sh
 
   SIGNUP_CLIENT_SECRET_KEY='mosip_signup_client_secret'
