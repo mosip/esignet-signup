@@ -259,13 +259,12 @@ export const VerificationScreen = ({
   const redirectToConsent = () => {
     unsubscribe();
     client.deactivate();
-    const consentUrl = settings?.configs["signin.redirect-url"].replace(
-      "authorize",
-      "consent"
-    );
+    const consentUrl = settings?.configs["signin.redirect-url"].replace("authorize", "consent");
     const encodedIdToken = window.location.hash;
     window.onbeforeunload = null;
-    window.location.replace(`${consentUrl}${encodedIdToken}`);
+    window.location.replace(
+      `${consentUrl}${encodedIdToken}`
+    );
   };
 
   const endWithSuccess = (successMsgCode: string) => {
@@ -386,6 +385,7 @@ export const VerificationScreen = ({
         resetEverything();
         unsubscribe();
         client.deactivate();
+
       } else if (previousState?.stepCode !== currentState?.stepCode) {
         console.log("Step code changed");
 
