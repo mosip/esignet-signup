@@ -42,7 +42,7 @@ export const EkycVerificationPopover = () => {
 
   return (
     <AlertDialog open={!!criticalError}>
-      <AlertDialogContent>
+      <AlertDialogContent className="rounded-[20px] bg-white !w-[90vw] pt-[2.5rem] pb-[2rem]">
         <AlertDialogHeader className="m-2">
           <AlertDialogTitle className="flex flex-col items-center justify-center gap-y-4">
             <>
