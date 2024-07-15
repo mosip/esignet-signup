@@ -9,6 +9,7 @@ import {
 } from "react-router-dom";
 
 import {
+  EKYC_VERIFICATION,
   RESET_PASSWORD,
   ROOT_ROUTE,
   SIGNUP_ROUTE,
@@ -23,6 +24,10 @@ const ResetPasswordPage = lazy(() =>
   lazyRetry(() => import("~pages/ResetPasswordPage"))
 );
 const LandingPage = lazy(() => lazyRetry(() => import("~pages/LandingPage")));
+const EkycVerificationPage = lazy(() =>
+  lazyRetry(() => import("~pages/EkycVerificationPage"))
+);
+
 const UnderConstructionPage = lazy(() =>
   lazyRetry(() => import("~pages/UnderConstructionPage"))
 );
@@ -51,6 +56,7 @@ export const AppRouter = () => {
         <Route element={<AppLayout />}>
           <Route path={SIGNUP_ROUTE} element={<SignUpPage />} />
           <Route path={RESET_PASSWORD} element={<ResetPasswordPage />} />
+          <Route path={EKYC_VERIFICATION} element={<EkycVerificationPage />} />
           <Route
             path={SOMETHING_WENT_WRONG}
             element={<SomethingWentWrongPage />}

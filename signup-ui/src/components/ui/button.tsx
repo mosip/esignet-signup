@@ -19,6 +19,7 @@ const buttonVariants = cva(
         secondary:
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         link: "text-primary underline-none disabled:text-[hsla(0,0%,68%)] disabled:bg-transparent",
+        cancel_outline: "border border-input bg-background cancel_btn"
       },
       size: {
         default: "h-[62px] px-4 py-2",

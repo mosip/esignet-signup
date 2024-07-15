@@ -27,7 +27,7 @@ i18n
   // init i18next
   .init({
     debug: false,
-    fallbackLng: (window as any)._env_.DEFAULT_LANG,
+    fallbackLng: (window as any)._env_.FALLBACK_LANG,
     lng: (window as any)._env_.DEFAULT_LANG,
     interpolation: {
       escapeValue: false, // not needed for react as it escapes by default

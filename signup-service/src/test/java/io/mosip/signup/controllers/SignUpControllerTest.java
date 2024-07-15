@@ -13,6 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.client.RestTemplate;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -33,6 +34,9 @@ public class SignUpControllerTest {
     @MockBean
     AuditHelper auditHelper;
 
+    @MockBean
+    RestTemplate restTemplate;
+
     ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
@@ -45,7 +49,6 @@ public class SignUpControllerTest {
                 .andExpect(jsonPath("$.response.configs").isNotEmpty())
                 .andExpect(jsonPath("$['response']['configs']['identifier.pattern']").value("^\\+855[1-9]\\d{7,8}$"))
                 .andExpect(jsonPath("$['response']['configs']['identifier.prefix']").value("+855"))
-                .andExpect(jsonPath("$['response']['configs']['captcha.site.key']").value("6LcdIvsoAAAAAMq"))
                 .andExpect(jsonPath("$['response']['configs']['otp.length']").value(6))
                 .andExpect(jsonPath("$['response']['configs']['password.pattern']").value("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[\\x5F\\W])(?=.{8,20})[a-zA-Z0-9\\x5F\\W]{8,20}$"))                .andExpect(jsonPath("$['response']['configs']['challenge.timeout']").value(60))
                 .andExpect(jsonPath("$['response']['configs']['resend.attempts']").value(3))

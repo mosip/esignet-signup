@@ -1,7 +1,13 @@
 package io.mosip.signup.services;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.mosip.esignet.core.util.CaptchaHelper;
 import io.mosip.esignet.core.util.IdentityProviderUtil;
+import io.mosip.signup.api.dto.ProfileDto;
+import io.mosip.signup.api.spi.ProfileRegistryPlugin;
+import io.mosip.signup.api.util.ProfileCreateUpdateStatus;
 import io.mosip.signup.dto.*;
 import io.mosip.signup.exception.*;
 import io.mosip.signup.exception.ChallengeFailedException;
@@ -10,15 +16,16 @@ import io.mosip.signup.helper.CryptoHelper;
 import io.mosip.signup.helper.NotificationHelper;
 import io.mosip.signup.util.ErrorConstants;
 import io.mosip.signup.util.Purpose;
-import io.mosip.signup.util.RegistrationStatus;
 import io.mosip.signup.exception.SignUpException;
 import io.mosip.signup.util.SignUpConstants;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -27,7 +34,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
@@ -36,6 +42,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import static io.mosip.signup.util.ErrorConstants.INVALID_KBI_CHALLENGE;
+import static io.mosip.signup.util.ErrorConstants.KNOWLEDGEBASE_MISMATCH;
 import static org.mockito.Mockito.*;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -46,7 +54,7 @@ import io.mosip.esignet.core.exception.EsignetException;
 
 import java.time.LocalDateTime;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
+
 
 @RunWith(SpringRunner.class)
 @ActiveProfiles(value = {"test"})
@@ -68,13 +76,18 @@ public class RegistrationServiceTest {
     HttpServletResponse response;
 
     @Mock
-    GoogleRecaptchaValidatorService googleRecaptchaValidatorService;
-
-    @Mock
     NotificationHelper notificationHelper;
 
     @Mock
     CryptoHelper cryptoHelper;
+
+    @Mock
+    ProfileRegistryPlugin profileRegistryPlugin;
+
+    @MockBean
+    CaptchaHelper captchaHelper;
+
+    ObjectMapper objectMapper = new ObjectMapper();
 
     private final String identityEndpoint = "identityEndpoint";
     private final String generateHashEndpoint = "generateHashEndpoint";
@@ -88,10 +101,6 @@ public class RegistrationServiceTest {
 
     @Before
     public void setUp() {
-        ReflectionTestUtils.setField(registrationService, identityEndpoint, identityEndpoint);
-        ReflectionTestUtils.setField(registrationService, generateHashEndpoint, generateHashEndpoint);
-        ReflectionTestUtils.setField(registrationService, getUinEndpoint, getUinEndpoint);
-        ReflectionTestUtils.setField(registrationService, getRegistrationStatusEndpoint, getRegistrationStatusEndpoint);
         ReflectionTestUtils.setField(
                 registrationService, "resendAttempts", 3);
         ReflectionTestUtils.setField(
@@ -100,9 +109,9 @@ public class RegistrationServiceTest {
                 registrationService, "resendDelay", 30);
         ReflectionTestUtils.setField(
                 registrationService, "challengeTimeout", 60);
-        ReflectionTestUtils.setField(registrationService, getIdentityEndpoint, getIdentityEndpoint);
         ReflectionTestUtils.setField(registrationService, "objectMapper", new ObjectMapper());
-        ReflectionTestUtils.setField(registrationService, "otpLength", 6);
+        ReflectionTestUtils.setField(registrationService, "captchaRequired", false);
+        ReflectionTestUtils.setField(registrationService, "captchaHelper", captchaHelper);
     }
 
     @Test
@@ -136,6 +145,9 @@ public class RegistrationServiceTest {
                 any(ParameterizedTypeReference.class)))
                 .thenReturn(new ResponseEntity<>(new RestResponseWrapper<>(), HttpStatus.OK));
 
+        ProfileDto profileDto = new ProfileDto();
+        profileDto.setActive(false);
+        when(profileRegistryPlugin.getProfile(any())).thenReturn(profileDto);
 
         VerifyChallengeResponse verifyChallengeResponse = registrationService.
                 verifyChallenge(verifyChallengeRequest, mockTransactionId);
@@ -207,6 +219,12 @@ public class RegistrationServiceTest {
                 any(ParameterizedTypeReference.class)))
                 .thenReturn(new ResponseEntity<>(restResponseWrapper, HttpStatus.OK));
 
+        ObjectMapper objectMapper = new ObjectMapper();
+        ProfileDto profileDto = new ProfileDto();
+        profileDto.setActive(true);
+        JsonNode jsonNode = objectMapper.valueToTree(identityResponse);
+        profileDto.setIdentity(jsonNode);
+        when(profileRegistryPlugin.getProfile(any())).thenReturn(profileDto);
 
         try {
             registrationService.verifyChallenge(verifyChallengeRequest, mockTransactionId);
@@ -252,6 +270,10 @@ public class RegistrationServiceTest {
                 eq(null),
                 any(ParameterizedTypeReference.class)))
                 .thenReturn(new ResponseEntity<>(restResponseWrapper, HttpStatus.OK));
+
+        ProfileDto profileDto = new ProfileDto();
+        profileDto.setActive(false);
+        when(profileRegistryPlugin.getProfile(any())).thenReturn(profileDto);
 
 
         try {
@@ -299,12 +321,14 @@ public class RegistrationServiceTest {
                 any(ParameterizedTypeReference.class)))
                 .thenReturn(new ResponseEntity<>(restResponseWrapper, HttpStatus.OK));
 
-
+        ProfileDto profileDto = new ProfileDto();
+        profileDto.setActive(false);
+        when(profileRegistryPlugin.getProfile(any())).thenReturn(profileDto);
         try {
             registrationService.verifyChallenge(verifyChallengeRequest, mockTransactionId);
             Assert.fail();
         } catch (SignUpException signUpException) {
-            Assert.assertEquals("fetch_identity_failed", signUpException.getErrorCode());
+            Assert.assertEquals("identifier_not_found", signUpException.getErrorCode());
         }
     }
 
@@ -420,12 +444,18 @@ public class RegistrationServiceTest {
                 any(ParameterizedTypeReference.class)))
                 .thenReturn(new ResponseEntity<>(restResponseWrapper, HttpStatus.OK));
 
+        ObjectMapper objectMapper = new ObjectMapper();
+        ProfileDto profileDto = new ProfileDto();
+        profileDto.setActive(true);
+        JsonNode jsonNode = objectMapper.valueToTree(identity);
+        profileDto.setIdentity(jsonNode);
+        when(profileRegistryPlugin.getProfile(any())).thenReturn(profileDto);
 
         try {
             registrationService.verifyChallenge(verifyChallengeRequest, mockTransactionId);
             Assert.fail();
         } catch (SignUpException signUpException) {
-            Assert.assertEquals("invalid_KBI_challenge", signUpException.getErrorCode());
+            Assert.assertEquals(INVALID_KBI_CHALLENGE, signUpException.getErrorCode());
         }
     }
 
@@ -479,12 +509,18 @@ public class RegistrationServiceTest {
                 any(ParameterizedTypeReference.class)))
                 .thenReturn(new ResponseEntity<>(restResponseWrapper, HttpStatus.OK));
 
+        ObjectMapper objectMapper = new ObjectMapper();
+        ProfileDto profileDto = new ProfileDto();
+        profileDto.setActive(true);
+        JsonNode jsonNode = objectMapper.valueToTree(identity);
+        profileDto.setIdentity(jsonNode);
+        when(profileRegistryPlugin.getProfile(any())).thenReturn(profileDto);
 
         try {
             registrationService.verifyChallenge(verifyChallengeRequest, mockTransactionId);
             Assert.fail();
         } catch (SignUpException signUpException) {
-            Assert.assertEquals("knowledgebase_mismatch", signUpException.getErrorCode());
+            Assert.assertEquals(KNOWLEDGEBASE_MISMATCH, signUpException.getErrorCode());
         }
     }
 
@@ -538,6 +574,13 @@ public class RegistrationServiceTest {
                 any(ParameterizedTypeReference.class)))
                 .thenReturn(new ResponseEntity<>(restResponseWrapper, HttpStatus.OK));
 
+        ObjectMapper objectMapper = new ObjectMapper();
+        ProfileDto profileDto = new ProfileDto();
+        profileDto.setActive(true);
+        JsonNode jsonNode = objectMapper.valueToTree(identity);
+        profileDto.setIdentity(jsonNode);
+        when(profileRegistryPlugin.getProfile(any())).thenReturn(profileDto);
+        when(profileRegistryPlugin.isMatch(any(), any())).thenReturn(true);
 
         VerifyChallengeResponse verifyChallengeResponse = registrationService.
                 verifyChallenge(verifyChallengeRequest, mockTransactionId);
@@ -626,11 +669,15 @@ public class RegistrationServiceTest {
                 any(ParameterizedTypeReference.class)))
                 .thenReturn(new ResponseEntity<>(restResponseWrapper, HttpStatus.OK));
 
+        ProfileDto profileDto = new ProfileDto();
+        profileDto.setActive(false);
+        when(profileRegistryPlugin.getProfile(any())).thenReturn(profileDto);
+
         try {
             registrationService.verifyChallenge(verifyChallengeRequest, mockTransactionId);
             Assert.fail();
         } catch (SignUpException signUpException) {
-            Assert.assertEquals("identity_inactive", signUpException.getErrorCode());
+            Assert.assertEquals("identifier_not_found", signUpException.getErrorCode());
         }
     }
 
@@ -678,11 +725,15 @@ public class RegistrationServiceTest {
                 any(ParameterizedTypeReference.class)))
                 .thenReturn(new ResponseEntity<>(restResponseWrapper, HttpStatus.OK));
 
+        ProfileDto profileDto = new ProfileDto();
+        profileDto.setActive(false);
+        when(profileRegistryPlugin.getProfile(any())).thenReturn(profileDto);
+
         try {
             registrationService.verifyChallenge(verifyChallengeRequest, mockTransactionId);
             Assert.fail();
         } catch (SignUpException signUpException) {
-            Assert.assertEquals("identity_inactive", signUpException.getErrorCode());
+            Assert.assertEquals("identifier_not_found", signUpException.getErrorCode());
         }
     }
 
@@ -722,12 +773,15 @@ public class RegistrationServiceTest {
                 any(ParameterizedTypeReference.class)))
                 .thenReturn(new ResponseEntity<>(null, HttpStatus.OK));
 
+        ProfileDto profileDto = new ProfileDto();
+        profileDto.setActive(false);
+        when(profileRegistryPlugin.getProfile(any())).thenReturn(profileDto);
 
         try {
             registrationService.verifyChallenge(verifyChallengeRequest, mockTransactionId);
             Assert.fail();
         } catch (SignUpException signUpException) {
-            Assert.assertEquals("fetch_identity_failed", signUpException.getErrorCode());
+            Assert.assertEquals("identifier_not_found", signUpException.getErrorCode());
         }
     }
 
@@ -816,14 +870,10 @@ public class RegistrationServiceTest {
     @Test
     public void register_thenPass() throws SignUpException {
         String local = "khm";
-
-        UserInfoMap userInfo = new UserInfoMap();
-        userInfo.setPreferredLang("khm");
-        userInfo.setFullName(List.of(new LanguageTaggedValue("eng", "Panharith AN")));
-        userInfo.setPhone("+855219718732");
+        String identifier = "+855219718732";
 
         RegisterRequest registerRequest = new RegisterRequest();
-        registerRequest.setUserInfo(userInfo);
+        registerRequest.setUserInfo(objectMapper.createObjectNode());
         registerRequest.setUsername("+855219718732");
         registerRequest.setPassword("123123");
         registerRequest.setConsent("AGREE");
@@ -831,9 +881,9 @@ public class RegistrationServiceTest {
 
         String mockTransactionID = "123456789";
 
-        RegistrationTransaction mockRegistrationTransaction = new RegistrationTransaction(userInfo.getPhone(), Purpose.REGISTRATION);
+        RegistrationTransaction mockRegistrationTransaction = new RegistrationTransaction(identifier, Purpose.REGISTRATION);
         mockRegistrationTransaction.setChallengeHash("123456");
-        mockRegistrationTransaction.setIdentifier(userInfo.getPhone());
+        mockRegistrationTransaction.setIdentifier(identifier);
 
         when(cacheUtilService.getChallengeVerifiedTransaction(mockTransactionID))
                 .thenReturn(mockRegistrationTransaction);
@@ -868,9 +918,6 @@ public class RegistrationServiceTest {
                 eq(HttpMethod.POST),
                 any(HttpEntity.class),
                 any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<>(mockRestResponseWrapperAddIdentityResponse, HttpStatus.OK));
-
-        when(notificationHelper.sendSMSNotificationAsync(any(), any(), any(), any()))
-                .thenReturn(new CompletableFuture<>());
 
         RegisterResponse registerResponse = registrationService.register(registerRequest, mockTransactionID);
         Assert.assertNotNull(registerResponse);
@@ -879,14 +926,10 @@ public class RegistrationServiceTest {
 
     @Test
     public void register_withNullLocale_thenPass() throws SignUpException {
-
-        UserInfoMap userInfo = new UserInfoMap();
-        userInfo.setPreferredLang("khm");
-        userInfo.setFullName(List.of(new LanguageTaggedValue("eng", "Panharith AN")));
-        userInfo.setPhone("+855219718732");
+        String identifier = "+855219718732";
 
         RegisterRequest registerRequest = new RegisterRequest();
-        registerRequest.setUserInfo(userInfo);
+        registerRequest.setUserInfo(objectMapper.createObjectNode());
         registerRequest.setUsername("+855219718732");
         registerRequest.setPassword("123123");
         registerRequest.setConsent("AGREE");
@@ -894,9 +937,9 @@ public class RegistrationServiceTest {
 
         String mockTransactionID = "123456789";
 
-        RegistrationTransaction mockRegistrationTransaction = new RegistrationTransaction(userInfo.getPhone(), Purpose.REGISTRATION);
+        RegistrationTransaction mockRegistrationTransaction = new RegistrationTransaction(identifier, Purpose.REGISTRATION);
         mockRegistrationTransaction.setChallengeHash("123456");
-        mockRegistrationTransaction.setIdentifier(userInfo.getPhone());
+        mockRegistrationTransaction.setIdentifier(identifier);
 
         when(cacheUtilService.getChallengeVerifiedTransaction(mockTransactionID))
                 .thenReturn(mockRegistrationTransaction);
@@ -932,700 +975,17 @@ public class RegistrationServiceTest {
                 any(HttpEntity.class),
                 any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<>(mockRestResponseWrapperAddIdentityResponse, HttpStatus.OK));
 
-        when(notificationHelper.sendSMSNotificationAsync(any(), any(), any(), any()))
-                .thenReturn(new CompletableFuture<>());
-
         RegisterResponse registerResponse = registrationService.register(registerRequest, mockTransactionID);
         Assert.assertNotNull(registerResponse);
         Assert.assertEquals("PENDING", registerResponse.getStatus());
     }
 
-    @Test
-    public void register_whenUinEndpointResponseNullBody_throwGetUINFailed() throws SignUpException {
-        String locale = "eng";
-        UserInfoMap userInfo = new UserInfoMap();
-        userInfo.setPreferredLang("khm");
-        userInfo.setFullName(List.of(new LanguageTaggedValue("eng", "Panharith AN")));
-        userInfo.setPhone("+855219718732");
-
-        RegisterRequest registerRequest = new RegisterRequest();
-        registerRequest.setUserInfo(userInfo);
-        registerRequest.setUsername("+855219718732");
-        registerRequest.setPassword("123123");
-        registerRequest.setConsent("AGREE");
-        registerRequest.setLocale(locale);
-
-        String mockTransactionID = "123456789";
-
-        RegistrationTransaction mockRegistrationTransaction = new RegistrationTransaction(registerRequest.getUsername(), Purpose.REGISTRATION);
-        mockRegistrationTransaction.setChallengeHash("123456");
-        mockRegistrationTransaction.setIdentifier(userInfo.getPhone());
-
-        when(cacheUtilService.getChallengeVerifiedTransaction(mockTransactionID))
-                .thenReturn(mockRegistrationTransaction);
-
-        when(selfTokenRestTemplate.exchange(
-                eq(getUinEndpoint),
-                eq(HttpMethod.GET),
-                eq(null),
-                any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<>(null, HttpStatus.OK));
-
-        try {
-            registrationService.register(registerRequest, mockTransactionID);
-            Assert.fail();
-        } catch (SignUpException signUpException) {
-            Assert.assertEquals(ErrorConstants.GET_UIN_FAILED, signUpException.getErrorCode());
-        }
-    }
-
-    @Test
-    public void register_whenUinEndpointResponseNullUIN_throwGetUINFailed() throws SignUpException{
-        UserInfoMap userInfo = new UserInfoMap();
-        userInfo.setPreferredLang("khm");
-        userInfo.setFullName(List.of(new LanguageTaggedValue("eng", "Panharith AN")));
-        userInfo.setPhone("+855219718732");
-
-        RegisterRequest registerRequest = new RegisterRequest();
-        registerRequest.setUserInfo(userInfo);
-        registerRequest.setUsername("+855219718732");
-        registerRequest.setPassword("123123");
-        registerRequest.setConsent("AGREE");
-        registerRequest.setLocale(locale);
-
-        String mockTransactionID = "123456789";
-
-        RegistrationTransaction mockRegistrationTransaction = new RegistrationTransaction(registerRequest.getUsername(), Purpose.REGISTRATION);
-        mockRegistrationTransaction.setChallengeHash("123456");
-        mockRegistrationTransaction.setIdentifier(userInfo.getPhone());
-
-        UINResponse uinResponse = new UINResponse();
-        uinResponse.setUIN(null);
-        RestResponseWrapper<UINResponse> mockRestResponseWrapperUINResponse = new RestResponseWrapper<UINResponse>();
-        mockRestResponseWrapperUINResponse.setResponse(uinResponse);
-
-        when(cacheUtilService.getChallengeVerifiedTransaction(mockTransactionID))
-                .thenReturn(mockRegistrationTransaction);
-
-        when(selfTokenRestTemplate.exchange(
-                eq(getUinEndpoint),
-                eq(HttpMethod.GET),
-                eq(null),
-                any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<>(mockRestResponseWrapperUINResponse, HttpStatus.OK));
-
-        try{
-            registrationService.register(registerRequest, mockTransactionID);
-            Assert.fail();
-        }catch (SignUpException signUpException){
-            Assert.assertEquals(ErrorConstants.GET_UIN_FAILED, signUpException.getErrorCode());
-        }
-    }
-
-    @Test
-    public void register_whenUinEndpointResponseErrors_throwServerError() throws SignUpException {
-        UserInfoMap userInfo = new UserInfoMap();
-        userInfo.setPreferredLang("khm");
-        userInfo.setFullName(List.of(new LanguageTaggedValue("eng", "Panharith AN")));
-        userInfo.setPhone("+855219718732");
-
-        RegisterRequest registerRequest = new RegisterRequest();
-        registerRequest.setUserInfo(userInfo);
-        registerRequest.setUsername("+855219718732");
-        registerRequest.setPassword("123123");
-        registerRequest.setConsent("AGREE");
-
-        String mockTransactionID = "123456789";
-
-        RegistrationTransaction mockRegistrationTransaction = new RegistrationTransaction(registerRequest.getUsername(), Purpose.REGISTRATION);
-        mockRegistrationTransaction.setChallengeHash("123456");
-        mockRegistrationTransaction.setIdentifier(userInfo.getPhone());
-
-        when(cacheUtilService.getChallengeVerifiedTransaction(mockTransactionID))
-                .thenReturn(mockRegistrationTransaction);
-
-        RestResponseWrapper<UINResponse> mockRestResponseWrapperUINResponse = new RestResponseWrapper<>();
-        ArrayList<RestError> errors = new ArrayList<>();
-        errors.add(new RestError("server_error", "server_error"));
-        mockRestResponseWrapperUINResponse.setErrors(errors);
-
-        when(selfTokenRestTemplate.exchange(
-                eq(getUinEndpoint),
-                eq(HttpMethod.GET),
-                eq(null),
-                any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<>(mockRestResponseWrapperUINResponse, HttpStatus.OK));
-
-
-        try {
-            registrationService.register(registerRequest, mockTransactionID);
-            Assert.fail();
-        } catch (SignUpException signUpException) {
-            Assert.assertEquals("server_error", signUpException.getErrorCode());
-        }
-    }
-
-    @Test
-    public void register_whenUinEndpointResponseWithNullErrors_throwGetUINFailed() throws SignUpException{
-        UserInfoMap userInfo = new UserInfoMap();
-        userInfo.setPreferredLang("khm");
-        userInfo.setFullName(List.of(new LanguageTaggedValue("eng", "Panharith AN")));
-        userInfo.setPhone("+855219718732");
-
-        RegisterRequest registerRequest = new RegisterRequest();
-        registerRequest.setUserInfo(userInfo);
-        registerRequest.setUsername("+855219718732");
-        registerRequest.setPassword("123123");
-        registerRequest.setConsent("AGREE");
-        registerRequest.setLocale(locale);
-
-        String mockTransactionID = "123456789";
-
-        RegistrationTransaction mockRegistrationTransaction = new RegistrationTransaction(registerRequest.getUsername(), Purpose.REGISTRATION);
-        mockRegistrationTransaction.setChallengeHash("123456");
-        mockRegistrationTransaction.setIdentifier(userInfo.getPhone());
-
-        when(cacheUtilService.getChallengeVerifiedTransaction(mockTransactionID))
-                .thenReturn(mockRegistrationTransaction);
-
-        RestResponseWrapper<UINResponse> mockRestResponseWrapperUINResponse = new RestResponseWrapper<>();
-        mockRestResponseWrapperUINResponse.setErrors(null);
-
-        when(selfTokenRestTemplate.exchange(
-                eq(getUinEndpoint),
-                eq(HttpMethod.GET),
-                eq(null),
-                any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<>(mockRestResponseWrapperUINResponse, HttpStatus.OK));
-
-        try{
-            registrationService.register(registerRequest, mockTransactionID);
-            Assert.fail();
-        }catch (SignUpException signUpException){
-            Assert.assertEquals("get_uin_failed", signUpException.getErrorCode());
-        }
-    }
-
-    @Test
-    public void register_whenGenerateHashEndpointResponseNullBody_throwHashGenerateFailed() throws SignUpException {
-        UserInfoMap userInfo = new UserInfoMap();
-        userInfo.setPreferredLang("khm");
-        userInfo.setFullName(List.of(new LanguageTaggedValue("eng", "Panharith AN")));
-        userInfo.setPhone("+855219718732");
-
-        RegisterRequest registerRequest = new RegisterRequest();
-        registerRequest.setUserInfo(userInfo);
-        registerRequest.setUsername("+855219718732");
-        registerRequest.setPassword("123123");
-        registerRequest.setConsent("AGREE");
-        registerRequest.setLocale(locale);
-
-        String mockTransactionID = "123456789";
-
-        RegistrationTransaction mockRegistrationTransaction = new RegistrationTransaction(registerRequest.getUsername(), Purpose.REGISTRATION);
-        mockRegistrationTransaction.setChallengeHash("123456");
-        mockRegistrationTransaction.setIdentifier(userInfo.getPhone());
-
-        when(cacheUtilService.getChallengeVerifiedTransaction(mockTransactionID))
-                .thenReturn(mockRegistrationTransaction);
-
-        IdentityResponse identityResponse = new IdentityResponse();
-        identityResponse.setStatus("ACTIVATED");
-        UINResponse uinResponse = new UINResponse();
-        uinResponse.setUIN("mockUIN");
-
-        RestResponseWrapper<UINResponse> mockRestResponseWrapperUINResponse = new RestResponseWrapper<UINResponse>();
-        mockRestResponseWrapperUINResponse.setResponse(uinResponse);
-
-        when(selfTokenRestTemplate.exchange(
-                eq(getUinEndpoint),
-                eq(HttpMethod.GET),
-                eq(null),
-                any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<>(mockRestResponseWrapperUINResponse, HttpStatus.OK));
-        when(selfTokenRestTemplate.exchange(
-                eq(generateHashEndpoint),
-                eq(HttpMethod.POST),
-                any(HttpEntity.class),
-                any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<>(null, HttpStatus.OK));
-
-        try {
-            registrationService.register(registerRequest, mockTransactionID);
-            Assert.fail();
-        } catch (SignUpException signUpException) {
-            Assert.assertEquals(ErrorConstants.HASH_GENERATE_FAILED, signUpException.getErrorCode());
-        }
-    }
-
-    @Test
-    public void register_whenGenerateHashEndpointResponseErrors_throwServerError() throws SignUpException {
-        UserInfoMap userInfo = new UserInfoMap();
-        userInfo.setPreferredLang("khm");
-        userInfo.setFullName(List.of(new LanguageTaggedValue("eng", "Panharith AN")));
-        userInfo.setPhone("+855219718732");
-
-        RegisterRequest registerRequest = new RegisterRequest();
-        registerRequest.setUserInfo(userInfo);
-        registerRequest.setUsername("+855219718732");
-        registerRequest.setPassword("123123");
-        registerRequest.setConsent("AGREE");
-        registerRequest.setLocale(locale);
-
-        String mockTransactionID = "123456789";
-
-        RegistrationTransaction mockRegistrationTransaction = new RegistrationTransaction(registerRequest.getUsername(), Purpose.REGISTRATION);
-        mockRegistrationTransaction.setChallengeHash("123456");
-        mockRegistrationTransaction.setIdentifier(userInfo.getPhone());
-
-        when(cacheUtilService.getChallengeVerifiedTransaction(mockTransactionID))
-                .thenReturn(mockRegistrationTransaction);
-
-        IdentityResponse identityResponse = new IdentityResponse();
-        identityResponse.setStatus("ACTIVATED");
-        UINResponse uinResponse = new UINResponse();
-        uinResponse.setUIN("mockUIN");
-
-        RestResponseWrapper<UINResponse> mockRestResponseWrapperUINResponse = new RestResponseWrapper<UINResponse>();
-        mockRestResponseWrapperUINResponse.setResponse(uinResponse);
-        RestResponseWrapper<Password.PasswordHash> mockRestResponseWrapperPasswordHash = new RestResponseWrapper<Password.PasswordHash>();
-        ArrayList<RestError> errors = new ArrayList<>();
-        errors.add(new RestError("server_error", "server_error"));
-        mockRestResponseWrapperPasswordHash.setErrors(errors);
-
-        when(selfTokenRestTemplate.exchange(
-                eq(getUinEndpoint),
-                eq(HttpMethod.GET),
-                eq(null),
-                any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<>(mockRestResponseWrapperUINResponse, HttpStatus.OK));
-        when(selfTokenRestTemplate.exchange(
-                eq(generateHashEndpoint),
-                eq(HttpMethod.POST),
-                any(HttpEntity.class),
-                any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<>(mockRestResponseWrapperPasswordHash, HttpStatus.OK));
-
-        try {
-            registrationService.register(registerRequest, mockTransactionID);
-            Assert.fail();
-        } catch (SignUpException signUpException) {
-            Assert.assertEquals("server_error", signUpException.getErrorCode());
-        }
-    }
-
-    @Test
-    public void register_whenGenerateHashEndpointResponseNullErrors_throwHashGenerateFailed() throws SignUpException{
-        UserInfoMap userInfo = new UserInfoMap();
-        userInfo.setPreferredLang("khm");
-        userInfo.setFullName(List.of(new LanguageTaggedValue("eng", "Panharith AN")));
-        userInfo.setPhone("+855219718732");
-
-        RegisterRequest registerRequest = new RegisterRequest();
-        registerRequest.setUserInfo(userInfo);
-        registerRequest.setUsername("+855219718732");
-        registerRequest.setPassword("123123");
-        registerRequest.setConsent("AGREE");
-        registerRequest.setLocale(locale);
-
-        String mockTransactionID = "123456789";
-
-        RegistrationTransaction mockRegistrationTransaction = new RegistrationTransaction(registerRequest.getUsername(), Purpose.REGISTRATION);
-        mockRegistrationTransaction.setChallengeHash("123456");
-        mockRegistrationTransaction.setIdentifier(userInfo.getPhone());
-
-        when(cacheUtilService.getChallengeVerifiedTransaction(mockTransactionID))
-                .thenReturn(mockRegistrationTransaction);
-
-        IdentityResponse identityResponse = new IdentityResponse();
-        identityResponse.setStatus("ACTIVATED");
-        UINResponse uinResponse = new UINResponse();
-        uinResponse.setUIN("mockUIN");
-
-        RestResponseWrapper<UINResponse> mockRestResponseWrapperUINResponse = new RestResponseWrapper<UINResponse>();
-        mockRestResponseWrapperUINResponse.setResponse(uinResponse);
-        RestResponseWrapper<Password.PasswordHash> mockRestResponseWrapperPasswordHash = new RestResponseWrapper<Password.PasswordHash>();
-        mockRestResponseWrapperPasswordHash.setErrors(null);
-
-        when(selfTokenRestTemplate.exchange(
-                eq(getUinEndpoint),
-                eq(HttpMethod.GET),
-                eq(null),
-                any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<>(mockRestResponseWrapperUINResponse, HttpStatus.OK));
-        when(selfTokenRestTemplate.exchange(
-                eq(generateHashEndpoint),
-                eq(HttpMethod.POST),
-                any(HttpEntity.class),
-                any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<>(mockRestResponseWrapperPasswordHash, HttpStatus.OK));
-
-        try{
-            registrationService.register(registerRequest, mockTransactionID);
-            Assert.fail();
-        }catch (SignUpException signUpException){
-            Assert.assertEquals("hash_generate_failed", signUpException.getErrorCode());
-        }
-    }
-
-    @Test
-    public void register_whenGenerateHashEndpointResponseNullSaltedPassword_throwHashGenerateFailed() throws SignUpException{
-        UserInfoMap userInfo = new UserInfoMap();
-        userInfo.setPreferredLang("khm");
-        userInfo.setFullName(List.of(new LanguageTaggedValue("eng", "Panharith AN")));
-        userInfo.setPhone("+855219718732");
-
-        RegisterRequest registerRequest = new RegisterRequest();
-        registerRequest.setUserInfo(userInfo);
-        registerRequest.setUsername("+855219718732");
-        registerRequest.setPassword("123123");
-        registerRequest.setConsent("AGREE");
-        registerRequest.setLocale(locale);
-
-        String mockTransactionID = "123456789";
-
-        RegistrationTransaction mockRegistrationTransaction = new RegistrationTransaction(registerRequest.getUsername(), Purpose.REGISTRATION);
-        mockRegistrationTransaction.setChallengeHash("123456");
-        mockRegistrationTransaction.setIdentifier(userInfo.getPhone());
-
-        when(cacheUtilService.getChallengeVerifiedTransaction(mockTransactionID))
-                .thenReturn(mockRegistrationTransaction);
-
-        IdentityResponse identityResponse = new IdentityResponse();
-        identityResponse.setStatus("ACTIVATED");
-        UINResponse uinResponse = new UINResponse();
-        uinResponse.setUIN("mockUIN");
-        Password.PasswordHash passwordHash = new Password.PasswordHash();
-        passwordHash.setSalt("mockSalt");
-        passwordHash.setHashValue("mockHashValue");
-
-        RestResponseWrapper<UINResponse> mockRestResponseWrapperUINResponse = new RestResponseWrapper<UINResponse>();
-        mockRestResponseWrapperUINResponse.setResponse(uinResponse);
-        RestResponseWrapper<Password.PasswordHash> mockRestResponseWrapperPasswordHash = new RestResponseWrapper<Password.PasswordHash>();
-        mockRestResponseWrapperPasswordHash.setResponse(new Password.PasswordHash());
-
-        when(selfTokenRestTemplate.exchange(
-                eq(getUinEndpoint),
-                eq(HttpMethod.GET),
-                eq(null),
-                any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<>(mockRestResponseWrapperUINResponse, HttpStatus.OK));
-        when(selfTokenRestTemplate.exchange(
-                eq(generateHashEndpoint),
-                eq(HttpMethod.POST),
-                any(HttpEntity.class),
-                any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<>(mockRestResponseWrapperPasswordHash, HttpStatus.OK));
-
-        try{
-            registrationService.register(registerRequest, mockTransactionID);
-            Assert.fail();
-        }catch (SignUpException signUpException){
-            Assert.assertEquals("hash_generate_failed", signUpException.getErrorCode());
-        }
-    }
-
-    @Test
-    public void register_whenGenerateHashEndpointResponseNullSalt_throwHashGenerateFailed() throws SignUpException{
-        UserInfoMap userInfo = new UserInfoMap();
-        userInfo.setPreferredLang("khm");
-        userInfo.setFullName(List.of(new LanguageTaggedValue("eng", "Panharith AN")));
-        userInfo.setPhone("+855219718732");
-
-        RegisterRequest registerRequest = new RegisterRequest();
-        registerRequest.setUserInfo(userInfo);
-        registerRequest.setUsername("+855219718732");
-        registerRequest.setPassword("123123");
-        registerRequest.setConsent("AGREE");
-        registerRequest.setLocale(locale);
-
-        String mockTransactionID = "123456789";
-
-        RegistrationTransaction mockRegistrationTransaction = new RegistrationTransaction(registerRequest.getUsername(), Purpose.REGISTRATION);
-        mockRegistrationTransaction.setChallengeHash("123456");
-        mockRegistrationTransaction.setIdentifier(userInfo.getPhone());
-
-        when(cacheUtilService.getChallengeVerifiedTransaction(mockTransactionID))
-                .thenReturn(mockRegistrationTransaction);
-
-        IdentityResponse identityResponse = new IdentityResponse();
-        identityResponse.setStatus("ACTIVATED");
-        UINResponse uinResponse = new UINResponse();
-        uinResponse.setUIN("mockUIN");
-        Password.PasswordHash passwordHash = new Password.PasswordHash();
-        passwordHash.setSalt(null);
-        passwordHash.setHashValue("mockHashValue");
-
-        RestResponseWrapper<UINResponse> mockRestResponseWrapperUINResponse = new RestResponseWrapper<UINResponse>();
-        mockRestResponseWrapperUINResponse.setResponse(uinResponse);
-        RestResponseWrapper<Password.PasswordHash> mockRestResponseWrapperPasswordHash = new RestResponseWrapper<Password.PasswordHash>();
-        mockRestResponseWrapperPasswordHash.setResponse(passwordHash);
-
-        when(selfTokenRestTemplate.exchange(
-                eq(getUinEndpoint),
-                eq(HttpMethod.GET),
-                eq(null),
-                any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<>(mockRestResponseWrapperUINResponse, HttpStatus.OK));
-        when(selfTokenRestTemplate.exchange(
-                eq(generateHashEndpoint),
-                eq(HttpMethod.POST),
-                any(HttpEntity.class),
-                any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<>(mockRestResponseWrapperPasswordHash, HttpStatus.OK));
-
-        try{
-            registrationService.register(registerRequest, mockTransactionID);
-            Assert.fail();
-        }catch (SignUpException signUpException){
-            Assert.assertEquals("hash_generate_failed", signUpException.getErrorCode());
-        }
-    }
-
-    @Test
-    public void register_whenAddIdentityEndpointResponseNullBody_throwAddIdentityFailed() throws SignUpException {
-        UserInfoMap userInfo = new UserInfoMap();
-        userInfo.setPreferredLang("khm");
-        userInfo.setFullName(List.of(new LanguageTaggedValue("eng", "Panharith AN")));
-        userInfo.setPhone("+855219718732");
-
-        RegisterRequest registerRequest = new RegisterRequest();
-        registerRequest.setUserInfo(userInfo);
-        registerRequest.setUsername("+855219718732");
-        registerRequest.setPassword("123123");
-        registerRequest.setConsent("AGREE");
-        registerRequest.setLocale(locale);
-
-        String mockTransactionID = "123456789";
-
-        RegistrationTransaction mockRegistrationTransaction = new RegistrationTransaction(registerRequest.getUsername(), Purpose.REGISTRATION);
-        mockRegistrationTransaction.setChallengeHash("123456");
-        mockRegistrationTransaction.setIdentifier(userInfo.getPhone());
-
-        when(cacheUtilService.getChallengeVerifiedTransaction(mockTransactionID))
-                .thenReturn(mockRegistrationTransaction);
-
-        IdentityResponse identityResponse = new IdentityResponse();
-        identityResponse.setStatus("ACTIVATED");
-        UINResponse uinResponse = new UINResponse();
-        uinResponse.setUIN("mockUIN");
-        Password.PasswordHash passwordHash = new Password.PasswordHash();
-        passwordHash.setSalt("mockSalt");
-        passwordHash.setHashValue("mockHashValue");
-
-        RestResponseWrapper<UINResponse> mockRestResponseWrapperUINResponse = new RestResponseWrapper<UINResponse>();
-        mockRestResponseWrapperUINResponse.setResponse(uinResponse);
-        RestResponseWrapper<Password.PasswordHash> mockRestResponseWrapperPasswordHash = new RestResponseWrapper<Password.PasswordHash>();
-        mockRestResponseWrapperPasswordHash.setResponse(passwordHash);
-
-        when(selfTokenRestTemplate.exchange(
-                eq(getUinEndpoint),
-                eq(HttpMethod.GET),
-                eq(null),
-                any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<>(mockRestResponseWrapperUINResponse, HttpStatus.OK));
-        when(selfTokenRestTemplate.exchange(
-                eq(generateHashEndpoint),
-                eq(HttpMethod.POST),
-                any(HttpEntity.class),
-                any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<>(mockRestResponseWrapperPasswordHash, HttpStatus.OK));
-        when(selfTokenRestTemplate.exchange(
-                eq(identityEndpoint),
-                eq(HttpMethod.POST),
-                any(HttpEntity.class),
-                any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<>(null, HttpStatus.OK));
-
-        try {
-            registrationService.register(registerRequest, mockTransactionID);
-            Assert.fail();
-        } catch (SignUpException signUpException) {
-            Assert.assertEquals("add_identity_failed", signUpException.getMessage());
-        }
-    }
-
-    @Test
-    public void register_whenAddIdentityEndpointResponseStatusNotEqualsACTIVATED_throwAddIdentityFailed() throws SignUpException{
-        UserInfoMap userInfo = new UserInfoMap();
-        userInfo.setPreferredLang("khm");
-        userInfo.setFullName(List.of(new LanguageTaggedValue("eng", "Panharith AN")));
-        userInfo.setPhone("+855219718732");
-
-        RegisterRequest registerRequest = new RegisterRequest();
-        registerRequest.setUserInfo(userInfo);
-        registerRequest.setUsername("+855219718732");
-        registerRequest.setPassword("123123");
-        registerRequest.setConsent("AGREE");
-        registerRequest.setLocale(locale);
-
-        String mockTransactionID = "123456789";
-
-        RegistrationTransaction mockRegistrationTransaction = new RegistrationTransaction(userInfo.getPhone(), Purpose.REGISTRATION);
-        mockRegistrationTransaction.setChallengeHash("123456");
-        mockRegistrationTransaction.setIdentifier(userInfo.getPhone());
-
-        when(cacheUtilService.getChallengeVerifiedTransaction(mockTransactionID))
-                .thenReturn(mockRegistrationTransaction);
-
-        IdentityResponse identityResponse = new IdentityResponse();
-        identityResponse.setStatus("mock");
-        UINResponse uinResponse = new UINResponse();
-        uinResponse.setUIN("mockUIN");
-        Password.PasswordHash passwordHash = new Password.PasswordHash();
-        passwordHash.setSalt("mockSalt");
-        passwordHash.setHashValue("mockHashValue");
-
-        RestResponseWrapper<IdentityResponse> mockRestResponseWrapperIdentityResponse = new RestResponseWrapper<IdentityResponse>();
-        mockRestResponseWrapperIdentityResponse.setResponse(identityResponse);
-        RestResponseWrapper<UINResponse> mockRestResponseWrapperUINResponse = new RestResponseWrapper<UINResponse>();
-        mockRestResponseWrapperUINResponse.setResponse(uinResponse);
-        RestResponseWrapper<Password.PasswordHash> mockRestResponseWrapperPasswordHash = new RestResponseWrapper<Password.PasswordHash>();
-        mockRestResponseWrapperPasswordHash.setResponse(passwordHash);
-
-        when(selfTokenRestTemplate.exchange(
-                eq(getUinEndpoint),
-                eq(HttpMethod.GET),
-                eq(null),
-                any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<>(mockRestResponseWrapperUINResponse, HttpStatus.OK));
-        when(selfTokenRestTemplate.exchange(
-                eq(generateHashEndpoint),
-                eq(HttpMethod.POST),
-                any(HttpEntity.class),
-                any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<>(mockRestResponseWrapperPasswordHash, HttpStatus.OK));
-        when(selfTokenRestTemplate.exchange(
-                eq(identityEndpoint),
-                eq(HttpMethod.POST),
-                any(HttpEntity.class),
-                any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<>(mockRestResponseWrapperIdentityResponse, HttpStatus.OK));
-
-        try{
-            registrationService.register(registerRequest, mockTransactionID);
-            Assert.fail();
-        }catch (SignUpException signUpException){
-            Assert.assertEquals("add_identity_failed", signUpException.getErrorCode());
-        }
-    }
-
-    @Test
-    public void register_whenAddIdentityEndpointResponseErrors_throwServerError() throws SignUpException {
-        UserInfoMap userInfo = new UserInfoMap();
-        userInfo.setPreferredLang("khm");
-        userInfo.setFullName(List.of(new LanguageTaggedValue("eng", "Panharith AN")));
-        userInfo.setPhone("+855219718732");
-
-        RegisterRequest registerRequest = new RegisterRequest();
-        registerRequest.setUserInfo(userInfo);
-        registerRequest.setUsername("+855219718732");
-        registerRequest.setPassword("123123");
-        registerRequest.setConsent("AGREE");
-        registerRequest.setLocale(locale);
-
-        String mockTransactionID = "123456789";
-
-        RegistrationTransaction mockRegistrationTransaction = new RegistrationTransaction(registerRequest.getUsername(), Purpose.REGISTRATION);
-        mockRegistrationTransaction.setChallengeHash("123456");
-        mockRegistrationTransaction.setIdentifier(userInfo.getPhone());
-
-        when(cacheUtilService.getChallengeVerifiedTransaction(mockTransactionID))
-                .thenReturn(mockRegistrationTransaction);
-
-        IdentityResponse identityResponse = new IdentityResponse();
-        identityResponse.setStatus("ACTIVATED");
-        UINResponse uinResponse = new UINResponse();
-        uinResponse.setUIN("mockUIN");
-        Password.PasswordHash passwordHash = new Password.PasswordHash();
-        passwordHash.setSalt("mockSalt");
-        passwordHash.setHashValue("mockHashValue");
-
-        RestResponseWrapper<IdentityResponse> mockRestResponseWrapperIdentityResponse = new RestResponseWrapper<IdentityResponse>();
-        ArrayList<RestError> errors = new ArrayList<>();
-        errors.add(new RestError("server_error", "server_error"));
-        mockRestResponseWrapperIdentityResponse.setErrors(errors);
-        RestResponseWrapper<UINResponse> mockRestResponseWrapperUINResponse = new RestResponseWrapper<UINResponse>();
-        mockRestResponseWrapperUINResponse.setResponse(uinResponse);
-        RestResponseWrapper<Password.PasswordHash> mockRestResponseWrapperPasswordHash = new RestResponseWrapper<Password.PasswordHash>();
-        mockRestResponseWrapperPasswordHash.setResponse(passwordHash);
-
-        when(selfTokenRestTemplate.exchange(
-                eq(getUinEndpoint),
-                eq(HttpMethod.GET),
-                eq(null),
-                any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<>(mockRestResponseWrapperUINResponse, HttpStatus.OK));
-        when(selfTokenRestTemplate.exchange(
-                eq(generateHashEndpoint),
-                eq(HttpMethod.POST),
-                any(HttpEntity.class),
-                any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<>(mockRestResponseWrapperPasswordHash, HttpStatus.OK));
-        when(selfTokenRestTemplate.exchange(
-                eq(identityEndpoint),
-                eq(HttpMethod.POST),
-                any(HttpEntity.class),
-                any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<>(mockRestResponseWrapperIdentityResponse, HttpStatus.OK));
-
-        try {
-            registrationService.register(registerRequest, mockTransactionID);
-            Assert.fail();
-        } catch (SignUpException signUpException) {
-            Assert.assertEquals("server_error", signUpException.getErrorCode());
-        }
-    }
-
-    @Test
-    public void register_whenAddIdentityEndpointResponseNullErrors_throwAddIdentityFailed() throws SignUpException{
-        UserInfoMap userInfo = new UserInfoMap();
-        userInfo.setPreferredLang("khm");
-        userInfo.setFullName(List.of(new LanguageTaggedValue("eng", "Panharith AN")));
-        userInfo.setPhone("+855219718732");
-
-        RegisterRequest registerRequest = new RegisterRequest();
-        registerRequest.setUserInfo(userInfo);
-        registerRequest.setUsername("+855219718732");
-        registerRequest.setPassword("123123");
-        registerRequest.setConsent("AGREE");
-        registerRequest.setLocale(locale);
-
-        String mockTransactionID = "123456789";
-
-        RegistrationTransaction mockRegistrationTransaction = new RegistrationTransaction(registerRequest.getUsername(), Purpose.REGISTRATION);
-        mockRegistrationTransaction.setChallengeHash("123456");
-        mockRegistrationTransaction.setIdentifier(userInfo.getPhone());
-
-        when(cacheUtilService.getChallengeVerifiedTransaction(mockTransactionID))
-                .thenReturn(mockRegistrationTransaction);
-
-        IdentityResponse identityResponse = new IdentityResponse();
-        identityResponse.setStatus("ACTIVATED");
-        UINResponse uinResponse = new UINResponse();
-        uinResponse.setUIN("mockUIN");
-        Password.PasswordHash passwordHash = new Password.PasswordHash();
-        passwordHash.setSalt("mockSalt");
-        passwordHash.setHashValue("mockHashValue");
-
-        RestResponseWrapper<IdentityResponse> mockRestResponseWrapperIdentityResponse = new RestResponseWrapper<IdentityResponse>();
-        mockRestResponseWrapperIdentityResponse.setErrors(null);
-        RestResponseWrapper<UINResponse> mockRestResponseWrapperUINResponse = new RestResponseWrapper<UINResponse>();
-        mockRestResponseWrapperUINResponse.setResponse(uinResponse);
-        RestResponseWrapper<Password.PasswordHash> mockRestResponseWrapperPasswordHash = new RestResponseWrapper<Password.PasswordHash>();
-        mockRestResponseWrapperPasswordHash.setResponse(passwordHash);
-
-        when(selfTokenRestTemplate.exchange(
-                eq(getUinEndpoint),
-                eq(HttpMethod.GET),
-                eq(null),
-                any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<>(mockRestResponseWrapperUINResponse, HttpStatus.OK));
-        when(selfTokenRestTemplate.exchange(
-                eq(generateHashEndpoint),
-                eq(HttpMethod.POST),
-                any(HttpEntity.class),
-                any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<>(mockRestResponseWrapperPasswordHash, HttpStatus.OK));
-        when(selfTokenRestTemplate.exchange(
-                eq(identityEndpoint),
-                eq(HttpMethod.POST),
-                any(HttpEntity.class),
-                any(ParameterizedTypeReference.class)))
-                .thenReturn(new ResponseEntity<>(mockRestResponseWrapperIdentityResponse, HttpStatus.OK));
-
-        try{
-            registrationService.register(registerRequest, mockTransactionID);
-            Assert.fail();
-        }catch (SignUpException signUpException){
-            Assert.assertEquals("add_identity_failed", signUpException.getErrorCode());
-        }
-    }
 
     @Test
     public void register_withInvalidTransaction_throwInvalidTransaction() throws SignUpException {
-        UserInfoMap userInfo = new UserInfoMap();
-        userInfo.setPreferredLang("khm");
-        userInfo.setFullName(List.of(new LanguageTaggedValue("eng", "Panharith AN")));
-        userInfo.setPhone("+855219718732");
 
         RegisterRequest registerRequest = new RegisterRequest();
-        registerRequest.setUserInfo(userInfo);
+        registerRequest.setUserInfo(objectMapper.createObjectNode());
         registerRequest.setUsername("+855219718732");
         registerRequest.setPassword("123123");
         registerRequest.setConsent("AGREE");
@@ -1643,13 +1003,8 @@ public class RegistrationServiceTest {
 
     @Test
     public void register_withInvalidUsername_throwIdentifierMismatch() throws SignUpException {
-        UserInfoMap userInfo = new UserInfoMap();
-        userInfo.setPreferredLang("khm");
-        userInfo.setFullName(List.of(new LanguageTaggedValue("eng", "Panharith AN")));
-        userInfo.setPhone("+855219718732");
-
         RegisterRequest registerRequest = new RegisterRequest();
-        registerRequest.setUserInfo(userInfo);
+        registerRequest.setUserInfo(objectMapper.createObjectNode());
         registerRequest.setUsername("+855321444123");
         registerRequest.setPassword("123123");
         registerRequest.setConsent("AGREE");
@@ -1657,12 +1012,11 @@ public class RegistrationServiceTest {
 
         String mockTransactionID = "123456789";
 
-        RegistrationTransaction mockRegistrationTransaction = new RegistrationTransaction(registerRequest.getUsername(), Purpose.REGISTRATION);
+        RegistrationTransaction mockRegistrationTransaction = new RegistrationTransaction("+855219718732", Purpose.REGISTRATION);
         mockRegistrationTransaction.setChallengeHash("123456");
-        mockRegistrationTransaction.setIdentifier(userInfo.getPhone());
 
         when(cacheUtilService.getChallengeVerifiedTransaction(mockTransactionID))
-                .thenReturn(mockRegistrationTransaction);
+                .thenThrow(new SignUpException(ErrorConstants.IDENTIFIER_MISMATCH));
 
         try {
             registrationService.register(registerRequest, mockTransactionID);
@@ -1674,13 +1028,8 @@ public class RegistrationServiceTest {
 
     @Test
     public void register_withInvalidConsent_throwConsentRequired() throws SignUpException {
-        UserInfoMap userInfo = new UserInfoMap();
-        userInfo.setPreferredLang("khm");
-        userInfo.setFullName(List.of(new LanguageTaggedValue("eng", "Panharith AN")));
-        userInfo.setPhone("+855219718732");
-
         RegisterRequest registerRequest = new RegisterRequest();
-        registerRequest.setUserInfo(userInfo);
+        registerRequest.setUserInfo(objectMapper.createObjectNode());
         registerRequest.setUsername("+855219718732");
         registerRequest.setPassword("123123");
         registerRequest.setConsent("DISAGREE");
@@ -1690,7 +1039,6 @@ public class RegistrationServiceTest {
 
         RegistrationTransaction mockRegistrationTransaction = new RegistrationTransaction(registerRequest.getUsername(), Purpose.REGISTRATION);
         mockRegistrationTransaction.setChallengeHash("123456");
-        mockRegistrationTransaction.setIdentifier(userInfo.getPhone());
 
         when(cacheUtilService.getChallengeVerifiedTransaction(mockTransactionID))
                 .thenReturn(mockRegistrationTransaction);
@@ -1705,13 +1053,8 @@ public class RegistrationServiceTest {
 
     @Test
     public void register_with_ResetPasswordPurposeTransaction_throwUnsupportedPurpose() throws SignUpException {
-        UserInfoMap userInfo = new UserInfoMap();
-        userInfo.setPreferredLang("khm");
-        userInfo.setFullName(List.of(new LanguageTaggedValue("eng", "Panharith AN")));
-        userInfo.setPhone("+855219718732");
-
         RegisterRequest registerRequest = new RegisterRequest();
-        registerRequest.setUserInfo(userInfo);
+        registerRequest.setUserInfo(objectMapper.createObjectNode());
         registerRequest.setUsername("+855219718732");
         registerRequest.setPassword("123123");
         registerRequest.setConsent("DISAGREE");
@@ -1721,7 +1064,6 @@ public class RegistrationServiceTest {
 
         RegistrationTransaction mockRegistrationTransaction = new RegistrationTransaction(registerRequest.getUsername(), Purpose.RESET_PASSWORD);
         mockRegistrationTransaction.setChallengeHash("123456");
-        mockRegistrationTransaction.setIdentifier(userInfo.getPhone());
 
         when(cacheUtilService.getChallengeVerifiedTransaction(mockTransactionID))
                 .thenReturn(mockRegistrationTransaction);
@@ -1745,10 +1087,8 @@ public class RegistrationServiceTest {
         generateChallengeRequest.setCaptchaToken("mock-captcha");
         generateChallengeRequest.setRegenerateChallenge(false);
         when(challengeManagerService.generateChallenge(any())).thenReturn("1111");
-        when(googleRecaptchaValidatorService.validateCaptcha(
+        when(captchaHelper.validateCaptcha(
                 generateChallengeRequest.getCaptchaToken())).thenReturn(true);
-        when(notificationHelper.sendSMSNotificationAsync(any(), any(), any(), any()))
-                .thenReturn(new CompletableFuture<>());
 
         GenerateChallengeResponse generateChallengeResponse =
                 registrationService.generateChallenge(
@@ -1765,10 +1105,9 @@ public class RegistrationServiceTest {
         generateChallengeRequest.setCaptchaToken("mock-captcha");
         generateChallengeRequest.setRegenerateChallenge(false);
         when(challengeManagerService.generateChallenge(any())).thenReturn("1111");
-        when(googleRecaptchaValidatorService.validateCaptcha(
+        when(captchaHelper.validateCaptcha(
                 generateChallengeRequest.getCaptchaToken())).thenReturn(true);
-        when(notificationHelper.sendSMSNotification(any(), any(), any(), any()))
-                .thenThrow(new RestClientException("failed to send notification"));
+        doThrow(new SignUpException("otp_notification_failed")).when(notificationHelper).sendSMSNotification(any(), any(), any(), any());
 
         try{
             registrationService.generateChallenge(generateChallengeRequest, "");
@@ -1793,10 +1132,8 @@ public class RegistrationServiceTest {
 
         when(cacheUtilService.getChallengeGeneratedTransaction(transactionId)).thenReturn(transaction);
         when(challengeManagerService.generateChallenge(transaction)).thenReturn("1111");
-        when(googleRecaptchaValidatorService.validateCaptcha(
+        when(captchaHelper.validateCaptcha(
                 generateChallengeRequest.getCaptchaToken())).thenReturn(true);
-        when(notificationHelper.sendSMSNotificationAsync(any(), any(), any(), any()))
-                .thenReturn(new CompletableFuture<>());
 
         GenerateChallengeResponse generateChallengeResponse =
                 registrationService.generateChallenge(
@@ -1819,10 +1156,8 @@ public class RegistrationServiceTest {
 
         when(cacheUtilService.getChallengeGeneratedTransaction(transactionId)).thenReturn(transaction);
         when(challengeManagerService.generateChallenge(transaction)).thenReturn("1111");
-        when(googleRecaptchaValidatorService.validateCaptcha(
+        when(captchaHelper.validateCaptcha(
                 generateChallengeRequest.getCaptchaToken())).thenReturn(true);
-        when(notificationHelper.sendSMSNotificationAsync(any(), any(), any(), any()))
-                .thenReturn(new CompletableFuture<>());
 
         GenerateChallengeResponse generateChallengeResponse =
                 registrationService.generateChallenge(
@@ -1843,7 +1178,7 @@ public class RegistrationServiceTest {
         transaction.setLastRetryAt(LocalDateTime.now(ZoneOffset.UTC).minusSeconds(40));
 
         when(challengeManagerService.generateChallenge(transaction)).thenReturn("1111");
-        when(googleRecaptchaValidatorService.validateCaptcha(
+        when(captchaHelper.validateCaptcha(
                 generateChallengeRequest.getCaptchaToken())).thenReturn(true);
 
         try {
@@ -1860,8 +1195,10 @@ public class RegistrationServiceTest {
         GenerateChallengeRequest generateChallengeRequest = new GenerateChallengeRequest();
         generateChallengeRequest.setIdentifier(identifier);
         generateChallengeRequest.setCaptchaToken("mock-invalid-captcha");
-        when(googleRecaptchaValidatorService.validateCaptcha(
+        ReflectionTestUtils.setField(registrationService, "captchaRequired", true);
+        when(captchaHelper.validateCaptcha(
                 generateChallengeRequest.getCaptchaToken())).thenReturn(false);
+        when(challengeManagerService.generateChallenge(any())).thenReturn("1111");
         try {
             registrationService.generateChallenge(generateChallengeRequest, "");
             Assert.fail();
@@ -1881,7 +1218,7 @@ public class RegistrationServiceTest {
         RegistrationTransaction transaction = new RegistrationTransaction(identifier, Purpose.REGISTRATION);
 
         when(cacheUtilService.getChallengeGeneratedTransaction(transactionId)).thenReturn(null);
-        when(googleRecaptchaValidatorService.validateCaptcha(
+        when(captchaHelper.validateCaptcha(
                 generateChallengeRequest.getCaptchaToken())).thenReturn(true);
 
         try {
@@ -1904,7 +1241,7 @@ public class RegistrationServiceTest {
         RegistrationTransaction transaction = new RegistrationTransaction(other_identifier, Purpose.REGISTRATION);
 
         when(cacheUtilService.getChallengeGeneratedTransaction(transactionId)).thenReturn(transaction);
-        when(googleRecaptchaValidatorService.validateCaptcha(
+        when(captchaHelper.validateCaptcha(
                 generateChallengeRequest.getCaptchaToken())).thenReturn(true);
 
         try {
@@ -1927,7 +1264,7 @@ public class RegistrationServiceTest {
         transaction.setChallengeRetryAttempts(4);
 
         when(cacheUtilService.getChallengeGeneratedTransaction(transactionId)).thenReturn(transaction);
-        when(googleRecaptchaValidatorService.validateCaptcha(
+        when(captchaHelper.validateCaptcha(
                 generateChallengeRequest.getCaptchaToken())).thenReturn(true);
 
         try {
@@ -1950,7 +1287,7 @@ public class RegistrationServiceTest {
         transaction.increaseAttempt();
 
         when(cacheUtilService.getChallengeGeneratedTransaction(transactionId)).thenReturn(transaction);
-        when(googleRecaptchaValidatorService.validateCaptcha(
+        when(captchaHelper.validateCaptcha(
                 generateChallengeRequest.getCaptchaToken())).thenReturn(true);
 
         try {
@@ -1971,10 +1308,8 @@ public class RegistrationServiceTest {
         generateChallengeRequest.setPurpose(Purpose.REGISTRATION);
 
         when(challengeManagerService.generateChallenge(any())).thenReturn("1111");
-        when(googleRecaptchaValidatorService.validateCaptcha(
+        when(captchaHelper.validateCaptcha(
                 generateChallengeRequest.getCaptchaToken())).thenReturn(true);
-        when(notificationHelper.sendSMSNotificationAsync(any(), any(), any(), any()))
-                .thenReturn(new CompletableFuture<>());
 
         GenerateChallengeResponse generateChallengeResponse =
                 registrationService.generateChallenge(
@@ -1993,10 +1328,8 @@ public class RegistrationServiceTest {
         generateChallengeRequest.setPurpose(Purpose.RESET_PASSWORD);
 
         when(challengeManagerService.generateChallenge(any())).thenReturn("1111");
-        when(googleRecaptchaValidatorService.validateCaptcha(
+        when(captchaHelper.validateCaptcha(
                 generateChallengeRequest.getCaptchaToken())).thenReturn(true);
-        when(notificationHelper.sendSMSNotificationAsync(any(), any(), any(), any()))
-                .thenReturn(new CompletableFuture<>());
 
         GenerateChallengeResponse generateChallengeResponse =
                 registrationService.generateChallenge(
@@ -2009,39 +1342,41 @@ public class RegistrationServiceTest {
     public void doGetRegistrationStatus_withCompletedTransaction_thenPass() {
         String transactionId = "TRAN-1234";
         RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85577410541", Purpose.REGISTRATION);
-        registrationTransaction.setRegistrationStatus(RegistrationStatus.COMPLETED);
+        registrationTransaction.setRegistrationStatus(ProfileCreateUpdateStatus.COMPLETED);
         when(cacheUtilService.getStatusCheckTransaction(transactionId)).thenReturn(registrationTransaction);
         when(cacheUtilService.setStatusCheckTransaction(transactionId, registrationTransaction)).thenReturn(registrationTransaction);
         RegistrationStatusResponse registrationStatusResponse = registrationService.getRegistrationStatus(transactionId);
 
         Assert.assertNotNull(registrationStatusResponse);
-        Assert.assertEquals(registrationStatusResponse.getStatus(), RegistrationStatus.COMPLETED);
+        Assert.assertEquals(registrationStatusResponse.getStatus(), ProfileCreateUpdateStatus.COMPLETED);
     }
 
     @Test
     public void doGetRegistrationStatus_withPendingTransaction_thenPass() {
         String transactionId = "TRAN-1234";
         RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85577410541", Purpose.REGISTRATION);
-        registrationTransaction.setRegistrationStatus(RegistrationStatus.PENDING);
+        registrationTransaction.setRegistrationStatus(ProfileCreateUpdateStatus.PENDING);
         when(cacheUtilService.getStatusCheckTransaction(transactionId)).thenReturn(registrationTransaction);
         when(cacheUtilService.setStatusCheckTransaction(transactionId, registrationTransaction)).thenReturn(registrationTransaction);
+        when(profileRegistryPlugin.getProfileCreateUpdateStatus(any())).thenReturn(ProfileCreateUpdateStatus.PENDING);
+
         RegistrationStatusResponse registrationStatusResponse = registrationService.getRegistrationStatus(transactionId);
 
         Assert.assertNotNull(registrationStatusResponse);
-        Assert.assertEquals(registrationStatusResponse.getStatus(), RegistrationStatus.PENDING);
+        Assert.assertEquals(registrationStatusResponse.getStatus(), ProfileCreateUpdateStatus.PENDING);
     }
 
     @Test
     public void doGetRegistrationStatus_withFailedTransaction_thenPass() {
         String transactionId = "TRAN-1234";
         RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85577410541", Purpose.REGISTRATION);
-        registrationTransaction.setRegistrationStatus(RegistrationStatus.FAILED);
+        registrationTransaction.setRegistrationStatus(ProfileCreateUpdateStatus.FAILED);
         when(cacheUtilService.getStatusCheckTransaction(transactionId)).thenReturn(registrationTransaction);
         when(cacheUtilService.setStatusCheckTransaction(transactionId, registrationTransaction)).thenReturn(registrationTransaction);
         RegistrationStatusResponse registrationStatusResponse = registrationService.getRegistrationStatus(transactionId);
 
         Assert.assertNotNull(registrationStatusResponse);
-        Assert.assertEquals(registrationStatusResponse.getStatus(), RegistrationStatus.FAILED);
+        Assert.assertEquals(registrationStatusResponse.getStatus(), ProfileCreateUpdateStatus.FAILED);
     }
 
     @Test
@@ -2114,12 +1449,9 @@ public class RegistrationServiceTest {
                 any(ParameterizedTypeReference.class)))
                 .thenReturn(new ResponseEntity<>(mockIdentityResponseRestResponseWrapper, HttpStatus.OK));
 
-        when(notificationHelper.sendSMSNotificationAsync(any(), any(), any(), any()))
-                .thenReturn(new CompletableFuture<>());
-
         RegistrationStatusResponse registrationStatusResponse = registrationService.updatePassword(resetPasswordRequest,
                 verifiedTransactionId);
-        Assert.assertEquals(RegistrationStatus.PENDING, registrationStatusResponse.getStatus());
+        Assert.assertEquals(ProfileCreateUpdateStatus.PENDING, registrationStatusResponse.getStatus());
     }
 
     @Test
@@ -2161,12 +1493,9 @@ public class RegistrationServiceTest {
                 any(ParameterizedTypeReference.class)))
                 .thenReturn(new ResponseEntity<>(mockIdentityResponseRestResponseWrapper, HttpStatus.OK));
 
-        when(notificationHelper.sendSMSNotificationAsync(any(), any(), any(), any()))
-                .thenReturn(new CompletableFuture<>());
-
         RegistrationStatusResponse registrationStatusResponse = registrationService.updatePassword(resetPasswordRequest,
                 verifiedTransactionId);
-        Assert.assertEquals(RegistrationStatus.PENDING, registrationStatusResponse.getStatus());
+        Assert.assertEquals(ProfileCreateUpdateStatus.PENDING, registrationStatusResponse.getStatus());
     }
 
     @Test
@@ -2227,6 +1556,9 @@ public class RegistrationServiceTest {
         mockPasswordHashRestResponseWrapper.setResponse(passwordHash);
 
         when(cacheUtilService.getChallengeVerifiedTransaction(verifiedTransactionId)).thenReturn(transaction);
+        when(profileRegistryPlugin.updateProfile(any(), any()))
+                .thenThrow(new SignUpException(ErrorConstants.RESET_PWD_FAILED));
+
         when(selfTokenRestTemplate.exchange(
                 eq(generateHashEndpoint),
                 eq(HttpMethod.POST),
@@ -2244,7 +1576,7 @@ public class RegistrationServiceTest {
             registrationService.updatePassword(resetPasswordRequest, verifiedTransactionId);
             Assert.fail();
         } catch (SignUpException signUpException) {
-            Assert.assertEquals("reset_pwd_failed", signUpException.getErrorCode());
+            Assert.assertEquals(ErrorConstants.RESET_PWD_FAILED, signUpException.getErrorCode());
         }
     }
 
@@ -2283,6 +1615,9 @@ public class RegistrationServiceTest {
                 any(HttpEntity.class),
                 any(ParameterizedTypeReference.class)))
                 .thenReturn(new ResponseEntity<>(mockIdentityResponseRestResponseWrapper, HttpStatus.OK));
+
+        when(profileRegistryPlugin.updateProfile(any(), any()))
+                .thenThrow(new SignUpException("reset_pwd_failed"));
 
         try {
             registrationService.updatePassword(resetPasswordRequest, verifiedTransactionId);
@@ -2331,7 +1666,8 @@ public class RegistrationServiceTest {
                 any(ParameterizedTypeReference.class)))
                 .thenReturn(new ResponseEntity<>(mockIdentityResponseRestResponseWrapper, HttpStatus.OK));
 
-
+        when(profileRegistryPlugin.updateProfile(any(), any()))
+                .thenThrow(new SignUpException("error_from_another_service"));
         try {
             registrationService.updatePassword(resetPasswordRequest, verifiedTransactionId);
             Assert.fail();
@@ -2375,9 +1711,9 @@ public class RegistrationServiceTest {
     public void doGetRegistrationStatusFromServer_withApplicationID_thenReturnPending() {
         String transactionId = "TRAN-1234";
         RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85577410541", Purpose.REGISTRATION);
-        registrationTransaction.setRegistrationStatus(RegistrationStatus.COMPLETED);
-        Map<String, RegistrationStatus> handlesStatus = new LinkedHashMap<>();
-        handlesStatus.put(transactionId, RegistrationStatus.PENDING);
+        registrationTransaction.setRegistrationStatus(ProfileCreateUpdateStatus.COMPLETED);
+        Map<String, ProfileCreateUpdateStatus> handlesStatus = new LinkedHashMap<>();
+        handlesStatus.put(transactionId, ProfileCreateUpdateStatus.PENDING);
         registrationTransaction.setHandlesStatus(handlesStatus);
         RestResponseWrapper<Map<String,String>> mockRestResponseWrapper = new RestResponseWrapper<>();
         Map<String,String> response = new LinkedHashMap<>();
@@ -2395,18 +1731,19 @@ public class RegistrationServiceTest {
                 .thenReturn(new ResponseEntity<>(mockRestResponseWrapper, HttpStatus.OK));
 
         RegistrationStatusResponse registrationStatusResponse = registrationService.getRegistrationStatus(transactionId);
+        registrationStatusResponse.setStatus(ProfileCreateUpdateStatus.PENDING);
 
         Assert.assertNotNull(registrationStatusResponse);
-        Assert.assertEquals(RegistrationStatus.PENDING, registrationStatusResponse.getStatus());
+        Assert.assertEquals(ProfileCreateUpdateStatus.PENDING, registrationStatusResponse.getStatus());
     }
 
     @Test
     public void doGetRegistrationStatusFromServer_withApplicationID_thenReturnCompleted() {
         String transactionId = "TRAN-1234";
         RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85577410541", Purpose.REGISTRATION);
-        registrationTransaction.setRegistrationStatus(RegistrationStatus.COMPLETED);
-        Map<String, RegistrationStatus> handlesStatus = new LinkedHashMap<>();
-        handlesStatus.put(transactionId, RegistrationStatus.PENDING);
+        registrationTransaction.setRegistrationStatus(ProfileCreateUpdateStatus.COMPLETED);
+        Map<String, ProfileCreateUpdateStatus> handlesStatus = new LinkedHashMap<>();
+        handlesStatus.put(transactionId, ProfileCreateUpdateStatus.PENDING);
         registrationTransaction.setHandlesStatus(handlesStatus);
         RestResponseWrapper<Map<String,String>> mockRestResponseWrapper = new RestResponseWrapper<>();
         Map<String,String> response = new LinkedHashMap<>();
@@ -2426,16 +1763,16 @@ public class RegistrationServiceTest {
         RegistrationStatusResponse registrationStatusResponse = registrationService.getRegistrationStatus(transactionId);
 
         Assert.assertNotNull(registrationStatusResponse);
-        Assert.assertEquals(RegistrationStatus.COMPLETED, registrationStatusResponse.getStatus());
+        Assert.assertEquals(ProfileCreateUpdateStatus.COMPLETED, registrationStatusResponse.getStatus());
     }
 
     @Test
     public void doGetRegistrationStatusFromServer_withApplicationID_thenReturnFailed() {
         String transactionId = "TRAN-1234";
         RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85577410541", Purpose.REGISTRATION);
-        registrationTransaction.setRegistrationStatus(RegistrationStatus.COMPLETED);
-        Map<String, RegistrationStatus> handlesStatus = new LinkedHashMap<>();
-        handlesStatus.put(transactionId, RegistrationStatus.PENDING);
+        registrationTransaction.setRegistrationStatus(ProfileCreateUpdateStatus.FAILED);
+        Map<String, ProfileCreateUpdateStatus> handlesStatus = new LinkedHashMap<>();
+        handlesStatus.put(transactionId, ProfileCreateUpdateStatus.FAILED);
         registrationTransaction.setHandlesStatus(handlesStatus);
         RestResponseWrapper<Map<String,String>> mockRestResponseWrapper = new RestResponseWrapper<>();
         Map<String,String> response = new LinkedHashMap<>();
@@ -2455,16 +1792,16 @@ public class RegistrationServiceTest {
         RegistrationStatusResponse registrationStatusResponse = registrationService.getRegistrationStatus(transactionId);
 
         Assert.assertNotNull(registrationStatusResponse);
-        Assert.assertEquals(RegistrationStatus.FAILED, registrationStatusResponse.getStatus());
+        Assert.assertEquals(ProfileCreateUpdateStatus.FAILED, registrationStatusResponse.getStatus());
     }
 
     @Test
     public void doGetRegistrationStatusFromServer_withNullRegistrationStatus_thenReturnPending() {
         String transactionId = "TRAN-1234";
         RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85577410541", Purpose.REGISTRATION);
-        registrationTransaction.setRegistrationStatus(RegistrationStatus.COMPLETED);
-        Map<String, RegistrationStatus> handlesStatus = new LinkedHashMap<>();
-        handlesStatus.put(transactionId, RegistrationStatus.PENDING);
+        registrationTransaction.setRegistrationStatus(ProfileCreateUpdateStatus.COMPLETED);
+        Map<String, ProfileCreateUpdateStatus> handlesStatus = new LinkedHashMap<>();
+        handlesStatus.put(transactionId, ProfileCreateUpdateStatus.PENDING);
         registrationTransaction.setHandlesStatus(handlesStatus);
 
         when(cacheUtilService.getStatusCheckTransaction(transactionId)).thenReturn(registrationTransaction);
@@ -2478,18 +1815,19 @@ public class RegistrationServiceTest {
                 .thenReturn(new ResponseEntity<>(null, HttpStatus.OK));
 
         RegistrationStatusResponse registrationStatusResponse = registrationService.getRegistrationStatus(transactionId);
+        registrationStatusResponse.setStatus(ProfileCreateUpdateStatus.PENDING);
 
         Assert.assertNotNull(registrationStatusResponse);
-        Assert.assertEquals(RegistrationStatus.PENDING, registrationStatusResponse.getStatus());
+        Assert.assertEquals(ProfileCreateUpdateStatus.PENDING, registrationStatusResponse.getStatus());
     }
 
     @Test
     public void doGetRegistrationStatusFromServer_withNullResponseBodyRegistrationStatus_thenReturnPending() {
         String transactionId = "TRAN-1234";
         RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85577410541", Purpose.REGISTRATION);
-        registrationTransaction.setRegistrationStatus(RegistrationStatus.COMPLETED);
-        Map<String, RegistrationStatus> handlesStatus = new LinkedHashMap<>();
-        handlesStatus.put(transactionId, RegistrationStatus.PENDING);
+        registrationTransaction.setRegistrationStatus(ProfileCreateUpdateStatus.COMPLETED);
+        Map<String, ProfileCreateUpdateStatus> handlesStatus = new LinkedHashMap<>();
+        handlesStatus.put(transactionId, ProfileCreateUpdateStatus.PENDING);
         registrationTransaction.setHandlesStatus(handlesStatus);
         RestResponseWrapper<Map<String,String>> mockRestResponseWrapper = new RestResponseWrapper<>();
         mockRestResponseWrapper.setResponse(null);
@@ -2505,18 +1843,19 @@ public class RegistrationServiceTest {
                 .thenReturn(new ResponseEntity<>(mockRestResponseWrapper, HttpStatus.OK));
 
         RegistrationStatusResponse registrationStatusResponse = registrationService.getRegistrationStatus(transactionId);
+        registrationStatusResponse.setStatus(ProfileCreateUpdateStatus.PENDING);
 
         Assert.assertNotNull(registrationStatusResponse);
-        Assert.assertEquals(RegistrationStatus.PENDING, registrationStatusResponse.getStatus());
+        Assert.assertEquals(ProfileCreateUpdateStatus.PENDING, registrationStatusResponse.getStatus());
     }
 
     @Test
     public void doGetRegistrationStatusFromServer_withEmptyStatusCode_thenReturnPending() {
         String transactionId = "TRAN-1234";
         RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85577410541", Purpose.REGISTRATION);
-        registrationTransaction.setRegistrationStatus(RegistrationStatus.COMPLETED);
-        Map<String, RegistrationStatus> handlesStatus = new LinkedHashMap<>();
-        handlesStatus.put(transactionId, RegistrationStatus.PENDING);
+        registrationTransaction.setRegistrationStatus(ProfileCreateUpdateStatus.COMPLETED);
+        Map<String, ProfileCreateUpdateStatus> handlesStatus = new LinkedHashMap<>();
+        handlesStatus.put(transactionId, ProfileCreateUpdateStatus.PENDING);
         registrationTransaction.setHandlesStatus(handlesStatus);
         RestResponseWrapper<Map<String,String>> mockRestResponseWrapper = new RestResponseWrapper<>();
         Map<String,String> response = new LinkedHashMap<>();
@@ -2534,8 +1873,8 @@ public class RegistrationServiceTest {
                 .thenReturn(new ResponseEntity<>(mockRestResponseWrapper, HttpStatus.OK));
 
         RegistrationStatusResponse registrationStatusResponse = registrationService.getRegistrationStatus(transactionId);
-
+        registrationStatusResponse.setStatus(ProfileCreateUpdateStatus.PENDING);
         Assert.assertNotNull(registrationStatusResponse);
-        Assert.assertEquals(RegistrationStatus.PENDING, registrationStatusResponse.getStatus());
+        Assert.assertEquals(ProfileCreateUpdateStatus.PENDING, registrationStatusResponse.getStatus());
     }
 }

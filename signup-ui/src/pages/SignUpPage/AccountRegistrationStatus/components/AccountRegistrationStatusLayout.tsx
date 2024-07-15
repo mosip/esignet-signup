@@ -45,7 +45,7 @@ export const AccountRegistrationStatusLayout = ({
               <h1>{t("signup_failed")}</h1>
             )}
           </div>
-          <p className="break-all text-center text-gray-500">{message}</p>
+          <p className="text-center text-gray-500">{message}</p>
         </div>
         <Button id="success-continue-button" className="my-4 h-16 w-full" onClick={handleAction}>
           {fromSignInHash ? t("login") : t("okay")}
