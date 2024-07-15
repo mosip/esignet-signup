@@ -8,8 +8,8 @@ metadata:
   name: {{ template "common.names.fullname" . }}
   annotations:
     {{- if .Values.commonAnnotations }}
-    {{- include "common.tplvalues.render" ( dict "value" .Values.commonAnnotations "context" $ ) | nindent 4 }}
-    {{- end }}
+      {{- include "common.tplvalues.render" ( dict "value" .Values.commonAnnotations "context" $ ) | nindent 4 }}
+      {{- end }}
 spec:
   replicas: {{ .Values.replicaCount }}
   {{- if .Values.updateStrategy }}
@@ -21,9 +21,9 @@ spec:
     metadata:
       annotations:
         {{- if or .Values.podAnnotations .Values.metrics.enabled }}
-        {{- include "signup.podAnnotations" . | nindent 8 }}
-        {{- end }}
-       
+          {{- include "signup.podAnnotations" . | nindent 8 }}
+          {{- end }}
+
       labels: {{- include "common.labels.standard" . | nindent 8 }}
         {{- if .Values.podLabels }}
         {{- include "common.tplvalues.render" (dict "value" .Values.podLabels "context" $) | nindent 8 }}
@@ -71,7 +71,7 @@ spec:
               mountPath: bar
         {{- end }}
         {{- if .Values.enable_insecure }}
-          {{- include "common.tplvalues.render" (dict "value" .Values.initContainers "context" $) | nindent 8 }}
+        {{- include "common.tplvalues.render" (dict "value" .Values.initContainers "context" $) | nindent 8 }}
         {{- end }}
       containers:
         - name: signup
@@ -99,19 +99,19 @@ spec:
             {{- end }}
           envFrom:
             {{- if .Values.extraEnvVarsCM }}
-            {{- range .Values.extraEnvVarsCM }}
-            - configMapRef:
-                name: {{ . }}
-            {{- end }}
-            {{- end }}
-            {{- if .Values.extraEnvVarsSecret }}
-            - secretRef:
-                name: {{ include "common.tplvalues.render" (dict "value" .Values.extraEnvVarsSecret "context" $) }}
-            {{- end }}
+              {{- range .Values.extraEnvVarsCM }}
+              - configMapRef:
+                  name: {{ . }}
+              {{- end }}
+              {{- end }}
+              {{- if .Values.extraEnvVarsSecret }}
+              - secretRef:
+                  name: {{ include "common.tplvalues.render" (dict "value" .Values.extraEnvVarsSecret "context" $) }}
+              {{- end }}
           ports:
             - name: spring-service
               containerPort: {{ .Values.springServicePort }}
-           
+
           {{- if .Values.resources }}
           resources: {{- toYaml .Values.resources | nindent 12 }}
           {{- end }}
@@ -136,6 +136,12 @@ spec:
             name: cacerts
             subPath: cacerts
           {{- end }}
+          {{- if .Values.volumes.secrets }}
+          {{- range $secretName, $value := .Values.volumes.secrets }}
+          - name: {{ $secretName }}
+            mountPath: {{ $value.path }}
+          {{- end }}
+          {{- end }}
         {{- if .Values.sidecars }}
         {{- include "common.tplvalues.render" ( dict "value" .Values.sidecars "context" $) | nindent 8 }}
         {{- end }}
@@ -143,4 +149,11 @@ spec:
       {{- if .Values.enable_insecure }}
       - name: cacerts
         emptyDir: {}
+      {{- end }}
+      {{- if .Values.volumes.secrets }}
+      {{- range $secretName, $value := .Values.volumes.secrets }}
+      - name: {{ $secretName }}
+        secret:
+          secretName: {{ $secretName }}
+      {{- end }}
       {{- end }}
