@@ -13,7 +13,8 @@ const ActionMessage = React.forwardRef<HTMLDivElement, ActionMessageProps>(
         "flex items-center justify-between bg-destructive/5 px-4 py-2",
         {
           hidden,
-        }
+        },
+        className
       )}
       {...props}
     >

@@ -17,7 +17,8 @@ export const validateUsername = (settings: SettingsDto) =>
       );
     });
 
-export const validateCaptchaToken = () =>
+export const validateCaptchaToken = (settings: any) =>
+  settings.response.configs["send-challenge.captcha.required"] && 
   yup.string().required("captcha_token_validation");
 
 export const validateFullName = (settings: SettingsDto) =>

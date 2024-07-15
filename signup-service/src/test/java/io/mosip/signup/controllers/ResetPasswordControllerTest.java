@@ -2,12 +2,12 @@ package io.mosip.signup.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.esignet.core.dto.RequestWrapper;
+import io.mosip.signup.api.util.ProfileCreateUpdateStatus;
 import io.mosip.signup.dto.RegistrationStatusResponse;
 import io.mosip.signup.dto.ResetPasswordRequest;
 import io.mosip.signup.helper.AuditHelper;
 import io.mosip.signup.services.RegistrationService;
 import io.mosip.signup.util.ErrorConstants;
-import io.mosip.signup.util.RegistrationStatus;
 import io.mosip.signup.util.SignUpConstants;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,6 +19,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.Cookie;
 import java.time.ZoneOffset;
@@ -39,6 +40,9 @@ public class ResetPasswordControllerTest {
 
     @Autowired
     MockMvc mockMvc;
+
+    @MockBean
+    RestTemplate restTemplate;
 
     @MockBean
     RegistrationService registrationService;
@@ -62,7 +66,7 @@ public class ResetPasswordControllerTest {
         resetPasswordWrapper.setRequest(resetPasswordRequest);
 
         RegistrationStatusResponse registrationStatusResponse = new RegistrationStatusResponse();
-        registrationStatusResponse.setStatus(RegistrationStatus.PENDING);
+        registrationStatusResponse.setStatus(ProfileCreateUpdateStatus.PENDING);
 
         when(registrationService.updatePassword(any(), any())).thenReturn(registrationStatusResponse);
 
@@ -132,7 +136,7 @@ public class ResetPasswordControllerTest {
         resetPasswordWrapper.setRequest(resetPasswordRequest);
 
         RegistrationStatusResponse registrationStatusResponse = new RegistrationStatusResponse();
-        registrationStatusResponse.setStatus(RegistrationStatus.PENDING);
+        registrationStatusResponse.setStatus(ProfileCreateUpdateStatus.PENDING);
 
         when(registrationService.updatePassword(any(), any())).thenReturn(registrationStatusResponse);
 
@@ -159,7 +163,7 @@ public class ResetPasswordControllerTest {
         resetPasswordWrapper.setRequest(resetPasswordRequest);
 
         RegistrationStatusResponse registrationStatusResponse = new RegistrationStatusResponse();
-        registrationStatusResponse.setStatus(RegistrationStatus.PENDING);
+        registrationStatusResponse.setStatus(ProfileCreateUpdateStatus.PENDING);
 
         when(registrationService.updatePassword(any(), any())).thenReturn(registrationStatusResponse);
 
@@ -195,7 +199,7 @@ public class ResetPasswordControllerTest {
         resetPasswordWrapper.setRequest(resetPasswordRequest);
 
         RegistrationStatusResponse registrationStatusResponse = new RegistrationStatusResponse();
-        registrationStatusResponse.setStatus(RegistrationStatus.PENDING);
+        registrationStatusResponse.setStatus(ProfileCreateUpdateStatus.PENDING);
 
         when(registrationService.updatePassword(any(), any())).thenReturn(registrationStatusResponse);
 
@@ -222,7 +226,7 @@ public class ResetPasswordControllerTest {
         resetPasswordWrapper.setRequest(resetPasswordRequest);
 
         RegistrationStatusResponse registrationStatusResponse = new RegistrationStatusResponse();
-        registrationStatusResponse.setStatus(RegistrationStatus.PENDING);
+        registrationStatusResponse.setStatus(ProfileCreateUpdateStatus.PENDING);
 
         when(registrationService.updatePassword(any(), any())).thenReturn(registrationStatusResponse);
 
@@ -249,7 +253,7 @@ public class ResetPasswordControllerTest {
         resetPasswordWrapper.setRequest(resetPasswordRequest);
 
         RegistrationStatusResponse registrationStatusResponse = new RegistrationStatusResponse();
-        registrationStatusResponse.setStatus(RegistrationStatus.PENDING);
+        registrationStatusResponse.setStatus(ProfileCreateUpdateStatus.PENDING);
 
         when(registrationService.updatePassword(any(), any())).thenReturn(registrationStatusResponse);
 

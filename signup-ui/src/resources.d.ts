@@ -85,6 +85,31 @@ interface Resources {
     signup_discontinue_prompt: string;
     reset_password_discontinue_prompt: string;
     captcha_required: string;
+    eykc_loading: {
+      header: string;
+      description: string;
+    };
+    session: {
+      alert: {
+        title: string;
+        description: string;
+        countDown: string;
+        continueSession: string;
+      };
+      expired: {
+        title: string;
+        description: string;
+        returnToLogin: string;
+      };
+    };
+    slot_checking: {
+      header: string;
+      description: string;
+    };
+    slot_unavailable: {
+      header: string;
+      description: string;
+    };
     footer: {
       powered_by: string;
     };

@@ -1,10 +1,34 @@
 :root {
-  --background-body:  #f7f9fd;
-  --background-color:  200 60% 98%;
+  --font-inter: "Inter";
+  --font-kantumruypro: "Kantumruy Pro Variable";
+  --background-body: #f7f9fd;
+  --background-color: 200 60% 98%;
+  --foreground-color: 222.2 47.4% 11.2%;
 
-  --foreground-color:  222.2 47.4% 11.2%;
+  --language-icon-color: #ffffff;
+  --language-icon-bg-color: #eb6f2d;
+  --brand-only-logo-url: url("/logo.png");
+  --brand-logo-url: url("/images/brand_logo.png");
+
+  --signup-background: #f7f9fd;
+  --side-section-bg-with: 225px;
+  --top-left-bg-logo-url: url("/images/top.png");
+  --top-left-bg-logo-display: block;
+  --bottom-left-bg-logo-url: url("/images/bg_bottom_left.png");
+  --bottom-left-bg-logo-display: none;
+  --top-right-bg-logo-url: url("/images/bg_bottom_left.png");
+  --top-right-bg-logo-display: none;
+  --bottom-right-bg-logo-url: url("/images/bottom.png");
+  --bottom-right-bg-logo-display: block;
+
+  --footer-brand-logo-url: url("/images/footer_logo.png");
+  --footer-text-color: #898989;
+  --footer-text-size: 14px;
+  --footer-bg-color: #ffffff;
+  --footer-padding-top: 15px;
+  --footer-padding-bottom: 15px;
+
   --primary-muted: 0 0% 80%;
-
   --primary-muted-foreground: 204 10% 10%;
   --primary-muted-neutral-gray: 0 0% 51%;
   --primary-muted-dark-gray: 0 0% 29%;
@@ -33,9 +57,35 @@
   --destructive-color: 0 68% 50%;
   --destructive-foreground-color: 0 52% 96%;
 
+  --alert-color: 36 100% 97%;
+
   --ring-color: 215 20.2% 65.1%;
 
   --radius-font-size: 0.5rem;
+  --video-preview-border-color: #eb6f2d;
+
+  --vertical-stepper-bg-color: #eb6f2d;
+  --vertical-stepper-bg-opacity: 0.55;
+  --vertical-stepper-description-font: normal normal normal 14px/17px Inter;
+  --vertical-stepper-label-font: normal normal 600 16px/20px Inter;
+  --vertical-stepper-node-bg: #eb6f2d;
+
+  --cancel-button-border: 2px solid #eb6f2d;
+  --cancel-button-border-radius: 8px;
+  --cancel-button-color: #eb6f2d;
+
+  --video-message-bg-color: #505050;
+  --video-message-text-color: #fff;
+  --video-message-banner-width: 610px;
+  --video-message-banner-padding: 0.75em;
+  --video-message-banner-font: normal normal medium 22px/29px Roboto;
+  --video-message-banner-border-radius: 10px;
+
+  --error-banner-padding: 0.75em;
+  --error-banner-text-align: center;
+  --error-banner-text-color: #d52929;
+  --error-banner-bg-color: #faefef;
+  --error-banner-font: normal normal 600 14px/17px Inter;
 }
 
 [class="dark"] {
@@ -65,6 +115,8 @@
 
   --destructive-color: 0 63% 31%;
   --destructive-foreground-color: 210 40% 98%;
+
+  --alert-color: 36 100% 97%;
 
   --ring-color: 216 34% 17%;
 
@@ -130,7 +182,32 @@
   --destructive-color: 0 68% 50%;
   --destructive-foreground-color: 0 52% 96%;
 
+  --alert-color: 36 100% 97%;
+
   --ring-color: 215 20.2% 65.1%;
 
   --radius-font-size: 0.5rem;
+
+  --vertical-stepper-bg-color: #004282;
+  --vertical-stepper-bg-opacity: 0.55;
+  --vertical-stepper-description-font: normal normal normal 14px/17px Inter;
+  --vertical-stepper-label-font: normal normal 600 16px/20px Inter;
+  --vertical-stepper-node-bg: #004282;
+
+  --cancel-button-border: 2px solid #004282;
+  --cancel-button-border-radius: 8px;
+  --cancel-button-color: #004282;
+
+  --video-message-bg-color: #505050;
+  --video-message-text-color: #fff;
+  --video-message-banner-width: 610px;
+  --video-message-banner-padding: 0.75em;
+  --video-message-banner-font: normal normal medium 22px/29px Roboto;
+  --video-message-banner-border-radius: 10px;
+
+  --error-banner-padding: 0.75em;
+  --error-banner-text-align: center;
+  --error-banner-text-color: #d52929;
+  --error-banner-bg-color: #faefef;
+  --error-banner-font: normal normal 600 14px/17px Inter;
 }

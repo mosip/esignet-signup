@@ -9,6 +9,7 @@ module.exports = {
     },
     screens: {
       "2xl": "1536px",
+      xl: { max: "1536px" },
       lg: { max: "1280px" },
       md: { max: "768px" },
       sm: { max: "640px" },
@@ -23,6 +24,7 @@ module.exports = {
         foreground: "hsl(var(--foreground))",
         checked: "hsl(var(--checked))",
         disabled: "hsl(var(--disabled))",
+        alert:"hsl(var(--alert))",
         pin: {
           DEFAULT: "hsl(var(--pin))",
           focus: "hsl(var(--pin-focus))",

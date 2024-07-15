@@ -87,6 +87,105 @@
   "footer": {
     "powered_by": "Powered by"
   },
+  "eykc_loading": {
+    "header": "Alert!",
+    "description": "Oops! It looks like you’re using an unsupported browser. Please consider upgrading to the latest version of the browser for the best experience. Thank you for your understanding"
+  },
+  "session": {
+    "alert": {
+      "title": "Alert!",
+      "description": "Your session is about to expire due to inactivity",
+      "countDown": "Session expiring in {remainingTimeBeforePrompt} minutes",
+      "continueSession": "Continue Session"
+    },
+    "expired": {
+      "title": "Session Expired",
+      "description": "Your session has expired due to inactivity. Please click on the below button to return to the login screen.",
+      "returnToLogin": "Return to Login"
+    }
+  },
+  "slot_checking": {
+    "header": "Loading!!!",
+    "description": "Kindly wait as we initiate your eKYC"
+  },
+  "slot_unavailable": {
+    "header": "Alert!",
+    "description": "We are experiencing a higher than usual demand, hence we are unable to proceed with the eKYC verification process at this moment. We regret the inconvenience and request you to please try again later. Thank you for your understanding."
+  },
+  "loadingMsgs": {
+    "please_wait": "Loading. Please wait....."
+  },
+  "video_preview": {
+    "header": "Key Information",
+    "cancel_button": "Cancel",
+    "proceed_button": "Proceed",
+    "permission_denied_header": "Camera Access Disabled",
+    "permission_denied_description": "Your camera permission has be disabled. Please enable camera permission from your browser setting..",
+    "not_accessible_header": "Camera Not Accessible",
+    "not_accessible_description": "Your camera is not accessible. Please check your camera accessibility, some other application is accessing your camera right now.",
+    "key_info": {
+      "step_1": "Verify the functionality of your camera using the video preview on the right",
+      "step_2": "Ensure you are positioned in a well-lit area to facilitate clear video capture",
+      "step_3": "Position your face within the oval frame, ensuring your face is clearly visible",
+      "step_4": "Remove any accessories or items that could obstruct your face, such as hats or sunglasses.",
+      "step_5": "Maintain a stable posture throughout the video recording to prevent blurring",
+      "step_6": "Be prepared to follow instructions provided on screen during the eKYC process, such as blinking or turning your head as directed.",
+      "step_7": "Have your ID readily accessible for the verification purposes."
+    }
+  },
+  "terms_and_conditions": {
+    "header": "Terms & Conditions",
+    "sub_header": "Please read the terms and conditions carefully.",
+    "agree_text": "I agree to the terms and conditions as set out by the user agreement.",
+    "failed_to_load": "Failed to load terms and conditions",
+    "still_loading": "Terms and conditions are still loading. Please wait",
+    "cancel_button": "Cancel",
+    "proceed_button": "Proceed"
+  },
+  "cancel_alert_popover": {
+    "title": "Attention!",
+    "description": "{relyingParty} requires access in order to proceed further, do you still wish to discontinue?",
+    "stay": "Stay",
+    "discontinue": "Discontinue"
+  },
+  "kyc_provider": {
+    "header": "Please select an eKYC service provider",
+    "no_kyc_provider": "No eKYC provider found",
+    "search_placeholder": "Search",
+    "cancel_button": "Cancel",
+    "proceed_button": "Proceed"
+  },
+  "verification_steps": {
+    "header": "Complete your eKYC verification with the below simple steps",
+    "cancel": "Cancel",
+    "proceed": "Proceed",
+    "ekycSteps": {
+      "ekyc_provider": {
+        "label": "Choose an eKYC provider",
+        "description": "Select an eKYC service provider that aligns with your requirements"
+      },
+      "terms_&_conditions": {
+        "label": "Terms & Conditions",
+        "description": "Review the policy terms & conditions"
+      },
+      "pre_verification_guide": {
+        "label": "Pre-verification guide",
+        "description": "Key instructions for a seamless eKYC experience"
+      },
+      "identity_verification": {
+        "label": "Identity verification",
+        "description": "This step verifies the individual’s physical presence during the identity verification process as well as verification of the individual’s identity with their physical ID"
+      },
+      "review_consent": {
+        "label": "Review Consent",
+        "description": "Review and approve consent before sharing with the service provider"
+      }
+    }
+  },
+  "verification_screen":{
+    "welcome_message": "Welcome! Initiating Identity verification process in {count} seconds",
+    "focus_on_screen_message": "Please try to focus on the screen"
+  },
   "error_response": {
     "invalid_transaction": "The transaction has timed out. Please try again.",
     "invalid_otp_channel": "Invalid OTP Channel Provided",

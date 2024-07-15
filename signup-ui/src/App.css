@@ -8,7 +8,6 @@ body {
   background: var(--background-body) 0% 0% no-repeat padding-box;
 }
 
-
 .language-icon-color {
   fill: var(--language-icon-color);
 }
@@ -63,6 +62,107 @@ body {
   content: var(--bottom-left-bg-logo-url);
 }
 
+.verticalStepper {
+  padding: 0 !important;
+}
+
+.verticalStepper .middleStepConnector {
+  background-color: var(--vertical-stepper-bg-color) !important;
+  opacity: var(--vertical-stepper-bg-opacity);
+  width: 1.5px;
+}
+
+.verticalStepper .stepConnector {
+  background-color: var(--vertical-stepper-bg-color) !important;
+  opacity: var(--vertical-stepper-bg-opacity);
+}
+
+.verticalContentWrapper .description {
+  position: relative;
+  bottom: 1em;
+  left: 0.9em;
+  font-size: 1em;
+  font: var(--vertical-stepper-description-font);
+  margin-right: 1.25rem;
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+
+.verticalStepper .descriptionContainer {
+  display: -webkit-box !important;
+}
+
+.verticalLabelRight .label {
+  padding-left: 0.5em;
+  font: var(--vertical-stepper-label-font);
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+
+#stepper-node {
+  background: var(--vertical-stepper-node-bg);
+  opacity: 1;
+}
+
+.cancel_btn,
+.cancel_btn:hover {
+  border: var(--cancel-button-border);
+  border-radius: var(--cancel-button-border-radius);
+  background: none;
+  color: var(--cancel-button-color) !important;
+}
+
+.video-message {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  margin: 1em auto;
+  background-color: var(--video-message-bg-color);
+  color: var(--video-message-text-color);
+  width: var(--video-message-banner-width);
+  padding: var(--video-message-banner-padding);
+  font: var(--video-message-banner-font);
+  border-radius: var(--video-message-banner-border-radius);
+}
+
+.video-border {
+  --s: 40px; /* the size on the corner */
+  --t: 5px; /* the thickness of the border */
+  --g: 10px; /* the gap between the border and image */
+
+  padding: calc(var(--g) + var(--t));
+  outline: var(--t) solid var(--video-preview-border-color); /* the color here */
+  outline-offset: calc(-1 * var(--t));
+  border-radius: 15px;
+
+  /* for chrome browser */
+  -webkit-mask:
+    conic-gradient(at var(--s) var(--s), #0000 75%, #000 0) 0 0 /
+      calc(100% - var(--s)) calc(100% - var(--s)),
+    linear-gradient(#000 0 0) content-box;
+
+  /* for firefox browser */
+  mask:
+    conic-gradient(at var(--s) var(--s), #0000 75%, #000 0) 0 0 /
+      calc(100% - var(--s)) calc(100% - var(--s)),
+    linear-gradient(#000 0 0) content-box;
+  transition: 0.4s;
+}
+
+.no-video-border {
+  width: 100vw;
+  height: calc(100vh - 207px);
+}
+
+.error-banner {
+  padding: var(--error-banner-padding);
+  text-align: var(--error-banner-text-align);
+  color: var(--error-banner-text-color);
+  background-color: var(--error-banner-bg-color);
+  font: var(--error-banner-font);
+}
+
 @media screen and (max-width: 640px) {
   .section-background .top_left_bg_logo,
   .section-background .top_right_bg_logo,
@@ -80,8 +180,86 @@ body {
   background-color: var(--footer-bg-color);
 }
 
-.pincode-input-container .pincode-input-text {
-  -webkit-text-security: disc;
+.scrollable-div {
+  scroll-behavior: smooth;
+  overflow-y: auto;
+  height: 300px;
+  -ms-overflow-style: none;
+}
+
+.scrollable-div::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scrollable-div::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+.scrollable-div::-webkit-scrollbar-thumb {
+  background-color: #d5d5d5;
+  border-radius: 8px;
+}
+
+.scrollable-div::-webkit-scrollbar-thumb:hover {
+  background-color: #a8bbbf;
+}
+
+/* Check mark box in top right corner */
+.check-box {
+  display: inline-block;
+  position: relative;
+}
+
+.check-box::after {
+  content: url("assets/svg/check_white.svg");
+  background: #eb6f2d;
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 4px 6px;
+  border-radius: 0px 5px 0px 8px;
+  border-style: solid;
+  border-color: #eb6f2d;
+}
+
+@media (min-width: 768px) {
+  /* corner border around video preview */
+  .corner-border {
+    --s: 40px; /* the size on the corner */
+    --t: 5px; /* the thickness of the border */
+    --g: 10px; /* the gap between the border and image */
+
+    padding: calc(var(--g) + var(--t));
+    outline: var(--t) solid var(--video-preview-border-color); /* the color here */
+    outline-offset: calc(-1 * var(--t));
+    border-radius: 15px;
+
+    /* for chrome browser */
+    -webkit-mask:
+      conic-gradient(at var(--s) var(--s), #0000 75%, #000 0) 0 0 /
+        calc(100% - var(--s)) calc(100% - var(--s)),
+      linear-gradient(#000 0 0) content-box;
+
+    /* for firefox browser */
+    mask:
+      conic-gradient(at var(--s) var(--s), #0000 75%, #000 0) 0 0 /
+        calc(100% - var(--s)) calc(100% - var(--s)),
+      linear-gradient(#000 0 0) content-box;
+    transition: 0.4s;
+  }
+}
+
+/* Align Loading spinner to center of the screen */
+.align-loading-center {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: max-content;
+  transform: translate(-50%, -50%);
+  -webkit-transform: translate(-50%, -50%);
+  -moz-transform: translate(-50%, -50%);
+  -o-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
 }
 
 @layer base {
@@ -122,6 +300,8 @@ body {
     --destructive: var(--destructive-color);
     --destructive-foreground: var(--destructive-foreground-color);
 
+    --alert: var(--alert-color);
+
     --ring: var(--ring-color);
 
     --radius: var(--radius-font-size);
@@ -154,6 +334,8 @@ body {
 
     --destructive: var(--destructive-color);
     --destructive-foreground: var(--destructive-foreground-color);
+
+    --alert: var(--alert-color);
 
     --ring: var(--ring-color);
 
@@ -196,6 +378,8 @@ body {
 
     --destructive: var(--destructive-color);
     --destructive-foreground: var(--destructive-foreground-color);
+
+    --alert: var(--alert-color);
 
     --ring: var(--ring-color);
 

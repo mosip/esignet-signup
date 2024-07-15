@@ -54,6 +54,14 @@ npm storybook
 
 This opens [http://localhost:6006](http://localhost:6006) in the browser. Making change to the components in the project triggers hot reload in storybook.
 
+##### Testing
+
+To run all test cases, run the following command:
+
+```bash
+npm test
+```
+
 #### Environments
 
 `.env.example` file is provided in the root folder. In the development, copy and paste the variables described into a self-created `.env.local` file, replacing the required values accordingly.

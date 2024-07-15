@@ -6,13 +6,21 @@ import {
   RegistrationStatusResponseDto,
   ResetPasswordResponseDto,
   SettingsDto,
+  KycProviderDetailResponseDto,
 } from "~typings/types";
 
-import { getRegistrationStatus, getSettings } from "./service";
+import {
+  getKycProvidersList,
+  getRegistrationStatus,
+  getSettings,
+  getTermsAndConditions,
+} from "./service";
 
 export const keys = {
+  termsAndConditions: ["termsAndConditions"] as const,
   settings: ["settings"] as const,
   registrationStatus: ["registrationStatus"] as const,
+  kycProvidersList: ["kycProvidersList"] as const,
 };
 
 export const useSettings = (): UseQueryResult<SettingsDto, unknown> => {
@@ -37,5 +45,16 @@ export const useRegistrationStatus = (
     enabled:
       !!registration.response &&
       registration.response.status === RegistrationStatus.PENDING,
+  });
+};
+
+export const useTermsAndConditions = (kycProviderId: string): UseQueryResult<
+  KycProviderDetailResponseDto,
+  unknown
+> => {
+  return useQuery<KycProviderDetailResponseDto>({
+    queryKey: [...keys.termsAndConditions, kycProviderId],
+    queryFn: () => getTermsAndConditions(kycProviderId),
+    staleTime: Infinity,
   });
 };

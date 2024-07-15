@@ -1,9 +1,10 @@
-import { useCallback } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { useTranslation } from "react-i18next";
 
 import { ReactComponent as TranslationIcon } from "~assets/svg/translation-icon.svg";
 import { cn } from "~utils/cn";
+import { replaceUILocales } from "~utils/link";
 import {
   langFontMappingSelector,
   languages2LettersSelector,
@@ -14,6 +15,7 @@ import { Icons } from "./ui/icons";
 
 export const Language = () => {
   const { i18n } = useTranslation();
+  const langRef = useRef(null);
   const { languages_2Letters, langFontMapping } = useLanguageStore(
     useCallback(
       (state) => ({
@@ -24,41 +26,37 @@ export const Language = () => {
     )
   );
 
-  const ui_locales = "ui_locales";
-
   const handleLanguageChange = (language: string) => {
     i18n.changeLanguage(language);
 
-    // Get the encoded string from the URL  
-    const hashCode = window.location.hash.substring(1);
-
-    // Decode the string
-    const decodedBase64 = atob(hashCode)
-        
-    var urlSearchParams = new URLSearchParams(decodedBase64);
-
-    // Convert the decoded string to JSON
-    var jsonObject: Record<string, string> = {};
-    urlSearchParams.forEach(function (value, key) {
-        jsonObject[key] = value;
-        // Assign the current i18n language to the ui_locales
-        if(key === ui_locales) {
-          jsonObject[key] = language
-        }
-    });
-
-    // Convert the JSON back to decoded string
-    Object.entries(jsonObject).forEach(([key, value]) => {
-      urlSearchParams.set(key, value);
-    });
-
+    const urlSearchParams = replaceUILocales(window.location.hash, language);
     // Encode the string
     const encodedBase64 = btoa(urlSearchParams.toString());
-    const url = window.location.origin + window.location.pathname + "#" + encodedBase64
+    const url =
+      window.location.origin + window.location.pathname + "#" + encodedBase64;
 
     // Replace the current url with the modified url due to the language change
     window.history.replaceState(null, "", url);
   };
+
+  // setting language dropdown value to current fallback language
+  const setFallbackLng = (lng: string) => {
+    const langToBeSet = languages_2Letters.hasOwnProperty(lng)
+      ? lng
+      : (window as any)._env_.FALLBACK_LANG;
+    handleLanguageChange(langToBeSet);
+  };
+
+  useEffect(() => {
+    // checking if language dropdown value is set or not
+    // if not then use current i18n language to set it
+    const refInterval = setInterval(() => {
+      if (!langRef.current) {
+        clearInterval(refInterval);
+        setFallbackLng(i18n.language);
+      }
+    }, 1000);
+  }, []);
 
   return (
     <div className="flex">
@@ -79,13 +77,18 @@ export const Language = () => {
         </DropdownMenu.Trigger>
         <DropdownMenu.Portal>
           <DropdownMenu.Content
-            className="data-[side=top]:animate-slideDownAndFade data-[side=right]:animate-slideLeftAndFade data-[side=bottom]:animate-slideUpAndFade data-[side=left]:animate-slideRightAndFade z-50 min-w-[220px] rounded-md bg-white px-3 py-2 shadow-[0px_10px_38px_-10px_rgba(0,0,0,_0.35),_0px_10px_20px_-15px_rgba(0,0,0,_0.2)] will-change-[opacity,transform]"
+            className={cn(
+              "relative  z-50  rounded-md border border-[#BCBCBC] bg-white px-3 py-2 shadow-md outline-0 ",
+              "data-[side=top]:animate-slideDownAndFade data-[side=right]:animate-slideLeftAndFade data-[side=bottom]:animate-slideUpAndFade data-[side=left]:animate-slideRightAndFade",
+              "top-[-0.5rem] min-w-[220px] will-change-[opacity,transform]"
+            )}
             sideOffset={5}
           >
             {Object.entries(languages_2Letters).map(([key, value]) => (
               <DropdownMenu.Item
-                id={key+"_language"}
+                id={key + "_language"}
                 key={key}
+                ref={langRef}
                 className={cn(
                   "group relative flex cursor-pointer select-none items-center py-2 text-[14px] leading-none outline-none first:border-b-[1px] hover:font-bold data-[disabled]:pointer-events-none",
                   langFontMapping[key],
@@ -98,12 +101,14 @@ export const Language = () => {
                 {value}
                 <div className="ml-auto">
                   {i18n.language === key && (
-                    <Icons.check className="h-4 w-4 text-orange-500" />
+                    <Icons.check className="h-4 w-4 text-primary" />
                   )}
                 </div>
               </DropdownMenu.Item>
             ))}
-            <DropdownMenu.Arrow className="fill-white" />
+            <DropdownMenu.Arrow asChild>
+              <Icons.chevronUpSolid className="h-[7px] stroke-[#bcbcbc]" />
+            </DropdownMenu.Arrow>
           </DropdownMenu.Content>
         </DropdownMenu.Portal>
       </DropdownMenu.Root>

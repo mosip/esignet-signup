@@ -7,6 +7,12 @@ export interface ResetPasswordForm {
   confirmNewPassword: string;
 }
 
+export interface EkYCVerificationForm {
+  consent: EKYCConsentStatus;
+  disabilityType: DisabilityType;
+  verifierId: string;
+}
+
 const GenerateChallengePossibleErrors = [
   "invalid_transaction",
   "invalid_otp_channel",
@@ -26,7 +32,7 @@ const VerifyChallengePossibleErrors = [
   "invalid_challenge_format",
   "unknown_error",
   "already-registered",
-  "identifier_already_registered"
+  "identifier_already_registered",
 ] as const;
 
 export type VerifyChallengeErrors =
@@ -72,13 +78,26 @@ const ResetPasswordPossibleErrors = [
 
 export type ResetPasswordErrors = (typeof ResetPasswordPossibleErrors)[number];
 
+const SlotAvailabilityPossibleErrors = [
+  "invalid_transaction",
+  "invalid_identifier",
+  "invalid_password",
+  "invalid_request",
+  "reset_pwd_failed",
+  "slot_unavailable",
+] as const;
+
+export type SlotAvailabilityErrors =
+  (typeof SlotAvailabilityPossibleErrors)[number];
+
 export interface Error {
   errorCode:
     | GenerateChallengeErrors
     | VerifyChallengeErrors
     | RegisterErrors
     | RegisterStatusErrors
-    | ResetPasswordErrors;
+    | ResetPasswordErrors
+    | SlotAvailabilityErrors;
   errorMessage: string;
 }
 
@@ -108,6 +127,8 @@ export interface SettingsConfig {
   "fullname.pattern": string;
   "status.request.limit": number;
   "status.request.delay": number;
+  "slot.request.limit": number;
+  "slot.request.delay": number;
   "popup.timeout": number;
   "signin.redirect-url": string;
   "identifier.allowed.characters": string;
@@ -117,6 +138,9 @@ export interface SettingsConfig {
   "fullname.length.min": number;
   "fullname.length.max": number;
   "send-challenge.captcha.required": boolean;
+  "signup.oauth-client-id": string;
+  "identity-verification.redirect-url": string;
+  "broswer.minimum-version": { [key: string]: string };
 }
 
 export interface Settings {
@@ -188,6 +212,110 @@ export type VerifyChallengeResponseDto = BaseResponseDto & {
   } | null;
 };
 
+export type KeyValueStringObject = {
+  [key: string]: string | KeyValueStringObject;
+};
+
+export type KycProviderDetailProp = "terms&Conditions" | "previewInfo" | "stepCodes" | "errors" | "messages";
+
+export type KycProviderDetail = {
+  "terms&Conditions": KeyValueStringObject;
+  previewInfo?: KeyValueStringObject;
+  stepCodes?: KeyValueStringObject;
+  errors: { [key: string]: KeyValueStringObject } | null;
+  messages: { [key: string]: KeyValueStringObject } | null;
+};
+
+export type KycProviderDetailResponseDto = BaseResponseDto & {
+  response: KycProviderDetail;
+};
+
+export type SlotAvailabilityDto = BaseResponseDto & {
+  response: {
+    status: string;
+    message: string;
+  } | null;
+};
+
+export type KycProvidersResponseDto = BaseResponseDto & {
+  response: {
+    identityVerifiers: KycProvider[];
+  };
+};
+
+export interface KycProvider {
+  id: string;
+  displayName: KeyValueStringObject;
+  logoUrl: string;
+  description: string;
+  processType: string;
+  active: boolean;
+  retryOnFailure: boolean;
+  resumeOnSuccess: boolean;
+}
+
+export interface IdvStep {
+  code: string;
+  framesPerSecond: number;
+  durationInSeconds: number;
+  startupDelayInSeconds: number;
+  retryOnTimeout: boolean;
+  retryableErrorCodes: string[];
+}
+
+export enum IdvFeedbackEnum {
+  MESSAGE = "MESSAGE",
+  ERROR = "ERROR",
+  COLOR = "COLOR",
+}
+
+export type IdvFeedbackType = keyof typeof IdvFeedbackEnum;
+
+export interface IdvFeedback {
+  type: IdvFeedbackType | string;
+  code: string;
+}
+
+export interface IdvFrames {
+  frame: string;
+  order: number;
+}
+export interface IdentityVerificationResponseDto {
+  slotId: string;
+  step?: IdvStep | null;
+  feedback?: IdvFeedback | null;
+}
+
+export interface IdentityVerificationRequestDto {
+  slotId: string;
+  stepCode?: string | null;
+  frames?: IdvFrames[];
+}
+
+export interface IdentityVerificationState {
+  stepCode: string | null;
+  fps: number | null;
+  totalDuration: number | null;
+  startupDelay: number;
+  feedbackType: string | null;
+  feedbackCode: string | null;
+}
+
+export interface DefaultEkyVerificationProp {
+  settings: Settings;
+  cancelPopup: (cancelProp: CancelPopup) => any;
+}
+
+export interface CancelPopup {
+  cancelButton: boolean;
+  handleStay: () => void;
+}
+
+export interface SignupHashCode {
+  state: string;
+  code: string;
+}
+
 export interface LanguageTaggedValue {
   language: string;
   value: string;
@@ -248,5 +376,45 @@ export enum ResetPasswordStatus {
 export type ResetPasswordResponseDto = BaseResponseDto & {
   response: {
     status: ResetPasswordStatus;
+  } | null;
+};
+
+const EKYCConsentOptions = ["ACCEPTED", "DECLINED"] as const;
+
+type EKYCConsentStatus = (typeof EKYCConsentOptions)[number];
+
+const DisabilityOptions = [
+  "VISION",
+  "AUDITORY",
+  "MOBILITY",
+  "NEUROLOGICAL",
+] as const;
+
+type DisabilityType = (typeof DisabilityOptions)[number] | null;
+
+export type SlotAvailabilityRequestDto = BaseRequestDto & {
+  request: {
+    verifierId: string;
+    consent: EKYCConsentStatus;
+    disabilityType?: DisabilityType;
+  };
+};
+
+export type SlotAvailabilityResponseDto = BaseResponseDto & {
+  response: {
+    slotId: string;
+  };
+};
+
+export type UpdateProcessRequestDto = BaseRequestDto & {
+  request: {
+    authorizationCode: string;
+    state: string;
+  };
+};
+
+export type UpdateProcessResponseDto = BaseResponseDto & {
+  response: {
+    status: object;
   } | null;
 };

@@ -43,7 +43,7 @@ export const ResetPasswordConfirmationLayout = ({
               <h1>{t("password_reset_failed")}</h1>
             )}
           </div>
-          <p className="break-all text-center text-muted-neutral-gray">
+          <p className="text-center text-muted-neutral-gray">
             {message}
           </p>
         </div>

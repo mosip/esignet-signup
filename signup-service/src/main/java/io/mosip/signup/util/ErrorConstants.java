@@ -6,7 +6,7 @@ public class ErrorConstants {
     public static final String INVALID_IDENTIFIER = "invalid_identifier";
     public static final String INVALID_USERNAME = "invalid_username";
     public static final String INVALID_PASSWORD = "invalid_password";
-    public static final String INVALID_USERINFO = "invalid_username";
+    public static final String INVALID_USERINFO = "invalid_userinfo";
     public static final String INVALID_CONSENT = "invalid_consent";
     public static final String INVALID_PURPOSE ="invalid_purpose";
     public static final String IDENTIFIER_MISMATCH = "identifier_mismatch";
@@ -44,4 +44,14 @@ public class ErrorConstants {
     public static final String IDENTIFIER_BLOCKED = "identifier_blocked";
     public static final String OTP_NOTIFICATION_FAILED = "otp_notification_failed";
     public static final String SERVER_UNREACHABLE = "server_unreachable";
+
+    public static final String INVALID_IDENTITY_VERIFIER_ID = "invalid_identity_verifier_id";
+
+    public static final String GRANT_EXCHANGE_FAILED="grant_exchange_failed";
+    public static final String USERINFO_FAILED="userinfo_failed";
+
+    public static final String PRIVATE_KEY_LOAD_FAILED="private_key_load_failed";
+
+    public static final String SLOT_NOT_AVAILABLE="slot_not_available";
+    public static final String INVALID_SLOT_ID = "invalid_slot_id";
 }
