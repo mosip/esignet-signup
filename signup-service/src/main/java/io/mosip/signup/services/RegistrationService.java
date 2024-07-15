@@ -2,9 +2,7 @@ package io.mosip.signup.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import io.mosip.esignet.core.util.CaptchaHelper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.mosip.esignet.core.util.IdentityProviderUtil;
 import io.mosip.signup.api.dto.ProfileDto;
 import io.mosip.signup.api.exception.ProfileException;
@@ -308,10 +306,10 @@ public class RegistrationService {
 
     private void validateKBAChallenge(ProfileDto profileDto, VerifyChallengeRequest verifyChallengeRequest) {
         Optional<ChallengeInfo> kbaChallenge = verifyChallengeRequest.getChallengeInfo().stream()
-                .filter(challengeInfo -> challengeInfo.getType().equals("KBA"))
+                .filter(challengeInfo -> challengeInfo.getType().equals("KBI"))
                 .findFirst();
         if (kbaChallenge.isEmpty()){
-            throw new SignUpException(ErrorConstants.KBA_CHALLENGE_NOT_FOUND);
+            throw new SignUpException(ErrorConstants.KBI_CHALLENGE_NOT_FOUND);
         }
 
         try {
@@ -320,7 +318,7 @@ public class RegistrationService {
                 throw new SignUpException(ErrorConstants.KNOWLEDGEBASE_MISMATCH);
             }
         }catch (JsonProcessingException exception){
-            throw new SignUpException(ErrorConstants.INVALID_KBA_CHALLENGE);
+            throw new SignUpException(ErrorConstants.INVALID_KBI_CHALLENGE);
         }
     }
 

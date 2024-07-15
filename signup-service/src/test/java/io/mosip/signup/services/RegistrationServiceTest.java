@@ -42,6 +42,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import static io.mosip.signup.util.ErrorConstants.INVALID_KBI_CHALLENGE;
+import static io.mosip.signup.util.ErrorConstants.KNOWLEDGEBASE_MISMATCH;
 import static org.mockito.Mockito.*;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -453,7 +455,7 @@ public class RegistrationServiceTest {
             registrationService.verifyChallenge(verifyChallengeRequest, mockTransactionId);
             Assert.fail();
         } catch (SignUpException signUpException) {
-            Assert.assertEquals("invalid_KBI_challenge", signUpException.getErrorCode());
+            Assert.assertEquals(INVALID_KBI_CHALLENGE, signUpException.getErrorCode());
         }
     }
 
@@ -518,7 +520,7 @@ public class RegistrationServiceTest {
             registrationService.verifyChallenge(verifyChallengeRequest, mockTransactionId);
             Assert.fail();
         } catch (SignUpException signUpException) {
-            Assert.assertEquals("knowledgebase_mismatch", signUpException.getErrorCode());
+            Assert.assertEquals(KNOWLEDGEBASE_MISMATCH, signUpException.getErrorCode());
         }
     }
 
