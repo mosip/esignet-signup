@@ -150,6 +150,10 @@ body {
   transition: 0.4s;
 }
 
+.video-message-loading {
+  border: var(--video-message-bg-color);
+}
+
 .no-video-border {
   width: 100vw;
   height: calc(100vh - 207px);
