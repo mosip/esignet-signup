@@ -33,7 +33,7 @@ export const Language = () => {
     // Encode the string
     const encodedBase64 = btoa(urlSearchParams.toString());
     const url =
-      window.location.origin + window.location.pathname + "#" + encodedBase64;
+      window.location.origin + window.location.pathname + window.location.search + "#" + encodedBase64;
 
     // Replace the current url with the modified url due to the language change
     window.history.replaceState(null, "", url);
