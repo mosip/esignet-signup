@@ -302,8 +302,8 @@ initContainers:
     terminationMessagePath: /dev/termination-log
     terminationMessagePolicy: File
     volumeMounts:
-      - mountPath: /cacerts
-        name: cacerts
+      - mountPath: /keys
+        name: keys
 
 ## Add sidecars to the  pods.
 ## Example:
@@ -469,3 +469,9 @@ istio:
   prefix: /v1/signup/
 
 enable_insecure: false
+
+volumes:
+  secrets:
+    signupoidc:
+      key: oidckeystore.p12
+      path: /home/mosip/keys

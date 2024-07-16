@@ -85,6 +85,11 @@ mosip.kernel.sms.country.code=+91
 
 ### Install
 * Install `kubectl` and `helm` utilities.
+* Run `install.sh` to run the partner-onboarder to create the signup-oidc
+ ```
+  cd partner-onboarder
+  ./install.sh
+  ```
 * Run `install-all.sh` to deploy signup services.
   ```
   cd helm

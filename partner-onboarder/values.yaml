@@ -1,0 +1,26 @@
+onboarding:
+  modules:
+    - name: ida
+      enabled: false
+    - name: print
+      enabled: false
+    - name: abis
+      enabled: false
+    - name: resident
+      enabled: false
+    - name: mobileid
+      enabled: false
+    - name: digitalcard
+      enabled: false
+    - name: esignet
+      enabled: false
+    - name: resident-oidc
+      enabled: false
+    - name: demo-oidc
+      enabled: false
+    - name: mimoto-keybinding
+      enabled: false
+    - name: mimoto-oidc
+      enabled: false
+    - name: signup-oidc
+      enabled: true
