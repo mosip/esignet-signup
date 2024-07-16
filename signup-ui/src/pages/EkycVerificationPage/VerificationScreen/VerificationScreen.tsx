@@ -18,6 +18,7 @@ import {
   KycProviderDetail,
   KycProviderDetailProp,
 } from "~typings/types";
+import LoadingIndicator from "~/common/LoadingIndicator";
 
 import {
   EkycVerificationStore,
@@ -47,6 +48,7 @@ export const VerificationScreen = ({
   const [colorVerification, setColorVerification] = useState<boolean>(false);
   const [bgColor, setBgColor] = useState<string | null>(null);
   const [imageFrames, setImageFrames] = useState<IdvFrames[]>([]);
+
   // let imageFrames: IdvFrames[] = [];
   const [identityVerification, setIdentityVerification] =
     useState<IdentityVerificationState | null>({
@@ -276,7 +278,7 @@ export const VerificationScreen = ({
     window.location.replace(
       `${consentUrl}${encodedIdToken}`
     );
-  }
+  };
 
   const endWithSuccess = (successMsgCode: string) => {
     resetEverything();
@@ -481,8 +483,18 @@ export const VerificationScreen = ({
     <EkycStatusAlert config={alertConfig} />
   ) : (
     <div className="sm:pb-[4em]">
-      {!errorBannerMessage && message && (
-        <div className="video-message sm:w-[90vw]">{message}</div>
+      {!connected ? (
+        <div className="video-message sm:w-[90vw]">
+          <LoadingIndicator
+            message="please_wait"
+            msgParam="Loading. Please wait....."
+            iconClass="video-message-loading"
+            divClass=""
+          />
+        </div>
+      ) : (
+        !errorBannerMessage &&
+        message && <div className="video-message sm:w-[90vw]">{message}</div>
       )}
       <div
         className={
