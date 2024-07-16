@@ -27,6 +27,9 @@ import {
   setErrorBannerMessageSelector,
   setIsNoBackgroundSelector,
   slotIdSelector,
+  setStepSelector,
+  EkycVerificationStep,
+  setSlotIdSelector,
   useEkycVerificationStore,
 } from "../useEkycVerificationStore";
 import { EkycStatusAlert } from "./components/EkycStatusAlert";
@@ -67,6 +70,8 @@ export const VerificationScreen = ({
     errorBannerMessage,
     slotId,
     kycProviderDetail,
+    setStep,
+    setSlotId
   } = useEkycVerificationStore(
     useCallback(
       (state: EkycVerificationStore) => ({
@@ -75,6 +80,8 @@ export const VerificationScreen = ({
         errorBannerMessage: errorBannerMessageSelector(state),
         slotId: slotIdSelector(state),
         kycProviderDetail: kycProviderDetailSelector(state),
+        setStep: setStepSelector(state),
+        setSlotId: setSlotIdSelector(state)
       }),
       []
     )
@@ -138,6 +145,12 @@ export const VerificationScreen = ({
     publish(PUBLISH_TOPIC, JSON.stringify(request));
   };
 
+  const handleRetry = (e: any) => {
+    e.preventDefault();
+    setSlotId(null);
+    setStep(EkycVerificationStep.SlotCheckingScreen);
+  };
+  
   // timer useEffect
   useEffect(() => {
     if (timer && timer > 0) {
@@ -311,6 +324,7 @@ export const VerificationScreen = ({
           getCurrentLangMsg("errors", currentStep.feedbackCode ?? "default")
         );
         setColorVerification(false);
+        setMessage(null);
         break;
       default:
         break;
@@ -346,7 +360,11 @@ export const VerificationScreen = ({
         ),
         subHeader: "Oops! We were unable to complete the eKYC verification.",
         footer: (
-          <Button id="retry-button" className="my-4 h-16 w-full">
+          <Button
+            id="retry-button"
+            className="my-4 h-16 w-full"
+            onClick={handleRetry}
+          >
             Retry
           </Button>
         ),
