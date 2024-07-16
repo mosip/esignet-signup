@@ -68,7 +68,7 @@ function installing_onboarder() {
     s3_user_key=$( kubectl -n s3 get cm s3 -o json | jq -r '.data."s3-user-key"' )
 
     echo Onboarding default partners
-    helm -n $NS install signup-partner-onboarder /home/techno-376/IdeaProjects/mosip-helm/charts/partner-onboarder \
+    helm -n $NS install signup-partner-onboarder mosip/partner-onboarder \
     --set image.repository=mosipdev/partner-onboarder \
     --set image.tag=develop \
     --set onboarding.configmaps.s3.s3-host="$s3_url" \
