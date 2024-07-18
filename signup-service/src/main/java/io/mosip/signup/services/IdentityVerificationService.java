@@ -15,6 +15,10 @@ import com.nimbusds.openid.connect.sdk.OIDCTokenResponseParser;
 import com.nimbusds.openid.connect.sdk.UserInfoRequest;
 import com.nimbusds.openid.connect.sdk.UserInfoResponse;
 import io.mosip.esignet.core.util.IdentityProviderUtil;
+import io.mosip.signup.api.exception.IdentityVerifierException;
+import io.mosip.signup.api.spi.ProfileRegistryPlugin;
+import io.mosip.signup.api.util.ProfileCreateUpdateStatus;
+import io.mosip.signup.api.util.VerificationStatus;
 import io.mosip.signup.dto.*;
 import io.mosip.signup.exception.InvalidTransactionException;
 import io.mosip.signup.exception.SignUpException;
@@ -39,7 +43,10 @@ import java.security.interfaces.RSAPrivateKey;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Optional;
+import java.util.UUID;
 
+import static io.mosip.signup.api.util.VerificationStatus.*;
+import static io.mosip.signup.util.ErrorConstants.UPDATE_FAILED;
 
 @Slf4j
 @Service
@@ -90,6 +97,9 @@ public class IdentityVerificationService {
     @Autowired
     private CacheUtilService cacheUtilService;
 
+    @Autowired
+    private ProfileRegistryPlugin profileRegistryPlugin;
+
     /**
      * Fetches the access token using the authorization grant and gets userinfo from eSignet.
      * If valid access token, starts the Identity verification transaction.
@@ -111,6 +121,7 @@ public class IdentityVerificationService {
         transaction.setIndividualId(subject); //TODO encrypt
         transaction.setSlotId(IdentityProviderUtil.generateB64EncodedHash(IdentityProviderUtil.ALGO_SHA3_256,
                 transactionId));
+        transaction.setApplicationId(UUID.randomUUID().toString());
         cacheUtilService.setIdentityVerificationTransaction(transactionId, transaction);
 
         Cookie cookie = new Cookie(SignUpConstants.IDV_TRANSACTION_ID, transactionId);
@@ -175,6 +186,7 @@ public class IdentityVerificationService {
             }
 
             transaction.setVerifierId(slotRequest.getVerifierId());
+            transaction.setStatus(STARTED);
             transaction = cacheUtilService.setSlotAllottedTransaction(transactionId, transaction);
             addSlotAllottedCookie(transactionId, result.get(), response);
 
@@ -187,6 +199,37 @@ public class IdentityVerificationService {
             log.error("Failed to assign slot to the requested transaction {}", transactionId, ex);
         }
         throw new SignUpException(ErrorConstants.SLOT_NOT_AVAILABLE);
+    }
+
+    /**
+     * Get the status of identity verification process with a valid allotted slotId
+     * @param slotId
+     * @return
+     */
+    public IdentityVerificationStatusResponse getStatus(String slotId) {
+        IdentityVerificationTransaction transaction = cacheUtilService.getVerifiedSlotTransaction(slotId);
+        if(transaction == null)
+            throw new InvalidTransactionException();
+
+        IdentityVerificationStatusResponse identityVerificationStatusResponse = new IdentityVerificationStatusResponse();
+        if(Arrays.asList(COMPLETED, FAILED).contains(transaction.getStatus())) {
+            identityVerificationStatusResponse.setStatus(transaction.getStatus());
+            return identityVerificationStatusResponse;
+        }
+
+        ProfileCreateUpdateStatus registrationStatus = profileRegistryPlugin.getProfileCreateUpdateStatus(transaction.getApplicationId());
+        switch (registrationStatus) {
+            case FAILED:
+                identityVerificationStatusResponse.setStatus(FAILED);
+                break;
+            case COMPLETED:
+                identityVerificationStatusResponse.setStatus(COMPLETED);
+                break;
+            case PENDING:
+                identityVerificationStatusResponse.setStatus(UPDATE_PENDING);
+                break;
+        }
+        return identityVerificationStatusResponse;
     }
 
     private void addSlotAllottedCookie(String transactionId, IdentityVerifierDetail identityVerifierDetail,
