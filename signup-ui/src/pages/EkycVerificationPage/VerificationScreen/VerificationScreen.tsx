@@ -14,15 +14,11 @@ import {
   IdentityVerificationState,
   IdvFeedbackEnum,
   IdvFrames,
-  KeyValueStringObject,
-  KycProviderDetail,
-  KycProviderDetailProp,
 } from "~typings/types";
 
 import {
   EkycVerificationStore,
   errorBannerMessageSelector,
-  kycProviderDetailSelector,
   setErrorBannerMessageSelector,
   setIsNoBackgroundSelector,
   slotIdSelector,
@@ -34,26 +30,25 @@ export const VerificationScreen = ({
   cancelPopup,
   settings,
 }: DefaultEkyVerificationProp) => {
-  const { t, i18n } = useTranslation("translation", {
+  const { t } = useTranslation("translation", {
     keyPrefix: "verification_screen",
   });
   const webcamRef = useRef(null);
   const [timer, setTimer] = useState<number | null>(null);
-  const [message, setMessage] = useState<string | null>(null);
+  const [message, setMessage] = useState<string | any>(null);
   const [alertConfig, setAlertConfig] = useState<object | null>(null);
   const [colorVerification, setColorVerification] = useState<boolean>(false);
   const [bgColor, setBgColor] = useState<string | null>(null);
   const [imageFrames, setImageFrames] = useState<IdvFrames[]>([]);
   // let imageFrames: IdvFrames[] = [];
-  const [identityVerification, setIdentityVerification] =
-    useState<IdentityVerificationState | null>({
-      stepCode: null,
-      fps: null,
-      totalDuration: null,
-      startupDelay: 10,
-      feedbackType: null,
-      feedbackCode: null,
-    });
+  let identityVerification: IdentityVerificationState | null = {
+    stepCode: null,
+    fps: null,
+    totalDuration: null,
+    startupDelay: 10,
+    feedbackType: null,
+    feedbackCode: null,
+  };
   const [langMap, setLangMap] = useState<any>({});
   let captureFrameInterval: any = null;
   let publishMessageInterval: any = null;
@@ -64,7 +59,6 @@ export const VerificationScreen = ({
     setErrorBannerMessage,
     errorBannerMessage,
     slotId,
-    kycProviderDetail,
   } = useEkycVerificationStore(
     useCallback(
       (state: EkycVerificationStore) => ({
@@ -72,7 +66,6 @@ export const VerificationScreen = ({
         setErrorBannerMessage: setErrorBannerMessageSelector(state),
         errorBannerMessage: errorBannerMessageSelector(state),
         slotId: slotIdSelector(state),
-        kycProviderDetail: kycProviderDetailSelector(state),
       }),
       []
     )
@@ -113,26 +106,15 @@ export const VerificationScreen = ({
       "*****************************Sending Message*****************************"
     );
     console.log(request);
-    console.log("before mapping");
-    console.log(imageFrames);
     if (imageFrames.length) {
       request.frames = imageFrames.map((frame: IdvFrames) => {
-        console.log("inside imageframe maps");
-        console.log(frame);
         return { frame: "", order: frame.order };
       });
     } else {
-      console.log(" image frame is empty");
       request.frames = Array.from(Array(10).keys()).map((i: number) => {
         return { frame: "", order: i };
       });
-
-      console.log("request frames");
-      console.log(request.frames);
     }
-    console.log("after mapping");
-    console.log(imageFrames);
-    // imageFrames = []
     publish(PUBLISH_TOPIC, JSON.stringify(request));
   };
 
@@ -142,7 +124,7 @@ export const VerificationScreen = ({
       const intervalId = setTimeout(() => {
         setTimer(timer - 1);
       }, 1000);
-      setMessage(t("welcome_message", { count: timer }));
+      setMessage(["welcome_message", { count: timer }]);
       return () => clearTimeout(intervalId);
     }
   }, [timer]);
@@ -164,27 +146,6 @@ export const VerificationScreen = ({
       window.screen.availWidth <= 1280
         ? window.screen.availWidth / window.innerHeight
         : 1.6,
-  };
-
-  const getCurrentLangMsg = (
-    key: KycProviderDetailProp,
-    prop: string
-  ): string => {
-    const currentLang = langMap[i18n.language];
-    // const msg: any = kycProviderDetail?[key]?[prop]?[currentLang];
-    let msg = "default";
-    let temp: KycProviderDetail | KeyValueStringObject | null =
-      kycProviderDetail;
-    if (temp && temp[key]) {
-      temp = temp[key] as KeyValueStringObject;
-      if (temp && temp[prop]) {
-        temp = temp[prop] as KeyValueStringObject;
-        if (temp && temp[currentLang]) {
-          msg = temp[currentLang] as string;
-        }
-      }
-    }
-    return msg;
   };
 
   // stompjs connection established
@@ -225,8 +186,6 @@ export const VerificationScreen = ({
         ...(res.feedback?.code && { feedbackCode: res.feedback.code }),
       };
     }
-    console.log("Converted Response to State");
-    console.log(temp);
     return temp;
   };
 
@@ -248,29 +207,28 @@ export const VerificationScreen = ({
         feedbackCode: tempRes.feedbackCode,
       };
     }
-    console.log("NEw current state");
-    console.log(temp);
-    setIdentityVerification(temp);
+    identityVerification = temp;
     return temp;
   };
 
   const redirectToConsent = () => {
     unsubscribe();
     client.deactivate();
-    const consentUrl = settings?.configs["signin.redirect-url"].replace("authorize", "consent");
+    const consentUrl = settings?.configs["signin.redirect-url"].replace(
+      "authorize",
+      "consent"
+    );
     const encodedIdToken = window.location.hash;
     window.onbeforeunload = null;
-    window.location.replace(
-      `${consentUrl}${encodedIdToken}`
-    );
-  }
+    window.location.replace(`${consentUrl}${encodedIdToken}`);
+  };
 
   const endWithSuccess = (successMsgCode: string) => {
     resetEverything();
     setAlertConfig({
       icon: "success",
-      header: getCurrentLangMsg("messages", successMsgCode),
-      subHeader: "Please wait while we finalize the process",
+      header: t("successful_header"),
+      subHeader: t("successful_subheader"),
       footer: null,
     });
     setTimeout(() => {
@@ -279,35 +237,25 @@ export const VerificationScreen = ({
   };
 
   const checkFeedback = (currentStep: IdentityVerificationState) => {
-    console.log("Checking Feedback");
-    console.log(currentStep.feedbackCode);
     setErrorBannerMessage(null);
     switch (currentStep.feedbackType) {
       case IdvFeedbackEnum.MESSAGE:
-        console.log("Message Feedback");
         if (currentStep.feedbackCode === "success_check") {
-          console.log("Success Feedback");
           // sending temporary success message
           endWithSuccess(
             currentStep?.feedbackCode ?? "Verification Successful"
           );
           break;
         }
-        setMessage(
-          getCurrentLangMsg("messages", currentStep.feedbackCode ?? "default")
-        );
+        setMessage([`messages.${currentStep.feedbackCode}`]);
         break;
       case IdvFeedbackEnum.COLOR:
-        console.log("Color Feedback");
         setColorVerification(true);
         setBgColor(currentStep.feedbackCode);
-        setMessage(t("focus_on_screen_message"));
+        setMessage(["focus_on_screen_message"]);
         break;
       case IdvFeedbackEnum.ERROR:
-        console.log("Error Feedback");
-        setErrorBannerMessage(
-          getCurrentLangMsg("errors", currentStep.feedbackCode ?? "default")
-        );
+        setErrorBannerMessage(t(`errors.${currentStep.feedbackCode}`));
         setColorVerification(false);
         break;
       default:
@@ -316,7 +264,6 @@ export const VerificationScreen = ({
   };
 
   const endResponseCheck = (currentStep: IdentityVerificationState | null) => {
-    console.log("End Response Check");
     if (currentStep === null) {
       return;
     }
@@ -328,21 +275,15 @@ export const VerificationScreen = ({
     ) {
       setAlertConfig({
         icon: "success",
-        header: getCurrentLangMsg(
-          "messages",
-          currentStep?.feedbackCode ?? "default"
-        ),
-        subHeader: "Please wait while we finalize the process",
+        header: t("successful_header"),
+        subHeader: t("successful_subheader"),
         footer: null,
       });
     } else {
       setAlertConfig({
         icon: "fail",
-        header: getCurrentLangMsg(
-          "errors",
-          currentStep?.feedbackCode ?? "default"
-        ),
-        subHeader: "Oops! We were unable to complete the eKYC verification.",
+        header: t("unsuccessful_header"),
+        subHeader: t("unsuccessful_subheader"),
         footer: (
           <Button id="retry-button" className="my-4 h-16 w-full">
             Retry
@@ -353,14 +294,13 @@ export const VerificationScreen = ({
   };
 
   const resetEverything = () => {
-    console.log("Resetting Everything");
     // when stepcode is end, then it will clear the interval
     // clearing capture frame & publish message interval
     clearInterval(captureFrameInterval);
     clearInterval(publishMessageInterval);
     setErrorBannerMessage(null);
     setColorVerification(false);
-    setMessage("");
+    setMessage([""]);
   };
 
   /**
@@ -381,9 +321,7 @@ export const VerificationScreen = ({
         console.log("End of the process");
 
         resetEverything();
-        unsubscribe();
-        client.deactivate();
-
+        redirectToConsent();
       } else if (previousState?.stepCode !== currentState?.stepCode) {
         console.log("Step code changed");
 
@@ -394,8 +332,6 @@ export const VerificationScreen = ({
           stepCode: currentState.stepCode,
           frames: [],
         };
-        console.log("Request to send");
-        console.log(request);
         // adding timer to show
         setTimer(currentState.startupDelay);
         // setting delay in startup
@@ -405,9 +341,7 @@ export const VerificationScreen = ({
             captureFrame,
             Math.floor(10000 / (currentState?.fps ?? 3))
           );
-          setMessage(
-            getCurrentLangMsg("stepCodes", currentState?.stepCode ?? "default")
-          );
+          setMessage([`stepCodes.${currentState.stepCode}`]);
 
           // sending image frame after every 10 seconds,
           // currently static, later will change to dynamic
@@ -464,7 +398,7 @@ export const VerificationScreen = ({
   ) : (
     <div className="sm:pb-[4em]">
       {!errorBannerMessage && message && (
-        <div className="video-message sm:w-[90vw]">{message}</div>
+        <div className="video-message sm:w-[90vw]">{t(...message)}</div>
       )}
       <div
         className={
