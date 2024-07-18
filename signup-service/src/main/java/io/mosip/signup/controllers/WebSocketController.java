@@ -1,9 +1,11 @@
 package io.mosip.signup.controllers;
 
-import io.mosip.signup.api.dto.IdentityVerificationDto;
-import io.mosip.signup.api.dto.IdentityVerificationResult;
-import io.mosip.signup.api.dto.VerifiedResult;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.mosip.signup.api.dto.*;
+import io.mosip.signup.api.exception.ProfileException;
 import io.mosip.signup.api.spi.IdentityVerifierPlugin;
+import io.mosip.signup.api.spi.ProfileRegistryPlugin;
+import io.mosip.signup.api.util.VerificationStatus;
 import io.mosip.signup.dto.IdentityVerificationRequest;
 import io.mosip.signup.dto.IdentityVerificationTransaction;
 import io.mosip.signup.exception.InvalidTransactionException;
@@ -11,6 +13,7 @@ import io.mosip.signup.exception.SignUpException;
 import io.mosip.signup.services.CacheUtilService;
 import io.mosip.signup.services.IdentityVerifierFactory;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.map.HashedMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -22,9 +25,12 @@ import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 import static io.mosip.signup.api.util.ErrorConstants.PLUGIN_NOT_FOUND;
+import static io.mosip.signup.util.ErrorConstants.VERIFIED_CLAIMS_FIELD_ID;
 import static io.mosip.signup.util.SignUpConstants.SOCKET_USERNAME_SEPARATOR;
 
 @Slf4j
@@ -39,6 +45,12 @@ public class WebSocketController {
 
     @Autowired
     private IdentityVerifierFactory identityVerifierFactory;
+
+    @Autowired
+    private ProfileRegistryPlugin profileRegistryPlugin;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
 
     @MessageMapping("/process-frame")
@@ -61,18 +73,53 @@ public class WebSocketController {
     @KafkaListener(id = "step-status-consumer", autoStartup = "true",
             topics = IdentityVerifierPlugin.RESULT_TOPIC)
     public void consumeStepStatus(final IdentityVerificationResult identityVerificationResult) {
-        simpMessagingTemplate.convertAndSend("/topic/"+identityVerificationResult.getId(), identityVerificationResult);
+        IdentityVerificationTransaction transaction = cacheUtilService.getVerifiedSlotTransaction(identityVerificationResult.getId());
+        if(transaction == null) {
+            log.error("Ignoring identity verification result received for unknown/expired transaction!");
+            return;
+        }
 
         IdentityVerifierPlugin plugin = identityVerifierFactory.getIdentityVerifier(identityVerificationResult.getVerifierId());
-        if(plugin == null)
-            throw new SignUpException(PLUGIN_NOT_FOUND);
+        if(plugin == null) {
+            log.error("Ignoring identity verification result received for unknown {} IDV plugin!", identityVerificationResult.getVerifierId());
+            return;
+        }
 
+        simpMessagingTemplate.convertAndSend("/topic/"+identityVerificationResult.getId(), identityVerificationResult);
+
+        //END step marks verification process completion
         if(identityVerificationResult.getStep() != null && plugin.isEndStep(identityVerificationResult.getStep().getCode())) {
             log.info("Reached the end step for {}", identityVerificationResult.getId());
-
             VerifiedResult verifiedResult = plugin.getVerifiedResult(identityVerificationResult.getId());
             log.info("VerifiedResult >> {}", verifiedResult);
-            //TODO update mock-identity-system
+
+            switch (verifiedResult.getStatus()) {
+                case FAILED:
+                    transaction.setStatus(VerificationStatus.FAILED);
+                    transaction.setErrorCode(verifiedResult.getErrorCode());
+                    break;
+                case COMPLETED: //Proceed to update the profile
+                    ProfileDto profileDto = new ProfileDto();
+                    profileDto.setIndividualId(transaction.getIndividualId());
+                    profileDto.setActive(true);
+                    Map<String, Map<String, VerificationDetail>> verifiedData = new HashMap<>();
+                    verifiedData.put(VERIFIED_CLAIMS_FIELD_ID, verifiedResult.getVerifiedClaims());
+                    profileDto.setIdentity(objectMapper.valueToTree(verifiedData));
+
+                    try {
+                        profileRegistryPlugin.updateProfile(transaction.getApplicationId(), profileDto);
+                        transaction.setStatus(VerificationStatus.UPDATE_PENDING);
+                    } catch (ProfileException ex) {
+                        log.error("Failed to updated verified claims in the registry", ex);
+
+                        transaction.setStatus(VerificationStatus.FAILED);
+                        transaction.setErrorCode(ex.getErrorCode());
+                    }
+                    break;
+                default:
+                    break;
+            }
+            cacheUtilService.updateVerifiedSlotTransaction(identityVerificationResult.getId(), transaction);
         }
     }
 

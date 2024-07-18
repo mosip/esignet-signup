@@ -4,5 +4,6 @@ public enum VerificationStatus {
 
     COMPLETED,
     FAILED,
-    PENDING;
+    STARTED,
+    UPDATE_PENDING;
 }

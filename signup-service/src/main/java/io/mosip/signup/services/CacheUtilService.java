@@ -166,6 +166,12 @@ public class CacheUtilService {
         return cacheManager.getCache(SignUpConstants.VERIFIED_SLOT).get(slotId, IdentityVerificationTransaction.class); //NOSONAR getCache() will not be returning null here.
     }
 
+    public void updateVerifiedSlotTransaction(String slotId, IdentityVerificationTransaction transaction) {
+        if(cacheManager.getCache(SignUpConstants.VERIFIED_SLOT) != null) {
+            cacheManager.getCache(SignUpConstants.VERIFIED_SLOT).put(slotId, transaction);
+        }
+    }
+
     public JsonNode getIdentityVerifierMetadata(String identityVerifierId) {
         return cacheManager.getCache(SignUpConstants.IDENTITY_VERIFIER_METADATA).get(identityVerifierId, JsonNode.class); //NOSONAR getCache() will not be returning null here.
     }
