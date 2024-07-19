@@ -6,22 +6,21 @@ import io.mosip.esignet.core.util.IdentityProviderUtil;
 import io.mosip.signup.dto.IdentityVerificationTransaction;
 import io.mosip.signup.dto.IdentityVerifierDetail;
 import io.mosip.signup.dto.RegistrationTransaction;
-import io.mosip.signup.exception.SignUpException;
 import io.mosip.signup.helper.CryptoHelper;
-import io.mosip.signup.util.ErrorConstants;
 import io.mosip.signup.util.SignUpConstants;
 import lombok.extern.slf4j.Slf4j;
+import net.javacrumbs.shedlock.core.LockAssert;
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.core.Cursor;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ScanOptions;
-import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.connection.ReturnType;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import java.util.Locale;
 
@@ -38,6 +37,21 @@ public class CacheUtilService {
 
     @Autowired
     private RedisConnectionFactory redisConnectionFactory;
+
+    @Value("${mosip.signup.slot.expire-in-seconds}")
+    private Integer slotExpireInSeconds;
+
+    private static final String CLEANUP_SCRIPT = "local hash_name = ARGV[1]\n" +
+            "local max_age = ARGV[2]\n" +
+            "\n" +
+            "for field, value in pairs(redis.call('hgetall', hash_name)) do\n" +
+            "\tlocal epoch = tonumber(value)\n" +
+            "\tif epoch and os.time() - epoch > max_age then\n" +
+            "\t\tredis.call('hdel', hash_name, field)\n" +
+            "\tend\n" +
+            "end";
+
+    private String scriptHash = null;
 
     //---Setter---
 
@@ -189,5 +203,19 @@ public class CacheUtilService {
         Long count = redisConnectionFactory.getConnection().hLen(SLOTS_CONNECTED.getBytes());
         log.debug("Current allotted slot count : {}", count);
         return count == null ? 0 : count;
+    }
+
+    @Scheduled(cron = "${mosip.signup.slot.cleanup-cron}")
+    @SchedulerLock(name = "clearExpiredSlots", lockAtMostFor = "PT120S", lockAtLeastFor = "PT120S")
+    public void clearExpiredSlots() {
+        if(redisConnectionFactory.getConnection() != null) {
+            if(scriptHash == null) {
+                scriptHash = redisConnectionFactory.getConnection().scriptingCommands().scriptLoad(CLEANUP_SCRIPT.getBytes());
+            }
+            LockAssert.assertLocked();
+            redisConnectionFactory.getConnection().scriptingCommands().evalSha(scriptHash, ReturnType.INTEGER, 1,
+                    SLOTS_CONNECTED.getBytes(), new byte[]{slotExpireInSeconds.byteValue()});
+        }
+
     }
 }
