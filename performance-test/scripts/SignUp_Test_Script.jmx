@@ -212,7 +212,7 @@
           </elementProp>
           <elementProp name="testDuration" elementType="Argument">
             <stringProp name="Argument.name">testDuration</stringProp>
-            <stringProp name="Argument.value">1800</stringProp>
+            <stringProp name="Argument.value">3600</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="rampUp" elementType="Argument">
@@ -220,15 +220,10 @@
             <stringProp name="Argument.value">30</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
-          <elementProp name="runTimeFilePath" elementType="Argument">
-            <stringProp name="Argument.name">runTimeFilePath</stringProp>
-            <stringProp name="Argument.value">./bin/RunTimeFiles</stringProp>
-            <stringProp name="Argument.metadata">=</stringProp>
-          </elementProp>
         </collectionProp>
       </Arguments>
       <hashTree/>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Sign Up Service - Reset Password (Setup)" enabled="true">
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Creating KBA Challenge value for Reset Password usecase (Setup)" enabled="true">
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
@@ -547,22 +542,25 @@ log.info(&quot;Password: &quot; + password)
             <stringProp name="script">import java.io.*;
 
 // Creating base64-urljsonencoded
-def fullnameval=vars.get(&quot;fullName&quot;);
-def fullpayload=&quot;{\&quot;fullName\&quot;:[{\&quot;language\&quot;:\&quot;khm\&quot;,\&quot;value\&quot;:\&quot;${fullnameval}\&quot;}]}&quot;
+def fullNameVal=vars.get(&quot;fullName&quot;);
+def langVal=vars.get(&quot;signUpRegisterLanguage&quot;);
+def fullPayload=&quot;{\&quot;fullName\&quot;:[{\&quot;language\&quot;:\&quot;${langVal}\&quot;,\&quot;value\&quot;:\&quot;${fullNameVal}\&quot;}]}&quot;
 def encodedBytes = fullpayload.getBytes(&quot;UTF-8&quot;)
 def encodedString = encodedBytes.encodeBase64().toString()
 
 //adding the identifier number
-def identifierprefix=vars.get(&quot;identifierPrefix&quot;);
+def identifierPrefix=vars.get(&quot;identifierPrefix&quot;);
 def identifier=vars.get(&quot;identifier&quot;);
 def phonenum=identifierprefix+identifier;
 
 //defining bin folder of JMeter path
 def currentDir = System.getProperty(&quot;user.dir&quot;);
-def binDir = new File(currentDir);
+//def binDir = new File(currentDir);
+
+def runtimeFilesDir = new File(currentDir, &quot;bin/runtime-files&quot;);
 
 //saving to the file
-File f = new File(binDir, &quot;testdata_reset_password.txt&quot;);
+File f = new File(runtimeFilesDir, &quot;testdata_resetpassword.txt&quot;);
 FileWriter fw=new FileWriter(f,true);
 BufferedWriter bw=new BufferedWriter(fw);
 bw.write(&quot;${phonenum},${encodedString}&quot;);
@@ -599,6 +597,15 @@ fw.close();</stringProp>
           <boolProp name="stopThread">true</boolProp>
           <stringProp name="variableNames">fullName</stringProp>
         </CSVDataSet>
+        <hashTree/>
+        <CounterConfig guiclass="CounterConfigGui" testclass="CounterConfig" testname="Counter for Set Property" enabled="true">
+          <stringProp name="CounterConfig.start">1</stringProp>
+          <stringProp name="CounterConfig.end"></stringProp>
+          <stringProp name="CounterConfig.incr">1</stringProp>
+          <stringProp name="CounterConfig.name">countVal2</stringProp>
+          <stringProp name="CounterConfig.format"></stringProp>
+          <boolProp name="CounterConfig.per_user">false</boolProp>
+        </CounterConfig>
         <hashTree/>
         <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="S01 T01 GetCsrf" enabled="true">
           <boolProp name="TransactionController.includeTimers">false</boolProp>
@@ -970,12 +977,6 @@ log.info(&quot;Password: &quot; + password)
             <hashTree/>
           </hashTree>
         </hashTree>
-        <TestAction guiclass="TestActionGui" testclass="TestAction" testname="Wait for the Asynchronous status call" enabled="true">
-          <intProp name="ActionProcessor.action">1</intProp>
-          <intProp name="ActionProcessor.target">0</intProp>
-          <stringProp name="ActionProcessor.duration">40000</stringProp>
-        </TestAction>
-        <hashTree/>
         <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="S01 T05 Registration" enabled="true">
           <boolProp name="TransactionController.includeTimers">false</boolProp>
           <boolProp name="TransactionController.parent">false</boolProp>
@@ -1041,6 +1042,24 @@ log.info(&quot;Password: &quot; + password)
               <intProp name="Assertion.test_type">2</intProp>
             </ResponseAssertion>
             <hashTree/>
+            <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="pendingStatus" enabled="true">
+              <stringProp name="RegexExtractor.useHeaders">false</stringProp>
+              <stringProp name="RegexExtractor.refname">pendingStatus</stringProp>
+              <stringProp name="RegexExtractor.regex">&quot;status&quot;:&quot;(.*?)&quot;</stringProp>
+              <stringProp name="RegexExtractor.template">$1$</stringProp>
+              <stringProp name="RegexExtractor.default">NOTFOUND</stringProp>
+              <stringProp name="RegexExtractor.match_number">1</stringProp>
+            </RegexExtractor>
+            <hashTree/>
+            <BeanShellAssertion guiclass="BeanShellAssertionGui" testclass="BeanShellAssertion" testname="Setting property to the variable " enabled="true">
+              <stringProp name="BeanShellAssertion.query">${__setProperty(loadCsrfTokenhost${countVal2},${loadCsrfToken},)}
+${__setProperty(verifiedTransactionIdhost${countVal2},${verifiedTransactionId},)}
+${__setProperty(pendingStatus${countVal2},${pendingStatus},)}</stringProp>
+              <stringProp name="BeanShellAssertion.filename"></stringProp>
+              <stringProp name="BeanShellAssertion.parameters"></stringProp>
+              <boolProp name="BeanShellAssertion.resetInterpreter">true</boolProp>
+            </BeanShellAssertion>
+            <hashTree/>
           </hashTree>
         </hashTree>
         <ConstantThroughputTimer guiclass="TestBeanGUI" testclass="ConstantThroughputTimer" testname="Constant Throughput Timer" enabled="true">
@@ -1070,7 +1089,7 @@ log.info(&quot;Password: &quot; + password)
         <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="Load identifier From File" enabled="true">
           <stringProp name="delimiter">,</stringProp>
           <stringProp name="fileEncoding">UTF-8</stringProp>
-          <stringProp name="filename">./bin/runtime-files/testdata_reset_password.txt</stringProp>
+          <stringProp name="filename">./runtime-files/testdata_resetpassword.txt</stringProp>
           <boolProp name="ignoreFirstLine">false</boolProp>
           <boolProp name="quotedData">false</boolProp>
           <boolProp name="recycle">true</boolProp>
@@ -1078,6 +1097,15 @@ log.info(&quot;Password: &quot; + password)
           <boolProp name="stopThread">true</boolProp>
           <stringProp name="variableNames">identifier,encodedData</stringProp>
         </CSVDataSet>
+        <hashTree/>
+        <CounterConfig guiclass="CounterConfigGui" testclass="CounterConfig" testname="Counter for Set property" enabled="true">
+          <stringProp name="CounterConfig.start">1</stringProp>
+          <stringProp name="CounterConfig.end"></stringProp>
+          <stringProp name="CounterConfig.incr">1</stringProp>
+          <stringProp name="CounterConfig.name">countval3</stringProp>
+          <stringProp name="CounterConfig.format"></stringProp>
+          <boolProp name="CounterConfig.per_user">false</boolProp>
+        </CounterConfig>
         <hashTree/>
         <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="S02 T01 GetCsrf" enabled="true">
           <boolProp name="TransactionController.includeTimers">false</boolProp>
@@ -1441,12 +1469,6 @@ log.info(&quot;Password: &quot; + password)</stringProp>
             <hashTree/>
           </hashTree>
         </hashTree>
-        <TestAction guiclass="TestActionGui" testclass="TestAction" testname="Wait for the Asynchronous status call" enabled="true">
-          <intProp name="ActionProcessor.action">1</intProp>
-          <intProp name="ActionProcessor.target">0</intProp>
-          <stringProp name="ActionProcessor.duration">40000</stringProp>
-        </TestAction>
-        <hashTree/>
         <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="S02 T04 Registration" enabled="true">
           <boolProp name="TransactionController.includeTimers">false</boolProp>
           <boolProp name="TransactionController.parent">false</boolProp>
@@ -1512,6 +1534,24 @@ log.info(&quot;Password: &quot; + password)</stringProp>
               <intProp name="Assertion.test_type">2</intProp>
             </ResponseAssertion>
             <hashTree/>
+            <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="pendingStatus" enabled="true">
+              <stringProp name="RegexExtractor.useHeaders">false</stringProp>
+              <stringProp name="RegexExtractor.refname">pendingStatus</stringProp>
+              <stringProp name="RegexExtractor.regex">&quot;status&quot;:&quot;(.*?)&quot;</stringProp>
+              <stringProp name="RegexExtractor.template">$1$</stringProp>
+              <stringProp name="RegexExtractor.default">NOTFOUND</stringProp>
+              <stringProp name="RegexExtractor.match_number">1</stringProp>
+            </RegexExtractor>
+            <hashTree/>
+            <BeanShellAssertion guiclass="BeanShellAssertionGui" testclass="BeanShellAssertion" testname="Setting property to the variable " enabled="true">
+              <stringProp name="BeanShellAssertion.query">${__setProperty(loadCsrfTokenhostResetPassword${countval3},${loadCsrfToken},)}
+${__setProperty(verifiedTransactionIdhostResetPassword${countval3},${verifiedTransactionId},)}
+${__setProperty(pendingStatusResetPassword${countval3},${pendingStatus},)}</stringProp>
+              <stringProp name="BeanShellAssertion.filename"></stringProp>
+              <stringProp name="BeanShellAssertion.parameters"></stringProp>
+              <boolProp name="BeanShellAssertion.resetInterpreter">true</boolProp>
+            </BeanShellAssertion>
+            <hashTree/>
           </hashTree>
         </hashTree>
         <ConstantThroughputTimer guiclass="TestBeanGUI" testclass="ConstantThroughputTimer" testname="Constant Throughput Timer" enabled="true">
@@ -1522,6 +1562,452 @@ log.info(&quot;Password: &quot; + password)</stringProp>
             <savedValue>0.0</savedValue>
           </doubleProp>
         </ConstantThroughputTimer>
+        <hashTree/>
+      </hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="S03 UserSignUpRegistrationStatus (Execution)" enabled="true">
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <intProp name="LoopController.loops">-1</intProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">90</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">${rampUp}</stringProp>
+        <boolProp name="ThreadGroup.scheduler">true</boolProp>
+        <stringProp name="ThreadGroup.duration">${testDuration}</stringProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">false</boolProp>
+      </ThreadGroup>
+      <hashTree>
+        <CounterConfig guiclass="CounterConfigGui" testclass="CounterConfig" testname="Counter" enabled="true">
+          <stringProp name="CounterConfig.start">1</stringProp>
+          <stringProp name="CounterConfig.end"></stringProp>
+          <stringProp name="CounterConfig.incr">1</stringProp>
+          <stringProp name="CounterConfig.name">countval</stringProp>
+          <stringProp name="CounterConfig.format"></stringProp>
+          <boolProp name="CounterConfig.per_user">false</boolProp>
+        </CounterConfig>
+        <hashTree/>
+        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Fetching the Data from Registration threadgroup" enabled="true"/>
+        <hashTree>
+          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Fetching the transaction IDs from the Registration status" enabled="true">
+            <stringProp name="cacheKey">false</stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="script">def loadCsrfTokencheck=&quot;${__property(loadCsrfTokenhost${countval},,)}&quot;
+//log.info(loadCsrfTokencheck);
+vars.put(&quot;loadCsrfTokencheck&quot;,loadCsrfTokencheck);
+def verifiedTransactionIdcheck=&quot;${__property(verifiedTransactionIdhost${countval},,)}&quot;
+//log.info(verifiedTransactionIdcheck);
+vars.put(&quot;verifiedTransactionIdcheck&quot;,verifiedTransactionIdcheck);
+def pendingStatuscheck=&quot;${__property(pendingStatus${countval},,)}&quot;
+//log.info(pendingStatuscheck);
+
+vars.put(&quot;pendingStatusCheck&quot;,pendingStatuscheck);
+def timeStamp=&quot;${__time(,)}&quot;;
+
+def flag=&quot;0&quot;;
+vars.put(&quot;check&quot;,flag);
+vars.put(&quot;timeStamp&quot;,timeStamp);</stringProp>
+            <stringProp name="scriptLanguage">groovy</stringProp>
+          </JSR223Sampler>
+          <hashTree>
+            <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Set to Ignore for above JSR223 sampler" enabled="true">
+              <stringProp name="scriptLanguage">groovy</stringProp>
+              <stringProp name="parameters"></stringProp>
+              <stringProp name="filename"></stringProp>
+              <stringProp name="cacheKey">true</stringProp>
+              <stringProp name="script">prev.setIgnore();</stringProp>
+            </JSR223PostProcessor>
+            <hashTree/>
+          </hashTree>
+          <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If Controller - Delay for returning empty data set from Registration Threadgroup" enabled="true">
+            <stringProp name="IfController.condition">${__groovy(vars.get(&quot;pendingStatusCheck&quot;).equals(&quot;&quot;),)}</stringProp>
+            <boolProp name="IfController.evaluateAll">false</boolProp>
+            <boolProp name="IfController.useExpression">true</boolProp>
+          </IfController>
+          <hashTree>
+            <TestAction guiclass="TestActionGui" testclass="TestAction" testname="Flow Control Action" enabled="true">
+              <intProp name="ActionProcessor.action">1</intProp>
+              <intProp name="ActionProcessor.target">0</intProp>
+              <stringProp name="ActionProcessor.duration">3000</stringProp>
+            </TestAction>
+            <hashTree/>
+          </hashTree>
+        </hashTree>
+        <WhileController guiclass="WhileControllerGui" testclass="WhileController" testname="While Controller - Recursive function if empty data is retreived received from Registration group" enabled="true">
+          <stringProp name="WhileController.condition">${__groovy(vars.get(&quot;pendingStatusCheck&quot;).equals(&quot;&quot;),)}</stringProp>
+        </WhileController>
+        <hashTree>
+          <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Module Controller - Recursive call  to fetch valid data" enabled="true">
+            <collectionProp name="ModuleController.node_path">
+              <stringProp name="764597751">Test Plan</stringProp>
+              <stringProp name="764597751">Test Plan</stringProp>
+              <stringProp name="311062769">S03 UserSignUpRegistrationStatus (Execution)</stringProp>
+              <stringProp name="1462511093">Fetching the Data from Registration threadgroup</stringProp>
+            </collectionProp>
+          </ModuleController>
+          <hashTree/>
+        </hashTree>
+        <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If Controller" enabled="true">
+          <stringProp name="IfController.condition">${__groovy(vars.get(&quot;pendingStatusCheck&quot;).equals(&quot;PENDING&quot;),)}</stringProp>
+          <boolProp name="IfController.evaluateAll">false</boolProp>
+          <boolProp name="IfController.useExpression">true</boolProp>
+        </IfController>
+        <hashTree>
+          <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="S03 RegistrationCheckStatus" enabled="true">
+            <boolProp name="TransactionController.parent">true</boolProp>
+          </TransactionController>
+          <hashTree>
+            <WhileController guiclass="WhileControllerGui" testclass="WhileController" testname="While Controller - Calling the endpoint until we fetch COMPLETED message" enabled="true">
+              <stringProp name="WhileController.condition">${__groovy(vars.get(&quot;pendingStatusCheck&quot;).equals(&quot;PENDING&quot;) &amp;&amp; vars.get(&quot;check&quot;).equals(&quot;0&quot;),)}</stringProp>
+            </WhileController>
+            <hashTree>
+              <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Registration Status Endpoint" enabled="true">
+                <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+                  <collectionProp name="Arguments.arguments"/>
+                </elementProp>
+                <stringProp name="HTTPSampler.domain">${serverIP}</stringProp>
+                <stringProp name="HTTPSampler.port">${serverPortNo}</stringProp>
+                <stringProp name="HTTPSampler.protocol">${protocol}</stringProp>
+                <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+                <stringProp name="HTTPSampler.path">/v1/signup/registration/status</stringProp>
+                <stringProp name="HTTPSampler.method">GET</stringProp>
+                <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+                <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+                <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+                <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+                <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+                <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+                <stringProp name="HTTPSampler.response_timeout"></stringProp>
+              </HTTPSamplerProxy>
+              <hashTree>
+                <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+                  <collectionProp name="HeaderManager.headers">
+                    <elementProp name="" elementType="Header">
+                      <stringProp name="Header.name">Content-Type</stringProp>
+                      <stringProp name="Header.value">application/json</stringProp>
+                    </elementProp>
+                    <elementProp name="" elementType="Header">
+                      <stringProp name="Header.name">X-XSRF-TOKEN</stringProp>
+                      <stringProp name="Header.value">${loadCsrfTokencheck}</stringProp>
+                    </elementProp>
+                    <elementProp name="" elementType="Header">
+                      <stringProp name="Header.name">Cookie</stringProp>
+                      <stringProp name="Header.value">XSRF-TOKEN=${loadCsrfTokencheck}</stringProp>
+                    </elementProp>
+                    <elementProp name="Cookie" elementType="Header">
+                      <stringProp name="Header.name">Cookie</stringProp>
+                      <stringProp name="Header.value">VERIFIED_TRANSACTION_ID=${verifiedTransactionIdcheck}</stringProp>
+                    </elementProp>
+                  </collectionProp>
+                </HeaderManager>
+                <hashTree/>
+                <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="pendingStatusCheck" enabled="true">
+                  <stringProp name="RegexExtractor.useHeaders">false</stringProp>
+                  <stringProp name="RegexExtractor.refname">pendingStatusCheck</stringProp>
+                  <stringProp name="RegexExtractor.regex">&quot;status&quot;:&quot;(.*?)&quot;</stringProp>
+                  <stringProp name="RegexExtractor.template">$1$</stringProp>
+                  <stringProp name="RegexExtractor.default"></stringProp>
+                  <stringProp name="RegexExtractor.match_number">1</stringProp>
+                  <boolProp name="RegexExtractor.default_empty_value">true</boolProp>
+                </RegexExtractor>
+                <hashTree/>
+                <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Timeout Check" enabled="true">
+                  <stringProp name="scriptLanguage">groovy</stringProp>
+                  <stringProp name="parameters"></stringProp>
+                  <stringProp name="filename"></stringProp>
+                  <stringProp name="cacheKey">false</stringProp>
+                  <stringProp name="script">def fetchStartTimestamp=vars.get(&quot;timeStamp&quot;);
+def success=vars.get(&quot;pendingStatusCheck&quot;);
+def currentTimestamp=&quot;${__time(,)}&quot;;
+long startTimestamp=fetchStartTimestamp.toLong();
+long endTimestamp=currentTimestamp.toLong();
+int timeConsumed=endTimestamp-startTimestamp;
+
+if(timeConsumed &gt;= 200000)
+{
+def timeoutCheck=&quot;DONE&quot;;
+vars.put(&quot;check&quot;,timeoutCheck);
+}
+if(timeConsumed &lt; 200000 &amp;&amp; success.equals(&quot;PENDING&quot;))
+{
+prev.setIgnore();
+}
+
+</stringProp>
+                </JSR223PostProcessor>
+                <hashTree/>
+                <JSR223Assertion guiclass="TestBeanGUI" testclass="JSR223Assertion" testname="Error assertion" enabled="true">
+                  <stringProp name="cacheKey">true</stringProp>
+                  <stringProp name="filename"></stringProp>
+                  <stringProp name="parameters"></stringProp>
+                  <stringProp name="script">def success=vars.get(&quot;pendingStatusCheck&quot;);
+def timeoutcheck=vars.get(&quot;check&quot;);
+if(success.equals(&quot;COMPLETED&quot;))
+{
+	SampleResult.setSuccessful(true);
+} else if(timeoutcheck.equals(&quot;DONE&quot;) || success.equals(&quot;FAILED&quot;))
+{
+	SampleResult.setSuccessful(false);
+}else
+{
+	prev.setIgnore();
+}
+</stringProp>
+                  <stringProp name="scriptLanguage">groovy</stringProp>
+                </JSR223Assertion>
+                <hashTree/>
+              </hashTree>
+              <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If Controller - Provide delay for 20 seconds" enabled="true">
+                <stringProp name="IfController.condition">${__groovy(vars.get(&quot;pendingStatusCheck&quot;).equals(&quot;PENDING&quot;) &amp;&amp; vars.get(&quot;check&quot;).equals(&quot;0&quot;) ,)}</stringProp>
+                <boolProp name="IfController.evaluateAll">false</boolProp>
+                <boolProp name="IfController.useExpression">true</boolProp>
+              </IfController>
+              <hashTree>
+                <TestAction guiclass="TestActionGui" testclass="TestAction" testname="Flow Control Action" enabled="true">
+                  <intProp name="ActionProcessor.action">1</intProp>
+                  <intProp name="ActionProcessor.target">0</intProp>
+                  <stringProp name="ActionProcessor.duration">20000</stringProp>
+                </TestAction>
+                <hashTree/>
+              </hashTree>
+            </hashTree>
+          </hashTree>
+        </hashTree>
+      </hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="S04 ResetPasswordStatus (Execution)" enabled="true">
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <intProp name="LoopController.loops">-1</intProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">10</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">${rampUp}</stringProp>
+        <boolProp name="ThreadGroup.scheduler">true</boolProp>
+        <stringProp name="ThreadGroup.duration">${testDuration}</stringProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">false</boolProp>
+      </ThreadGroup>
+      <hashTree>
+        <CounterConfig guiclass="CounterConfigGui" testclass="CounterConfig" testname="Counter" enabled="true">
+          <stringProp name="CounterConfig.start">1</stringProp>
+          <stringProp name="CounterConfig.end"></stringProp>
+          <stringProp name="CounterConfig.incr">1</stringProp>
+          <stringProp name="CounterConfig.name">countval</stringProp>
+          <stringProp name="CounterConfig.format"></stringProp>
+          <boolProp name="CounterConfig.per_user">false</boolProp>
+        </CounterConfig>
+        <hashTree/>
+        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Fetching the Data from Registration threadgroup" enabled="true"/>
+        <hashTree>
+          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Fetching the transaction IDs from the Registration status" enabled="true">
+            <stringProp name="cacheKey">false</stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="script">def loadCsrfTokencheck=&quot;${__property(loadCsrfTokenhostResetPassword${countval},,)}&quot;
+//log.info(loadCsrfTokencheck);
+vars.put(&quot;loadCsrfTokencheck&quot;,loadCsrfTokencheck);
+def verifiedTransactionIdcheck=&quot;${__property(verifiedTransactionIdhostResetPassword${countval},,)}&quot;
+//log.info(verifiedTransactionIdcheck);
+vars.put(&quot;verifiedTransactionIdcheck&quot;,verifiedTransactionIdcheck);
+def pendingStatuscheck=&quot;${__property(pendingStatusResetPassword${countval},,)}&quot;
+//log.info(pendingStatuscheck);
+
+vars.put(&quot;pendingStatusCheck&quot;,pendingStatuscheck);
+def timeStamp=&quot;${__time(,)}&quot;;
+
+def flag=&quot;0&quot;;
+vars.put(&quot;check&quot;,flag);
+vars.put(&quot;timeStamp&quot;,timeStamp);</stringProp>
+            <stringProp name="scriptLanguage">groovy</stringProp>
+          </JSR223Sampler>
+          <hashTree>
+            <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Set to Ignore for above JSR223 sampler" enabled="true">
+              <stringProp name="scriptLanguage">groovy</stringProp>
+              <stringProp name="parameters"></stringProp>
+              <stringProp name="filename"></stringProp>
+              <stringProp name="cacheKey">true</stringProp>
+              <stringProp name="script">prev.setIgnore();</stringProp>
+            </JSR223PostProcessor>
+            <hashTree/>
+          </hashTree>
+          <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If Controller - Delay for returning empty data set from Registration Threadgroup" enabled="true">
+            <stringProp name="IfController.condition">${__groovy(vars.get(&quot;pendingStatusCheck&quot;).equals(&quot;&quot;),)}</stringProp>
+            <boolProp name="IfController.evaluateAll">false</boolProp>
+            <boolProp name="IfController.useExpression">true</boolProp>
+          </IfController>
+          <hashTree>
+            <TestAction guiclass="TestActionGui" testclass="TestAction" testname="Flow Control Action" enabled="true">
+              <intProp name="ActionProcessor.action">1</intProp>
+              <intProp name="ActionProcessor.target">0</intProp>
+              <stringProp name="ActionProcessor.duration">3000</stringProp>
+            </TestAction>
+            <hashTree/>
+          </hashTree>
+        </hashTree>
+        <WhileController guiclass="WhileControllerGui" testclass="WhileController" testname="While Controller - Recursive function if empty data is retreived received from Registration group" enabled="true">
+          <stringProp name="WhileController.condition">${__groovy(vars.get(&quot;pendingStatusCheck&quot;).equals(&quot;&quot;),)}</stringProp>
+        </WhileController>
+        <hashTree>
+          <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Module Controller - Recursive call  to fetch valid data" enabled="true">
+            <collectionProp name="ModuleController.node_path">
+              <stringProp name="764597751">Test Plan</stringProp>
+              <stringProp name="764597751">Test Plan</stringProp>
+              <stringProp name="994321196">S04 ResetPasswordStatus (Execution)</stringProp>
+              <stringProp name="1462511093">Fetching the Data from Registration threadgroup</stringProp>
+            </collectionProp>
+          </ModuleController>
+          <hashTree/>
+        </hashTree>
+        <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If Controller" enabled="true">
+          <stringProp name="IfController.condition">${__groovy(vars.get(&quot;pendingStatusCheck&quot;).equals(&quot;PENDING&quot;),)}</stringProp>
+          <boolProp name="IfController.evaluateAll">false</boolProp>
+          <boolProp name="IfController.useExpression">true</boolProp>
+        </IfController>
+        <hashTree>
+          <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="S04 ResetPasswordCheckStatus" enabled="true">
+            <boolProp name="TransactionController.parent">true</boolProp>
+          </TransactionController>
+          <hashTree>
+            <WhileController guiclass="WhileControllerGui" testclass="WhileController" testname="While Controller - Calling the endpoint until we fetch COMPLETED message" enabled="true">
+              <stringProp name="WhileController.condition">${__groovy(vars.get(&quot;pendingStatusCheck&quot;).equals(&quot;PENDING&quot;) &amp;&amp; vars.get(&quot;check&quot;).equals(&quot;0&quot;),)}</stringProp>
+            </WhileController>
+            <hashTree>
+              <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="ResetPasswordStatus Endpoint" enabled="true">
+                <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+                  <collectionProp name="Arguments.arguments"/>
+                </elementProp>
+                <stringProp name="HTTPSampler.domain">${serverIP}</stringProp>
+                <stringProp name="HTTPSampler.port">${serverPortNo}</stringProp>
+                <stringProp name="HTTPSampler.protocol">${protocol}</stringProp>
+                <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+                <stringProp name="HTTPSampler.path">/v1/signup/registration/status</stringProp>
+                <stringProp name="HTTPSampler.method">GET</stringProp>
+                <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+                <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+                <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+                <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+                <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+                <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+                <stringProp name="HTTPSampler.response_timeout"></stringProp>
+              </HTTPSamplerProxy>
+              <hashTree>
+                <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+                  <collectionProp name="HeaderManager.headers">
+                    <elementProp name="" elementType="Header">
+                      <stringProp name="Header.name">Content-Type</stringProp>
+                      <stringProp name="Header.value">application/json</stringProp>
+                    </elementProp>
+                    <elementProp name="" elementType="Header">
+                      <stringProp name="Header.name">X-XSRF-TOKEN</stringProp>
+                      <stringProp name="Header.value">${loadCsrfTokencheck}</stringProp>
+                    </elementProp>
+                    <elementProp name="" elementType="Header">
+                      <stringProp name="Header.name">Cookie</stringProp>
+                      <stringProp name="Header.value">XSRF-TOKEN=${loadCsrfTokencheck}</stringProp>
+                    </elementProp>
+                    <elementProp name="Cookie" elementType="Header">
+                      <stringProp name="Header.name">Cookie</stringProp>
+                      <stringProp name="Header.value">VERIFIED_TRANSACTION_ID=${verifiedTransactionIdcheck}</stringProp>
+                    </elementProp>
+                  </collectionProp>
+                </HeaderManager>
+                <hashTree/>
+                <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="pendingStatusCheck" enabled="true">
+                  <stringProp name="RegexExtractor.useHeaders">false</stringProp>
+                  <stringProp name="RegexExtractor.refname">pendingStatusCheck</stringProp>
+                  <stringProp name="RegexExtractor.regex">&quot;status&quot;:&quot;(.*?)&quot;</stringProp>
+                  <stringProp name="RegexExtractor.template">$1$</stringProp>
+                  <stringProp name="RegexExtractor.default"></stringProp>
+                  <stringProp name="RegexExtractor.match_number">1</stringProp>
+                  <boolProp name="RegexExtractor.default_empty_value">true</boolProp>
+                </RegexExtractor>
+                <hashTree/>
+                <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Timeout Check" enabled="true">
+                  <stringProp name="scriptLanguage">groovy</stringProp>
+                  <stringProp name="parameters"></stringProp>
+                  <stringProp name="filename"></stringProp>
+                  <stringProp name="cacheKey">false</stringProp>
+                  <stringProp name="script">def fetchStartTimestamp=vars.get(&quot;timeStamp&quot;);
+def success=vars.get(&quot;pendingStatusCheck&quot;);
+def currentTimestamp=&quot;${__time(,)}&quot;;
+long startTimestamp=fetchStartTimestamp.toLong();
+long endTimestamp=currentTimestamp.toLong();
+int timeConsumed=endTimestamp-startTimestamp;
+//log.info(success);
+if(timeConsumed &gt;= 200000)
+{
+def timeoutCheck=&quot;DONE&quot;;
+vars.put(&quot;check&quot;,timeoutCheck);
+}
+if(timeConsumed &lt; 200000 &amp;&amp; success.equals(&quot;PENDING&quot;))
+{
+prev.setIgnore();
+}
+
+</stringProp>
+                </JSR223PostProcessor>
+                <hashTree/>
+                <JSR223Assertion guiclass="TestBeanGUI" testclass="JSR223Assertion" testname="Error assertion" enabled="true">
+                  <stringProp name="cacheKey">true</stringProp>
+                  <stringProp name="filename"></stringProp>
+                  <stringProp name="parameters"></stringProp>
+                  <stringProp name="script">def success=vars.get(&quot;pendingStatusCheck&quot;);
+def timeoutcheck=vars.get(&quot;check&quot;);
+if(success.equals(&quot;COMPLETED&quot;))
+{
+	SampleResult.setSuccessful(true);
+} else if(timeoutcheck.equals(&quot;DONE&quot;) || success.equals(&quot;FAILED&quot;))
+{
+	SampleResult.setSuccessful(false);
+}else
+{
+	prev.setIgnore();
+}
+</stringProp>
+                  <stringProp name="scriptLanguage">groovy</stringProp>
+                </JSR223Assertion>
+                <hashTree/>
+              </hashTree>
+              <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If Controller - Provide delay for 20 seconds" enabled="true">
+                <stringProp name="IfController.condition">${__groovy(vars.get(&quot;pendingStatusCheck&quot;).equals(&quot;PENDING&quot;) &amp;&amp; vars.get(&quot;check&quot;).equals(&quot;0&quot;) ,)}</stringProp>
+                <boolProp name="IfController.evaluateAll">false</boolProp>
+                <boolProp name="IfController.useExpression">true</boolProp>
+              </IfController>
+              <hashTree>
+                <TestAction guiclass="TestActionGui" testclass="TestAction" testname="Flow Control Action" enabled="true">
+                  <intProp name="ActionProcessor.action">1</intProp>
+                  <intProp name="ActionProcessor.target">0</intProp>
+                  <stringProp name="ActionProcessor.duration">20000</stringProp>
+                </TestAction>
+                <hashTree/>
+              </hashTree>
+            </hashTree>
+          </hashTree>
+        </hashTree>
+      </hashTree>
+      <PostThreadGroup guiclass="PostThreadGroupGui" testclass="PostThreadGroup" testname="tearDown Thread Group (Execution)" enabled="true">
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <stringProp name="LoopController.loops">1</stringProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">1</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.duration"></stringProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
+      </PostThreadGroup>
+      <hashTree>
+        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Cleared all property values" enabled="true">
+          <stringProp name="scriptLanguage">groovy</stringProp>
+          <stringProp name="parameters"></stringProp>
+          <stringProp name="filename"></stringProp>
+          <stringProp name="cacheKey">true</stringProp>
+          <stringProp name="script">// Clearing all property variables
+props.clear();</stringProp>
+        </JSR223Sampler>
         <hashTree/>
       </hashTree>
       <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
