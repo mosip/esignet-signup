@@ -86,6 +86,19 @@
   --error-banner-text-color: #d52929;
   --error-banner-bg-color: #faefef;
   --error-banner-font: normal normal 600 14px/17px Inter;
+
+  --kyc-box-border: 1px solid #b2b2b2;
+  --kyc-box-selected-border: 1px solid #eb6f2d;
+  --kyc-box-icon-border: 1px solid #d8d8d8;
+  --kyc-box-icon-shadow: 0 3px 6px 3px rgba(0,0,0,0.10);
+  --kyc-box-header-font: normal normal 600 16px/20px Inter;
+  --kyc-box-header-font-color: #2B3840;
+  --kyc-box-subheader-font: normal normal 600 14px/24px Inter;
+  --kyc-box-subheader-font-color: #2B3840;
+  --kyc-box-subheader-font-detail: normal normal normal 14px/24px Inter;
+  --kyc-header-font: normal normal 600 22px/26px Inter;
+  --kyc-header-color: #2B3840;
+  --loading-indicator-color: #eb6f2d;
 }
 
 [class="dark"] {

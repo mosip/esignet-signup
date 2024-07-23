@@ -266,6 +266,48 @@ body {
   -ms-transform: translate(-50%, -50%);
 }
 
+.kyc-header {
+  font: var(--kyc-header-font);
+  color: var(--kyc-header-color);
+  letter-spacing: 0px;
+}
+
+.kyc-box {
+  border: var(--kyc-box-border);
+}
+
+.kyc-box-selected {
+  border: var(--kyc-box-selected-border);
+}
+
+.kyc-box-icon {
+  border: var(--kyc-box-icon-border);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
+    var(--tw-ring-shadow, 0 0 #0000), var(--kyc-box-icon-shadow);
+}
+
+.kyc-box-header {
+  font: var(--kyc-box-header-font);
+  color: var(--kyc-box-header-font-color);
+  letter-spacing: 0px;
+}
+
+.kyc-box-subheader-title {
+  font: var(--kyc-box-subheader-font);
+  color: var(--kyc-box-subheader-font-color);
+  letter-spacing: 0px;
+}
+
+.kyc-box-subheader-detail {
+  font: var(--kyc-box-subheader-font-detail);
+  color: var(--kyc-box-subheader-font-color);
+  letter-spacing: 0px;
+}
+
+.loading-indicator {
+  fill: var(--loading-indicator-color);
+}
+
 @layer base {
   :root {
     --font-inter: "Inter";
