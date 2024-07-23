@@ -62,7 +62,6 @@
   --ring-color: 215 20.2% 65.1%;
 
   --radius-font-size: 0.5rem;
-  --video-preview-border-color: #eb6f2d;
 
   --vertical-stepper-bg-color: #eb6f2d;
   --vertical-stepper-bg-opacity: 0.55;
@@ -90,14 +89,14 @@
   --kyc-box-border: 1px solid #b2b2b2;
   --kyc-box-selected-border: 1px solid #eb6f2d;
   --kyc-box-icon-border: 1px solid #d8d8d8;
-  --kyc-box-icon-shadow: 0 3px 6px 3px rgba(0,0,0,0.10);
+  --kyc-box-icon-shadow: 0 3px 6px 3px rgba(0, 0, 0, 0.1);
   --kyc-box-header-font: normal normal 600 16px/20px Inter;
-  --kyc-box-header-font-color: #2B3840;
+  --kyc-box-header-font-color: #2b3840;
   --kyc-box-subheader-font: normal normal 600 14px/24px Inter;
-  --kyc-box-subheader-font-color: #2B3840;
+  --kyc-box-subheader-font-color: #2b3840;
   --kyc-box-subheader-font-detail: normal normal normal 14px/24px Inter;
   --kyc-header-font: normal normal 600 22px/26px Inter;
-  --kyc-header-color: #2B3840;
+  --kyc-header-color: #2b3840;
   --loading-indicator-color: #eb6f2d;
 
   --tnc-header-font: normal normal 600 22px/26px Inter;
@@ -109,6 +108,18 @@
   --tnc-consent-background: #fff6f2;
   --tnc-consent-font: normal normal 700 15px/19px Inter;
   --tnc-consent-color: #333333;
+
+  --video-preview-border-color: #eb6f2d;
+  --video-preview-header-font: normal normal 600 22px/26px Inter;
+  --video-preview-header-color: #2b3840;
+  --video-preview-content-font: normal normal normal 16px/20px Helvetica Neue;
+  --video-preview-content-color: #4e4e4e;
+  --video-preview-disabled-header-font: normal normal 600 16px/20px Inter;
+  --video-preview-disabled-header-color: #313131;
+  --video-preview-disabled-subheader-font: normal normal normal 14px/17px Inter;
+  --video-preview-disabled-subheader-color: #7e7e7e;
+  --video-preview-disabled-background: #f8f8f8;
+  --video-preview-disabled-border-radius: 10px;
 }
 
 [class="dark"] {
