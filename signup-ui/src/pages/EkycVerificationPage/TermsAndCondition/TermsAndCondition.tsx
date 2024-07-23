@@ -167,18 +167,12 @@ export const TermsAndCondition = ({
           <Step className="max-w-[644px] md:rounded-2xl md:shadow sm:rounded-2xl sm:shadow">
             <StepHeader className="px-0 py-5 sm:pb-[25px] sm:pt-[33px]">
               <StepTitle className="relative flex w-full items-center justify-center gap-x-4 text-base font-semibold">
-                <div
-                  className="ml-5 w-full text-[22px] font-semibold"
-                  id="tnc-header"
-                >
+                <div className="tnc-header ml-5 w-full" id="tnc-header">
                   {t("header")}
                 </div>
               </StepTitle>
               <StepDescription className="w-full text-start tracking-normal">
-                <div
-                  className="ml-5 text-muted-neutral-gray"
-                  id="tnc-sub-header"
-                >
+                <div className="tnc-subheader ml-5" id="tnc-sub-header">
                   {t("sub_header")}
                 </div>
               </StepDescription>
@@ -189,13 +183,13 @@ export const TermsAndCondition = ({
               {termsAndCondition && (
                 <div
                   id="tnc-content"
-                  className="scrollable-div flex text-justify text-sm sm:p-0"
+                  className="scrollable-div tnc-content flex text-justify sm:p-0"
                   dangerouslySetInnerHTML={sanitizeMsg(tncMessage)}
                 ></div>
               )}
             </StepContent>
             <StepAlert>
-              <ActionMessage className="justify-start bg-[#FFF6F2]">
+              <ActionMessage className="justify-start tnc-consent">
                 <Checkbox
                   id="consent-button"
                   checked={agreeTerms}
@@ -203,7 +197,7 @@ export const TermsAndCondition = ({
                   disabled={!termsAndCondition}
                   className="h-5 w-5 rounded-[2px] text-white data-[state=checked]:border-primary data-[state=checked]:bg-primary"
                 />
-                <p className="ml-2 truncate text-xs font-bold">
+                <p className="ml-2 tnc-consent-text">
                   {t("agree_text")}
                 </p>
               </ActionMessage>

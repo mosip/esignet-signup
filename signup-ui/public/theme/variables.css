@@ -99,6 +99,16 @@
   --kyc-header-font: normal normal 600 22px/26px Inter;
   --kyc-header-color: #2B3840;
   --loading-indicator-color: #eb6f2d;
+
+  --tnc-header-font: normal normal 600 22px/26px Inter;
+  --tnc-header-color: #2b3840;
+  --tnc-subheader-font: normal normal normal 16px/20px Inter;
+  --tnc-subheader-color: #838383;
+  --tnc-content-font: normal normal medium 14px/17px Inter;
+  --tnc-content-color: #333333;
+  --tnc-consent-background: #fff6f2;
+  --tnc-consent-font: normal normal 700 15px/19px Inter;
+  --tnc-consent-color: #333333;
 }
 
 [class="dark"] {
