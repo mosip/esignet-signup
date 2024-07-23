@@ -308,6 +308,39 @@ body {
   fill: var(--loading-indicator-color);
 }
 
+
+.tnc-header {
+  font: var(--tnc-header-font);
+  color: var(--tnc-header-color);
+  letter-spacing: 0px;
+}
+
+.tnc-subheader {
+  font: var(--tnc-subheader-font);
+  color: var(--tnc-subheader-color);
+  letter-spacing: 0px;
+}
+
+.tnc-content {
+  font: var(--tnc-content-font);
+  color: var(--tnc-content-color);
+  letter-spacing: 0px;
+  padding-right: 7px;
+}
+
+.tnc-consent {
+  background: var(--tnc-consent-background);
+}
+
+.tnc-consent-text {
+  font: var(--tnc-consent-font);
+  color: var(--tnc-consent-color);
+  letter-spacing: 0px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 @layer base {
   :root {
     --font-inter: "Inter";
