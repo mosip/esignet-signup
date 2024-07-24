@@ -137,17 +137,17 @@ export const VideoPreview = ({
         {!permissionGranted && (
           <Step className="2xl:h-full xl:h-full md:mx-0 md:rounded-2xl md:shadow-none sm:mx-0 sm:rounded-2xl">
             <StepHeader className="p-0"></StepHeader>
-            <StepContent className="m-6 h-[90%] content-center rounded-[10px] bg-[#F8F8F8] text-sm md:m-0">
+            <StepContent className="video-preview-disabled m-6 h-[90%] content-center text-sm md:m-0">
               <div className="flex flex-col text-center">
                 <Icons.disabledCamera
                   id="camera-disabled"
                   name="camera-disabled"
                   className="mb-6 h-[52px] w-[52px] self-center"
                 />
-                <div className="color-[#313131] pb-2 text-base font-semibold leading-5">
+                <div className="video-preview-disabled-header pb-2">
                   {t(permissionErrMsg.header)}
                 </div>
-                <div className="color-[#7E7E7E] pb-5 text-sm font-normal leading-4">
+                <div className="video-preview-disabled-subheader pb-5">
                   {t(permissionErrMsg.description)}
                 </div>
               </div>
@@ -167,7 +167,7 @@ export const VideoPreview = ({
           <StepHeader className="px-0 py-5 sm:pb-[25px] sm:pt-[33px]">
             <StepTitle className="relative flex w-full items-center justify-center gap-x-4 text-base font-semibold">
               <div
-                className="ml-5 w-full text-[22px] font-semibold"
+                className="video-preview-header ml-5 w-full"
                 id="video-preview-header"
               >
                 {t("header")}
@@ -182,7 +182,9 @@ export const VideoPreview = ({
               {keyInfoList.map((keyInfo, index) => (
                 <div key={index} className="mb-6">
                   <Icons.check className="mr-1 inline-block h-4 w-4 stroke-[4px] text-primary" />
-                  <span>{t(`key_info.${keyInfo}`)}</span>
+                  <span className="video-preview-content">
+                    {t(`key_info.${keyInfo}`)}
+                  </span>
                 </div>
               ))}
             </div>

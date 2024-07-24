@@ -215,13 +215,10 @@ export const KycProviderList = ({
       )}
       {!isLoading && (
         <div className="my-4 flex flex-row items-stretch justify-center gap-x-1">
-          <Step className="mx-10 max-w-[70rem] md:rounded-2xl md:shadow sm:rounded-2xl sm:shadow sm:mx-0">
+          <Step className="mx-10 max-w-[70rem] md:rounded-2xl md:shadow sm:mx-0 sm:rounded-2xl sm:shadow">
             <StepHeader className="p-5 sm:pb-[25px] sm:pt-[33px]">
               <StepTitle className="relative flex w-full flex-row items-center justify-between text-base font-semibold md:flex-col md:justify-center">
-                <div
-                  className="w-full text-[22px] font-semibold leading-[26px] text-[#2B3840]"
-                  id="kyc-provider-header"
-                >
+                <div className="kyc-header w-full" id="kyc-provider-header">
                   {t("header")}
                 </div>
                 {providerListStore && providerListStore.length > 2 && (
