@@ -266,6 +266,24 @@ body {
   -ms-transform: translate(-50%, -50%);
 }
 
+/* Status classes */
+.status__content {
+  @apply flex flex-col items-center gap-4 py-4;
+}
+
+.status__title {
+  @apply text-center text-lg font-semibold;
+}
+
+.status__description {
+  @apply text-center text-gray-500;
+}
+
+.status__btn {
+  @apply my-4 h-16 w-full;
+}
+
+
 @layer base {
   :root {
     --font-inter: "Inter";

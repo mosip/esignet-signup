@@ -12,6 +12,7 @@ export enum EkycVerificationStep {
   VideoPreview,
   SlotCheckingScreen,
   VerificationScreen,
+  IdentityVerificationStatus,
 }
 
 export type EkycVerificationStore = {
