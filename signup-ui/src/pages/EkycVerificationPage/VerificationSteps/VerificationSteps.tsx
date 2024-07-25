@@ -19,6 +19,7 @@ import {
   EkycVerificationStore,
   setCriticalErrorSelector,
   setStepSelector,
+  kycProvidersListSelector,
   useEkycVerificationStore,
 } from "../useEkycVerificationStore";
 import { checkBrowserCompatible } from "./utils/checkBrowserCompatible";
@@ -32,11 +33,12 @@ export const VerificationSteps = ({
   });
   const [cancelButton, setCancelButton] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const { setStep, setCriticalError } = useEkycVerificationStore(
+  const { setStep, setCriticalError, providerListStore } = useEkycVerificationStore(
     useCallback(
       (state: EkycVerificationStore) => ({
         setStep: setStepSelector(state),
         setCriticalError: setCriticalErrorSelector(state),
+        providerListStore: kycProvidersListSelector(state),
       }),
       []
     )
@@ -51,9 +53,8 @@ export const VerificationSteps = ({
   const state = urlObj.searchParams.get("state");
 
   useEffect(() => {
+    setIsLoading(true);
     if (hashCode !== null && hashCode !== undefined) {
-      console.log(hashCode);
-      setIsLoading(true);
       if (!hasState && !hasCode) {
         const authorizeURI = settings?.configs["signin.redirect-url"];
         const clientIdURI = settings?.configs["signup.oauth-client-id"];
@@ -75,10 +76,8 @@ export const VerificationSteps = ({
         const redirectURI = `${authorizeURI}?${redirectParams}`;
 
         window.location.replace(redirectURI);
-      } else {
-        setIsLoading(false);
-        return;
       }
+      return;
     }
   }, [settings]);
 
@@ -137,6 +136,12 @@ export const VerificationSteps = ({
   const handleStay = () => {
     setCancelButton(false);
   };
+
+  useEffect(() => {
+    if (providerListStore && providerListStore.length > 0) {
+      setIsLoading(false);
+    }
+  }, [providerListStore]);
 
   return (
     <>
