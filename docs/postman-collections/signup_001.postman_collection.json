@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "578adb06-0d30-4990-b5d7-cf9b9b0330cd",
+		"_postman_id": "a7f3b646-42b3-4249-97d6-b5270d86bce8",
 		"name": "signup-001",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "20579541"
+		"_exporter_id": "16926030"
 	},
 	"item": [
 		{
@@ -364,6 +364,160 @@
 								"v1",
 								"signup",
 								"registration",
+								"status"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "IdentityVerification",
+			"item": [
+				{
+					"name": "Initiate",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"IDV_TRANSACTION_ID\",pm.cookies.get(\"IDV_TRANSACTION_ID\"))\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"requestTime\": \"{{$isoTimestamp}}\",\r\n    \"request\": {\r\n        \"authorizationCode\": {{code}},\r\n        \"state\": {{state}}\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8088/v1/signup/identity-verification/initiate",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8088",
+							"path": [
+								"v1",
+								"signup",
+								"identity-verification",
+								"initiate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get id-verifier",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "IDV_TRANSACTION_ID",
+								"value": "{{IDV_TRANSACTION_ID}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8088/v1/signup/identity-verification/identity-verifier/{{identity-verifier-id}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8088",
+							"path": [
+								"v1",
+								"signup",
+								"identity-verification",
+								"identity-verifier",
+								"{{identity-verifier-id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get slot",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"IDV_SLOT_ALLOTTED\",pm.environment.get(\"IDV_TRANSACTION_ID\"));\r",
+									"\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"pm.environment.set(\"slot-id\", jsonData.response.slotId);\r",
+									"pm.environment.unset(\"IDV_TRANSACTION_ID\");"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "IDV_TRANSACTION_ID",
+								"value": "{{IDV_TRANSACTION_ID}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"requestTime\": \"2024-07-25T07:36:43.304Z\",\r\n    \"request\": {\r\n        \"verifierId\": {{identity-verifier-id}},\r\n        \"consent\": \"ACCEPTED\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8088/v1/signup/identity-verification/slot",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8088",
+							"path": [
+								"v1",
+								"signup",
+								"identity-verification",
+								"slot"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get status",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8088/v1/signup/identity-verification/status",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8088",
+							"path": [
+								"v1",
+								"signup",
+								"identity-verification",
 								"status"
 							]
 						}
