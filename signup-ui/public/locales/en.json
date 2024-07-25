@@ -84,6 +84,8 @@
   "privacy_and_policy_title": "Privacy & Policy",
   "signup_discontinue_prompt": "Are you sure you want to discontinue the sign up process?",
   "reset_password_discontinue_prompt": "Are you sure you want to discontinue the reset password process?",
+  "offline_polling_prompt": "Your network connection dropped, please check your internet connection.",
+  "online_polling_prompt": "You are now connected with internet.",
   "footer": {
     "powered_by": "Powered by"
   },
