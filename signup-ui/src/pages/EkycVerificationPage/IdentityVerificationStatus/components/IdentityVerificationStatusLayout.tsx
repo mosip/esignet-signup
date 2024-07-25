@@ -9,17 +9,17 @@ interface IdentityVerificationStatusLayoutProps {
   status: "success" | "failed";
   title: string;
   description: string;
-  onActionClick?: MouseEventHandler<HTMLButtonElement> | undefined;
+  btnLabel?: string;
+  onBtnClick?: MouseEventHandler<HTMLButtonElement> | undefined;
 }
 
 export const IdentityVerificationStatusLayout = ({
   status,
   title,
   description,
-  onActionClick,
+  btnLabel,
+  onBtnClick,
 }: IdentityVerificationStatusLayoutProps) => {
-  const { t } = useTranslation();
-
   return (
     <Step>
       <StepContent>
@@ -28,13 +28,15 @@ export const IdentityVerificationStatusLayout = ({
           <h1 className="status__title">{title}</h1>
           <p className="status__description">{description}</p>
         </div>
-        <Button
-          id="success-continue-button"
-          className="status__btn"
-          onClick={onActionClick}
-        >
-          {t("okay")}
-        </Button>
+        {status === "failed" && (
+          <Button
+            id="success-continue-button"
+            className="status__btn"
+            onClick={onBtnClick}
+          >
+            {btnLabel}
+          </Button>
+        )}
       </StepContent>
     </Step>
   );

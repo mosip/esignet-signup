@@ -21,15 +21,16 @@ import {
 import LoadingIndicator from "~/common/LoadingIndicator";
 
 import {
+  EkycVerificationStep,
   EkycVerificationStore,
   errorBannerMessageSelector,
   kycProviderDetailSelector,
   setErrorBannerMessageSelector,
+  setIsLivenessCheckSuccessSelector,
   setIsNoBackgroundSelector,
-  slotIdSelector,
-  setStepSelector,
-  EkycVerificationStep,
   setSlotIdSelector,
+  setStepSelector,
+  slotIdSelector,
   useEkycVerificationStore,
 } from "../useEkycVerificationStore";
 import { EkycStatusAlert } from "./components/EkycStatusAlert";
@@ -71,7 +72,8 @@ export const VerificationScreen = ({
     slotId,
     kycProviderDetail,
     setStep,
-    setSlotId
+    setSlotId,
+    setIsLivenessCheckSuccess,
   } = useEkycVerificationStore(
     useCallback(
       (state: EkycVerificationStore) => ({
@@ -81,7 +83,8 @@ export const VerificationScreen = ({
         slotId: slotIdSelector(state),
         kycProviderDetail: kycProviderDetailSelector(state),
         setStep: setStepSelector(state),
-        setSlotId: setSlotIdSelector(state)
+        setSlotId: setSlotIdSelector(state),
+        setIsLivenessCheckSuccess: setIsLivenessCheckSuccessSelector(state),
       }),
       []
     )
@@ -342,34 +345,43 @@ export const VerificationScreen = ({
       currentStep.feedbackType === IdvFeedbackEnum.MESSAGE &&
       currentStep.feedbackCode === "success_check"
     ) {
-      setAlertConfig({
-        icon: "success",
-        header: getCurrentLangMsg(
-          "messages",
-          currentStep?.feedbackCode ?? "default"
-        ),
-        subHeader: "Please wait while we finalize the process",
-        footer: null,
-      });
+      // TODO: add liveness check status and move to identity verification status check
+      setIsLivenessCheckSuccess(true);
+
+      // TODO: remove this alert as we move to next screen instead
+      // setAlertConfig({
+      //   icon: "success",
+      //   header: getCurrentLangMsg(
+      //     "messages",
+      //     currentStep?.feedbackCode ?? "default"
+      //   ),
+      //   subHeader: "Please wait while we finalize the process",
+      //   footer: null,
+      // });
     } else {
-      setAlertConfig({
-        icon: "fail",
-        header: getCurrentLangMsg(
-          "errors",
-          currentStep?.feedbackCode ?? "default"
-        ),
-        subHeader: "Oops! We were unable to complete the eKYC verification.",
-        footer: (
-          <Button
-            id="retry-button"
-            className="my-4 h-16 w-full"
-            onClick={handleRetry}
-          >
-            Retry
-          </Button>
-        ),
-      });
+      // TODO: add liveness check status and move to identity verification status check
+      setIsLivenessCheckSuccess(false);
+
+      // TODO: remove this alert as we move to next screen instead
+      // setAlertConfig({
+      //   icon: "fail",
+      //   header: getCurrentLangMsg(
+      //     "errors",
+      //     currentStep?.feedbackCode ?? "default"
+      //   ),
+      //   subHeader: "Oops! We were unable to complete the eKYC verification.",
+      //   footer: (
+      //     <Button
+      //       id="retry-button"
+      //       className="my-4 h-16 w-full"
+      //       onClick={handleRetry}
+      //     >
+      //       Retry
+      //     </Button>
+      //   ),
+      // });
     }
+    setStep(EkycVerificationStep.IdentityVerificationStatus);
   };
 
   const resetEverything = () => {

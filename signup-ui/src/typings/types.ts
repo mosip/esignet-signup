@@ -149,6 +149,7 @@ export interface SettingsConfig {
   "signup.oauth-client-id": string;
   "identity-verification.redirect-url": string;
   "broswer.minimum-version": { [key: string]: string };
+  "esignet-consent.redirect-url": string;
 }
 
 export interface Settings {
