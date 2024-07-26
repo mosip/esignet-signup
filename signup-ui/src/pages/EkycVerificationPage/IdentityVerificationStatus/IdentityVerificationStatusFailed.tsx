@@ -26,7 +26,7 @@ export const IdentityVerificationStatusFailed = ({
   );
 
   const handleIdentityVerificationRetry = () => {
-    setStep(EkycVerificationStep.LoadingScreen);
+    setStep(EkycVerificationStep.VideoPreview);
   };
 
   return (

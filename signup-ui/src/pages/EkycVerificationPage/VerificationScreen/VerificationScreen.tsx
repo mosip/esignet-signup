@@ -153,7 +153,7 @@ export const VerificationScreen = ({
     setSlotId(null);
     setStep(EkycVerificationStep.SlotCheckingScreen);
   };
-  
+
   // timer useEffect
   useEffect(() => {
     if (timer && timer > 0) {
@@ -275,12 +275,13 @@ export const VerificationScreen = ({
   const redirectToConsent = () => {
     unsubscribe();
     client.deactivate();
-    const consentUrl = settings?.configs["signin.redirect-url"].replace("authorize", "consent");
+    const consentUrl = settings?.configs["signin.redirect-url"].replace(
+      "authorize",
+      "consent"
+    );
     const encodedIdToken = window.location.hash;
     window.onbeforeunload = null;
-    window.location.replace(
-      `${consentUrl}${encodedIdToken}`
-    );
+    window.location.replace(`${consentUrl}${encodedIdToken}`);
   };
 
   const endWithSuccess = (successMsgCode: string) => {
@@ -345,43 +346,34 @@ export const VerificationScreen = ({
       currentStep.feedbackType === IdvFeedbackEnum.MESSAGE &&
       currentStep.feedbackCode === "success_check"
     ) {
-      // TODO: add liveness check status and move to identity verification status check
-      setIsLivenessCheckSuccess(true);
-
-      // TODO: remove this alert as we move to next screen instead
-      // setAlertConfig({
-      //   icon: "success",
-      //   header: getCurrentLangMsg(
-      //     "messages",
-      //     currentStep?.feedbackCode ?? "default"
-      //   ),
-      //   subHeader: "Please wait while we finalize the process",
-      //   footer: null,
-      // });
+      setAlertConfig({
+        icon: "success",
+        header: getCurrentLangMsg(
+          "messages",
+          currentStep?.feedbackCode ?? "default"
+        ),
+        subHeader: "Please wait while we finalize the process",
+        footer: null,
+      });
     } else {
-      // TODO: add liveness check status and move to identity verification status check
-      setIsLivenessCheckSuccess(false);
-
-      // TODO: remove this alert as we move to next screen instead
-      // setAlertConfig({
-      //   icon: "fail",
-      //   header: getCurrentLangMsg(
-      //     "errors",
-      //     currentStep?.feedbackCode ?? "default"
-      //   ),
-      //   subHeader: "Oops! We were unable to complete the eKYC verification.",
-      //   footer: (
-      //     <Button
-      //       id="retry-button"
-      //       className="my-4 h-16 w-full"
-      //       onClick={handleRetry}
-      //     >
-      //       Retry
-      //     </Button>
-      //   ),
-      // });
+      setAlertConfig({
+        icon: "fail",
+        header: getCurrentLangMsg(
+          "errors",
+          currentStep?.feedbackCode ?? "default"
+        ),
+        subHeader: "Oops! We were unable to complete the eKYC verification.",
+        footer: (
+          <Button
+            id="retry-button"
+            className="my-4 h-16 w-full"
+            onClick={handleRetry}
+          >
+            Retry
+          </Button>
+        ),
+      });
     }
-    setStep(EkycVerificationStep.IdentityVerificationStatus);
   };
 
   const resetEverything = () => {
@@ -415,7 +407,6 @@ export const VerificationScreen = ({
         resetEverything();
         unsubscribe();
         client.deactivate();
-
       } else if (previousState?.stepCode !== currentState?.stepCode) {
         console.log("Step code changed");
 
