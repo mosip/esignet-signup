@@ -153,7 +153,7 @@ export const VerificationScreen = ({
     setSlotId(null);
     setStep(EkycVerificationStep.SlotCheckingScreen);
   };
-
+  
   // timer useEffect
   useEffect(() => {
     if (timer && timer > 0) {
@@ -286,16 +286,10 @@ export const VerificationScreen = ({
 
   const endWithSuccess = (successMsgCode: string) => {
     resetEverything();
-    setAlertConfig({
-      icon: "success",
-      header: getCurrentLangMsg("messages", successMsgCode),
-      subHeader: "Please wait while we finalize the process",
-      footer: null,
-    });
-    setTimeout(() => {
-      redirectToConsent();
-    }, 5000);
+    setIsLivenessCheckSuccess(true);
+    setStep(EkycVerificationStep.IdentityVerificationStatus);
   };
+  
 
   const checkFeedback = (currentStep: IdentityVerificationState) => {
     console.log("Checking Feedback");
@@ -407,6 +401,7 @@ export const VerificationScreen = ({
         resetEverything();
         unsubscribe();
         client.deactivate();
+
       } else if (previousState?.stepCode !== currentState?.stepCode) {
         console.log("Step code changed");
 

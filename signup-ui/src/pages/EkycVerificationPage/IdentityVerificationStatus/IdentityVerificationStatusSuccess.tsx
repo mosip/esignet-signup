@@ -46,11 +46,7 @@ export const IdentityVerificationStatusSuccess = ({
     <IdentityVerificationStatusLayout
       status="success"
       title={t("identity_verification_status.successful.title")}
-      description={
-        isCheckingIdentityVerificationStatus
-          ? t("identity_verification_status.successful.description")
-          : "FAILED..."
-      }
+      description={t("identity_verification_status.successful.description")}
     />
   );
 };
