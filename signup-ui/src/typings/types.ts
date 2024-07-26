@@ -148,7 +148,12 @@ export interface SettingsConfig {
   "send-challenge.captcha.required": boolean;
   "signup.oauth-client-id": string;
   "identity-verification.redirect-url": string;
-  "broswer.minimum-version": { [key: string]: string };
+  "online.polling.timeout": number;
+  "offline.polling.interval": number;
+  "offline.polling.timeout": number;
+  "offline.polling.enabled": boolean;
+  "offline.polling.url": string;
+  "broswer.minimum-version": { [key: string]: string; };
   "esignet-consent.redirect-url": string;
 }
 
