@@ -21,15 +21,16 @@ import {
 import LoadingIndicator from "~/common/LoadingIndicator";
 
 import {
+  EkycVerificationStep,
   EkycVerificationStore,
   errorBannerMessageSelector,
   kycProviderDetailSelector,
   setErrorBannerMessageSelector,
+  setIsLivenessCheckSuccessSelector,
   setIsNoBackgroundSelector,
-  slotIdSelector,
-  setStepSelector,
-  EkycVerificationStep,
   setSlotIdSelector,
+  setStepSelector,
+  slotIdSelector,
   useEkycVerificationStore,
 } from "../useEkycVerificationStore";
 import { EkycStatusAlert } from "./components/EkycStatusAlert";
@@ -71,7 +72,8 @@ export const VerificationScreen = ({
     slotId,
     kycProviderDetail,
     setStep,
-    setSlotId
+    setSlotId,
+    setIsLivenessCheckSuccess,
   } = useEkycVerificationStore(
     useCallback(
       (state: EkycVerificationStore) => ({
@@ -81,7 +83,8 @@ export const VerificationScreen = ({
         slotId: slotIdSelector(state),
         kycProviderDetail: kycProviderDetailSelector(state),
         setStep: setStepSelector(state),
-        setSlotId: setSlotIdSelector(state)
+        setSlotId: setSlotIdSelector(state),
+        setIsLivenessCheckSuccess: setIsLivenessCheckSuccessSelector(state),
       }),
       []
     )
@@ -150,7 +153,7 @@ export const VerificationScreen = ({
     setSlotId(null);
     setStep(EkycVerificationStep.SlotCheckingScreen);
   };
-  
+
   // timer useEffect
   useEffect(() => {
     if (timer && timer > 0) {
@@ -282,16 +285,20 @@ export const VerificationScreen = ({
 
   const endWithSuccess = (successMsgCode: string) => {
     resetEverything();
-    setAlertConfig({
-      icon: "success",
-      header: getCurrentLangMsg("messages", successMsgCode),
-      subHeader: "Please wait while we finalize the process",
-      footer: null,
-    });
-    setTimeout(() => {
-      redirectToConsent();
-    }, 5000);
+    // setAlertConfig({
+    //   icon: "success",
+    //   header: getCurrentLangMsg("messages", successMsgCode),
+    //   subHeader: "Please wait while we finalize the process",
+    //   footer: null,
+    // });
+    // setTimeout(() => {
+    //   redirectToConsent();
+    // }, 5000);
+
+    setIsLivenessCheckSuccess(true);
+    setStep(EkycVerificationStep.IdentityVerificationStatus);
   };
+  
 
   const checkFeedback = (currentStep: IdentityVerificationState) => {
     console.log("Checking Feedback");

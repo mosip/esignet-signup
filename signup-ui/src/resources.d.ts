@@ -115,6 +115,16 @@ interface Resources {
     footer: {
       powered_by: string;
     };
+    identity_verification_status: {
+      successful: {
+        title: string;
+        description: string;
+      };
+      failed: {
+        title: string;
+        description: string;
+      };
+    };
     error_response: {
       invalid_transaction: string;
       invalid_otp_channel: string;

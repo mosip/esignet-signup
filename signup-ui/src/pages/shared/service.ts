@@ -1,6 +1,9 @@
 import { ApiService } from "~services/api.service";
 import {
   GenerateChallengeRequestDto,
+  IdentityVerificationStatus,
+  IdentityVerificationStatusResponseDto,
+  KycProviderDetailResponseDto,
   KycProvidersResponseDto,
   RegistrationRequestDto,
   RegistrationStatusResponseDto,
@@ -9,7 +12,6 @@ import {
   SettingsDto,
   SlotAvailabilityRequestDto,
   SlotAvailabilityResponseDto,
-  KycProviderDetailResponseDto,
   UpdateProcessRequestDto,
   VerifyChallengeRequestDto,
 } from "~typings/types";
@@ -59,7 +61,7 @@ export const getRegistrationStatus =
     return ApiService.get<RegistrationStatusResponseDto>(
       "/registration/status"
     ).then(({ data }) => {
-      // treat PENDING as an error so that react-query will auto retry
+      // treat `PENDING` as an error so that react-query will auto retry
       if (data.response?.status === RegistrationWithFailedStatus.PENDING) {
         throw new Error("Status pending");
       }
@@ -116,3 +118,20 @@ export const checkSlotAvailability = async (
     return data;
   });
 };
+
+export const getIdentityVerificationStatus =
+  async (): Promise<IdentityVerificationStatusResponseDto> => {
+    return ApiService.get<IdentityVerificationStatusResponseDto>(
+      "/identity-verification/status"
+    ).then(({ data }) => {
+      // treat `UPDATE_PENDING` as an error so that react-query will auto retry
+      if (
+        data.response?.status ===
+        IdentityVerificationStatus.UPDATEPENDING
+      ) {
+        throw new Error("Identity verification update is pending");
+      }
+
+      return data;
+    });
+  };

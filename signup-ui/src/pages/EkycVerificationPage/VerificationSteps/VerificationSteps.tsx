@@ -32,15 +32,18 @@ export const VerificationSteps = ({
   });
   const [cancelButton, setCancelButton] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const { setStep, setCriticalError } = useEkycVerificationStore(
-    useCallback(
-      (state: EkycVerificationStore) => ({
-        setStep: setStepSelector(state),
-        setCriticalError: setCriticalErrorSelector(state),
-      }),
-      []
-    )
-  );
+
+  // TODO: remove `setLivenessCheckStatus`
+  const { setStep, setCriticalError } =
+    useEkycVerificationStore(
+      useCallback(
+        (state: EkycVerificationStore) => ({
+          setStep: setStepSelector(state),
+          setCriticalError: setCriticalErrorSelector(state),
+        }),
+        []
+      )
+    );
 
   const hashCode = window.location.hash.substring(1);
   const decodedBase64 = atob(hashCode);

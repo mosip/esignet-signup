@@ -12,6 +12,7 @@ export enum EkycVerificationStep {
   VideoPreview,
   SlotCheckingScreen,
   VerificationScreen,
+  IdentityVerificationStatus,
 }
 
 export type EkycVerificationStore = {
@@ -33,6 +34,8 @@ export type EkycVerificationStore = {
   setErrorBannerMessage: (errorBannerMessage: string | null) => void;
   slotId: string | null;
   setSlotId: (slotId: string | null) => void;
+  isLivenessCheckSuccess: boolean;
+  setIsLivenessCheckSuccess: (isLivenessCheckSuccess: boolean) => void;
 };
 
 export const useEkycVerificationStore = create<EkycVerificationStore>()(
@@ -90,6 +93,12 @@ export const useEkycVerificationStore = create<EkycVerificationStore>()(
       const current = get();
       if (isEqual(current.slotId, slotId)) return;
       set((state) => ({ slotId }));
+    },
+    isLivenessCheckSuccess: false,
+    setIsLivenessCheckSuccess: (isLivenessCheckSuccess: boolean) => {
+      const current = get();
+      if (isEqual(current.isLivenessCheckSuccess, isLivenessCheckSuccess)) return;
+      set((state) => ({ isLivenessCheckSuccess }));
     },
   }))
 );
@@ -165,3 +174,11 @@ export const slotIdSelector = (
 export const setSlotIdSelector = (
   state: EkycVerificationStore
 ): EkycVerificationStore["setSlotId"] => state.setSlotId;
+
+export const isLivenessCheckSuccessSelector = (
+  state: EkycVerificationStore
+): EkycVerificationStore["isLivenessCheckSuccess"] => state.isLivenessCheckSuccess;
+
+export const setIsLivenessCheckSuccessSelector = (
+  state: EkycVerificationStore
+): EkycVerificationStore["setIsLivenessCheckSuccess"] => state.setIsLivenessCheckSuccess;

@@ -184,9 +184,19 @@
       }
     }
   },
-  "verification_screen":{
+  "verification_screen": {
     "welcome_message": "Welcome! Initiating Identity verification process in {count} seconds",
     "focus_on_screen_message": "Please try to focus on the screen"
+  },
+  "identity_verification_status": {
+    "successful": {
+      "title": "Verification Successful!",
+      "description": "Please wait while we finalize the process"
+    },
+    "failed": {
+      "title": "Verification Unsuccessful!",
+      "description": "Oops! We were unable to complete the eKYC verification."
+    }
   },
   "error_response": {
     "invalid_transaction": "The transaction has timed out. Please try again.",

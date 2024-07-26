@@ -90,6 +90,13 @@ const SlotAvailabilityPossibleErrors = [
 export type SlotAvailabilityErrors =
   (typeof SlotAvailabilityPossibleErrors)[number];
 
+const IdentityVerificationStatusPossibleErrors = [
+  "invalid_transaction",
+  "unknown_error",
+] as const;
+
+export type IdentityVerificationStatusErrors =
+  (typeof IdentityVerificationStatusPossibleErrors)[number];
 export interface Error {
   errorCode:
     | GenerateChallengeErrors
@@ -97,7 +104,8 @@ export interface Error {
     | RegisterErrors
     | RegisterStatusErrors
     | ResetPasswordErrors
-    | SlotAvailabilityErrors;
+    | SlotAvailabilityErrors
+    | IdentityVerificationStatusErrors;
   errorMessage: string;
 }
 
@@ -146,6 +154,7 @@ export interface SettingsConfig {
   "offline.polling.enabled": boolean;
   "offline.polling.url": string;
   "broswer.minimum-version": { [key: string]: string; };
+  "esignet-consent.redirect-url": string;
 }
 
 export interface Settings {
@@ -422,4 +431,17 @@ export type UpdateProcessResponseDto = BaseResponseDto & {
   response: {
     status: object;
   } | null;
+};
+
+export enum IdentityVerificationStatus {
+  UPDATEPENDING = "UPDATE_PENDING",
+  COMPLETED = "COMPLETED",
+  FAILED = "FAILED",
+}
+
+export type IdentityVerificationStatusResponseDto = BaseResponseDto & {
+  response: {
+    status: IdentityVerificationStatus;
+  } | null;
+  errors: IdentityVerificationStatusErrors;
 };

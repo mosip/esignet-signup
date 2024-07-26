@@ -1,16 +1,17 @@
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
 
 import {
+  IdentityVerificationStatusResponseDto,
+  KycProviderDetailResponseDto,
   RegistrationResponseDto,
   RegistrationStatus,
   RegistrationStatusResponseDto,
   ResetPasswordResponseDto,
   SettingsDto,
-  KycProviderDetailResponseDto,
 } from "~typings/types";
 
 import {
-  getKycProvidersList,
+  getIdentityVerificationStatus,
   getRegistrationStatus,
   getSettings,
   getTermsAndConditions,
@@ -21,6 +22,7 @@ export const keys = {
   settings: ["settings"] as const,
   registrationStatus: ["registrationStatus"] as const,
   kycProvidersList: ["kycProvidersList"] as const,
+  identityVerificationStatus: ["identityVerificationStatus"] as const,
 };
 
 export const useSettings = (): UseQueryResult<SettingsDto, unknown> => {
@@ -56,5 +58,21 @@ export const useTermsAndConditions = (kycProviderId: string): UseQueryResult<
     queryKey: [...keys.termsAndConditions, kycProviderId],
     queryFn: () => getTermsAndConditions(kycProviderId),
     staleTime: Infinity,
+  });
+};
+
+export const useIdentityVerificationStatus = ({
+  attempts: statusRequestAttempt,
+  delay: statusRequestDelay,
+}: {
+  attempts: number;
+  delay: number;
+}): UseQueryResult<IdentityVerificationStatusResponseDto, unknown> => {
+  return useQuery<IdentityVerificationStatusResponseDto>({
+    queryKey: keys.identityVerificationStatus,
+    queryFn: () => getIdentityVerificationStatus(),
+    gcTime: Infinity,
+    retry: statusRequestAttempt - 1, // minus 1 for we called it once already
+    retryDelay: statusRequestDelay * 1000,
   });
 };

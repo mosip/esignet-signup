@@ -17,6 +17,7 @@ import {
 
 import { CancelAlertPopover } from "./CancelAlertPopover";
 import { EkycVerificationPopover } from "./EkycVerificationPopover";
+import IdentityVerificationStatus from "./IdentityVerificationStatus";
 import KycProviderList from "./KycProviderList";
 import LoadingScreen from "./LoadingScreen";
 import SlotChecking from "./SlotChecking";
@@ -158,7 +159,9 @@ export const EkycVerificationPage = ({
       case EkycVerificationStep.SlotCheckingScreen:
         return <SlotChecking {...defaultProps} />;
       case EkycVerificationStep.VerificationScreen:
-        return <VerificationScreen  {...defaultProps} />;
+        return <VerificationScreen {...defaultProps} />;
+      case EkycVerificationStep.IdentityVerificationStatus:
+        return <IdentityVerificationStatus {...defaultProps} />;
       default:
         return "unknown step";
     }
@@ -174,7 +177,7 @@ export const EkycVerificationPage = ({
 
   return (
     <>
-    {/* TODO: uncomment when needed */}
+      {/* TODO: uncomment when needed */}
       {/* {
         <SessionAlert
           isInSessionTimeoutScope={SCREENS_IN_SESSION_TIMEOUT_SCOPE.includes(
