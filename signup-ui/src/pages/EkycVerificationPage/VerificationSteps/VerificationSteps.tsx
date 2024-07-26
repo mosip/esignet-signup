@@ -18,7 +18,6 @@ import {
   EkycVerificationStep,
   EkycVerificationStore,
   setCriticalErrorSelector,
-  setIsLivenessCheckSuccessSelector,
   setStepSelector,
   useEkycVerificationStore,
 } from "../useEkycVerificationStore";
@@ -35,13 +34,12 @@ export const VerificationSteps = ({
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   // TODO: remove `setLivenessCheckStatus`
-  const { setStep, setCriticalError, setIsLivenessCheckSuccess } =
+  const { setStep, setCriticalError } =
     useEkycVerificationStore(
       useCallback(
         (state: EkycVerificationStore) => ({
           setStep: setStepSelector(state),
           setCriticalError: setCriticalErrorSelector(state),
-          setIsLivenessCheckSuccess: setIsLivenessCheckSuccessSelector(state),
         }),
         []
       )
@@ -116,11 +114,6 @@ export const VerificationSteps = ({
   ];
 
   const handleContinue = async (e: any) => {
-    // TODO: remove this before committing
-    // setIsLivenessCheckSuccess(false);
-    // setStep(EkycVerificationStep.IdentityVerificationStatus);
-
-    // TODO: uncomment this before committing
     e.preventDefault();
 
     // Check if the browser is compatible
