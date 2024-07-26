@@ -153,7 +153,7 @@ export const VerificationScreen = ({
     setSlotId(null);
     setStep(EkycVerificationStep.SlotCheckingScreen);
   };
-  
+
   // timer useEffect
   useEffect(() => {
     if (timer && timer > 0) {
@@ -275,17 +275,26 @@ export const VerificationScreen = ({
   const redirectToConsent = () => {
     unsubscribe();
     client.deactivate();
-    const consentUrl = settings?.configs["signin.redirect-url"].replace(
-      "authorize",
-      "consent"
-    );
+    const consentUrl = settings?.configs["signin.redirect-url"].replace("authorize", "consent");
     const encodedIdToken = window.location.hash;
     window.onbeforeunload = null;
-    window.location.replace(`${consentUrl}${encodedIdToken}`);
+    window.location.replace(
+      `${consentUrl}${encodedIdToken}`
+    );
   };
 
   const endWithSuccess = (successMsgCode: string) => {
     resetEverything();
+    // setAlertConfig({
+    //   icon: "success",
+    //   header: getCurrentLangMsg("messages", successMsgCode),
+    //   subHeader: "Please wait while we finalize the process",
+    //   footer: null,
+    // });
+    // setTimeout(() => {
+    //   redirectToConsent();
+    // }, 5000);
+
     setIsLivenessCheckSuccess(true);
     setStep(EkycVerificationStep.IdentityVerificationStatus);
   };
