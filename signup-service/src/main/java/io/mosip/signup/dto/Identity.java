@@ -10,7 +10,7 @@ import java.util.List;
 @Data
 public class Identity implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 5678901234L;
 
     @JsonProperty("UIN")
     private String UIN;
