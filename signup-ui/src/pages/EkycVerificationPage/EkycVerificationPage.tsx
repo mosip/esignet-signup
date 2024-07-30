@@ -1,12 +1,7 @@
 import { useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { useLocation } from "react-router-dom";
-
-import { SIGNUP_ROUTE } from "~constants/routes";
-import { SessionAlert } from "~components/session-alert";
 import { Form } from "~components/ui/form";
-import { getSignInRedirectURL } from "~utils/link";
 import { useKycProvidersList } from "~pages/shared/mutations";
 import {
   CancelPopup,
@@ -34,6 +29,7 @@ import {
 import VerificationScreen from "./VerificationScreen";
 import VerificationSteps from "./VerificationSteps";
 import VideoPreview from "./VideoPreview";
+import { useL2Hash } from "~hooks/useL2Hash";
 
 interface EkycVerificationPageProps {
   settings: SettingsDto;
@@ -65,7 +61,7 @@ export const EkycVerificationPage = ({
 
   const methods = useForm();
 
-  const { hash: fromSignInHash } = useLocation();
+  const { state } = useL2Hash();
 
   const hashCode = window.location.hash.substring(1);
 
@@ -122,11 +118,7 @@ export const EkycVerificationPage = ({
   const cancelAlertPopoverComp = (cancelProp: CancelPopup) => {
     const handleDismiss = () => {
       window.onbeforeunload = null;
-      window.location.href = getSignInRedirectURL(
-        settings?.response?.configs["signin.redirect-url"],
-        fromSignInHash,
-        SIGNUP_ROUTE
-      );
+      window.location.href = `${settings?.response?.configs["esignet-consent.redirect-url"]}?key=${state}&error=dismiss`;
     };
     return (
       cancelProp.cancelButton && (
