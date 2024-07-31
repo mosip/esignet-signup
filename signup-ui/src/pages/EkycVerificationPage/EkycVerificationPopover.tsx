@@ -1,6 +1,5 @@
 import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
-import { useLocation } from "react-router-dom";
 
 import { ReactComponent as FailedIconSvg } from "~assets/svg/failed-icon.svg";
 import {
@@ -12,10 +11,13 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "~components/ui/alert-dialog";
-import { getSignInRedirectURL } from "~utils/link";
+import { useL2Hash } from "~hooks/useL2Hash";
 import { useSettings } from "~pages/shared/queries";
 
-import { criticalErrorSelector, useEkycVerificationStore } from "./useEkycVerificationStore";
+import {
+  criticalErrorSelector,
+  useEkycVerificationStore,
+} from "./useEkycVerificationStore";
 
 export const EkycVerificationPopover = () => {
   const { t } = useTranslation();
@@ -29,20 +31,16 @@ export const EkycVerificationPopover = () => {
       []
     )
   );
-  const { hash: fromSignInHash } = useLocation();
+  const { state } = useL2Hash();
 
   const handleAction = (e: any) => {
     e.preventDefault();
-    window.location.href = getSignInRedirectURL(
-      settings?.response.configs["signin.redirect-url"],
-      fromSignInHash,
-      "/signup"
-    );
+    window.location.href = `${settings?.response?.configs["esignet-consent.redirect-url"]}?key=${state}&error=${criticalError}`;
   };
 
   return (
     <AlertDialog open={!!criticalError}>
-      <AlertDialogContent className="rounded-[20px] bg-white !w-[90vw] pt-[2.5rem] pb-[2rem]">
+       <AlertDialogContent className="rounded-[20px] bg-white !w-[90vw] pt-[2.5rem] pb-[2rem]">
         <AlertDialogHeader className="m-2">
           <AlertDialogTitle className="flex flex-col items-center justify-center gap-y-4">
             <>
