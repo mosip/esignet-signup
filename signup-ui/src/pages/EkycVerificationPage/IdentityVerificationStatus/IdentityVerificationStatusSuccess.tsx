@@ -8,6 +8,7 @@ import {
 } from "~typings/types";
 
 import { IdentityVerificationStatusLayout } from "./components/IdentityVerificationStatusLayout";
+import { IdentityVerificationStatusLoader } from "./components/IdentityVerificationStatusLoader";
 
 export const IdentityVerificationStatusSuccess = ({
   settings,
@@ -20,7 +21,6 @@ export const IdentityVerificationStatusSuccess = ({
   const {
     data: identityVerificationStatus,
     isError: isIdentityVerificationStatusError,
-    isLoading: isCheckingIdentityVerificationStatus,
   } = useIdentityVerificationStatus({
     attempts: settings.configs["status.request.limit"],
     delay: settings.configs["slot.request.delay"],
@@ -32,21 +32,38 @@ export const IdentityVerificationStatusSuccess = ({
   ) {
     window.onbeforeunload = null;
     window.location.href = `${settings.configs["esignet-consent.redirect-url"]}?key=${state}`;
+
+    return (
+      <IdentityVerificationStatusLayout
+        status="success"
+        title={t("identity_verification_status.successful.title")}
+        description={t("identity_verification_status.successful.description")}
+      />
+    );
   }
 
+  // scenario:
+  // - identity verification check returns response with errorCode
+  if (
+    identityVerificationStatus?.errors &&
+    identityVerificationStatus.errors.length > 0
+  ) {
+    window.onbeforeunload = null;
+    window.location.href = `${settings.configs["esignet-consent.redirect-url"]}?key=${state}&error=${identityVerificationStatus.errors[0].errorCode}`;
+  }
+
+  // scenario:
+  // - identity verification check status failed
+  // - identity verification check status reaches its limit
   if (
     identityVerificationStatus?.response?.status ===
       IdentityVerificationStatusType.FAILED ||
     isIdentityVerificationStatusError
   ) {
     // TODO: handle scenario when identity verification fails or reaches its limit
+    window.onbeforeunload = null;
+    window.location.href = `${settings.configs["esignet-consent.redirect-url"]}?key=${state}&error=true`;
   }
 
-  return (
-    <IdentityVerificationStatusLayout
-      status="success"
-      title={t("identity_verification_status.successful.title")}
-      description={t("identity_verification_status.successful.description")}
-    />
-  );
+  return <IdentityVerificationStatusLoader />;
 };
