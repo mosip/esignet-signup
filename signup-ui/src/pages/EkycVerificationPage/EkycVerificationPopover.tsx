@@ -35,7 +35,8 @@ export const EkycVerificationPopover = () => {
 
   const handleAction = (e: any) => {
     e.preventDefault();
-    window.location.href = `${settings?.response?.configs["esignet-consent.redirect-url"]}?key=${state}&error=${criticalError}`;
+    window.onbeforeunload = null;
+    window.location.href = `${settings?.response?.configs["esignet-consent.redirect-url"]}?key=${state}&error=${criticalError?.errorCode}`;
   };
 
   return (
