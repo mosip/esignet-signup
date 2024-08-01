@@ -124,6 +124,7 @@ interface Resources {
         title: string;
         description: string;
       };
+      loading_title: string;
     };
     error_response: {
       invalid_transaction: string;

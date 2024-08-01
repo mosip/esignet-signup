@@ -386,6 +386,17 @@ body {
   @apply my-4 h-16 w-full;
 }
 
+.status-loader__content {
+  @apply flex flex-col items-center gap-8;
+}
+
+.status-loader__icon {
+  @apply h-20 w-20 animate-spin text-primary;
+}
+
+.status-loader__title {
+  @apply text-center text-2xl font-semibold;
+}
 
 @layer base {
   :root {

@@ -196,7 +196,8 @@
     "failed": {
       "title": "Verification Unsuccessful!",
       "description": "Oops! We were unable to complete the eKYC verification."
-    }
+    },
+    "loading_title": "Please wait while we finalize the process…"
   },
   "error_response": {
     "invalid_transaction": "The transaction has timed out. Please try again.",
