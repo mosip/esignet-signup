@@ -47,6 +47,7 @@ import java.util.UUID;
 
 import static io.mosip.signup.api.util.VerificationStatus.*;
 import static io.mosip.signup.util.ErrorConstants.UPDATE_FAILED;
+import static io.mosip.signup.util.SignUpConstants.VALUE_SEPARATOR;
 
 @Slf4j
 @Service
@@ -188,7 +189,9 @@ public class IdentityVerificationService {
             transaction.setVerifierId(slotRequest.getVerifierId());
             transaction.setStatus(STARTED);
             transaction = cacheUtilService.setSlotAllottedTransaction(transactionId, transaction);
-            addSlotAllottedCookie(transactionId, result.get(), response);
+
+            String cookieValue = transactionId.concat(VALUE_SEPARATOR).concat(transaction.getSlotId());
+            addSlotAllottedCookie(cookieValue, result.get(), response);
 
             log.info("Slot available and assigned to the requested transaction {}", transactionId);
             SlotResponse slotResponse = new SlotResponse();
@@ -203,11 +206,14 @@ public class IdentityVerificationService {
 
     /**
      * Get the status of identity verification process with a valid allotted slotId
-     * @param slotId
+     * @param transactionId
      * @return
      */
-    public IdentityVerificationStatusResponse getStatus(String slotId) {
-        IdentityVerificationTransaction transaction = cacheUtilService.getVerifiedSlotTransaction(slotId);
+    public IdentityVerificationStatusResponse getStatus(String transactionId) {
+        if(transactionId.split(VALUE_SEPARATOR).length <= 1)
+            throw new InvalidTransactionException();
+
+        IdentityVerificationTransaction transaction = cacheUtilService.getVerifiedSlotTransaction(transactionId.split(VALUE_SEPARATOR)[1]);
         if(transaction == null)
             throw new InvalidTransactionException();
 
@@ -232,7 +238,7 @@ public class IdentityVerificationService {
         return identityVerificationStatusResponse;
     }
 
-    private void addSlotAllottedCookie(String transactionId, IdentityVerifierDetail identityVerifierDetail,
+    private void addSlotAllottedCookie(String value, IdentityVerifierDetail identityVerifierDetail,
                                        HttpServletResponse response) {
         Cookie unsetCookie = new Cookie(SignUpConstants.IDV_TRANSACTION_ID, "");
         unsetCookie.setMaxAge(0);
@@ -241,7 +247,7 @@ public class IdentityVerificationService {
         unsetCookie.setPath("/");
         response.addCookie(unsetCookie);
 
-        Cookie cookie = new Cookie(SignUpConstants.IDV_SLOT_ALLOTTED, transactionId);
+        Cookie cookie = new Cookie(SignUpConstants.IDV_SLOT_ALLOTTED, value);
         cookie.setMaxAge(identityVerifierDetail.getProcessDuration() > 0 ? identityVerifierDetail.getProcessDuration() : identityVerificationTransactionTimeout);
         cookie.setHttpOnly(true);
         cookie.setSecure(true);

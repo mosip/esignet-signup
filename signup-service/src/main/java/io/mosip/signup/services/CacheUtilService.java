@@ -166,7 +166,7 @@ public class CacheUtilService {
 
 
     @Caching(evict = {
-            @CacheEvict(value = SignUpConstants.VERIFIED_SLOT, key = "#slotId"),
+            //@CacheEvict(value = SignUpConstants.VERIFIED_SLOT, key = "#slotId"),
             @CacheEvict(value = SignUpConstants.SLOT_ALLOTTED, key = "#transactionId")
     })
     public void evictSlotAllottedTransaction(String transactionId, String slotId) {

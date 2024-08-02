@@ -13,7 +13,6 @@ import io.mosip.signup.exception.SignUpException;
 import io.mosip.signup.services.CacheUtilService;
 import io.mosip.signup.services.IdentityVerifierFactory;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections.map.HashedMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -31,7 +30,7 @@ import java.util.Objects;
 
 import static io.mosip.signup.api.util.ErrorConstants.PLUGIN_NOT_FOUND;
 import static io.mosip.signup.util.ErrorConstants.VERIFIED_CLAIMS_FIELD_ID;
-import static io.mosip.signup.util.SignUpConstants.SOCKET_USERNAME_SEPARATOR;
+import static io.mosip.signup.util.SignUpConstants.VALUE_SEPARATOR;
 
 @Slf4j
 @Controller()
@@ -135,7 +134,7 @@ public class WebSocketController {
         String username = Objects.requireNonNull(disconnectEvent.getUser()).getName();
         log.info("WebSocket Disconnected >>>>>> {}", username);
         cacheUtilService.removeFromVerifiedSlot(username);
-        cacheUtilService.evictSlotAllottedTransaction(username.split(SOCKET_USERNAME_SEPARATOR)[0],
-                username.split(SOCKET_USERNAME_SEPARATOR)[1]);
+        cacheUtilService.evictSlotAllottedTransaction(username.split(VALUE_SEPARATOR)[0],
+                username.split(VALUE_SEPARATOR)[1]);
     }
 }

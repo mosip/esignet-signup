@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
 
-import static io.mosip.signup.util.SignUpConstants.SOCKET_USERNAME_SEPARATOR;
+import static io.mosip.signup.util.SignUpConstants.VALUE_SEPARATOR;
 
 
 @Slf4j
@@ -49,19 +49,22 @@ public class IdentityVerificationHandshakeHandler extends DefaultHandshakeHandle
         if(transactionCookie.isEmpty())
             throw new HandshakeFailureException(ErrorConstants.INVALID_TRANSACTION);
 
-        String transactionId = transactionCookie.get().split(SLOT_COOKIE_NAME)[1];
-        log.info("cookie  transactionId; {}", transactionId);
-        IdentityVerificationTransaction transaction = cacheUtilService.getSlotAllottedTransaction(transactionId.trim());
+        String cookieValue = transactionCookie.get().split(SLOT_COOKIE_NAME)[1];
+        log.info("cookie  transactionId; {}", cookieValue);
+        String transactionId = cookieValue.split(VALUE_SEPARATOR)[0].trim();
+        IdentityVerificationTransaction transaction = cacheUtilService.getSlotAllottedTransaction(transactionId);
 
         String queryParam = request.getURI().getQuery();
         log.info("*** queryParam >>> {} with transaction: {}", queryParam, transaction);
-        if(queryParam == null || queryParam.split(SLOTID_QUERY_PARAM).length <= 1 || transaction == null || 
-                !transaction.getSlotId().equals(queryParam.split(SLOTID_QUERY_PARAM)[1])) {
+        if(queryParam == null || queryParam.split(SLOTID_QUERY_PARAM).length <= 1 || transaction == null ||
+                cookieValue.split(VALUE_SEPARATOR).length <= 1 ||
+                !transaction.getSlotId().equals(queryParam.split(SLOTID_QUERY_PARAM)[1]) ||
+                !transaction.getSlotId().equals(cookieValue.split(VALUE_SEPARATOR)[1])) {
             log.error("SlotId in the handshake url doesn't match the slotId in the transaction");
             throw new HandshakeFailureException(ErrorConstants.INVALID_TRANSACTION);
         }
 
-        final String username = transactionId.concat(SOCKET_USERNAME_SEPARATOR).concat(transaction.getSlotId());
+        final String username = transactionId.concat(VALUE_SEPARATOR).concat(transaction.getSlotId());
         cacheUtilService.setVerifiedSlotTransaction(transactionId, transaction.getSlotId(), transaction);
 
         return new Principal() {
