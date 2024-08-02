@@ -1,10 +1,11 @@
 import { QueryCache, QueryClient } from "@tanstack/react-query";
 import { screen } from "@testing-library/react";
+import { WS } from "jest-websocket-mock";
 
 import { renderWithClient } from "~utils/test";
+import { SettingsDto } from "~typings/types";
 
 import { VerificationScreen } from "../VerificationScreen";
-import { SettingsDto } from "~typings/types";
 
 describe("Web socket connection between the front end and back end", () => {
   const queryCache = new QueryCache();
@@ -20,16 +21,22 @@ describe("Web socket connection between the front end and back end", () => {
   } as SettingsDto;
   const cancelPopup = jest.fn();
 
-  it("should be on", () => {
-    // TODO: will add the test implementation once some web socket structure is given
+  let ws: WS;
 
+  beforeEach(() => {
+    ws = new WS("ws://localhost:8088");
+  });
+
+  afterEach(() => WS.clean());
+
+  it("should exchange message", () => {
     // Arrange
-
     // Act
-    renderWithClient(queryClient, <VerificationScreen />);
-
     // Assert
-    // the connection should be on
+    // 1. status to be connected (using hidden element) when connected
+    // 2. send to /topic/<SLOT_ID> and receive 
+    //    `"frameNumber":0,"stepCode":"START","step":{"code":"liveness_check","framesPerSecond":3,"durationInSeconds":100,"startupDelayInSeconds":15,"retryOnTimeout":false,"retryableErrorCodes":[]},"feedback":null`
+    // 3. status to be disconnected (using hidden element) when disconnected
   });
 });
 
@@ -37,33 +44,60 @@ describe("VerificationScreen (vs)", () => {
   const queryCache = new QueryCache();
   const queryClient = new QueryClient({ queryCache });
 
+  const settings = {
+    response: {
+      configs: {},
+    },
+  } as SettingsDto;
+  const cancelPopup = jest.fn();
+
   it("should render correctly", () => {
     // Arrange
-    renderWithClient(queryClient, <VerificationScreen />);
+    renderWithClient(
+      queryClient,
+      <VerificationScreen
+        settings={settings.response}
+        cancelPopup={cancelPopup}
+      />
+    );
 
     // Act
 
     // Assert
+    // 1. VS id is in the document
     const vs = screen.getByTestId("vs");
     expect(vs).toBeInTheDocument();
   });
 
-  it("should show onscreen instructions above the video frame sent from eKYC provider", () => {
+  it("should show onscreen instructions above the video frame", () => {
     // Arrange
-    // TODO: mock instruction of an eKYC provider
 
-    renderWithClient(queryClient, <VerificationScreen />);
+    renderWithClient(
+      queryClient,
+      <VerificationScreen
+        settings={settings.response}
+        cancelPopup={cancelPopup}
+      />
+    );
 
     // Act
 
     // Assert
+    // 1. `vs-onscreen-instruction` is in the document
+    // 2. `vs-onscreen-instruction` should say "Welcome! Initiating Identity verification process in..."
     const vsOnScreenInstruction = screen.getByTestId("vs-onscreen-instruction");
     expect(vsOnScreenInstruction).toBeInTheDocument();
   });
 
   it("should show liveliness verification screen", () => {
     // Arrange
-    renderWithClient(queryClient, <VerificationScreen />);
+    renderWithClient(
+      queryClient,
+      <VerificationScreen
+        settings={settings.response}
+        cancelPopup={cancelPopup}
+      />
+    );
 
     // Act
 
@@ -74,7 +108,13 @@ describe("VerificationScreen (vs)", () => {
 
   it("should show solid colors across the full screen for color based frame verification", async () => {
     // Arrange
-    renderWithClient(queryClient, <VerificationScreen />);
+    renderWithClient(
+      queryClient,
+      <VerificationScreen
+        settings={settings.response}
+        cancelPopup={cancelPopup}
+      />
+    );
 
     // Act
     // TODO: add wait for x seconds
@@ -86,7 +126,13 @@ describe("VerificationScreen (vs)", () => {
 
   it("should show NID verification screen", () => {
     // Arrange
-    renderWithClient(queryClient, <VerificationScreen />);
+    renderWithClient(
+      queryClient,
+      <VerificationScreen
+        settings={settings.response}
+        cancelPopup={cancelPopup}
+      />
+    );
 
     // Act
 
@@ -98,7 +144,13 @@ describe("VerificationScreen (vs)", () => {
   it("should show feedback message when verification fails", () => {
     // Arrange
     // TODO: mock failed verification
-    renderWithClient(queryClient, <VerificationScreen />);
+    renderWithClient(
+      queryClient,
+      <VerificationScreen
+        settings={settings.response}
+        cancelPopup={cancelPopup}
+      />
+    );
 
     // Act
 
@@ -110,7 +162,13 @@ describe("VerificationScreen (vs)", () => {
   it("should show warning message if there is any technical issue", () => {
     // Arrange
     // TODO: mock technical issue: internet connection lost, ...
-    renderWithClient(queryClient, <VerificationScreen />);
+    renderWithClient(
+      queryClient,
+      <VerificationScreen
+        settings={settings.response}
+        cancelPopup={cancelPopup}
+      />
+    );
 
     // Act
 
@@ -124,7 +182,13 @@ describe("VerificationScreen (vs)", () => {
   it("should be redirected to the leading screen when the verification is successful", () => {
     // Arrange
     // TODO: mock successful verification
-    renderWithClient(queryClient, <VerificationScreen />);
+    renderWithClient(
+      queryClient,
+      <VerificationScreen
+        settings={settings.response}
+        cancelPopup={cancelPopup}
+      />
+    );
 
     // Act
 
