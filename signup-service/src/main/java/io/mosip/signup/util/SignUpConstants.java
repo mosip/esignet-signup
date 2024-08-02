@@ -25,5 +25,5 @@ public class SignUpConstants {
     public static final String SLOTS_CONNECTED = "slots_connected";
     public static final String SLOT_ALLOTTED = "slot_allotted";
     public static final String VERIFIED_SLOT = "verified_slot";
-    public static final String SOCKET_USERNAME_SEPARATOR = "##";
+    public static final String VALUE_SEPARATOR = "###";
 }

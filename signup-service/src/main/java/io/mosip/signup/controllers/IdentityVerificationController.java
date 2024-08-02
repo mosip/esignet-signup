@@ -75,18 +75,18 @@ public class IdentityVerificationController {
     @GetMapping("/status")
     public ResponseWrapper<IdentityVerificationStatusResponse> getStatus(
             @Valid @NotBlank(message = ErrorConstants.INVALID_TRANSACTION)
-            @CookieValue(value = SignUpConstants.IDV_SLOT_ALLOTTED, defaultValue = EMTPY) String slotId) {
+            @CookieValue(value = SignUpConstants.IDV_SLOT_ALLOTTED, defaultValue = EMTPY) String transactionId) {
         ResponseWrapper<IdentityVerificationStatusResponse> responseWrapper = new ResponseWrapper<>();
         try {
-            responseWrapper.setResponse(identityVerificationService.getStatus(slotId));
+            responseWrapper.setResponse(identityVerificationService.getStatus(transactionId));
             responseWrapper.setResponseTime(IdentityProviderUtil.getUTCDateTime());
         }catch (SignUpException signUpException){
             auditHelper.sendAuditTransaction(AuditEvent.REGISTER_STATUS_CHECK, AuditEventType.ERROR,
-                    slotId, signUpException);
+                    transactionId, signUpException);
             throw signUpException;
         }
         auditHelper.sendAuditTransaction(AuditEvent.REGISTER_STATUS_CHECK, AuditEventType.SUCCESS,
-                slotId, null);
+                transactionId, null);
         return responseWrapper;
     }
 }
