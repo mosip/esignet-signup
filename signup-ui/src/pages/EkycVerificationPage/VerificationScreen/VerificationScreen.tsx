@@ -114,10 +114,6 @@ export const VerificationScreen = ({
    * @param request
    */
   const sendMessage = (request: any) => {
-    console.log(
-      "*****************************Sending Message*****************************"
-    );
-    console.log(request);
     if (imageFrames.length) {
       request.frames = imageFrames.map((frame: IdvFrames) => {
         return { frame: "", order: frame.order };
@@ -339,19 +335,11 @@ export const VerificationScreen = ({
     const previousState = identityVerification;
     const currentState = checkPreviousState(res);
 
-    console.log(
-      "******************************Getting Response from Socket******************************"
-    );
-    console.log(res);
     if (currentState) {
       if (currentState.stepCode === "END") {
-        console.log("End of the process");
-
         resetEverything();
         redirectToConsent();
       } else if (previousState?.stepCode !== currentState?.stepCode) {
-        console.log("Step code changed");
-
         resetEverything();
 
         const request = {
@@ -379,7 +367,6 @@ export const VerificationScreen = ({
           checkFeedback(currentState);
         }, currentState.startupDelay * 1000);
       } else {
-        console.log("Step code not changed");
         checkFeedback(currentState);
       }
     }
@@ -424,8 +411,18 @@ export const VerificationScreen = ({
     <EkycStatusAlert config={alertConfig} />
   ) : (
     <div className="sm:pb-[4em]">
-      {!errorBannerMessage && message && (
-        <div className="video-message sm:w-[90vw]">{t(...message)}</div>
+      {!connected ? (
+        <div className="video-message sm:w-[90vw]">
+          <LoadingIndicator
+            message="please_wait"
+            msgParam="Loading. Please wait....."
+            iconClass="video-message-loading"
+            divClass=""
+          />
+        </div>
+      ) : (
+        !errorBannerMessage &&
+        message && <div className="video-message sm:w-[90vw]">{t(...message)}</div>
       )}
       <div
         className={
