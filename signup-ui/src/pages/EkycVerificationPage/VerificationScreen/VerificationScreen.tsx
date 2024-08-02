@@ -411,8 +411,18 @@ export const VerificationScreen = ({
     <EkycStatusAlert config={alertConfig} />
   ) : (
     <div className="sm:pb-[4em]">
-      {!errorBannerMessage && message && (
-        <div className="video-message sm:w-[90vw]">{t(...message)}</div>
+      {!connected ? (
+        <div className="video-message sm:w-[90vw]">
+          <LoadingIndicator
+            message="please_wait"
+            msgParam="Loading. Please wait....."
+            iconClass="video-message-loading"
+            divClass=""
+          />
+        </div>
+      ) : (
+        !errorBannerMessage &&
+        message && <div className="video-message sm:w-[90vw]">{t(...message)}</div>
       )}
       <div
         className={
