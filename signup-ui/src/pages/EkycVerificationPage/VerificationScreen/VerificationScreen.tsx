@@ -86,7 +86,7 @@ export const VerificationScreen = ({
   const webSocketUrl = `${WS_BASE_URL}${WS_URL}?slotId=${slotId}`;
 
   const { client, connected, publish, subscribe, unsubscribe } =
-    useStompClient(webSocketUrl);
+  useStompClient(webSocketUrl);
   // const slotId = "123456";
   // temporary button ref variable
   const buttonRef = useRef(null);
@@ -425,8 +425,15 @@ export const VerificationScreen = ({
   ) : (
     <div className="sm:pb-[4em]">
       {!errorBannerMessage && message && (
-        <div className="video-message sm:w-[90vw]">{t(...message)}</div>
+        <div
+          className="video-message sm:w-[90vw]"
+          data-testid="vs-onscreen-instruction"
+          >
+            {t(...message)}
+        </div>
       )}
+      {connected && <span className="sr-only" data-testid="websocket-connected">connected</span>}
+      {!connected && <span className="sr-only" data-testid="websocket-disconnected">disconnected</span>}
       <div
         className={
           colorVerification

@@ -1,45 +1,11 @@
 import { QueryCache, QueryClient } from "@tanstack/react-query";
 import { screen } from "@testing-library/react";
-import { WS } from "jest-websocket-mock";
 
 import { renderWithClient } from "~utils/test";
+import * as useStompClient from "~pages/shared/stompWs";
 import { SettingsDto } from "~typings/types";
 
 import { VerificationScreen } from "../VerificationScreen";
-
-describe("Web socket connection between the front end and back end", () => {
-  const queryCache = new QueryCache();
-  const queryClient = new QueryClient({ queryCache });
-
-  const settings = {
-    response: {
-      configs: {
-        "slot.request.limit": 2,
-        "slot.request.delay": 1,
-      },
-    },
-  } as SettingsDto;
-  const cancelPopup = jest.fn();
-
-  let ws: WS;
-
-  beforeEach(() => {
-    ws = new WS("ws://localhost:8088");
-  });
-
-  afterEach(() => WS.clean());
-
-  it("should exchange message", () => {
-    // Arrange
-    // Act
-    // Assert
-    // 1. status to be connected (using hidden element) when connected
-    // NOTE: Due to the randomness nature of the socket, I will just check the stepCode=START
-    // 2. send to /topic/<SLOT_ID> and receive 
-    //    `"frameNumber":0,"stepCode":"START","step":{"code":"liveness_check","framesPerSecond":3,"durationInSeconds":100,"startupDelayInSeconds":15,"retryOnTimeout":false,"retryableErrorCodes":[]},"feedback":null`
-    // 3. status to be disconnected (using hidden element) when disconnected
-  });
-});
 
 describe("VerificationScreen (vs)", () => {
   const queryCache = new QueryCache();
@@ -47,13 +13,24 @@ describe("VerificationScreen (vs)", () => {
 
   const settings = {
     response: {
-      configs: {},
+      configs: {
+        "signin.redirect-url":
+          "https://esignet.camdgc-dev1.mosip.net/authorize",
+      },
     },
   } as SettingsDto;
   const cancelPopup = jest.fn();
 
-  it("should render correctly", () => {
+  it("should have a connected indicator when web socket is connected", async () => {
     // Arrange
+    jest.spyOn(useStompClient, "default").mockReturnValue({
+      client: null,
+      connected: true,
+      subscribe: jest.fn(),
+      publish: jest.fn(),
+      unsubscribe: jest.fn(),
+    });
+
     renderWithClient(
       queryClient,
       <VerificationScreen
@@ -65,14 +42,46 @@ describe("VerificationScreen (vs)", () => {
     // Act
 
     // Assert
-    // 1. `vs` is in the document
-    // 2. `vs` contains a `webcam`
-    const vs = screen.getByTestId("vs");
-    expect(vs).toBeInTheDocument();
+    const statusConnected = await screen.findByTestId("websocket-connected");
+    expect(statusConnected).toBeInTheDocument();
   });
 
-  it("should show onscreen instructions above the video frame", () => {
+  it("should have a disconnected indicator when web socket is disconnected", async () => {
     // Arrange
+    jest.spyOn(useStompClient, "default").mockReturnValue({
+      client: null,
+      connected: false,
+      subscribe: jest.fn(),
+      publish: jest.fn(),
+      unsubscribe: jest.fn(),
+    });
+
+    renderWithClient(
+      queryClient,
+      <VerificationScreen
+        settings={settings.response}
+        cancelPopup={cancelPopup}
+      />
+    );
+
+    // Act
+
+    // Assert
+    const statusDisconnected = await screen.findByTestId(
+      "websocket-disconnected"
+    );
+    expect(statusDisconnected).toBeInTheDocument();
+  });
+
+  it("should show onscreen instructions above the video frame", async () => {
+    // Arrange
+    jest.spyOn(useStompClient, "default").mockReturnValue({
+      client: null,
+      connected: true,
+      subscribe: jest.fn(),
+      publish: jest.fn(),
+      unsubscribe: jest.fn(),
+    });
 
     renderWithClient(
       queryClient,
@@ -87,7 +96,9 @@ describe("VerificationScreen (vs)", () => {
     // Assert
     // 1. `vs-onscreen-instruction` is in the document
     // 2. `vs-onscreen-instruction` should say "Welcome! Initiating Identity verification process in..."
-    const vsOnScreenInstruction = screen.getByTestId("vs-onscreen-instruction");
+    const vsOnScreenInstruction = await screen.findByTestId(
+      "vs-onscreen-instruction"
+    );
     expect(vsOnScreenInstruction).toBeInTheDocument();
   });
 
