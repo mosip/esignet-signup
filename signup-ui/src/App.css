@@ -335,9 +335,6 @@ body {
   font: var(--tnc-consent-font);
   color: var(--tnc-consent-color);
   letter-spacing: 0px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .video-preview-header {
