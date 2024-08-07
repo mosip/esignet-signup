@@ -35,6 +35,7 @@ export const UnsupportedBrowserPerm = () => {
           name="okay-button"
           className="my-4 h-16 w-full"
           onClick={handleOkay}
+          type="button"
         >
           {t("okay")}
         </Button>
