@@ -51,4 +51,6 @@ public class ErrorConstants {
     public static final String VERIFIED_CLAIMS_FIELD_ID = "verified_claims";
 
     public static final String INVALID_DISABILITY_TYPE = "invalid_disability_type";
+    public static final String INVALID_AUTHORIZATION_CODE = "invalid_authorization_code";
+    public static final String INVALID_STATE = "invalid_state";
 }
