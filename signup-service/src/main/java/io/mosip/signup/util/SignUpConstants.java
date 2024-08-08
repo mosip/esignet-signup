@@ -15,7 +15,7 @@ public class SignUpConstants {
     public static final String VERIFIED_TRANSACTION_ID = "VERIFIED_TRANSACTION_ID";
     public static final String IDV_TRANSACTION_ID = "IDV_TRANSACTION_ID";
     public static final String IDV_SLOT_ALLOTTED = "IDV_SLOT_ALLOTTED";
-    public static final String CONSENT_DISAGREE = "DISAGREE";
+    public static final String CONSENT_AGREE = "AGREE";
     public static final String EMTPY = "";
     public static final String SEND_OTP_SMS_NOTIFICATION_TEMPLATE_KEY = "mosip.signup.sms-notification-template.send-otp";
     public static final String REGISTRATION_SMS_NOTIFICATION_TEMPLATE_KEY = "mosip.signup.sms-notification-template.registration";
