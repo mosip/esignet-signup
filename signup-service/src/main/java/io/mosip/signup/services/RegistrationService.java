@@ -188,11 +188,11 @@ public class RegistrationService {
             log.error("Transaction {} : not found in ChallengeVerifiedTransaction cache", transactionId);
             throw new InvalidTransactionException();
         }
-        if (!transaction.getPurpose().equals(Purpose.REGISTRATION)) {
+        if (!Purpose.REGISTRATION.equals(transaction.getPurpose())) {
             log.error("Transaction {} : is not for Registration Purpose", transactionId);
             throw new SignUpException(ErrorConstants.UNSUPPORTED_PURPOSE);
         }
-        if(registerRequest.getConsent().equals(CONSENT_DISAGREE)) {
+        if(!CONSENT_AGREE.equals(registerRequest.getConsent())) {
             log.error("Transaction {} : disagrees consent", transactionId);
             throw new SignUpException(ErrorConstants.CONSENT_REQUIRED);
         }

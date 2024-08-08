@@ -187,6 +187,7 @@ public class IdentityVerificationService {
             }
 
             transaction.setVerifierId(slotRequest.getVerifierId());
+            transaction.setDisabilityType(slotRequest.getDisabilityType());
             transaction.setStatus(STARTED);
             transaction = cacheUtilService.setSlotAllottedTransaction(transactionId, transaction);
 
