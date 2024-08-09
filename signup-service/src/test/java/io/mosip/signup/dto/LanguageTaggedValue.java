@@ -13,7 +13,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class LanguageTaggedValue implements Serializable {
 
-    private static final long serialVersionUID = 2345678901L;
+    private static final long serialVersionUID = 1L;
 
     public LanguageTaggedValue(String language, String value){
         this.language =  language;

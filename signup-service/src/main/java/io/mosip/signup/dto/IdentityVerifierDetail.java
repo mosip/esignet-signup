@@ -8,7 +8,7 @@ import java.util.Map;
 @Data
 public class IdentityVerifierDetail implements Serializable {
 
-    private static final long serialVersionUID = 9876543210L;
+    private static final long serialVersionUID = 1L;
     private String id;
     private Map<String, String> displayName;
     private Map<String, String> description;

@@ -17,7 +17,7 @@ import java.util.UUID;
 @Data
 public class RegistrationTransaction implements Serializable {
 
-    private static final long serialVersionUID = 6543210987L;
+    private static final long serialVersionUID = 1L;
     private String challengeHash;
     private String identifier;
     private LocalDateTime startedAt;

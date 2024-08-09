@@ -8,7 +8,7 @@ import java.util.ArrayList;
 @Data
 public class RestResponseWrapper<T> implements Serializable {
 
-    private static final long serialVersionUID = 1234567890L;
+    private static final long serialVersionUID = 1L;
     private String id;
     private String version;
     private String responsetime;

@@ -7,6 +7,6 @@ import java.io.Serializable;
 @Data
 public class OtpRequest implements Serializable {
 
-    private static final long serialVersionUID = 7890123456L;
+    private static final long serialVersionUID = 1L;
     private String key;
 }
