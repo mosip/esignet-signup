@@ -1,7 +1,10 @@
 import { useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
+
 import { Form } from "~components/ui/form";
+import { useL2Hash } from "~hooks/useL2Hash";
 import { useKycProvidersList } from "~pages/shared/mutations";
 import {
   CancelPopup,
@@ -20,6 +23,7 @@ import TermsAndCondition from "./TermsAndCondition";
 import {
   criticalErrorSelector,
   EkycVerificationStep,
+  setCriticalErrorSelector,
   setHashCodeSelector,
   setKycProviderSelector,
   setKycProvidersListSelector,
@@ -29,7 +33,6 @@ import {
 import VerificationScreen from "./VerificationScreen";
 import VerificationSteps from "./VerificationSteps";
 import VideoPreview from "./VideoPreview";
-import { useL2Hash } from "~hooks/useL2Hash";
 
 interface EkycVerificationPageProps {
   settings: SettingsDto;
@@ -39,10 +42,12 @@ export const EkycVerificationPage = ({
   settings,
 }: EkycVerificationPageProps) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   const {
     step,
     criticalError,
+    setCriticalError,
     setKycProvider,
     setKycProviderList,
     setHashCode,
@@ -51,6 +56,7 @@ export const EkycVerificationPage = ({
       (state) => ({
         step: stepSelector(state),
         criticalError: criticalErrorSelector(state),
+        setCriticalError: setCriticalErrorSelector(state),
         setKycProvider: setKycProviderSelector(state),
         setKycProviderList: setKycProvidersListSelector(state),
         setHashCode: setHashCodeSelector(state),
@@ -67,43 +73,49 @@ export const EkycVerificationPage = ({
 
   const { kycProvidersList } = useKycProvidersList();
 
+  const navigateToLandingPage = () => {
+    navigate("/");
+  };
+
   useEffect(() => {
-    if (hashCode !== null && hashCode !== undefined) {
-      const decodedBase64 = atob(hashCode);
+    if (!hashCode) return navigateToLandingPage();
 
-      const params = new URLSearchParams(decodedBase64);
+    const base64Regex =
+      /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/;
+    if (!base64Regex.test(hashCode)) return navigateToLandingPage();
 
-      const hasState = params.has("state");
-      const hasCode = params.has("code");
+    const decodedBase64 = atob(hashCode);
+    const params = new URLSearchParams(decodedBase64);
+    const requiredParams = ["state", "code", "ui_locales"];
+    if (!requiredParams.every((param) => params.has(param)))
+      return navigateToLandingPage();
 
-      if (hasState && hasCode) {
-        setHashCode({
-          state: params.get("state") ?? "",
-          code: params.get("code") ?? "",
-        });
+    setHashCode({
+      state: params.get("state") ?? "",
+      code: params.get("code") ?? "",
+    });
 
-        if (kycProvidersList.isPending) return;
-        const UpdateProcessRequestDto: UpdateProcessRequestDto = {
-          requestTime: new Date().toISOString(),
-          request: {
-            authorizationCode: params?.get("code") ?? "",
-            state: params?.get("state") ?? "",
-          },
-        };
-        return kycProvidersList.mutate(UpdateProcessRequestDto, {
-          onSuccess: ({ response, errors }) => {
-            if (!errors || errors.length === 0) {
-              setKycProviderList(response?.identityVerifiers);
-              if (response?.identityVerifiers.length === 1) {
-                setKycProvider(response?.identityVerifiers[0]);
-              }
-              return;
-            }
-          },
-        });
-      }
-    }
-  }, []);
+    if (kycProvidersList.isPending) return;
+    const UpdateProcessRequestDto: UpdateProcessRequestDto = {
+      requestTime: new Date().toISOString(),
+      request: {
+        authorizationCode: params?.get("code") ?? "",
+        state: params?.get("state") ?? "",
+      },
+    };
+    return kycProvidersList.mutate(UpdateProcessRequestDto, {
+      onSuccess: ({ response, errors }) => {
+        if (errors?.length) {
+          setCriticalError(errors[0]);
+        } else {
+          setKycProviderList(response?.identityVerifiers);
+          if (response?.identityVerifiers.length === 1) {
+            setKycProvider(response?.identityVerifiers[0]);
+          }
+        }
+      },
+    });
+  }, [hashCode, kycProvidersList, navigate]);
 
   useEffect(() => {
     window.onbeforeunload = () => {
@@ -178,9 +190,11 @@ export const EkycVerificationPage = ({
         />
       } */}
       {criticalError &&
-        ["invalid_transaction", "identifier_already_registered"].includes(
-          criticalError.errorCode
-        ) && <EkycVerificationPopover />}
+        [
+          "invalid_transaction",
+          "identifier_already_registered",
+          "grant_exchange_failed",
+        ].includes(criticalError.errorCode) && <EkycVerificationPopover />}
 
       <Form {...methods}>
         <form noValidate>{getEkycVerificationStepContent(step)}</form>

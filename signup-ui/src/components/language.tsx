@@ -28,15 +28,21 @@ export const Language = () => {
 
   const handleLanguageChange = (language: string) => {
     i18n.changeLanguage(language);
-
+    
     const urlSearchParams = replaceUILocales(window.location.hash, language);
-    // Encode the string
-    const encodedBase64 = btoa(urlSearchParams.toString());
-    const url =
-      window.location.origin + window.location.pathname + window.location.search + "#" + encodedBase64;
-
-    // Replace the current url with the modified url due to the language change
-    window.history.replaceState(null, "", url);
+    if (urlSearchParams) {
+      // Encode the string
+      const encodedBase64 = btoa(urlSearchParams.toString());
+      const url =
+        window.location.origin +
+        window.location.pathname +
+        window.location.search +
+        "#" +
+        encodedBase64;
+        
+      // Replace the current url with the modified url due to the language change
+      window.history.replaceState(null, "", url);
+    }
   };
 
   // setting language dropdown value to current fallback language
