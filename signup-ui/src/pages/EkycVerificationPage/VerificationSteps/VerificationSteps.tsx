@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import Stepper from "@keyvaluesystems/react-stepper";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 
 import { Button } from "~components/ui/button";
 import {
@@ -17,9 +18,9 @@ import LoadingIndicator from "~/common/LoadingIndicator";
 import {
   EkycVerificationStep,
   EkycVerificationStore,
+  kycProvidersListSelector,
   setCriticalErrorSelector,
   setStepSelector,
-  kycProvidersListSelector,
   useEkycVerificationStore,
 } from "../useEkycVerificationStore";
 import { checkBrowserCompatible } from "./utils/checkBrowserCompatible";
@@ -33,29 +34,42 @@ export const VerificationSteps = ({
   });
   const [cancelButton, setCancelButton] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const { setStep, setCriticalError, providerListStore } = useEkycVerificationStore(
-    useCallback(
-      (state: EkycVerificationStore) => ({
-        setStep: setStepSelector(state),
-        setCriticalError: setCriticalErrorSelector(state),
-        providerListStore: kycProvidersListSelector(state),
-      }),
-      []
-    )
-  );
+  const { setStep, setCriticalError, providerListStore } =
+    useEkycVerificationStore(
+      useCallback(
+        (state: EkycVerificationStore) => ({
+          setStep: setStepSelector(state),
+          setCriticalError: setCriticalErrorSelector(state),
+          providerListStore: kycProvidersListSelector(state),
+        }),
+        []
+      )
+    );
+  const navigate = useNavigate();
+  const base64Regex =
+    /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/;
 
   const hashCode = window.location.hash.substring(1);
-  const decodedBase64 = atob(hashCode);
+  var decodedBase64;
+  var isValidHash = base64Regex.test(hashCode);
+
+  if (isValidHash) {
+    decodedBase64 = atob(hashCode);
+  } else {
+    navigate("/");
+  }
+
   const params = new URLSearchParams(decodedBase64);
   const hasState = params.has("state");
   const hasCode = params.has("code");
+  const uiLocales = params.has("ui_locales");
   const urlObj = new URL(window.location.href);
   const state = urlObj.searchParams.get("state");
 
   useEffect(() => {
     setIsLoading(true);
-    if (hashCode !== null && hashCode !== undefined) {
-      if (!hasState && !hasCode) {
+    if (hashCode) {
+      if (!hasState && !hasCode && uiLocales && isValidHash) {
         const authorizeURI = settings?.configs["signin.redirect-url"];
         const clientIdURI = settings?.configs["signup.oauth-client-id"];
         const identityVerificationRedirectURI =
@@ -145,7 +159,7 @@ export const VerificationSteps = ({
 
   return (
     <>
-      {hasState && hasCode && !isLoading ? (
+      {hasState && hasCode && uiLocales && !isLoading ? (
         <>
           {cancelPopup({ cancelButton, handleStay })}
           <div className="my-4 flex flex-row justify-center">
