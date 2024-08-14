@@ -115,7 +115,7 @@ export const EkycVerificationPage = ({
         }
       },
     });
-  }, [hashCode, kycProvidersList, navigate]);
+  }, []);
 
   useEffect(() => {
     window.onbeforeunload = () => {
