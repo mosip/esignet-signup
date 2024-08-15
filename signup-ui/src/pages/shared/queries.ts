@@ -50,10 +50,9 @@ export const useRegistrationStatus = (
   });
 };
 
-export const useTermsAndConditions = (kycProviderId: string): UseQueryResult<
-  KycProviderDetailResponseDto,
-  unknown
-> => {
+export const useTermsAndConditions = (
+  kycProviderId: string
+): UseQueryResult<KycProviderDetailResponseDto, unknown> => {
   return useQuery<KycProviderDetailResponseDto>({
     queryKey: [...keys.termsAndConditions, kycProviderId],
     queryFn: () => getTermsAndConditions(kycProviderId),
@@ -64,13 +63,15 @@ export const useTermsAndConditions = (kycProviderId: string): UseQueryResult<
 export const useIdentityVerificationStatus = ({
   attempts: statusRequestAttempt,
   delay: statusRequestDelay,
+  retriableErrorCodes,
 }: {
   attempts: number;
   delay: number;
+  retriableErrorCodes: string[];
 }): UseQueryResult<IdentityVerificationStatusResponseDto, unknown> => {
   return useQuery<IdentityVerificationStatusResponseDto>({
     queryKey: keys.identityVerificationStatus,
-    queryFn: () => getIdentityVerificationStatus(),
+    queryFn: () => getIdentityVerificationStatus(retriableErrorCodes),
     gcTime: Infinity,
     retry: statusRequestAttempt - 1, // minus 1 for we called it once already
     retryDelay: statusRequestDelay * 1000,

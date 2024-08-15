@@ -119,19 +119,22 @@ export const checkSlotAvailability = async (
   });
 };
 
-export const getIdentityVerificationStatus =
-  async (): Promise<IdentityVerificationStatusResponseDto> => {
-    return ApiService.get<IdentityVerificationStatusResponseDto>(
-      "/identity-verification/status"
-    ).then(({ data }) => {
-      // treat `UPDATE_PENDING` as an error so that react-query will auto retry
-      if (
-        data.response?.status ===
-        IdentityVerificationStatus.UPDATEPENDING
-      ) {
-        throw new Error("Identity verification update is pending");
-      }
+export const getIdentityVerificationStatus = async (
+  retriableErrorCodes: string[]
+): Promise<IdentityVerificationStatusResponseDto> => {
+  return ApiService.get<IdentityVerificationStatusResponseDto>(
+    "/identity-verification/status"
+  ).then(({ data }) => {
+    if (
+      data.response?.status !== IdentityVerificationStatus.COMPLETED &&
+      data.response?.status !== IdentityVerificationStatus.FAILED &&
+      (data.response?.status === IdentityVerificationStatus.UPDATEPENDING ||
+        (data.errors.length > 0 &&
+          retriableErrorCodes.includes(data.errors[0].errorCode)))
+    ) {
+      throw new Error("Identity verification update is pending");
+    }
 
-      return data;
-    });
-  };
+    return data;
+  });
+};
