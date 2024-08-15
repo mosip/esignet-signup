@@ -54,6 +54,7 @@ export const AccountSetupStatus = ({
     useRegistrationStatus(
       settings.response.configs["status.request.limit"],
       settings.response.configs["status.request.delay"],
+      settings.response.configs["status.request.retry.error.codes"].split(","),
       registration
     );
 

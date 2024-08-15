@@ -56,19 +56,29 @@ export const register = async (register: RegistrationRequestDto) => {
   );
 };
 
-export const getRegistrationStatus =
-  async (): Promise<RegistrationStatusResponseDto> => {
-    return ApiService.get<RegistrationStatusResponseDto>(
-      "/registration/status"
-    ).then(({ data }) => {
-      // treat `PENDING` as an error so that react-query will auto retry
-      if (data.response?.status === RegistrationWithFailedStatus.PENDING) {
-        throw new Error("Status pending");
-      }
+export const getRegistrationStatus = async (
+  retriableErrorCodes: string[]
+): Promise<RegistrationStatusResponseDto> => {
+  return ApiService.get<RegistrationStatusResponseDto>(
+    "/registration/status"
+  ).then(({ data }) => {
+    const isErrorRetriable =
+      data.errors.length > 0 &&
+      retriableErrorCodes.includes(data.errors[0].errorCode);
 
-      return data;
-    });
-  };
+    const shouldRetryCheckingRegistrationStatus =
+      data.response?.status !== RegistrationWithFailedStatus.COMPLETED &&
+      data.response?.status !== RegistrationWithFailedStatus.FAILED &&
+      (data.response?.status === RegistrationWithFailedStatus.PENDING ||
+        isErrorRetriable);
+
+    if (shouldRetryCheckingRegistrationStatus) {
+      throw new Error("Status pending");
+    }
+
+    return data;
+  });
+};
 
 export const resetPassword = async (newUserInfo: ResetPasswordRequestDto) => {
   return ApiService.post("/reset-password", newUserInfo).then(

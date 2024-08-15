@@ -36,11 +36,12 @@ export const useSettings = (): UseQueryResult<SettingsDto, unknown> => {
 export const useRegistrationStatus = (
   statusRequestAttempt: number,
   statusRequestDelay: number,
+  retriableErrorCodes: string[],
   registration: RegistrationResponseDto | ResetPasswordResponseDto
 ): UseQueryResult<RegistrationStatusResponseDto, unknown> => {
   return useQuery<RegistrationStatusResponseDto>({
     queryKey: keys.registrationStatus,
-    queryFn: () => getRegistrationStatus(),
+    queryFn: () => getRegistrationStatus(retriableErrorCodes),
     gcTime: Infinity,
     retry: statusRequestAttempt - 1, // minus 1 for we called it once already
     retryDelay: statusRequestDelay * 1000,
