@@ -205,14 +205,21 @@ public class CacheUtilService {
         return count == null ? 0 : count;
     }
 
+    /**
+     * SchedulerLock - When dealing with multiple instances, tasks will run more than once. We are using
+     * a scheduler lock, ensuring that scheduled task runs only once.
+     */
     @Scheduled(cron = "${mosip.signup.slot.cleanup-cron}")
     @SchedulerLock(name = "clearExpiredSlots", lockAtMostFor = "PT120S", lockAtLeastFor = "PT120S")
     public void clearExpiredSlots() {
+        log.info("Scheduled Task - clearExpiredSlots triggered");
         if(redisConnectionFactory.getConnection() != null) {
             if(scriptHash == null) {
                 scriptHash = redisConnectionFactory.getConnection().scriptingCommands().scriptLoad(CLEANUP_SCRIPT.getBytes());
             }
             LockAssert.assertLocked();
+            log.info("Running scheduled cleanup task - task to clear expired slots with script hash: {} {} {}", scriptHash,
+                    SLOTS_CONNECTED, slotExpireInSeconds);
             redisConnectionFactory.getConnection().scriptingCommands().evalSha(scriptHash, ReturnType.INTEGER, 1,
                     SLOTS_CONNECTED.getBytes(), new byte[]{slotExpireInSeconds.byteValue()});
         }
