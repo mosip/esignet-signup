@@ -55,6 +55,36 @@ mosip.identity.fieldid.handle-postfix.mapping={'phone':'@phone'}
 mosip.kernel.sms.country.code=+91
 ``
 
+#### signup-default.properties for l2 flow
+```
+##  redis configuration is mandotory for l2 flow
+
+mosip.signup.oauth.client-id=mosip-signup-oauth-client
+
+mosip.signup.oauth.redirect-uri=https://signup.dev.mosip.net/identity-verification
+
+mosip.signup.oauth.issuer-uri=https://esignet.dev.mosip.net
+
+mosip.signup.oauth.keystore-path=keystore.p12
+
+mosip.signup.oauth.keystore-password=mosip
+
+mosip.signup.oauth.key-alias=signup
+
+mosip.signup.oauth.token-uri=https://esignet.dev.mosip.net/v1/esignet/oauth/v2/token
+
+mosip.signup.oauth.audience=https://esignet.dev.mosip.net/v1/esignet/oauth/v2/token
+
+mosip.signup.oauth.userinfo-uri=https://esignet.dev.mosip.net/v1/esignet/oidc/userinfo
+
+mosip.signup.slot.max-count=50
+
+mosip.signup.slot.request.delay=20
+
+mosip.signup.slot.request.limit=10
+
+```
+
 
 
 ## Installing in k8s cluster using helm
