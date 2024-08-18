@@ -9,6 +9,7 @@ import java.io.Serializable;
 @Data
 public class IdentityVerificationTransaction implements Serializable {
 
+    private static final long serialVersionUID = 1L;
     private String individualId;
     private String slotId;
     private String verifierId;
