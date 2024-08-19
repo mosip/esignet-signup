@@ -3,6 +3,7 @@ package io.mosip.signup.services;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.mosip.esignet.core.util.CaptchaHelper;
 import io.mosip.esignet.core.util.IdentityProviderUtil;
 import io.mosip.signup.api.dto.ProfileDto;
@@ -873,7 +874,9 @@ public class RegistrationServiceTest {
         String identifier = "+855219718732";
 
         RegisterRequest registerRequest = new RegisterRequest();
-        registerRequest.setUserInfo(objectMapper.createObjectNode());
+        ObjectNode root = objectMapper.createObjectNode();
+        root.set("phone", objectMapper.convertValue(identifier, JsonNode.class));
+        registerRequest.setUserInfo(root);
         registerRequest.setUsername("+855219718732");
         registerRequest.setPassword("123123");
         registerRequest.setConsent("AGREE");
@@ -929,7 +932,9 @@ public class RegistrationServiceTest {
         String identifier = "+855219718732";
 
         RegisterRequest registerRequest = new RegisterRequest();
-        registerRequest.setUserInfo(objectMapper.createObjectNode());
+        ObjectNode root = objectMapper.createObjectNode();
+        root.set("phone", objectMapper.convertValue(identifier, JsonNode.class));
+        registerRequest.setUserInfo(root);
         registerRequest.setUsername("+855219718732");
         registerRequest.setPassword("123123");
         registerRequest.setConsent("AGREE");
@@ -985,7 +990,9 @@ public class RegistrationServiceTest {
     public void register_withInvalidTransaction_throwInvalidTransaction() throws SignUpException {
 
         RegisterRequest registerRequest = new RegisterRequest();
-        registerRequest.setUserInfo(objectMapper.createObjectNode());
+        ObjectNode root = objectMapper.createObjectNode();
+        root.set("phone", objectMapper.convertValue("+855219718732", JsonNode.class));
+        registerRequest.setUserInfo(root);
         registerRequest.setUsername("+855219718732");
         registerRequest.setPassword("123123");
         registerRequest.setConsent("AGREE");
@@ -1004,7 +1011,9 @@ public class RegistrationServiceTest {
     @Test
     public void register_withInvalidUsername_throwIdentifierMismatch() throws SignUpException {
         RegisterRequest registerRequest = new RegisterRequest();
-        registerRequest.setUserInfo(objectMapper.createObjectNode());
+        ObjectNode root = objectMapper.createObjectNode();
+        root.set("phone", objectMapper.convertValue("+855321444123", JsonNode.class));
+        registerRequest.setUserInfo(root);
         registerRequest.setUsername("+855321444123");
         registerRequest.setPassword("123123");
         registerRequest.setConsent("AGREE");
@@ -1029,7 +1038,9 @@ public class RegistrationServiceTest {
     @Test
     public void register_withInvalidConsent_throwConsentRequired() throws SignUpException {
         RegisterRequest registerRequest = new RegisterRequest();
-        registerRequest.setUserInfo(objectMapper.createObjectNode());
+        ObjectNode root = objectMapper.createObjectNode();
+        root.set("phone", objectMapper.convertValue("+855219718732", JsonNode.class));
+        registerRequest.setUserInfo(root);
         registerRequest.setUsername("+855219718732");
         registerRequest.setPassword("123123");
         registerRequest.setConsent("DISAGREE");
@@ -1050,11 +1061,40 @@ public class RegistrationServiceTest {
             Assert.assertEquals("consent_required", signUpException.getErrorCode());
         }
     }
+    
+    @Test
+    public void register_withDifferentUserNameAndPhone_throwIdentifierMismatch() throws SignUpException {
+        RegisterRequest registerRequest = new RegisterRequest();
+        ObjectNode root = objectMapper.createObjectNode();
+        root.set("phone", objectMapper.convertValue("+855219908732", JsonNode.class));
+        registerRequest.setUserInfo(root);
+        registerRequest.setUsername("+855219718732");
+        registerRequest.setPassword("123123");
+        registerRequest.setConsent("DISAGREE");
+        registerRequest.setLocale(locale);
+
+        String mockTransactionID = "123456789";
+
+        RegistrationTransaction mockRegistrationTransaction = new RegistrationTransaction(registerRequest.getUsername(), Purpose.REGISTRATION);
+        mockRegistrationTransaction.setChallengeHash("123456");
+
+        when(cacheUtilService.getChallengeVerifiedTransaction(mockTransactionID))
+                .thenReturn(mockRegistrationTransaction);
+
+        try {
+            registrationService.register(registerRequest, mockTransactionID);
+            Assert.fail();
+        } catch (SignUpException signUpException) {
+            Assert.assertEquals("identifier_mismatch", signUpException.getErrorCode());
+        }
+    }
 
     @Test
     public void register_with_ResetPasswordPurposeTransaction_throwUnsupportedPurpose() throws SignUpException {
         RegisterRequest registerRequest = new RegisterRequest();
-        registerRequest.setUserInfo(objectMapper.createObjectNode());
+        ObjectNode root = objectMapper.createObjectNode();
+        root.set("phone", objectMapper.convertValue("+855219718732", JsonNode.class));
+        registerRequest.setUserInfo(root);
         registerRequest.setUsername("+855219718732");
         registerRequest.setPassword("123123");
         registerRequest.setConsent("DISAGREE");

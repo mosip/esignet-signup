@@ -184,6 +184,10 @@ public class RegistrationService {
 
     public RegisterResponse register(RegisterRequest registerRequest, String transactionId) throws SignUpException {
         RegistrationTransaction transaction = cacheUtilService.getChallengeVerifiedTransaction(transactionId);
+        if(registerRequest.getUsername()!= registerRequest.getUserInfo().get("phone").asText()) {
+            log.error("Transaction {} : phoneNumber and userName mismatch", transactionId);
+            throw new SignUpException(ErrorConstants.IDENTIFIER_MISMATCH);
+        }
         if(transaction == null) {
             log.error("Transaction {} : not found in ChallengeVerifiedTransaction cache", transactionId);
             throw new InvalidTransactionException();
