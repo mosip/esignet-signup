@@ -135,13 +135,17 @@ export const getIdentityVerificationStatus = async (
   return ApiService.get<IdentityVerificationStatusResponseDto>(
     "/identity-verification/status"
   ).then(({ data }) => {
-    if (
+    const isErrorRetriable =
+      data.errors.length > 0 &&
+      retriableErrorCodes.includes(data.errors[0].errorCode);
+
+    const shouldRetryCheckingIdentityVerificationStatus =
       data.response?.status !== IdentityVerificationStatus.COMPLETED &&
       data.response?.status !== IdentityVerificationStatus.FAILED &&
       (data.response?.status === IdentityVerificationStatus.UPDATEPENDING ||
-        (data.errors.length > 0 &&
-          retriableErrorCodes.includes(data.errors[0].errorCode)))
-    ) {
+        isErrorRetriable);
+
+    if (shouldRetryCheckingIdentityVerificationStatus) {
       throw new Error("Identity verification update is pending");
     }
 
