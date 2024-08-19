@@ -135,6 +135,7 @@ export interface SettingsConfig {
   "fullname.pattern": string;
   "status.request.limit": number;
   "status.request.delay": number;
+  "status.request.retry.error.codes": string;
   "slot.request.limit": number;
   "slot.request.delay": number;
   "popup.timeout": number;
