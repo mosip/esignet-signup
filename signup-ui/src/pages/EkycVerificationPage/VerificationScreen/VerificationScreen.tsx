@@ -292,12 +292,7 @@ export const VerificationScreen = ({
       currentStep.feedbackType === IdvFeedbackEnum.MESSAGE &&
       currentStep.feedbackCode === "success_check"
     ) {
-      setAlertConfig({
-        icon: "success",
-        header: t("successful_header"),
-        subHeader: t("successful_subheader"),
-        footer: null,
-      });
+      endWithSuccess(t("successful_header"))
     } else {
       setAlertConfig({
         icon: "fail",
@@ -337,8 +332,7 @@ export const VerificationScreen = ({
 
     if (currentState) {
       if (currentState.stepCode === "END") {
-        resetEverything();
-        redirectToConsent();
+        endResponseCheck(currentState);
       } else if (previousState?.stepCode !== currentState?.stepCode) {
         resetEverything();
 
