@@ -394,7 +394,7 @@ export type ResetPasswordResponseDto = BaseResponseDto & {
   } | null;
 };
 
-const EKYCConsentOptions = ["ACCEPTED", "DECLINED"] as const;
+const EKYCConsentOptions = ["AGREE"] as const;
 
 type EKYCConsentStatus = (typeof EKYCConsentOptions)[number];
 
