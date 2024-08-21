@@ -9,6 +9,7 @@
         <collectionProp name="Arguments.arguments"/>
       </elementProp>
       <stringProp name="TestPlan.user_define_classpath"></stringProp>
+      <boolProp name="TestPlan.tearDown_on_shutdown">true</boolProp>
     </TestPlan>
     <hashTree>
       <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
@@ -1707,9 +1708,8 @@ vars.put(&quot;timeStamp&quot;,timeStamp);</stringProp>
                   <stringProp name="RegexExtractor.refname">pendingStatusCheck</stringProp>
                   <stringProp name="RegexExtractor.regex">&quot;status&quot;:&quot;(.*?)&quot;</stringProp>
                   <stringProp name="RegexExtractor.template">$1$</stringProp>
-                  <stringProp name="RegexExtractor.default"></stringProp>
+                  <stringProp name="RegexExtractor.default">PENDING</stringProp>
                   <stringProp name="RegexExtractor.match_number">1</stringProp>
-                  <boolProp name="RegexExtractor.default_empty_value">true</boolProp>
                 </RegexExtractor>
                 <hashTree/>
                 <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Timeout Check" enabled="true">
@@ -1918,9 +1918,8 @@ vars.put(&quot;timeStamp&quot;,timeStamp);</stringProp>
                   <stringProp name="RegexExtractor.refname">pendingStatusCheck</stringProp>
                   <stringProp name="RegexExtractor.regex">&quot;status&quot;:&quot;(.*?)&quot;</stringProp>
                   <stringProp name="RegexExtractor.template">$1$</stringProp>
-                  <stringProp name="RegexExtractor.default"></stringProp>
+                  <stringProp name="RegexExtractor.default">PENDING</stringProp>
                   <stringProp name="RegexExtractor.match_number">1</stringProp>
-                  <boolProp name="RegexExtractor.default_empty_value">true</boolProp>
                 </RegexExtractor>
                 <hashTree/>
                 <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Timeout Check" enabled="true">
