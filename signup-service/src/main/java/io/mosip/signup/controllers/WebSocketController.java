@@ -2,6 +2,7 @@ package io.mosip.signup.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.signup.api.dto.*;
+import io.mosip.signup.api.exception.IdentityVerifierException;
 import io.mosip.signup.api.exception.ProfileException;
 import io.mosip.signup.api.spi.IdentityVerifierPlugin;
 import io.mosip.signup.api.spi.ProfileRegistryPlugin;
@@ -91,6 +92,13 @@ public class WebSocketController {
         //END step marks verification process completion
         if(identityVerificationResult.getStep() != null && plugin.isEndStep(identityVerificationResult.getStep().getCode())) {
             log.info("Reached the end step for {}", identityVerificationResult.getId());
+            handleVerifiedResult(plugin, identityVerificationResult, transaction);
+        }
+    }
+
+    private void handleVerifiedResult(IdentityVerifierPlugin plugin, IdentityVerificationResult identityVerificationResult,
+                                      IdentityVerificationTransaction transaction) {
+        try {
             VerifiedResult verifiedResult = plugin.getVerifiedResult(identityVerificationResult.getId());
             log.debug("VerifiedResult >> {}", verifiedResult);
 
@@ -121,8 +129,13 @@ public class WebSocketController {
                     transaction.setErrorCode(IDENTITY_VERIFICATION_FAILED);
                     break;
             }
-            cacheUtilService.updateVerifiedSlotTransaction(identityVerificationResult.getId(), transaction);
+
+        } catch (IdentityVerifierException e) {
+            log.error("Failed to fetch verified result from the plugin", e);
+            transaction.setStatus(VerificationStatus.FAILED);
+            transaction.setErrorCode(IDENTITY_VERIFICATION_FAILED);
         }
+        cacheUtilService.updateVerifiedSlotTransaction(identityVerificationResult.getId(), transaction);
     }
 
     @EventListener
