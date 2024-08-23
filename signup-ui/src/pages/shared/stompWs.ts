@@ -39,15 +39,28 @@ const useStompClient = (url: string, options = {}) => {
     }
   };
 
-  const unsubscribe = () => {
-    if (subscription) {
-      subscription.unsubscribe();
+  const unsubscribe = (subscript: any = null) => {
+    if (subscript) {
+      subscript.unsubscribe();
     } else {
-      console.warn("No subscription to unsubscribe from!");
+      if (subscription) {
+        subscription.unsubscribe();
+      } else {
+        console.warn("No subscription to unsubscribe from!");
+      }
     }
-  }
+  };
 
-  return { client, connected, subscribe, publish, unsubscribe };
+  const disconnect = (clientSub: any = null) => {
+    const tempClient = clientSub ?? client;
+    if (tempClient) {
+      tempClient.deactivate().then(() => {
+        setConnected(false);
+      });
+    }
+  };
+
+  return { client, connected, subscribe, publish, unsubscribe, disconnect };
 };
 
 export default useStompClient;
