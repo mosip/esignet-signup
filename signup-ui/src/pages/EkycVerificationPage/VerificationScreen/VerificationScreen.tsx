@@ -239,16 +239,6 @@ export const VerificationScreen = ({
 
   const endWithSuccess = (successMsgCode: string) => {
     resetEverything();
-    // setAlertConfig({
-    //   icon: "success",
-    //   header: getCurrentLangMsg("messages", successMsgCode),
-    //   subHeader: "Please wait while we finalize the process",
-    //   footer: null,
-    // });
-    // setTimeout(() => {
-    //   redirectToConsent();
-    // }, 5000);
-
     setIsLivenessCheckSuccess(true);
     setStep(EkycVerificationStep.IdentityVerificationStatus);
   };
@@ -258,13 +248,6 @@ export const VerificationScreen = ({
     setErrorBannerMessage(null);
     switch (currentStep.feedbackType) {
       case IdvFeedbackEnum.MESSAGE:
-        if (currentStep.feedbackCode === "success_check") {
-          // sending temporary success message
-          endWithSuccess(
-            currentStep?.feedbackCode ?? "Verification Successful"
-          );
-          break;
-        }
         setMessage([`messages.${currentStep.feedbackCode}`]);
         break;
       case IdvFeedbackEnum.COLOR:
@@ -282,34 +265,34 @@ export const VerificationScreen = ({
     }
   };
 
-  const endResponseCheck = (currentStep: IdentityVerificationState | null) => {
-    if (currentStep === null) {
-      return;
-    }
-    unsubscribe();
-    client.deactivate();
-    if (
-      currentStep.feedbackType === IdvFeedbackEnum.MESSAGE &&
-      currentStep.feedbackCode === "success_check"
-    ) {
-      endWithSuccess(t("successful_header"))
-    } else {
-      setAlertConfig({
-        icon: "fail",
-        header: t("unsuccessful_header"),
-        subHeader: t("unsuccessful_subheader"),
-        footer: (
-          <Button
-            id="retry-button"
-            className="my-4 h-16 w-full"
-            onClick={handleRetry}
-          >
-            Retry
-          </Button>
-        ),
-      });
-    }
-  };
+  // const endResponseCheck = (currentStep: IdentityVerificationState | null) => {
+  //   if (currentStep === null) {
+  //     return;
+  //   }
+  //   unsubscribe();
+  //   client.deactivate();
+  //   if (
+  //     currentStep.feedbackType === IdvFeedbackEnum.MESSAGE &&
+  //     currentStep.feedbackCode === "success_check"
+  //   ) {
+  //     endWithSuccess(t("successful_header"))
+  //   } else {
+  //     setAlertConfig({
+  //       icon: "fail",
+  //       header: t("unsuccessful_header"),
+  //       subHeader: t("unsuccessful_subheader"),
+  //       footer: (
+  //         <Button
+  //           id="retry-button"
+  //           className="my-4 h-16 w-full"
+  //           onClick={handleRetry}
+  //         >
+  //           Retry
+  //         </Button>
+  //       ),
+  //     });
+  //   }
+  // };
 
   const resetEverything = () => {
     // when stepcode is end, then it will clear the interval
@@ -332,7 +315,7 @@ export const VerificationScreen = ({
 
     if (currentState) {
       if (currentState.stepCode === "END") {
-        endResponseCheck(currentState);
+        endWithSuccess(t("successful_header"))
       } else if (previousState?.stepCode !== currentState?.stepCode) {
         resetEverything();
 
