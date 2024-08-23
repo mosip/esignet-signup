@@ -242,6 +242,7 @@ export const VerificationScreen = ({
 
   const redirectToConsent = () => {
     unsubscribe();
+    console.log("deactivate inside redirect to consent");
     client.deactivate();
     const consentUrl = settings?.configs["signin.redirect-url"].replace(
       "authorize",
@@ -361,6 +362,7 @@ export const VerificationScreen = ({
   };
 
   const captureNewFrame = (request: any, fps: number) => {
+    console.log("capture new frame");
     if (frameArray.length >= fps) {
       request.frames = frameArray.length
         ? frameArray.map((frame: IdvFrames) => {
@@ -369,15 +371,16 @@ export const VerificationScreen = ({
         : Array.from(Array(4).keys()).map((i: number) => {
             return { frame: "", order: i };
           });
+      console.log(request)
       publish(PUBLISH_TOPIC, JSON.stringify(request));
       frameArray = [];
     } else {
       if (webcamRef && webcamRef.current) {
         const imageSrc = (webcamRef.current as Webcam).getScreenshot();
-
+        console.log(frameArray)
         if (imageSrc) {
           frameArray.push({
-            frame: imageSrc,
+            frame: "",
             order: frameCount++,
           });
         }
@@ -389,6 +392,7 @@ export const VerificationScreen = ({
   // then subscribe to the topic and call onConnect
   useEffect(() => {
     if (connected) {
+      console.log("subscribe")
       subscribe(`${SUBSCRIBE_TOPIC}${slotId}`, receiveMessage);
 
       onConnect();
@@ -416,6 +420,7 @@ export const VerificationScreen = ({
       setLangMap(langMap);
     });
     return () => {
+      console.log("deactivate inside useEffect");
       client?.deactivate();
     };
   }, []);

@@ -79,7 +79,11 @@ export const VideoPreview = ({
 
   useEffect(() => {
     // checking camera permission in every 1 second
-    setInterval(cameraPermissionCheck, 1000);
+    const cameraPermissionCheckInterval = setInterval(
+      cameraPermissionCheck,
+      1000
+    );
+    return () => clearInterval(cameraPermissionCheckInterval);
   }, [permissionGranted]);
 
   // if camera permission granted then set the state

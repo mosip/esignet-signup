@@ -14,7 +14,10 @@ const useStompClient = (url: string, options = {}) => {
     stompClient.onConnect = () => {
       setConnected(true);
     };
-    stompClient.onDisconnect = () => setConnected(false);
+    stompClient.onDisconnect = () => {
+      console.log("Disconnected! from stompjs");
+      setConnected(false);
+    };
 
     setClient(stompClient);
 
@@ -40,6 +43,7 @@ const useStompClient = (url: string, options = {}) => {
   };
 
   const unsubscribe = (subscript: any = null) => {
+    console.log("Unsubscribing...");
     if (subscript) {
       subscript.unsubscribe();
     } else {
@@ -51,16 +55,16 @@ const useStompClient = (url: string, options = {}) => {
     }
   };
 
-  const disconnect = (clientSub: any = null) => {
-    const tempClient = clientSub ?? client;
-    if (tempClient) {
-      tempClient.deactivate().then(() => {
-        setConnected(false);
-      });
-    }
-  };
+  // const disconnect = (clientSub: any = null) => {
+  //   const tempClient = clientSub ?? client;
+  //   if (tempClient) {
+  //     tempClient.deactivate().then(() => {
+  //       setConnected(false);
+  //     });
+  //   }
+  // };
 
-  return { client, connected, subscribe, publish, unsubscribe, disconnect };
+  return { client, connected, subscribe, publish, unsubscribe };
 };
 
 export default useStompClient;
