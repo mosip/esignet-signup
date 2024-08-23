@@ -380,7 +380,7 @@ export const VerificationScreen = ({
         console.log(frameArray)
         if (imageSrc) {
           frameArray.push({
-            frame: "",
+            frame: imageSrc,
             order: frameCount++,
           });
         }
