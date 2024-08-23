@@ -58,6 +58,10 @@ export const VerificationScreen = ({
   const [langMap, setLangMap] = useState<any>({});
   let captureFrameInterval: any = null;
   let publishMessageInterval: any = null;
+  let newCaptureInterval: any = null;
+
+  let frameArray: any[] = [];
+  let frameCount = 0;
 
   // getting stored data from the store
   const {
@@ -92,20 +96,30 @@ export const VerificationScreen = ({
   const buttonRef = useRef(null);
 
   // capturing frame from the web camera
-  const captureFrame = useCallback(() => {
-    if (webcamRef && webcamRef.current) {
-      const imageSrc = (webcamRef.current as Webcam).getScreenshot();
+  // const captureFrame = useCallback(() => {
+  //   if (webcamRef && webcamRef.current) {
+  //     let frameArray = imageFrames.map((_) => _);
+  //     const imageSrc = (webcamRef.current as Webcam).getScreenshot();
 
-      if (imageSrc) {
-        let frameArray = imageFrames;
-        frameArray.push({
-          frame: imageSrc,
-          order: frameArray.length,
-        });
-        setImageFrames(frameArray);
-      }
-    }
-  }, [webcamRef]);
+  //     if (imageSrc) {
+  //       frameArray.push({
+  //         frame: imageSrc,
+  //         order: frameArray.length,
+  //       });
+  //       console.log(
+  //         "before setimage frame frameArray",
+  //         frameArray.length,
+  //         imageFrames.length
+  //       );
+  //       setImageFrames(frameArray);
+  //       console.log(
+  //         "after setimage frame frameArray",
+  //         frameArray.length,
+  //         imageFrames.length
+  //       );
+  //     }
+  //   }
+  // }, [webcamRef, imageFrames]);
 
   const isError = false;
 
@@ -116,14 +130,15 @@ export const VerificationScreen = ({
   const sendMessage = (request: any) => {
     if (imageFrames.length) {
       request.frames = imageFrames.map((frame: IdvFrames) => {
-        return { frame: "", order: frame.order };
+        return { ...frame };
       });
     } else {
-      request.frames = Array.from(Array(10).keys()).map((i: number) => {
+      request.frames = Array.from(Array(4).keys()).map((i: number) => {
         return { frame: "", order: i };
       });
     }
     publish(PUBLISH_TOPIC, JSON.stringify(request));
+    setImageFrames([]);
   };
 
   const handleRetry = (e: any) => {
@@ -242,7 +257,6 @@ export const VerificationScreen = ({
     setIsLivenessCheckSuccess(true);
     setStep(EkycVerificationStep.IdentityVerificationStatus);
   };
-  
 
   const checkFeedback = (currentStep: IdentityVerificationState) => {
     setErrorBannerMessage(null);
@@ -299,6 +313,7 @@ export const VerificationScreen = ({
     // clearing capture frame & publish message interval
     clearInterval(captureFrameInterval);
     clearInterval(publishMessageInterval);
+    clearInterval(newCaptureInterval);
     setErrorBannerMessage(null);
     setColorVerification(false);
     setMessage([""]);
@@ -315,7 +330,7 @@ export const VerificationScreen = ({
 
     if (currentState) {
       if (currentState.stepCode === "END") {
-        endWithSuccess(t("successful_header"))
+        endWithSuccess(t("successful_header"));
       } else if (previousState?.stepCode !== currentState?.stepCode) {
         resetEverything();
 
@@ -329,22 +344,43 @@ export const VerificationScreen = ({
         // setting delay in startup
         setTimeout(() => {
           // setting the framerate to capture images
-          captureFrameInterval = setInterval(
-            captureFrame,
-            Math.floor(10000 / (currentState?.fps ?? 3))
-          );
           setMessage([`stepCodes.${currentState.stepCode}`]);
 
-          // sending image frame after every 10 seconds,
-          // currently static, later will change to dynamic
-          publishMessageInterval = setInterval(() => {
-            sendMessage(request);
-            setImageFrames([]);
-          }, 10000);
+          newCaptureInterval = setInterval(
+            () => {
+              captureNewFrame(request, currentState.fps ?? 3);
+            },
+            10000 / (currentState.fps ?? 3)
+          );
           checkFeedback(currentState);
         }, currentState.startupDelay * 1000);
       } else {
         checkFeedback(currentState);
+      }
+    }
+  };
+
+  const captureNewFrame = (request: any, fps: number) => {
+    if (frameArray.length >= fps) {
+      request.frames = frameArray.length
+        ? frameArray.map((frame: IdvFrames) => {
+            return { ...frame };
+          })
+        : Array.from(Array(4).keys()).map((i: number) => {
+            return { frame: "", order: i };
+          });
+      publish(PUBLISH_TOPIC, JSON.stringify(request));
+      frameArray = [];
+    } else {
+      if (webcamRef && webcamRef.current) {
+        const imageSrc = (webcamRef.current as Webcam).getScreenshot();
+
+        if (imageSrc) {
+          frameArray.push({
+            frame: imageSrc,
+            order: frameCount++,
+          });
+        }
       }
     }
   };
