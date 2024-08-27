@@ -28,7 +28,7 @@ export const IdentityVerificationStatus = ({
     isError: isIdentityVerificationStatusError,
   } = useIdentityVerificationStatus({
     attempts: settings.configs["status.request.limit"],
-    delay: settings.configs["slot.request.delay"],
+    delay: settings.configs["status.request.delay"],
     retriableErrorCodes,
   });
 
