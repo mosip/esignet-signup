@@ -98,7 +98,7 @@ export const AccountSetup = ({ settings, methods }: AccountSetupProps) => {
               }${getValues("phone")}`,
               preferredLang: "eng",
             },
-            locale: null
+            locale: null,
           },
         };
 
@@ -268,8 +268,8 @@ export const AccountSetup = ({ settings, methods }: AccountSetupProps) => {
                           settings.response.configs["password.length.max"]
                         }
                         onBlur={() => {
-                          trigger("password")
-                          trigger("confirmPassword")
+                          trigger("password");
+                          trigger("confirmPassword");
                         }}
                       />
                     </FormControl>
@@ -326,19 +326,15 @@ export const AccountSetup = ({ settings, methods }: AccountSetupProps) => {
                       i18nKey="terms_and_condition"
                       components={{
                         TermsAndConditionsAnchor: (
-                          <a
-                            href="#!"
+                          <span
                             className="text-primary underline"
-                            target="_blank"
                             aria-label="Terms and Conditions"
                             onClick={onOpenTerm}
                           />
                         ),
                         PrivacyPolicyAnchor: (
-                          <a
-                            href="#!"
+                          <span
                             className="text-primary underline"
-                            target="_blank"
                             aria-label="Terms and Conditions"
                             onClick={onOpenPrivacy}
                           />
