@@ -43,6 +43,13 @@ public class CacheUtilServiceTest {
         Assert.assertNotNull(cacheUtilService.getChallengeGeneratedTransaction("mock"));
         Assert.assertNotNull(cacheUtilService.getChallengeVerifiedTransaction("mock"));
         Assert.assertNotNull(cacheUtilService.getStatusCheckTransaction("mock"));
+        Assert.assertEquals(cacheUtilService.blockIdentifier("mock-transaction", "key","value"), "value");
+        Assert.assertEquals(cacheUtilService.setSecretKey("key","value"), "value");
+        Assert.assertEquals(cacheUtilService.setActiveKeyAlias("key","value"), "value");
+        IdentityVerifierDetail[] identityVerifierDetails = new IdentityVerifierDetail[]{};
+        IdentityVerificationTransaction identityVerificationTransaction=new IdentityVerificationTransaction();
+        Assert.assertArrayEquals(cacheUtilService.setIdentityVerifierDetails("key",identityVerifierDetails), identityVerifierDetails);
+        Assert.assertEquals(cacheUtilService.setIdentityVerificationTransaction("transactionId",identityVerificationTransaction),identityVerificationTransaction);
     }
 
     @Test
@@ -51,21 +58,6 @@ public class CacheUtilServiceTest {
         RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85512123123", Purpose.REGISTRATION);
         Assert.assertEquals(cacheUtilService.createUpdateChallengeGeneratedTransaction("mock-transaction", registrationTransaction), registrationTransaction);
         Assert.assertNotNull(cacheUtilService.createUpdateChallengeGeneratedTransaction("mock-transaction", registrationTransaction));
-    }
-
-    @Test
-    public void testIdentifier_cache_thenPass() {
-        Assert.assertEquals(cacheUtilService.blockIdentifier("mock-transaction", "key","value"), "value");
-        Assert.assertEquals(cacheUtilService.setSecretKey("key","value"), "value");
-        Assert.assertEquals(cacheUtilService.setActiveKeyAlias("key","value"), "value");
-    }
-
-    @Test
-    public void testIdentifierDetails_cache_thenPass() {
-        IdentityVerifierDetail[] identityVerifierDetails = new IdentityVerifierDetail[]{};
-        IdentityVerificationTransaction identityVerificationTransaction=new IdentityVerificationTransaction();
-        Assert.assertArrayEquals(cacheUtilService.setIdentityVerifierDetails("key",identityVerifierDetails), identityVerifierDetails);
-        Assert.assertEquals(cacheUtilService.setIdentityVerificationTransaction("transactionId",identityVerificationTransaction),identityVerificationTransaction);
     }
 
 }

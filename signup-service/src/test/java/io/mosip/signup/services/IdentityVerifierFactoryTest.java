@@ -32,7 +32,7 @@ public class IdentityVerifierFactoryTest{
     }
 
     @Test
-    public void getIdentityVerifierWhenPluginExists_thenPass() {
+    public void getIdentityVerifier_whenPluginExists_thenPass() {
         String id = "123";
         IdentityVerifierPlugin plugin = Mockito.mock(IdentityVerifierPlugin.class);
         Mockito.when(plugin.getVerifierId()).thenReturn(id);
@@ -45,7 +45,7 @@ public class IdentityVerifierFactoryTest{
     }
 
     @Test
-    public void getIdentityVerifierWhenPluginDoesNotExist_thenFail() {
+    public void getIdentityVerifier_whenPluginDoesNotExist_thenFail() {
         String id = "123";
         Mockito.when(identityVerifiers.stream()
                 .filter(idv -> idv.getVerifierId().equals(id)))
