@@ -1,5 +1,7 @@
 package io.mosip.signup.services;
 
+import io.mosip.signup.dto.IdentityVerificationTransaction;
+import io.mosip.signup.dto.IdentityVerifierDetail;
 import io.mosip.signup.dto.RegistrationTransaction;
 import io.mosip.signup.util.Purpose;
 import org.junit.Assert;
@@ -50,4 +52,20 @@ public class CacheUtilServiceTest {
         Assert.assertEquals(cacheUtilService.createUpdateChallengeGeneratedTransaction("mock-transaction", registrationTransaction), registrationTransaction);
         Assert.assertNotNull(cacheUtilService.createUpdateChallengeGeneratedTransaction("mock-transaction", registrationTransaction));
     }
+
+    @Test
+    public void testIdentifier_cache_thenPass() {
+        Assert.assertEquals(cacheUtilService.blockIdentifier("mock-transaction", "key","value"), "value");
+        Assert.assertEquals(cacheUtilService.setSecretKey("key","value"), "value");
+        Assert.assertEquals(cacheUtilService.setActiveKeyAlias("key","value"), "value");
+    }
+
+    @Test
+    public void testIdentifierDetails_cache_thenPass() {
+        IdentityVerifierDetail[] identityVerifierDetails = new IdentityVerifierDetail[]{};
+        IdentityVerificationTransaction identityVerificationTransaction=new IdentityVerificationTransaction();
+        Assert.assertArrayEquals(cacheUtilService.setIdentityVerifierDetails("key",identityVerifierDetails), identityVerifierDetails);
+        Assert.assertEquals(cacheUtilService.setIdentityVerificationTransaction("transactionId",identityVerificationTransaction),identityVerificationTransaction);
+    }
+
 }
