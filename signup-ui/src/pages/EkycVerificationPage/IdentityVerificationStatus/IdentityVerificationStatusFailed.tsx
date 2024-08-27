@@ -1,13 +1,9 @@
-import { useCallback } from "react";
+import { MouseEventHandler, useCallback } from "react";
 import { useTranslation } from "react-i18next";
+import { useL2Hash } from "~hooks/useL2Hash";
 
 import { DefaultEkyVerificationProp } from "~typings/types";
 
-import {
-  EkycVerificationStep,
-  setStepSelector,
-  useEkycVerificationStore,
-} from "../useEkycVerificationStore";
 import { IdentityVerificationStatusLayout } from "./components/IdentityVerificationStatusLayout";
 
 export const IdentityVerificationStatusFailed = ({
@@ -16,17 +12,12 @@ export const IdentityVerificationStatusFailed = ({
 }: DefaultEkyVerificationProp) => {
   const { t } = useTranslation();
 
-  const { setStep } = useEkycVerificationStore(
-    useCallback(
-      (state) => ({
-        setStep: setStepSelector(state),
-      }),
-      []
-    )
-  );
+  const { state } = useL2Hash();
 
-  const handleIdentityVerificationRetry = () => {
-    setStep(EkycVerificationStep.VideoPreview);
+  const handleFailedIdentityVerification: MouseEventHandler<HTMLButtonElement> = (e) => {
+    e.preventDefault();
+    window.onbeforeunload = null;
+    window.location.href = `${settings.configs["esignet-consent.redirect-url"]}?key=${state}&error=true`;
   };
 
   return (
@@ -34,9 +25,8 @@ export const IdentityVerificationStatusFailed = ({
       status="failed"
       title={t("identity_verification_status.failed.title")}
       description={t("identity_verification_status.failed.description")}
-      btnLabel={t("retry")}
-      onBtnClick={handleIdentityVerificationRetry}
-
+      btnLabel={t("okay")}
+      onBtnClick={handleFailedIdentityVerification}
     />
   );
 };

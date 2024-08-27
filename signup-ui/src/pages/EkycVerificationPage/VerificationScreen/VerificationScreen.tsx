@@ -22,7 +22,6 @@ import {
   EkycVerificationStore,
   errorBannerMessageSelector,
   setErrorBannerMessageSelector,
-  setIsLivenessCheckSuccessSelector,
   setIsNoBackgroundSelector,
   setSlotIdSelector,
   setStepSelector,
@@ -71,7 +70,6 @@ export const VerificationScreen = ({
     slotId,
     setStep,
     setSlotId,
-    setIsLivenessCheckSuccess,
   } = useEkycVerificationStore(
     useCallback(
       (state: EkycVerificationStore) => ({
@@ -81,7 +79,6 @@ export const VerificationScreen = ({
         slotId: slotIdSelector(state),
         setStep: setStepSelector(state),
         setSlotId: setSlotIdSelector(state),
-        setIsLivenessCheckSuccess: setIsLivenessCheckSuccessSelector(state),
       }),
       []
     )
@@ -253,9 +250,8 @@ export const VerificationScreen = ({
     window.location.replace(`${consentUrl}${encodedIdToken}`);
   };
 
-  const endWithSuccess = (successMsgCode: string) => {
+  const endWithSuccess = () => {
     resetEverything();
-    setIsLivenessCheckSuccess(true);
     setStep(EkycVerificationStep.IdentityVerificationStatus);
   };
 
@@ -331,7 +327,7 @@ export const VerificationScreen = ({
 
     if (currentState) {
       if (currentState.stepCode === "END") {
-        endWithSuccess(t("successful_header"));
+        endWithSuccess();
       } else if (previousState?.stepCode !== currentState?.stepCode) {
         resetEverything();
 
