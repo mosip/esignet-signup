@@ -51,6 +51,7 @@ export const ResetPasswordStatus = ({ settings }: ResetPasswordStatusProps) => {
     useRegistrationStatus(
       settings.response.configs["status.request.limit"],
       settings.response.configs["status.request.delay"],
+      settings.response.configs["status.request.retry.error.codes"].split(","),
       resetPassword
     );
 

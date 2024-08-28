@@ -22,7 +22,6 @@ import {
   EkycVerificationStore,
   errorBannerMessageSelector,
   setErrorBannerMessageSelector,
-  setIsLivenessCheckSuccessSelector,
   setIsNoBackgroundSelector,
   setSlotIdSelector,
   setStepSelector,
@@ -58,6 +57,10 @@ export const VerificationScreen = ({
   const [langMap, setLangMap] = useState<any>({});
   let captureFrameInterval: any = null;
   let publishMessageInterval: any = null;
+  let newCaptureInterval: any = null;
+
+  let frameArray: any[] = [];
+  let frameCount = 0;
 
   // getting stored data from the store
   const {
@@ -67,7 +70,6 @@ export const VerificationScreen = ({
     slotId,
     setStep,
     setSlotId,
-    setIsLivenessCheckSuccess,
   } = useEkycVerificationStore(
     useCallback(
       (state: EkycVerificationStore) => ({
@@ -77,7 +79,6 @@ export const VerificationScreen = ({
         slotId: slotIdSelector(state),
         setStep: setStepSelector(state),
         setSlotId: setSlotIdSelector(state),
-        setIsLivenessCheckSuccess: setIsLivenessCheckSuccessSelector(state),
       }),
       []
     )
@@ -86,26 +87,36 @@ export const VerificationScreen = ({
   const webSocketUrl = `${WS_BASE_URL}${WS_URL}?slotId=${slotId}`;
 
   const { client, connected, publish, subscribe, unsubscribe } =
-  useStompClient(webSocketUrl);
+    useStompClient(webSocketUrl);
   // const slotId = "123456";
   // temporary button ref variable
   const buttonRef = useRef(null);
 
   // capturing frame from the web camera
-  const captureFrame = useCallback(() => {
-    if (webcamRef && webcamRef.current) {
-      const imageSrc = (webcamRef.current as Webcam).getScreenshot();
+  // const captureFrame = useCallback(() => {
+  //   if (webcamRef && webcamRef.current) {
+  //     let frameArray = imageFrames.map((_) => _);
+  //     const imageSrc = (webcamRef.current as Webcam).getScreenshot();
 
-      if (imageSrc) {
-        let frameArray = imageFrames;
-        frameArray.push({
-          frame: imageSrc,
-          order: frameArray.length,
-        });
-        setImageFrames(frameArray);
-      }
-    }
-  }, [webcamRef]);
+  //     if (imageSrc) {
+  //       frameArray.push({
+  //         frame: imageSrc,
+  //         order: frameArray.length,
+  //       });
+  //       console.log(
+  //         "before setimage frame frameArray",
+  //         frameArray.length,
+  //         imageFrames.length
+  //       );
+  //       setImageFrames(frameArray);
+  //       console.log(
+  //         "after setimage frame frameArray",
+  //         frameArray.length,
+  //         imageFrames.length
+  //       );
+  //     }
+  //   }
+  // }, [webcamRef, imageFrames]);
 
   const isError = false;
 
@@ -114,20 +125,17 @@ export const VerificationScreen = ({
    * @param request
    */
   const sendMessage = (request: any) => {
-    console.log(
-      "*****************************Sending Message*****************************"
-    );
-    console.log(request);
     if (imageFrames.length) {
       request.frames = imageFrames.map((frame: IdvFrames) => {
-        return { frame: "", order: frame.order };
+        return { ...frame };
       });
     } else {
-      request.frames = Array.from(Array(10).keys()).map((i: number) => {
+      request.frames = Array.from(Array(4).keys()).map((i: number) => {
         return { frame: "", order: i };
       });
     }
     publish(PUBLISH_TOPIC, JSON.stringify(request));
+    setImageFrames([]);
   };
 
   const handleRetry = (e: any) => {
@@ -231,6 +239,7 @@ export const VerificationScreen = ({
 
   const redirectToConsent = () => {
     unsubscribe();
+    console.log("deactivate inside redirect to consent");
     client.deactivate();
     const consentUrl = settings?.configs["signin.redirect-url"].replace(
       "authorize",
@@ -241,34 +250,15 @@ export const VerificationScreen = ({
     window.location.replace(`${consentUrl}${encodedIdToken}`);
   };
 
-  const endWithSuccess = (successMsgCode: string) => {
+  const endWithSuccess = () => {
     resetEverything();
-    // setAlertConfig({
-    //   icon: "success",
-    //   header: getCurrentLangMsg("messages", successMsgCode),
-    //   subHeader: "Please wait while we finalize the process",
-    //   footer: null,
-    // });
-    // setTimeout(() => {
-    //   redirectToConsent();
-    // }, 5000);
-
-    setIsLivenessCheckSuccess(true);
     setStep(EkycVerificationStep.IdentityVerificationStatus);
   };
-  
 
   const checkFeedback = (currentStep: IdentityVerificationState) => {
     setErrorBannerMessage(null);
     switch (currentStep.feedbackType) {
       case IdvFeedbackEnum.MESSAGE:
-        if (currentStep.feedbackCode === "success_check") {
-          // sending temporary success message
-          endWithSuccess(
-            currentStep?.feedbackCode ?? "Verification Successful"
-          );
-          break;
-        }
         setMessage([`messages.${currentStep.feedbackCode}`]);
         break;
       case IdvFeedbackEnum.COLOR:
@@ -286,45 +276,41 @@ export const VerificationScreen = ({
     }
   };
 
-  const endResponseCheck = (currentStep: IdentityVerificationState | null) => {
-    if (currentStep === null) {
-      return;
-    }
-    unsubscribe();
-    client.deactivate();
-    if (
-      currentStep.feedbackType === IdvFeedbackEnum.MESSAGE &&
-      currentStep.feedbackCode === "success_check"
-    ) {
-      setAlertConfig({
-        icon: "success",
-        header: t("successful_header"),
-        subHeader: t("successful_subheader"),
-        footer: null,
-      });
-    } else {
-      setAlertConfig({
-        icon: "fail",
-        header: t("unsuccessful_header"),
-        subHeader: t("unsuccessful_subheader"),
-        footer: (
-          <Button
-            id="retry-button"
-            className="my-4 h-16 w-full"
-            onClick={handleRetry}
-          >
-            Retry
-          </Button>
-        ),
-      });
-    }
-  };
+  // const endResponseCheck = (currentStep: IdentityVerificationState | null) => {
+  //   if (currentStep === null) {
+  //     return;
+  //   }
+  //   unsubscribe();
+  //   client.deactivate();
+  //   if (
+  //     currentStep.feedbackType === IdvFeedbackEnum.MESSAGE &&
+  //     currentStep.feedbackCode === "success_check"
+  //   ) {
+  //     endWithSuccess(t("successful_header"))
+  //   } else {
+  //     setAlertConfig({
+  //       icon: "fail",
+  //       header: t("unsuccessful_header"),
+  //       subHeader: t("unsuccessful_subheader"),
+  //       footer: (
+  //         <Button
+  //           id="retry-button"
+  //           className="my-4 h-16 w-full"
+  //           onClick={handleRetry}
+  //         >
+  //           Retry
+  //         </Button>
+  //       ),
+  //     });
+  //   }
+  // };
 
   const resetEverything = () => {
     // when stepcode is end, then it will clear the interval
     // clearing capture frame & publish message interval
     clearInterval(captureFrameInterval);
     clearInterval(publishMessageInterval);
+    clearInterval(newCaptureInterval);
     setErrorBannerMessage(null);
     setColorVerification(false);
     setMessage([""]);
@@ -339,19 +325,10 @@ export const VerificationScreen = ({
     const previousState = identityVerification;
     const currentState = checkPreviousState(res);
 
-    console.log(
-      "******************************Getting Response from Socket******************************"
-    );
-    console.log(res);
     if (currentState) {
       if (currentState.stepCode === "END") {
-        console.log("End of the process");
-
-        resetEverything();
-        redirectToConsent();
+        endWithSuccess();
       } else if (previousState?.stepCode !== currentState?.stepCode) {
-        console.log("Step code changed");
-
         resetEverything();
 
         const request = {
@@ -364,23 +341,45 @@ export const VerificationScreen = ({
         // setting delay in startup
         setTimeout(() => {
           // setting the framerate to capture images
-          captureFrameInterval = setInterval(
-            captureFrame,
-            Math.floor(10000 / (currentState?.fps ?? 3))
-          );
           setMessage([`stepCodes.${currentState.stepCode}`]);
 
-          // sending image frame after every 10 seconds,
-          // currently static, later will change to dynamic
-          publishMessageInterval = setInterval(() => {
-            sendMessage(request);
-            setImageFrames([]);
-          }, 10000);
+          newCaptureInterval = setInterval(
+            () => {
+              captureNewFrame(request, currentState.fps ?? 3);
+            },
+            10000 / (currentState.fps ?? 3)
+          );
           checkFeedback(currentState);
         }, currentState.startupDelay * 1000);
       } else {
-        console.log("Step code not changed");
         checkFeedback(currentState);
+      }
+    }
+  };
+
+  const captureNewFrame = (request: any, fps: number) => {
+    console.log("capture new frame");
+    if (frameArray.length >= fps) {
+      request.frames = frameArray.length
+        ? frameArray.map((frame: IdvFrames) => {
+            return { ...frame };
+          })
+        : Array.from(Array(4).keys()).map((i: number) => {
+            return { frame: "", order: i };
+          });
+      console.log(request)
+      publish(PUBLISH_TOPIC, JSON.stringify(request));
+      frameArray = [];
+    } else {
+      if (webcamRef && webcamRef.current) {
+        const imageSrc = (webcamRef.current as Webcam).getScreenshot();
+        console.log(frameArray)
+        if (imageSrc) {
+          frameArray.push({
+            frame: imageSrc,
+            order: frameCount++,
+          });
+        }
       }
     }
   };
@@ -389,6 +388,7 @@ export const VerificationScreen = ({
   // then subscribe to the topic and call onConnect
   useEffect(() => {
     if (connected) {
+      console.log("subscribe")
       subscribe(`${SUBSCRIBE_TOPIC}${slotId}`, receiveMessage);
 
       onConnect();
@@ -416,6 +416,7 @@ export const VerificationScreen = ({
       setLangMap(langMap);
     });
     return () => {
+      console.log("deactivate inside useEffect");
       client?.deactivate();
     };
   }, []);
@@ -424,16 +425,19 @@ export const VerificationScreen = ({
     <EkycStatusAlert config={alertConfig} />
   ) : (
     <div className="sm:pb-[4em]">
-      {!errorBannerMessage && message && (
-        <div
-          className="video-message sm:w-[90vw]"
-          data-testid="vs-onscreen-instruction"
-          >
-            {t(...message)}
+      {!connected ? (
+        <div className="video-message sm:w-[90vw]">
+          <LoadingIndicator
+            message="please_wait"
+            msgParam="Loading. Please wait....."
+            iconClass="video-message-loading"
+            divClass=""
+          />
         </div>
+      ) : (
+        !errorBannerMessage &&
+        message && <div className="video-message sm:w-[90vw]">{t(...message)}</div>
       )}
-      {connected && <span className="sr-only" data-testid="websocket-connected">connected</span>}
-      {!connected && <span className="sr-only" data-testid="websocket-disconnected">disconnected</span>}
       <div
         className={
           colorVerification

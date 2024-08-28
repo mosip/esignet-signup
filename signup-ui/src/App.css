@@ -214,16 +214,13 @@ body {
   position: relative;
 }
 
-.check-box::after {
-  content: url("assets/svg/check_white.svg");
-  background: #eb6f2d;
+.check_box {
+  background: var(--checkbox-background);
   position: absolute;
   top: 0;
   right: 0;
   padding: 4px 6px;
   border-radius: 0px 5px 0px 8px;
-  border-style: solid;
-  border-color: #eb6f2d;
 }
 
 @media (min-width: 768px) {
@@ -335,9 +332,6 @@ body {
   font: var(--tnc-consent-font);
   color: var(--tnc-consent-color);
   letter-spacing: 0px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .video-preview-header {

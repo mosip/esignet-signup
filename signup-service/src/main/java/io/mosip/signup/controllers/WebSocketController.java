@@ -2,6 +2,7 @@ package io.mosip.signup.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.signup.api.dto.*;
+import io.mosip.signup.api.exception.IdentityVerifierException;
 import io.mosip.signup.api.exception.ProfileException;
 import io.mosip.signup.api.spi.IdentityVerifierPlugin;
 import io.mosip.signup.api.spi.ProfileRegistryPlugin;
@@ -28,6 +29,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import static io.mosip.signup.api.util.ErrorConstants.IDENTITY_VERIFICATION_FAILED;
 import static io.mosip.signup.api.util.ErrorConstants.PLUGIN_NOT_FOUND;
 import static io.mosip.signup.util.ErrorConstants.VERIFIED_CLAIMS_FIELD_ID;
 import static io.mosip.signup.util.SignUpConstants.VALUE_SEPARATOR;
@@ -54,7 +56,7 @@ public class WebSocketController {
 
     @MessageMapping("/process-frame")
     public void processFrames(final @Valid @Payload IdentityVerificationRequest identityVerificationRequest) {
-        log.info("Process frame invoked with payload : {}", identityVerificationRequest);
+        log.debug("Process frame invoked with payload : {}", identityVerificationRequest);
         IdentityVerificationTransaction transaction = cacheUtilService.getVerifiedSlotTransaction(identityVerificationRequest.getSlotId());
         if(transaction == null)
             throw new InvalidTransactionException();
@@ -66,6 +68,7 @@ public class WebSocketController {
         IdentityVerificationDto dto = new IdentityVerificationDto();
         dto.setStepCode(identityVerificationRequest.getStepCode());
         dto.setFrames(identityVerificationRequest.getFrames());
+        dto.setDisabilityType(transaction.getDisabilityType());
         plugin.verify(identityVerificationRequest.getSlotId(), dto);
     }
 
@@ -89,14 +92,17 @@ public class WebSocketController {
         //END step marks verification process completion
         if(identityVerificationResult.getStep() != null && plugin.isEndStep(identityVerificationResult.getStep().getCode())) {
             log.info("Reached the end step for {}", identityVerificationResult.getId());
+            handleVerifiedResult(plugin, identityVerificationResult, transaction);
+        }
+    }
+
+    private void handleVerifiedResult(IdentityVerifierPlugin plugin, IdentityVerificationResult identityVerificationResult,
+                                      IdentityVerificationTransaction transaction) {
+        try {
             VerifiedResult verifiedResult = plugin.getVerifiedResult(identityVerificationResult.getId());
-            log.info("VerifiedResult >> {}", verifiedResult);
+            log.debug("VerifiedResult >> {}", verifiedResult);
 
             switch (verifiedResult.getStatus()) {
-                case FAILED:
-                    transaction.setStatus(VerificationStatus.FAILED);
-                    transaction.setErrorCode(verifiedResult.getErrorCode());
-                    break;
                 case COMPLETED: //Proceed to update the profile
                     ProfileDto profileDto = new ProfileDto();
                     profileDto.setIndividualId(transaction.getIndividualId());
@@ -110,16 +116,27 @@ public class WebSocketController {
                         transaction.setStatus(VerificationStatus.UPDATE_PENDING);
                     } catch (ProfileException ex) {
                         log.error("Failed to updated verified claims in the registry", ex);
-
-                        transaction.setStatus(VerificationStatus.FAILED);
-                        transaction.setErrorCode(ex.getErrorCode());
+                       //TODO  transaction.setStatus(VerificationStatus.FAILED);
+                       // transaction.setErrorCode(ex.getErrorCode());
+                        transaction.setStatus(VerificationStatus.COMPLETED); //TEMP Fix
                     }
                     break;
+                case FAILED:
+                    transaction.setStatus(VerificationStatus.FAILED);
+                    transaction.setErrorCode(verifiedResult.getErrorCode());
+                    break;
                 default:
+                    transaction.setStatus(VerificationStatus.FAILED);
+                    transaction.setErrorCode(IDENTITY_VERIFICATION_FAILED);
                     break;
             }
-            cacheUtilService.updateVerifiedSlotTransaction(identityVerificationResult.getId(), transaction);
+
+        } catch (IdentityVerifierException e) {
+            log.error("Failed to fetch verified result from the plugin", e);
+            transaction.setStatus(VerificationStatus.FAILED);
+            transaction.setErrorCode(IDENTITY_VERIFICATION_FAILED);
         }
+        cacheUtilService.updateVerifiedSlotTransaction(identityVerificationResult.getId(), transaction);
     }
 
     @EventListener

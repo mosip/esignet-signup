@@ -43,7 +43,7 @@ export const VideoPreview = ({
   );
 
   const [cancelButton, setCancelButton] = useState<boolean>(false);
-  const [permissionGranted, setPermissionGranted] = useState(true);
+  const [permissionGranted, setPermissionGranted] = useState(false);
   const [permissionErrMsg, setPermissionErrMsg] = useState({
     header: "permission_denied_header",
     description: "permission_denied_description",
@@ -79,7 +79,11 @@ export const VideoPreview = ({
 
   useEffect(() => {
     // checking camera permission in every 1 second
-    setInterval(cameraPermissionCheck, 1000);
+    const cameraPermissionCheckInterval = setInterval(
+      cameraPermissionCheck,
+      1000
+    );
+    return () => clearInterval(cameraPermissionCheckInterval);
   }, [permissionGranted]);
 
   // if camera permission granted then set the state

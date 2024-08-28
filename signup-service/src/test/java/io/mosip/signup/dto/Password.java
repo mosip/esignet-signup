@@ -11,6 +11,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class Password {
 
+    private static final long serialVersionUID = 1L;
     private String hash;
     private String salt;
 

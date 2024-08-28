@@ -41,7 +41,7 @@ export const SlotChecking = ({ settings }: DefaultEkyVerificationProp) => {
       requestTime: new Date().toISOString(),
       request: {
         verifierId: kycProvider?.id ?? "",
-        consent: "ACCEPTED",
+        consent: "AGREE",
         //disabilityType: "VISION",
       },
     };

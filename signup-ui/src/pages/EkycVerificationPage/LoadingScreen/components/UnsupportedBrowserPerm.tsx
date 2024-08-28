@@ -8,9 +8,18 @@ import {
   StepHeader,
   StepTitle,
 } from "~components/ui/step";
+import { useL2Hash } from "~hooks/useL2Hash";
+import { useSettings } from "~pages/shared/queries";
 
 export const UnsupportedBrowserPerm = () => {
   const { t } = useTranslation();
+  const { state } = useL2Hash();
+  const { data: settings } = useSettings();
+
+  const handleOkay = () => {
+    window.onbeforeunload = null;
+    window.location.href = `${settings?.response?.configs["esignet-consent.redirect-url"]}?key=${state}&error=incompatible_browser`;
+  };
 
   return (
     <Step>
@@ -25,6 +34,8 @@ export const UnsupportedBrowserPerm = () => {
           id="okay-button"
           name="okay-button"
           className="my-4 h-16 w-full"
+          onClick={handleOkay}
+          type="button"
         >
           {t("okay")}
         </Button>
