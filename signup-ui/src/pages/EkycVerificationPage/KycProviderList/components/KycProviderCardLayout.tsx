@@ -73,13 +73,8 @@ export const KycProviderCardLayout = ({
               <div className="mt-2.5 kyc-box-header">
               {providerName}
             </div>
-            <div className="mt-3">
-              <div className="kyc-box-subheader-title">
-                Supported Ids:
-              </div>
-              <div className="kyc-box-subheader-detail">Foundation 1, Foundation 2</div>
             </div>
-            </div>
+
           </>
         </div>
       </div>
