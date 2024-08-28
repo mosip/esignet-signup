@@ -110,6 +110,8 @@ public class RegistrationServiceTest {
                 registrationService, "resendDelay", 30);
         ReflectionTestUtils.setField(
                 registrationService, "challengeTimeout", 60);
+        ReflectionTestUtils.setField(
+                registrationService, "userNameHandle", "phone");
         ReflectionTestUtils.setField(registrationService, "objectMapper", new ObjectMapper());
         ReflectionTestUtils.setField(registrationService, "captchaRequired", false);
         ReflectionTestUtils.setField(registrationService, "captchaHelper", captchaHelper);
