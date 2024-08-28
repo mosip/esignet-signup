@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.concurrent.Executor;
 
@@ -34,5 +35,11 @@ public class Config {
     @Bean
     public LockProvider lockProvider(RedisConnectionFactory redisConnectionFactory) {
         return new RedisLockProvider(redisConnectionFactory);
+    }
+    
+    @Bean
+    public BCryptPasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+
     }
 }

@@ -55,6 +55,9 @@ public class RegistrationService {
 
     @Autowired
     private ProfileRegistryPlugin profileRegistryPlugin;
+    
+    @Value("${mosip.signup.username.handle:phone}")
+    private String userNameHandle;
 
     @Value("${mosip.signup.challenge.resend-attempt}")
     private int resendAttempts;
@@ -184,7 +187,7 @@ public class RegistrationService {
 
     public RegisterResponse register(RegisterRequest registerRequest, String transactionId) throws SignUpException {
         RegistrationTransaction transaction = cacheUtilService.getChallengeVerifiedTransaction(transactionId);
-        if(registerRequest.getUsername()!= registerRequest.getUserInfo().get("phone").asText()) {
+        if(registerRequest.getUsername().equalsIgnoreCase(registerRequest.getUserInfo().get(userNameHandle).asText())) {
             log.error("Transaction {} : phoneNumber and userName mismatch", transactionId);
             throw new SignUpException(ErrorConstants.IDENTIFIER_MISMATCH);
         }
