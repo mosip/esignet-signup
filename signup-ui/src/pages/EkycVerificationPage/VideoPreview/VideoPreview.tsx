@@ -43,7 +43,7 @@ export const VideoPreview = ({
   );
 
   const [cancelButton, setCancelButton] = useState<boolean>(false);
-  const [permissionGranted, setPermissionGranted] = useState(true);
+  const [permissionGranted, setPermissionGranted] = useState(false);
   const [permissionErrMsg, setPermissionErrMsg] = useState({
     header: "permission_denied_header",
     description: "permission_denied_description",
