@@ -36,10 +36,5 @@ public class Config {
     public LockProvider lockProvider(RedisConnectionFactory redisConnectionFactory) {
         return new RedisLockProvider(redisConnectionFactory);
     }
-    
-    @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-
-    }
+   
 }
