@@ -1,16 +1,16 @@
 package io.mosip.signup.config;
 
-import net.javacrumbs.shedlock.core.LockProvider;
-import net.javacrumbs.shedlock.provider.redis.spring.RedisLockProvider;
-import net.javacrumbs.shedlock.spring.annotation.EnableSchedulerLock;
+import java.util.concurrent.Executor;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import java.util.concurrent.Executor;
+import net.javacrumbs.shedlock.core.LockProvider;
+import net.javacrumbs.shedlock.provider.redis.spring.RedisLockProvider;
+import net.javacrumbs.shedlock.spring.annotation.EnableSchedulerLock;
 
 @EnableSchedulerLock(defaultLockAtLeastFor = "PT120S", defaultLockAtMostFor = "PT120S")
 @Configuration
