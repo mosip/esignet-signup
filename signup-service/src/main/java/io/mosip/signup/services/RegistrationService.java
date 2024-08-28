@@ -188,7 +188,7 @@ public class RegistrationService {
     public RegisterResponse register(RegisterRequest registerRequest, String transactionId) throws SignUpException {
         RegistrationTransaction transaction = cacheUtilService.getChallengeVerifiedTransaction(transactionId);
         if(!registerRequest.getUsername().equalsIgnoreCase(registerRequest.getUserInfo().get(userNameHandle).asText())) {
-            log.error("Transaction {} : phoneNumber and userName mismatch", transactionId);
+            log.error(String.format("Transaction {} : %s and userName mismatch", userNameHandle), transactionId);
             throw new SignUpException(ErrorConstants.IDENTIFIER_MISMATCH);
         }
         if(transaction == null) {
