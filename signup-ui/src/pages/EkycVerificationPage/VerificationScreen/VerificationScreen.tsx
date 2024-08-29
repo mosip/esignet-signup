@@ -186,20 +186,44 @@ export const VerificationScreen = ({
     sendMessage(request);
   };
 
-  useEffect(() => {
-    // checking camera permission in every 1 second
-    const cameraCheckInterval = setInterval(
-      cameraDeviceCheck,
-      1000
-    );
-    return () => clearInterval(cameraCheckInterval);
-  }, []);
+  // useEffect(() => {
+  //   // checking camera permission in every 1 second
+  //   const cameraCheckInterval = setInterval(
+  //     cameraDeviceCheck,
+  //     1000
+  //   );
+  //   return () => clearInterval(cameraCheckInterval);
+  // }, []);
 
-  const cameraDeviceCheck = () => {
-    navigator.mediaDevices
-      .getUserMedia({ video: true })
-      .catch(stopEkycVerificationCheck);
-  };
+  // const cameraDeviceCheck = () => {
+  //   navigator.mediaDevices
+  //     .getUserMedia({ video: true })
+  //     .catch(stopEkycVerificationCheck);
+  // };
+
+  useEffect(() => {
+    // check the camera permission, if camera permission granted then set the state
+    // it will work for chrome & firefox as well
+    const cameraPermissionCheck = () => {
+      navigator.mediaDevices
+        .getUserMedia({ video: true })
+        .catch(stopEkycVerificationCheck);
+    };
+
+    // // checking camera permission in every 1 second
+    // const cameraPermissionCheckInterval = setInterval(
+    //   cameraPermissionCheck,
+    //   1000
+    // );
+
+    cameraPermissionCheck();
+    return () => {
+      // clearInterval(cameraPermissionCheckInterval);
+      if (window.localStream) {
+        window.localStream.getTracks().forEach(track => track.stop());
+      }
+    };
+  }, []);
 
   const stopEkycVerificationCheck = (err: DOMException) => {
     if (connected) {

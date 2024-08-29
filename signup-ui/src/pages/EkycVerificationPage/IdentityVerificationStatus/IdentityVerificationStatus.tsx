@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
 import { useL2Hash } from "~hooks/useL2Hash";
@@ -21,6 +22,13 @@ export const IdentityVerificationStatus = ({
 
   const retriableErrorCodes =
     settings.configs["status.request.retry.error.codes"].split(",");
+
+  useEffect(() => {
+    console.log({localStream: window.localStream});
+    if (window.localStream) {
+      window.localStream.getTracks().forEach(track => track.stop());
+    }
+  }, [])
 
   // isError occurs when the query encounters a network error or the request limit attempts is reached
   const {

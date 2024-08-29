@@ -58,6 +58,7 @@ export const VideoPreview = ({
    */
   const handleContinue = (e: any) => {
     e.preventDefault();
+    webcamRef.current = null;
     setStep(EkycVerificationStep.SlotCheckingScreen);
   };
 
@@ -77,24 +78,58 @@ export const VideoPreview = ({
     setCancelButton(false);
   };
 
+  // useEffect(() => {
+  //   navigator.mediaDevices.ondevicechange((device) => {
+  //     console.log(
+  //       "🚀 ~ file: VideoPreview.tsx:82 ~ useEffect ~ device:",
+  //       device
+  //     );
+  //   });
+  // }, []);
+
+  // check the camera permission, if camera permission granted then set the state
+    // it will work for chrome & firefox as well
+    // const cameraPermissionCheck = useCallback(() => {
+    //   navigator.mediaDevices
+    //     .getUserMedia({ video: true })
+    //     .then(cameraPermissionAllowed)
+    //     .catch(cameraPermissionDenied);
+    // }, []);
+
   useEffect(() => {
     // checking camera permission in every 1 second
-    const cameraPermissionCheckInterval = setInterval(
-      cameraPermissionCheck,
-      1000
-    );
-    return () => clearInterval(cameraPermissionCheckInterval);
+    // const cameraPermissionCheckInterval = setInterval(
+    //   cameraPermissionCheck,
+    //   1000
+    // );
+
+    const cameraPermissionCheck = () => {
+      navigator.mediaDevices
+        .getUserMedia({ video: true })
+        .then(cameraPermissionAllowed)
+        .catch(cameraPermissionDenied);
+    };
+
+    cameraPermissionCheck();
+
+    return () => {
+      // clearInterval(cameraPermissionCheckInterval);
+      if (window.localStream) {
+        window.localStream.getTracks().forEach(track => track.stop());
+      }
+    };
   }, [permissionGranted]);
 
   // if camera permission granted then set the state
-  const cameraPermissionAllowed = (stream: MediaStream) => {
+  const cameraPermissionAllowed = useCallback((stream: MediaStream) => {
+    window.localStream = stream;
     if (!permissionGranted) {
       setPermissionGranted(true);
     }
-  };
+  }, []);
 
   // if camera permission denied then set the state
-  const cameraPermissionDenied = (error: any) => {
+  const cameraPermissionDenied = useCallback((error: any) => {
     if (permissionGranted) {
       setPermissionGranted(false);
       if (error.name === "NotReadableError") {
@@ -111,16 +146,7 @@ export const VideoPreview = ({
         });
       }
     }
-  };
-
-  // check the camera permission, if camera permission granted then set the state
-  // it will work for chrome & firefox as well
-  const cameraPermissionCheck = () => {
-    navigator.mediaDevices
-      .getUserMedia({ video: true })
-      .then(cameraPermissionAllowed)
-      .catch(cameraPermissionDenied);
-  };
+  }, []);
 
   // video preview div, it will show the video preview if camera permission granted
   // otherwise it will show a card asking for camera permission
@@ -161,6 +187,16 @@ export const VideoPreview = ({
         )}
       </>
     );
+  };
+
+  const handleStopVideo = (e: any) => {
+    e.preventDefault();
+    webcamRef.current = null;
+    if (window.localStream) {
+      console.log("disable video");
+      // window.localStream.getTracks().forEach(track => track.stop());
+      window.localStream.getVideoTracks()[0].stop();
+    }
   };
 
   return (
@@ -213,6 +249,14 @@ export const VideoPreview = ({
                 disabled={!permissionGranted}
               >
                 {t("proceed_button")}
+              </Button>
+              <Button
+                id="proceed-preview-button"
+                name="proceed-preview-button"
+                className="w-full p-4 font-semibold"
+                onClick={handleStopVideo}
+              >
+                Stop Video
               </Button>
             </div>
           </StepFooter>
