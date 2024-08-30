@@ -3,7 +3,6 @@ package io.mosip.signup.services;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nimbusds.openid.connect.sdk.UserInfoSuccessResponse;
 import io.mosip.signup.api.spi.ProfileRegistryPlugin;
 import io.mosip.signup.api.util.ProfileCreateUpdateStatus;
 import io.mosip.signup.api.util.VerificationStatus;
@@ -66,7 +65,8 @@ public class IdentityVerificationServiceTest {
 
     private MockWebServer mockWebServer;
 
-    private String tokenUri;
+    private String mockServerUri;
+    private int port;
 
     @Before
     public void setUp() throws Exception {
@@ -74,15 +74,15 @@ public class IdentityVerificationServiceTest {
         mockWebServer = new MockWebServer();
 
         mockWebServer.start();
-        int port=mockWebServer.getPort();
-        tokenUri="http://localhost:"+port+"/esignet.dev.mosip.net/v1/esignet/token";
+        port=mockWebServer.getPort();
+        mockServerUri ="http://localhost:"+port;
         ReflectionTestUtils.setField(identityVerificationService, "privateKeyAlias", "signup");
         ReflectionTestUtils.setField(identityVerificationService, "p12FilePath", "keystore.p12");
         ReflectionTestUtils.setField(identityVerificationService, "audience", "http://localhost:"+port+"/signup.dev.mosip.net/v1/esignet/oauth/token");
         ReflectionTestUtils.setField(identityVerificationService, "p12FilePassword", "mosip");
         ReflectionTestUtils.setField(identityVerificationService, "oauthClientId", "clientId");
         ReflectionTestUtils.setField(identityVerificationService, "oauthRedirectUri", "https://signup.dev.mosip.net/identity-verification");
-        ReflectionTestUtils.setField(identityVerificationService, "oauthTokenUri", tokenUri);
+        ReflectionTestUtils.setField(identityVerificationService, "oauthTokenUri", mockServerUri);
         KeyPair keyPair = generateRSAKeyPair();
         X509Certificate certificate = generateSelfSignedCertificate(keyPair);
         createAndStoreKeyInP12(keyPair, certificate);
@@ -93,52 +93,6 @@ public class IdentityVerificationServiceTest {
         mockWebServer.shutdown();
     }
 
-
-    @Test
-    public void initiateIdentityVerification_withValidDetails_thenPass() throws IOException {
-
-
-        MockWebServer mockWebServer1 = new MockWebServer();
-        mockWebServer1.start();
-        int port1=mockWebServer1.getPort();
-
-        String oauthIssuerUri="http://localhost:"+port1+"/esignet.dev.mosip.net/v1/esignet/oidc/userinfo";
-        ClassPathResource resource = new ClassPathResource("keystore.p12");
-        Path absolutePath = Paths.get(resource.getURI());
-        ReflectionTestUtils.setField(identityVerificationService, "p12FilePath", absolutePath.toString());
-        ReflectionTestUtils.setField(identityVerificationService, "oauthUserinfoUri", oauthIssuerUri);
-        ReflectionTestUtils.setField(identityVerificationService, "oauthTokenUri", tokenUri);
-        InitiateIdentityVerificationRequest request = new InitiateIdentityVerificationRequest();
-        request.setAuthorizationCode("authCode");
-        request.setState("state");
-        MockResponse response = new MockResponse()
-                .setBody("{\n" +
-                        "    \"id_token\": \"eyJraWQiOiJkdmt6enRuanJ3WS11azU1V3hGN0FCNWFTOHFPODFGd2o5T05UTERZLVI0IiwiYWxnIjoiUlMyNTYifQ.eyJhdF9oYXNoIjoid2VCMlhGUHE0eFpHNF9VUFhYckNpZyIsInN1YiI6Ijk3Q3NiYk01amY3MHBMbmpWaW9PaGNvclFiMXVWbE5leUNXM2ZRT2VuY00iLCJhdWQiOiIxMjM0NTY3ODkwIiwiYWNyIjoibW9zaXA6aWRwOmFjcjpnZW5lcmF0ZWQtY29kZSIsImF1dGhfdGltZSI6MTcxNzA2MjU5OCwiaXNzIjoiaHR0cDpcL1wvbG9jYWxob3N0OjgwODhcL3YxXC9lc2lnbmV0IiwiZXhwIjoxNzE3MDY2MjAxLCJpYXQiOjE3MTcwNjI2MDEsIm5vbmNlIjoiOTczZWllbGp6bmcifQ.Yopt54_l9CBZUcYA3cWxXugnMfwgOkn0H8QEFtaQBTq_SkBoqabt0_5cGMoc7U_WhUnhRFfWNZKuUrrmCZyrnOnrmh_-qQ004lql_GfXc-vrWSCVYx9FK_G5E115a6ltT_XtH3Ur_9Fw7QOk08WIzBU6BOi-lz7Q46lGzAR2tGVQ6tXvYjpRtM1WNkyL33KJNGS2bBGqglK7CzPm3Pj7tyM9nXuusNOGVed_PgbG-Ur7ItpZWy1feDd8WmynXibM6kc95cCg2a4GHpJxjb437ls_OYEHjDm6F0eWyAdemp6mXLIsj7fZYu_razwaXYSW2ZKg6XQLyqZfHa2j5AWnXA\",\n" +
-                        "    \"token_type\": \"Bearer\",\n" +
-                        "    \"access_token\": \"eyJraWQiOiJkdmt6enRuanJ3WS11azU1V3hGN0FCNWFTOHFPODFGd2o5T05UTERZLVI0IiwiYWxnIjoiUlMyNTYifQ.eyJzdWIiOiI5N0NzYmJNNWpmNzBwTG5qVmlvT2hjb3JRYjF1VmxOZXlDVzNmUU9lbmNNIiwiYXVkIjoiMTIzNDU2Nzg5MCIsImlzcyI6Imh0dHA6XC9cL2xvY2FsaG9zdDo4MDg4XC92MVwvZXNpZ25ldCIsImV4cCI6MTcxNzA2NjIwMSwiaWF0IjoxNzE3MDYyNjAxLCJjbGllbnRfaWQiOiIxMjM0NTY3ODkwIn0.dVST9YDnTksOs764zJlYq4Qxam2foY6nbNhHadUMBWEubzXOV85g9oWOOoRtyJTHPpzIWGLRQ_XrO4GyKN0RvG2me9atwTIMAUrKAh2sPusNiZSLkaAtrOu1Oppfe0ob03ozJVmHtwaL8fPwEQ1icJktjEqSDpTMgZG333K9rZaA8wSqVExaF94PvONWSxrv9EmfIMJssJdIRrqWPqPbrh6Jx-WYMe3pdGyxZTh_V6EeCvbMbHTpfG0Kg0ZD8BcsAaDmw1Sk6fehEiW2RuJK_0Vp_4I9_IsOzuSYcFafxhNpkJjnCLNfnqvXVm5qXi-x2WB9l54RHnpTrmQ3yitWZg\",\n" +
-                        "    \"expires_in\": 3600\n" +
-                        "}")
-                .addHeader("Content-Type", "application/json");
-
-        mockWebServer.enqueue(response);
-        mockWebServer.url(tokenUri);
-
-        new MockResponse().setBody(UserInfoSuccessResponse.class.toString());
-
-        MockResponse response1 = new MockResponse()
-                .setBody("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c\n")
-                .addHeader("Content-Type", "application/jwt");
-        mockWebServer1.enqueue(response1);
-        mockWebServer1.url(oauthIssuerUri);
-
-        IdentityVerifierDetail [] identityVerifierDetails = new IdentityVerifierDetail[1];
-        Mockito.when(cacheUtilService.getIdentityVerifierDetails()).thenReturn(identityVerifierDetails);
-        HttpServletResponse httpServletResponse = Mockito.mock(HttpServletResponse.class);
-
-        InitiateIdentityVerificationResponse result = identityVerificationService.initiateIdentityVerification(request, httpServletResponse);
-        Assert.assertNotNull(result);
-        mockWebServer1.shutdown();
-    }
 
     @Test
     public void getStatus_withStatusAsCompleted_thenPass(){
@@ -183,20 +137,52 @@ public class IdentityVerificationServiceTest {
     }
 
 
+
     @Test
-    public void initiateIdentityVerification_withInValidUserRequestDetails_thenFail() throws IOException {
+    public void initiateIdentityVerification_withValidDetails_thenPass() throws IOException {
 
-
-        MockWebServer mockWebServer1 = new MockWebServer();
-        mockWebServer1.start();
-        int port1=mockWebServer1.getPort();
-
-        String oauthIssuerUri="http://localhost:"+port1+"/esignet.dev.mosip.net/v1/esignet/oidc/userinfo";
+        String oauthIssuerUri="http://localhost:"+port+"/esignet.dev.mosip.net/v1/esignet/oidc/userinfo";
         ClassPathResource resource = new ClassPathResource("keystore.p12");
         Path absolutePath = Paths.get(resource.getURI());
         ReflectionTestUtils.setField(identityVerificationService, "p12FilePath", absolutePath.toString());
         ReflectionTestUtils.setField(identityVerificationService, "oauthUserinfoUri", oauthIssuerUri);
-        ReflectionTestUtils.setField(identityVerificationService, "oauthTokenUri", tokenUri);
+        ReflectionTestUtils.setField(identityVerificationService, "oauthTokenUri", mockServerUri);
+        InitiateIdentityVerificationRequest request = new InitiateIdentityVerificationRequest();
+        request.setAuthorizationCode("authCode");
+        request.setState("state");
+        MockResponse response = new MockResponse()
+                .setBody("{\n" +
+                        "    \"id_token\": \"eyJraWQiOiJkdmt6enRuanJ3WS11azU1V3hGN0FCNWFTOHFPODFGd2o5T05UTERZLVI0IiwiYWxnIjoiUlMyNTYifQ.eyJhdF9oYXNoIjoid2VCMlhGUHE0eFpHNF9VUFhYckNpZyIsInN1YiI6Ijk3Q3NiYk01amY3MHBMbmpWaW9PaGNvclFiMXVWbE5leUNXM2ZRT2VuY00iLCJhdWQiOiIxMjM0NTY3ODkwIiwiYWNyIjoibW9zaXA6aWRwOmFjcjpnZW5lcmF0ZWQtY29kZSIsImF1dGhfdGltZSI6MTcxNzA2MjU5OCwiaXNzIjoiaHR0cDpcL1wvbG9jYWxob3N0OjgwODhcL3YxXC9lc2lnbmV0IiwiZXhwIjoxNzE3MDY2MjAxLCJpYXQiOjE3MTcwNjI2MDEsIm5vbmNlIjoiOTczZWllbGp6bmcifQ.Yopt54_l9CBZUcYA3cWxXugnMfwgOkn0H8QEFtaQBTq_SkBoqabt0_5cGMoc7U_WhUnhRFfWNZKuUrrmCZyrnOnrmh_-qQ004lql_GfXc-vrWSCVYx9FK_G5E115a6ltT_XtH3Ur_9Fw7QOk08WIzBU6BOi-lz7Q46lGzAR2tGVQ6tXvYjpRtM1WNkyL33KJNGS2bBGqglK7CzPm3Pj7tyM9nXuusNOGVed_PgbG-Ur7ItpZWy1feDd8WmynXibM6kc95cCg2a4GHpJxjb437ls_OYEHjDm6F0eWyAdemp6mXLIsj7fZYu_razwaXYSW2ZKg6XQLyqZfHa2j5AWnXA\",\n" +
+                        "    \"token_type\": \"Bearer\",\n" +
+                        "    \"access_token\": \"eyJraWQiOiJkdmt6enRuanJ3WS11azU1V3hGN0FCNWFTOHFPODFGd2o5T05UTERZLVI0IiwiYWxnIjoiUlMyNTYifQ.eyJzdWIiOiI5N0NzYmJNNWpmNzBwTG5qVmlvT2hjb3JRYjF1VmxOZXlDVzNmUU9lbmNNIiwiYXVkIjoiMTIzNDU2Nzg5MCIsImlzcyI6Imh0dHA6XC9cL2xvY2FsaG9zdDo4MDg4XC92MVwvZXNpZ25ldCIsImV4cCI6MTcxNzA2NjIwMSwiaWF0IjoxNzE3MDYyNjAxLCJjbGllbnRfaWQiOiIxMjM0NTY3ODkwIn0.dVST9YDnTksOs764zJlYq4Qxam2foY6nbNhHadUMBWEubzXOV85g9oWOOoRtyJTHPpzIWGLRQ_XrO4GyKN0RvG2me9atwTIMAUrKAh2sPusNiZSLkaAtrOu1Oppfe0ob03ozJVmHtwaL8fPwEQ1icJktjEqSDpTMgZG333K9rZaA8wSqVExaF94PvONWSxrv9EmfIMJssJdIRrqWPqPbrh6Jx-WYMe3pdGyxZTh_V6EeCvbMbHTpfG0Kg0ZD8BcsAaDmw1Sk6fehEiW2RuJK_0Vp_4I9_IsOzuSYcFafxhNpkJjnCLNfnqvXVm5qXi-x2WB9l54RHnpTrmQ3yitWZg\",\n" +
+                        "    \"expires_in\": 3600\n" +
+                        "}")
+                .addHeader("Content-Type", "application/json");
+        mockWebServer.enqueue(response);
+        mockWebServer.url(mockServerUri);
+        MockResponse response1 = new MockResponse()
+                .setBody("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c\n")
+                .addHeader("Content-Type", "application/jwt");
+        mockWebServer.enqueue(response1);
+
+        IdentityVerifierDetail [] identityVerifierDetails = new IdentityVerifierDetail[1];
+        Mockito.when(cacheUtilService.getIdentityVerifierDetails()).thenReturn(identityVerifierDetails);
+        HttpServletResponse httpServletResponse = Mockito.mock(HttpServletResponse.class);
+
+        InitiateIdentityVerificationResponse result = identityVerificationService.initiateIdentityVerification(request, httpServletResponse);
+        Assert.assertNotNull(result);
+    }
+
+
+    @Test
+    public void initiateIdentityVerification_withInValidUserRequestDetails_thenFail() throws IOException {
+
+        String oauthIssuerUri="http://localhost:"+port+"/esignet.dev.mosip.net/v1/esignet/oidc/userinfo";
+        ClassPathResource resource = new ClassPathResource("keystore.p12");
+        Path absolutePath = Paths.get(resource.getURI());
+        ReflectionTestUtils.setField(identityVerificationService, "p12FilePath", absolutePath.toString());
+        ReflectionTestUtils.setField(identityVerificationService, "oauthUserinfoUri", oauthIssuerUri);
+        ReflectionTestUtils.setField(identityVerificationService, "oauthTokenUri", mockServerUri);
         InitiateIdentityVerificationRequest request = new InitiateIdentityVerificationRequest();
         request.setAuthorizationCode("authCode");
         request.setState("state");
@@ -210,23 +196,16 @@ public class IdentityVerificationServiceTest {
                 .addHeader("Content-Type", "application/json");
 
         mockWebServer.enqueue(response);
-        mockWebServer.url(tokenUri);
-
-        new MockResponse().setBody(UserInfoSuccessResponse.class.toString());
-
         MockResponse response1 = new MockResponse().setHttp2ErrorCode(400).setStatus("Bad Request");
-        mockWebServer1.enqueue(response1);
-        mockWebServer1.url(oauthIssuerUri);
+        mockWebServer.enqueue(response1);
+        mockWebServer.url(mockServerUri);
 
         HttpServletResponse httpServletResponse = Mockito.mock(HttpServletResponse.class);
-
         try{
             identityVerificationService.initiateIdentityVerification(request, httpServletResponse);
             Assert.fail();
         }catch (SignUpException e){
             Assert.assertEquals(e.getErrorCode(),ErrorConstants.USERINFO_FAILED);
-        }finally {
-            mockWebServer1.shutdown();
         }
     }
 
@@ -243,10 +222,8 @@ public class IdentityVerificationServiceTest {
                 .addHeader("Content-Type", "application/json");
 
         mockWebServer.enqueue(response);
+        mockWebServer.url(mockServerUri);
 
-        mockWebServer.url("/signup.dev.mosip.net/v1/esignet/oauth/token");
-
-        IdentityVerifierDetail [] identityVerifierDetails = new IdentityVerifierDetail[1];
         HttpServletResponse httpServletResponse = Mockito.mock(HttpServletResponse.class);
 
         try{
@@ -271,7 +248,7 @@ public class IdentityVerificationServiceTest {
     }
 
     @Test
-    public void getSlotWithValidDetails_thenPass()  {
+    public void getSlot_withValidDetails_thenPass()  {
 
         ReflectionTestUtils.setField(identityVerificationService, "slotMaxCount", 100);
         String transactionId = "testTransactionId";
@@ -303,7 +280,7 @@ public class IdentityVerificationServiceTest {
     }
 
     @Test
-    public void getSlotWithInValidTransaction_thenFail() {
+    public void getSlot_withInValidTransaction_thenFail() {
         Mockito.when(cacheUtilService.getIdentityVerificationTransaction(Mockito.anyString())).thenReturn(null);
         try{
             identityVerificationService.getSlot("transactionId", null, null);
@@ -313,7 +290,7 @@ public class IdentityVerificationServiceTest {
     }
 
     @Test
-    public void getSlotWithInValidVerifierId_thenFail()  {
+    public void getSlot_withInValidVerifierId_thenFail()  {
         SlotRequest slotRequest = new SlotRequest();
         slotRequest.setVerifierId("testVerifierId2");
 
@@ -337,7 +314,7 @@ public class IdentityVerificationServiceTest {
 
 
     @Test
-    public void getSlotWithFullSlot_thenFail()  {
+    public void getSlot_withFullSlot_thenFail()  {
 
         ReflectionTestUtils.setField(identityVerificationService, "slotMaxCount", 100);
         SlotRequest slotRequest = new SlotRequest();
