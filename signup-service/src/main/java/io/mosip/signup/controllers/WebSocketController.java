@@ -23,6 +23,7 @@ import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 import javax.validation.Valid;
 import java.util.Objects;
+import java.util.Optional;
 
 import static io.mosip.signup.api.util.ErrorConstants.PLUGIN_NOT_FOUND;
 import static io.mosip.signup.util.SignUpConstants.SOCKET_USERNAME_SEPARATOR;
