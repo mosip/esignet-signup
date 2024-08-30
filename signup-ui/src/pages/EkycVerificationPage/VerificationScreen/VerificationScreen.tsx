@@ -144,6 +144,35 @@ export const VerificationScreen = ({
     setStep(EkycVerificationStep.SlotCheckingScreen);
   };
 
+  const stopEkycVerificationProcess = useCallback(() => {
+    if (connected) {
+      unsubscribe();
+      client.deactivate();
+    }
+    setStep(EkycVerificationStep.IdentityVerificationStatus);
+  }, [])
+
+  useEffect(() => {
+    const checkWebcamInputSource = () => {
+      if (webcamRef && webcamRef.current) {
+        const webcamStreamState = (webcamRef.current as Webcam).stream?.active;
+        if (webcamStreamState === false) {
+          stopEkycVerificationProcess();
+        }
+      }
+    }
+
+    // checking camera permission in every 1 second
+    const webcamInputSourceCheckInterval = setInterval(
+      checkWebcamInputSource,
+      1000
+    );
+
+    return () => {
+      clearInterval(webcamInputSourceCheckInterval);
+    };
+  }, []);
+
   // timer useEffect
   useEffect(() => {
     if (timer && timer > 0) {
@@ -185,53 +214,6 @@ export const VerificationScreen = ({
     // as soon as we establish the connection, we will send the process frame request
     sendMessage(request);
   };
-
-  // useEffect(() => {
-  //   // checking camera permission in every 1 second
-  //   const cameraCheckInterval = setInterval(
-  //     cameraDeviceCheck,
-  //     1000
-  //   );
-  //   return () => clearInterval(cameraCheckInterval);
-  // }, []);
-
-  // const cameraDeviceCheck = () => {
-  //   navigator.mediaDevices
-  //     .getUserMedia({ video: true })
-  //     .catch(stopEkycVerificationCheck);
-  // };
-
-  useEffect(() => {
-    // check the camera permission, if camera permission granted then set the state
-    // it will work for chrome & firefox as well
-    const cameraPermissionCheck = () => {
-      navigator.mediaDevices
-        .getUserMedia({ video: true })
-        .catch(stopEkycVerificationCheck);
-    };
-
-    // // checking camera permission in every 1 second
-    // const cameraPermissionCheckInterval = setInterval(
-    //   cameraPermissionCheck,
-    //   1000
-    // );
-
-    cameraPermissionCheck();
-    return () => {
-      // clearInterval(cameraPermissionCheckInterval);
-      if (window.localStream) {
-        window.localStream.getTracks().forEach(track => track.stop());
-      }
-    };
-  }, []);
-
-  const stopEkycVerificationCheck = (err: DOMException) => {
-    if (connected) {
-      unsubscribe();
-      client.deactivate();
-    }
-    setStep(EkycVerificationStep.IdentityVerificationStatus);
-  }
 
   const convertResponseToState = (
     res: IdentityVerificationResponseDto
@@ -468,6 +450,8 @@ export const VerificationScreen = ({
     };
   }, []);
 
+  const handleWebcamUserMediaError = (error: string | DOMException) => stopEkycVerificationProcess();
+
   return alertConfig !== null ? (
     <EkycStatusAlert config={alertConfig} />
   ) : (
@@ -503,6 +487,7 @@ export const VerificationScreen = ({
           }
           videoConstraints={videoConstraints}
           screenshotFormat="image/jpeg"
+          onUserMediaError={handleWebcamUserMediaError}
         />
       </div>
       {/* temporary button for socket connection */}

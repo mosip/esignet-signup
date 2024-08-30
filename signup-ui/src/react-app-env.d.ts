@@ -2,7 +2,7 @@
 
 declare global {
     interface Window {
-        localStream: MediaStream
+        videoLocalStream: MediaStream
     }
 }
 

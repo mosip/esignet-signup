@@ -97,12 +97,6 @@ export const VideoPreview = ({
     // }, []);
 
   useEffect(() => {
-    // checking camera permission in every 1 second
-    // const cameraPermissionCheckInterval = setInterval(
-    //   cameraPermissionCheck,
-    //   1000
-    // );
-
     const cameraPermissionCheck = () => {
       navigator.mediaDevices
         .getUserMedia({ video: true })
@@ -110,19 +104,23 @@ export const VideoPreview = ({
         .catch(cameraPermissionDenied);
     };
 
-    cameraPermissionCheck();
+    // checking camera permission in every 1 second
+    const cameraPermissionCheckInterval = setInterval(
+      cameraPermissionCheck,
+      1000
+    );
 
     return () => {
-      // clearInterval(cameraPermissionCheckInterval);
-      if (window.localStream) {
-        window.localStream.getTracks().forEach(track => track.stop());
+      clearInterval(cameraPermissionCheckInterval);
+      if (window.videoLocalStream) {
+        window.videoLocalStream.getTracks().forEach(track => track.stop());
       }
     };
   }, [permissionGranted]);
 
   // if camera permission granted then set the state
   const cameraPermissionAllowed = useCallback((stream: MediaStream) => {
-    window.localStream = stream;
+    window.videoLocalStream = stream;
     if (!permissionGranted) {
       setPermissionGranted(true);
     }
@@ -189,16 +187,6 @@ export const VideoPreview = ({
     );
   };
 
-  const handleStopVideo = (e: any) => {
-    e.preventDefault();
-    webcamRef.current = null;
-    if (window.localStream) {
-      console.log("disable video");
-      // window.localStream.getTracks().forEach(track => track.stop());
-      window.localStream.getVideoTracks()[0].stop();
-    }
-  };
-
   return (
     <>
       {cancelPopup({ cancelButton, handleStay })}
@@ -249,14 +237,6 @@ export const VideoPreview = ({
                 disabled={!permissionGranted}
               >
                 {t("proceed_button")}
-              </Button>
-              <Button
-                id="proceed-preview-button"
-                name="proceed-preview-button"
-                className="w-full p-4 font-semibold"
-                onClick={handleStopVideo}
-              >
-                Stop Video
               </Button>
             </div>
           </StepFooter>

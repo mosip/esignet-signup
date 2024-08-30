@@ -24,9 +24,8 @@ export const IdentityVerificationStatus = ({
     settings.configs["status.request.retry.error.codes"].split(",");
 
   useEffect(() => {
-    console.log({localStream: window.localStream});
-    if (window.localStream) {
-      window.localStream.getTracks().forEach(track => track.stop());
+    if (window.videoLocalStream) {
+      window.videoLocalStream.getTracks().forEach(track => track.stop());
     }
   }, [])
 
