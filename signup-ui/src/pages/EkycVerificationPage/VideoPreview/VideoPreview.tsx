@@ -78,24 +78,6 @@ export const VideoPreview = ({
     setCancelButton(false);
   };
 
-  // useEffect(() => {
-  //   navigator.mediaDevices.ondevicechange((device) => {
-  //     console.log(
-  //       "🚀 ~ file: VideoPreview.tsx:82 ~ useEffect ~ device:",
-  //       device
-  //     );
-  //   });
-  // }, []);
-
-  // check the camera permission, if camera permission granted then set the state
-    // it will work for chrome & firefox as well
-    // const cameraPermissionCheck = useCallback(() => {
-    //   navigator.mediaDevices
-    //     .getUserMedia({ video: true })
-    //     .then(cameraPermissionAllowed)
-    //     .catch(cameraPermissionDenied);
-    // }, []);
-
   useEffect(() => {
     const cameraPermissionCheck = () => {
       navigator.mediaDevices

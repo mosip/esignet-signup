@@ -1,6 +1,4 @@
 import { isEqual } from "lodash";
-import { MutableRefObject, RefObject, useRef } from "react";
-import Webcam from "react-webcam";
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 
@@ -41,10 +39,6 @@ export type EkycVerificationStore = {
   setErrorBannerMessage: (errorBannerMessage: string | null) => void;
   slotId: string | null;
   setSlotId: (slotId: string | null) => void;
-  cameraDeviceStream: MediaStream | undefined;
-  setCameraDeviceStream: (cameraDeviceStream: MediaStream) => void;
-  videoRef: RefObject<Webcam>;
-  setVideoRef: (videoRef: RefObject<Webcam>) => void;
 };
 
 export const useEkycVerificationStore = create<EkycVerificationStore>()(
@@ -102,18 +96,6 @@ export const useEkycVerificationStore = create<EkycVerificationStore>()(
       const current = get();
       if (isEqual(current.slotId, slotId)) return;
       set((state) => ({ slotId }));
-    },
-    cameraDeviceStream: undefined,
-    setCameraDeviceStream: (cameraDeviceStream: MediaStream) => {
-      const current = get();
-      if (isEqual(current.cameraDeviceStream, cameraDeviceStream)) return;
-      set((state) => ({ cameraDeviceStream }));
-    },
-    videoRef: {current: null},
-    setVideoRef: (videoRef: RefObject<Webcam>) => {
-      const current = get();
-      if (isEqual(current.videoRef, videoRef)) return;
-      set((state) => ({ videoRef }));
     },
   }))
 );
@@ -190,19 +172,3 @@ export const slotIdSelector = (
 export const setSlotIdSelector = (
   state: EkycVerificationStore
 ): EkycVerificationStore["setSlotId"] => state.setSlotId;
-
-export const cameraDeviceStreamSelector = (
-  state: EkycVerificationStore
-): EkycVerificationStore["cameraDeviceStream"] => state.cameraDeviceStream;
-
-export const setCameraDeviceStreamSelector = (
-  state: EkycVerificationStore
-): EkycVerificationStore["setCameraDeviceStream"] => state.setCameraDeviceStream;
-
-export const videoRefSelector = (
-  state: EkycVerificationStore
-): EkycVerificationStore["videoRef"] => state.videoRef;
-
-export const setVideoRefSelector = (
-  state: EkycVerificationStore
-): EkycVerificationStore["setVideoRef"] => state.setVideoRef;
