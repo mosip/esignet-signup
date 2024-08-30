@@ -53,7 +53,8 @@
 									"const randomNumber = _.random(100000000,999999999)",
 									"pm.environment.set('randomPhoneNumber', randomNumber)"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {}
 							}
 						}
 					],
@@ -76,12 +77,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8088/v1/signup/registration/generate-challenge",
-							"protocol": "http",
+							"raw": "{{signup-base-url}}/v1/signup/registration/generate-challenge",
 							"host": [
-								"localhost"
+								"{{signup-base-url}}"
 							],
-							"port": "8088",
 							"path": [
 								"v1",
 								"signup",
@@ -113,12 +112,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8088/v1/signup/registration/verify-challenge",
-							"protocol": "http",
+							"raw": "{{signup-base-url}}/v1/signup/registration/verify-challenge",
 							"host": [
-								"localhost"
+								"{{signup-base-url}}"
 							],
-							"port": "8088",
 							"path": [
 								"v1",
 								"signup",
@@ -150,12 +147,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8088/v1/signup/registration/register",
-							"protocol": "http",
+							"raw": "{{signup-base-url}}/v1/signup/registration/register",
 							"host": [
-								"localhost"
+								"{{signup-base-url}}"
 							],
-							"port": "8088",
 							"path": [
 								"v1",
 								"signup",
@@ -172,12 +167,10 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8088/v1/signup/registration/status",
-							"protocol": "http",
+							"raw": "{{signup-base-url}}/v1/signup/registration/status",
 							"host": [
-								"localhost"
+								"{{signup-base-url}}"
 							],
-							"port": "8088",
 							"path": [
 								"v1",
 								"signup",
@@ -203,7 +196,8 @@
 									"var token = pm.cookies.get(\"XSRF-TOKEN\")",
 									"pm.environment.set(\"csrf_token\", token);"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {}
 							}
 						}
 					],
@@ -211,12 +205,10 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8088/v1/signup/csrf/token",
-							"protocol": "http",
+							"raw": "{{signup-base-url}}/v1/signup/csrf/token",
 							"host": [
-								"localhost"
+								"{{signup-base-url}}"
 							],
-							"port": "8088",
 							"path": [
 								"v1",
 								"signup",
@@ -236,7 +228,8 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {}
 							}
 						}
 					],
@@ -259,12 +252,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8088/v1/signup/registration/generate-challenge",
-							"protocol": "http",
+							"raw": "{{signup-base-url}}/v1/signup/registration/generate-challenge",
 							"host": [
-								"localhost"
+								"{{signup-base-url}}"
 							],
-							"port": "8088",
 							"path": [
 								"v1",
 								"signup",
@@ -296,12 +287,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8088/v1/signup/registration/verify-challenge",
-							"protocol": "http",
+							"raw": "{{signup-base-url}}/v1/signup/registration/verify-challenge",
 							"host": [
-								"localhost"
+								"{{signup-base-url}}"
 							],
-							"port": "8088",
 							"path": [
 								"v1",
 								"signup",
@@ -333,12 +322,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8088/v1/signup/reset-password",
-							"protocol": "http",
+							"raw": "{{signup-base-url}}/v1/signup/reset-password",
 							"host": [
-								"localhost"
+								"{{signup-base-url}}"
 							],
-							"port": "8088",
 							"path": [
 								"v1",
 								"signup",
@@ -354,12 +341,10 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8088/v1/signup/registration/status",
-							"protocol": "http",
+							"raw": "{{signup-base-url}}/v1/signup/registration/status",
 							"host": [
-								"localhost"
+								"{{signup-base-url}}"
 							],
-							"port": "8088",
 							"path": [
 								"v1",
 								"signup",
@@ -376,14 +361,46 @@
 			"name": "IdentityVerification",
 			"item": [
 				{
+					"name": "generate CSRF token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var token = pm.cookies.get(\"XSRF-TOKEN\")",
+									"pm.environment.set(\"csrf_token\", token);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{signup-base-url}}/v1/signup/csrf/token",
+							"host": [
+								"{{signup-base-url}}"
+							],
+							"path": [
+								"v1",
+								"signup",
+								"csrf",
+								"token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Initiate",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.environment.set(\"IDV_TRANSACTION_ID\",pm.cookies.get(\"IDV_TRANSACTION_ID\"))\r",
-									""
+									"pm.environment.set(\"IDV_TRANSACTION_ID\",pm.cookies.get(\"IDV_TRANSACTION_ID\"));"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -392,10 +409,16 @@
 					],
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "X-XSRF-TOKEN",
+								"value": "{{csrf_token}}",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"requestTime\": \"{{$isoTimestamp}}\",\r\n    \"request\": {\r\n        \"authorizationCode\": {{code}},\r\n        \"state\": {{state}}\r\n    }\r\n}",
+							"raw": "{\r\n    \"requestTime\": \"{{$isoTimestamp}}\",\r\n    \"request\": {\r\n        \"authorizationCode\": \"xFExNqskZcIJJwVaHRKFf-9cpmeRNXhLHAnxE0-Hhtg\",\r\n        \"state\": \"urlInfo1724138417665\"\r\n    }\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -403,12 +426,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8088/v1/signup/identity-verification/initiate",
-							"protocol": "http",
+							"raw": "{{signup-base-url}}/v1/signup/identity-verification/initiate",
 							"host": [
-								"localhost"
+								"{{signup-base-url}}"
 							],
-							"port": "8088",
 							"path": [
 								"v1",
 								"signup",
@@ -428,15 +449,18 @@
 								"key": "IDV_TRANSACTION_ID",
 								"value": "{{IDV_TRANSACTION_ID}}",
 								"type": "text"
+							},
+							{
+								"key": "X-XSRF-TOKEN",
+								"value": "{{csrf_token}}",
+								"type": "text"
 							}
 						],
 						"url": {
-							"raw": "http://localhost:8088/v1/signup/identity-verification/identity-verifier/{{identity-verifier-id}}",
-							"protocol": "http",
+							"raw": "{{signup-base-url}}/v1/signup/identity-verification/identity-verifier/{{identity-verifier-id}}",
 							"host": [
-								"localhost"
+								"{{signup-base-url}}"
 							],
-							"port": "8088",
 							"path": [
 								"v1",
 								"signup",
@@ -455,11 +479,12 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.environment.set(\"IDV_SLOT_ALLOTTED\",pm.environment.get(\"IDV_TRANSACTION_ID\"));\r",
+									"\r",
 									"\r",
 									"\r",
 									"var jsonData = pm.response.json();\r",
 									"pm.environment.set(\"slot-id\", jsonData.response.slotId);\r",
+									"pm.environment.set(\"IDV_SLOT_ALLOTTED\",pm.environment.get(\"IDV_TRANSACTION_ID\")+\"###\"+jsonData.response.slotId);\r",
 									"pm.environment.unset(\"IDV_TRANSACTION_ID\");"
 								],
 								"type": "text/javascript",
@@ -474,11 +499,16 @@
 								"key": "IDV_TRANSACTION_ID",
 								"value": "{{IDV_TRANSACTION_ID}}",
 								"type": "text"
+							},
+							{
+								"key": "X-XSRF-TOKEN",
+								"value": "{{csrf_token}}",
+								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"requestTime\": \"2024-07-25T07:36:43.304Z\",\r\n    \"request\": {\r\n        \"verifierId\": {{identity-verifier-id}},\r\n        \"consent\": \"ACCEPTED\"\r\n    }\r\n}",
+							"raw": "{\r\n    \"requestTime\": \"{{$isoTimestamp}}\",\r\n    \"request\": {\"verifierId\":\"{{identity-verifier-id}}\",\"consent\":\"ACCEPTED\"}\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -486,12 +516,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8088/v1/signup/identity-verification/slot",
-							"protocol": "http",
+							"raw": "{{signup-base-url}}/v1/signup/identity-verification/slot",
 							"host": [
-								"localhost"
+								"{{signup-base-url}}"
 							],
-							"port": "8088",
 							"path": [
 								"v1",
 								"signup",
@@ -506,14 +534,23 @@
 					"name": "get status",
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "IDV_SLOT_ALLOTTED",
+								"value": "{{IDV_SLOT_ALLOTTED}}",
+								"type": "text"
+							},
+							{
+								"key": "X-XSRF-TOKEN",
+								"value": "{{csrf_token}}",
+								"type": "text"
+							}
+						],
 						"url": {
-							"raw": "http://localhost:8088/v1/signup/identity-verification/status",
-							"protocol": "http",
+							"raw": "{{signup-base-url}}/v1/signup/identity-verification/status",
 							"host": [
-								"localhost"
+								"{{signup-base-url}}"
 							],
-							"port": "8088",
 							"path": [
 								"v1",
 								"signup",
@@ -538,12 +575,10 @@
 					}
 				],
 				"url": {
-					"raw": "http://localhost:8088/v1/signup/settings",
-					"protocol": "http",
+					"raw": "{{signup-base-url}}/v1/signup/settings",
 					"host": [
-						"localhost"
+						"{{signup-base-url}}"
 					],
-					"port": "8088",
 					"path": [
 						"v1",
 						"signup",
