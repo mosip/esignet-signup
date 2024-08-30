@@ -2,7 +2,12 @@ import { isEqual } from "lodash";
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 
-import { Error, KycProvider, KycProviderDetail, SignupHashCode } from "~typings/types";
+import {
+  Error,
+  KycProvider,
+  KycProviderDetail,
+  SignupHashCode,
+} from "~typings/types";
 
 export enum EkycVerificationStep {
   VerificationSteps,
@@ -157,7 +162,8 @@ export const errorBannerMessageSelector = (
 
 export const setErrorBannerMessageSelector = (
   state: EkycVerificationStore
-): EkycVerificationStore["setErrorBannerMessage"] => state.setErrorBannerMessage;
+): EkycVerificationStore["setErrorBannerMessage"] =>
+  state.setErrorBannerMessage;
 
 export const slotIdSelector = (
   state: EkycVerificationStore

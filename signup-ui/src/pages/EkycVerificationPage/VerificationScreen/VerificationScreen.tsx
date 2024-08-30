@@ -144,6 +144,35 @@ export const VerificationScreen = ({
     setStep(EkycVerificationStep.SlotCheckingScreen);
   };
 
+  const stopEkycVerificationProcess = useCallback(() => {
+    if (connected) {
+      unsubscribe();
+      client.deactivate();
+    }
+    setStep(EkycVerificationStep.IdentityVerificationStatus);
+  }, [])
+
+  useEffect(() => {
+    const checkWebcamInputSource = () => {
+      if (webcamRef && webcamRef.current) {
+        const webcamStreamState = (webcamRef.current as Webcam).stream?.active;
+        if (webcamStreamState === false) {
+          stopEkycVerificationProcess();
+        }
+      }
+    }
+
+    // checking camera permission in every 1 second
+    const webcamInputSourceCheckInterval = setInterval(
+      checkWebcamInputSource,
+      1000
+    );
+
+    return () => {
+      clearInterval(webcamInputSourceCheckInterval);
+    };
+  }, []);
+
   // timer useEffect
   useEffect(() => {
     if (timer && timer > 0) {
@@ -444,6 +473,8 @@ export const VerificationScreen = ({
     };
   }, []);
 
+  const handleWebcamUserMediaError = (error: string | DOMException) => stopEkycVerificationProcess();
+
   return alertConfig !== null ? (
     <EkycStatusAlert config={alertConfig} />
   ) : (
@@ -479,6 +510,7 @@ export const VerificationScreen = ({
           }
           videoConstraints={videoConstraints}
           screenshotFormat="image/jpeg"
+          onUserMediaError={handleWebcamUserMediaError}
         />
       </div>
       {/* temporary button for socket connection */}

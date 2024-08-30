@@ -58,6 +58,7 @@ export const VideoPreview = ({
    */
   const handleContinue = (e: any) => {
     e.preventDefault();
+    webcamRef.current = null;
     setStep(EkycVerificationStep.SlotCheckingScreen);
   };
 
@@ -78,23 +79,37 @@ export const VideoPreview = ({
   };
 
   useEffect(() => {
+    const cameraPermissionCheck = () => {
+      navigator.mediaDevices
+        .getUserMedia({ video: true })
+        .then(cameraPermissionAllowed)
+        .catch(cameraPermissionDenied);
+    };
+
     // checking camera permission in every 1 second
     const cameraPermissionCheckInterval = setInterval(
       cameraPermissionCheck,
       1000
     );
-    return () => clearInterval(cameraPermissionCheckInterval);
+
+    return () => {
+      clearInterval(cameraPermissionCheckInterval);
+      if (window.videoLocalStream) {
+        window.videoLocalStream.getTracks().forEach(track => track.stop());
+      }
+    };
   }, [permissionGranted]);
 
   // if camera permission granted then set the state
-  const cameraPermissionAllowed = (stream: MediaStream) => {
+  const cameraPermissionAllowed = useCallback((stream: MediaStream) => {
+    window.videoLocalStream = stream;
     if (!permissionGranted) {
       setPermissionGranted(true);
     }
-  };
+  }, []);
 
   // if camera permission denied then set the state
-  const cameraPermissionDenied = (error: any) => {
+  const cameraPermissionDenied = useCallback((error: any) => {
     if (permissionGranted) {
       setPermissionGranted(false);
       if (error.name === "NotReadableError") {
@@ -111,16 +126,7 @@ export const VideoPreview = ({
         });
       }
     }
-  };
-
-  // check the camera permission, if camera permission granted then set the state
-  // it will work for chrome & firefox as well
-  const cameraPermissionCheck = () => {
-    navigator.mediaDevices
-      .getUserMedia({ video: true })
-      .then(cameraPermissionAllowed)
-      .catch(cameraPermissionDenied);
-  };
+  }, []);
 
   // video preview div, it will show the video preview if camera permission granted
   // otherwise it will show a card asking for camera permission
