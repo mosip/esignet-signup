@@ -114,6 +114,6 @@
     "tailwindcss-dir": "^4.0.0",
     "tsconfig-paths-webpack-plugin": "^4.1.0",
     "type-fest": "^4.6.0",
-    "webpack": "^5.89.0"
+    "webpack": "^5.94.0"
   }
 }
