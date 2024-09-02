@@ -127,7 +127,7 @@ export const VerificationScreen = ({
   const sendMessage = (request: any) => {
     if (imageFrames.length) {
       request.frames = imageFrames.map((frame: IdvFrames) => {
-        return { ...frame };
+        return { frame: "", order: frame.order };
       });
     } else {
       request.frames = Array.from(Array(4).keys()).map((i: number) => {
