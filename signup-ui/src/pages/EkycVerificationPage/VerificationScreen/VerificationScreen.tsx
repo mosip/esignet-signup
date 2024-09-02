@@ -215,6 +215,29 @@ export const VerificationScreen = ({
     sendMessage(request);
   };
 
+  useEffect(() => {
+    // checking camera permission in every 1 second
+    const cameraCheckInterval = setInterval(
+      cameraDeviceCheck,
+      1000
+    );
+    return () => clearInterval(cameraCheckInterval);
+  }, []);
+
+  const cameraDeviceCheck = () => {
+    navigator.mediaDevices
+      .getUserMedia({ video: true })
+      .catch(stopEkycVerificationCheck);
+  };
+
+  const stopEkycVerificationCheck = (err: DOMException) => {
+    if (connected) {
+      unsubscribe();
+      client.deactivate();
+    }
+    setStep(EkycVerificationStep.IdentityVerificationStatus);
+  }
+
   const convertResponseToState = (
     res: IdentityVerificationResponseDto
   ): IdentityVerificationState => {

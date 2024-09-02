@@ -4,7 +4,7 @@
 // learn more: https://github.com/testing-library/jest-dom
 import "@testing-library/jest-dom";
 
-import { mswServer } from "./mocks/msw-server";
+import { mswWorker } from "./mocks/msw-browser";
 
 require("whatwg-fetch");
 
@@ -26,7 +26,3 @@ jest.mock("react-i18next", () => ({
     };
   },
 }));
-
-beforeAll(() => mswServer.listen());
-afterEach(() => mswServer.resetHandlers());
-afterAll(() => mswServer.close());
