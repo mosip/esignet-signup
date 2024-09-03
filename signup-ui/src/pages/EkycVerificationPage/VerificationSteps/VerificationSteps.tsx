@@ -89,7 +89,8 @@ export const VerificationSteps = ({
 
         const redirectURI = `${authorizeURI}?${redirectParams}`;
 
-        window.location.href = redirectURI;
+        window.history.replaceState(null, '', redirectURI);
+        window.location.reload();
       }
       return;
     }
