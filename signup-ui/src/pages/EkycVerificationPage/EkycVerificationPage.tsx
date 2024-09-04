@@ -78,44 +78,78 @@ export const EkycVerificationPage = ({
   };
 
   useEffect(() => {
-    if (!hashCode) return navigateToLandingPage();
+    if (hashCode) {
+      const base64Regex =
+        /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/;
+      const isValidHash = base64Regex.test(hashCode);
 
-    const base64Regex =
-      /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/;
-    if (!base64Regex.test(hashCode)) return navigateToLandingPage();
+      if (isValidHash) {
+        const decodedBase64 = atob(hashCode);
+        const params = new URLSearchParams(decodedBase64);
+        const hasRequiredParams =
+          params.has("state") && params.has("code") && params.has("ui_locales");
 
-    const decodedBase64 = atob(hashCode);
-    const params = new URLSearchParams(decodedBase64);
-    const requiredParams = ["state", "code", "ui_locales"];
-    if (!requiredParams.every((param) => params.has(param)))
-      return navigateToLandingPage();
+        if (hasRequiredParams) {
+          setHashCode({
+            state: params.get("state") ?? "",
+            code: params.get("code") ?? "",
+          });
 
-    setHashCode({
-      state: params.get("state") ?? "",
-      code: params.get("code") ?? "",
-    });
+          if (kycProvidersList.isPending) return;
+          const UpdateProcessRequestDto: UpdateProcessRequestDto = {
+            requestTime: new Date().toISOString(),
+            request: {
+              authorizationCode: params?.get("code") ?? "",
+              state: params?.get("state") ?? "",
+            },
+          };
+          return kycProvidersList.mutate(UpdateProcessRequestDto, {
+            onSuccess: ({ response, errors }) => {
+              if (errors?.length) {
+                setCriticalError(errors[0]);
+              } else {
+                setKycProviderList(response?.identityVerifiers);
+                if (response?.identityVerifiers.length === 1) {
+                  setKycProvider(response?.identityVerifiers[0]);
+                }
+              }
+            },
+          });
+        } else if (params.has("id_token_hint")) {
+          const authorizeURI =
+            settings?.response?.configs["signin.redirect-url"];
+          const clientIdURI =
+            settings?.response?.configs["signup.oauth-client-id"];
+          const identityVerificationRedirectURI =
+            settings?.response?.configs["identity-verification.redirect-url"];
+          const urlObj = new URL(window.location.href);
+          const state = urlObj.searchParams.get("state");
 
-    if (kycProvidersList.isPending) return;
-    const UpdateProcessRequestDto: UpdateProcessRequestDto = {
-      requestTime: new Date().toISOString(),
-      request: {
-        authorizationCode: params?.get("code") ?? "",
-        state: params?.get("state") ?? "",
-      },
-    };
-    return kycProvidersList.mutate(UpdateProcessRequestDto, {
-      onSuccess: ({ response, errors }) => {
-        if (errors?.length) {
-          setCriticalError(errors[0]);
+          const paramObj = {
+            state: state ?? "",
+            client_id: clientIdURI ?? "",
+            redirect_uri: identityVerificationRedirectURI ?? "",
+            scope: "openid",
+            response_type: "code",
+            id_token_hint: params.get("id_token_hint") ?? "",
+            ui_locales: (window as any)._env_.DEFAULT_LANG,
+          };
+
+          const redirectParams = new URLSearchParams(paramObj).toString();
+
+          const redirectURI = `${authorizeURI}?${redirectParams}`;
+
+          window.location.replace(redirectURI);
         } else {
-          setKycProviderList(response?.identityVerifiers);
-          if (response?.identityVerifiers.length === 1) {
-            setKycProvider(response?.identityVerifiers[0]);
-          }
+          navigateToLandingPage();
         }
-      },
-    });
-  }, []);
+      } else {
+        navigateToLandingPage();
+      }
+    } else {
+      navigateToLandingPage();
+    }
+  }, [settings]);
 
   useEffect(() => {
     window.onbeforeunload = () => {
