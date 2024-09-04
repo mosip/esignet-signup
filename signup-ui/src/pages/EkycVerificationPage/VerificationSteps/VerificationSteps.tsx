@@ -19,7 +19,6 @@ import {
   EkycVerificationStep,
   EkycVerificationStore,
   kycProvidersListSelector,
-  setCriticalErrorSelector,
   setStepSelector,
   useEkycVerificationStore,
 } from "../useEkycVerificationStore";
@@ -34,12 +33,11 @@ export const VerificationSteps = ({
   });
   const [cancelButton, setCancelButton] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const { setStep, setCriticalError, providerListStore } =
+  const { setStep, providerListStore } =
     useEkycVerificationStore(
       useCallback(
         (state: EkycVerificationStore) => ({
           setStep: setStepSelector(state),
-          setCriticalError: setCriticalErrorSelector(state),
           providerListStore: kycProvidersListSelector(state),
         }),
         []
@@ -63,38 +61,37 @@ export const VerificationSteps = ({
   const hasState = params.has("state");
   const hasCode = params.has("code");
   const uiLocales = params.has("ui_locales");
-  const urlObj = new URL(window.location.href);
-  const state = urlObj.searchParams.get("state");
+  // const urlObj = new URL(window.location.href);
+  // const state = urlObj.searchParams.get("state");
 
-  useEffect(() => {
-    setIsLoading(true);
-    if (hashCode) {
-      if (!hasState && !hasCode && uiLocales && isValidHash) {
-        const authorizeURI = settings?.configs["signin.redirect-url"];
-        const clientIdURI = settings?.configs["signup.oauth-client-id"];
-        const identityVerificationRedirectURI =
-          settings?.configs["identity-verification.redirect-url"];
+  // useEffect(() => {
+  //   setIsLoading(true);
+  //   // if (hashCode) {
+  //   //   if (!hasState && !hasCode && uiLocales && isValidHash) {
+  //   //     const authorizeURI = settings?.configs["signin.redirect-url"];
+  //   //     const clientIdURI = settings?.configs["signup.oauth-client-id"];
+  //   //     const identityVerificationRedirectURI =
+  //   //       settings?.configs["identity-verification.redirect-url"];
 
-        const paramObj = {
-          state: state ?? "",
-          client_id: clientIdURI ?? "",
-          redirect_uri: identityVerificationRedirectURI ?? "",
-          scope: "openid",
-          response_type: "code",
-          id_token_hint: params.get("id_token_hint") ?? "",
-          ui_locales: (window as any)._env_.DEFAULT_LANG,
-        };
+  //   //     const paramObj = {
+  //   //       state: state ?? "",
+  //   //       client_id: clientIdURI ?? "",
+  //   //       redirect_uri: identityVerificationRedirectURI ?? "",
+  //   //       scope: "openid",
+  //   //       response_type: "code",
+  //   //       id_token_hint: params.get("id_token_hint") ?? "",
+  //   //       ui_locales: (window as any)._env_.DEFAULT_LANG,
+  //   //     };
 
-        const redirectParams = new URLSearchParams(paramObj).toString();
+  //   //     const redirectParams = new URLSearchParams(paramObj).toString();
 
-        const redirectURI = `${authorizeURI}?${redirectParams}`;
+  //   //     const redirectURI = `${authorizeURI}?${redirectParams}`;
 
-        window.history.replaceState(null, '', redirectURI);
-        window.location.reload();
-      }
-      return;
-    }
-  }, [settings]);
+  //   //     window.location.replace(redirectURI);
+  //   //   }
+  //   //   return;
+  //   // }
+  // }, [settings]);
 
   const eKYCSteps = [
     {
