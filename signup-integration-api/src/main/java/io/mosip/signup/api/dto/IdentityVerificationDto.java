@@ -14,6 +14,5 @@ import java.util.List;
 public class IdentityVerificationDto {
 
     private String stepCode;
-    private String disabilityType;
     private List<FrameDetail> frames;
 }

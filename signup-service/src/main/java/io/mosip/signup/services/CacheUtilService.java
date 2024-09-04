@@ -90,9 +90,27 @@ public class CacheUtilService {
         return alias;
     }
 
+    public RegistrationTransaction createUpdateChallengeGeneratedTransaction(String transactionId,
+                                                                             RegistrationTransaction registrationTransaction) {
+        cacheManager.getCache(SignUpConstants.CHALLENGE_GENERATED).put(transactionId, registrationTransaction); //NOSONAR getCache() will not be returning null here.
+        return registrationTransaction;
+    }
+
+    public void updateStatusCheckTransaction(String transactionId,
+                                             RegistrationTransaction registrationTransaction) {
+        cacheManager.getCache(SignUpConstants.STATUS_CHECK).put(transactionId, registrationTransaction);    //NOSONAR getCache() will not be returning null here.
+    }
+
+    //Identity verification process related caches
+
     @Cacheable(value = SignUpConstants.IDENTITY_VERIFIERS, key = "#key")
     public IdentityVerifierDetail[] setIdentityVerifierDetails(String key, IdentityVerifierDetail[] identityVerifierDetails) {
         return identityVerifierDetails;
+    }
+
+    @Cacheable(value = SignUpConstants.IDENTITY_VERIFIER_METADATA, key = "#identityVerifierId")
+    public JsonNode setIdentityVerifierMetadata(String identityVerifierId, JsonNode jsonNode) {
+        return jsonNode;
     }
 
     @Cacheable(value = SignUpConstants.IDENTITY_VERIFICATION, key = "#transactionId")
@@ -101,23 +119,18 @@ public class CacheUtilService {
         return identityVerificationTransaction;
     }
 
-    @Cacheable(value = SignUpConstants.IDENTITY_VERIFIER_METADATA, key = "#identityVerifierId")
-    public JsonNode setIdentityVerifierMetadata(String identityVerifierId, JsonNode jsonNode) {
-        return jsonNode;
+    @CacheEvict(value = SignUpConstants.IDENTITY_VERIFICATION, key = "#transactionId")
+    @Cacheable(value = SignUpConstants.SLOT_ALLOTTED, key = "#transactionId")
+    public IdentityVerificationTransaction setSlotAllottedTransaction(String transactionId,
+                                                                      IdentityVerificationTransaction identityVerificationTransaction) {
+        return identityVerificationTransaction;
     }
 
-    //----- cache update is separated
-    //----- we are not using @cacheput as @cacheput extends the TTL on cache entry
-
-    public RegistrationTransaction createUpdateChallengeGeneratedTransaction(String transactionId,
-                                                                       RegistrationTransaction registrationTransaction) {
-        cacheManager.getCache(SignUpConstants.CHALLENGE_GENERATED).put(transactionId, registrationTransaction); //NOSONAR getCache() will not be returning null here.
-        return registrationTransaction;
-    }
-
-    public void updateStatusCheckTransaction(String transactionId,
-                                                    RegistrationTransaction registrationTransaction) {
-        cacheManager.getCache(SignUpConstants.STATUS_CHECK).put(transactionId, registrationTransaction);    //NOSONAR getCache() will not be returning null here.
+    @CacheEvict(value = SignUpConstants.SLOT_ALLOTTED, key = "#transactionId")
+    @Cacheable(value = SignUpConstants.VERIFIED_SLOT, key = "#slotId")
+    public IdentityVerificationTransaction setVerifiedSlotTransaction(String transactionId, String slotId,
+                                                                      IdentityVerificationTransaction identityVerificationTransaction) {
+        return identityVerificationTransaction;
     }
 
     //---Getter---
@@ -155,28 +168,6 @@ public class CacheUtilService {
         return cacheManager.getCache(SignUpConstants.IDENTITY_VERIFICATION).get(transactionId, IdentityVerificationTransaction.class); //NOSONAR getCache() will not be returning null here.
     }
 
-    // @CacheEvict(value = SignUpConstants.IDENTITY_VERIFICATION, key = "#transactionId")
-    @Cacheable(value = SignUpConstants.SLOT_ALLOTTED, key = "#transactionId")
-    public IdentityVerificationTransaction setSlotAllottedTransaction(String transactionId,
-                                                                              IdentityVerificationTransaction identityVerificationTransaction) {
-        return identityVerificationTransaction;
-    }
-
-    @Cacheable(value = SignUpConstants.VERIFIED_SLOT, key = "#slotId")
-    @CacheEvict(value = SignUpConstants.SLOT_ALLOTTED, key = "#transactionId")
-    public IdentityVerificationTransaction setVerifiedSlotTransaction(String transactionId, String slotId,
-                                                                      IdentityVerificationTransaction identityVerificationTransaction) {
-        return identityVerificationTransaction;
-    }
-
-
-    @Caching(evict = {
-            //@CacheEvict(value = SignUpConstants.VERIFIED_SLOT, key = "#slotId"),
-            @CacheEvict(value = SignUpConstants.SLOT_ALLOTTED, key = "#transactionId")
-    })
-    public void evictSlotAllottedTransaction(String transactionId, String slotId) {
-    }
-
     public IdentityVerificationTransaction getSlotAllottedTransaction(String transactionId) {
         return cacheManager.getCache(SignUpConstants.SLOT_ALLOTTED).get(transactionId, IdentityVerificationTransaction.class); //NOSONAR getCache() will not be returning null here.
     }
@@ -185,29 +176,37 @@ public class CacheUtilService {
         return cacheManager.getCache(SignUpConstants.VERIFIED_SLOT).get(slotId, IdentityVerificationTransaction.class); //NOSONAR getCache() will not be returning null here.
     }
 
+    public JsonNode getIdentityVerifierMetadata(String identityVerifierId) {
+        return cacheManager.getCache(SignUpConstants.IDENTITY_VERIFIER_METADATA).get(identityVerifierId, JsonNode.class); //NOSONAR getCache() will not be returning null here.
+    }
+
     public void updateVerifiedSlotTransaction(String slotId, IdentityVerificationTransaction transaction) {
         if(cacheManager.getCache(SignUpConstants.VERIFIED_SLOT) != null) {
             cacheManager.getCache(SignUpConstants.VERIFIED_SLOT).put(slotId, transaction);
         }
     }
 
-    public JsonNode getIdentityVerifierMetadata(String identityVerifierId) {
-        return cacheManager.getCache(SignUpConstants.IDENTITY_VERIFIER_METADATA).get(identityVerifierId, JsonNode.class); //NOSONAR getCache() will not be returning null here.
-    }
-
-    public void addToVerifiedSlot(String value) {
+    public void addToSlotConnected(String value) {
         redisConnectionFactory.getConnection().hSet(SLOTS_CONNECTED.getBytes(), value.getBytes(),
                 Longs.toByteArray(System.currentTimeMillis()));
     }
 
-    public void removeFromVerifiedSlot(String value) {
+    public void removeFromSlotConnected(String value) {
         redisConnectionFactory.getConnection().hDel(SLOTS_CONNECTED.getBytes(), value.getBytes());
     }
 
     public long getCurrentSlotCount() {
         Long count = redisConnectionFactory.getConnection().hLen(SLOTS_CONNECTED.getBytes());
-        log.debug("Current allotted slot count : {}", count);
+        log.info("Current allotted slot count : {}", count);
         return count == null ? 0 : count;
+    }
+
+    //Cleanup assigned slot details on WS connection disconnect
+    @Caching(evict = {
+            @CacheEvict(value = SignUpConstants.VERIFIED_SLOT, key = "#slotId"),
+            @CacheEvict(value = SignUpConstants.SLOT_ALLOTTED, key = "#transactionId")
+    })
+    public void evictSlotAllottedTransaction(String transactionId, String slotId) {
     }
 
     /**

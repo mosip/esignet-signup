@@ -52,7 +52,7 @@ public class ErrorConstants {
 
     public static final String SLOT_NOT_AVAILABLE="slot_not_available";
     public static final String INVALID_SLOT_ID = "invalid_slot_id";
-    public static final String UPDATE_FAILED = "update_failed";
+    public static final String INVALID_STEP_CODE = "invalid_step_code";
     public static final String VERIFIED_CLAIMS_FIELD_ID = "verified_claims";
 
     public static final String INVALID_DISABILITY_TYPE = "invalid_disability_type";

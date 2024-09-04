@@ -20,10 +20,8 @@ import com.nimbusds.openid.connect.sdk.OIDCTokenResponseParser;
 import com.nimbusds.openid.connect.sdk.UserInfoRequest;
 import com.nimbusds.openid.connect.sdk.UserInfoResponse;
 import io.mosip.esignet.core.util.IdentityProviderUtil;
-import io.mosip.signup.api.exception.IdentityVerifierException;
 import io.mosip.signup.api.spi.ProfileRegistryPlugin;
 import io.mosip.signup.api.util.ProfileCreateUpdateStatus;
-import io.mosip.signup.api.util.VerificationStatus;
 import io.mosip.signup.dto.*;
 import io.mosip.signup.exception.InvalidTransactionException;
 import io.mosip.signup.exception.SignUpException;
@@ -51,7 +49,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static io.mosip.signup.api.util.VerificationStatus.*;
-import static io.mosip.signup.util.ErrorConstants.UPDATE_FAILED;
 import static io.mosip.signup.util.SignUpConstants.VALUE_SEPARATOR;
 
 @Slf4j

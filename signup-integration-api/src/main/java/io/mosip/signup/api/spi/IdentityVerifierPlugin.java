@@ -6,8 +6,9 @@
 package io.mosip.signup.api.spi;
 
 import io.mosip.signup.api.dto.IdentityVerificationDto;
+import io.mosip.signup.api.dto.IdentityVerificationInitDto;
 import io.mosip.signup.api.dto.IdentityVerificationResult;
-import io.mosip.signup.api.dto.VerifiedResult;
+import io.mosip.signup.api.dto.VerificationResult;
 import io.mosip.signup.api.exception.IdentityVerifierException;
 import io.mosip.signup.api.util.ProcessType;
 import lombok.extern.slf4j.Slf4j;
@@ -50,6 +51,14 @@ public abstract class IdentityVerifierPlugin {
      */
     public abstract List<ProcessType> getSupportedProcessTypes();
 
+
+    /**
+     * Initialize the transaction with individualId and the disability type (if any)
+     * @param transactionId
+     * @param identityVerificationInitDto
+     */
+    public abstract void initialize(String transactionId, IdentityVerificationInitDto identityVerificationInitDto);
+
     /**
      * Verify the input frames based on the provided step code. TransactionId should be used to maintain the state of the
      * verification process.
@@ -69,5 +78,5 @@ public abstract class IdentityVerifierPlugin {
      * @return
      * @throws IdentityVerifierException
      */
-    public abstract VerifiedResult getVerifiedResult(String transactionId) throws IdentityVerifierException;
+    public abstract VerificationResult getVerificationResult(String transactionId) throws IdentityVerifierException;
 }
