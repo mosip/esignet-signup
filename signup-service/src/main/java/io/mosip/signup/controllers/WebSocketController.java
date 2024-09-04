@@ -20,7 +20,6 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
@@ -41,7 +40,7 @@ public class WebSocketController {
 
 
     @MessageMapping("/process-frame")
-    public void processFrames(final @Valid @Payload IdentityVerificationRequest identityVerificationRequest) {
+    public void processFrames(final @Payload IdentityVerificationRequest identityVerificationRequest) {
         log.debug("Process frame invoked with payload : {}", identityVerificationRequest);
         if(identityVerificationRequest == null || StringUtils.isEmpty(identityVerificationRequest.getSlotId()))
             throw new IdentityVerifierException(ErrorConstants.INVALID_SLOT_ID);
