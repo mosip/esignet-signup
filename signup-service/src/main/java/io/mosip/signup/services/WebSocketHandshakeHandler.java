@@ -27,7 +27,7 @@ import static io.mosip.signup.util.SignUpConstants.VALUE_SEPARATOR;
 
 @Slf4j
 @Component
-public class IdentityVerificationHandshakeHandler extends DefaultHandshakeHandler {
+public class WebSocketHandshakeHandler extends DefaultHandshakeHandler {
 
     @Autowired
     CacheUtilService cacheUtilService;
@@ -39,7 +39,7 @@ public class IdentityVerificationHandshakeHandler extends DefaultHandshakeHandle
     protected Principal determineUser(ServerHttpRequest request, WebSocketHandler wsHandler,
                                       Map<String, Object> attributes) {
 
-        log.info("Started to determine user aka slotId with headers : {}", request.getHeaders());
+        log.debug("Started to determine user aka slotId with headers : {}", request.getHeaders());
         HttpHeaders headers = request.getHeaders();
 
         Optional<String> transactionCookie = Optional.empty();

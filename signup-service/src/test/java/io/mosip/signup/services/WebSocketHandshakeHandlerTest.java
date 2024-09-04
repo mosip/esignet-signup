@@ -26,12 +26,12 @@ import java.util.Collections;
 import java.util.Map;
 
 @RunWith(SpringRunner.class)
-public class IdentityVerificationHandshakeHandlerTest {
+public class WebSocketHandshakeHandlerTest {
 
 
 
     @InjectMocks
-    private IdentityVerificationHandshakeHandler identityVerificationHandshakeHandler;
+    private WebSocketHandshakeHandler webSocketHandshakeHandler;
 
     @Mock
     private CacheUtilService cacheUtilService;
@@ -44,7 +44,7 @@ public class IdentityVerificationHandshakeHandlerTest {
     }
 
     @Test
-    public void determineUserWithValidTransaction_withValidDetails_thenPass() throws Exception {
+    public void determineUser_withValidDetails_thenPass() throws Exception {
 
 
         IdentityVerificationTransaction transaction = new IdentityVerificationTransaction();
@@ -57,14 +57,14 @@ public class IdentityVerificationHandshakeHandlerTest {
         headers.set("Cookie","IDV_SLOT_ALLOTTED=Slot###123");
         Mockito.when(request.getHeaders()).thenReturn(headers);
         Mockito.when(request.getURI()).thenReturn(new URI("http://localhost?slotId=123"));
-        Principal principal = identityVerificationHandshakeHandler.determineUser(request, Mockito.mock(WebSocketHandler.class), attributes);
+        Principal principal = webSocketHandshakeHandler.determineUser(request, Mockito.mock(WebSocketHandler.class), attributes);
 
         Assert.assertNotNull(principal);
         Assert.assertEquals("Slot###123", principal.getName());
     }
 
     @Test
-    public void determineUserWithInvalidTransaction_thenFail() throws Exception {
+    public void determineUser_withInvalidTransaction_thenFail() throws Exception {
 
         IdentityVerificationTransaction transaction = new IdentityVerificationTransaction();
         transaction.setSlotId("123");
@@ -78,7 +78,7 @@ public class IdentityVerificationHandshakeHandlerTest {
         Mockito.when(request.getURI()).thenReturn(new URI("http://localhost?slotId=123"));
 
         try{
-            identityVerificationHandshakeHandler.determineUser(request, Mockito.mock(WebSocketHandler.class), attributes);
+            webSocketHandshakeHandler.determineUser(request, Mockito.mock(WebSocketHandler.class), attributes);
             Assert.fail("Expected HandshakeFailureException");
         }catch(HandshakeFailureException e) {
             Assert.assertEquals(ErrorConstants.INVALID_TRANSACTION, e.getMessage());
@@ -86,7 +86,7 @@ public class IdentityVerificationHandshakeHandlerTest {
     }
 
     @Test
-    public void determineUserWithInValidSlotId_thenFail() throws Exception {
+    public void determineUser_withInValidSlotId_thenFail() throws Exception {
 
         IdentityVerificationTransaction transaction = new IdentityVerificationTransaction();
         transaction.setSlotId("123");
@@ -98,7 +98,7 @@ public class IdentityVerificationHandshakeHandlerTest {
         Mockito.when(request.getHeaders()).thenReturn(headers);
         Mockito.when(request.getURI()).thenReturn(new URI("http://localhost?slotId=123"));
         try{
-            identityVerificationHandshakeHandler.determineUser(request, Mockito.mock(WebSocketHandler.class), attributes);
+            webSocketHandshakeHandler.determineUser(request, Mockito.mock(WebSocketHandler.class), attributes);
         }catch (HandshakeFailureException e){
             Assert.assertEquals(ErrorConstants.INVALID_TRANSACTION, e.getMessage());
         }

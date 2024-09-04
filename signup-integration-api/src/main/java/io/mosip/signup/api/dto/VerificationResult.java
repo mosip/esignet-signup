@@ -12,7 +12,7 @@ import lombok.Data;
 import java.util.Map;
 
 @Data
-public class VerifiedResult {
+public class VerificationResult {
 
     private VerificationStatus status;
     private Map<String, VerificationDetail> verifiedClaims;

@@ -18,6 +18,8 @@ public class IdentityVerificationRequest {
     @NotBlank(message = ErrorConstants.INVALID_SLOT_ID)
     private String slotId;
 
+    @NotBlank(message = ErrorConstants.INVALID_STEP_CODE)
     private String stepCode;
+
     private List<FrameDetail> frames;
 }

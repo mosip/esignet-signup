@@ -5,14 +5,11 @@
  */
 package io.mosip.signup.api.dto;
 
-
 import lombok.Data;
 
-import java.util.List;
-
 @Data
-public class IdentityVerificationDto {
+public class IdentityVerificationInitDto {
 
-    private String stepCode;
-    private List<FrameDetail> frames;
+    private String individualId;
+    private String disabilityType;
 }
