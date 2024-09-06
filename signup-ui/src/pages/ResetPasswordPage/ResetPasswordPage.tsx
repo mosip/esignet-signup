@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useMemo } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { isEqual } from "lodash";
+import { useCallback, useEffect, useMemo } from "react";
 import { Resolver, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import * as yup from "yup";
@@ -60,7 +60,7 @@ export const ResetPasswordPage = ({ settings }: ResetPasswordPageProps) => {
       // Step 1 - UserInfo
       yup.object({
         username: validateUsername(settings),
-        fullname: validateFullName(settings),
+        fullname: validateFullName(settings, t),
         captchaToken: validateCaptchaToken(settings),
       }),
       // Step 2 - Otp
