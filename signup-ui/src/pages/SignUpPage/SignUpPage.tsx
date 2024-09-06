@@ -1,12 +1,11 @@
-import { useCallback, useEffect, useMemo } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useMutationState } from "@tanstack/react-query";
 import { isEqual } from "lodash";
+import { useCallback, useEffect, useMemo } from "react";
 import { Resolver, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import * as yup from "yup";
 
-import { Button } from "~components/ui/button";
 import { Form } from "~components/ui/form";
 import { keys as mutationKeys } from "~pages/shared/mutations";
 import {
@@ -88,7 +87,7 @@ export const SignUpPage = ({ settings }: SignUpPageProps) => {
       // Step 4 - Account Setup Validation
       yup.object({
         username: yup.string(),
-        fullNameInKhmer: validateFullName(settings),
+        fullNameInKhmer: validateFullName(settings, t),
         password: validatePassword(settings),
         confirmPassword: validateConfirmPassword("password", settings, true),
         consent: yup.bool().oneOf([true], t("terms_and_conditions_validation")),
