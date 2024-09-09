@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { Detector } from "react-detect-offline";
 import { useTranslation } from "react-i18next";
 
 import { Button } from "~components/ui/button";
@@ -281,15 +282,19 @@ export const KycProviderList = ({
                 >
                   {t("cancel_button")}
                 </Button>
-                <Button
-                  id="proceed-preview-button"
-                  name="proceed-preview-button"
-                  className="max-w-max px-[6rem] font-semibold sm:px-[2rem] xs:px-[1.5rem]"
-                  onClick={handleContinue}
-                  disabled={!selectedKycProvider}
-                >
-                  {t("proceed_button")}
-                </Button>
+                <Detector
+                  render={({ online }) => (
+                    <Button
+                      id="proceed-preview-button"
+                      name="proceed-preview-button"
+                      className="max-w-max px-[6rem] font-semibold sm:px-[2rem] xs:px-[1.5rem]"
+                      onClick={handleContinue}
+                      disabled={!online || !selectedKycProvider}
+                    >
+                      {t("proceed_button")}
+                    </Button>
+                  )}
+                />
               </div>
             </StepFooter>
           </Step>

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import Stepper from "@keyvaluesystems/react-stepper";
+import { Detector } from "react-detect-offline";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
@@ -190,12 +191,17 @@ export const VerificationSteps = ({
                   >
                     {t("cancel")}
                   </Button>
-                  <Button
-                    className="px-[6rem] font-semibold sm:w-full sm:p-4"
-                    onClick={handleContinue}
-                  >
-                    {t("proceed")}
-                  </Button>
+                  <Detector
+                    render={({ online }) => (
+                      <Button
+                        className="px-[6rem] font-semibold sm:w-full sm:p-4"
+                        onClick={handleContinue}
+                        disabled={!online}
+                      >
+                        {t("proceed")}
+                      </Button>
+                    )}
+                  />
                 </div>
               </StepFooter>
             </Step>
