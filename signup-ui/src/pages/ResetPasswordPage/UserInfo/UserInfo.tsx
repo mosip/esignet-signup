@@ -1,4 +1,5 @@
 import {
+  ChangeEvent,
   KeyboardEvent,
   MouseEvent,
   useCallback,
@@ -7,7 +8,12 @@ import {
   useState,
 } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
-import { useFormContext, UseFormReturn } from "react-hook-form";
+import {
+  ControllerRenderProps,
+  FieldValues,
+  useFormContext,
+  UseFormReturn,
+} from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
 
@@ -116,11 +122,17 @@ export const UserInfo = ({ settings, methods }: UserInfoProps) => {
       settings.response.configs["identifier.allowed.characters"]
     );
 
-  const handleFullNameInput = (event: KeyboardEvent<HTMLInputElement>) =>
-    handleInputFilter(
-      event,
-      settings.response.configs["fullname.allowed.characters"]
+  const handleFullNameInput = (
+    event: ChangeEvent<HTMLInputElement>,
+    field: ControllerRenderProps<FieldValues, "fullname">
+  ) => {
+    const allowedCharsRegex = new RegExp(
+      settings.response.configs["fullname.allowed.characters"],
+      "g"
     );
+    const filteredText = event.target.value.replace(allowedCharsRegex, "");
+    field.onChange(filteredText);
+  };
 
   const disabledContinue =
     !isUserInfoValid ||
@@ -300,7 +312,9 @@ export const UserInfo = ({ settings, methods }: UserInfoProps) => {
                           maxLength={
                             settings.response.configs["fullname.length.max"]
                           }
-                          onKeyDown={handleFullNameInput}
+                          onChange={(event) =>
+                            handleFullNameInput(event, field)
+                          }
                           disabled={resendOtp}
                         />
                       </FormControl>
