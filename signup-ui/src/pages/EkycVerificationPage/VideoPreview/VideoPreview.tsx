@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { Detector } from "react-detect-offline";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
 import Webcam from "react-webcam";
@@ -211,15 +212,19 @@ export const VideoPreview = ({
               >
                 {t("cancel_button")}
               </Button>
-              <Button
-                id="proceed-preview-button"
-                name="proceed-preview-button"
-                className="w-full p-4 font-semibold"
-                onClick={handleContinue}
-                disabled={!permissionGranted}
-              >
-                {t("proceed_button")}
-              </Button>
+              <Detector
+                render={({ online }) => (
+                  <Button
+                    id="proceed-preview-button"
+                    name="proceed-preview-button"
+                    className="w-full p-4 font-semibold"
+                    onClick={handleContinue}
+                    disabled={!online || !permissionGranted}
+                  >
+                    {t("proceed_button")}
+                  </Button>
+                )}
+              />
             </div>
           </StepFooter>
         </Step>

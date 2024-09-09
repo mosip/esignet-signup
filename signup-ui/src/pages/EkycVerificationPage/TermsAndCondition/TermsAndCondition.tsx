@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import purify from "dompurify";
 import i18next from "i18next";
+import { Detector } from "react-detect-offline";
 import { useTranslation } from "react-i18next";
 
 import { ActionMessage } from "~components/ui/action-message";
@@ -189,7 +190,7 @@ export const TermsAndCondition = ({
               )}
             </StepContent>
             <StepAlert>
-              <ActionMessage className="justify-start tnc-consent">
+              <ActionMessage className="tnc-consent justify-start">
                 <Checkbox
                   id="consent-button"
                   checked={agreeTerms}
@@ -197,9 +198,7 @@ export const TermsAndCondition = ({
                   disabled={!termsAndCondition}
                   className="h-5 w-5 rounded-[2px] text-white data-[state=checked]:border-primary data-[state=checked]:bg-primary"
                 />
-                <p className="ml-2 tnc-consent-text">
-                  {t("agree_text")}
-                </p>
+                <p className="tnc-consent-text ml-2">{t("agree_text")}</p>
               </ActionMessage>
             </StepAlert>
             <StepDivider />
@@ -214,15 +213,19 @@ export const TermsAndCondition = ({
                 >
                   {t("cancel_button")}
                 </Button>
-                <Button
-                  id="proceed-tnc-button"
-                  name="proceed-tnc-button"
-                  className="w-full p-4 font-semibold"
-                  onClick={handleContinue}
-                  disabled={!agreeTerms}
-                >
-                  {t("proceed_button")}
-                </Button>
+                <Detector
+                  render={({ online }) => (
+                    <Button
+                      id="proceed-tnc-button"
+                      name="proceed-tnc-button"
+                      className="w-full p-4 font-semibold"
+                      onClick={handleContinue}
+                      disabled={!online || !agreeTerms}
+                    >
+                      {t("proceed_button")}
+                    </Button>
+                  )}
+                />
               </div>
             </StepFooter>
           </Step>
