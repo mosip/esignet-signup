@@ -19,7 +19,7 @@ export const checkBrowserCompatible = (
   const minBrowserVersion = minBrowserCompatibility[browserName];
   const currentBrowserVersion = browserInfo.browser.version;
 
-  if (minBrowserVersion === "" || !currentBrowserVersion) return false;
+  if (!minBrowserVersion || !currentBrowserVersion) return false;
 
   const isEligible = compareVersions(currentBrowserVersion, minBrowserVersion);
 
