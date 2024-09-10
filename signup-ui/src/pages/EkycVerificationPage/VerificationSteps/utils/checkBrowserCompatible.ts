@@ -21,9 +21,9 @@ export const checkBrowserCompatible = (
 
   if (!minBrowserVersion || !currentBrowserVersion) return false;
 
-  const isEligible = compareVersions(currentBrowserVersion, minBrowserVersion);
+  const isCompatible = compareVersions(currentBrowserVersion, minBrowserVersion);
 
-  if (isEligible) {
+  if (isCompatible) {
     return true;
   }
 
