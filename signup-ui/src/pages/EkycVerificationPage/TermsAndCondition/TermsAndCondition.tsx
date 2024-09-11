@@ -108,7 +108,7 @@ export const TermsAndCondition = ({
   const {
     data: kycDetail,
     isLoading,
-    isSuccess, 
+    isSuccess,
   } = useTermsAndConditions(kycProvider ? kycProvider.id : "");
 
   // checking if kycProvider is set or not,
