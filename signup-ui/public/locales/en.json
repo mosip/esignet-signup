@@ -253,6 +253,7 @@
     "identifier_blocked": "User is blocked. Please try again after 5 minutes.",
     "unsupported_purpose": "Invalid Request",
     "server_unreachable": "We are unable to process your request, please try again later.",
+    "too_many_verify_attempts": "Request verify OTP too many attempts",
     "otp_notification_failed": "Failed to send the otp",
     "IDR-IDC-001": "Missing Input Parameter",
     "IDR-IDC-002": "Invalid Input Parameter",

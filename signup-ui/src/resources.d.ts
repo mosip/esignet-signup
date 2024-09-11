@@ -85,8 +85,8 @@ interface Resources {
     signup_discontinue_prompt: string;
     reset_password_discontinue_prompt: string;
     captcha_required: string;
-    offline_polling_prompt: string,
-    online_polling_prompt: string,
+    offline_polling_prompt: string;
+    online_polling_prompt: string;
     eykc_loading: {
       header: string;
       description: string;
@@ -150,6 +150,7 @@ interface Resources {
       unsupported_purpose: string;
       otp_notification_failed: string;
       server_unreachable: string;
+      too_many_verify_attempts: string;
     };
   };
 }
