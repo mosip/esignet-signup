@@ -197,6 +197,7 @@ export const VerificationScreen = ({
   }, [isError, timer, colorVerification]);
 
   const videoConstraints = {
+    facingMode: "user",
     aspectRatio:
       window.screen.availWidth <= 1280
         ? window.screen.availWidth / window.innerHeight

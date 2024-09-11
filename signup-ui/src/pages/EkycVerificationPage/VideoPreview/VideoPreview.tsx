@@ -79,6 +79,11 @@ export const VideoPreview = ({
     setCancelButton(false);
   };
 
+  // video constraints
+  const videoConstraints = {
+    facingMode: "user",
+  };
+
   useEffect(() => {
     const cameraPermissionCheck = () => {
       navigator.mediaDevices
@@ -96,7 +101,7 @@ export const VideoPreview = ({
     return () => {
       clearInterval(cameraPermissionCheckInterval);
       if (window.videoLocalStream) {
-        window.videoLocalStream.getTracks().forEach(track => track.stop());
+        window.videoLocalStream.getTracks().forEach((track) => track.stop());
       }
     };
   }, [permissionGranted]);
@@ -141,6 +146,7 @@ export const VideoPreview = ({
               width={560}
               audio={false}
               ref={webcamRef}
+              videoConstraints={videoConstraints}
               className="rounded-lg"
             />
           </div>

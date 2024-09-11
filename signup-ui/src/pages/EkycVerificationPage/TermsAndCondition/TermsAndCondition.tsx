@@ -141,6 +141,8 @@ export const TermsAndCondition = ({
           }
         );
         setTermsAndCondition(kycDetail.response["terms&Conditions"]);
+      } else {
+        setCriticalError(kycDetail.errors[0]);
       }
     }
   }, [isSuccess]);
