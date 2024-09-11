@@ -108,7 +108,7 @@ export const TermsAndCondition = ({
   const {
     data: kycDetail,
     isLoading,
-    isSuccess,
+    isSuccess, 
   } = useTermsAndConditions(kycProvider ? kycProvider.id : "");
 
   // checking if kycProvider is set or not,
@@ -141,6 +141,8 @@ export const TermsAndCondition = ({
           }
         );
         setTermsAndCondition(kycDetail.response["terms&Conditions"]);
+      } else {
+        setCriticalError(kycDetail.errors[0]);
       }
     }
   }, [isSuccess]);
