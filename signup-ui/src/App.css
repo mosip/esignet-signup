@@ -321,7 +321,7 @@ body {
   font: var(--tnc-content-font);
   color: var(--tnc-content-color);
   letter-spacing: 0px;
-  padding-right: 7px;
+  padding-right: 1.1em;
 }
 
 .tnc-consent {

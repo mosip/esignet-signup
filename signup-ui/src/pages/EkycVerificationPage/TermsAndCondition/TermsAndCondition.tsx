@@ -181,12 +181,12 @@ export const TermsAndCondition = ({
               </StepDescription>
             </StepHeader>
             <StepDivider />
-            <StepContent className="px-6 py-5">
-              {!termsAndCondition && <div>{t("failed_to_load")}</div>}
-              {termsAndCondition && (
+            <StepContent className="!pe-1">
+            {(!termsAndCondition || !tncMessage) && <div>{t("failed_to_load")}</div>}
+            {termsAndCondition && tncMessage && (
                 <div
                   id="tnc-content"
-                  className="scrollable-div tnc-content flex text-justify sm:p-0"
+                  className="scrollable-div tnc-content flex text-justify sm:py-0 sm:ps-0"
                   dangerouslySetInnerHTML={sanitizeMsg(tncMessage)}
                 ></div>
               )}
@@ -197,7 +197,7 @@ export const TermsAndCondition = ({
                   id="consent-button"
                   checked={agreeTerms}
                   onCheckedChange={changeAgreeTerms}
-                  disabled={!termsAndCondition}
+                  disabled={!termsAndCondition || !tncMessage}
                   className="h-5 w-5 rounded-[2px] text-white data-[state=checked]:border-primary data-[state=checked]:bg-primary"
                 />
                 <p className="tnc-consent-text ml-2">{t("agree_text")}</p>
