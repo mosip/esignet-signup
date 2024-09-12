@@ -6,6 +6,7 @@
 package io.mosip.signup.services;
 
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.signup.api.dto.*;
 import io.mosip.signup.api.exception.IdentityVerifierException;
@@ -112,7 +113,7 @@ public class WebSocketHandler {
                     ProfileDto profileDto = new ProfileDto();
                     profileDto.setIndividualId(transaction.getIndividualId());
                     profileDto.setActive(true);
-                    Map<String, Map<String, VerificationDetail>> verifiedData = new HashMap<>();
+                    Map<String, Map<String, JsonNode>> verifiedData = new HashMap<>();
                     verifiedData.put(VERIFIED_CLAIMS_FIELD_ID, verificationResult.getVerifiedClaims());
                     profileDto.setIdentity(objectMapper.valueToTree(verifiedData));
                     try {
