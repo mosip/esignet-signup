@@ -251,19 +251,16 @@ export const KycProviderList = ({
             </StepHeader>
             <StepDivider />
             <StepContent className="scrollable-div !h-[408px] p-5 text-sm">
-              <div className="grid grid-cols-3 gap-x-4 gap-y-5 md:grid-cols-2 sm:grid-cols-1 sm:gap-y-3.5 ">
+              <div className="grid grid-cols-3 items-stretch gap-x-4 gap-y-5 md:grid-cols-2 sm:grid-cols-1 sm:gap-y-3.5">
                 {kycProvidersList?.map((keyInfo: any) => (
-                  <div
-                    key={keyInfo.id}
-                    className="w-full"
-                    onClick={() => selectingKycProviders(keyInfo)}
-                  >
-                    <KycProviderCardLayout
-                      {...keyInfo}
-                      selected={selectedKycProvider === keyInfo.id}
-                      langMap={langMap}
-                    ></KycProviderCardLayout>
-                  </div>
+                  <KycProviderCardLayout
+                    {...keyInfo}
+                    selected={selectedKycProvider === keyInfo.id}
+                    langMap={langMap}
+                    onKycProvidersSelection={() =>
+                      selectingKycProviders(keyInfo)
+                    }
+                  />
                 ))}
                 {(!kycProvidersList || kycProvidersList.length === 0) && (
                   <div>{t("no_kyc_provider")}</div>
