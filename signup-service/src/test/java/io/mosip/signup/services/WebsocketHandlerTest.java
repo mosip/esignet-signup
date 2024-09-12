@@ -7,7 +7,6 @@ import io.mosip.signup.api.exception.IdentityVerifierException;
 import io.mosip.signup.api.exception.ProfileException;
 import io.mosip.signup.api.spi.IdentityVerifierPlugin;
 import io.mosip.signup.api.spi.ProfileRegistryPlugin;
-import io.mosip.signup.api.util.ProcessType;
 import io.mosip.signup.api.util.VerificationStatus;
 import io.mosip.signup.dto.IdentityVerificationRequest;
 import io.mosip.signup.dto.IdentityVerificationTransaction;
@@ -48,9 +47,11 @@ public class WebsocketHandlerTest {
     @Mock
     private CacheUtilService cacheUtilService;
 
+    private ObjectMapper objectMapper = new ObjectMapper();
+
     @Before
     public void setup() {
-        ReflectionTestUtils.setField(webSocketHandler, "objectMapper", new ObjectMapper());
+        ReflectionTestUtils.setField(webSocketHandler, "objectMapper", objectMapper);
     }
 
     @Test
@@ -176,7 +177,7 @@ public class WebsocketHandlerTest {
         VerificationResult verificationResult = new VerificationResult();
         verificationResult.setStatus(VerificationStatus.COMPLETED);
         verificationResult.setVerifiedClaims(new HashMap<>());
-        verificationResult.getVerifiedClaims().put("name", new VerificationDetail());
+        verificationResult.getVerifiedClaims().put("name", objectMapper.createObjectNode());
         Mockito.when(identityVerifierPlugin.getVerificationResult(identityVerificationResult.getId())).thenReturn(verificationResult);
 
         webSocketHandler.processVerificationResult(identityVerificationResult);
@@ -202,7 +203,7 @@ public class WebsocketHandlerTest {
         VerificationResult verificationResult = new VerificationResult();
         verificationResult.setStatus(VerificationStatus.COMPLETED);
         verificationResult.setVerifiedClaims(new HashMap<>());
-        verificationResult.getVerifiedClaims().put("name", new VerificationDetail());
+        verificationResult.getVerifiedClaims().put("name", objectMapper.createObjectNode());
         Mockito.when(identityVerifierPlugin.getVerificationResult(identityVerificationResult.getId())).thenReturn(verificationResult);
 
         Mockito.when(profileRegistryPlugin.updateProfile(Mockito.anyString(), Mockito.any())).thenThrow(new ProfileException("update_failed"));

@@ -6,6 +6,7 @@
 package io.mosip.signup.api.dto;
 
 
+import com.fasterxml.jackson.databind.JsonNode;
 import io.mosip.signup.api.util.VerificationStatus;
 import lombok.Data;
 
@@ -15,6 +16,6 @@ import java.util.Map;
 public class VerificationResult {
 
     private VerificationStatus status;
-    private Map<String, VerificationDetail> verifiedClaims;
+    private Map<String, JsonNode> verifiedClaims;
     private String errorCode;
 }
