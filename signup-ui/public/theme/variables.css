@@ -87,7 +87,7 @@
   --error-banner-text-color: #d52929;
   --error-banner-bg-color: #faefef;
   --error-banner-font: normal normal 600 14px/17px Inter;
-
+  
   --kyc-box-border: 2px solid #b2b2b2;
   --kyc-box-selected-border: 2px solid #eb6f2d;
   --kyc-box-icon-border: 1px solid #d8d8d8;
@@ -223,6 +223,7 @@
   --ring-color: 215 20.2% 65.1%;
 
   --radius-font-size: 0.5rem;
+  --video-preview-border-color: #004282;
 
   --vertical-stepper-bg-color: #004282;
   --vertical-stepper-bg-opacity: 0.55;
@@ -248,7 +249,7 @@
   --error-banner-text-color: #d52929;
   --error-banner-bg-color: #faefef;
   --error-banner-font: normal normal 600 14px/17px Inter;
-  
+
   --kyc-box-border: 2px solid #b2b2b2;
   --kyc-box-selected-border: 2px solid #004282;
   --kyc-box-icon-border: 1px solid #d8d8d8;

@@ -67,7 +67,7 @@
   "attempts_left_and_retry": "{attemptLeft, plural, =0 {0 of {totalAttempt} attempts left. Please try again after {attemptRetryAfter} minutes.} other {{attemptLeft} of {totalAttempt} attempts left}}",
   "captcha_token_validation": "Please verify that you are a human.",
   "username_validation": "Enter a valid username",
-  "username_lead_zero_validation": "Number cannot start with zero. Please enter a valid mobile number",
+  "username_lead_zero_validation": "Number cannot start with zero. Enter a valid mobile number.",
   "full_name_validation": "Please enter a valid name",
   "full_name_all_spaces_validation": "Please enter a valid name.",
   "full_name_in_lng_validation": "Full Name has to be in Khmer only.",
@@ -184,7 +184,7 @@
       }
     }
   },
-  "verification_screen": {
+  "verification_screen":{
     "welcome_message": "Welcome! Initiating Identity verification process in {count} seconds",
     "focus_on_screen_message": "Please try to focus on the screen",
     "successful_header": "Verification Successful!",
@@ -233,6 +233,7 @@
     "identifier_mismatch": "Identifier Mismatch",
     "consent_required": "Consent Required",
     "too_many_attempts": "Request OTP too many attempts",
+    "too_many_verify_attempts": "Too many verification attempts, Kindly generate new OTP",
     "too_early_attempt": "Request OTP too early attempts",
     "invalid_request": "Invalid OTP request",
     "already-registered": "Already Registered",
@@ -244,6 +245,8 @@
     "reset_pwd_failed": "Reset Password Failed",
     "identifier_already_registered": "Identifier already registered",
     "identifier_not_found": "Invalid number or name. Please enter a registered mobile number and full name.",
+    "invalid_kba_challenge": "Invalid number or name. Please enter a registered mobile number and full name.",
+    "kba_challenge_not_found": "Invalid number or name. Please enter a registered mobile number and full name.",
     "invalid_kbi_challenge": "Invalid number or name. Please enter a registered mobile number and full name.",
     "kbi_challenge_not_found": "Invalid number or name. Please enter a registered mobile number and full name.",
     "identity_inactive": "Identifier inactive",
@@ -253,7 +256,6 @@
     "identifier_blocked": "User is blocked. Please try again after 5 minutes.",
     "unsupported_purpose": "Invalid Request",
     "server_unreachable": "We are unable to process your request, please try again later.",
-    "too_many_verify_attempts": "Request verify OTP too many attempts",
     "otp_notification_failed": "Failed to send the otp",
     "IDR-IDC-001": "Missing Input Parameter",
     "IDR-IDC-002": "Invalid Input Parameter",
@@ -262,8 +264,8 @@
     "IDR-IDC-005": "Input Data Validation Failed",
     "IDR-IDC-006": "Username already exist. Please try again with a different username",
     "IDR-IDC-007": "No Record(s) found",
-    "IDR-IDC-008": "4XX - Client Error occured",
-    "IDR-IDC-009": "5XX - Server Error occured",
+    "IDR-IDC-008": "4XX - Client Error occurred",
+    "IDR-IDC-009": "5XX - Server Error occurred",
     "IDR-IDC-010": "Connection timed out",
     "IDR-IDC-011": "Authorization Failed",
     "IDR-IDC-012": "Record already exists in DB",
