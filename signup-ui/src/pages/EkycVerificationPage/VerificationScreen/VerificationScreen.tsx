@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import Compressor from "compressorjs";
 import { useTranslation } from "react-i18next";
 import Webcam from "react-webcam";
 
 import { PUBLISH_TOPIC, SUBSCRIBE_TOPIC, WS_URL } from "~constants/routes";
-import { Button } from "~components/ui/button";
 import useStompClient from "~pages/shared/stompWs";
 import { WS_BASE_URL } from "~services/api.service";
 import langConfigService from "~services/langConfig.service";
@@ -92,32 +92,6 @@ export const VerificationScreen = ({
   // temporary button ref variable
   const buttonRef = useRef(null);
 
-  // capturing frame from the web camera
-  // const captureFrame = useCallback(() => {
-  //   if (webcamRef && webcamRef.current) {
-  //     let frameArray = imageFrames.map((_) => _);
-  //     const imageSrc = (webcamRef.current as Webcam).getScreenshot();
-
-  //     if (imageSrc) {
-  //       frameArray.push({
-  //         frame: imageSrc,
-  //         order: frameArray.length,
-  //       });
-  //       console.log(
-  //         "before setimage frame frameArray",
-  //         frameArray.length,
-  //         imageFrames.length
-  //       );
-  //       setImageFrames(frameArray);
-  //       console.log(
-  //         "after setimage frame frameArray",
-  //         frameArray.length,
-  //         imageFrames.length
-  //       );
-  //     }
-  //   }
-  // }, [webcamRef, imageFrames]);
-
   const isError = false;
 
   /**
@@ -150,7 +124,7 @@ export const VerificationScreen = ({
       client.deactivate();
     }
     setStep(EkycVerificationStep.IdentityVerificationStatus);
-  }, [])
+  }, []);
 
   useEffect(() => {
     const checkWebcamInputSource = () => {
@@ -160,7 +134,7 @@ export const VerificationScreen = ({
           stopEkycVerificationProcess();
         }
       }
-    }
+    };
 
     // checking camera permission in every 1 second
     const webcamInputSourceCheckInterval = setInterval(
@@ -218,10 +192,7 @@ export const VerificationScreen = ({
 
   useEffect(() => {
     // checking camera permission in every 1 second
-    const cameraCheckInterval = setInterval(
-      cameraDeviceCheck,
-      1000
-    );
+    const cameraCheckInterval = setInterval(cameraDeviceCheck, 1000);
     return () => clearInterval(cameraCheckInterval);
   }, []);
 
@@ -237,7 +208,7 @@ export const VerificationScreen = ({
       client.deactivate();
     }
     setStep(EkycVerificationStep.IdentityVerificationStatus);
-  }
+  };
 
   const convertResponseToState = (
     res: IdentityVerificationResponseDto
@@ -305,6 +276,10 @@ export const VerificationScreen = ({
 
   const endWithSuccess = () => {
     resetEverything();
+    if (connected) {
+      unsubscribe();
+      client.deactivate();
+    }
     setStep(EkycVerificationStep.IdentityVerificationStatus);
   };
 
@@ -328,35 +303,6 @@ export const VerificationScreen = ({
         break;
     }
   };
-
-  // const endResponseCheck = (currentStep: IdentityVerificationState | null) => {
-  //   if (currentStep === null) {
-  //     return;
-  //   }
-  //   unsubscribe();
-  //   client.deactivate();
-  //   if (
-  //     currentStep.feedbackType === IdvFeedbackEnum.MESSAGE &&
-  //     currentStep.feedbackCode === "success_check"
-  //   ) {
-  //     endWithSuccess(t("successful_header"))
-  //   } else {
-  //     setAlertConfig({
-  //       icon: "fail",
-  //       header: t("unsuccessful_header"),
-  //       subHeader: t("unsuccessful_subheader"),
-  //       footer: (
-  //         <Button
-  //           id="retry-button"
-  //           className="my-4 h-16 w-full"
-  //           onClick={handleRetry}
-  //         >
-  //           Retry
-  //         </Button>
-  //       ),
-  //     });
-  //   }
-  // };
 
   const resetEverything = () => {
     // when stepcode is end, then it will clear the interval
@@ -400,7 +346,7 @@ export const VerificationScreen = ({
             () => {
               captureNewFrame(request, currentState.fps ?? 3);
             },
-            10000 / (currentState.fps ?? 3)
+            1000 / (currentState.fps ?? 3)
           );
           checkFeedback(currentState);
         }, currentState.startupDelay * 1000);
@@ -410,8 +356,30 @@ export const VerificationScreen = ({
     }
   };
 
-  const captureNewFrame = (request: any, fps: number) => {
-    console.log("capture new frame");
+  const blob2base64 = (blob: any, mimeType = "image/jpeg") => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const dataUrlPrefix = `data:${mimeType};base64,`;
+        const base64WithDataUrlPrefix = reader.result as string;
+        if (base64WithDataUrlPrefix !== null) {
+          const base64 = base64WithDataUrlPrefix.replace(dataUrlPrefix, "");
+          resolve(base64);
+        }
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+  };
+
+  const base64ToBlob = async (base64: string) => {
+    const response = await fetch(base64);
+    const blob = await response.blob();
+    return blob;
+  };
+
+  // capturing frame from the web camera
+  const captureNewFrame = async (request: any, fps: number) => {
     if (frameArray.length >= fps) {
       request.frames = frameArray.length
         ? frameArray.map((frame: IdvFrames) => {
@@ -420,17 +388,21 @@ export const VerificationScreen = ({
         : Array.from(Array(4).keys()).map((i: number) => {
             return { frame: "", order: i };
           });
-      console.log(request)
       publish(PUBLISH_TOPIC, JSON.stringify(request));
       frameArray = [];
     } else {
       if (webcamRef && webcamRef.current) {
         const imageSrc = (webcamRef.current as Webcam).getScreenshot();
-        console.log(frameArray)
         if (imageSrc) {
-          frameArray.push({
-            frame: imageSrc,
-            order: frameCount++,
+          const blobData = await base64ToBlob(imageSrc);
+          new Compressor(blobData, {
+            quality: 0,
+            async success(result) {
+              frameArray.push({
+                frame: await blob2base64(result),
+                order: frameCount++,
+              });
+            },
           });
         }
       }
@@ -441,7 +413,6 @@ export const VerificationScreen = ({
   // then subscribe to the topic and call onConnect
   useEffect(() => {
     if (connected) {
-      console.log("subscribe")
       subscribe(`${SUBSCRIBE_TOPIC}${slotId}`, receiveMessage);
 
       onConnect();
@@ -474,7 +445,8 @@ export const VerificationScreen = ({
     };
   }, []);
 
-  const handleWebcamUserMediaError = (error: string | DOMException) => stopEkycVerificationProcess();
+  const handleWebcamUserMediaError = (error: string | DOMException) =>
+    stopEkycVerificationProcess();
 
   return alertConfig !== null ? (
     <EkycStatusAlert config={alertConfig} />
@@ -491,7 +463,9 @@ export const VerificationScreen = ({
         </div>
       ) : (
         !errorBannerMessage &&
-        message && <div className="video-message sm:w-[90vw]">{t(...message)}</div>
+        message && (
+          <div className="video-message sm:w-[90vw]">{t(...message)}</div>
+        )
       )}
       <div
         className={
