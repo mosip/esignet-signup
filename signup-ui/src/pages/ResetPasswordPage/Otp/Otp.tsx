@@ -303,6 +303,7 @@ export const Otp = ({ methods, settings }: OtpProps) => {
 
   const handleExhaustedAttempt = () => {
     setStep(ResetPasswordStep.UserInfo);
+    setResendAttempts(settings.response.configs["resend.attempts"]);
     setResendOtp(false);
     reset();
   };
