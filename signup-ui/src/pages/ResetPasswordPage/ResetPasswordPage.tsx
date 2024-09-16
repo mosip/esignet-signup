@@ -43,7 +43,7 @@ interface ResetPasswordPageProps {
 }
 
 export const ResetPasswordPage = ({ settings }: ResetPasswordPageProps) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const { step, criticalError } = useResetPasswordStore(
     useCallback(
@@ -60,7 +60,7 @@ export const ResetPasswordPage = ({ settings }: ResetPasswordPageProps) => {
       // Step 1 - UserInfo
       yup.object({
         username: validateUsername(settings),
-        fullname: validateFullName(settings),
+        fullname: validateFullName(settings, t),
         captchaToken: validateCaptchaToken(settings),
       }),
       // Step 2 - Otp
@@ -127,6 +127,10 @@ export const ResetPasswordPage = ({ settings }: ResetPasswordPageProps) => {
       window.removeEventListener("beforeunload", handleTabBeforeUnload);
     };
   }, [step, criticalError, getValues()]);
+
+  // useEffect(() => {
+  //   methods.trigger();
+  // }, [i18n.language, methods]);
 
   const getResetPasswordContent = (step: ResetPasswordStep) => {
     switch (step) {

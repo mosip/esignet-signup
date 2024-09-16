@@ -88,7 +88,7 @@ export const SignUpPage = ({ settings }: SignUpPageProps) => {
       // Step 4 - Account Setup Validation
       yup.object({
         username: yup.string(),
-        fullNameInKhmer: validateFullName(settings),
+        fullNameInKhmer: validateFullName(settings, t),
         password: validatePassword(settings),
         confirmPassword: validateConfirmPassword("password", settings, true),
         consent: yup.bool().oneOf([true], t("terms_and_conditions_validation")),
