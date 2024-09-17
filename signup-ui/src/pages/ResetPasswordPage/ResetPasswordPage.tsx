@@ -43,7 +43,7 @@ interface ResetPasswordPageProps {
 }
 
 export const ResetPasswordPage = ({ settings }: ResetPasswordPageProps) => {
-  const { t,i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const { step, criticalError } = useResetPasswordStore(
     useCallback(
