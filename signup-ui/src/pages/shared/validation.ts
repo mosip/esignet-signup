@@ -22,7 +22,7 @@ export const validateCaptchaToken = (settings: any) =>
   settings.response.configs["send-challenge.captcha.required"] && 
   yup.string().required("captcha_token_validation");
 
-export const validateFullName = (settings: SettingsDto, t:TFunction<"translation",  undefined>) =>
+export const validateFullName = (settings: SettingsDto, t:TFunction<"translation", undefined>) =>
   yup
     .string()
     .strict(true)
