@@ -5,7 +5,6 @@
  */
 package io.mosip.signup.services;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.signup.api.spi.ProfileRegistryPlugin;
@@ -37,13 +36,11 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.test.util.ReflectionTestUtils;
-import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.math.BigInteger;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -63,7 +60,7 @@ public class IdentityVerificationServiceTest {
     CacheUtilService cacheUtilService;
 
     @Mock
-    RestTemplate restTemplate;
+    ResourceLoader resourceLoader;
 
     @Mock
     ProfileRegistryPlugin profileRegistryPlugin;
@@ -72,6 +69,7 @@ public class IdentityVerificationServiceTest {
 
     private String mockServerUri;
     private int port;
+    private ObjectMapper objectMapper = new ObjectMapper();
 
     @Before
     public void setUp() throws Exception {
@@ -88,6 +86,7 @@ public class IdentityVerificationServiceTest {
         ReflectionTestUtils.setField(identityVerificationService, "oauthClientId", "clientId");
         ReflectionTestUtils.setField(identityVerificationService, "oauthRedirectUri", "https://signup.dev.mosip.net/identity-verification");
         ReflectionTestUtils.setField(identityVerificationService, "oauthTokenUri", mockServerUri);
+        ReflectionTestUtils.setField(identityVerificationService, "objectMapper", objectMapper);
         KeyPair keyPair = generateRSAKeyPair();
         X509Certificate certificate = generateSelfSignedCertificate(keyPair);
         createAndStoreKeyInP12(keyPair, certificate);
@@ -346,7 +345,7 @@ public class IdentityVerificationServiceTest {
     }
 
     @Test
-    public void getIdentityVerifierDetails_withValidDetails_thenPass() throws JsonProcessingException {
+    public void getIdentityVerifierDetails_withValidDetails_thenPass() throws IOException {
 
         String transactionId = "validTransactionId";
         String identityVerifierId = "validIdentityVerifierId";
@@ -357,11 +356,17 @@ public class IdentityVerificationServiceTest {
         IdentityVerifierDetail[] verifierDetails = {identityVerifierDetail, new IdentityVerifierDetail()};
         Mockito.when(cacheUtilService.getIdentityVerificationTransaction(Mockito.anyString())).thenReturn(transaction);
         Mockito.when(cacheUtilService.setIdentityVerifierDetails(Mockito.anyString(),Mockito.any())).thenReturn(verifierDetails);
-        Mockito.when(restTemplate.getForObject(Mockito.anyString(), Mockito.eq(IdentityVerifierDetail[].class))).thenReturn(verifierDetails);
 
-        JsonNode jsonNode= new ObjectMapper().readTree("{\"id\":\"validIdentityVerifierId\",\"active\":true}");
-        Mockito.when(restTemplate.getForObject(Mockito.anyString(), Mockito.eq(JsonNode.class))).thenReturn(jsonNode);
-        Mockito.when(cacheUtilService.setIdentityVerifierMetadata(Mockito.anyString(),Mockito.any())).thenReturn(jsonNode);
+        InputStream verifierDetailsInputStream = new ByteArrayInputStream(objectMapper.writeValueAsBytes(verifierDetails));
+        Resource verifierDetailsMockResource = Mockito.mock(Resource.class);
+        Mockito.when(verifierDetailsMockResource.getInputStream()).thenReturn(verifierDetailsInputStream);
+
+        InputStream metadataInputStream = new ByteArrayInputStream("{\"id\":\"validIdentityVerifierId\",\"active\":true}".getBytes());
+        Resource metadataMockResource = Mockito.mock(Resource.class);
+        Mockito.when(metadataMockResource.getInputStream()).thenReturn(metadataInputStream);
+        Mockito.when(resourceLoader.getResource(Mockito.anyString())).thenReturn(verifierDetailsMockResource, metadataMockResource);
+
+        Mockito.when(cacheUtilService.setIdentityVerifierMetadata(Mockito.anyString(),Mockito.any())).thenReturn(objectMapper.createObjectNode());
 
         JsonNode result = identityVerificationService.getIdentityVerifierDetails(transactionId, identityVerifierId);
         Assert.assertNotNull(result);
@@ -369,7 +374,7 @@ public class IdentityVerificationServiceTest {
 
 
     @Test
-    public void getIdentityVerifierDetails_withInValidDetails_thenFail()  {
+    public void getIdentityVerifierDetails_withInValidDetails_thenFail() throws IOException {
 
         String transactionId = "validTransactionId";
         String identityVerifierId = "validIdentityVerifierId";
@@ -380,7 +385,11 @@ public class IdentityVerificationServiceTest {
         IdentityVerifierDetail[] verifierDetails = {identityVerifierDetail, new IdentityVerifierDetail()};
         Mockito.when(cacheUtilService.getIdentityVerificationTransaction(Mockito.anyString())).thenReturn(transaction);
         Mockito.when(cacheUtilService.setIdentityVerifierDetails(Mockito.anyString(),Mockito.any())).thenReturn(verifierDetails);
-        Mockito.when(restTemplate.getForObject(Mockito.anyString(), Mockito.eq(IdentityVerifierDetail[].class))).thenReturn(verifierDetails);
+
+        InputStream inputStream = new ByteArrayInputStream(objectMapper.writeValueAsBytes(verifierDetails));
+        Resource mockResource = Mockito.mock(Resource.class);
+        Mockito.when(mockResource.getInputStream()).thenReturn(inputStream);
+        Mockito.when(resourceLoader.getResource(Mockito.anyString())).thenReturn(mockResource);
 
         try{
             identityVerificationService.getIdentityVerifierDetails(transactionId, identityVerifierId);

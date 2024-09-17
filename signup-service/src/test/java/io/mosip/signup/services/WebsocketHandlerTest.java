@@ -69,7 +69,7 @@ public class WebsocketHandlerTest {
 
         webSocketHandler.processFrames(identityVerificationRequest);
         Mockito.verify(identityVerifierPlugin, Mockito.times(1)).initialize(Mockito.anyString(), Mockito.any());
-        Mockito.verify(identityVerifierPlugin, Mockito.times(0)).verify(Mockito.anyString(), Mockito.any());
+        Mockito.verify(identityVerifierPlugin, Mockito.times(1)).verify(Mockito.anyString(), Mockito.any());
     }
 
     @Test

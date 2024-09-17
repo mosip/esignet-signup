@@ -133,6 +133,11 @@ public class CacheUtilService {
         return identityVerificationTransaction;
     }
 
+    @Cacheable(value = SignUpConstants.SHARED_IDV_RESULT, key = "#haltedTransactionId")
+    public String setSharedVerificationResult(String haltedTransactionId, String status) {
+        return status;
+    }
+
     //---Getter---
     public RegistrationTransaction getChallengeGeneratedTransaction(String transactionId) {
         return cacheManager.getCache(SignUpConstants.CHALLENGE_GENERATED).get(transactionId, RegistrationTransaction.class);    //NOSONAR getCache() will not be returning null here.
