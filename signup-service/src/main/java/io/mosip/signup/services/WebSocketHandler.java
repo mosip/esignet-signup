@@ -66,12 +66,11 @@ public class WebSocketHandler {
             identityVerificationInitDto.setDisabilityType(transaction.getDisabilityType());
             plugin.initialize(identityVerificationRequest.getSlotId(), identityVerificationInitDto);
         }
-        else {
-            IdentityVerificationDto dto = new IdentityVerificationDto();
-            dto.setStepCode(identityVerificationRequest.getStepCode());
-            dto.setFrames(identityVerificationRequest.getFrames());
-            plugin.verify(identityVerificationRequest.getSlotId(), dto);
-        }
+
+        IdentityVerificationDto dto = new IdentityVerificationDto();
+        dto.setStepCode(identityVerificationRequest.getStepCode());
+        dto.setFrames(identityVerificationRequest.getFrames());
+        plugin.verify(identityVerificationRequest.getSlotId(), dto);
     }
 
     public void processVerificationResult(IdentityVerificationResult identityVerificationResult) {
@@ -140,6 +139,7 @@ public class WebSocketHandler {
             transaction.setStatus(VerificationStatus.FAILED);
             transaction.setErrorCode(IDENTITY_VERIFICATION_FAILED);
         }
+        cacheUtilService.setSharedVerificationResult(transaction.getAccessTokenSubject(), transaction.getStatus().toString());
         cacheUtilService.updateVerifiedSlotTransaction(identityVerificationResult.getId(), transaction);
     }
 }

@@ -1,0 +1,42 @@
+{
+  "terms&Conditions": {
+    "eng": "I understand that the data collected about me during registration by the said authority includes different parameters.<br><br>Lorem Ipsum is simply dummy text of the printing and type setting industry. Lorem Ipsum has been the industry’s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.<br> Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry’s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries.<br><br>It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages.",
+    "khm": "ខ្ញុំយល់ថាទិន្នន័យដែលប្រមូលបានអំពីខ្ញុំក្នុងអំឡុងពេលចុះឈ្មោះដោយអាជ្ញាធរបាននិយាយថាមានប៉ារ៉ាម៉ែត្រផ្សេងៗគ្នា។<br><br>Lorem Ipsum គឺជាអត្ថបទមិនពិតនៃឧស្សាហកម្មការកំណត់ប្រភេទបោះពុម្ព។ Lorem Ipsum គឺជាអត្ថបទអត់ចេះសោះស្តង់ដាររបស់ឧស្សាហកម្មនេះ ចាប់តាំងពីទសវត្សរ៍ឆ្នាំ 1500 នៅពេលដែលម៉ាស៊ីនបោះពុម្ពមិនស្គាល់មួយបានយកប្រអប់ប្រភេទមួយ ហើយលាយវាដើម្បីបង្កើតសៀវភៅគំរូប្រភេទមួយ។ វាបានរស់រានមានជីវិតមិនត្រឹមតែប្រាំសតវត្សប៉ុណ្ណោះទេ ប៉ុន្តែវាក៏ជាការលោតផ្លោះចូលទៅក្នុងការវាយអក្សរអេឡិចត្រូនិចផងដែរ ដែលនៅតែមិនផ្លាស់ប្តូរ។<br> Lorem Ipsum គឺជាអត្ថបទដ៏សាមញ្ញនៃឧស្សាហកម្មបោះពុម្ព និងវាយអក្សរ។ Lorem Ipsum គឺជាអត្ថបទអត់ចេះសោះស្តង់ដាររបស់ឧស្សាហកម្មនេះ ចាប់តាំងពីទសវត្សរ៍ឆ្នាំ 1500 នៅពេលដែលម៉ាស៊ីនបោះពុម្ពមិនស្គាល់មួយបានយកប្រអប់ប្រភេទមួយ ហើយលាយវាដើម្បីបង្កើតសៀវភៅគំរូប្រភេទមួយ។ វាបានរស់រានមានជីវិតមិនត្រឹមតែប្រាំសតវត្សប៉ុណ្ណោះទេ។<br><br>វាត្រូវបានពេញនិយមនៅក្នុងទសវត្សរ៍ឆ្នាំ 1960 ជាមួយនឹងការចេញផ្សាយសន្លឹក Letraset ដែលមានអត្ថបទ Lorem Ipsum ។"
+  },
+  "previewInfo" : {
+    "step_1": { "eng" : "Verify the functionality of your camera using the video preview on the right" },
+    "step_2":  { "eng" : "Ensure you are positioned in a well-lit area to facilitate clear video capture"},
+    "step_3":  { "eng" : "Position your face within the oval frame, ensuring your face is clearly visible"},
+    "step_4":  { "eng" : "Remove any accessories or items that could obstruct your face, such as hats or sunglasses."},
+    "step_5":  { "eng" : "Maintain a stable posture throughout the video recording to prevent blurring"},
+    "step_6":  { "eng" : "Be prepared to follow instructions provided on screen during the eKYC process, such as blinking or turning your head as directed."},
+    "step_7":  { "eng" : "Have your ID readily accessible for the verification purposes."}
+  },
+  "stepCodes" : {
+    "liveness_check" : { "eng": "Liveness check" },
+    "id_verification" : { "eng": "ID card verification" }
+  },
+  "errors": {
+    "low_light": { "eng" : "Low light, consider facing the sun or switching on the lights" },
+    "id_card_too_far": { "eng" : "Unable to read card as its too far" }
+  },
+  "messages": {
+    "turn_left": { "eng" : "Turn your head to Left" },
+    "turn_right": { "eng" : "Turn your head to Right" },
+    "sit_straight": {"eng" : "Keep good posture while facing the camera" },
+    "success_check": { "eng" : "Liveness check successful" },
+    "id_verified": { "eng" : "ID card verification successful" },
+    "facingcamera": {
+      "eng": "Keep good posture while facing the camera,do follow all the instructions as informed",
+      "khm": "រក្សា​ឥរិយាបថ​ឱ្យ​បានល្អ​ពេល​កំពុង​ប្រឈមមុខ​នឹង​កាមេរ៉ា សូម​ធ្វើ​តាម​ការណែនាំ​ទាំងអស់​ដូច​ដែល​បាន​ជូនដំណឹង"
+    },
+    "facingscreen": {
+      "eng": "please follow instruction to perform eKYC process successfully, keep your internet connected throughout the process",
+      "khm": "សូមធ្វើតាមការណែនាំ ដើម្បីអនុវត្តដំណើរការ eKYC ដោយជោគជ័យ រក្សាអ៊ីនធឺណិតរបស់អ្នកបានភ្ជាប់ពេញដំណើរការ"
+    },
+    "camera_on": {
+      "eng": "please follow instruction to perform eKYC process successfully, keep your internet connected throughout the process",
+      "khm": "សូមធ្វើតាមការណែនាំ ដើម្បីអនុវត្តដំណើរការ eKYC ដោយជោគជ័យ រក្សាអ៊ីនធឺណិតរបស់អ្នកបានភ្ជាប់ពេញដំណើរការ"
+    }
+  }
+}

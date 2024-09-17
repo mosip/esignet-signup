@@ -1,12 +1,24 @@
+// Get the current URL
+const currentUrl = window.location.href;
+
+// Create a URL object
+const url = new URL(currentUrl);
+
+// Get the search parameters (query params)
+const searchParams = new URLSearchParams(url.search);
+
+// Access specific query parameters
+const slotId = searchParams.get('slotId');
+
 const stompClient = new StompJs.Client({
-    brokerURL: 'wss://signup-l2.camdgc-dev1.mosip.net/v1/signup/ws?slotId=greetings'
+    brokerURL: 'ws://localhost:8089/v1/signup/ws?slotId='+slotId
 });
 
 stompClient.onConnect = (frame) => {
     setConnected(true);
     console.log('Connected: ' + frame);
-    stompClient.subscribe('/topic/greetings', (greeting) => {
-        showGreeting(greeting.body);
+    stompClient.subscribe('/topic/'+slotId, (resp) => {
+        showGreeting(resp.body);
     });
 };
 
@@ -42,11 +54,10 @@ function disconnect() {
 }
 
 function sendName() {
-    console.log('Sending message to server');
+    console.log('Sending message to server ', $("#step-code").val(),  $("#frame-order").val());
     stompClient.publish({
         destination: "/v1/signup/ws/process-frame",
-        headers : {'SlotId': 'value1'},
-        body: JSON.stringify({'slotId': $("#name").val()})
+        body: JSON.stringify({'slotId': slotId, 'stepCode':  $("#step-code").val(), "frames": [{"frame": "", "order":  $("#frame-order").val()}]})
     });
 }
 

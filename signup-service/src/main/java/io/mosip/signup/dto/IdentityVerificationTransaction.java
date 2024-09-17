@@ -19,6 +19,7 @@ public class IdentityVerificationTransaction implements Serializable {
     private String verifierId;
     private String disabilityType;
     private String accessToken;
+    private String accessTokenSubject;
 
     //Id to track the profile update status
     private String applicationId;

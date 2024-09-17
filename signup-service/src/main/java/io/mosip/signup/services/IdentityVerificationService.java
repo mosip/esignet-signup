@@ -6,20 +6,24 @@
 package io.mosip.signup.services;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;
 import com.nimbusds.jose.crypto.RSASSASigner;
 import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.JWTParser;
 import com.nimbusds.jwt.SignedJWT;
 import com.nimbusds.oauth2.sdk.*;
 import com.nimbusds.oauth2.sdk.auth.ClientAuthentication;
 import com.nimbusds.oauth2.sdk.auth.PrivateKeyJWT;
 import com.nimbusds.oauth2.sdk.token.AccessToken;
+import com.nimbusds.oauth2.sdk.token.BearerAccessToken;
 import com.nimbusds.openid.connect.sdk.OIDCTokenResponseParser;
 import com.nimbusds.openid.connect.sdk.UserInfoRequest;
 import com.nimbusds.openid.connect.sdk.UserInfoResponse;
 import io.mosip.esignet.core.util.IdentityProviderUtil;
+import io.mosip.signup.api.exception.IdentityVerifierException;
 import io.mosip.signup.api.spi.ProfileRegistryPlugin;
 import io.mosip.signup.api.util.ProfileCreateUpdateStatus;
 import io.mosip.signup.dto.*;
@@ -30,23 +34,30 @@ import io.mosip.signup.util.SignUpConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.KeyStore;
 import java.security.PrivateKey;
 import java.security.interfaces.RSAPrivateKey;
+import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static io.mosip.signup.api.util.VerificationStatus.*;
 import static io.mosip.signup.util.SignUpConstants.VALUE_SEPARATOR;
@@ -95,13 +106,16 @@ public class IdentityVerificationService {
     private int slotMaxCount;
 
     @Autowired
-    private RestTemplate restTemplate;
-
-    @Autowired
     private CacheUtilService cacheUtilService;
 
     @Autowired
     private ProfileRegistryPlugin profileRegistryPlugin;
+
+    @Autowired
+    private ResourceLoader resourceLoader;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     /**
      * Fetches the access token using the authorization grant and gets userinfo from eSignet.
@@ -114,6 +128,8 @@ public class IdentityVerificationService {
     public InitiateIdentityVerificationResponse initiateIdentityVerification(InitiateIdentityVerificationRequest request,
                                                                              HttpServletResponse response) {
         //fetch access token from esignet with auth-code in the request
+        //access token subject is the Halted transactionId
+        //userinfo subject holds the actual user's individualId
         AccessToken accessToken = fetchAndVerifyAccessToken(request.getAuthorizationCode());
         String subject = getUsername(accessToken);
 
@@ -121,6 +137,7 @@ public class IdentityVerificationService {
         String transactionId = IdentityProviderUtil.createTransactionId(null);
         IdentityVerificationTransaction transaction = new IdentityVerificationTransaction();
         transaction.setAccessToken(accessToken.toJSONString());
+        transaction.setAccessTokenSubject(extractSubject(accessToken));
         transaction.setIndividualId(subject); //TODO encrypt
         transaction.setSlotId(IdentityProviderUtil.generateB64EncodedHash(IdentityProviderUtil.ALGO_SHA3_256,
                 transactionId));
@@ -310,7 +327,7 @@ public class IdentityVerificationService {
     private IdentityVerifierDetail[] getIdentityVerifierDetails() {
         IdentityVerifierDetail[] verifierDetails = cacheUtilService.getIdentityVerifierDetails();
         if(verifierDetails == null || verifierDetails.length == 0) {
-            verifierDetails = restTemplate.getForObject(configServerUrl+ALL_IDV_DETAILS_JSON_FILE_NAME, IdentityVerifierDetail[].class);
+            verifierDetails = getResource(configServerUrl+ALL_IDV_DETAILS_JSON_FILE_NAME, IdentityVerifierDetail[].class);
             return cacheUtilService.setIdentityVerifierDetails(CacheUtilService.COMMON_KEY, verifierDetails);
         }
         return verifierDetails;
@@ -320,7 +337,7 @@ public class IdentityVerificationService {
         JsonNode jsonNode = cacheUtilService.getIdentityVerifierMetadata(identityVerifierId);
         if(jsonNode == null) {
             String fileName = String.format(IDV_DETAILS_JSON_FILE_NAME, identityVerifierId);
-            jsonNode = restTemplate.getForObject(configServerUrl+fileName, JsonNode.class);
+            jsonNode = getResource(configServerUrl+fileName, JsonNode.class);
             return cacheUtilService.setIdentityVerifierMetadata(identityVerifierId, jsonNode);
         }
         return jsonNode;
@@ -339,5 +356,31 @@ public class IdentityVerificationService {
             log.error("Failed to load private key from keystore", e);
             throw new SignUpException(ErrorConstants.PRIVATE_KEY_LOAD_FAILED);
         }
+    }
+
+    private <T> T getResource(String url, Class<T> clazz) {
+        Resource resource = resourceLoader.getResource(url);
+        try (BufferedReader reader = new BufferedReader(
+                new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8))) {
+            String content = reader.lines().collect(Collectors.joining("\n"));
+            return objectMapper.readValue(content, clazz);
+        } catch (IOException e) {
+            log.error("Failed to parse data: {}", url, e);
+        }
+        throw new IdentityVerifierException("invalid_configuration");
+    }
+
+    private String extractSubject(AccessToken accessToken) {
+        String tokenString = accessToken.getValue();
+        try {
+            JWT jwt = JWTParser.parse(tokenString);
+            if (jwt instanceof SignedJWT) {
+                SignedJWT signedJWT = (SignedJWT) jwt;
+                return signedJWT.getJWTClaimsSet().getSubject();
+            }
+        } catch (ParseException e) {
+            log.error("Failed to parse access token: {}", tokenString, e);
+        }
+        return null;
     }
 }
