@@ -235,7 +235,7 @@
     "too_many_attempts": "ស្នើសុំ លេខកូដសម្ងាត់ (OTP) ច្រើនដងពេក",
     "too_many_verify_attempts": "ការ ប៉ុនប៉ង ផ្ទៀង ផ្ទាត់ ច្រើន ពេក Kindly បង្កើត OTP ថ្មី",
     "too_early_attempt": "ស្នើសុំ លេខកូដសម្ងាត់ (OTP) លឿនពេក",
-    "invalid_request": "សំណើ លេខកូដសម្ងាត់ (OTP) មិនត្រឹមត្រូវ",
+    "invalid_request": "សំណើរមិនត្រឹមត្រូវ",
     "already-registered": "បានចុះឈ្មោះរួចហើយ",
     "timed_out": "អស់ម៉ោង",
     "timeout_transaction": "ប្រតិបត្តិការផុតកំណត់",

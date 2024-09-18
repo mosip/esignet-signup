@@ -235,7 +235,7 @@
     "too_many_attempts": "Request OTP too many attempts",
     "too_many_verify_attempts": "Too many verification attempts, Kindly generate new OTP",
     "too_early_attempt": "Request OTP too early attempts",
-    "invalid_request": "Invalid OTP request",
+    "invalid_request": "Invalid Request",
     "already-registered": "Already Registered",
     "timed_out": "Timedout",
     "timeout_transaction": "Transaction Timeout",
