@@ -1,7 +1,5 @@
 import { TFunction } from "i18next";
 import * as yup from "yup";
-import i18n from "~services/i18n.service";
-
 import { SettingsDto } from "~typings/types";
 
 export const validateUsername = (settings: SettingsDto) =>
@@ -22,7 +20,7 @@ export const validateCaptchaToken = (settings: any) =>
   settings.response.configs["send-challenge.captcha.required"] && 
   yup.string().required("captcha_token_validation");
 
-export const validateFullName = (settings: SettingsDto, t:TFunction< "translation", undefined >) =>
+export const validateFullName = (settings: SettingsDto, t: TFunction<"translation", undefined>) =>
   yup
     .string()
     .strict(true)
