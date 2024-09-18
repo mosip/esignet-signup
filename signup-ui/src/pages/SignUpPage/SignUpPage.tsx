@@ -59,7 +59,7 @@ interface SignUpPageProps {
 }
 
 export const SignUpPage = ({ settings }: SignUpPageProps) => {
-  const { t } = useTranslation();
+  const { t, i18n} = useTranslation();
 
   const { step, criticalError } = useSignUpStore(
     useCallback(

@@ -1,6 +1,5 @@
 import { TFunction } from "i18next";
 import * as yup from "yup";
-
 import { SettingsDto } from "~typings/types";
 
 export const validateUsername = (settings: SettingsDto) =>

@@ -128,6 +128,10 @@ export const ResetPasswordPage = ({ settings }: ResetPasswordPageProps) => {
     };
   }, [step, criticalError, getValues()]);
 
+  // useEffect(() => {
+  //   methods.trigger();
+  // }, [i18n.language, methods]);
+
   const getResetPasswordContent = (step: ResetPasswordStep) => {
     switch (step) {
       case ResetPasswordStep.UserInfo:
