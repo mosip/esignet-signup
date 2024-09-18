@@ -9,9 +9,11 @@ const searchParams = new URLSearchParams(url.search);
 
 // Access specific query parameters
 const slotId = searchParams.get('slotId');
+const domain = searchParams.get('domain');
+const uri = domain === 'localhost' ? 'ws://localhost:8089' : 'wss://'+domain;
 
 const stompClient = new StompJs.Client({
-    brokerURL: 'ws://localhost:8089/v1/signup/ws?slotId='+slotId
+    brokerURL: uri+'/v1/signup/ws?slotId='+slotId
 });
 
 stompClient.onConnect = (frame) => {
