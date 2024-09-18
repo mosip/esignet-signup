@@ -18,9 +18,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 @EnableCaching
 @EnableAsync
-@SpringBootApplication(scanBasePackages = "io.mosip.signup.*," +
-        "${mosip.signup.integration.impl.basepackage},"+
-        "${mosip.auth.adapter.impl.basepackage}")
+@SpringBootApplication(scanBasePackages = "io.mosip.signup.*,io.mosip.kernel.auth.defaultadapter," +
+        "${mosip.signup.integration.impl.basepackage}")
 @Import({SharedComponentConfig.class, RedisCacheConfig.class, SimpleCacheConfig.class})
 public class SignUpServiceApplication {
 
