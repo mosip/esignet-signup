@@ -240,6 +240,8 @@ public class IdentityVerificationService {
         IdentityVerificationStatusResponse identityVerificationStatusResponse = new IdentityVerificationStatusResponse();
         if(Arrays.asList(COMPLETED, FAILED).contains(transaction.getStatus())) {
             identityVerificationStatusResponse.setStatus(transaction.getStatus());
+            cacheUtilService.setSharedVerificationResult(transaction.getAccessTokenSubject(),
+                    identityVerificationStatusResponse.getStatus().toString());
             return identityVerificationStatusResponse;
         }
 
