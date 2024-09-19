@@ -255,6 +255,8 @@ public class IdentityVerificationService {
                 identityVerificationStatusResponse.setStatus(UPDATE_PENDING);
                 break;
         }
+        cacheUtilService.setSharedVerificationResult(transaction.getAccessTokenSubject(),
+                identityVerificationStatusResponse.getStatus().toString());
         return identityVerificationStatusResponse;
     }
 
