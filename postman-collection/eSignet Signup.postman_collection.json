@@ -1,0 +1,888 @@
+{
+	"info": {
+		"_postman_id": "13a15511-b515-4f4c-ae9a-5ae79437e213",
+		"name": "eSignet Signup",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "20579541",
+		"_collection_link": "https://mosip-idp.postman.co/workspace/MOSIP-Team-Workspace~76ac5ada-d630-4817-8d7b-25f499b093d4/collection/20579541-13a15511-b515-4f4c-ae9a-5ae79437e213?action=share&source=collection_link&creator=20579541"
+	},
+	"item": [
+		{
+			"name": "Register Signup OIDC",
+			"item": [
+				{
+					"name": "Create Signup OIDC client",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-XSRF-TOKEN",
+								"value": "{{csrf_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"requestTime\": \"{{$isoTimestamp}}\",\n    \"request\": {\n        \"clientId\": \"mosip-signup-oauth-client\",\n        \"clientName\": \"mosip-signup-oauth-client\",\n        \"publicKey\": {\n            \"kty\": \"RSA\",\n            \"n\": \"lfq9e7C3aHIXeMdVV5LnuiC8WRI6jvRdXqNeFwUh6t2jASN4Ku3ENlPGdsIY3VIoR5YXoogfKUkR3suld3pDGzyeuGp8v1gkRJ0IZtPioXyBLa4PET3-9CsdsH5H7MV0Vz6606h1ZfN95vGWjsWyqjbZbzeWc8xbcVQ2-GVMVGVZNrCP-iJ0v7m7f89FXtZH4kzvzKwFt_KJy1_7xD3op2Xu5NtR2-PENDJLwh501slBuJczcagplfZTm4Hz7v9coCx3QHuMOv4iwMhFnpcpymiY7YT1geUDoUzR3MY-1OT-SKzWWnyLC8p8s0EkfvsXXHSr9zVTtqhGqjlZjQP9pQ\",\n            \"e\": \"AQAB\",\n            \"alg\": \"RS256\",\n            \"use\": \"sig\"\n        },\n        \"relyingPartyId\": \"mosip-signup-oauth-client\",\n        \"userClaims\": [],\n        \"authContextRefs\": [\n            \"mosip:idp:acr:id-token\"\n        ],\n        \"logoUri\": \"{{$randomImageUrl}}\",\n        \"redirectUris\": [\n            \"http://localhost:8089/identity-verification\"\n        ],\n        \"grantTypes\": [\n            \"authorization_code\"\n        ],\n        \"clientAuthMethods\": [\n            \"private_key_jwt\"\n        ]\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{esignet_url}}/v1/esignet/client-mgmt/oidc-client",
+							"host": [
+								"{{esignet_url}}"
+							],
+							"path": [
+								"v1",
+								"esignet",
+								"client-mgmt",
+								"oidc-client"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Register",
+			"item": [
+				{
+					"name": "generate CSRF token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var token = pm.cookies.get(\"XSRF-TOKEN\")",
+									"pm.environment.set(\"csrf_token\", token);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/v1/signup/csrf/token",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"v1",
+								"signup",
+								"csrf",
+								"token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "generate-challenge",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const randomNumber = _.random(100000000,999999999)",
+									"pm.environment.set('randomPhoneNumber', randomNumber)"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-XSRF-TOKEN",
+								"value": "{{csrf_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"requestTime\": \"{{$isoTimestamp}}\",\n  \"request\": {\n    \"identifier\": \"+855{{randomPhoneNumber}}\",\n    \"captchaToken\": \"<captcha-token>\",\n    \"regenerateChallenge\" : false,\n    \"locale\" : \"eng\",\n    \"purpose\" : \"REGISTRATION\"\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/v1/signup/registration/generate-challenge",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"v1",
+								"signup",
+								"registration",
+								"generate-challenge"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "verify-challenge",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-XSRF-TOKEN",
+								"value": "{{csrf_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"requestTime\": \"{{$isoTimestamp}}\",\n    \"request\": {\n        \"identifier\": \"+855{{randomPhoneNumber}}\",\n        \"challengeInfo\": [{\n            \"challenge\": \"111111\",\n            \"format\": \"alpha-numeric\",\n            \"type\" : \"OTP\"\n        }]\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/v1/signup/registration/verify-challenge",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"v1",
+								"signup",
+								"registration",
+								"verify-challenge"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "register",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-XSRF-TOKEN",
+								"value": "{{csrf_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"requestTime\": \"{{$isoTimestamp}}\",\n    \"request\": {\n        \"username\": \"+855{{randomPhoneNumber}}\",\n        \"password\": \"A123)4567890n\",\n        \"consent\": \"AGREE\",\n        \"userInfo\": {\n            \"fullName\": [\n                {\n                    \"language\": \"khm\",\n                    \"value\": \"ពាក្យសម្ងាត់\"\n                }\n            ],\n            \"phone\": \"+855{{randomPhoneNumber}}\",\n            \"preferredLang\": \"khm\"\n        }\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/v1/signup/registration/register",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"v1",
+								"signup",
+								"registration",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Check Status",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/v1/signup/registration/status",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"v1",
+								"signup",
+								"registration",
+								"status"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Reset Password",
+			"item": [
+				{
+					"name": "generate CSRF token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var token = pm.cookies.get(\"XSRF-TOKEN\")",
+									"pm.environment.set(\"csrf_token\", token);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/v1/signup/csrf/token",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"v1",
+								"signup",
+								"csrf",
+								"token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "generate-challenge",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-XSRF-TOKEN",
+								"value": "{{csrf_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"requestTime\": \"{{$isoTimestamp}}\",\n  \"request\": {\n    \"identifier\": \"+855{{randomPhoneNumber}}\",\n    \"captchaToken\": \"<captcha-token>\",\n    \"regenerateChallenge\" : false,\n    \"purpose\" : \"RESET_PASSWORD\"\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/v1/signup/registration/generate-challenge",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"v1",
+								"signup",
+								"registration",
+								"generate-challenge"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "verify-challenge",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-XSRF-TOKEN",
+								"value": "{{csrf_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"requestTime\": \"{{$isoTimestamp}}\",\n    \"request\": {\n        \"identifier\": \"+855{{randomPhoneNumber}}\",\n        \"challengeInfo\": [{\n            \"challenge\": \"111111\",\n            \"format\": \"alpha-numeric\",\n            \"type\" : \"OTP\"\n        },{\n            \"challenge\": \"eyJmdWxsTmFtZSI6W3sibGFuZ3VhZ2UiOiJraG0iLCJ2YWx1ZSI6IuGeluGetuGegOGfkuGemeGen-GemOGfkuGehOGetuGej-GfiyJ9XX0\",\"format\":\"base64url-encoded-json\",\n                \"type\" : \"KBI\"\n        }]\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/v1/signup/registration/verify-challenge",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"v1",
+								"signup",
+								"registration",
+								"verify-challenge"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Reset Password",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-XSRF-TOKEN",
+								"value": "{{csrf_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"requestTime\": \"{{$isoTimestamp}}\",\n    \"request\": {\n        \"identifier\": \"+855{{randomPhoneNumber}}\",\n        \"password\": \"A1234*5678m99\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/v1/signup/reset-password",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"v1",
+								"signup",
+								"reset-password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Check Status",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/v1/signup/registration/status",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"v1",
+								"signup",
+								"registration",
+								"status"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "IdentityVerification",
+			"item": [
+				{
+					"name": "esignet CSRF token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var token = pm.cookies.get(\"XSRF-TOKEN\")",
+									"pm.environment.set(\"csrf_token\", token);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{esignet_url}}/v1/esignet/csrf/token",
+							"host": [
+								"{{esignet_url}}"
+							],
+							"path": [
+								"v1",
+								"esignet",
+								"csrf",
+								"token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Authorize / OAuthdetails (ID token hint)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var btoa = require('btoa');",
+									"",
+									"var token = pm.cookies.get(\"XSRF-TOKEN\")",
+									"pm.environment.set(\"csrf_token\", token);",
+									"",
+									"pm.test(\"Validate transactionId\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.response.transactionId).not.equals(null);",
+									"    pm.environment.set(\"idt_transaction_id\", jsonData.response.transactionId);",
+									"});",
+									"",
+									"pm.test(\"Validate auth factors\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.response.authFactors[0].name).to.eql(pm.environment.get(\"expected_amr\"));",
+									"});",
+									"",
+									"pm.test(\"set oauth-details-hash\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    var sha256Hash = CryptoJS.SHA256(JSON.stringify(jsonData.response));",
+									"    var base64Encoded = sha256Hash.toString(CryptoJS.enc.Base64);",
+									"    // Remove padding characters",
+									"    base64Encoded = base64Encoded.replace(/=+$/, '');",
+									"    // Replace '+' with '-' and '/' with '_' to convert to base64 URL encoding",
+									"    base64Encoded = base64Encoded.replace(/\\+/g, '-').replace(/\\//g, '_');",
+									"    console.log(\"base64Encoded : \" + base64Encoded);",
+									"    pm.environment.set(\"oauth_details_key_idt\", jsonData.response.transactionId);",
+									"    pm.environment.set(\"oauth_details_hash_idt\", base64Encoded);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-XSRF-TOKEN",
+								"value": "{{csrf_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"requestTime\": \"{{$isoTimestamp}}\",\n    \"request\": {\n        \"clientId\": \"mosip-signup-oauth-client\",\n        \"scope\": \"openid\",\n        \"responseType\": \"code\",\n        \"redirectUri\": \"http://localhost:8089/identity-verification\",\n        \"display\": \"popup\",\n        \"prompt\": \"login\",\n        \"acrValues\": \"mosip:idp:acr:id-token\",\n        \"nonce\" : \"{{nonce}}\",\n        \"state\" : \"{{state}}\",\n        \"idTokenHint\" : \"{{id_token_hint}}\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{esignet_url}}/v1/esignet/authorization/v3/oauth-details",
+							"host": [
+								"{{esignet_url}}"
+							],
+							"path": [
+								"v1",
+								"esignet",
+								"authorization",
+								"v3",
+								"oauth-details"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Authenticate User (Id token)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var token = pm.cookies.get(\"XSRF-TOKEN\")",
+									"pm.environment.set(\"csrf_token\", token);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"eval(pm.environment.get('pmlib_code'))",
+									"",
+									"token = pm.globals.get(\"id_token_hint\");",
+									"console.log(token);",
+									"let base64Url = token.split('.')[1];",
+									"let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');",
+									"decodedToken = JSON.parse(atob(base64));",
+									"pm.environment.set(\"id_token_subject\", decodedToken.sub);",
+									"",
+									"var challenge = {\"token\" : token, \"code\": \"code\"}",
+									"let challengeString = JSON.stringify(challenge);",
+									"let base64Encoded = pmlib.rs.stob64u(challengeString);",
+									"pm.environment.set(\"idt_challenge\", base64Encoded);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-XSRF-TOKEN",
+								"value": "{{csrf_token}}"
+							},
+							{
+								"key": "oauth-details-key",
+								"value": "{{oauth_details_key_idt}}"
+							},
+							{
+								"key": "oauth-details-hash",
+								"value": "{{oauth_details_hash_idt}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"requestTime\": \"{{$isoTimestamp}}\",\n    \"request\": {\n        \"transactionId\": \"{{idt_transaction_id}}\",\n        \"individualId\": \"{{id_token_subject}}\",\n        \"challengeList\" : [\n            {\n                \"authFactorType\" : \"IDT\",\n                \"challenge\" : \"{{idt_challenge}}\",\n                \"format\" : \"base64url-encoded-json\"\n            }\n        ]\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{esignet_url}}/v1/esignet/authorization/v3/authenticate",
+							"host": [
+								"{{esignet_url}}"
+							],
+							"path": [
+								"v1",
+								"esignet",
+								"authorization",
+								"v3",
+								"authenticate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Authorization Code (Id token)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var token = pm.cookies.get(\"XSRF-TOKEN\")",
+									"pm.environment.set(\"csrf_token\", token);",
+									"",
+									"pm.test(\"Validate code\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.response.code).not.equals(null);",
+									"    pm.environment.set(\"idt_auth_code\", jsonData.response.code);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"followRedirects": false
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-XSRF-TOKEN",
+								"value": "{{csrf_token}}"
+							},
+							{
+								"key": "oauth-details-key",
+								"value": "{{oauth_details_key_idt}}"
+							},
+							{
+								"key": "oauth-details-hash",
+								"value": "{{oauth_details_hash_idt}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"requestTime\": \"{{$isoTimestamp}}\",\n    \"request\": {\n        \"transactionId\": \"{{idt_transaction_id}}\",\n        \"acceptedClaims\": [],\n        \"permittedAuthorizeScopes\" : []\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{esignet_url}}/v1/esignet/authorization/auth-code",
+							"host": [
+								"{{esignet_url}}"
+							],
+							"path": [
+								"v1",
+								"esignet",
+								"authorization",
+								"auth-code"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "generate CSRF token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var token = pm.cookies.get(\"XSRF-TOKEN\")",
+									"pm.environment.set(\"csrf_token\", token);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/v1/signup/csrf/token",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"v1",
+								"signup",
+								"csrf",
+								"token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Initiate",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"code = pm.environment.get(\"idt_auth_code\");",
+									"pm.environment.set(\"code\", code);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-XSRF-TOKEN",
+								"value": "{{csrf_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"requestTime\": \"{{$isoTimestamp}}\",\r\n    \"request\": {\r\n        \"authorizationCode\": \"{{code}}\",\r\n        \"state\": \"urlInfo1724138417665\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/v1/signup/identity-verification/initiate",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"v1",
+								"signup",
+								"identity-verification",
+								"initiate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get id-verifier",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-XSRF-TOKEN",
+								"value": "{{csrf_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/v1/signup/identity-verification/identity-verifier/{{identity-verifier-id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"v1",
+								"signup",
+								"identity-verification",
+								"identity-verifier",
+								"{{identity-verifier-id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get slot",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();\r",
+									"pm.environment.set(\"slot-id\", jsonData.response.slotId);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-XSRF-TOKEN",
+								"value": "{{csrf_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"requestTime\": \"{{$isoTimestamp}}\",\r\n    \"request\": {\r\n        \"verifierId\": \"{{identity-verifier-id}}\",\r\n        \"consent\": \"AGREE\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/v1/signup/identity-verification/slot",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"v1",
+								"signup",
+								"identity-verification",
+								"slot"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get status",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-XSRF-TOKEN",
+								"value": "{{csrf_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/v1/signup/identity-verification/status",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"v1",
+								"signup",
+								"identity-verification",
+								"status"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "settings",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-XSRF-TOKEN",
+						"value": "{{csrf_token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/v1/signup/settings",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"v1",
+						"signup",
+						"settings"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

@@ -27,6 +27,7 @@ replay_pid*
 target/
 .idea/
 *.p12
+*.jwk
 *.iml
 .settings/
 .setting/
