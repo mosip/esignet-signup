@@ -133,11 +133,6 @@ public class CacheUtilService {
         return identityVerificationTransaction;
     }
 
-    @Cacheable(value = SignUpConstants.SHARED_IDV_RESULT, key = "#haltedTransactionId")
-    public String setSharedVerificationResult(String haltedTransactionId, String status) {
-        return status;
-    }
-
     //---Getter---
     public RegistrationTransaction getChallengeGeneratedTransaction(String transactionId) {
         return cacheManager.getCache(SignUpConstants.CHALLENGE_GENERATED).get(transactionId, RegistrationTransaction.class);    //NOSONAR getCache() will not be returning null here.
@@ -191,6 +186,12 @@ public class CacheUtilService {
         }
     }
 
+    public void updateSharedVerificationResult(String haltedTransactionId, String status) {
+        if(cacheManager.getCache(SignUpConstants.SHARED_IDV_RESULT) != null) {
+            cacheManager.getCache(SignUpConstants.SHARED_IDV_RESULT).put(haltedTransactionId, status);
+        }
+    }
+
     public void addToSlotConnected(String value) {
         redisConnectionFactory.getConnection().hSet(SLOTS_CONNECTED.getBytes(), value.getBytes(),
                 Longs.toByteArray(System.currentTimeMillis()));
@@ -208,7 +209,6 @@ public class CacheUtilService {
 
     //Cleanup assigned slot details on WS connection disconnect
     @Caching(evict = {
-            @CacheEvict(value = SignUpConstants.VERIFIED_SLOT, key = "#slotId"),
             @CacheEvict(value = SignUpConstants.SLOT_ALLOTTED, key = "#transactionId")
     })
     public void evictSlotAllottedTransaction(String transactionId, String slotId) {
