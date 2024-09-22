@@ -18,7 +18,6 @@ import com.nimbusds.oauth2.sdk.*;
 import com.nimbusds.oauth2.sdk.auth.ClientAuthentication;
 import com.nimbusds.oauth2.sdk.auth.PrivateKeyJWT;
 import com.nimbusds.oauth2.sdk.token.AccessToken;
-import com.nimbusds.oauth2.sdk.token.BearerAccessToken;
 import com.nimbusds.openid.connect.sdk.OIDCTokenResponseParser;
 import com.nimbusds.openid.connect.sdk.UserInfoRequest;
 import com.nimbusds.openid.connect.sdk.UserInfoResponse;
@@ -240,7 +239,7 @@ public class IdentityVerificationService {
         IdentityVerificationStatusResponse identityVerificationStatusResponse = new IdentityVerificationStatusResponse();
         if(Arrays.asList(COMPLETED, FAILED).contains(transaction.getStatus())) {
             identityVerificationStatusResponse.setStatus(transaction.getStatus());
-            cacheUtilService.setSharedVerificationResult(transaction.getAccessTokenSubject(),
+            cacheUtilService.updateSharedVerificationResult(transaction.getAccessTokenSubject(),
                     identityVerificationStatusResponse.getStatus().toString());
             return identityVerificationStatusResponse;
         }
@@ -257,7 +256,7 @@ public class IdentityVerificationService {
                 identityVerificationStatusResponse.setStatus(UPDATE_PENDING);
                 break;
         }
-        cacheUtilService.setSharedVerificationResult(transaction.getAccessTokenSubject(),
+        cacheUtilService.updateSharedVerificationResult(transaction.getAccessTokenSubject(),
                 identityVerificationStatusResponse.getStatus().toString());
         return identityVerificationStatusResponse;
     }

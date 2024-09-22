@@ -106,7 +106,7 @@ public class IdentityVerificationServiceTest {
         identityVerificationTransaction.setAccessTokenSubject("subject");
         Mockito.when(cacheUtilService.getVerifiedSlotTransaction(Mockito.anyString())).thenReturn(identityVerificationTransaction);
         identityVerificationService.getStatus("testTransactionId###123");
-        Mockito.verify(cacheUtilService, Mockito.times(1)).setSharedVerificationResult(Mockito.anyString(), Mockito.anyString());
+        Mockito.verify(cacheUtilService, Mockito.times(1)).updateSharedVerificationResult(Mockito.anyString(), Mockito.anyString());
     }
 
     @Test
@@ -119,7 +119,7 @@ public class IdentityVerificationServiceTest {
         Mockito.when(cacheUtilService.getVerifiedSlotTransaction(Mockito.anyString())).thenReturn(identityVerificationTransaction);
         Mockito.when(profileRegistryPlugin.getProfileCreateUpdateStatus("testApplicationId")).thenReturn(ProfileCreateUpdateStatus.PENDING);
         identityVerificationService.getStatus("testTransactionId###123");
-        Mockito.verify(cacheUtilService, Mockito.times(1)).setSharedVerificationResult(Mockito.anyString(), Mockito.anyString());
+        Mockito.verify(cacheUtilService, Mockito.times(1)).updateSharedVerificationResult(Mockito.anyString(), Mockito.anyString());
     }
 
     @Test
@@ -132,7 +132,7 @@ public class IdentityVerificationServiceTest {
         Mockito.when(cacheUtilService.getVerifiedSlotTransaction(Mockito.anyString())).thenReturn(identityVerificationTransaction);
         Mockito.when(profileRegistryPlugin.getProfileCreateUpdateStatus("testApplicationId")).thenReturn(ProfileCreateUpdateStatus.COMPLETED);
         identityVerificationService.getStatus("testTransactionId###123");
-        Mockito.verify(cacheUtilService, Mockito.times(1)).setSharedVerificationResult(Mockito.anyString(), Mockito.anyString());
+        Mockito.verify(cacheUtilService, Mockito.times(1)).updateSharedVerificationResult(Mockito.anyString(), Mockito.anyString());
     }
 
     @Test
@@ -145,7 +145,7 @@ public class IdentityVerificationServiceTest {
         Mockito.when(cacheUtilService.getVerifiedSlotTransaction(Mockito.anyString())).thenReturn(identityVerificationTransaction);
         Mockito.when(profileRegistryPlugin.getProfileCreateUpdateStatus("testApplicationId")).thenReturn(ProfileCreateUpdateStatus.FAILED);
         identityVerificationService.getStatus("testTransactionId###123");
-        Mockito.verify(cacheUtilService, Mockito.times(1)).setSharedVerificationResult(Mockito.anyString(), Mockito.anyString());
+        Mockito.verify(cacheUtilService, Mockito.times(1)).updateSharedVerificationResult(Mockito.anyString(), Mockito.anyString());
     }
 
 
