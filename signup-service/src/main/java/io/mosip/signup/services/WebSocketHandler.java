@@ -139,7 +139,7 @@ public class WebSocketHandler {
             transaction.setStatus(VerificationStatus.FAILED);
             transaction.setErrorCode(IDENTITY_VERIFICATION_FAILED);
         }
-        cacheUtilService.setSharedVerificationResult(transaction.getAccessTokenSubject(), transaction.getStatus().toString());
+        cacheUtilService.updateSharedVerificationResult(transaction.getAccessTokenSubject(), transaction.getStatus().toString());
         cacheUtilService.updateVerifiedSlotTransaction(identityVerificationResult.getId(), transaction);
     }
 }
