@@ -12,6 +12,9 @@ import io.mosip.signup.dto.IdentityVerificationRequest;
 import io.mosip.signup.dto.IdentityVerificationTransaction;
 import io.mosip.signup.exception.InvalidTransactionException;
 import io.mosip.signup.exception.SignUpException;
+import io.mosip.signup.helper.AuditHelper;
+import io.mosip.signup.util.AuditEvent;
+import io.mosip.signup.util.AuditEventType;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,11 +50,15 @@ public class WebsocketHandlerTest {
     @Mock
     private CacheUtilService cacheUtilService;
 
+    @Mock
+    private AuditHelper auditHelper;
+
     private ObjectMapper objectMapper = new ObjectMapper();
 
     @Before
     public void setup() {
         ReflectionTestUtils.setField(webSocketHandler, "objectMapper", objectMapper);
+        ReflectionTestUtils.setField(webSocketHandler, "auditHelper", auditHelper);
     }
 
     @Test
@@ -267,6 +274,8 @@ public class WebsocketHandlerTest {
 
         webSocketHandler.processVerificationResult(identityVerificationResult);
         Mockito.verify(profileRegistryPlugin, Mockito.times(0)).updateProfile(Mockito.anyString(), Mockito.any());
+        Mockito.verify(auditHelper, Mockito.times(1))
+                .sendAuditTransaction(AuditEvent.PROCESS_FRAMES, AuditEventType.ERROR, null, null);
         Assert.assertEquals(VerificationStatus.FAILED, transaction.getStatus());
         Assert.assertEquals(IDENTITY_VERIFICATION_FAILED, transaction.getErrorCode());
     }
