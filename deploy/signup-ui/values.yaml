@@ -1,0 +1,49 @@
+## Uncomment required parms added with single '#' when needed.
+#image:
+#  registry: docker.io
+#  repository: mosipdev/signup-ui
+#  tag: develop
+
+## Additional environment variables to set
+## Example:
+## extraEnvVars:
+##   - name: FOO
+##     value: "bar"
+##
+#extraEnvVars: []
+
+## ConfigMap with extra environment variables
+##
+#extraEnvVarsCM:
+#  - signup-ui
+
+## Secret with extra environment variables
+##
+#extraEnvVarsSecret: []
+
+#signup_ui:
+#  signup_ui_port: '3000'
+#  signup_service_host: 'signup.signup'
+#  i18n_url_env: ''
+#  theme_url_env: ''
+#  images_url_env: ''
+#  configmaps:
+#    signup-ui:
+#      REACT_APP_API_BASE_URL: 'http://signup.signup/v1/signup'
+#      REACT_APP_SBI_DOMAIN_URI: 'http://signup.$NS'
+#      SIGNUP_UI_PUBLIC_URL: ''
+#      SIGN_IN_WITH_ESIGNET_PLUGIN_URL: ''
+## SIGNUP UI swagger should have only internal access. Hence linked to internal gateway
+## We create a gateway for esignet specific URL(s) listed under `hosts`
+#istio:
+#  enabled: true
+#  ingressController:
+#    name: ingressgateway
+#  gateways:
+#    - name: signup-ui-gateway
+#      protocol: HTTP
+#      portName: http
+#      port: 80
+#  hosts:
+#    - signup.sandbox.xyz.net
+#  prefix: /
