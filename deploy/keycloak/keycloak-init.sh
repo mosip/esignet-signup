@@ -1,5 +1,5 @@
 #!/bin/sh
-# Installs all esignet keycloak-init
+# Initialises signup keycloak-init
 ## Usage: ./keycloak-init.sh [kubeconfig]
 
 if [ $# -ge 1 ] ; then

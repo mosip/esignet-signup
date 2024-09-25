@@ -1,5 +1,5 @@
 #!/bin/bash
-# Installs all signup helm charts
+# Installs signup helm chart
 ## Usage: ./install.sh [kubeconfig]
 
 if [ $# -ge 1 ] ; then
