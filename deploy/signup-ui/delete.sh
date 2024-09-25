@@ -1,5 +1,5 @@
 #!/bin/bash
-# Uninstalls signup-ui helm charts
+## Deletes signup-ui helm chart
 ## Usage: ./delete.sh [kubeconfig]
 
 if [ $# -ge 1 ] ; then

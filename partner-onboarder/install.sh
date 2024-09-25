@@ -82,13 +82,6 @@ function installing_onboarder() {
 
     echo Updating signup-keystore-password value
     kubectl -n $NS create secret generic signup-keystore-password --from-literal=signup-keystore-password='mosip123' --dry-run=client -o yaml | kubectl apply -f -
-    ./copy_cm_func.sh secret signup-keystore-password signup config-server
-
-    echo Updating signup keystore-password
-    kubectl -n config-server set env --keys=signup-keystore-password --from secret/signup-keystore-password deployment/config-server --prefix=SPRING_CLOUD_CONFIG_SERVER_OVERRIDES_
-
-    kubectl -n config-server rollout restart deployment config-server
-    kubectl -n config-server rollout status deployment config-server
 
     echo Reports are moved to S3 under onboarder bucket
     return 0
