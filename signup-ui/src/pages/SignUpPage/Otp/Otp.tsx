@@ -40,6 +40,7 @@ import {
   setResendAttemptsSelector,
   setResendOtpSelector,
   setStepSelector,
+  setVerificationChallengeErrorSelector,
   SignUpStep,
   stepSelector,
   useSignUpStore,
@@ -62,6 +63,7 @@ export const Otp = ({ methods, settings }: OtpProps) => {
     setResendOtp,
     resendAttempts,
     setResendAttempts,
+    setVerificationChallengeError
   } = useSignUpStore(
     useCallback(
       (state) => ({
@@ -71,6 +73,7 @@ export const Otp = ({ methods, settings }: OtpProps) => {
         setResendOtp: setResendOtpSelector(state),
         resendAttempts: resendAttemptsSelector(state),
         setResendAttempts: setResendAttemptsSelector(state),
+        setVerificationChallengeError: setVerificationChallengeErrorSelector(state)
       }),
       []
     )
@@ -272,6 +275,7 @@ export const Otp = ({ methods, settings }: OtpProps) => {
                   "identifier_already_registered",
                 ].includes(errors[0].errorCode)
               ) {
+                setVerificationChallengeError(errors[0]);
                 setStep(SignUpStep.PhoneStatus);
               } else if (errors[0].errorCode === "invalid_transaction") {
                 setCriticalError(errors[0]);
@@ -281,6 +285,7 @@ export const Otp = ({ methods, settings }: OtpProps) => {
             }
 
             if (errors.length === 0) {
+              setVerificationChallengeError(null)
               setStep(SignUpStep.PhoneStatus);
             }
           },

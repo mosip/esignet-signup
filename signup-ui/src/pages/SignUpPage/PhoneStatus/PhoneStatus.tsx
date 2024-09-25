@@ -1,5 +1,4 @@
 import { useCallback } from "react";
-import { useMutationState } from "@tanstack/react-query";
 import { UseFormReturn } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
@@ -9,12 +8,15 @@ import { ReactComponent as SuccessIconSvg } from "~assets/svg/success-icon.svg";
 import { Button } from "~components/ui/button";
 import { Step, StepContent } from "~components/ui/step";
 import { getSignInRedirectURL } from "~utils/link";
-import { keys as mutationKeys } from "~pages/shared/mutations";
 import { useSettings } from "~pages/shared/queries";
-import { VerifyChallengeResponseDto } from "~typings/types";
 
 import { SignUpForm } from "../SignUpPage";
-import { setStepSelector, SignUpStep, useSignUpStore } from "../useSignUpStore";
+import {
+  setStepSelector,
+  SignUpStep,
+  useSignUpStore,
+  verificationChallengeErrorSelector,
+} from "../useSignUpStore";
 
 interface PhoneStatusProps {
   methods: UseFormReturn<SignUpForm, any, undefined>;
@@ -24,8 +26,14 @@ export const PhoneStatus = ({ methods }: PhoneStatusProps) => {
   const { t } = useTranslation();
   const { data: settings } = useSettings();
 
-  const { setStep } = useSignUpStore(
-    useCallback((state) => ({ setStep: setStepSelector(state) }), [])
+  const { setStep, challengeVerification } = useSignUpStore(
+    useCallback(
+      (state) => ({
+        setStep: setStepSelector(state),
+        challengeVerification: verificationChallengeErrorSelector(state),
+      }),
+      []
+    )
   );
   const { hash: fromSignInHash } = useLocation();
   const { trigger } = methods;
@@ -51,17 +59,11 @@ export const PhoneStatus = ({ methods }: PhoneStatusProps) => {
     );
   };
 
-  const [challengeVerification] = useMutationState<VerifyChallengeResponseDto>({
-    filters: {
-      mutationKey: mutationKeys.challengeVerification,
-      status: "success",
-    },
-    select: (mutation) => mutation.state.data as VerifyChallengeResponseDto,
-  });
-
   if (
-    challengeVerification.errors.length > 0 &&
-    ["already-registered", "identifier_already_registered"].includes(challengeVerification.errors[0].errorCode)
+    challengeVerification &&
+    ["already-registered", "identifier_already_registered"].includes(
+      challengeVerification.errorCode
+    )
   ) {
     return (
       <Step>
@@ -103,7 +105,9 @@ export const PhoneStatus = ({ methods }: PhoneStatusProps) => {
         <Button
           id="mobile-number-verified-continue-button"
           name="mobile-number-verified-continue-button"
-          className="my-4 h-16 w-full" onClick={handleContinue}>
+          className="my-4 h-16 w-full"
+          onClick={handleContinue}
+        >
           {t("continue")}
         </Button>
       </StepContent>
