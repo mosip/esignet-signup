@@ -56,7 +56,7 @@ RUN apt-get -y update \
 && chown -R ${container_user}:${container_user} /home/${container_user}
 
 # copy all files under target/esignet-plugins to the plugins folder
-COPY ./target/esignet-mock-plugin.jar ./target/mosip-identity-plugin.jar ${plugins_path}
+COPY ./target/*-plugin.jar ${plugins_path}
 COPY ./target/kernel-auth-adapter-lite.jar ${loader_path}
 
 # select container user for all tasks
