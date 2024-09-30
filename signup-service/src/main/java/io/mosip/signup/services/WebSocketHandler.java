@@ -115,31 +115,26 @@ public class WebSocketHandler {
                     Map<String, Map<String, JsonNode>> verifiedData = new HashMap<>();
                     verifiedData.put(VERIFIED_CLAIMS_FIELD_ID, verificationResult.getVerifiedClaims());
                     profileDto.setIdentity(objectMapper.valueToTree(verifiedData));
-                    try {
-                        profileRegistryPlugin.updateProfile(transaction.getApplicationId(), profileDto);
-                        transaction.setStatus(VerificationStatus.UPDATE_PENDING);
-                    } catch (ProfileException ex) {
-                        log.error("Failed to updated verified claims in the registry", ex);
-                        transaction.setStatus(VerificationStatus.FAILED);
-                        transaction.setErrorCode(ex.getErrorCode());
-                    }
-                    break;
-                case FAILED:
-                    transaction.setStatus(VerificationStatus.FAILED);
-                    transaction.setErrorCode(verificationResult.getErrorCode());
+                    profileRegistryPlugin.updateProfile(transaction.getApplicationId(), profileDto);
+                    transaction.setStatus(VerificationStatus.UPDATE_PENDING);
                     break;
                 default:
                     transaction.setStatus(VerificationStatus.FAILED);
-                    transaction.setErrorCode(IDENTITY_VERIFICATION_FAILED);
+                    transaction.setErrorCode(verificationResult.getErrorCode() == null ? IDENTITY_VERIFICATION_FAILED : verificationResult.getErrorCode());
                     break;
             }
 
         } catch (IdentityVerifierException e) {
             log.error("Failed to fetch verified result from the plugin", e);
             transaction.setStatus(VerificationStatus.FAILED);
-            transaction.setErrorCode(IDENTITY_VERIFICATION_FAILED);
+            transaction.setErrorCode(e.getErrorCode());
+        } catch (ProfileException e) {
+            log.error("Failed to update profile", e);
+            transaction.setStatus(VerificationStatus.FAILED);
+            transaction.setErrorCode(e.getErrorCode());
         }
-        cacheUtilService.updateSharedVerificationResult(transaction.getAccessTokenSubject(), transaction.getStatus().toString());
         cacheUtilService.updateVerifiedSlotTransaction(identityVerificationResult.getId(), transaction);
+        cacheUtilService.updateVerificationStatus(transaction.getAccessTokenSubject(), transaction.getStatus().toString(),
+                transaction.getErrorCode());
     }
 }
