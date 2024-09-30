@@ -7,6 +7,8 @@ package io.mosip.signup.services;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.primitives.Longs;
+import io.mosip.esignet.core.constants.Constants;
+import io.mosip.esignet.core.dto.OIDCTransaction;
 import io.mosip.esignet.core.util.IdentityProviderUtil;
 import io.mosip.signup.dto.IdentityVerificationTransaction;
 import io.mosip.signup.dto.IdentityVerifierDetail;
@@ -55,8 +57,18 @@ public class CacheUtilService {
             "\t\tredis.call('hdel', hash_name, field)\n" +
             "\tend\n" +
             "end";
-
     private String scriptHash = null;
+
+
+    private static final String ADD_SLOT_SCRIPT = "local count = redis.call('HLEN', KEYS[1]); " +
+            "if count < tonumber(ARGV[1]) then" +
+            " redis.call('HSET', KEYS[1], ARGV[2], ARGV[3]);" +
+            " return count;" +
+            "else return -1; " +
+            "end";
+    private String addSlotScriptHash = null;
+
+
 
     //---Setter---
 
@@ -186,9 +198,14 @@ public class CacheUtilService {
         }
     }
 
-    public void updateSharedVerificationResult(String haltedTransactionId, String status) {
-        if(cacheManager.getCache(SignUpConstants.SHARED_IDV_RESULT) != null) {
-            cacheManager.getCache(SignUpConstants.SHARED_IDV_RESULT).put(haltedTransactionId, status);
+    public void updateVerificationStatus(String haltedTransactionId, String status, String errorCode) {
+        if(cacheManager.getCache(Constants.HALTED_CACHE) != null) {
+            OIDCTransaction oidcTransaction = cacheManager.getCache(Constants.HALTED_CACHE).get(haltedTransactionId, OIDCTransaction.class);
+            if(oidcTransaction != null) {
+                oidcTransaction.setVerificationStatus(status);
+                oidcTransaction.setVerificationErrorCode(errorCode);
+                cacheManager.getCache(Constants.HALTED_CACHE).put(haltedTransactionId, oidcTransaction);
+            }
         }
     }
 
@@ -232,6 +249,18 @@ public class CacheUtilService {
             redisConnectionFactory.getConnection().scriptingCommands().evalSha(scriptHash, ReturnType.INTEGER, 1,
                     SLOTS_CONNECTED.getBytes(), new byte[]{slotExpireInSeconds.byteValue()});
         }
+    }
 
+    public Integer getSetSlotCount(String field, Integer maxCount) {
+        if(redisConnectionFactory.getConnection() != null) {
+            if(addSlotScriptHash == null) {
+                addSlotScriptHash = redisConnectionFactory.getConnection().scriptingCommands().scriptLoad(ADD_SLOT_SCRIPT.getBytes());
+            }
+            LockAssert.assertLocked();
+            log.info("Running ADD_SLOT_SCRIPT script: {} {} {}", addSlotScriptHash, SLOTS_CONNECTED, maxCount);
+            return redisConnectionFactory.getConnection().scriptingCommands().evalSha(addSlotScriptHash, ReturnType.INTEGER, 1,
+                    SLOTS_CONNECTED.getBytes(), new byte[]{maxCount.byteValue()}, field.getBytes(), Longs.toByteArray(System.currentTimeMillis()));
+        }
+        return -1;
     }
 }
