@@ -256,7 +256,6 @@ public class CacheUtilService {
             if(addSlotScriptHash == null) {
                 addSlotScriptHash = redisConnectionFactory.getConnection().scriptingCommands().scriptLoad(ADD_SLOT_SCRIPT.getBytes());
             }
-            LockAssert.assertLocked();
             log.info("Running ADD_SLOT_SCRIPT script: {} {} {}", addSlotScriptHash, SLOTS_CONNECTED, maxCount);
             return redisConnectionFactory.getConnection().scriptingCommands().evalSha(addSlotScriptHash, ReturnType.INTEGER, 1,
                     SLOTS_CONNECTED.getBytes(), new byte[]{maxCount.byteValue()}, field.getBytes(), Longs.toByteArray(System.currentTimeMillis()));
