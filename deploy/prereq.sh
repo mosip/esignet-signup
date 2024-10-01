@@ -48,7 +48,7 @@ function installing_prereq() {
   kubectl -n $NS create secret generic signup-keystore-password --from-literal=signup-keystore-password='' --dry-run=client -o yaml | kubectl apply -f -
 
   echo creating empty signup-keystore secret
-  kubectl -n $NS create secret generic signupoidc --from-literal=oidckeystore.p12='' --dry-run=client -o yaml | kubectl apply -f -
+  kubectl -n $NS create secret generic signup-keystore --from-literal=oidckeystore.p12='' --dry-run=client -o yaml | kubectl apply -f -
 
   echo All signup services pre-requisites deployed sucessfully.
   return 0

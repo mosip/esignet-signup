@@ -74,7 +74,10 @@ function installing_signup() {
 
 
   echo Installing signup
-  helm -n $NS install signup mosip/signup -f values.yaml --version $CHART_VERSION $ENABLE_INSECURE $plugin_option --set metrics.serviceMonitor.enabled=$servicemonitorflag --wait
+  helm -n $NS install signup mosip/signup \
+    -f values.yaml --version $CHART_VERSION $ENABLE_INSECURE $plugin_option \
+    --set metrics.serviceMonitor.enabled=$servicemonitorflag --wait
+
   kubectl -n $NS  get deploy -o name |  xargs -n1 -t  kubectl -n $NS rollout status
 
   echo Installed signup
