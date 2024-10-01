@@ -285,7 +285,7 @@ public class IdentityVerificationServiceTest {
 
         Mockito.when(cacheUtilService.getIdentityVerifierDetails()).thenReturn(identityVerifierDetails);
         String field = transactionId.concat(VALUE_SEPARATOR).concat("testSlotId");
-        Mockito.when(cacheUtilService.getSetSlotCount(field, 100)).thenReturn(10);
+        Mockito.when(cacheUtilService.getSetSlotCount(field, 100)).thenReturn(10L);
         Mockito.when(cacheUtilService.setSlotAllottedTransaction(Mockito.anyString(), Mockito.any())).thenReturn(
                 identityVerificationTransaction); // Assuming maxSlotPoolSize > 10
         HttpServletResponse httpServletResponse = Mockito.mock(HttpServletResponse.class);
@@ -351,7 +351,7 @@ public class IdentityVerificationServiceTest {
 
         Mockito.when(cacheUtilService.getIdentityVerifierDetails()).thenReturn(identityVerifierDetails);
         String field = "transactionId###testSlotId";
-        Mockito.when(cacheUtilService.getSetSlotCount(field, 100)).thenReturn(-1);
+        Mockito.when(cacheUtilService.getSetSlotCount(field, 100)).thenReturn(-1L);
         // Execute
         try{
             identityVerificationService.getSlot("transactionId", slotRequest, null);
