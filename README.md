@@ -41,7 +41,8 @@ cd deploy
   cd deploy
   ./restart-signup.sh
   ```
-  
+## Partner onboarding
+* Perform Partner onboarding for esignet Signup MISP partner using [steps](partner-onboarder/README.md) only if mosip-identity plugin is used.  
 
 ## APIs
 API documentation is available [here](https://mosip.stoplight.io/docs/identity-provider/branches/signupV1/t9tvfbteqqokf-e-signet-signup-portal-ap-is).
