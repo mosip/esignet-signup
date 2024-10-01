@@ -499,7 +499,7 @@ enable_insecure: false
 
 volumes:
   secrets:
-    signupoidc:
+    signup-keystore:
       key: oidckeystore.p12
       path: /home/mosip/keys
 pluginNameEnv: esignet-mock-plugin.jar
