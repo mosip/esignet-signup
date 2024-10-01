@@ -251,7 +251,7 @@ public class CacheUtilService {
         }
     }
 
-    public Integer getSetSlotCount(String field, Integer maxCount) {
+    public Long getSetSlotCount(String field, Integer maxCount) {
         if(redisConnectionFactory.getConnection() != null) {
             if(addSlotScriptHash == null) {
                 addSlotScriptHash = redisConnectionFactory.getConnection().scriptingCommands().scriptLoad(ADD_SLOT_SCRIPT.getBytes());
@@ -260,6 +260,6 @@ public class CacheUtilService {
             return redisConnectionFactory.getConnection().scriptingCommands().evalSha(addSlotScriptHash, ReturnType.INTEGER, 1,
                     SLOTS_CONNECTED.getBytes(), new byte[]{maxCount.byteValue()}, field.getBytes(), Longs.toByteArray(System.currentTimeMillis()));
         }
-        return -1;
+        return -1L;
     }
 }

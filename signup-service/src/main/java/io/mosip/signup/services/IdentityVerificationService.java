@@ -200,7 +200,7 @@ public class IdentityVerificationService {
 
         try{
             String cookieValue = transactionId.concat(VALUE_SEPARATOR).concat(transaction.getSlotId());
-            int slotCount = cacheUtilService.getSetSlotCount(cookieValue, slotMaxCount);
+            long slotCount = cacheUtilService.getSetSlotCount(cookieValue, slotMaxCount);
             if(slotCount < 0) {
                 log.error("**** Maximum slot capacity reached! slotCount result: {} ****", slotCount);
                 throw new SignUpException(ErrorConstants.SLOT_NOT_AVAILABLE);
