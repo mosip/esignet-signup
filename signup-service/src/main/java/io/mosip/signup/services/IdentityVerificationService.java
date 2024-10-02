@@ -104,6 +104,9 @@ public class IdentityVerificationService {
     @Value("${mosip.signup.slot.max-count:50}")
     private int slotMaxCount;
 
+    @Value("${mosip.signup.slot.expire-in-seconds}")
+    private Integer slotExpireInSeconds;
+
     @Autowired
     private CacheUtilService cacheUtilService;
 
@@ -200,7 +203,7 @@ public class IdentityVerificationService {
 
         try{
             String cookieValue = transactionId.concat(VALUE_SEPARATOR).concat(transaction.getSlotId());
-            long slotCount = cacheUtilService.getSetSlotCount(cookieValue, slotMaxCount);
+            long slotCount = cacheUtilService.getSetSlotCount(cookieValue, getVerificationProcessExpireTimeInMillis(result.get()), slotMaxCount);
             if(slotCount < 0) {
                 log.error("**** Maximum slot capacity reached! slotCount result: {} ****", slotCount);
                 throw new SignUpException(ErrorConstants.SLOT_NOT_AVAILABLE);
@@ -387,5 +390,10 @@ public class IdentityVerificationService {
             log.error("Failed to parse access token: {}", tokenString, e);
         }
         return null;
+    }
+
+    private long getVerificationProcessExpireTimeInMillis(IdentityVerifierDetail identityVerifierDetail) {
+        int processDurationInSeconds = identityVerifierDetail.getProcessDuration() <= 0 ? slotExpireInSeconds : identityVerifierDetail.getProcessDuration();
+        return System.currentTimeMillis() + ( processDurationInSeconds * 1000L );
     }
 }
