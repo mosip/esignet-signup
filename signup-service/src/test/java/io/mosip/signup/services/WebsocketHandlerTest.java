@@ -248,6 +248,7 @@ public class WebsocketHandlerTest {
 
         //Set to invalid end status
         verificationResult.setStatus(VerificationStatus.STARTED);
+        verificationResult.setErrorCode(null);
         Mockito.when(identityVerifierPlugin.getVerificationResult(identityVerificationResult.getId())).thenReturn(verificationResult);
 
         webSocketHandler.processVerificationResult(identityVerificationResult);
@@ -277,7 +278,7 @@ public class WebsocketHandlerTest {
         Mockito.verify(auditHelper, Mockito.times(1))
                 .sendAuditTransaction(AuditEvent.PROCESS_FRAMES, AuditEventType.ERROR, null, null);
         Assert.assertEquals(VerificationStatus.FAILED, transaction.getStatus());
-        Assert.assertEquals(IDENTITY_VERIFICATION_FAILED, transaction.getErrorCode());
+        Assert.assertEquals("verification_failed", transaction.getErrorCode());
     }
 
     @Test

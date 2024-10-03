@@ -1,11 +1,10 @@
-# esignet-signup
+# eSignet Signup
 
-signup-service is part of the esignet modules, This module is used to register endusers into any integrated registry.
+signup-service is part of the esignet modules, This module is used to register end users into any integrated registry.
 
 Below diagram depicts the high level deployment architecture for signup service with MOSIP ID-repo(registry).
 
-![](docs/signup-with-mosip-id-repo.png)
-
+![signup-with-mosip-id-repo.png](signup-with-mosip-id-repo.png)
 
 **Note:**
 

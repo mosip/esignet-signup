@@ -291,6 +291,6 @@
     "IDR-IDS-012": "Authentication Failed",
     "IDR-BIE-001": "Technical Error in Biometric Extraction",
     "IDR-CFJ-001": "Credential Feeder job failed",
-    "grant_exchange_failed": "Grant exchange failed"
+    "grant_exchange_failed": "Unable to Authorise - grant exchange failed. Please try again."
   }
 }

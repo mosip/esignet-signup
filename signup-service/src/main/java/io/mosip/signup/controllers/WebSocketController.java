@@ -69,7 +69,7 @@ public class WebSocketController {
     public void onConnected(SessionConnectedEvent connectedEvent) {
         final String username = Objects.requireNonNull(connectedEvent.getUser()).getName();
         log.info("WebSocket Connected >>>>>> {}", username);
-        cacheUtilService.addToSlotConnected(username);
+        webSocketHandler.updateProcessDuration(username);
         auditHelper.sendAuditTransaction(AuditEvent.ON_CONNECTED,AuditEventType.SUCCESS,null,null);
     }
 

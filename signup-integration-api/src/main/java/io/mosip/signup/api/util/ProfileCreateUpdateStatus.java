@@ -17,4 +17,13 @@ public enum ProfileCreateUpdateStatus implements Serializable {
     public static List<ProfileCreateUpdateStatus> getEndStatuses() {
         return Arrays.asList(ProfileCreateUpdateStatus.COMPLETED, ProfileCreateUpdateStatus.FAILED);
     }
+
+    public static VerificationStatus getVerificationStatus(ProfileCreateUpdateStatus profileCreateUpdateStatus) {
+        switch (profileCreateUpdateStatus) {
+            case PENDING: return VerificationStatus.UPDATE_PENDING;
+            case COMPLETED: return VerificationStatus.COMPLETED;
+            case FAILED: return VerificationStatus.FAILED;
+        }
+        return VerificationStatus.UPDATE_PENDING;
+    }
 }

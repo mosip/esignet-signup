@@ -7,6 +7,8 @@ package io.mosip.signup.services;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.primitives.Longs;
+import io.mosip.esignet.core.constants.Constants;
+import io.mosip.esignet.core.dto.OIDCTransaction;
 import io.mosip.esignet.core.util.IdentityProviderUtil;
 import io.mosip.signup.dto.IdentityVerificationTransaction;
 import io.mosip.signup.dto.IdentityVerifierDetail;
@@ -43,20 +45,36 @@ public class CacheUtilService {
     @Autowired
     private RedisConnectionFactory redisConnectionFactory;
 
-    @Value("${mosip.signup.slot.expire-in-seconds}")
-    private Integer slotExpireInSeconds;
+
 
     private static final String CLEANUP_SCRIPT = "local hash_name = ARGV[1]\n" +
-            "local max_age = ARGV[2]\n" +
-            "\n" +
-            "for field, value in pairs(redis.call('hgetall', hash_name)) do\n" +
-            "\tlocal epoch = tonumber(value)\n" +
-            "\tif epoch and os.time() - epoch > max_age then\n" +
-            "\t\tredis.call('hdel', hash_name, field)\n" +
-            "\tend\n" +
-            "end";
-
+            "local current_time = tonumber(ARGV[2])\n" +
+            "local hash_data = redis.call('hgetall', hash_name)\n" +
+            "for i = 1, #hash_data, 2 do\n" +
+            "    local field = hash_data[i]\n" +
+            "    local value = tonumber(hash_data[i + 1])\n" +
+            "    if value and value < current_time then\n" +
+            "        redis.call('hdel', hash_name, field)\n" +
+            "    end\n" +
+            "end\n";
     private String scriptHash = null;
+
+
+    private static final String ADD_SLOT_SCRIPT = "local function add_to_hset(key, field, value, max_count)\n" +
+            "    local count = redis.call('HLEN', key) or 0\n" +
+            "    max_count = tonumber(max_count)\n" +
+            "    if count < max_count then\n" +
+            "        redis.call('HSET', key, field, value)\n" +
+            "        return count\n" +
+            "    else\n" +
+            "        return -1\n" +
+            "    end\n" +
+            "end\n" +
+            "\n" +
+            "return add_to_hset(KEYS[1], ARGV[1], ARGV[2], ARGV[3])\n";
+    private String addSlotScriptHash = null;
+
+
 
     //---Setter---
 
@@ -186,15 +204,20 @@ public class CacheUtilService {
         }
     }
 
-    public void updateSharedVerificationResult(String haltedTransactionId, String status) {
-        if(cacheManager.getCache(SignUpConstants.SHARED_IDV_RESULT) != null) {
-            cacheManager.getCache(SignUpConstants.SHARED_IDV_RESULT).put(haltedTransactionId, status);
+    public void updateVerificationStatus(String haltedTransactionId, String status, String errorCode) {
+        if(cacheManager.getCache(Constants.HALTED_CACHE) != null) {
+            OIDCTransaction oidcTransaction = cacheManager.getCache(Constants.HALTED_CACHE).get(haltedTransactionId, OIDCTransaction.class);
+            if(oidcTransaction != null) {
+                oidcTransaction.setVerificationStatus(status);
+                oidcTransaction.setVerificationErrorCode(errorCode);
+                cacheManager.getCache(Constants.HALTED_CACHE).put(haltedTransactionId, oidcTransaction);
+            }
         }
     }
 
-    public void addToSlotConnected(String value) {
+    public void addToSlotConnected(String value, long slotExpireEpochInMillis) {
         redisConnectionFactory.getConnection().hSet(SLOTS_CONNECTED.getBytes(), value.getBytes(),
-                Longs.toByteArray(System.currentTimeMillis()));
+                Longs.toByteArray(slotExpireEpochInMillis));
     }
 
     public void removeFromSlotConnected(String value) {
@@ -222,16 +245,44 @@ public class CacheUtilService {
     @SchedulerLock(name = "clearExpiredSlots", lockAtMostFor = "PT120S", lockAtLeastFor = "PT120S")
     public void clearExpiredSlots() {
         log.info("Scheduled Task - clearExpiredSlots triggered");
-        if(redisConnectionFactory.getConnection() != null) {
-            if(scriptHash == null) {
+        if (redisConnectionFactory.getConnection() != null) {
+            if (scriptHash == null) {
                 scriptHash = redisConnectionFactory.getConnection().scriptingCommands().scriptLoad(CLEANUP_SCRIPT.getBytes());
             }
             LockAssert.assertLocked();
-            log.info("Running scheduled cleanup task - task to clear expired slots with script hash: {} {} {}", scriptHash,
-                    SLOTS_CONNECTED, slotExpireInSeconds);
-            redisConnectionFactory.getConnection().scriptingCommands().evalSha(scriptHash, ReturnType.INTEGER, 1,
-                    SLOTS_CONNECTED.getBytes(), new byte[]{slotExpireInSeconds.byteValue()});
-        }
+            Long currentTimeMillis = System.currentTimeMillis();  // Current time in millis
+            log.info("Running scheduled cleanup task - task to clear expired slots with script hash: {} {}", scriptHash,
+                    SLOTS_CONNECTED);
 
+            redisConnectionFactory.getConnection().scriptingCommands().evalSha(
+                    scriptHash,
+                    ReturnType.INTEGER,
+                    1,  // Number of keys
+                    SLOTS_CONNECTED.getBytes(),  // The Redis hash name (key)
+                    String.valueOf(currentTimeMillis).getBytes()  // Current time in milliseconds
+            );
+        }
     }
+
+    public Long getSetSlotCount(String field, long expireTimeInMillis, Integer maxCount) {
+        if (redisConnectionFactory.getConnection() != null) {
+            if (addSlotScriptHash == null) {
+                addSlotScriptHash = redisConnectionFactory.getConnection().scriptingCommands().scriptLoad(ADD_SLOT_SCRIPT.getBytes());
+            }
+            log.info("Running ADD_SLOT_SCRIPT script: {} {} {}", addSlotScriptHash, SLOTS_CONNECTED, maxCount);
+
+            // Convert field and maxCount to appropriate types
+            return redisConnectionFactory.getConnection().scriptingCommands().evalSha(
+                    addSlotScriptHash,
+                    ReturnType.INTEGER,
+                    1,  // Number of keys (SLOTS_CONNECTED is the key here)
+                    SLOTS_CONNECTED.getBytes(),  // key (first argument in Lua script)
+                    field.getBytes(),  // field (second argument in Lua script)
+                    Longs.toByteArray(expireTimeInMillis),  // value (third argument in Lua script)
+                    String.valueOf(maxCount).getBytes()  // maxCount (fourth argument, should be passed as a string)
+            );
+        }
+        return -1L;
+    }
+
 }
