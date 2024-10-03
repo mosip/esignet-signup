@@ -712,7 +712,7 @@
 					"name": "Initiate",
 					"event": [
 						{
-							"listen": "test",
+							"listen": "prerequest",
 							"script": {
 								"exec": [
 									"code = pm.environment.get(\"idt_auth_code\");",
