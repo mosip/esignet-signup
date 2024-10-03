@@ -164,7 +164,7 @@ public class WebSocketHandler {
             log.error("Failed to fetch verified result from the plugin", e);
             transaction.setStatus(VerificationStatus.FAILED);
             transaction.setErrorCode(e.getErrorCode());
-            auditHelper.sendAuditTransaction(AuditEvent.PROCESS_FRAMES, AuditEventType.ERROR, null,null);
+            auditHelper.sendAuditTransaction(AuditEvent.PROCESS_FRAMES, AuditEventType.ERROR,transaction.getSlotId() , null);
         } catch (ProfileException e) {
             log.error("Failed to update profile", e);
             transaction.setStatus(VerificationStatus.FAILED);

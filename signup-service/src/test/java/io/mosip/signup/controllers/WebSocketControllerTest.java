@@ -86,7 +86,7 @@ public class WebSocketControllerTest {
         identityVerificationRequest.setSlotId("slot-id");
         webSocketController.processFrames(identityVerificationRequest);
         Mockito.verify(auditHelper, Mockito.times(1))
-                .sendAuditTransaction(AuditEvent.PROCESS_FRAMES, AuditEventType.SUCCESS, null, null);
+                .sendAuditTransaction(AuditEvent.PROCESS_FRAMES, AuditEventType.SUCCESS, "slot-id", null);
     }
 
     @Test
@@ -108,7 +108,7 @@ public class WebSocketControllerTest {
         });
         webSocketController.onConnected(sessionConnectedEvent);
         Mockito.verify(auditHelper, Mockito.times(1))
-                .sendAuditTransaction(AuditEvent.ON_CONNECTED, AuditEventType.SUCCESS, null, null);
+                .sendAuditTransaction(AuditEvent.ON_CONNECTED, AuditEventType.SUCCESS,"" , null);
         Mockito.verify(webSocketHandler, Mockito.times(1)).updateProcessDuration("");
     }
 
@@ -125,6 +125,6 @@ public class WebSocketControllerTest {
         Mockito.verify(cacheUtilService, Mockito.times(1)).removeFromSlotConnected(Mockito.anyString());
         Mockito.verify(cacheUtilService, Mockito.times(1)).evictSlotAllottedTransaction(Mockito.anyString(),Mockito.anyString());
         Mockito.verify(auditHelper, Mockito.times(1))
-                .sendAuditTransaction(AuditEvent.ON_DISCONNECTED, AuditEventType.SUCCESS, null, null);
+                .sendAuditTransaction(AuditEvent.ON_DISCONNECTED, AuditEventType.SUCCESS, "TID", null);
     }
 }

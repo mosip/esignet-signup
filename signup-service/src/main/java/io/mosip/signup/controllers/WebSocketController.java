@@ -54,14 +54,14 @@ public class WebSocketController {
             throw new IdentityVerifierException(ErrorConstants.INVALID_STEP_CODE);
 
         webSocketHandler.processFrames(identityVerificationRequest);
-        auditHelper.sendAuditTransaction(AuditEvent.PROCESS_FRAMES, AuditEventType.SUCCESS, null,null);
+        auditHelper.sendAuditTransaction(AuditEvent.PROCESS_FRAMES, AuditEventType.SUCCESS, identityVerificationRequest.getSlotId(),null);
     }
 
     @KafkaListener(id = "step-status-consumer", autoStartup = "true",
             topics = IdentityVerifierPlugin.RESULT_TOPIC)
     public void consumeStepResult(final IdentityVerificationResult identityVerificationResult) {
         webSocketHandler.processVerificationResult(identityVerificationResult);
-        auditHelper.sendAuditTransaction(AuditEvent.CONSUME_STEP_RESULT,AuditEventType.SUCCESS,null,null);
+        auditHelper.sendAuditTransaction(AuditEvent.CONSUME_STEP_RESULT,AuditEventType.SUCCESS,identityVerificationResult.getId(),null);
     }
 
 
@@ -70,7 +70,7 @@ public class WebSocketController {
         final String username = Objects.requireNonNull(connectedEvent.getUser()).getName();
         log.info("WebSocket Connected >>>>>> {}", username);
         webSocketHandler.updateProcessDuration(username);
-        auditHelper.sendAuditTransaction(AuditEvent.ON_CONNECTED,AuditEventType.SUCCESS,null,null);
+        auditHelper.sendAuditTransaction(AuditEvent.ON_CONNECTED,AuditEventType.SUCCESS,username.split(VALUE_SEPARATOR)[0],null);
     }
 
     @EventListener
@@ -80,6 +80,6 @@ public class WebSocketController {
         cacheUtilService.removeFromSlotConnected(username);
         cacheUtilService.evictSlotAllottedTransaction(username.split(VALUE_SEPARATOR)[0],
                 username.split(VALUE_SEPARATOR)[1]);
-        auditHelper.sendAuditTransaction(AuditEvent.ON_DISCONNECTED,AuditEventType.SUCCESS,null,null);
+        auditHelper.sendAuditTransaction(AuditEvent.ON_DISCONNECTED,AuditEventType.SUCCESS,username.split(VALUE_SEPARATOR)[0],null);
     }
 }
