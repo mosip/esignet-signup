@@ -96,7 +96,7 @@ public class WebSocketControllerTest {
             }
         });
         webSocketController.onConnected(sessionConnectedEvent);
-        Mockito.verify(cacheUtilService, Mockito.times(1)).addToSlotConnected(Mockito.anyString());
+        Mockito.verify(webSocketHandler, Mockito.times(1)).updateProcessDuration("");
     }
 
     @Test
