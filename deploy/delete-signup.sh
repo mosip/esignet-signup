@@ -1,7 +1,6 @@
 #!/bin/bash
-
-# deletes signup services in correct order
-## Usage: ./delete-all.sh [kubeconfig]
+# Deleted signup services in correct order
+## Usage: ./restart-all.sh [kubeconfig]
 
 if [ $# -ge 1 ] ; then
   export KUBECONFIG=$1
@@ -9,15 +8,10 @@ fi
 
 function Deleting_All() {
   ROOT_DIR=`pwd`
-  SOFTHSM_NS=softhsm
 
-  helm -n $SOFTHSM_NS delete softhsm-signup
+  declare -a module=("signup-service" "signup-ui")
 
-  declare -a module=("signup-service"
-         "signup-ui"
-                     )
-
-  echo Installing signup services
+  echo restarting signup services
 
   for i in "${module[@]}"
   do

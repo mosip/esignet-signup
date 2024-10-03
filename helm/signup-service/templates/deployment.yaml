@@ -94,6 +94,14 @@ spec:
               value: {{ .Values.containerSecurityContext.runAsUser }}
             - name: JDK_JAVA_OPTIONS
               value: {{ .Values.additionalResources.javaOpts }}
+            {{- if .Values.pluginUrlEnv }}
+            - name: plugin_url_env
+              value: {{ .Values.pluginUrlEnv }}
+            {{- end }}
+            {{- if .Values.pluginNameEnv }}
+            - name: plugin_name_env
+              value: {{ .Values.pluginNameEnv }}
+            {{- end }}
             {{- if .Values.extraEnvVars }}
             {{- include "common.tplvalues.render" (dict "value" .Values.extraEnvVars "context" $) | nindent 12 }}
             {{- end }}

@@ -1,18 +1,18 @@
 #!/bin/bash
-# Uninstalls signup-ui helm charts
+# Deletes signup helm chart
 ## Usage: ./delete.sh [kubeconfig]
 
 if [ $# -ge 1 ] ; then
   export KUBECONFIG=$1
 fi
 
-function Deleting_signup-ui() {
+function Deleting_signup() {
   NS=signup
   while true; do
-      read -p "Are you sure you want to delete all signup-ui helm charts?(Y/n) " yn
-      if [ $yn = "Y" ]
+      read -p "Are you sure you want to delete signup helm charts?(Y/n) " yn
+      if [[ $yn = "Y" ]] || [[ $yn = "y" ]];
         then
-          helm -n $NS delete signup-service
+          helm -n $NS delete signup
           break
         else
           break
@@ -27,4 +27,5 @@ set -o errexit   ## set -e : exit the script if any statement returns a non-true
 set -o nounset   ## set -u : exit the script if you try to use an uninitialised variable
 set -o errtrace  # trace ERR through 'time command' and other functions
 set -o pipefail  # trace ERR through pipes
-Deleting_signup-ui   # calling function
+Deleting_signup   # calling function
+

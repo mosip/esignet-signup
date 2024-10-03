@@ -1,0 +1,15 @@
+keycloak:
+  realms:
+    mosip: # realm
+      roles:
+        - AUTH
+        - ID_REPOSITORY
+        - REGISTRATION_ADMIN
+      clients:   
+        - name: mosip-signup-client
+          mappers: []
+          saroles:
+            - AUTH
+            - CREDENTIAL_REQUEST
+            - ID_REPOSITORY
+            - REGISTRATION_ADMIN

@@ -1,5 +1,5 @@
 #!/bin/bash
-# Uninstalls partner-onboarder helm
+# Uninstalls Signup OIDC client onboarder helm
 ## Usage: ./delete.sh [kubeconfig]
 
 if [ $# -ge 1 ] ; then
@@ -10,8 +10,8 @@ function deleting_onboarder() {
   NS=signup
   while true; do
       read -p "Are you sure you want to delete all partner-onboarder ?(Y/n) " yn
-      if [ $yn = "Y" ]; then
-        echo Deleting signup-partner-onboarder helm
+      if [[ $yn = "Y" ]] || [[ $yn = "y" ]]; then
+        echo Deleting signup-oidc-onboarder helm
         helm -n $NS delete signup-partner-onboarder
         break
       fi

@@ -1,28 +1,25 @@
 #!/bin/bash
-# Installs oidc-ui helm charts
+## Installs signup-ui helm chart
 ## Usage: ./install.sh [kubeconfig]
 
 if [ $# -ge 1 ] ; then
   export KUBECONFIG=$1
 fi
 
-NS=signup
-CHART_VERSION=0.0.1-develop
-
-echo Create $NS namespace
-kubectl create ns $NS
-
 function installing_signup-ui() {
+  NS=signup
+  CHART_VERSION=0.0.1-develop
+
+  echo Create $NS namespace
+  kubectl create ns $NS || true
+
   echo Istio label
   kubectl label ns $NS istio-injection=enabled --overwrite
 
   helm repo add mosip https://mosip.github.io/mosip-helm
   helm repo update
 
-  echo Copy configmaps
-  ./copy_cm.sh
-
-  SIGNUP_HOST=$(kubectl get cm global -o jsonpath={.data.mosip-signup-host})
+  SIGNUP_HOST=$(kubectl -n $NS get cm esignet-global -o jsonpath={.data.mosip-signup-host})
 
   echo Installing SIGNUP UI
   helm -n $NS install signup-ui mosip/signup-ui \
@@ -30,7 +27,7 @@ function installing_signup-ui() {
   --set signup_ui.configmaps.signup-ui.REACT_APP_SBI_DOMAIN_URI="http://signup.$NS" \
   --set signup_ui.configmaps.signup-ui.SIGNUP_UI_PUBLIC_URL=''\
   --set istio.hosts\[0\]=$SIGNUP_HOST \
-  --version $CHART_VERSION 
+  -f values.yaml --version $CHART_VERSION --wait
 
   kubectl -n $NS  get deploy -o name |  xargs -n1 -t  kubectl -n $NS rollout status
 
