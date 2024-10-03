@@ -1,5 +1,5 @@
 #!/bin/bash
-# Installs signup MOSIP onboarder helm
+# Installs signup OIDC client onboarder helm
 ## Usage: ./install.sh [kubeconfig]
 
 if [ $# -ge 1 ] ; then
@@ -101,7 +101,7 @@ function installing_onboarder() {
     $COPY_UTIL secret keycloak keycloak $NS
     $COPY_UTIL secret keycloak-client-secrets keycloak $NS
 
-    echo "Onboarding Esignet Signup MISP client"
+    echo "Onboarding Esignet Signup OIDC client"
     helm -n $NS install signup-partner-onboarder mosip/partner-onboarder \
       $NFS_OPTION \
       $S3_OPTION \

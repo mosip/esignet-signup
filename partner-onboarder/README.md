@@ -1,7 +1,7 @@
 # Partner Onboarder
 
 ## Overview
-Exchanges certificates for eSignet Signup MISP partner. Refer [mosip-onboarding repo](https://github.com/mosip/mosip-onboarding).
+Creates and onboards eSignet signup OIDC client. Refer [mosip-onboarding repo](https://github.com/mosip/mosip-onboarding).
 
 ## Install 
 * Set `values.yaml` to run onboarder for specific modules.
