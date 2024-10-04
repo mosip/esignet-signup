@@ -54,9 +54,6 @@ mosip.identity.fieldid.handle-postfix.mapping={'phone':'@phone'}
 ``
 mosip.kernel.sms.country.code=+91
 ``
-
-
-
 ## Installing in k8s cluster using helm
 ### Pre-requisites
 1. Set the kube config file of the Esignet k8 cluster having esignet services is set correctly in PC.
@@ -74,12 +71,7 @@ cd deploy
 ```
 ### Install Signup service
 * Install `kubectl` and `helm` utilities.
-* Run `install.sh` to run the partner-onboarder to create the signup-oidc
- ```
-  cd partner-onboarder
-  ./install.sh
-  ```
-* Run `install-all.sh` to deploy signup services.
+* Run `install-signup.sh` to deploy signup services.
   ```
   cd deploy
   ./install-signup.sh
