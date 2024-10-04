@@ -7,7 +7,7 @@ if [ $# -ge 1 ] ; then
 fi
 
 NS=signup
-CHART_VERSION=0.0.1-develop
+CHART_VERSION=1.1.0-develop
 
 function installing_signup() {
   helm repo add mosip https://mosip.github.io/mosip-helm
