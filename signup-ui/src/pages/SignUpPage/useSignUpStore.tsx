@@ -22,6 +22,8 @@ export type SignUpStore = {
   setResendOtp: (resendOtp: boolean) => void;
   resendAttempts: any;
   setResendAttempts: (resendAttempts: any) => void;
+  verificationChallengeError: Error | null;
+  setVerificationChallengeError: (verificationChallengeError: any) => void;
 };
 
 export const useSignUpStore = create<SignUpStore>()(
@@ -49,6 +51,17 @@ export const useSignUpStore = create<SignUpStore>()(
       const current = get();
       if (isEqual(current.resendAttempts, resendAttempts)) return;
       set((state) => ({ resendAttempts }));
+    },
+    verificationChallengeError: null,
+    setVerificationChallengeError: (
+      verificationChallengeError: Error | null
+    ) => {
+      const current = get();
+      if (
+        isEqual(current.verificationChallengeError, verificationChallengeError)
+      )
+        return;
+      set((state) => ({ verificationChallengeError }));
     },
   }))
 );
@@ -78,3 +91,13 @@ export const criticalErrorSelector = (
 export const setCriticalErrorSelector = (
   state: SignUpStore
 ): SignUpStore["setCriticalError"] => state.setCriticalError;
+
+export const verificationChallengeErrorSelector = (
+  state: SignUpStore
+): SignUpStore["verificationChallengeError"] =>
+  state.verificationChallengeError;
+
+export const setVerificationChallengeErrorSelector = (
+  state: SignUpStore
+): SignUpStore["setVerificationChallengeError"] =>
+  state.setVerificationChallengeError;

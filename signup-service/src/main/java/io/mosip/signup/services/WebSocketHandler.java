@@ -16,24 +16,32 @@ import io.mosip.signup.api.spi.ProfileRegistryPlugin;
 import io.mosip.signup.api.util.VerificationStatus;
 import io.mosip.signup.dto.IdentityVerificationRequest;
 import io.mosip.signup.dto.IdentityVerificationTransaction;
+import io.mosip.signup.dto.IdentityVerifierDetail;
 import io.mosip.signup.exception.InvalidTransactionException;
 import io.mosip.signup.exception.SignUpException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import static io.mosip.signup.api.util.ErrorConstants.IDENTITY_VERIFICATION_FAILED;
 import static io.mosip.signup.api.util.ErrorConstants.PLUGIN_NOT_FOUND;
 import static io.mosip.signup.util.ErrorConstants.VERIFIED_CLAIMS_FIELD_ID;
+import static io.mosip.signup.util.SignUpConstants.VALUE_SEPARATOR;
 
 @Slf4j
 @Service
 public class WebSocketHandler {
+
+    @Value("${mosip.signup.slot.expire-in-seconds}")
+    private Integer slotExpireInSeconds;
 
     @Autowired
     CacheUtilService cacheUtilService;
@@ -95,6 +103,28 @@ public class WebSocketHandler {
         }
     }
 
+    public void updateProcessDuration(String username) {
+        String[] parts = username.split(VALUE_SEPARATOR);
+
+        if(parts.length <= 1) {
+            log.error("WebSocket Connected request received with invalid transaction details >>>>>> {}", username);
+            return;
+        }
+
+        IdentityVerificationTransaction transaction = cacheUtilService.getVerifiedSlotTransaction(parts[1]);
+        if(transaction == null) {
+            log.error("WebSocket Connected request received with invalid transaction details >>>>>> {}", username);
+            return;
+        }
+
+        IdentityVerifierDetail[] verifierDetails = cacheUtilService.getIdentityVerifierDetails();
+        Optional<IdentityVerifierDetail> result = Arrays.stream(verifierDetails)
+                .filter(idv -> idv.isActive() && idv.getId().equals(transaction.getVerifierId()))
+                .findFirst();
+
+        result.ifPresent(identityVerifierDetail -> cacheUtilService.addToSlotConnected(username, getVerificationProcessExpireTimeInMillis(identityVerifierDetail)));
+    }
+
     private void handleVerificationResult(IdentityVerifierPlugin plugin, IdentityVerificationResult identityVerificationResult,
                                       IdentityVerificationTransaction transaction) {
         try {
@@ -115,31 +145,31 @@ public class WebSocketHandler {
                     Map<String, Map<String, JsonNode>> verifiedData = new HashMap<>();
                     verifiedData.put(VERIFIED_CLAIMS_FIELD_ID, verificationResult.getVerifiedClaims());
                     profileDto.setIdentity(objectMapper.valueToTree(verifiedData));
-                    try {
-                        profileRegistryPlugin.updateProfile(transaction.getApplicationId(), profileDto);
-                        transaction.setStatus(VerificationStatus.UPDATE_PENDING);
-                    } catch (ProfileException ex) {
-                        log.error("Failed to updated verified claims in the registry", ex);
-                        transaction.setStatus(VerificationStatus.FAILED);
-                        transaction.setErrorCode(ex.getErrorCode());
-                    }
-                    break;
-                case FAILED:
-                    transaction.setStatus(VerificationStatus.FAILED);
-                    transaction.setErrorCode(verificationResult.getErrorCode());
+                    profileRegistryPlugin.updateProfile(transaction.getApplicationId(), profileDto);
+                    transaction.setStatus(VerificationStatus.UPDATE_PENDING);
                     break;
                 default:
                     transaction.setStatus(VerificationStatus.FAILED);
-                    transaction.setErrorCode(IDENTITY_VERIFICATION_FAILED);
+                    transaction.setErrorCode(verificationResult.getErrorCode() == null ? IDENTITY_VERIFICATION_FAILED : verificationResult.getErrorCode());
                     break;
             }
 
         } catch (IdentityVerifierException e) {
             log.error("Failed to fetch verified result from the plugin", e);
             transaction.setStatus(VerificationStatus.FAILED);
-            transaction.setErrorCode(IDENTITY_VERIFICATION_FAILED);
+            transaction.setErrorCode(e.getErrorCode());
+        } catch (ProfileException e) {
+            log.error("Failed to update profile", e);
+            transaction.setStatus(VerificationStatus.FAILED);
+            transaction.setErrorCode(e.getErrorCode());
         }
-        cacheUtilService.setSharedVerificationResult(transaction.getAccessTokenSubject(), transaction.getStatus().toString());
         cacheUtilService.updateVerifiedSlotTransaction(identityVerificationResult.getId(), transaction);
+        cacheUtilService.updateVerificationStatus(transaction.getAccessTokenSubject(), transaction.getStatus().toString(),
+                transaction.getErrorCode());
+    }
+
+    private long getVerificationProcessExpireTimeInMillis(IdentityVerifierDetail identityVerifierDetail) {
+        int processDurationInSeconds = identityVerifierDetail.getProcessDuration() <= 0 ? slotExpireInSeconds : identityVerifierDetail.getProcessDuration();
+        return System.currentTimeMillis() + ( processDurationInSeconds * 1000L );
     }
 }

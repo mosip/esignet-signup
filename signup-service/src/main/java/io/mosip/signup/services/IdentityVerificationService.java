@@ -18,7 +18,6 @@ import com.nimbusds.oauth2.sdk.*;
 import com.nimbusds.oauth2.sdk.auth.ClientAuthentication;
 import com.nimbusds.oauth2.sdk.auth.PrivateKeyJWT;
 import com.nimbusds.oauth2.sdk.token.AccessToken;
-import com.nimbusds.oauth2.sdk.token.BearerAccessToken;
 import com.nimbusds.openid.connect.sdk.OIDCTokenResponseParser;
 import com.nimbusds.openid.connect.sdk.UserInfoRequest;
 import com.nimbusds.openid.connect.sdk.UserInfoResponse;
@@ -104,6 +103,9 @@ public class IdentityVerificationService {
 
     @Value("${mosip.signup.slot.max-count:50}")
     private int slotMaxCount;
+
+    @Value("${mosip.signup.slot.expire-in-seconds}")
+    private Integer slotExpireInSeconds;
 
     @Autowired
     private CacheUtilService cacheUtilService;
@@ -200,8 +202,10 @@ public class IdentityVerificationService {
             throw new SignUpException(ErrorConstants.INVALID_IDENTITY_VERIFIER_ID);
 
         try{
-            if(cacheUtilService.getCurrentSlotCount() >= slotMaxCount) {
-                log.error("**** Maximum slot capacity reached ****");
+            String cookieValue = transactionId.concat(VALUE_SEPARATOR).concat(transaction.getSlotId());
+            long slotCount = cacheUtilService.getSetSlotCount(cookieValue, getVerificationProcessExpireTimeInMillis(result.get()), slotMaxCount);
+            if(slotCount < 0) {
+                log.error("**** Maximum slot capacity reached! slotCount result: {} ****", slotCount);
                 throw new SignUpException(ErrorConstants.SLOT_NOT_AVAILABLE);
             }
 
@@ -210,10 +214,9 @@ public class IdentityVerificationService {
             transaction.setStatus(STARTED);
             transaction = cacheUtilService.setSlotAllottedTransaction(transactionId, transaction);
 
-            String cookieValue = transactionId.concat(VALUE_SEPARATOR).concat(transaction.getSlotId());
             addSlotAllottedCookie(cookieValue, result.get(), response);
 
-            log.info("Slot available and assigned to the requested transaction {}", transactionId);
+            log.info("Slot({}) available and assigned to the requested transaction {}", slotCount, transactionId);
             SlotResponse slotResponse = new SlotResponse();
             slotResponse.setSlotId(transaction.getSlotId());
             return slotResponse;
@@ -233,32 +236,33 @@ public class IdentityVerificationService {
         if(transactionId.split(VALUE_SEPARATOR).length <= 1)
             throw new InvalidTransactionException();
 
-        IdentityVerificationTransaction transaction = cacheUtilService.getVerifiedSlotTransaction(transactionId.split(VALUE_SEPARATOR)[1]);
+        final String slotId = transactionId.split(VALUE_SEPARATOR)[1];
+        IdentityVerificationTransaction transaction = cacheUtilService.getVerifiedSlotTransaction(slotId);
         if(transaction == null)
             throw new InvalidTransactionException();
 
-        IdentityVerificationStatusResponse identityVerificationStatusResponse = new IdentityVerificationStatusResponse();
-        if(Arrays.asList(COMPLETED, FAILED).contains(transaction.getStatus())) {
-            identityVerificationStatusResponse.setStatus(transaction.getStatus());
-            cacheUtilService.setSharedVerificationResult(transaction.getAccessTokenSubject(),
-                    identityVerificationStatusResponse.getStatus().toString());
-            return identityVerificationStatusResponse;
+        ProfileCreateUpdateStatus registrationStatus;
+        if(transaction.getStatus() == null) {
+            registrationStatus = profileRegistryPlugin.getProfileCreateUpdateStatus(transaction.getApplicationId());
+            transaction.setStatus(ProfileCreateUpdateStatus.getVerificationStatus(registrationStatus));
         }
 
-        ProfileCreateUpdateStatus registrationStatus = profileRegistryPlugin.getProfileCreateUpdateStatus(transaction.getApplicationId());
-        switch (registrationStatus) {
-            case FAILED:
-                identityVerificationStatusResponse.setStatus(FAILED);
-                break;
+        IdentityVerificationStatusResponse identityVerificationStatusResponse = new IdentityVerificationStatusResponse();
+        switch (transaction.getStatus()) {
             case COMPLETED:
-                identityVerificationStatusResponse.setStatus(COMPLETED);
+            case FAILED:
+                identityVerificationStatusResponse.setStatus(transaction.getStatus());
                 break;
-            case PENDING:
-                identityVerificationStatusResponse.setStatus(UPDATE_PENDING);
+            case UPDATE_PENDING:
+                registrationStatus = profileRegistryPlugin.getProfileCreateUpdateStatus(transaction.getApplicationId());
+                transaction.setStatus(ProfileCreateUpdateStatus.getVerificationStatus(registrationStatus));
+                cacheUtilService.updateVerifiedSlotTransaction(slotId, transaction);
                 break;
         }
-        cacheUtilService.setSharedVerificationResult(transaction.getAccessTokenSubject(),
-                identityVerificationStatusResponse.getStatus().toString());
+
+        cacheUtilService.updateVerificationStatus(transaction.getAccessTokenSubject(), transaction.getStatus().toString(),
+                transaction.getErrorCode());
+        identityVerificationStatusResponse.setStatus(transaction.getStatus());
         return identityVerificationStatusResponse;
     }
 
@@ -386,5 +390,10 @@ public class IdentityVerificationService {
             log.error("Failed to parse access token: {}", tokenString, e);
         }
         return null;
+    }
+
+    private long getVerificationProcessExpireTimeInMillis(IdentityVerifierDetail identityVerifierDetail) {
+        int processDurationInSeconds = identityVerifierDetail.getProcessDuration() <= 0 ? slotExpireInSeconds : identityVerifierDetail.getProcessDuration();
+        return System.currentTimeMillis() + ( processDurationInSeconds * 1000L );
     }
 }
