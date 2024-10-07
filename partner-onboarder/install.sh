@@ -21,7 +21,7 @@ if [ "$flag" = "n" ]; then
 fi
 
 NS=signup
-CHART_VERSION=1.5.0-ES-develop
+CHART_VERSION=1.5.0-es-develop
 
 echo Create $NS namespace
 kubectl create ns $NS || true
@@ -114,6 +114,12 @@ function installing_onboarder() {
       --version $CHART_VERSION \
       --wait --wait-for-jobs
     echo "Partner onboarded successfully and reports are moved to S3 or NFS"
+
+    echo Updating signup-keystore-password value
+    kubectl -n $NS create secret generic signup-keystore-password --from-literal=signup-keystore-password='mosip123' --dry-run=client -o yaml | kubectl apply -f
+
+    kubectl rollout restart deployment signup -n signup
+    echo signup-keystore-password updated successfully to signup.
     return 0
   fi
 }
