@@ -163,7 +163,7 @@
     "proceed": "Proceed",
     "ekycSteps": {
       "ekyc_provider": {
-        "label": "Choose an eKYC provider",
+        "label": "Choose An eKYC Provider",
         "description": "Select an eKYC service provider that aligns with your requirements"
       },
       "terms_&_conditions": {
@@ -171,11 +171,11 @@
         "description": "Review the policy terms & conditions"
       },
       "pre_verification_guide": {
-        "label": "Pre-verification guide",
-        "description": "Key instructions for a seamless eKYC experience"
+        "label": "Pre-verification Guide",
+        "description": "Essential tips to follow for a smooth eKYC experience"
       },
       "identity_verification": {
-        "label": "Identity verification",
+        "label": "Identity Verification",
         "description": "This step verifies the individual’s physical presence during the identity verification process as well as verification of the individual’s identity with their physical ID"
       },
       "review_consent": {
@@ -185,7 +185,7 @@
     }
   },
   "verification_screen":{
-    "welcome_message": "Welcome! Initiating Identity verification process in {count} seconds",
+    "welcome_message": "Welcome! initiating identity verification process in {count} seconds",
     "focus_on_screen_message": "Please try to focus on the screen",
     "successful_header": "Verification Successful!",
     "successful_subheader": "Please wait while we finalize the process",
@@ -291,6 +291,6 @@
     "IDR-IDS-012": "Authentication Failed",
     "IDR-BIE-001": "Technical Error in Biometric Extraction",
     "IDR-CFJ-001": "Credential Feeder job failed",
-    "grant_exchange_failed": "Unable to Authorise - grant exchange failed. Please try again."
+    "grant_exchange_failed": "Unable to Authorize - grant exchange failed. Please try again."
   }
 }
