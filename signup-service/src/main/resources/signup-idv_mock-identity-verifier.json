@@ -21,8 +21,8 @@
     "id_card_too_far": { "eng" : "Unable to read card as its too far" }
   },
   "messages": {
-    "turn_left": { "eng" : "Turn your head to Left" },
-    "turn_right": { "eng" : "Turn your head to Right" },
+    "turn_left": { "eng" : "Turn your head to left" },
+    "turn_right": { "eng" : "Turn your head to right" },
     "sit_straight": {"eng" : "Keep good posture while facing the camera" },
     "success_check": { "eng" : "Liveness check successful" },
     "id_verified": { "eng" : "ID card verification successful" },
