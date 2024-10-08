@@ -19,6 +19,9 @@ import io.mosip.signup.dto.IdentityVerificationTransaction;
 import io.mosip.signup.dto.IdentityVerifierDetail;
 import io.mosip.signup.exception.InvalidTransactionException;
 import io.mosip.signup.exception.SignUpException;
+import io.mosip.signup.helper.AuditHelper;
+import io.mosip.signup.util.AuditEvent;
+import io.mosip.signup.util.AuditEventType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -57,6 +60,9 @@ public class WebSocketHandler {
 
     @Autowired
     private SimpMessagingTemplate simpMessagingTemplate;
+
+    @Autowired
+    AuditHelper auditHelper;
 
 
     public void processFrames(IdentityVerificationRequest identityVerificationRequest) {
@@ -158,6 +164,7 @@ public class WebSocketHandler {
             log.error("Failed to fetch verified result from the plugin", e);
             transaction.setStatus(VerificationStatus.FAILED);
             transaction.setErrorCode(e.getErrorCode());
+            auditHelper.sendAuditTransaction(AuditEvent.PROCESS_FRAMES, AuditEventType.ERROR,transaction.getSlotId() , null);
         } catch (ProfileException e) {
             log.error("Failed to update profile", e);
             transaction.setStatus(VerificationStatus.FAILED);
