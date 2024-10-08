@@ -122,7 +122,7 @@
     "cancel_button": "Cancel",
     "proceed_button": "Proceed",
     "permission_denied_header": "Camera Access Disabled",
-    "permission_denied_description": "Your camera permission has be disabled. Please enable camera permission from your browser setting..",
+    "permission_denied_description": "Your camera permission has be disabled. Please enable camera permission from your browser settings.",
     "not_accessible_header": "Camera Not Accessible",
     "not_accessible_description": "Your camera is not accessible. Please check your camera accessibility, some other application is accessing your camera right now.",
     "key_info": {
