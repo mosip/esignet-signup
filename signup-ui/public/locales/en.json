@@ -185,7 +185,7 @@
     }
   },
   "verification_screen":{
-    "welcome_message": "Welcome! initiating identity verification process in {count} seconds",
+    "welcome_message": "Welcome! Initiating identity verification process in {count} seconds",
     "focus_on_screen_message": "Please try to focus on the screen",
     "successful_header": "Verification Successful!",
     "successful_subheader": "Please wait while we finalize the process",
