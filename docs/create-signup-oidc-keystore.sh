@@ -52,7 +52,15 @@ EOL
 
 rm $PRIVATE_KEY_FILE $PUBLIC_KEY_FILE $CERT_FILE
 
+# Get the current directory
+current_dir=$(pwd)
+# Get the parent directory
+parent_dir=$(dirname "$current_dir")
+
+mv $KEYSTORE_FILE "$parent_dir"
+mv $JWK_FILE "$parent_dir"
+
 # Completion messages
-echo "PKCS12 keystore generated: $KEYSTORE_FILE"
-echo "Public key (JWK) saved to: $JWK_FILE"
+echo "PKCS12 keystore generated: $parent_dir/$KEYSTORE_FILE"
+echo "Public key (JWK) saved to: $parent_dir/$JWK_FILE"
 

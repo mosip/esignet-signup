@@ -6,6 +6,17 @@ if [ $# -ge 1 ] ; then
   export KUBECONFIG=$1
 fi
 
+while true; do
+    read -p "Do you want to continue installing signup services? (y/n): " ans
+    if [ "$ans" = "Y" ] || [ "$ans" = "y" ]; then
+        break
+    elif [ "$ans" = "N" ] || [ "$ans" = "n" ]; then
+        exit 1
+    else
+        echo "Please provide a correct option (Y or N)"
+    fi
+done
+
 function installing_signup-ui() {
 
   while true; do

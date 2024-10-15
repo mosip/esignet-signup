@@ -35,22 +35,50 @@ function installing_prereq() {
   cd $ROOT_DIR/keycloak
   ./keycloak-init.sh
 
-  SIGNUP_HOST=$(kubectl -n esignet get cm esignet-global -o jsonpath={.data.mosip-signup-host})
-  echo "Please enter the recaptcha admin site key for domain "$SIGNUP_HOST""
-  read SSITE_KEY
-  echo Please enter the recaptcha admin secret key for domain $SIGNUP_HOST
-  read SSECRET_KEY
+  while true; do
+    read -p "Do you want to continue configuring Captcha secrets for signup ? (y/n) : " ans
+      if [ $ans='Y' ] || [ $ans='y' ]; then
+        echo "Please create captcha site and secret key for signup domain: signup.sandbox.xyz.net"
 
-  echo Setting up captcha secrets
-  kubectl -n $NS create secret generic signup-captcha --from-literal=signup-captcha-site-key=$SSITE_KEY --from-literal=signup-captcha-secret-key=$SSECRET_KEY --dry-run=client -o yaml | kubectl apply -f -
+        SIGNUP_HOST=$(kubectl -n esignet get cm esignet-global -o jsonpath={.data.mosip-signup-host})
+        echo Please enter the recaptcha admin site key for domain $SIGNUP_HOST
+        read SSITE_KEY
+        echo Please enter the recaptcha admin secret key for domain $SIGNUP_HOST
+        read SSECRET_KEY
 
-  echo creating empty signup-keystore-password secret
+        echo "Setting up captcha secrets"
+        kubectl -n $NS create secret generic signup-captcha --from-literal=signup-captcha-site-key=$SSITE_KEY --from-literal=signup-captcha-secret-key=$SSECRET_KEY --dry-run=client -o yaml | kubectl apply -f -
+        echo "Captcha secrets for esignet configured sucessfully"
+
+        ./copy_cm_func.sh secret signup-captcha $NS captcha
+
+        # Check if the first environment variable exists
+        ENV_VAR_EXISTS=$(kubectl -n captcha get deployment captcha -o jsonpath="{.spec.template.spec.containers[0].env[?(@.name=='MOSIP_CAPTCHA_SECRET_SIGNUP')].name}")
+
+        if [[ -z "$ENV_VAR_EXISTS" ]]; then
+            # If the environment variable does not exist, add it
+            echo "Environment variable 'MOSIP_CAPTCHA_SECRET_SIGNUP' does not exist. Adding it..."
+            kubectl patch deployment -n captcha captcha --type='json' -p='[{"op": "add", "path": "/spec/template/spec/containers/0/env/-", "value": {"name": "MOSIP_CAPTCHA_SECRET_SIGNUP", "valueFrom": {"secretKeyRef": {"name": "signup-captcha", "key": "signup-captcha-secret-key"}}}}]'
+        else
+            # If the environment variable exists, update it
+            echo "Environment variable 'MOSIP_CAPTCHA_SECRET_SIGNUP' exists. Updating it..."
+            kubectl patch deployment -n captcha captcha --type='json' -p='[{"op": "replace", "path": "/spec/template/spec/containers/0/env[?(@.name==\"MOSIP_CAPTCHA_SECRET_SIGNUP\")]", "value": {"name": "MOSIP_CAPTCHA_SECRET_SIGNUP", "valueFrom": {"secretKeyRef": {"name": "signup-captcha", "key": "signup-captcha-secret-key"}}}}]'
+        fi
+
+      elif [ "$ans" = "N" ] || [ "$ans" = "n" ]; then
+        exit 1
+      else
+        echo "Please provide a correct option (Y or N)"
+      fi
+  done
+
+  echo "creating empty signup-keystore-password secret"
   kubectl -n $NS create secret generic signup-keystore-password --from-literal=signup-keystore-password='' --dry-run=client -o yaml | kubectl apply -f -
 
-  echo creating empty signup-keystore secret
+  echo "creating empty signup-keystore secret"
   kubectl -n $NS create secret generic signup-keystore --from-literal=oidckeystore.p12='' --dry-run=client -o yaml | kubectl apply -f -
 
-  echo All signup services pre-requisites deployed sucessfully.
+  echo "All signup services pre-requisites deployed sucessfully."
   return 0
 }
 
