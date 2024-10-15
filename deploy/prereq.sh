@@ -53,16 +53,16 @@ function installing_prereq() {
         ./copy_cm_func.sh secret signup-captcha $NS captcha
 
         # Check if the first environment variable exists
-        ENV_VAR_EXISTS=$(kubectl -n captcha get deployment captcha -o jsonpath="{.spec.template.spec.containers[0].env[?(@.name=='MOSIP_SIGNUP_CAPTCHA_SECRET_KEY')].name}")
+        ENV_VAR_EXISTS=$(kubectl -n captcha get deployment captcha -o jsonpath="{.spec.template.spec.containers[0].env[?(@.name=='MOSIP_CAPTCHA_SECRET_SIGNUP')].name}")
 
         if [[ -z "$ENV_VAR_EXISTS" ]]; then
             # If the environment variable does not exist, add it
-            echo "Environment variable 'MOSIP_SIGNUP_CAPTCHA_SECRET_KEY' does not exist. Adding it..."
-            kubectl patch deployment -n captcha captcha --type='json' -p='[{"op": "add", "path": "/spec/template/spec/containers/0/env/-", "value": {"name": "MOSIP_SIGNUP_CAPTCHA_SECRET_KEY", "valueFrom": {"secretKeyRef": {"name": "signup-captcha", "key": "signup-captcha-secret-key"}}}}]'
+            echo "Environment variable 'MOSIP_CAPTCHA_SECRET_SIGNUP' does not exist. Adding it..."
+            kubectl patch deployment -n captcha captcha --type='json' -p='[{"op": "add", "path": "/spec/template/spec/containers/0/env/-", "value": {"name": "MOSIP_CAPTCHA_SECRET_SIGNUP", "valueFrom": {"secretKeyRef": {"name": "signup-captcha", "key": "signup-captcha-secret-key"}}}}]'
         else
             # If the environment variable exists, update it
-            echo "Environment variable 'MOSIP_SIGNUP_CAPTCHA_SECRET_KEY' exists. Updating it..."
-            kubectl patch deployment -n captcha captcha --type='json' -p='[{"op": "replace", "path": "/spec/template/spec/containers/0/env[?(@.name==\"MOSIP_SIGNUP_CAPTCHA_SECRET_KEY\")]", "value": {"name": "MOSIP_SIGNUP_CAPTCHA_SECRET_KEY", "valueFrom": {"secretKeyRef": {"name": "signup-captcha", "key": "signup-captcha-secret-key"}}}}]'
+            echo "Environment variable 'MOSIP_CAPTCHA_SECRET_SIGNUP' exists. Updating it..."
+            kubectl patch deployment -n captcha captcha --type='json' -p='[{"op": "replace", "path": "/spec/template/spec/containers/0/env[?(@.name==\"MOSIP_CAPTCHA_SECRET_SIGNUP\")]", "value": {"name": "MOSIP_CAPTCHA_SECRET_SIGNUP", "valueFrom": {"secretKeyRef": {"name": "signup-captcha", "key": "signup-captcha-secret-key"}}}}]'
         fi
 
       elif [ "$ans" = "N" ] || [ "$ans" = "n" ]; then
