@@ -113,10 +113,10 @@ function installing_onboarder() {
       -f values.yaml \
       --version $CHART_VERSION \
       --wait --wait-for-jobs
-    echo "Partner onboarded successfully and reports are moved to S3 or NFS"
+    echo "Partner onboarder executed and reports are moved to S3 or NFS please check the same to make sure partner was onboarded sucessfully."
 
     echo Updating signup-keystore-password value
-    kubectl -n $NS create secret generic signup-keystore-password --from-literal=signup-keystore-password='mosip123' --dry-run=client -o yaml | kubectl apply -f
+    kubectl -n $NS create secret generic signup-keystore-password --from-literal=signup-keystore-password='mosip123' --dry-run=client -o yaml | kubectl apply -f -
 
     kubectl rollout restart deployment signup -n signup
     echo signup-keystore-password updated successfully to signup.

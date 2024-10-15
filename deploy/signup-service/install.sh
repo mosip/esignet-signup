@@ -9,6 +9,17 @@ fi
 NS=signup
 CHART_VERSION=1.1.0-develop
 
+while true; do
+    read -p "Do you want to continue installing signup services? (y/n): " ans
+    if [ "$ans" = "Y" ] || [ "$ans" = "y" ]; then
+        break
+    elif [ "$ans" = "N" ] || [ "$ans" = "n" ]; then
+        exit 1
+    else
+        echo "Please provide a correct option (Y or N)"
+    fi
+done
+
 function installing_signup() {
   helm repo add mosip https://mosip.github.io/mosip-helm
   helm repo update
