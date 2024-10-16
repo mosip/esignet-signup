@@ -6,12 +6,22 @@ if [ $# -ge 1 ] ; then
   export KUBECONFIG=$1
 fi
 
+# set commands for error handling.
+set -e
+set -o errexit   ## set -e : exit the script if any statement returns a non-true return value
+set -o nounset   ## set -u : exit the script if you try to use an uninitialised variable
+set -o errtrace  # trace ERR through 'time command' and other functions
+set -o pipefail  # trace ERR through pipes
+
+
 NS=signup
 CHART_VERSION=0.0.1-develop
 COPY_UTIL=../copy_cm_func.sh
 
 helm repo add mosip https://mosip.github.io/mosip-helm
 helm repo update
+
+kubectl create ns $NS || true
 
 echo "checking if mosip-pms-client, mosip-ida-client & mpartner_default_auth client is created already"
 IAMHOST_URL=$(kubectl -n esignet get cm esignet-global -o jsonpath={.data.mosip-iam-external-host})
