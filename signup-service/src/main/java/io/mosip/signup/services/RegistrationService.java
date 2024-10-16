@@ -96,9 +96,13 @@ public class RegistrationService {
      * @throws SignUpException
      */
     public GenerateChallengeResponse generateChallenge(GenerateChallengeRequest generateChallengeRequest, String transactionId) throws SignUpException {
-        if (captchaRequired && !captchaHelper.validateCaptcha(generateChallengeRequest.getCaptchaToken())) {
-            log.error("generate-challenge failed: invalid captcha");
-            throw new CaptchaException(ErrorConstants.INVALID_CAPTCHA);
+        if (captchaRequired) {
+            try {
+                captchaHelper.validateCaptcha(generateChallengeRequest.getCaptchaToken());
+            } catch (Exception e) {
+                log.error("generate-challenge failed: invalid captcha");
+                throw new CaptchaException(ErrorConstants.INVALID_CAPTCHA);
+            }
         }
 
         String identifier = generateChallengeRequest.getIdentifier();
