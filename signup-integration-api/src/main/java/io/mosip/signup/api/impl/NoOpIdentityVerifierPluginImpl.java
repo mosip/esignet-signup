@@ -27,16 +27,17 @@ public class NoOpIdentityVerifierPluginImpl extends IdentityVerifierPlugin {
 
     @Override
     public void initialize(String transactionId, IdentityVerificationInitDto identityVerificationInitDto) {
-
+        log.warn("NoOpVerifier initialize invoked!!");
     }
 
     @Override
     public void verify(String transactionId, IdentityVerificationDto identityVerificationDto) throws IdentityVerifierException {
-
+        log.warn("NoOpVerifier verify invoked!!");
     }
 
     @Override
     public VerificationResult getVerificationResult(String transactionId) throws IdentityVerifierException {
+        log.warn("NoOpVerifier getVerificationResult invoked!!");
         return null;
     }
 }
