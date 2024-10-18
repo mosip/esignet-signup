@@ -7,9 +7,8 @@ package io.mosip.signup.config;
 
 import io.mosip.esignet.core.dto.Error;
 import io.mosip.esignet.core.dto.ResponseWrapper;
+import io.mosip.esignet.core.exception.EsignetException;
 import io.mosip.esignet.core.util.IdentityProviderUtil;
-import io.mosip.signup.exception.CaptchaException;
-import io.mosip.signup.exception.GenerateChallengeException;
 import io.mosip.signup.exception.SignUpException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.TypeMismatchException;
@@ -104,6 +103,11 @@ public class ExceptionHandlerAdvice extends ResponseEntityExceptionHandler {
         }
         if(ex instanceof SignUpException) {
             String errorCode = ((SignUpException) ex).getErrorCode();
+            return new ResponseEntity<ResponseWrapper>(getResponseWrapper(errorCode, getMessage(errorCode)),
+                    HttpStatus.OK);
+        }
+        if(ex instanceof EsignetException) {
+            String errorCode = ((EsignetException) ex).getErrorCode();
             return new ResponseEntity<ResponseWrapper>(getResponseWrapper(errorCode, getMessage(errorCode)),
                     HttpStatus.OK);
         }
