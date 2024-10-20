@@ -1202,12 +1202,12 @@ public class RegistrationServiceTest {
         generateChallengeRequest.setCaptchaToken("mock-invalid-captcha");
         ReflectionTestUtils.setField(registrationService, "captchaRequired", true);
         when(captchaHelper.validateCaptcha(
-                generateChallengeRequest.getCaptchaToken())).thenReturn(false);
+                generateChallengeRequest.getCaptchaToken())).thenThrow(new EsignetException(ErrorConstants.INVALID_CAPTCHA));
         when(challengeManagerService.generateChallenge(any())).thenReturn("1111");
         try {
             registrationService.generateChallenge(generateChallengeRequest, "");
             Assert.fail();
-        } catch (CaptchaException ex) {
+        } catch (EsignetException ex) {
             Assert.assertEquals("invalid_captcha", ex.getErrorCode());
         }
     }
