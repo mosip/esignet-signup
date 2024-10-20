@@ -8,6 +8,7 @@ package io.mosip.signup.controllers;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.esignet.core.dto.RequestWrapper;
+import io.mosip.esignet.core.exception.EsignetException;
 import io.mosip.esignet.core.util.IdentityProviderUtil;
 import io.mosip.kernel.auth.defaultadapter.config.SecurityConfig;
 import io.mosip.signup.api.dto.ProfileDto;
@@ -516,7 +517,7 @@ public class RegistrationControllerTest {
     @Test
     public void doGenerateChallenge_withInvalidCaptchaToken_returnErrorResponse() throws Exception {
         when(registrationService.generateChallenge(generateChallengeRequest, ""))
-                .thenThrow(new CaptchaException(ErrorConstants.INVALID_CAPTCHA));
+                .thenThrow(new EsignetException(ErrorConstants.INVALID_CAPTCHA));
         mockMvc.perform(post("/registration/generate-challenge")
                         .content(objectMapper.writeValueAsString(wrapper))
                         .contentType(MediaType.APPLICATION_JSON))
