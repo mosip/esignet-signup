@@ -19,7 +19,6 @@ import io.mosip.signup.exception.InvalidTransactionException;
 import io.mosip.signup.exception.SignUpException;
 import io.mosip.signup.helper.CryptoHelper;
 import io.mosip.signup.util.*;
-import io.mosip.signup.exception.CaptchaException;
 import io.mosip.signup.exception.GenerateChallengeException;
 import io.mosip.signup.helper.NotificationHelper;
 import lombok.extern.slf4j.Slf4j;
@@ -96,10 +95,8 @@ public class RegistrationService {
      * @throws SignUpException
      */
     public GenerateChallengeResponse generateChallenge(GenerateChallengeRequest generateChallengeRequest, String transactionId) throws SignUpException {
-        if (captchaRequired && !captchaHelper.validateCaptcha(generateChallengeRequest.getCaptchaToken())) {
-            log.error("generate-challenge failed: invalid captcha");
-            throw new CaptchaException(ErrorConstants.INVALID_CAPTCHA);
-        }
+        if (captchaRequired)
+            captchaHelper.validateCaptcha(generateChallengeRequest.getCaptchaToken());
 
         String identifier = generateChallengeRequest.getIdentifier();
         RegistrationTransaction transaction = null;
