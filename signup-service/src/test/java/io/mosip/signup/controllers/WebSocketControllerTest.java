@@ -3,8 +3,11 @@ package io.mosip.signup.controllers;
 import io.mosip.signup.api.dto.IdentityVerificationResult;
 import io.mosip.signup.api.exception.IdentityVerifierException;
 import io.mosip.signup.dto.IdentityVerificationRequest;
+import io.mosip.signup.helper.AuditHelper;
 import io.mosip.signup.services.CacheUtilService;
 import io.mosip.signup.services.WebSocketHandler;
+import io.mosip.signup.util.AuditEvent;
+import io.mosip.signup.util.AuditEventType;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,10 +46,14 @@ public class WebSocketControllerTest {
     @MockBean
     private RestTemplate restTemplate;
 
+    @MockBean
+    private AuditHelper auditHelper;
+
     @Before
     public void setup() {
         ReflectionTestUtils.setField(webSocketController, "webSocketHandler", webSocketHandler);
         ReflectionTestUtils.setField(webSocketController, "cacheUtilService", cacheUtilService);
+        ReflectionTestUtils.setField(webSocketController,"auditHelper",auditHelper);
     }
 
     @Test
@@ -78,12 +85,17 @@ public class WebSocketControllerTest {
         identityVerificationRequest.setStepCode("START");
         identityVerificationRequest.setSlotId("slot-id");
         webSocketController.processFrames(identityVerificationRequest);
+        Mockito.verify(auditHelper, Mockito.times(1))
+                .sendAuditTransaction(AuditEvent.PROCESS_FRAMES, AuditEventType.SUCCESS, "slot-id", null);
     }
 
     @Test
     public void consumeStepResult_test() {
         IdentityVerificationResult identityVerificationResult = new IdentityVerificationResult();
+        identityVerificationResult.setId("id");
         webSocketController.consumeStepResult(identityVerificationResult);
+        Mockito.verify(auditHelper, Mockito.times(1))
+                .sendAuditTransaction(AuditEvent.CONSUME_STEP_RESULT, AuditEventType.SUCCESS, "id", null);
     }
 
     @Test
@@ -97,6 +109,8 @@ public class WebSocketControllerTest {
         });
         webSocketController.onConnected(sessionConnectedEvent);
         Mockito.verify(webSocketHandler, Mockito.times(1)).updateProcessDuration("");
+        Mockito.verify(auditHelper, Mockito.times(1))
+                .sendAuditTransaction(AuditEvent.ON_CONNECTED, AuditEventType.SUCCESS,"" , null);
     }
 
     @Test
@@ -111,5 +125,7 @@ public class WebSocketControllerTest {
         webSocketController.onDisconnected(sessionDisconnectEvent);
         Mockito.verify(cacheUtilService, Mockito.times(1)).removeFromSlotConnected(Mockito.anyString());
         Mockito.verify(cacheUtilService, Mockito.times(1)).evictSlotAllottedTransaction(Mockito.anyString(),Mockito.anyString());
+        Mockito.verify(auditHelper, Mockito.times(1))
+                .sendAuditTransaction(AuditEvent.ON_DISCONNECTED, AuditEventType.SUCCESS, "TID", null);
     }
 }
