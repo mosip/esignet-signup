@@ -103,7 +103,7 @@ paths:
       description: |-
         This endpoint generates a challenge for the provided user identifier. For example, if the identifier is a phone number, an OTP is sent to that phone. If the identifier is an email address, the OTP is sent to the given email.
 
-        A transaction ID is created and stored in the cache to maintain the state of the challenge specific to the input user identifier. The system should identify whether the provided identifier is a phone number or an email address. The response header should include a Set-Cookie with the transaction ID.
+        A transactionID is created and stored in the cache to maintain the state of the challenge specific to the input user identifier. The response header should include a Set-Cookie with the transaction ID.
 
         **Response Specification**:
 
@@ -883,10 +883,9 @@ paths:
         4. Check if the disabilityType is set with valid value, null is allowed.
 
         Video identity verification process is handled using websocket connection. 
-        As the server limits the number of websocket connection, every request to get the slot ID checks the current ongoing websocket connections.
-        slot ID is returned only if the current count is less than the allowed count. Otherwise, `slot_not_available` error is returned.
+        It checks the current number of allocated slots using a unique cookieValue. This count reflects the ongoing WebSocket connections. If the count exceeds the predefined maximum limit, an error slot_not_available is thrown.
 
-        **Note:** If this request is invoked after getting a valid slot ID, Server returns back the same slot ID until the transaction timeout.
+        If a valid slot ID is already assigned to the transaction, that ID is returned immediately, avoiding unnecessary reallocation.If no existing slot ID is found, the method updates the transaction with the new verifier ID and disability type, sets the transaction status to STARTED, and saves the updated transaction in the cache.
       operationId: post-slot
       parameters:
         - name: X-XSRF-TOKEN
@@ -974,6 +973,7 @@ paths:
                           enum:
                             - invalid_transaction
                             - slot_not_available
+                            - invalid_identity_verifier_id
                         errorMessage:
                           type: string
           headers: {}
@@ -1320,7 +1320,7 @@ components:
           type: string
           enum:
             - OTP
-            - KBA
+            - KBI
       required:
         - challenge
         - format
@@ -1371,8 +1371,10 @@ components:
           type: string
           x-stoplight:
             id: osonjar9p3hng
+          description: A unique identifier for the identity verifier.
         description:
           type: object
+          description: A map containing localized descriptions for the identity verifier.
           x-stoplight:
             id: mdywcu1t5p7f7
           additionalProperties:
@@ -1381,6 +1383,7 @@ components:
             type: string
         displayName:
           type: object
+          description: A map containing localized display names for the identity verifier.
           x-stoplight:
             id: d7gji8pii33ao
           additionalProperties:
@@ -1389,23 +1392,29 @@ components:
             type: string
         logoUrl:
           type: string
+          description: The URL to the logo image representing the identity verifier.
           x-stoplight:
             id: p53z2gnd7g7t8
         processType:
           type: string
+          description: The type of process associated with the identity verification.
           x-stoplight:
             id: c1izbfvk09g2e
         retryOnFailure:
           type: boolean
+          description: A flag indicating if the process should automatically retry on failure.
           x-stoplight:
             id: cv452a1uhh6v4
-        retryAttempt:
-          type: number
+        resumeOnSuccess:
+          type: boolean
+          description: A flag indicating if the process can resume from the last successful state.
           x-stoplight:
             id: ewzxm6x6p3pg0
         active:
           type: boolean
+          description: A flag indicating whether the identity verifier is currently active.
           x-stoplight:
             id: tp0ta9gots7qw
         processDuration:
           type: number
+          description: The duration (in seconds) for which the identity verification process typically runs.
