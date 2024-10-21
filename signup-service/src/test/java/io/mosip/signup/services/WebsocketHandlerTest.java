@@ -267,6 +267,7 @@ public class WebsocketHandlerTest {
         IdentityVerificationTransaction transaction = new IdentityVerificationTransaction();
         transaction.setVerifierId("verifier-id");
         transaction.setApplicationId("application-id");
+        transaction.setSlotId("slotId");
         Mockito.when(cacheUtilService.getVerifiedSlotTransaction(identityVerificationResult.getId())).thenReturn(transaction);
         IdentityVerifierPlugin identityVerifierPlugin = Mockito.mock(IdentityVerifierPlugin.class);
         Mockito.when(identityVerifierFactory.getIdentityVerifier("verifier-id")).thenReturn(identityVerifierPlugin);
@@ -275,7 +276,7 @@ public class WebsocketHandlerTest {
         webSocketHandler.processVerificationResult(identityVerificationResult);
         Mockito.verify(profileRegistryPlugin, Mockito.times(0)).updateProfile(Mockito.anyString(), Mockito.any());
         Mockito.verify(auditHelper, Mockito.times(1))
-                .sendAuditTransaction(AuditEvent.PROCESS_FRAMES, AuditEventType.ERROR, null, null);
+                .sendAuditTransaction(AuditEvent.PROCESS_FRAMES, AuditEventType.ERROR, "slotId", null);
         Assert.assertEquals(VerificationStatus.FAILED, transaction.getStatus());
         Assert.assertEquals("verification_failed", transaction.getErrorCode());
     }

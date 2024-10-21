@@ -160,15 +160,13 @@ public class WebSocketHandler {
                     break;
             }
 
-        } catch (IdentityVerifierException e) {
-            log.error("Failed to fetch verified result from the plugin", e);
-            transaction.setStatus(VerificationStatus.FAILED);
-            transaction.setErrorCode(e.getErrorCode());
-            auditHelper.sendAuditTransaction(AuditEvent.PROCESS_FRAMES, AuditEventType.ERROR,transaction.getSlotId() , null);
-        } catch (ProfileException e) {
+        } catch (IdentityVerifierException | ProfileException e) {
             log.error("Failed to update profile", e);
             transaction.setStatus(VerificationStatus.FAILED);
-            transaction.setErrorCode(e.getErrorCode());
+            transaction.setErrorCode(e instanceof IdentityVerifierException ?
+                    ((IdentityVerifierException) e).getErrorCode() :
+                    ((ProfileException) e).getErrorCode());
+            auditHelper.sendAuditTransaction(AuditEvent.PROCESS_FRAMES, AuditEventType.ERROR,transaction.getSlotId(), null);
         }
         cacheUtilService.updateVerifiedSlotTransaction(identityVerificationResult.getId(), transaction);
         cacheUtilService.updateVerificationStatus(transaction.getAccessTokenSubject(), transaction.getStatus().toString(),
