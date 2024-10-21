@@ -7,6 +7,9 @@ package io.mosip.signup.services;
 
 
 import io.mosip.signup.dto.IdentityVerificationTransaction;
+import io.mosip.signup.helper.AuditHelper;
+import io.mosip.signup.util.AuditEvent;
+import io.mosip.signup.util.AuditEventType;
 import io.mosip.signup.util.ErrorConstants;
 import org.junit.Assert;
 import org.junit.Test;
@@ -36,6 +39,9 @@ public class WebSocketHandshakeHandlerTest {
     @Mock
     private CacheUtilService cacheUtilService;
 
+    @Mock
+    private AuditHelper auditHelper;
+
     private Map<String, Object> attributes;
 
     @BeforeEach
@@ -61,6 +67,7 @@ public class WebSocketHandshakeHandlerTest {
 
         Assert.assertNotNull(principal);
         Assert.assertEquals("Slot###123", principal.getName());
+        Mockito.verify(auditHelper).sendAuditTransaction(AuditEvent.HANDSHAKE_SUCCESS, AuditEventType.SUCCESS, "Slot", null);
     }
 
     @Test
@@ -102,6 +109,7 @@ public class WebSocketHandshakeHandlerTest {
         }catch (HandshakeFailureException e){
             Assert.assertEquals(ErrorConstants.INVALID_TRANSACTION, e.getMessage());
         }
+        Mockito.verify(auditHelper).sendAuditTransaction(AuditEvent.HANDSHAKE_FAILED, AuditEventType.ERROR, "Slot", null);
     }
 
 }
