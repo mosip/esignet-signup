@@ -92,9 +92,10 @@ public class WebSocketControllerTest {
     @Test
     public void consumeStepResult_test() {
         IdentityVerificationResult identityVerificationResult = new IdentityVerificationResult();
+        identityVerificationResult.setId("id");
         webSocketController.consumeStepResult(identityVerificationResult);
         Mockito.verify(auditHelper, Mockito.times(1))
-                .sendAuditTransaction(AuditEvent.CONSUME_STEP_RESULT, AuditEventType.SUCCESS, null, null);
+                .sendAuditTransaction(AuditEvent.CONSUME_STEP_RESULT, AuditEventType.SUCCESS, "id", null);
     }
 
     @Test
