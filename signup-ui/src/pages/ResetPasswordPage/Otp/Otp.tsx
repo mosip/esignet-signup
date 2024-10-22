@@ -4,6 +4,7 @@ import { Trans, useTranslation } from "react-i18next";
 import PinInput from "react-pin-input";
 import { useTimer } from "react-timer-hook";
 
+import { criticalErrorsToPopup } from "~constants/criticalErrors";
 import { ResendAttempt } from "~components/resend-attempt";
 import { ActionMessage } from "~components/ui/action-message";
 import { Button } from "~components/ui/button";
@@ -278,8 +279,11 @@ export const Otp = ({ methods, settings }: OtpProps) => {
             if (errors.length > 0) {
               if (
                 [
-                  "invalid_transaction",
-                  ...ResetPasswordPossibleInvalid,
+                  ...new Set([
+                    "invalid_transaction",
+                    ...ResetPasswordPossibleInvalid,
+                    ...criticalErrorsToPopup
+                  ])
                 ].includes(errors[0].errorCode)
               ) {
                 setCriticalError(errors[0]);

@@ -5,6 +5,7 @@ import { Resolver, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import * as yup from "yup";
 
+import { criticalErrorsToPopup } from "~constants/criticalErrors";
 import { Form } from "~components/ui/form";
 import {
   validateCaptchaToken,
@@ -14,7 +15,11 @@ import {
   validatePassword,
   validateUsername,
 } from "~pages/shared/validation";
-import { ResetPasswordForm, ResetPasswordPossibleInvalid, SettingsDto } from "~typings/types";
+import {
+  ResetPasswordForm,
+  ResetPasswordPossibleInvalid,
+  SettingsDto,
+} from "~typings/types";
 
 import Otp from "./Otp";
 import ResetPassword from "./ResetPassword";
@@ -60,7 +65,7 @@ export const ResetPasswordPage = ({ settings }: ResetPasswordPageProps) => {
       // Step 1 - UserInfo
       yup.object({
         username: validateUsername(settings),
-        fullname: validateFullName(settings,t),
+        fullname: validateFullName(settings, t),
         captchaToken: validateCaptchaToken(settings),
       }),
       // Step 2 - Otp
@@ -152,9 +157,13 @@ export const ResetPasswordPage = ({ settings }: ResetPasswordPageProps) => {
   return (
     <>
       {criticalError &&
-        ["invalid_transaction", ...ResetPasswordPossibleInvalid].includes(
-          criticalError.errorCode
-        ) && <ResetPasswordPopover />}
+        [
+          ...new Set([
+            "invalid_transaction",
+            ...ResetPasswordPossibleInvalid,
+            ...criticalErrorsToPopup
+          ])
+        ].includes(criticalError.errorCode) && <ResetPasswordPopover />}
       <Form {...methods}>
         <form noValidate>{getResetPasswordContent(step)}</form>
       </Form>
