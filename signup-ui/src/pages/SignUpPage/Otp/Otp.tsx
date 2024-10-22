@@ -45,6 +45,7 @@ import {
   stepSelector,
   useSignUpStore,
 } from "../useSignUpStore";
+import { criticalErrorsToPopup } from "~constants/criticalErrors";
 
 interface OtpProps {
   settings: SettingsDto;
@@ -272,12 +273,11 @@ export const Otp = ({ methods, settings }: OtpProps) => {
               if (
                 [
                   "already-registered",
-                  "identifier_already_registered",
                 ].includes(errors[0].errorCode)
               ) {
                 setVerificationChallengeError(errors[0]);
                 setStep(SignUpStep.PhoneStatus);
-              } else if (errors[0].errorCode === "invalid_transaction") {
+              } else if (criticalErrorsToPopup.includes(errors[0].errorCode)) {
                 setCriticalError(errors[0]);
               } else {
                 setChallengeVerificationError(errors[0]);
