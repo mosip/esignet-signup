@@ -6,6 +6,7 @@ import { Resolver, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import * as yup from "yup";
 
+import { criticalErrorsToPopup } from "~constants/criticalErrors";
 import { Form } from "~components/ui/form";
 import { keys as mutationKeys } from "~pages/shared/mutations";
 import {
@@ -59,7 +60,7 @@ interface SignUpPageProps {
 }
 
 export const SignUpPage = ({ settings }: SignUpPageProps) => {
-  const { t, i18n} = useTranslation();
+  const { t } = useTranslation();
 
   const { step, criticalError } = useSignUpStore(
     useCallback(
@@ -166,13 +167,12 @@ export const SignUpPage = ({ settings }: SignUpPageProps) => {
         return "unknown step";
     }
   };
-
   return (
     <>
       {criticalError &&
-        ["invalid_transaction", "identifier_already_registered"].includes(
-          criticalError.errorCode
-        ) && <SignUpPopover />}
+        criticalErrorsToPopup.includes(criticalError.errorCode) && (
+          <SignUpPopover />
+        )}
       <Form {...methods}>
         <form noValidate>{getSignUpStepContent(step)}</form>
       </Form>
