@@ -230,6 +230,7 @@
     "invalid_username": "Please Enter Valid Username and try again.",
     "invalid_password": "Please Enter Valid Password and try again.",
     "invalid_consent": "Invalid Consent",
+    "tran_failed_invalid_request": "Transaction has failed due to invalid request. Please try again.",
     "identifier_mismatch": "Identifier Mismatch",
     "consent_required": "Consent Required",
     "too_many_attempts": "Too many OTP requests received. Please wait a moment before trying again.",
