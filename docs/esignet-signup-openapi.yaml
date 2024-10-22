@@ -885,7 +885,7 @@ paths:
         Video identity verification process is handled using websocket connection. 
         It checks the current number of allocated slots using a unique cookieValue. This count reflects the ongoing WebSocket connections. If the count exceeds the predefined maximum limit, an error slot_not_available is thrown.
 
-        If a valid slot ID is already assigned to the transaction, that ID is returned immediately, avoiding unnecessary reallocation.If no existing slot ID is found, the method updates the transaction with the new verifier ID and disability type, sets the transaction status to STARTED, and saves the updated transaction in the cache.
+        If no existing slot ID is found, the method updates the transaction with the new verifier ID and disability type, sets the transaction status to STARTED, and saves the updated transaction in the cache.
       operationId: post-slot
       parameters:
         - name: X-XSRF-TOKEN
