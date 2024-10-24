@@ -176,7 +176,7 @@
       },
       "identity_verification": {
         "label": "Identity Verification",
-        "description": "This step verifies the individual’s physical presence during the identity verification process as well as verification of the individual’s identity with their physical ID"
+        "description": "This step verifies an individual’s physical presence during the identity verification process as well as verification of the individual’s identity with their physical ID"
       },
       "review_consent": {
         "label": "Review Consent",
@@ -292,6 +292,6 @@
     "IDR-IDS-012": "Authentication Failed",
     "IDR-BIE-001": "Technical Error in Biometric Extraction",
     "IDR-CFJ-001": "Credential Feeder job failed",
-    "grant_exchange_failed": "Unable to Authorize - grant exchange failed. Please try again."
+    "grant_exchange_failed": "Unable to Authorize. Please try again."
   }
 }
