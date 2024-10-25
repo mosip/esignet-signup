@@ -1,0 +1,69 @@
+GetRegistrationStatusNegTC:
+   Signup_ESignet_GetRegistrationStatusNegTC_without_TransactionID:
+      endPoint: /v1/signup/registration/status
+      role: resident
+      restMethod: post
+      inputTemplate: signup/GetRegistrationStatus/GetRegistrationStatus
+      outputTemplate: signup/error
+      input: '{
+  "verifiedTransactionID": ""
+}'
+      output: '{
+      	"errors": [
+    {
+      "errorCode": "invalid_transaction",
+      "errorMessage": "$IGNORE$"
+    }
+  ]
+}'
+   Signup_ESignet_GetRegistrationStatusNegTC_with_invalid_TransactionID:
+      endPoint: /v1/signup/registration/status
+      role: resident
+      restMethod: post
+      inputTemplate: signup/GetRegistrationStatus/GetRegistrationStatus
+      outputTemplate: signup/error
+      input: '{
+  "verifiedTransactionID": "@363gssh"
+}'
+      output: '{
+      	"errors": [
+    {
+      "errorCode": "invalid_request",
+      "errorMessage": "$IGNORE$"
+    }
+  ]
+}'
+   Signup_ESignet_GetRegistrationStatusNegTC_with_invalid_TransactionID:
+      endPoint: /v1/signup/registration/status
+      role: resident
+      restMethod: post
+      inputTemplate: signup/GetRegistrationStatus/GetRegistrationStatus
+      outputTemplate: signup/error
+      input: '{
+  "verifiedTransactionID": "@363gssh"
+}'
+      output: '{
+      	"errors": [
+    {
+      "errorCode": "invalid_transaction",
+      "errorMessage": "$IGNORE$"
+    }
+  ]
+}'
+   Signup_ESignet_GetRegistrationStatusNegTC_with_expired_TransactionID_wait:
+      endPoint: /v1/signup/registration/status
+      role: resident
+      restMethod: post
+      inputTemplate: signup/GetRegistrationStatus/GetRegistrationStatus
+      outputTemplate: signup/error
+      input: '{
+  "verifiedTransactionID": "c6HmSfLCj-GK6VfozWbJA0ox4CrMfQZ9Ln8jkBequCg"
+}'
+      output: '{
+      	"errors": [
+    {
+      "errorCode": "invalid_transaction",
+      "errorMessage": "$IGNORE$"
+    }
+  ]
+}'
