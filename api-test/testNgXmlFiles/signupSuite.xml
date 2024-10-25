@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+
+	<suite name="Signup Suite">
+	<!-- Passing Group as parmeter unsing "testType" Possible Groups are: smoke 
+		regression smokeAndRegression -->
+	<listeners>
+		<listener class-name="io.mosip.testrig.apirig.report.EmailableReport"/>
+	</listeners>
+	
+	<test name ="SignUpSettings">
+		<parameter name ="ymlFile"
+			value="signup/SignUpSettings/SignUpSettings.yml" />
+	<classes>
+			<class name="io.mosip.testrig.apirig.testscripts.GetWithParam" />
+		</classes>
+	</test>
+	<test name ="GenerateChallenge">
+		<parameter name ="ymlFile"
+			value="signup/GenerateChallenge/GenerateChallenge.yml" />
+	<classes>
+			<class name="io.mosip.testrig.apirig.testscripts.SimplePost" />
+		</classes>
+	</test>
+	<test name ="VerifyChallenge">
+		<parameter name ="ymlFile"
+			value="signup/VerifyChallenge/VerifyChallenge.yml" />
+	<classes>
+			<class name="io.mosip.testrig.apirig.testscripts.SimplePost" />
+		</classes>
+	</test>
+	<test name ="RegisterUser">
+		<parameter name ="ymlFile"
+			value="signup/RegisterUser/RegisterUser.yml" />
+	<classes>
+			<class name="io.mosip.testrig.apirig.testscripts.SimplePost" />
+		</classes>
+	</test>
+	<test name ="GetRegistrationStatus">
+		<parameter name ="ymlFile"
+			value="signup/GetRegistrationStatus/GetRegistrationStatus.yml" />
+	<classes>
+			<class name="io.mosip.testrig.apirig.testscripts.GetWithParam" />
+		</classes>
+	</test>
+	<test name ="GenerateChallengeForResetPassword">
+		<parameter name ="ymlFile"
+			value="signup/GenerateChallengeForResetPassword/GenerateChallengeForResetPassword.yml" />
+	<classes>
+			<class name="io.mosip.testrig.apirig.testscripts.SimplePost" />
+		</classes>
+	</test>
+	<test name ="VerifyChallengeForResetPassword">
+		<parameter name ="ymlFile"
+			value="signup/VerifyChallengeForResetPassword/VerifyChallengeForResetPassword.yml" />
+	<classes>
+			<class name="io.mosip.testrig.apirig.testscripts.SimplePost" />
+		</classes>
+	</test>
+	<test name ="ResetPassword">
+		<parameter name ="ymlFile"
+			value="signup/ResetPassword/ResetPassword.yml" />
+	<classes>
+			<class name="io.mosip.testrig.apirig.testscripts.SimplePost" />
+		</classes>
+	</test>
+	<test name ="GetRegistrationStatusForResetPassword">
+		<parameter name ="ymlFile"
+			value="signup/GetRegistrationStatusForResetPassword/GetRegistrationStatusForResetPassword.yml" />
+	<classes>
+			<class name="io.mosip.testrig.apirig.testscripts.GetWithParam" />
+		</classes>
+	</test>
+	<test name ="GenerateChallengeNegTC">
+		<parameter name ="ymlFile"
+			value="signup/GenerateChallengeNegTC/GenerateChallengeNegTC.yml" />
+	<classes>
+			<class name="io.mosip.testrig.apirig.testscripts.SimplePost" />
+		</classes>
+	</test>
+	<test name ="VerifyChallengeNegTC">
+		<parameter name ="ymlFile"
+			value="signup/VerifyChallengeNegTC/VerifyChallengeNegTC.yml" />
+	<classes>
+			<class name="io.mosip.testrig.apirig.testscripts.PostWithAutogenIdWithOtpGenerate" />
+		</classes>
+	</test>
+	<test name ="RegisterUserNegTC">
+		<parameter name ="ymlFile"
+			value="signup/RegisterUserNegTC/RegisterUserNegTC.yml" />
+	<classes>
+			<class name="io.mosip.testrig.apirig.testscripts.SimplePost" />
+		</classes>
+	</test>
+	<test name ="GetRegistrationStatusNegTC">
+		<parameter name ="ymlFile"
+			value="signup/GetRegistrationStatusNegTC/GetRegistrationStatusNegTC.yml" />
+	<classes>
+			<class name="io.mosip.testrig.apirig.testscripts.GetWithParam" />
+		</classes>
+	</test>
+	<test name ="GenerateChallengeForResetPasswordNegTC">
+		<parameter name ="ymlFile"
+			value="signup/GenerateChallengeForResetPasswordNegTC/GenerateChallengeForResetPasswordNegTC.yml" />
+	<classes>
+			<class name="io.mosip.testrig.apirig.testscripts.SimplePost" />
+		</classes>
+	</test>
+	<test name ="VerifyChallengeForResetPasswordNegTC">
+		<parameter name ="ymlFile"
+			value="signup/VerifyChallengeForResetPasswordNegTC/VerifyChallengeForResetPasswordNegTC.yml" />
+	<classes>
+			<class name="io.mosip.testrig.apirig.testscripts.PostWithAutogenIdWithOtpGenerate" />
+		</classes>
+	</test>
+	<test name ="ResetPasswordNegTC">
+		<parameter name ="ymlFile"
+			value="signup/ResetPasswordNegTC/ResetPasswordNegTC.yml" />
+	<classes>
+			<class name="io.mosip.testrig.apirig.testscripts.SimplePost" />
+		</classes>
+	</test>
+	
+	<test name="OIDCClientV2">
+		<parameter name="ymlFile"
+			value="signup/OIDCClientV2/OIDCClientV2.yml" />
+			<parameter name="idKeyName"	value="clientId" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.testscripts.SimplePostForAutoGenId" />
+		</classes>
+	</test>
+	<test name="OAuthDetailsRequestPassword">
+		<parameter name="ymlFile"
+			value="signup/OAuthDetailsRequestPassword/OAuthDetailsRequestPassword.yml" />
+			<parameter name="idKeyName"	value="transactionId,encodedResp" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.testscripts.SimplePostForAutoGenId" />
+		</classes>
+	</test>
+	<test name="AuthenticateUserPassword">
+		<parameter name="ymlFile"
+			value="signup/AuthenticateUserPassword/AuthenticateUserPassword.yml" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.testscripts.SimplePost" />
+		</classes>
+	</test>
+	<test name="AuthorizationCodePassword">
+		<parameter name="ymlFile"
+			value="signup/AuthorizationCodePassword/AuthorizationCodePassword.yml" />
+			<parameter name="idKeyName"	value="code" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.testscripts.SimplePostForAutoGenId" />
+		</classes>
+	</test>
+	<test name="GenerateTokenPassword">
+		<parameter name="ymlFile"
+			value="signup/GenerateTokenPassword/GenerateTokenPassword.yml" />
+			<parameter name="idKeyName"	value="access_token" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.testscripts.SimplePostForAutoGenIdForUrlEncoded" />
+		</classes>
+	</test>
+	<test name="GetOidcUserInfoPassword">
+		<parameter name="ymlFile"
+			value="signup/GetOidcUserInfoPassword/GetOidcUserInfoPassword.yml" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.testscripts.GetWithParam" />
+		</classes>
+	</test>
+	<test name="OAuthDetailsRequestPasswordNegTC">
+		<parameter name="ymlFile"
+			value="signup/OAuthDetailsRequestPasswordNegTC/OAuthDetailsRequestPasswordNegTC.yml" />
+			<parameter name="idKeyName"	value="transactionId,encodedResp" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.testscripts.SimplePostForAutoGenId" />
+		</classes>
+	</test>
+	<test name="AuthenticateUserPasswordNegTC">
+		<parameter name="ymlFile"
+			value="signup/AuthenticateUserPasswordNegTC/AuthenticateUserPasswordNegTC.yml" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.testscripts.SimplePost" />
+		</classes>
+	</test>
+	
+	<!-- Start of Sign up L2 phase test cases -->
+	<test name="OAuthDetailsRequestV3">
+		<parameter name="ymlFile"
+			value="signup/OAuthDetailsRequestV3/OAuthDetailsRequest.yml" />
+		<parameter name="idKeyName"	value="transactionId,encodedResp" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.testscripts.SimplePostForAutoGenId" />
+		</classes>
+	</test>
+	<test name="AuthenticateUserV3">
+		<parameter name="ymlFile"
+			value="signup/AuthenticateUserV3/AuthenticateUser.yml" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.testscripts.PostWithAutogenIdWithOtpGenerate" />
+		</classes>
+	</test>
+	<test name="ClaimDetails">
+		<parameter name="ymlFile"
+			value="signup/ClaimDetails/ClaimDetails.yml" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.testscripts.GetWithParam" />
+		</classes>
+	</test>
+	<test name="PrepareSignupRedirect">
+		<parameter name="ymlFile"
+			value="signup/PrepareSignupRedirect/PrepareSignupRedirect.yml" />
+		<parameter name="idKeyName"	value="idToken" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.testscripts.SimplePostForAutoGenId" />
+		</classes>
+	</test>
+	<test name="SignupAuthorize">
+		<parameter name="ymlFile"
+			value="signup/SignupAuthorize/SignupAuthorize.yml" />
+		<parameter name="idKeyName"	value="transactionId,encodedResp" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.testscripts.SimplePostForAutoGenId" />
+		</classes>
+	</test>
+	<test name="IDTAuthentication">
+		<parameter name="ymlFile"
+			value="signup/IDTAuthentication/IDTAuthentication.yml" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.testscripts.SimplePostForAutoGenId" />
+		</classes>
+	</test>
+	<test name="SignupAuthorizeCode">
+		<parameter name="ymlFile"
+			value="signup/SignupAuthorizeCode/SignupAuthorizeCode.yml" />
+		<parameter name="idKeyName"	value="code" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.testscripts.SimplePostForAutoGenId" />
+		</classes>
+	</test>
+	<test name="InitiateIdVerification">
+		<parameter name="ymlFile"
+			value="signup/InitiateIdVerification/InitiateIdVerification.yml" />
+		<parameter name="idKeyName"	value="id" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.testscripts.SimplePostForAutoGenId" />
+		</classes>
+	</test>
+	<test name="GetIdVerifier">
+		<parameter name="ymlFile"
+			value="signup/GetIdVerifier/GetIdVerifier.yml" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.testscripts.GetWithParam" />
+		</classes>
+	</test>
+	<test name="GetSlot">
+		<parameter name="ymlFile"
+			value="signup/GetSlot/GetSlot.yml" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.testscripts.SimplePost" />
+		</classes>
+	</test>
+    <test name="PrepareSignupRedirectNeg">
+	    <parameter name="ymlFile"
+			value="signup/PrepareSignupRedirectNeg/PrepareSignupRedirectNeg.yml" />
+		<parameter name="idKeyName"	value="idToken" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.testscripts.SimplePostForAutoGenId" />
+		</classes>
+	</test>
+	<!-- End of Sign up L2 phase test cases -->
+</suite>

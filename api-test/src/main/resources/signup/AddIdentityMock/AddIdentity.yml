@@ -1,0 +1,38 @@
+AddIdentity:
+   Signup_AddIdentity_Password_Auth_smoke_Pos:
+      endPoint: /v1/mock-identity-system/identity
+      description: Add identity with password authentication
+      role: idrepo
+      restMethod: post
+      inputTemplate: signup/AddIdentityMock/AddIdentity
+      outputTemplate: signup/AddIdentityMock/addIdentityResult
+      input: '{
+	  "requesttime": "$TIMESTAMP$",
+	  "individualId": "$RANDOMINDIVIDUALIDFORMOCKIDENTITY$",
+	  "pin": "545411",
+	  "email": "$EMAILIDFORMOCKIDENTITY$",
+	  "password": "$PASSWORDFORMOCKIDENTITY$",
+	  "phone": "$PHONEFORMOCKIDENTITY$"
+}'
+      output: '{
+  "status":"mock identity data created successfully"
+}'
+
+   Signup_AddIdentity_L2_Valid_Parameters_smoke_Pos:
+      endPoint: /v1/mock-identity-system/identity
+      description: Add identity with password authentication
+      role: idrepo
+      restMethod: post
+      inputTemplate: signup/AddIdentityMock/AddIdentity
+      outputTemplate: signup/AddIdentityMock/addIdentityResult
+      input: '{
+	  "requesttime": "$TIMESTAMP$",
+	  "individualId": "$RANDOMINDIVIDUALIDFORMOCKIDENTITY$",
+	  "pin": "545411",
+	  "email": "$EMAILIDFORMOCKIDENTITY$",
+	  "password": "$PASSWORDFORMOCKIDENTITY$",
+	  "phone": "$PHONEFORMOCKIDENTITY$"
+}'
+      output: '{
+  "status":"mock identity data created successfully"
+}'
