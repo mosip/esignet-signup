@@ -60,6 +60,9 @@ public class WebSocketHandler {
     @Autowired
     private SimpMessagingTemplate simpMessagingTemplate;
 
+    @Autowired
+    AuditHelper auditHelper;
+
 
     public void processFrames(IdentityVerificationRequest identityVerificationRequest) {
         String errorCode = null;
