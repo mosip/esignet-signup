@@ -7,8 +7,8 @@ GetIdVerifier:
       inputTemplate: signup/GetIdVerifier/GetIdVerifier
       outputTemplate: signup/GetIdVerifier/GetIdVerifierResult
       input: '{
-      	"idvTransactionID": "$ID:InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_Smoke_Sid_idvTransactionID$",
-      	"verifierId": "$ID:InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_Smoke_Sid_id$"
+      	"idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_Smoke_Sid_idvTransactionID$",
+      	"verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_Smoke_Sid_id$"
 }'
       output: '{
        

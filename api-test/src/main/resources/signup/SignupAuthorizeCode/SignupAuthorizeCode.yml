@@ -7,11 +7,11 @@ SignupAuthorizeCode:
       inputTemplate: signup/SignupAuthorizeCode/SignupAuthorizeCode
       outputTemplate: signup/SignupAuthorizeCode/SignupAuthorizeCodeResult
       input: '{
-        "encodedHash": "$ID:SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_encodedResp$",
+        "encodedHash": "$ID:ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_encodedResp$",
       	"requestTime": "$TIMESTAMP$",
-      	"pathFragmentCookie": "$ID:PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_Smoke_sid_pathFragmentCookie$",
-      	"pathFragmentCookieTransactionId": "$ID:OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_transactionId$",
-      	"transactionId": "$ID:SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_transactionId$",
+      	"pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_Smoke_sid_pathFragmentCookie$",
+      	"pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_transactionId$",
+      	"transactionId": "$ID:ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_transactionId$",
       	"acceptedClaims": [{channel: "email"},{channel: "phone_number"}]
 }'
       output: '{
