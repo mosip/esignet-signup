@@ -748,7 +748,7 @@ paths:
                         type: array
                         x-stoplight:
                           id: bqo8k9elv3sqq
-                        description: List of configured identity verifiers to systematically verify user and provide vreified claim about the user.
+                        description: List of configured identity verifiers to systematically verify user and provide verified claim about the user.
                         items:
                           $ref: '#/components/schemas/ProviderDetail'
                           x-stoplight:
