@@ -1,8 +1,7 @@
-package io.mosip.testrig.apirig.testscripts;
+package io.mosip.testrig.apirig.signup.testscripts;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -23,23 +22,24 @@ import org.testng.internal.TestResult;
 
 import io.mosip.testrig.apirig.dto.OutputValidationDto;
 import io.mosip.testrig.apirig.dto.TestCaseDTO;
+import io.mosip.testrig.apirig.signup.utils.SignupConfigManager;
+import io.mosip.testrig.apirig.signup.utils.SignupUtil;
 import io.mosip.testrig.apirig.testrunner.BaseTestCase;
 import io.mosip.testrig.apirig.testrunner.HealthChecker;
 import io.mosip.testrig.apirig.utils.AdminTestException;
 import io.mosip.testrig.apirig.utils.AdminTestUtil;
 import io.mosip.testrig.apirig.utils.AuthenticationTestException;
-import io.mosip.testrig.apirig.utils.SignupConfigManager;
-import io.mosip.testrig.apirig.utils.SignupUtil;
 import io.mosip.testrig.apirig.utils.GlobalConstants;
 import io.mosip.testrig.apirig.utils.OutputValidationUtil;
 import io.mosip.testrig.apirig.utils.ReportUtil;
 import io.restassured.response.Response;
 
-public class PostWithOnlyPathParam extends AdminTestUtil implements ITest {
-	private static final Logger logger = Logger.getLogger(PostWithOnlyPathParam.class);
+public class PostWithBodyAndPathParams extends AdminTestUtil implements ITest {
+	private static final Logger logger = Logger.getLogger(PostWithBodyAndPathParams.class);
 	protected String testCaseName = "";
+	String pathParams = null;
+	String headers = null;
 	public Response response = null;
-	public boolean sendEsignetToken = false;
 
 	@BeforeClass
 	public static void setLogLevel() {
@@ -65,7 +65,8 @@ public class PostWithOnlyPathParam extends AdminTestUtil implements ITest {
 	@DataProvider(name = "testcaselist")
 	public Object[] getTestCaseList(ITestContext context) {
 		String ymlFile = context.getCurrentXmlTest().getLocalParameters().get("ymlFile");
-		sendEsignetToken = context.getCurrentXmlTest().getLocalParameters().containsKey("sendEsignetToken");
+		pathParams = context.getCurrentXmlTest().getLocalParameters().get("pathParams");
+		headers = context.getCurrentXmlTest().getLocalParameters().get("headers");
 		logger.info("Started executing yml: " + ymlFile);
 		return getYmlTestData(ymlFile);
 	}
@@ -83,13 +84,12 @@ public class PostWithOnlyPathParam extends AdminTestUtil implements ITest {
 	public void test(TestCaseDTO testCaseDTO) throws AuthenticationTestException, AdminTestException {
 		testCaseName = testCaseDTO.getTestCaseName();
 		testCaseName = SignupUtil.isTestCaseValidForExecution(testCaseDTO);
-		testCaseName = isTestCaseValidForExecution(testCaseDTO);
 		String[] templateFields = testCaseDTO.getTemplateFields();
+
 		if (HealthChecker.signalTerminateExecution) {
 			throw new SkipException(
 					GlobalConstants.TARGET_ENV_HEALTH_CHECK_FAILED + HealthChecker.healthCheckFailureMapS);
 		}
-
 		if (testCaseDTO.getTestCaseName().contains("VID") || testCaseDTO.getTestCaseName().contains("Vid")) {
 			if (!BaseTestCase.getSupportedIdTypesValue().contains("VID")
 					&& !BaseTestCase.getSupportedIdTypesValue().contains("vid")) {
@@ -97,13 +97,17 @@ public class PostWithOnlyPathParam extends AdminTestUtil implements ITest {
 			}
 		}
 
+		testCaseDTO = AdminTestUtil.filterHbs(testCaseDTO);
+		String inputJson = filterInputHbs(testCaseDTO);
+		String outputJson = filterOutputHbs(testCaseDTO);
+
 		if (testCaseDTO.getTemplateFields() != null && templateFields.length > 0) {
 			ArrayList<JSONObject> inputtestCases = AdminTestUtil.getInputTestCase(testCaseDTO);
 			ArrayList<JSONObject> outputtestcase = AdminTestUtil.getOutputTestCase(testCaseDTO);
 			for (int i = 0; i < languageList.size(); i++) {
-				response = postWithOnlyPathParamAndCookie(ApplnURI + testCaseDTO.getEndPoint(),
+				response = postWithPathParamsBodyAndCookie(ApplnURI + testCaseDTO.getEndPoint(),
 						getJsonFromTemplate(inputtestCases.get(i).toString(), testCaseDTO.getInputTemplate()),
-						COOKIENAME, testCaseDTO.getRole(), testCaseDTO.getTestCaseName());
+						COOKIENAME, testCaseDTO.getRole(), testCaseDTO.getTestCaseName(), pathParams);
 
 				Map<String, List<OutputValidationDto>> ouputValid = OutputValidationUtil.doJsonOutputValidation(
 						response.asString(),
@@ -117,29 +121,46 @@ public class PostWithOnlyPathParam extends AdminTestUtil implements ITest {
 		}
 
 		else {
-			response = postWithOnlyPathParamAndCookie(ApplnURI + testCaseDTO.getEndPoint(),
-					getJsonFromTemplate(testCaseDTO.getInput(), testCaseDTO.getInputTemplate()), COOKIENAME,
-					testCaseDTO.getRole(), testCaseDTO.getTestCaseName(), sendEsignetToken);
-
-			Map<String, List<OutputValidationDto>> ouputValid = null;
-			if (testCaseName.contains("_StatusCode")) {
-
-				OutputValidationDto customResponse = customStatusCodeResponse(String.valueOf(response.getStatusCode()),
-						testCaseDTO.getOutput());
-
-				ouputValid = new HashMap<>();
-				ouputValid.put(GlobalConstants.EXPECTED_VS_ACTUAL, List.of(customResponse));
+			if (testCaseName.contains("Esignet_KycDemoAuth")) {
+				response = postWithPathParamsBodyHeaderAndCookie(ApplnURI + testCaseDTO.getEndPoint(), inputJson,
+						COOKIENAME, testCaseDTO.getRole(), testCaseDTO.getTestCaseName(), pathParams);
 			} else {
-				ouputValid = OutputValidationUtil.doJsonOutputValidation(response.asString(),
-						getJsonFromTemplate(testCaseDTO.getOutput(), testCaseDTO.getOutputTemplate()), testCaseDTO,
-						response.getStatusCode());
+				response = postWithPathParamsBodyAndCookie(ApplnURI + testCaseDTO.getEndPoint(), inputJson, COOKIENAME,
+						testCaseDTO.getRole(), testCaseDTO.getTestCaseName(), pathParams);
 			}
-
+			Map<String, List<OutputValidationDto>> ouputValid = OutputValidationUtil
+					.doJsonOutputValidation(response.asString(), outputJson, testCaseDTO, response.getStatusCode());
 			Reporter.log(ReportUtil.getOutputValidationReport(ouputValid));
 
 			if (!OutputValidationUtil.publishOutputResult(ouputValid))
 				throw new AdminTestException("Failed at output validation");
 		}
+
+	}
+
+	private String filterOutputHbs(TestCaseDTO testCaseDTO) {
+		String outputJson = getJsonFromTemplate(testCaseDTO.getOutput(), testCaseDTO.getOutputTemplate());
+
+		if (outputJson.contains(GlobalConstants.$1STLANG$))
+			outputJson = outputJson.replace(GlobalConstants.$1STLANG$, BaseTestCase.languageList.get(0));
+		if (outputJson.contains(GlobalConstants.$2STLANG$))
+			outputJson = outputJson.replace(GlobalConstants.$2STLANG$, BaseTestCase.languageList.get(1));
+		if (outputJson.contains(GlobalConstants.$3STLANG$))
+			outputJson = outputJson.replace(GlobalConstants.$3STLANG$, BaseTestCase.languageList.get(2));
+		return outputJson;
+	}
+
+	private String filterInputHbs(TestCaseDTO testCaseDTO) {
+		String inputJson = getJsonFromTemplate(testCaseDTO.getInput(), testCaseDTO.getInputTemplate());
+
+		if (inputJson.contains(GlobalConstants.$1STLANG$))
+			inputJson = inputJson.replace(GlobalConstants.$1STLANG$, BaseTestCase.languageList.get(0));
+		if (inputJson.contains(GlobalConstants.$2STLANG$))
+			inputJson = inputJson.replace(GlobalConstants.$2STLANG$, BaseTestCase.languageList.get(1));
+		if (inputJson.contains(GlobalConstants.$3STLANG$))
+			inputJson = inputJson.replace(GlobalConstants.$3STLANG$, BaseTestCase.languageList.get(2));
+
+		return inputJson;
 	}
 
 	/**

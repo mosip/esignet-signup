@@ -8,8 +8,8 @@ ClaimDetails:
       inputTemplate: signup/ClaimDetails/ClaimDetails
       outputTemplate: signup/ClaimDetails/ClaimDetailsResult
       input: '{
-        "encodedHash": "$ID:OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_encodedResp$",
-      	"transactionId": "$ID:OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_transactionId$"
+        "encodedHash": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_encodedResp$",
+      	"transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_transactionId$"
     }'
       output: '{
 }'
