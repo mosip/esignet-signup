@@ -8,7 +8,7 @@ InitiateIdVerification:
       outputTemplate: signup/InitiateIdVerification/InitiateIdVerificationResult
       input: '{
       	"requestTime": "$TIMESTAMP$",
-      	"authorizationCode": "$ID:SignupAuthorizeCode_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_code$",
+      	"authorizationCode": "$ID:ESignet_SignupAuthorizeCode_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_code$",
       	"state": "urlInfo1724138417665"
 }'
       output: '{

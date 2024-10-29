@@ -1,4 +1,4 @@
-package io.mosip.testrig.apirig.utils;
+package io.mosip.testrig.apirig.signup.utils;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -12,8 +12,13 @@ import org.json.JSONObject;
 import org.testng.SkipException;
 
 import io.mosip.testrig.apirig.dto.TestCaseDTO;
+import io.mosip.testrig.apirig.signup.testrunner.MosipTestRunner;
 import io.mosip.testrig.apirig.testrunner.BaseTestCase;
-import io.mosip.testrig.apirig.testrunner.MosipTestRunner;
+import io.mosip.testrig.apirig.testrunner.OTPListener;
+import io.mosip.testrig.apirig.utils.AdminTestUtil;
+import io.mosip.testrig.apirig.utils.GlobalConstants;
+import io.mosip.testrig.apirig.utils.RestClient;
+import io.mosip.testrig.apirig.utils.SkipTestCaseHandler;
 import io.restassured.response.Response;
 
 public class SignupUtil extends AdminTestUtil {
@@ -175,6 +180,59 @@ public class SignupUtil extends AdminTestUtil {
 			return jsonString.replace(keyword, value);
 		else
 			throw new SkipException("Marking testcase as skipped as required fields are empty " + keyword);
+	}
+	
+	public static String otpHandler(String inputJson, String testCaseName) {
+		JSONObject request = new JSONObject(inputJson);
+		String emailId = null;
+		String otp = null;
+		if (request.has(GlobalConstants.REQUEST)) {
+			if (request.getJSONObject(GlobalConstants.REQUEST).has("otp")) {
+				if (request.getJSONObject(GlobalConstants.REQUEST).getString("otp").endsWith(GlobalConstants.MOSIP_NET)
+						|| request.getJSONObject(GlobalConstants.REQUEST).getString("otp")
+								.endsWith(GlobalConstants.OTP_AS_PHONE)) {
+					emailId = request.getJSONObject(GlobalConstants.REQUEST).get("otp").toString();
+					if (emailId.endsWith(GlobalConstants.OTP_AS_PHONE))
+						emailId = emailId.replace(GlobalConstants.OTP_AS_PHONE, "");
+					logger.info(emailId);
+					otp = OTPListener.getOtp(emailId);
+					request.getJSONObject(GlobalConstants.REQUEST).put("otp", otp);
+					inputJson = request.toString();
+					return inputJson;
+				}
+			} else if (request.has(GlobalConstants.REQUEST)) {
+				if (request.getJSONObject(GlobalConstants.REQUEST).has(GlobalConstants.CHALLENGELIST)) {
+					if (request.getJSONObject(GlobalConstants.REQUEST).getJSONArray(GlobalConstants.CHALLENGELIST)
+							.length() > 0) {
+						if (request.getJSONObject(GlobalConstants.REQUEST).getJSONArray(GlobalConstants.CHALLENGELIST)
+								.getJSONObject(0).has(GlobalConstants.CHALLENGE)) {
+							if (request.getJSONObject(GlobalConstants.REQUEST)
+									.getJSONArray(GlobalConstants.CHALLENGELIST).getJSONObject(0)
+									.getString(GlobalConstants.CHALLENGE).endsWith(GlobalConstants.MOSIP_NET)
+									|| request.getJSONObject(GlobalConstants.REQUEST)
+											.getJSONArray(GlobalConstants.CHALLENGELIST).getJSONObject(0)
+											.getString(GlobalConstants.CHALLENGE)
+											.endsWith(GlobalConstants.OTP_AS_PHONE)) {
+								emailId = request.getJSONObject(GlobalConstants.REQUEST)
+										.getJSONArray(GlobalConstants.CHALLENGELIST).getJSONObject(0)
+										.getString(GlobalConstants.CHALLENGE);
+								if (emailId.endsWith(GlobalConstants.OTP_AS_PHONE))
+									emailId = emailId.replace(GlobalConstants.OTP_AS_PHONE, "");
+								logger.info(emailId);
+								otp = OTPListener.getOtp(emailId);
+								request.getJSONObject(GlobalConstants.REQUEST)
+										.getJSONArray(GlobalConstants.CHALLENGELIST).getJSONObject(0)
+										.put(GlobalConstants.CHALLENGE, otp);
+								inputJson = request.toString();
+							}
+						}
+					}
+				}
+				return inputJson;
+			}
+		}
+
+		return inputJson;
 	}
 	
 }

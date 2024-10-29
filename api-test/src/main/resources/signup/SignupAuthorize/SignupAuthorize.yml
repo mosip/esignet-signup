@@ -7,8 +7,8 @@ SignupAuthorize:
       inputTemplate: signup/SignupAuthorize/SignupAuthorize
       outputTemplate: signup/SignupAuthorize/SignupAuthorizeResult
       input: '{
-      	"pathFragmentCookie": "$ID:PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_Smoke_sid_pathFragmentCookie$",
-      	"pathFragmentCookieTransactionId": "$ID:OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_transactionId$",
+      	"pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_Smoke_sid_pathFragmentCookie$",
+      	"pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_transactionId$",
       	"requestTime": "$TIMESTAMP$",
       	"clientId": "mosip-signup-oauth-client",
       	"scope": "openid",
@@ -17,7 +17,7 @@ SignupAuthorize:
       	"acrValues": "mosip:idp:acr:id-token",
       	"state": "urlInfo1724138417665",
       	"uiLocales": "en",
-      	"idTokenHint": "$ID:PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_Smoke_sid_idToken$"
+      	"idTokenHint": "$ID:ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_Smoke_sid_idToken$"
 }'
       output: '{
        

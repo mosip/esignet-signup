@@ -8,26 +8,26 @@ AuthenticateUserV3:
       inputTemplate: signup/AuthenticateUserV3/AuthenticateUser
       outputTemplate: signup/AuthenticateUserV3/AuthenticateUserResult
       input: '{
-        "encodedHash": "$ID:OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_encodedResp$",
+        "encodedHash": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_encodedResp$",
       	"requestTime": "$TIMESTAMP$",
-      	"transactionId": "$ID:OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_transactionId$",
+      	"transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_transactionId$",
       	"individualId": "$ID:AddIdentity_L2_Valid_Parameters_smoke_Pos_UIN$",
       	"authFactorType" : "OTP",
       	"challenge" : "$ID:AddIdentity_L2_Valid_Parameters_smoke_Pos_EMAIL$",
         "sendOtp":{
-    "encodedHash": "$ID:OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_encodedResp$",
+    "encodedHash": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_encodedResp$",
     "requestTime": "$TIMESTAMP$",
-    "transactionId": "$ID:OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_transactionId$",
+    "transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_transactionId$",
     "individualId": "$ID:AddIdentity_L2_Valid_Parameters_smoke_Pos_UIN$",
     "otpChannels": [{channel: "email"},{channel: "phone"}],
-    "sendOtpReqTemplate": "esignet/SendOtp/SendOtp",
+    "sendOtpReqTemplate": "signup/SendOtp/SendOtp",
     "sendOtpEndPoint": "/v1/esignet/authorization/send-otp"
     }
     }'
       output: '{
   "sendOtpResp":{
         "maskedMobile": "$IGNORE$",
-        "sendOtpResTemplate":"esignet/SendOtp/SendOtpResult",
+        "sendOtpResTemplate":"signup/SendOtp/SendOtpResult",
         "maskedEmail": "$IGNORE$"
     }
 }'
