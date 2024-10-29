@@ -1,4 +1,6 @@
 openapi: 3.1.0
+x-stoplight:
+  id: xzlslwsgsz4w5
 info:
   version: '1.0'
   title: e-Signet Signup Portal APIs
@@ -91,24 +93,26 @@ paths:
                         errorMessage: invalid_transaction
       servers:
         - url: 'https://signup.collab.mosip.net/v1/signup'
+      x-stoplight:
+        id: ar3yjf7kxwpic
   /registration/generate-challenge:
     post:
       tags:
         - UI
       summary: Generate Challenge Endpoint
       description: |-
-        Endpoint to generate challenge for the input identifier of the user. 
-        For eg: if the provided identifier is phone number, OTP is sent to phone. If the identifier is email, OTP is mailed to the given emailID.
+        This endpoint generates a challenge for the provided user identifier. For example, if the identifier is a phone number, an OTP is sent to that phone. If the identifier is an email address, the OTP is sent to the given email.
 
-        TransactionId is created and stored in the cache to maintain the state of the challenge specific to input user identifier.
+        A transactionID is created and stored in the cache to maintain the state of the challenge specific to the input user identifier. The response header should include a Set-Cookie with the transaction ID.
 
-        1. Should identify if the provided identifier is phone number or emailID.
-        2. Response header should set-cookie with transactionId
-        3. On success, return status as SUCCESS
-        4. In Failure, response is set to null, errors list if set with specific errorCode.
-        5. if regenerate is true, then a valid transactionId is excepted in the cookie to re-generate the challenge in the existing transaction.
-        6. Purpose of the challenge is set on starting of new transaction. Challenge generated for "Registration" should be used only for registration process.
-        And challenge generated for RESET_PASSWORD should be used only to reset password.
+        **Response Specification**:
+
+        On success, return the status as "SUCCESS."
+        On failure, the response should be set to null, with an errors list populated with specific error codes.
+        If regenerateChallenge is true, then a valid transaction ID is expected in the cookie to re-generate the challenge within the existing transaction.
+        Purpose of the Challenge:
+
+        The purpose of the challenge is defined at the start of a new transaction. A challenge generated for "Registration" should be used only for the registration process, while a challenge generated for "RESET_PASSWORD" should be used solely for resetting the password.
       operationId: post-send-otp
       parameters:
         - name: X-XSRF-TOKEN
@@ -142,7 +146,7 @@ paths:
                       description: |-
                         Locale to be used to send the challege in the notification to the user.
                         If not provided default notification language is considered.
-                    regenerate:
+                    regenerateChallenge:
                       type: boolean
                       description: |-
                         True - when we should resend the challenge for existing transaction.
@@ -156,7 +160,6 @@ paths:
                       description: Marks the purpose of this challenge in the transaction.
                   required:
                     - identifier
-                    - captchaToken
                     - purpose
               required:
                 - requestTime
@@ -190,6 +193,9 @@ paths:
                       status:
                         const: SUCCESS
                         description: Status of challenge verification.
+                        type: string
+                        x-stoplight:
+                          id: 0n615qpnrkxzb
                   errors:
                     type: array
                     description: List of Errors in case of request validation / processing failure in the server.
@@ -229,22 +235,25 @@ paths:
               description: Transaction Id is set in the cookie
       servers:
         - url: 'https://signup.collab.mosip.net/v1/signup'
+      x-stoplight:
+        id: mlcahim3lhd1z
   /registration/verify-challenge:
     post:
       tags:
         - UI
       summary: Challenge Verification Endpoint
       description: |-
-        Endpoint to verify with the provided challenge w.r.t the transaction ID.
+        This endpoint verifies the provided challenge against the transaction ID.
 
-        1. TransactionId from the cookie is validated.
-        2. validate the challenge.
-        3. identifier in the request MUST match the identifier stored in the cache.
-        3. On success, return status as SUCCESS
-        4. In Failure, response is set to null, errors list if set with specific errorCode.
+        The transaction ID from the cookie is validated.
+        The challenge is validated.
+        The identifier in the request must match the identifier stored in the cache.
 
-        TransactionId and setting the same in the new cookie, post successful challenge verification.
-        Old cookie is removed by setting age to 0.
+        **Response Specification**:
+
+        On success, return the status as "SUCCESS."
+        On failure, the response should be set to null, with the errors list populated with specific error codes.
+        After successful challenge verification, the transaction ID is set in a new cookie, while the old cookie is removed by setting its age to 0.
       operationId: post-verify-challenge
       parameters:
         - name: X-XSRF-TOKEN
@@ -315,6 +324,7 @@ paths:
                       status:
                         const: SUCCESS
                         description: Status of challenge verification.
+                        type: string
                   errors:
                     type: array
                     description: List of Errors in case of request validation / processing failure in Idp server.
@@ -353,6 +363,8 @@ paths:
               description: Verified transaction Id to be set after successful challenge verification
       servers:
         - url: 'https://signup.collab.mosip.net/v1/signup'
+      x-stoplight:
+        id: nme81qr34w1hk
   /registration/register:
     post:
       tags:
@@ -361,8 +373,8 @@ paths:
       description: |-
         Endpoint to register the individual.
 
-        1. username is with country code including + symbol if present.
-        2. if username is phone number, the same should be set as value to "phone" field.
+        1. Username is with country code including + symbol if present.
+        2. If username is phone number, the same should be set as value to "phone" field.
         3. Fields with no value should be set to null in userInfo.
 
         Note: We should clearly convey that username contains country code in the UI after registration.
@@ -386,6 +398,9 @@ paths:
           application/json:
             schema:
               type: object
+              required:
+                - requestTime
+                - request
               properties:
                 requestTime:
                   type: string
@@ -393,6 +408,11 @@ paths:
                   format: date-time
                 request:
                   type: object
+                  required:
+                    - username
+                    - password
+                    - consent
+                    - userInfo
                   properties:
                     username:
                       type: string
@@ -406,14 +426,10 @@ paths:
                     userInfo:
                       $ref: '#/components/schemas/UserInfoMap'
                       description: 'This is a map, every key-value here is a field published in the identity-schema.'
-                  required:
-                    - username
-                    - password
-                    - consent
-                    - userInfo
-              required:
-                - requestTime
-                - request
+                    locale:
+                      type: string
+                      x-stoplight:
+                        id: jmehz48h09b6y
             examples:
               Example 1:
                 value:
@@ -474,6 +490,8 @@ paths:
                     errors: []
       servers:
         - url: 'https://signup.collab.mosip.net/v1/signup'
+      x-stoplight:
+        id: 26xqeeectmolu
   /registration/status:
     get:
       tags:
@@ -482,9 +500,9 @@ paths:
       description: |-
         Endpoint to get the latest registration/reset-password status.
 
-        1. validate the verified_transaction id in the cookie.
-        2. check status of each handle registered.
-        3. Once the status of all the registered handles are in end statuses (Completed / Failed). Mark the 
+        1. Validate the verified_transaction id in the cookie.
+        2. Check status of each handle registered.
+        3. Once the status of all the registered handles are in end status (Completed / Failed). Mark the 
         transaction as completed.
         4. Return back the final status in the response.
       operationId: get-registration-status
@@ -548,6 +566,8 @@ paths:
                     errors: []
       servers:
         - url: 'https://signup.collab.mosip.net/v1/signup'
+      x-stoplight:
+        id: 0ncguzuxdx0mw
   /reset-password:
     post:
       tags:
@@ -556,14 +576,13 @@ paths:
       description: |-
         Endpoint to reset password for already registered users.
 
-
         1. TransactionId from the cookie is validated.
-        2. identifier in the request MUST match the identifier stored in the cache.
+        2. Identifier in the request MUST match the identifier stored in the cache.
         3. Retrieve the identity from credential-service using the identifier.
-        4. Fetch the uin from the retrieved identity and use to call the updateIdentity endpoint.
+        4. Fetch the UIN from the retrieved identity and use to call the updateIdentity endpoint.
         5. Generate password hash for the provided new password.
-        6. On success, return status as PENDING
-        7. In Failure, response is set to null, errors list if set with specific errorCode.
+        6. On Success, return status as PENDING
+        7. On Failure, response is set to null, errors list if set with specific errorCode.
 
         registration/status endpoint should be invoked to get the latest status of the pwd reset.
       operationId: post-reset-password
@@ -623,6 +642,7 @@ paths:
                         enum:
                           - PENDING
                           - COMPLETED
+                          - FAILED
                   errors:
                     type: array
                     items:
@@ -646,6 +666,585 @@ paths:
                             - reset_pwd_failed
       servers:
         - url: 'https://signup.collab.mosip.net/v1/signup'
+      x-stoplight:
+        id: 2qcdjfssneqqa
+  /identity-verification/initiate:
+    post:
+      tags:
+        - UI
+      summary: Initiate identity verification process Endpoint
+      description: |
+        Endpoint to start with Identity verification process.
+
+        **Prerequisite:** Signup-service is registered as OIDC client in the esignet-service, registered clientId is configured in the signup properties file.
+        - mosip.signup.oauth.client-id='mosip-signup-oauth-client'
+        - mosip.signup.oauth.redirect-uri=https://${mosip.signup.host}/identity-verification
+        - mosip.signup.oauth.issuer-uri=https://${mosip.esignet.host}
+
+        And also keystore is accessible to signup-service to read the private key which is used to sign the client assertion during token endpoint call.
+
+
+        1. Fetches access token from eSignet service with configured details.
+        2. Once access token is fetched successfully, create identity verification transaction in signup service
+        3. set-cookie header as `IDV_TRANSACTION_ID` in the response with identity verification transaction ID.
+
+        Response is built based on the list of verifiers configured in `signup-identity-verifier-details.json` file in the config server.
+      operationId: post-initiate-identity-verification
+      parameters:
+        - name: X-XSRF-TOKEN
+          in: header
+          description: CSRF token as set in cookie key 'XSRF-TOKEN'
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - requestTime
+                - request
+              properties:
+                requestTime:
+                  type: string
+                  format: date-time
+                  description: Current date and time when the request is sent
+                request:
+                  type: object
+                  required:
+                    - authorizationCode
+                    - state
+                  properties:
+                    authorizationCode:
+                      type: string
+                      description: Authorization code as result of oauth flow with esignet service.
+                      x-stoplight:
+                        id: ksxosl0ji6bkj
+                    state:
+                      type: string
+                      description: OAuth state parameter
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - responseTime
+                  - response
+                properties:
+                  responseTime:
+                    type: string
+                    format: date-time
+                    description: Current date and time when the request is sent
+                  response:
+                    type: object
+                    required:
+                      - identityVerifiers
+                    properties:
+                      identityVerifiers:
+                        type: array
+                        x-stoplight:
+                          id: bqo8k9elv3sqq
+                        description: List of configured identity verifiers to systematically verify user and provide verified claim about the user.
+                        items:
+                          $ref: '#/components/schemas/ProviderDetail'
+                          x-stoplight:
+                            id: z1qrr8wlserp5
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        errorCode:
+                          type: string
+                          enum:
+                            - invalid_request
+                            - grant_exchange_failed
+                            - userinfo_failed
+                        errorMessage:
+                          type: string
+          headers:
+            set-cookie:
+              schema:
+                type: string
+              description: IDV_TRANSACTION_ID
+      servers:
+        - url: 'https://signup.collab.mosip.net/v1/signup'
+      x-stoplight:
+        id: 8wabq54v6ny0e
+    parameters: []
+  '/identity-verification/identity-verifier/{id}':
+    get:
+      tags:
+        - UI
+      summary: Get Identity verifier details
+      description: |
+        Endpoint to get the details of specific identity verifier.
+
+        1. Validates the cookie with valid IDV transaction ID.
+        2. Validate the identity verifier ID.
+        3. Validate if the request is for `active` identity verifier.
+      operationId: get-identifier-verifier
+      parameters:
+        - name: X-XSRF-TOKEN
+          in: header
+          description: CSRF token as set in cookie key 'XSRF-TOKEN'
+          required: true
+          schema:
+            type: string
+        - schema:
+            type: string
+          in: cookie
+          name: IDV_TRANSACTION_ID
+          description: Transaction ID set after successful start of update process
+          required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - responseTime
+                  - response
+                properties:
+                  responseTime:
+                    type: string
+                    format: date-time
+                    description: Current date and time when the request is sent
+                  response:
+                    type: object
+                    required:
+                      - terms&Conditions
+                      - errors
+                      - messages
+                    properties:
+                      terms&Conditions:
+                        type: object
+                        description: |
+                          List of terms and conditions specific to identity verifier. Details of the identity verifier is fetched from the config server. File is identified with the identity verifier ID.
+                          File name format: signup-idv_%s.json
+                          %s is replaced with Identity verifier ID.
+                        x-stoplight:
+                          id: 04wwvclq7tmh8
+                        additionalProperties:
+                          x-stoplight:
+                            id: 2ibluuduvuut6
+                          type: string
+                      errors:
+                        type: object
+                        x-stoplight:
+                          id: rs17urkck31b6
+                        additionalProperties: {}
+                      messages:
+                        type: object
+                        x-stoplight:
+                          id: xrtxlq8e76cdz
+                        additionalProperties: {}
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        errorCode:
+                          type: string
+                          enum:
+                            - invalid_transaction
+                            - invalid_identity_verifier_id
+                        errorMessage:
+                          type: string
+          headers: {}
+      servers:
+        - url: 'https://signup.collab.mosip.net/v1/signup'
+      x-stoplight:
+        id: 8k3y829yk0k5g
+    parameters:
+      - schema:
+          type: string
+        name: id
+        in: path
+        required: true
+        description: Identity verifier identifier
+  /identity-verification/slot:
+    post:
+      tags:
+        - UI
+      summary: Fetch Slot ID endpoint
+      description: |
+        Endpoint to get the slot ID to begin the video identity verification process.
+
+        1. Validates the cookie with valid IDV transaction ID.
+        2. Validate the Identity verifier ID and should be `active`.
+        3. Validate if the consent is provided, if consent is not provided reject the request.
+        4. Check if the disabilityType is set with valid value, null is allowed.
+
+        Video identity verification process is handled using websocket connection. 
+        It checks the current number of allocated slots using a unique cookieValue. This count reflects the ongoing WebSocket connections. If the count exceeds the predefined maximum limit, an error slot_not_available is thrown.
+
+        If no existing slot ID is found, the method updates the transaction with the new verifier ID and disability type, sets the transaction status to STARTED, and saves the updated transaction in the cache.
+      operationId: post-slot
+      parameters:
+        - name: X-XSRF-TOKEN
+          in: header
+          description: CSRF token as set in cookie key 'XSRF-TOKEN'
+          required: true
+          schema:
+            type: string
+        - schema:
+            type: string
+          in: cookie
+          name: IDV_TRANSACTION_ID
+          description: Transaction ID set after successful start of update process
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - requestTime
+                - request
+              properties:
+                requestTime:
+                  type: string
+                  format: date-time
+                  description: Current date and time when the request is sent
+                request:
+                  type: object
+                  required:
+                    - verifierId
+                    - consent
+                  properties:
+                    verifierId:
+                      type: string
+                      x-stoplight:
+                        id: 8vifssg9mlgyz
+                      description: Selected Identity verifier ID.
+                    consent:
+                      type: string
+                      description: Consent to share and store the collected user details during KYC process.
+                      x-stoplight:
+                        id: 0b5v7657w13p8
+                      enum:
+                        - AGREE
+                    disabilityType:
+                      x-stoplight:
+                        id: lrsfsflg5wdd9
+                      enum:
+                        - VISION
+                        - AUDITORY
+                        - MOBILITY
+                        - NEUROLOGICAL
+                      description: Type of disability
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - responseTime
+                  - response
+                properties:
+                  responseTime:
+                    type: string
+                    format: date-time
+                    description: Current date and time when the request is sent
+                  response:
+                    type: object
+                    required:
+                      - slotId
+                    properties:
+                      slotId:
+                        type: string
+                        description: Slot ID allocated for eKYC process.
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        errorCode:
+                          type: string
+                          enum:
+                            - invalid_transaction
+                            - slot_not_available
+                            - invalid_identity_verifier_id
+                        errorMessage:
+                          type: string
+          headers: {}
+      servers:
+        - url: 'https://signup.collab.mosip.net/v1/signup'
+      x-stoplight:
+        id: 7zsr3eaeyt8kc
+    parameters: []
+  /ws:
+    get:
+      summary: Connect to WebSocket
+      tags:
+        - UI
+      responses:
+        '101':
+          description: Switching Protocols
+      operationId: get-ws
+      x-stoplight:
+        id: dpirqq9ylbs5v
+      description: |-
+        Request raised to initiate websocket connection. Https protocol is upgraded to WSS protocol.
+        Headers and the cookie is validated to allow the connection, if the headers or the query parameter provided is invalid, 
+        websocket connection is denied.
+      parameters:
+        - schema:
+            type: string
+          in: cookie
+          name: IDV_SLOT_ALLOTTED
+          description: Identity verification transaction Id
+          required: true
+        - schema:
+            type: string
+          in: header
+          name: Upgrade
+          required: true
+          description: Header required to upgrade https to wss protocol
+        - schema:
+            type: string
+          in: header
+          name: Connection
+          required: true
+          description: Header required to upgrade https to wss protocol
+        - schema:
+            type: string
+          in: query
+          name: slotId
+          description: 'Allotted slotId, as returned in the /identity-verification/slot endpoint response'
+          required: true
+  /ws/process-frame:
+    post:
+      summary: Process Frames (WS)
+      tags:
+        - UI
+      responses:
+        2XX:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - id
+                  - verifierId
+                properties:
+                  id:
+                    type: string
+                    x-stoplight:
+                      id: xem302paiyc9f
+                    description: SlotId
+                  verifierId:
+                    type: string
+                    x-stoplight:
+                      id: ojedpp1bpwd32
+                    description: Identity verifier Id
+                  step:
+                    type: object
+                    x-stoplight:
+                      id: wbyzetmbjbxp4
+                    description: Step details based on the selected identity verifier.
+                    required:
+                      - code
+                      - framesPerSecond
+                      - durationInSeconds
+                      - startupDelayInSeconds
+                      - retryOnTimeout
+                    properties:
+                      code:
+                        type: string
+                        x-stoplight:
+                          id: cu4o38ztn7x3h
+                        description: Step code
+                      framesPerSecond:
+                        type: integer
+                        x-stoplight:
+                          id: p88gcasyui684
+                        description: Number of frames to capture per second.
+                      durationInSeconds:
+                        type: integer
+                        x-stoplight:
+                          id: iu0wbx5fdvpje
+                        description: Number of seconds this step can be active.
+                      startupDelayInSeconds:
+                        type: integer
+                        x-stoplight:
+                          id: 6n01qs57igj3h
+                        description: Startup delay between the previous completed and current yet to start step.
+                      retryOnTimeout:
+                        type: boolean
+                        x-stoplight:
+                          id: 2egargo5suiag
+                        description: Retry is allowed after elapsing "durationInSeconds".
+                      retryableErrorCodes:
+                        type: array
+                        x-stoplight:
+                          id: 0pqnsxsbczx9s
+                        description: 'If step should be tried only on specific error codes, then those error-codes should be listed here.'
+                        items:
+                          x-stoplight:
+                            id: o2bb727dbltgn
+                          type: string
+                  feedback:
+                    type: object
+                    x-stoplight:
+                      id: vc8vbeod4qnxa
+                    required:
+                      - type
+                      - code
+                    properties:
+                      type:
+                        x-stoplight:
+                          id: 611d8nrbntnam
+                        enum:
+                          - MESSAGE
+                          - ERROR
+                          - COLOR
+                        description: Type of the feedback
+                      code:
+                        type: string
+                        x-stoplight:
+                          id: yt693fjm193qr
+                        description: Code of the feedback type.
+      operationId: post-ws-process-frame
+      x-stoplight:
+        id: azaz1mqj6ypqo
+      description: |
+        This is not an endpoint but the destination to send the captured messages on the websocket connection, once the websocket client is successfully subscribed to the allotted slotId.
+
+        Two way communication is carried out with websocket connection:
+
+        connect -> connected -> subscribe to slotId -> send/publish to /ws/process-frames destination
+
+        Message is received on the subscribed slotId
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - slotId
+              properties:
+                slotId:
+                  type: string
+                  x-stoplight:
+                    id: n45hj9gc30s42
+                  description: Valid slotId as returned by the fetch slotID endpoint.
+                stepCode:
+                  type: string
+                  x-stoplight:
+                    id: ww928zat6csik
+                  description: |
+                    Step Code of the current step in video identity verification.
+                    Two default step code for any identity verifier is "START" and "END".
+                frames:
+                  type: array
+                  x-stoplight:
+                    id: dovez6i2fekdd
+                  description: 'Captured frames, in the "START" step frames will be empty array.'
+                  items:
+                    x-stoplight:
+                      id: 3jfn0g164rc08
+                    type: object
+                    required:
+                      - frame
+                      - order
+                    properties:
+                      frame:
+                        type: string
+                        x-stoplight:
+                          id: 0eo56iryvt1df
+                        description: Encoded captured image.
+                      order:
+                        type: integer
+                        x-stoplight:
+                          id: r0767pp3awa31
+                        description: Order of the captured frame.
+  /identity-verification/status:
+    get:
+      tags:
+        - UI
+      summary: Get Identity Verification Status Endpoint
+      description: |-
+        Endpoint to get the latest identity verification status.
+
+        1. Validate the IDV_SLOT_ALLOTTED id in the cookie.
+        2. Check status of verified data update in the integrated registry.
+        3. Return back the final status in the response.
+      operationId: get-identity-verification-status
+      parameters:
+        - name: X-XSRF-TOKEN
+          in: header
+          description: CSRF token as set in cookie key 'XSRF-TOKEN'
+          required: true
+          schema:
+            type: string
+        - name: IDV_SLOT_ALLOTTED
+          in: cookie
+          description: Cookie set after the allotted slot ID verification
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  responseTime:
+                    type: string
+                    description: Current date and time when the request is sent
+                    format: date-time
+                  response:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        enum:
+                          - UPDATE_PENDING
+                          - COMPLETED
+                          - FAILED
+                          - STARTED
+                        description: Status of registration
+                  errors:
+                    type: array
+                    description: List of Errors in case of request validation / processing failure in the server.
+                    items:
+                      type: object
+                      properties:
+                        errorCode:
+                          type: string
+                          enum:
+                            - invalid_transaction
+                            - unknown_error
+                        errorMessage:
+                          type: string
+                          enum:
+                            - invalid_transaction
+                            - unknown_error
+              examples:
+                Example 1:
+                  value:
+                    responseTime: '2023-11-03T11:03:49.770Z'
+                    response:
+                      status: COMPLETED
+                    errors: []
+      servers:
+        - url: 'https://signup.collab.mosip.net/v1/signup'
+      x-stoplight:
+        id: dub1wcgovwhwl
+    parameters: []
 tags:
   - name: UI
     description: UI related API.
@@ -701,6 +1300,8 @@ components:
         otp.blocked:
           type: integer
           description: 'Number of seconds, a mobile number will not be allowed to register.'
+      x-stoplight:
+        id: qsg1ykzn89elz
     ChallengeInfo:
       type: object
       title: ChallengeInfo
@@ -724,6 +1325,8 @@ components:
         - challenge
         - format
         - type
+      x-stoplight:
+        id: vupi50p6qhgul
     UserInfoMap:
       type: object
       title: UserInfoMap
@@ -739,6 +1342,8 @@ components:
       required:
         - fullName
         - phone
+      x-stoplight:
+        id: 7gzdo83lsa98j
     LanguageTaggedValue:
       type: object
       title: LanguageTaggedValue
@@ -747,3 +1352,69 @@ components:
           type: string
         value:
           type: string
+      x-stoplight:
+        id: fjvqsxzx2yzln
+    ProviderDetail:
+      title: IdentityVerifierDetail
+      x-stoplight:
+        id: b6hnskxc5isg1
+      type: object
+      description: Identity Verifier details to be used by the UI to display. And every verifier is identified with a unique `id`
+      required:
+        - id
+        - displayName
+        - logoUrl
+        - processType
+        - active
+      properties:
+        id:
+          type: string
+          x-stoplight:
+            id: osonjar9p3hng
+          description: A unique identifier for the identity verifier.
+        description:
+          type: object
+          description: A map containing localized descriptions for the identity verifier.
+          x-stoplight:
+            id: mdywcu1t5p7f7
+          additionalProperties:
+            x-stoplight:
+              id: p5s44gsq5418c
+            type: string
+        displayName:
+          type: object
+          description: A map containing localized display names for the identity verifier.
+          x-stoplight:
+            id: d7gji8pii33ao
+          additionalProperties:
+            x-stoplight:
+              id: iiis9477hhde8
+            type: string
+        logoUrl:
+          type: string
+          description: The URL to the logo image representing the identity verifier.
+          x-stoplight:
+            id: p53z2gnd7g7t8
+        processType:
+          type: string
+          description: The type of process associated with the identity verification.
+          x-stoplight:
+            id: c1izbfvk09g2e
+        retryOnFailure:
+          type: boolean
+          description: A flag indicating if the process should automatically retry on failure.
+          x-stoplight:
+            id: cv452a1uhh6v4
+        resumeOnSuccess:
+          type: boolean
+          description: A flag indicating if the process can resume from the last successful state.
+          x-stoplight:
+            id: ewzxm6x6p3pg0
+        active:
+          type: boolean
+          description: A flag indicating whether the identity verifier is currently active.
+          x-stoplight:
+            id: tp0ta9gots7qw
+        processDuration:
+          type: number
+          description: The duration (in seconds) for which the identity verification process typically runs.
