@@ -1,0 +1,17 @@
+GetSlot:
+   Signup_ESignet_GetSlot_STransId_uin_all_Valid_Smoke:
+      endPoint: /v1/signup/identity-verification/slot
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/GetSlot/GetSlot
+      outputTemplate: signup/GetSlot/GetSlotResult
+      input: '{
+      	"requestTime": "$TIMESTAMP$",
+      	"idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_Smoke_Sid_idvTransactionID$",
+      	"verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_Smoke_Sid_id$",
+      	"consent": "AGREE"
+}'
+      output: '{
+       
+}'
