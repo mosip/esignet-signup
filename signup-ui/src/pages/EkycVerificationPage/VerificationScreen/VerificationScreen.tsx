@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import Webcam from "react-webcam";
 
 import { PUBLISH_TOPIC, SUBSCRIBE_TOPIC, WS_URL } from "~constants/routes";
+import { convertToI18nData } from "~utils/conversion";
 import useStompClient from "~pages/shared/stompWs";
 import { WS_BASE_URL } from "~services/api.service";
 import langConfigService from "~services/langConfig.service";
@@ -14,6 +15,7 @@ import {
   IdentityVerificationState,
   IdvFeedbackEnum,
   IdvFrames,
+  KeyValueStringObject,
 } from "~typings/types";
 import LoadingIndicator from "~/common/LoadingIndicator";
 
@@ -21,6 +23,7 @@ import {
   EkycVerificationStep,
   EkycVerificationStore,
   errorBannerMessageSelector,
+  kycProviderDetailSelector,
   setErrorBannerMessageSelector,
   setIsNoBackgroundSelector,
   setSlotIdSelector,
@@ -34,7 +37,7 @@ export const VerificationScreen = ({
   cancelPopup,
   settings,
 }: DefaultEkyVerificationProp) => {
-  const { t } = useTranslation("translation", {
+  const { t, i18n } = useTranslation("translation", {
     keyPrefix: "verification_screen",
   });
   const webcamRef = useRef(null);
@@ -70,6 +73,7 @@ export const VerificationScreen = ({
     slotId,
     setStep,
     setSlotId,
+    kycProviderDetail,
   } = useEkycVerificationStore(
     useCallback(
       (state: EkycVerificationStore) => ({
@@ -79,6 +83,7 @@ export const VerificationScreen = ({
         slotId: slotIdSelector(state),
         setStep: setStepSelector(state),
         setSlotId: setSlotIdSelector(state),
+        kycProviderDetail: kycProviderDetailSelector(state),
       }),
       []
     )
@@ -126,7 +131,31 @@ export const VerificationScreen = ({
     setStep(EkycVerificationStep.IdentityVerificationStatus);
   }, []);
 
+  // adding translation of verification in a specific
+  // language from kycProviderDetail object
+  const addTranslation = (lang: string) => {
+    convertToI18nData(kycProviderDetail as KeyValueStringObject).then(
+      (data) => {
+        i18n.addResourceBundle(
+          lang,
+          "translation",
+          { verification_screen: data[lang] },
+          true,
+          true
+        );
+      }
+    );
+  };
+
   useEffect(() => {
+    // adding translation for the current language
+    addTranslation(i18n.language);
+
+    i18n.on("languageChanged", (lang) => {
+      // adding translation for the new language
+      addTranslation(lang);
+    });
+
     const checkWebcamInputSource = () => {
       if (webcamRef && webcamRef.current) {
         const webcamStreamState = (webcamRef.current as Webcam).stream?.active;

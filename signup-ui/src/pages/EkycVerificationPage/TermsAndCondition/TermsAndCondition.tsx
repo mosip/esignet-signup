@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
 import purify from "dompurify";
-import i18next from "i18next";
 import { Detector } from "react-detect-offline";
 import { useTranslation } from "react-i18next";
 
@@ -17,13 +16,9 @@ import {
   StepHeader,
   StepTitle,
 } from "~components/ui/step";
-import { convertToI18nData } from "~utils/conversion";
 import { useTermsAndConditions } from "~pages/shared/queries";
 import langConfigService from "~services/langConfig.service";
-import {
-  DefaultEkyVerificationProp,
-  KeyValueStringObject,
-} from "~typings/types";
+import { DefaultEkyVerificationProp } from "~typings/types";
 import LoadingIndicator from "~/common/LoadingIndicator";
 
 import {
@@ -127,19 +122,6 @@ export const TermsAndCondition = ({
       // setting kyc provider detail in the store
       setKycProviderDetail(kycDetail.response);
       if (kycDetail.errors === null || kycDetail.errors.length === 0) {
-        convertToI18nData(kycDetail.response as KeyValueStringObject).then(
-          (data) => {
-            for (const langCode in data) {
-              i18next.addResourceBundle(
-                langCode,
-                "translation",
-                { verification_screen: data[langCode] },
-                true,
-                true
-              );
-            }
-          }
-        );
         setTermsAndCondition(kycDetail.response["terms&Conditions"]);
       } else {
         setCriticalError(kycDetail.errors[0]);
@@ -200,7 +182,7 @@ export const TermsAndCondition = ({
                   disabled={!termsAndCondition || !tncMessage}
                   className="h-5 w-5 rounded-[2px] text-white data-[state=checked]:border-primary data-[state=checked]:bg-primary"
                 />
-                <p className="tnc-consent-text ml-2">{t("agree_text")}</p>
+                <p className="tnc-consent-text ml-2 cursor-pointer" onClick={() => changeAgreeTerms(!agreeTerms)}>{t("agree_text")}</p>
               </ActionMessage>
             </StepAlert>
             <StepDivider />
