@@ -93,7 +93,6 @@ public class PostWithBodyWithOtpGenerate extends AdminTestUtil implements ITest 
 			}
 		}
 
-		testCaseName = isTestCaseValidForExecution(testCaseDTO);
 		auditLogCheck = testCaseDTO.isAuditLogCheck();
 		String tempUrl = SignupConfigManager.getEsignetBaseUrl();
 		JSONObject req = new JSONObject(testCaseDTO.getInput());
