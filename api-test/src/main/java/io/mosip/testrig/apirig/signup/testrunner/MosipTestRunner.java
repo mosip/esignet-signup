@@ -117,6 +117,8 @@ public class MosipTestRunner {
 				BiometricDataProvider.generateBiometricTestData("Registration");
 				startTestRunner();
 			} else {
+				BaseTestCase.isTargetEnvLatest = true;
+				SignupUtil.getSupportedLanguage();
 				startTestRunner();
 			}
 
