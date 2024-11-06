@@ -1,3 +1,18 @@
+## Signup service postman collection
+
+Collection contains 3 folder, each containing requests for 3 different operations:
+
+1. Registration - contains sequence of requests to register a new user in the plugged in ID registry
+2. Reset password - contains sequence of requests to reset password for an already created user.
+3. Identity(eKYC) verification - Sequence of requests to initiate identity verification process. Priori to this 
+request a valid authorization code should be generated. Using eSignet collection/verified claims folder one
+can obtain the authorization code and the id-token-hint.
+
+In the identity verification folder once the slot-id is returned in the "slot" endpoint response. One should run the ws_client.py to 
+carry out the video identity(eKYC) verification process using a WebSocket connection.
+
+**Note:** Mock plugin does not validate the frames in the current version.
+
 ## Usage of [ws_client.py](ws_client.py)
 
 eKYC verification process is carried out through WebSocket connection and as postman currently does not support export of WS 
@@ -47,17 +62,17 @@ The connection is established with ws.run_forever(), which keeps the connection 
 
 2. Run the Script: Execute the script in your terminal or command prompt:
 
-`python ws_client.py`
+`python <path to ws_client.py script>`
 
 3. Provide Input: When prompted, enter the base URL (WebSocket server address), slot ID, and cookie value.
 
 4. Sending Messages: When prompted, to enter message to send, type the message as below, there are 3 different messages
 
-START step message -> `{"slotId":"slotId","stepCode":"START","frames":[{"frame":"","order":"0"}]}`
+START step message -> `{"slotId":"<allotted slotId>","stepCode":"START","frames":[{"frame":"","order":"0"}]}`
 
-Other step messages -> `{"slotId":"slotId","stepCode":"<step_name as in the received messages>","frames":[{"frame":"","order":"0"}]}`
+Other step messages -> `{"slotId":"<allotted slotId>","stepCode":"<step_name as in the received messages>","frames":[{"frame":"","order":"0"}]}`
 
-END step message -> `{"slotId":"slotId","stepCode":"END","frames":[{"frame":"","order":"0"}]}`
+END step message -> `{"slotId":"<allotted slotId>","stepCode":"END","frames":[{"frame":"","order":"0"}]}`
 
 5. Receiving Messages: Any messages sent from the server to the subscribed topic will be printed to the console as they are received.
 

@@ -49,13 +49,31 @@ public class CacheUtilService {
 
     private static final String CLEANUP_SCRIPT = "local hash_name = ARGV[1]\n" +
             "local current_time = tonumber(ARGV[2])\n" +
-            "local hash_data = redis.call('hgetall', hash_name)\n" +
-            "for i = 1, #hash_data, 2 do\n" +
-            "    local field = hash_data[i]\n" +
-            "    local value = tonumber(hash_data[i + 1])\n" +
-            "    if value and value < current_time then\n" +
-            "        redis.call('hdel', hash_name, field)\n" +
+            "local verified_slot_cache_keys = {}\n" +
+            "local fields_to_delete = {}\n" +
+            "local cursor = \"0\"\n" +
+            "repeat\n" +
+            "    local result = redis.call('hscan', hash_name, cursor)\n" +
+            "    cursor = result[1]\n" +
+            "    local hash_data = result[2]\n" +
+            "    for i = 1, #hash_data, 2 do\n" +
+            "        local field = hash_data[i]\n" +
+            "        local value = tonumber(hash_data[i + 1])\n" +
+            "        if value and value < current_time then\n" +
+            "            local separator_index = string.find(field, \"###\")\n" +
+            "            if separator_index then               \n" +
+            "                local key_part = string.sub(field, 1, separator_index - 1)\n" +
+            "                table.insert(verified_slot_cache_keys, \"verified_slot::\" .. key_part)\n" +
+            "            end\n" +
+            "            table.insert(fields_to_delete, field)\n" +
+            "        end\n" +
             "    end\n" +
+            "until cursor == \"0\"\n" +
+            "if #verified_slot_cache_keys > 0 then\n" +
+            "    redis.call('del', unpack(verified_slot_cache_keys))\n" +
+            "end\n" +
+            "if #fields_to_delete > 0 then\n" +
+            "    redis.call('hdel', hash_name, unpack(fields_to_delete))\n" +
             "end\n";
     private String scriptHash = null;
 
