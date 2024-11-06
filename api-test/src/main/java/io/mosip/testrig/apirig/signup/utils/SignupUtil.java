@@ -277,8 +277,13 @@ public class SignupUtil extends AdminTestUtil {
 	}
 	
 	public static void getSupportedLanguage() {
-		String supportedLanguages = getValueFromSignupActuator("classpath:/application-default.properties",
-				"mosip.signup.supported-languages");
+		String supportedLanguages = getValueFromSignupActuator("systemEnvironment",
+				"MOSIP_SIGNUP_SUPPORTED_LANGUAGES");
+		
+		if (supportedLanguages == null || supportedLanguages.isBlank() == true) {
+			supportedLanguages = getValueFromSignupActuator("classpath:/application-default.properties",
+					"mosip.signup.supported-languages");
+		}
 
 		if (supportedLanguages != null && supportedLanguages.isBlank() == false) {
 			supportedLanguages = supportedLanguages.replace("{", "").replace("}", "").replace("'", "");
