@@ -130,7 +130,10 @@ export const UserInfo = ({ settings, methods }: UserInfoProps) => {
       settings.response.configs["fullname.allowed.characters"],
       "g"
     );
-    const filteredText = event.target.value.replace(allowedCharsRegex, "");
+
+    const filteredText = allowedCharsRegex.test(event.target.value)
+      ? event.target.value
+      : event.target.value.slice(0, -1);
     field.onChange(filteredText);
   };
 
