@@ -51,6 +51,7 @@ public class CacheUtilService {
             "local current_time = tonumber(ARGV[1])\n" +
             "local verified_slot_cache_keys = {}\n" +
             "local fields_to_delete = {}\n" +
+            "local delcount=0\n" +
             "local cursor = \"0\"\n" +
             "repeat\n" +
             "    local result = redis.call('hscan', hash_name, cursor)\n" +
@@ -68,7 +69,6 @@ public class CacheUtilService {
             "            table.insert(fields_to_delete, field)\n" +
             "        end\n" +
             "    end\n" +
-            "local delcount=0\n" +
             "until cursor == \"0\"\n" +
             "if #verified_slot_cache_keys > 0 then\n" +
             "    redis.call('del', unpack(verified_slot_cache_keys))\n" +
