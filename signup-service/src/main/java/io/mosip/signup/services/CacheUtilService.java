@@ -47,8 +47,8 @@ public class CacheUtilService {
 
 
 
-    private static final String CLEANUP_SCRIPT = "local hash_name = ARGV[1]\n" +
-            "local current_time = tonumber(ARGV[2])\n" +
+    private static final String CLEANUP_SCRIPT = "local hash_name = KEYS[1]\n" +
+            "local current_time = tonumber(ARGV[1])\n" +
             "local verified_slot_cache_keys = {}\n" +
             "local fields_to_delete = {}\n" +
             "local cursor = \"0\"\n" +
@@ -68,13 +68,15 @@ public class CacheUtilService {
             "            table.insert(fields_to_delete, field)\n" +
             "        end\n" +
             "    end\n" +
+            "local delcount=0\n" +
             "until cursor == \"0\"\n" +
             "if #verified_slot_cache_keys > 0 then\n" +
             "    redis.call('del', unpack(verified_slot_cache_keys))\n" +
             "end\n" +
             "if #fields_to_delete > 0 then\n" +
-            "    redis.call('hdel', hash_name, unpack(fields_to_delete))\n" +
-            "end\n";
+            "    delcount=redis.call('hdel', hash_name, unpack(fields_to_delete))\n" +
+            "end\n" +
+            "return delcount\n";
     private String scriptHash = null;
 
 
@@ -272,13 +274,14 @@ public class CacheUtilService {
             log.info("Running scheduled cleanup task - task to clear expired slots with script hash: {} {}", scriptHash,
                     SLOTS_CONNECTED);
 
-            redisConnectionFactory.getConnection().scriptingCommands().evalSha(
+            int keysDeleted = redisConnectionFactory.getConnection().scriptingCommands().evalSha(
                     scriptHash,
                     ReturnType.INTEGER,
                     1,  // Number of keys
                     SLOTS_CONNECTED.getBytes(),  // The Redis hash name (key)
-                    String.valueOf(currentTimeMillis).getBytes()  // Current time in milliseconds
+                    Longs.toByteArray(currentTimeMillis) // Current time in milliseconds
             );
+            log.info("Running scheduled cleanup task - Keys Deleted count: {}", keysDeleted);
         }
     }
 
