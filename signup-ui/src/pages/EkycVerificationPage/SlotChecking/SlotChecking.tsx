@@ -7,11 +7,12 @@ import {
 } from "~typings/types";
 
 import {
+  criticalErrorSelector,
   EkycVerificationStep,
   kycProviderSelector,
   setCriticalErrorSelector,
-  setStepSelector,
   setSlotIdSelector,
+  setStepSelector,
   useEkycVerificationStore,
 } from "../useEkycVerificationStore";
 import { SlotCheckingLoading } from "./components/SlotCheckingLoading";
@@ -23,17 +24,19 @@ export const SlotChecking = ({ settings }: DefaultEkyVerificationProp) => {
     retryDelay: settings.configs["slot.request.delay"],
   });
 
-  const { kycProvider, setStep, setCriticalError, setSlotId } = useEkycVerificationStore(
-    useCallback(
-      (state) => ({
-        kycProvider: kycProviderSelector(state),
-        setStep: setStepSelector(state),
-        setCriticalError: setCriticalErrorSelector(state),
-        setSlotId: setSlotIdSelector(state)
-      }),
-      []
-    )
-  );
+  const { kycProvider, setStep, setCriticalError, setSlotId, criticalError } =
+    useEkycVerificationStore(
+      useCallback(
+        (state) => ({
+          kycProvider: kycProviderSelector(state),
+          setStep: setStepSelector(state),
+          setCriticalError: setCriticalErrorSelector(state),
+          setSlotId: setSlotIdSelector(state),
+          criticalError: criticalErrorSelector(state),
+        }),
+        []
+      )
+    );
 
   useEffect(() => {
     if (!kycProvider) throw Error("KycProvider should not be null");
@@ -49,15 +52,9 @@ export const SlotChecking = ({ settings }: DefaultEkyVerificationProp) => {
     slotAvailabilityMutation.mutate(slotAvailabilityRequestDto, {
       onSuccess: ({ response, errors }) => {
         if (errors.length > 0) {
-          switch (errors[0].errorCode) {
-            case "invalid_transaction":
-              setCriticalError(errors[0]);
-              break;
-            case "slot_unavailable":
-              break;
-          }
+          setCriticalError(errors[0]);
         } else {
-          setSlotId(response.slotId)
+          setSlotId(response.slotId);
           setStep(EkycVerificationStep.VerificationScreen);
         }
       },
@@ -66,7 +63,11 @@ export const SlotChecking = ({ settings }: DefaultEkyVerificationProp) => {
 
   if (slotAvailabilityMutation.isPending) {
     return <SlotCheckingLoading />;
+  } else if (
+    slotAvailabilityMutation.isSuccess &&
+    criticalError?.errorCode === "slot_not_available"
+  ) {
+    return <SlotUnavailableAlert />;
   }
-
-  return <SlotUnavailableAlert />;
+  return <></>;
 };
