@@ -49,6 +49,9 @@ public class NotificationHelper {
     @Value("#{${mosip.signup.sms-notification-template.encoded-langcodes}}")
     private List<String> encodedLangCodes;
 
+    @Value("${mosip.signup.identifier.prefix}")
+    private String countryCode;
+
     public void sendSMSNotification
             (String number, String locale, String templateKey, Map<String, String> params){
 
@@ -64,7 +67,7 @@ public class NotificationHelper {
             }
         }
 
-        NotificationRequest notificationRequest = new NotificationRequest(number.substring(4), message);
+        NotificationRequest notificationRequest = new NotificationRequest(number.substring(countryCode.length()), message);
 
         RestRequestWrapper<NotificationRequest> restRequestWrapper = new RestRequestWrapper<>();
         restRequestWrapper.setRequesttime(IdentityProviderUtil.getUTCDateTime());
