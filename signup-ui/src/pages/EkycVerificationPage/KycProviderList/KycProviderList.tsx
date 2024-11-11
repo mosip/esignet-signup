@@ -210,7 +210,7 @@ export const KycProviderList = ({
         <LoadingIndicator
           message="please_wait"
           msgParam="Loading. Please wait....."
-          iconClass="fill-[#eb6f2d]"
+          iconClass="loading-indicator"
           divClass="align-loading-center"
         />
       )}
