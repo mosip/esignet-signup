@@ -1,0 +1,30 @@
+WebSocketConnection:
+   Signup_ESignet_WebSocketConnection_uin_all_Valid_Smoke:
+      endPoint: /v1/signup/ws
+      description: SendOtp with all valid details UIN
+      role: resident
+      checkErrorsOnlyInResponse: true
+      inputTemplate: esignet/WebSocketConnection/WebSocketConnection
+      outputTemplate: esignet/WebSocketConnection/WebSocketConnectionResult
+      input: '{
+        "slotId": "$ID:ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_Smoke_Sid_slotId$",
+        "idvSlotAllotted": "$ID:ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_Smoke_Sid_idvSlotAllotted$",
+        "sendDestination": "/v1/signup/ws/process-frame",
+        "message1": {
+          "slotId": "$ID:ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_Smoke_Sid_slotId$",
+          "stepCode": "START",
+          "frames": [
+            { "frame": "frame1", "order": "0" }
+          ]
+        },
+        "message2": {
+          "slotId": "$ID:ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_Smoke_Sid_slotId$",
+          "stepCode": "liveness_check",
+          "frames": [
+            { "frame": "frame1", "order": "1" },
+            { "frame": "frame2", "order": "5" }
+          ]
+        }
+}'
+      output: '{
+}'
