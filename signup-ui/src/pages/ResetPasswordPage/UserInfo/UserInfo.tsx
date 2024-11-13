@@ -1,5 +1,6 @@
 import {
   ChangeEvent,
+  ClipboardEvent,
   KeyboardEvent,
   MouseEvent,
   useCallback,
@@ -121,6 +122,18 @@ export const UserInfo = ({ settings, methods }: UserInfoProps) => {
       event,
       settings.response.configs["identifier.allowed.characters"]
     );
+
+  // checking clipboard data with regex, before pasting it into the input field
+  const handleUsernamePaste = (event: ClipboardEvent<HTMLInputElement>) => {
+    const allowedCharsRegex = new RegExp(
+      settings.response.configs["identifier.allowed.characters"],
+      "g"
+    );
+
+    if (!allowedCharsRegex.test(event.clipboardData.getData("text/plain"))) {
+      event.preventDefault();
+    }
+  };
 
   const handleFullNameInput = (
     event: ChangeEvent<HTMLInputElement>,
@@ -278,6 +291,7 @@ export const UserInfo = ({ settings, methods }: UserInfoProps) => {
                                   "identifier.length.max"
                                 ]
                               }
+                              onPaste={handleUsernamePaste}
                               onKeyUp={handleUsernameInput}
                               onKeyDown={handleUsernameInput}
                               disabled={resendOtp}
