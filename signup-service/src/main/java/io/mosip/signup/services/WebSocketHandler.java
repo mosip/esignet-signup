@@ -94,6 +94,7 @@ public class WebSocketHandler {
             return;
         }
 
+        log.info("Analysis result published to /topic/{}", identityVerificationResult.getId());
         simpMessagingTemplate.convertAndSend("/topic/"+identityVerificationResult.getId(), identityVerificationResult);
 
         //END step marks verification process completion
