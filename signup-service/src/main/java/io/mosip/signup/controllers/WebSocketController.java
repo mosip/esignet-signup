@@ -8,8 +8,10 @@ package io.mosip.signup.controllers;
 import io.mosip.signup.api.dto.*;
 import io.mosip.signup.api.exception.IdentityVerifierException;
 import io.mosip.signup.api.spi.IdentityVerifierPlugin;
+import io.mosip.signup.api.util.VerificationStatus;
 import io.mosip.signup.dto.IdentityVerificationRequest;
 import io.mosip.signup.helper.AuditHelper;
+import io.mosip.signup.dto.IdentityVerificationTransaction;
 import io.mosip.signup.services.CacheUtilService;
 import io.mosip.signup.services.WebSocketHandler;
 import io.mosip.signup.util.AuditEvent;
@@ -23,6 +25,7 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
+import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
@@ -78,6 +81,12 @@ public class WebSocketController {
     public void onDisconnected(SessionDisconnectEvent disconnectEvent) {
         String username = Objects.requireNonNull(disconnectEvent.getUser()).getName();
         log.info("WebSocket Disconnected >>>>>> {}", username);
+        if(disconnectEvent.getCloseStatus()!=null && !disconnectEvent.getCloseStatus().equals(CloseStatus.NORMAL)){
+            IdentityVerificationTransaction transaction =
+                    cacheUtilService.getVerifiedSlotTransaction(username.split(VALUE_SEPARATOR)[1]);
+            transaction.setStatus(VerificationStatus.FAILED);
+            cacheUtilService.updateVerifiedSlotTransaction(username.split(VALUE_SEPARATOR)[1], transaction);
+        }
         cacheUtilService.removeFromSlotConnected(username);
         cacheUtilService.evictSlotAllottedTransaction(username.split(VALUE_SEPARATOR)[0],
                 username.split(VALUE_SEPARATOR)[1]);
