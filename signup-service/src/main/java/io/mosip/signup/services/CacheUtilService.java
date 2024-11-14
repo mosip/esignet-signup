@@ -29,6 +29,8 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.ReturnType;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+
+import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 
 import static io.mosip.signup.util.SignUpConstants.*;
@@ -47,16 +49,45 @@ public class CacheUtilService {
 
 
 
-    private static final String CLEANUP_SCRIPT = "local hash_name = ARGV[1]\n" +
-            "local current_time = tonumber(ARGV[2])\n" +
-            "local hash_data = redis.call('hgetall', hash_name)\n" +
-            "for i = 1, #hash_data, 2 do\n" +
-            "    local field = hash_data[i]\n" +
-            "    local value = tonumber(hash_data[i + 1])\n" +
-            "    if value and value < current_time then\n" +
-            "        redis.call('hdel', hash_name, field)\n" +
+    private static final String CLEANUP_SCRIPT = "local function binary_to_long(binary_str)\n" +
+            "    local result = 0\n" +
+            "    for i = 1, #binary_str do\n" +
+            "        result = result * 256 + binary_str:byte(i)\n" +
             "    end\n" +
-            "end\n";
+            "    return result\n" +
+            "end" +
+            "\n" +
+            "local hash_name = KEYS[1]\n" +
+            "local time = redis.call(\"TIME\")\n" +
+            "local current_time = ( tonumber(time[1]) * 1000) + math.floor( tonumber(time[2]) / 1000)\n" +
+            "local verified_slot_cache_keys = {}\n" +
+            "local fields_to_delete = {}\n" +
+            "local delcount=0\n" +
+            "local cursor = \"0\"\n" +
+            "repeat\n" +
+            "    local result = redis.call('hscan', hash_name, cursor)\n" +
+            "    cursor = result[1]\n" +
+            "    local hash_data = result[2]\n" +
+            "    for i = 1, #hash_data, 2 do\n" +
+            "        local field = hash_data[i]\n" +
+            "        local value = binary_to_long(hash_data[i + 1])\n" +
+            "        if value < current_time then\n" +
+            "            local separator_index = string.find(field, \"###\")\n" +
+            "            if separator_index then               \n" +
+            "                local key_part = string.sub(field, 1, separator_index - 1)\n" +
+            "                table.insert(verified_slot_cache_keys, \"verified_slot::\" .. key_part)\n" +
+            "            end\n" +
+            "            table.insert(fields_to_delete, field)\n" +
+            "        end\n" +
+            "    end\n" +
+            "until cursor == \"0\"\n" +
+            "if #verified_slot_cache_keys > 0 then\n" +
+            "    redis.call('del', unpack(verified_slot_cache_keys))\n" +
+            "end\n" +
+            "if #fields_to_delete > 0 then\n" +
+            "    delcount=redis.call('hdel', hash_name, unpack(fields_to_delete))\n" +
+            "end\n" +
+            "return delcount\n";
     private String scriptHash = null;
 
 
@@ -250,17 +281,16 @@ public class CacheUtilService {
                 scriptHash = redisConnectionFactory.getConnection().scriptingCommands().scriptLoad(CLEANUP_SCRIPT.getBytes());
             }
             LockAssert.assertLocked();
-            Long currentTimeMillis = System.currentTimeMillis();  // Current time in millis
             log.info("Running scheduled cleanup task - task to clear expired slots with script hash: {} {}", scriptHash,
                     SLOTS_CONNECTED);
 
-            redisConnectionFactory.getConnection().scriptingCommands().evalSha(
+            long keysDeleted = redisConnectionFactory.getConnection().scriptingCommands().evalSha(
                     scriptHash,
                     ReturnType.INTEGER,
                     1,  // Number of keys
-                    SLOTS_CONNECTED.getBytes(),  // The Redis hash name (key)
-                    String.valueOf(currentTimeMillis).getBytes()  // Current time in milliseconds
+                    SLOTS_CONNECTED.getBytes() // The Redis hash name (key)
             );
+            log.info("Running scheduled cleanup task - Keys Deleted count: {}", keysDeleted);
         }
     }
 
@@ -276,10 +306,10 @@ public class CacheUtilService {
                     addSlotScriptHash,
                     ReturnType.INTEGER,
                     1,  // Number of keys (SLOTS_CONNECTED is the key here)
-                    SLOTS_CONNECTED.getBytes(),  // key (first argument in Lua script)
-                    field.getBytes(),  // field (second argument in Lua script)
-                    Longs.toByteArray(expireTimeInMillis),  // value (third argument in Lua script)
-                    String.valueOf(maxCount).getBytes()  // maxCount (fourth argument, should be passed as a string)
+                    SLOTS_CONNECTED.getBytes(StandardCharsets.UTF_8),  // key (first argument in Lua script)
+                    field.getBytes(StandardCharsets.UTF_8),  // field (second argument in Lua script)
+                    String.valueOf(expireTimeInMillis).getBytes(StandardCharsets.UTF_8),  // value
+                    String.valueOf(maxCount).getBytes(StandardCharsets.UTF_8)  // maxCount
             );
         }
         return -1L;
