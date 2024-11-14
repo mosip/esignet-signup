@@ -140,10 +140,11 @@ export const getIdentityVerificationStatus = async (
       retriableErrorCodes.includes(data.errors[0].errorCode);
 
     const shouldRetryCheckingIdentityVerificationStatus =
-      data.response?.status !== IdentityVerificationStatus.COMPLETED &&
-      data.response?.status !== IdentityVerificationStatus.FAILED &&
-      (data.response?.status === IdentityVerificationStatus.UPDATEPENDING ||
-        isErrorRetriable);
+      (data.response?.status !== IdentityVerificationStatus.COMPLETED &&
+        data.response?.status !== IdentityVerificationStatus.FAILED) ||
+      isErrorRetriable;
+
+    console.log(shouldRetryCheckingIdentityVerificationStatus);
 
     if (shouldRetryCheckingIdentityVerificationStatus) {
       throw new Error("Identity verification update is pending");
