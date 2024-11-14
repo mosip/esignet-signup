@@ -200,7 +200,13 @@
 			<artifactId>shedlock-provider-redis-spring</artifactId>
 			<version>4.47.0</version>
 		</dependency>
-	</dependencies>
+        <dependency>
+            <groupId>io.mosip.signup</groupId>
+            <artifactId>signup-integration-api</artifactId>
+            <version>1.1.1-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
 
 	<build>
 		<plugins>

@@ -12,6 +12,7 @@ import io.mosip.signup.dto.IdentityVerificationRequest;
 import io.mosip.signup.dto.IdentityVerificationTransaction;
 import io.mosip.signup.exception.InvalidTransactionException;
 import io.mosip.signup.exception.SignUpException;
+import io.mosip.signup.helper.IdentityVerificationRequestValidator;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,6 +47,9 @@ public class WebsocketHandlerTest {
 
     @Mock
     private CacheUtilService cacheUtilService;
+
+    @Mock
+    private IdentityVerificationRequestValidator identityVerificationRequestValidator;
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
@@ -107,7 +111,7 @@ public class WebsocketHandlerTest {
     public void processFrames_invalidVerifierId_thenFail() {
         IdentityVerificationRequest identityVerificationRequest = new IdentityVerificationRequest();
         identityVerificationRequest.setSlotId("test");
-
+        identityVerificationRequest.setStepCode("stepCode");
         IdentityVerificationTransaction identityVerificationTransaction = new IdentityVerificationTransaction();
         identityVerificationTransaction.setVerifierId("verifier-id");
         Mockito.when(cacheUtilService.getVerifiedSlotTransaction(identityVerificationRequest.getSlotId())).thenReturn(identityVerificationTransaction);

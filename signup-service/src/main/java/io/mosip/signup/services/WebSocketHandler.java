@@ -19,7 +19,9 @@ import io.mosip.signup.dto.IdentityVerificationTransaction;
 import io.mosip.signup.dto.IdentityVerifierDetail;
 import io.mosip.signup.exception.InvalidTransactionException;
 import io.mosip.signup.exception.SignUpException;
+import io.mosip.signup.helper.IdentityVerificationRequestValidator;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.common.errors.InvalidRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -56,11 +58,17 @@ public class WebSocketHandler {
     private ObjectMapper objectMapper;
 
     @Autowired
+    private IdentityVerificationRequestValidator identityVerificationRequestValidator;
+
+    @Autowired
     private SimpMessagingTemplate simpMessagingTemplate;
 
 
     public void processFrames(IdentityVerificationRequest identityVerificationRequest) {
+        String errorMessage = null;
+        try {
         IdentityVerificationTransaction transaction = cacheUtilService.getVerifiedSlotTransaction(identityVerificationRequest.getSlotId());
+        identityVerificationRequestValidator.validate(identityVerificationRequest);
         if(transaction == null)
             throw new InvalidTransactionException();
 
@@ -79,6 +87,13 @@ public class WebSocketHandler {
         dto.setStepCode(identityVerificationRequest.getStepCode());
         dto.setFrames(identityVerificationRequest.getFrames());
         plugin.verify(identityVerificationRequest.getSlotId(), dto);
+        } catch (InvalidRequestException e) {
+            errorMessage = e.getMessage();
+        } finally {
+            if (errorMessage != null) {
+                simpMessagingTemplate.convertAndSend("/topic/" + identityVerificationRequest.getSlotId(), errorMessage);
+            }
+        }
     }
 
     public void processVerificationResult(IdentityVerificationResult identityVerificationResult) {
