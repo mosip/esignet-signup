@@ -50,7 +50,8 @@ public class CacheUtilService {
 
 
     private static final String CLEANUP_SCRIPT = "local hash_name = KEYS[1]\n" +
-            "local current_time = tonumber(ARGV[1])\n" +
+            "local time = redis.call(\"TIME\")\n" +
+            "local current_time = ( tonumber(time[1]) * 1000) + math.floor( tonumber(time[2]) / 1000)\n" +
             "local verified_slot_cache_keys = {}\n" +
             "local fields_to_delete = {}\n" +
             "local delcount=0\n" +
@@ -62,7 +63,7 @@ public class CacheUtilService {
             "    for i = 1, #hash_data, 2 do\n" +
             "        local field = hash_data[i]\n" +
             "        local value = tonumber(hash_data[i + 1])\n" +
-            "        if value and value < current_time then\n" +
+            "        if value < current_time then\n" +
             "            local separator_index = string.find(field, \"###\")\n" +
             "            if separator_index then               \n" +
             "                local key_part = string.sub(field, 1, separator_index - 1)\n" +
@@ -272,7 +273,6 @@ public class CacheUtilService {
                 scriptHash = redisConnectionFactory.getConnection().scriptingCommands().scriptLoad(CLEANUP_SCRIPT.getBytes());
             }
             LockAssert.assertLocked();
-            Long currentTimeMillis = System.currentTimeMillis();  // Current time in millis
             log.info("Running scheduled cleanup task - task to clear expired slots with script hash: {} {}", scriptHash,
                     SLOTS_CONNECTED);
 
@@ -280,8 +280,7 @@ public class CacheUtilService {
                     scriptHash,
                     ReturnType.INTEGER,
                     1,  // Number of keys
-                    SLOTS_CONNECTED.getBytes(),  // The Redis hash name (key)
-                    Longs.toByteArray(currentTimeMillis) // Current time in milliseconds
+                    SLOTS_CONNECTED.getBytes() // The Redis hash name (key)
             );
             log.info("Running scheduled cleanup task - Keys Deleted count: {}", keysDeleted);
         }
