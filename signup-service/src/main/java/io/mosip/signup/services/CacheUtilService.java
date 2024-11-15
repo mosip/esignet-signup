@@ -276,7 +276,6 @@ public class CacheUtilService {
                 scriptHash = redisConnectionFactory.getConnection().scriptingCommands().scriptLoad(CLEANUP_SCRIPT.getBytes());
             }
             LockAssert.assertLocked();
-            Long currentTimeMillis = System.currentTimeMillis();  // Current time in millis
             log.info("Running scheduled cleanup task - task to clear expired slots with script hash: {} {}", scriptHash,
                     SLOTS_CONNECTED);
 
@@ -284,8 +283,7 @@ public class CacheUtilService {
                     scriptHash,
                     ReturnType.INTEGER,
                     1,  // Number of keys
-                    SLOTS_CONNECTED.getBytes(),  // The Redis hash name (key)
-                    Longs.toByteArray(currentTimeMillis) // Current time in milliseconds
+                    SLOTS_CONNECTED.getBytes() // The Redis hash name (key)
             );
             log.info("Running scheduled cleanup task - Keys Deleted count: {}", keysDeleted);
         }
