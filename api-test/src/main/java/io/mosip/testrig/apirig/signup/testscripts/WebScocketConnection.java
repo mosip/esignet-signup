@@ -34,7 +34,6 @@ import io.mosip.testrig.apirig.utils.WebSocketClientUtil;
 import io.restassured.response.Response;
 
 public class WebScocketConnection extends AdminTestUtil implements ITest {
-	//private static final Logger logger = Logger.getLogger(WebScocketConnection.class);
 	private static final Logger logger = Logger.getLogger(WebScocketConnection.class);
 	protected String testCaseName = "";
 	public String idKeyName = null;
@@ -180,7 +179,12 @@ public class WebScocketConnection extends AdminTestUtil implements ITest {
 		}
 
 	}
-
+	
+	/**
+	 * The method ser current test name to result
+	 * 
+	 * @param result
+	 */
 	@AfterMethod(alwaysRun = true)
 	public void setResultTestName(ITestResult result) {
 		try {

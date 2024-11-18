@@ -307,29 +307,29 @@ public class SignupUtil extends AdminTestUtil {
 	}
 	
 	public static String getTypeValueFromWebSocketMessage(String message) {
-        try {
-            JSONObject rootObject = new JSONObject(message);
+		try {
+			JSONObject rootObject = new JSONObject(message);
 
-            if (rootObject.has("step") && !rootObject.get("step").equals(JSONObject.NULL)) {
-                JSONObject stepObject = rootObject.getJSONObject("step");
-                if (stepObject.has("code")) {
-                    return stepObject.getString("code");
-                }
-            }
+			if (rootObject.has("step") && !rootObject.get("step").equals(JSONObject.NULL)) {
+				JSONObject stepObject = rootObject.getJSONObject("step");
+				if (stepObject.has("code")) {
+					return stepObject.getString("code");
+				}
+			}
 
-            if (rootObject.has("feedback") && !rootObject.get("feedback").equals(JSONObject.NULL)) {
-                JSONObject feedbackObject = rootObject.getJSONObject("feedback");
-                if (feedbackObject.has("code")) {
-                    return feedbackObject.getString("code");
-                }
-            }
+			if (rootObject.has("feedback") && !rootObject.get("feedback").equals(JSONObject.NULL)) {
+				JSONObject feedbackObject = rootObject.getJSONObject("feedback");
+				if (feedbackObject.has("code")) {
+					return feedbackObject.getString("code");
+				}
+			}
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
-        logger.info("Type is not available in the response.");
-        return null;
-    }
+		logger.info("Type is not available in the response.");
+		return null;
+	}
 	
 }
