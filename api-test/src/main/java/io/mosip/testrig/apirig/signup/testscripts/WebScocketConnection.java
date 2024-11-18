@@ -1,7 +1,9 @@
 package io.mosip.testrig.apirig.signup.testscripts;
 
 import java.lang.reflect.Field;
-import java.util.concurrent.TimeUnit;
+import java.util.Map;
+
+import javax.websocket.Session;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -11,13 +13,13 @@ import org.testng.ITestContext;
 import org.testng.ITestResult;
 import org.testng.Reporter;
 import org.testng.SkipException;
-import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.testng.internal.BaseTestMethod;
 import org.testng.internal.TestResult;
+
 
 import io.mosip.testrig.apirig.dto.TestCaseDTO;
 import io.mosip.testrig.apirig.signup.utils.SignupConfigManager;
@@ -27,6 +29,7 @@ import io.mosip.testrig.apirig.utils.AdminTestException;
 import io.mosip.testrig.apirig.utils.AdminTestUtil;
 import io.mosip.testrig.apirig.utils.AuthenticationTestException;
 import io.mosip.testrig.apirig.utils.GlobalConstants;
+import io.mosip.testrig.apirig.utils.GlobalMethods;
 import io.mosip.testrig.apirig.utils.WebSocketClientUtil;
 import io.restassured.response.Response;
 
@@ -37,6 +40,8 @@ public class WebScocketConnection extends AdminTestUtil implements ITest {
 	public String idKeyName = null;
 	public Response response = null;
 	public boolean auditLogCheck = false;
+	private boolean sendWebsocketMessage = true;
+	private Session session;
 
 	@BeforeClass
 	public static void setLogLevel() {
@@ -81,80 +86,101 @@ public class WebScocketConnection extends AdminTestUtil implements ITest {
 	@Test(dataProvider = "testcaselist")
 	public void test(TestCaseDTO testCaseDTO)
 			throws AuthenticationTestException, AdminTestException, NumberFormatException, InterruptedException {
+
 		testCaseName = testCaseDTO.getTestCaseName();
 		testCaseName = SignupUtil.isTestCaseValidForExecution(testCaseDTO);
 		if (HealthChecker.signalTerminateExecution) {
 			throw new SkipException(
 					GlobalConstants.TARGET_ENV_HEALTH_CHECK_FAILED + HealthChecker.healthCheckFailureMapS);
 		}
-		
-		
-		testCaseName = isTestCaseValidForExecution(testCaseDTO);
 
-		String inputJson = testCaseDTO.getInput().toString();
+		String inputJson = getJsonFromTemplate(testCaseDTO.getInput(), testCaseDTO.getInputTemplate());
 		inputJson = inputJsonKeyWordHandeler(inputJson, testCaseName);
 
 		auditLogCheck = testCaseDTO.isAuditLogCheck();
-		
-		String slotId = null;		
-		String idvSlotAllotted = null;
-		String sendDestination = null;
-		String subscribeDestination = null;
-		String message1 = null;
-		String message2 = null;
-		
-		
+
 		JSONObject webSocketReqJson = new JSONObject(inputJson);
-		slotId = webSocketReqJson.getString("slotId");
-		webSocketReqJson.remove("slotId");
-		idvSlotAllotted = webSocketReqJson.getString("idvSlotAllotted");
-		webSocketReqJson.remove("idvSlotAllotted");
-		sendDestination = webSocketReqJson.getString("sendDestination");
-		webSocketReqJson.remove("sendDestination");
-		
-		message1 = webSocketReqJson.get("message1").toString();
-		message2 = webSocketReqJson.get("message2").toString();
-		
+		String message1 = webSocketReqJson.get("message1").toString();
+		String message2 = webSocketReqJson.get("message2").toString();
 		webSocketReqJson.remove("message1");
-		subscribeDestination = "/topic/" + slotId;
+		webSocketReqJson.remove("message2");
+
+		String slotId = webSocketReqJson.getString("slotId");
+		String idvSlotAllotted = webSocketReqJson.getString("idvSlotAllotted");
+		String cookie = GlobalConstants.IDV_SLOT_ALLOTED_KEY + idvSlotAllotted;
+		String sendDestination = webSocketReqJson.getString("sendDestination");
+		String subscribeDestination = "/topic/" + slotId;
 
 		String tempUrl = SignupConfigManager.getEsignetBaseUrl();
 		if (testCaseDTO.getEndPoint().contains("/signup/")) {
 			tempUrl = SignupConfigManager.getSignupBaseUrl();
 		}
-		
-		tempUrl = tempUrl.replace("https", "wss") + testCaseDTO.getEndPoint();
-		
-		WebSocketClientUtil webSocketClient = new WebSocketClientUtil(slotId, idvSlotAllotted, subscribeDestination, sendDestination);
-        
-        // Connect to WebSocket server
-        webSocketClient.connect(tempUrl);
-        
-        // Send a message
-        webSocketClient.sendMessage(message1);
-        webSocketClient.sendMessage(message2);
-        
-        // Wait for messages or other tasks, then close connection when done
-        // This is just an example; add logic for your specific timing
-        try {
-            Thread.sleep(5000); // Wait 5 seconds for demonstration purposes
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
-        
-        System.out.println(WebSocketClientUtil.getMessageStore());
-        
-        // Close the connection
-        webSocketClient.closeConnection();
-        System.out.println("Connection closed.");
+
+		tempUrl = tempUrl.replace("https", "wss") + testCaseDTO.getEndPoint() + "?slotId=" + slotId;
+
+		WebSocketClientUtil webSocketClient = new WebSocketClientUtil(cookie, subscribeDestination, sendDestination);
+
+		// Connect to WebSocket server
+		webSocketClient.connect(tempUrl);
+
+		// Send a message
+		webSocketClient.sendMessage(message1);
+
+		int order = 1;
+		String typeValue = "START";
+		JSONObject messageObject = new JSONObject(message2);
+
+		try {
+
+			while (sendWebsocketMessage && order < 15) {
+
+				Session session = webSocketClient.getSession();
+				GlobalMethods.reportRequest(webSocketReqJson.toString(), messageObject.toString(), tempUrl);
+
+				if (!(session == null) && !typeValue.equals("END")) {
+					messageObject.getJSONArray("frames").getJSONObject(0).put("order", String.valueOf(order));
+					webSocketClient.sendMessage(messageObject.toString());
+
+					try {
+						Thread.sleep(3000); // Wait 5 seconds for demonstration purposes
+					} catch (InterruptedException e) {
+						Thread.currentThread().interrupt();
+					}
+
+					Map<String, String> receivedMessage = WebSocketClientUtil.getMessageStore();
+
+					String completeMessage = receivedMessage.values().stream().reduce((a, b) -> a + "\n" + b)
+							.orElse("");
+
+					String jsonPayload = completeMessage.substring(completeMessage.indexOf("{"));
+					typeValue = SignupUtil.getTypeValueFromWebSocketMessage(jsonPayload);
+
+					GlobalMethods.reportResponse(session.toString(), tempUrl, jsonPayload, true);
+
+					order++;
+				} else {
+					sendWebsocketMessage = false;
+					if (session == null) {
+						String webSocketConnectionError = "WebSocket connection is not active, either not created or closed abnormally";
+						logger.info(webSocketConnectionError);
+						GlobalMethods.reportResponse(null, tempUrl, webSocketConnectionError, true);
+						throw new AdminTestException("Failed due to " + webSocketConnectionError);
+					}
+				}
+			}
+
+		} catch (Exception e) {
+			throw new AdminTestException("Failed at sending message to websocket");
+		}
+
+		// Close the connection
+		if (!(session == null)) {
+			webSocketClient.closeConnection();
+			System.out.println("Connection closed.");
+		}
 
 	}
 
-	/**
-	 * The method ser current test name to result
-	 * 
-	 * @param result
-	 */
 	@AfterMethod(alwaysRun = true)
 	public void setResultTestName(ITestResult result) {
 		try {
@@ -168,24 +194,5 @@ public class WebScocketConnection extends AdminTestUtil implements ITest {
 		} catch (Exception e) {
 			Reporter.log("Exception : " + e.getMessage());
 		}
-	}
-
-	@AfterClass(alwaysRun = true)
-	public void waittime() {
-		try {
-			if (SignupUtil.getIdentityPluginNameFromEsignetActuator().toLowerCase()
-					.contains("mockauthenticationservice") == false) {
-				if (!testCaseName.contains(GlobalConstants.ESIGNET_)) {
-					long delayTime = Long.parseLong(properties.getProperty("Delaytime"));
-					logger.info("waiting for " + delayTime + " mili secs after VID Generation In RESIDENT SERVICES");
-					Thread.sleep(delayTime);
-				}
-			}
-
-		} catch (Exception e) {
-			logger.error("Exception : " + e.getMessage());
-			Thread.currentThread().interrupt();
-		}
-
 	}
 }
