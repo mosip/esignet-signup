@@ -28,6 +28,7 @@ public abstract class IdentityVerifierPlugin {
     public KafkaTemplate<String, IdentityVerificationResult> kafkaTemplate;
 
     protected void publishAnalysisResult(IdentityVerificationResult identityVerificationResult) {
+        log.info("publishAnalysisResult by {} invoked with result : {}", identityVerificationResult.getVerifierId(), identityVerificationResult);
         kafkaTemplate.send(RESULT_TOPIC, identityVerificationResult);
     }
 
