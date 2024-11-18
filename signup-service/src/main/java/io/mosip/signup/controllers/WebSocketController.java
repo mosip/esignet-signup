@@ -58,7 +58,7 @@ public class WebSocketController {
         auditHelper.sendAuditTransaction(AuditEvent.PROCESS_FRAMES, AuditEventType.SUCCESS, identityVerificationRequest.getSlotId(),null);
     }
 
-    @KafkaListener(id = "step-status-consumer", autoStartup = "true",
+    @KafkaListener(id = "${kafka.consumer.group-id}", autoStartup = "true",
             topics = IdentityVerifierPlugin.RESULT_TOPIC)
     public void consumeStepResult(final IdentityVerificationResult identityVerificationResult) {
         webSocketHandler.processVerificationResult(identityVerificationResult);
