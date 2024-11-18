@@ -48,7 +48,6 @@ public class CacheUtilService {
     private RedisConnectionFactory redisConnectionFactory;
 
 
-
     private static final String CLEANUP_SCRIPT = "local function binary_to_long(binary_str)\n" +
             "    local result = 0\n" +
             "    for i = 1, #binary_str do\n" +
@@ -70,7 +69,7 @@ public class CacheUtilService {
             "    local hash_data = result[2]\n" +
             "    for i = 1, #hash_data, 2 do\n" +
             "        local field = hash_data[i]\n" +
-            "        local value = binary_to_long(hash_data[i + 1])\n" +
+            "        local value = tonumber(hash_data[i + 1])\n" +
             "        if value < current_time then\n" +
             "            local separator_index = string.find(field, \"###\")\n" +
             "            if separator_index then               \n" +
@@ -104,6 +103,13 @@ public class CacheUtilService {
             "\n" +
             "return add_to_hset(KEYS[1], ARGV[1], ARGV[2], ARGV[3])\n";
     private String addSlotScriptHash = null;
+
+    private static final String UPDATE_SLOT_EXPIRE_DT_SCRIPT = "local function update_slot_expire_dt(key, field, value)\n" +
+            "redis.call('HSET', key, field, value)\n" +
+            "end\n" +
+            "\n" +
+            "return update_slot_expire_dt(KEYS[1], ARGV[1], ARGV[2], ARGV[3])\n";
+    private String updateSlotExpireDtScriptHash = null;
 
 
 
@@ -246,19 +252,8 @@ public class CacheUtilService {
         }
     }
 
-    public void addToSlotConnected(String value, long slotExpireEpochInMillis) {
-        redisConnectionFactory.getConnection().hSet(SLOTS_CONNECTED.getBytes(), value.getBytes(),
-                Longs.toByteArray(slotExpireEpochInMillis));
-    }
-
     public void removeFromSlotConnected(String value) {
         redisConnectionFactory.getConnection().hDel(SLOTS_CONNECTED.getBytes(), value.getBytes());
-    }
-
-    public long getCurrentSlotCount() {
-        Long count = redisConnectionFactory.getConnection().hLen(SLOTS_CONNECTED.getBytes());
-        log.info("Current allotted slot count : {}", count);
-        return count == null ? 0 : count;
     }
 
     //Cleanup assigned slot details on WS connection disconnect
@@ -313,6 +308,24 @@ public class CacheUtilService {
             );
         }
         return -1L;
+    }
+
+    public void updateSlotExpireTime(String field, long expireTimeInMillis) {
+        if (redisConnectionFactory.getConnection() != null) {
+            if (updateSlotExpireDtScriptHash == null) {
+                updateSlotExpireDtScriptHash = redisConnectionFactory.getConnection().scriptingCommands().scriptLoad(UPDATE_SLOT_EXPIRE_DT_SCRIPT.getBytes());
+            }
+            log.info("Running UPDATE_SLOT_EXPIRE_DT_SCRIPT script: {} {} {}", updateSlotExpireDtScriptHash, SLOTS_CONNECTED, field);
+
+            redisConnectionFactory.getConnection().scriptingCommands().evalSha(
+                    updateSlotExpireDtScriptHash,
+                    ReturnType.INTEGER,
+                    1,  // Number of keys (SLOTS_CONNECTED is the key here)
+                    SLOTS_CONNECTED.getBytes(StandardCharsets.UTF_8),  // key (first argument in Lua script)
+                    field.getBytes(StandardCharsets.UTF_8),  // field (second argument in Lua script)
+                    String.valueOf(expireTimeInMillis).getBytes(StandardCharsets.UTF_8) // value
+            );
+        }
     }
 
 }
