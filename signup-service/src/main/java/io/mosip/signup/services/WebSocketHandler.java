@@ -129,7 +129,7 @@ public class WebSocketHandler {
                 .filter(idv -> idv.isActive() && idv.getId().equals(transaction.getVerifierId()))
                 .findFirst();
 
-        result.ifPresent(identityVerifierDetail -> cacheUtilService.addToSlotConnected(username, getVerificationProcessExpireTimeInMillis(identityVerifierDetail)));
+        result.ifPresent(identityVerifierDetail -> cacheUtilService.updateSlotExpireTime(username, getVerificationProcessExpireTimeInMillis(identityVerifierDetail)));
     }
 
     private void handleVerificationResult(IdentityVerifierPlugin plugin, IdentityVerificationResult identityVerificationResult,
