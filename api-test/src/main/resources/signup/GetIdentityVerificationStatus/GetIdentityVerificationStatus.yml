@@ -1,6 +1,7 @@
 GetIdentityVerificationStatus:
    Signup_ESignet_GetIdentityVerificationStatus_AuthToken_Xsrf_STransId_uin_all_Valid_Smoke:
       endPoint: /v1/signup/identity-verification/status
+      description: Getting the status of Identity verification
       role: resident
       restMethod: get
       checkErrorsOnlyInResponse: true
