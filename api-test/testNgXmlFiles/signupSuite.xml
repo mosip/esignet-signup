@@ -260,4 +260,83 @@
 		</classes>
 	</test>
 	<!-- End of Sign up L2 phase test cases -->
+	
+		<!-- Start of Sign up L2 phase Negative test cases -->	
+	<test name="OAuthDetailsRequestV3NegTC"> 
+		<parameter name="ymlFile"
+			value="signup/OAuthDetailsRequestV3NegTC/OAuthDetailsRequestNegTC.yml" />
+		<parameter name="idKeyName"	value="transactionId,encodedResp" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.signup.testscripts.SimplePostForAutoGenId" />
+		</classes>
+	</test>
+	<test name="AuthenticateUserV3NegTC">
+		<parameter name="ymlFile"
+			value="signup/AuthenticateUserV3NegTC/AuthenticateUserNegTC.yml" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.signup.testscripts.PostWithAutogenIdWithOtpGenerate" />
+		</classes>
+	</test>
+    <test name="ClaimDetailsNegTC">
+		<parameter name="ymlFile"
+			value="signup/ClaimDetailsNegTC/ClaimDetailsNegTC.yml" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.signup.testscripts.GetWithParam" />
+		</classes>
+	</test>
+	<test name="PrepareSignupRedirectNegTC">
+	    <parameter name="ymlFile"
+			value="signup/PrepareSignupRedirectNegTC/PrepareSignupRedirectNegTC.yml" />
+		<parameter name="idKeyName"	value="idToken" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.signup.testscripts.SimplePostForAutoGenId" />
+		</classes>
+	</test>
+	 <test name="SignupAuthorizeNegTC">
+		<parameter name="ymlFile"
+			value="signup/SignupAuthorizeNegTC/SignupAuthorizeNegTC.yml" />
+		<parameter name="idKeyName"	value="transactionId,encodedResp" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.signup.testscripts.SimplePostForAutoGenId" />
+		</classes>
+	</test>
+	<test name="IDTAuthenticationNegTC">
+		<parameter name="ymlFile"
+			value="signup/IDTAuthenticationNegTC/IDTAuthenticationNegTC.yml" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.signup.testscripts.SimplePostForAutoGenId" />
+		</classes>
+	</test>
+	<test name="SignupAuthorizeCodeNegTC">
+		<parameter name="ymlFile"
+			value="signup/SignupAuthorizeCodeNegTC/SignupAuthorizeCodeNegTC.yml" />
+		<parameter name="idKeyName"	value="code" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.signup.testscripts.SimplePostForAutoGenId" />
+		</classes>
+	</test>
+	<test name="InitiateIdVerificationNegTC">
+		<parameter name="ymlFile"
+			value="signup/InitiateIdVerificationNegTC/InitiateIdVerificationNegTC.yml" />
+		<parameter name="idKeyName"	value="id" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.signup.testscripts.SimplePostForAutoGenId" />
+		</classes>
+	</test>
+	<test name="GetIdVerifierNegTC">
+		<parameter name="ymlFile"
+			value="signup/GetIdVerifierNegTC/GetIdVerifierNegTC.yml" />
+		<parameter name="idKeyName"	value="code" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.signup.testscripts.GetWithParam" />
+		</classes>
+	</test>
+	<test name="GetSlotNegTC">
+		<parameter name="ymlFile"
+			value="signup/GetSlotNegTC/GetSlotNegTC.yml" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.signup.testscripts.SimplePost" />
+		</classes>
+	</test>
+	<!-- End of Sign up L2 phase Negative test cases -->
 </suite>
