@@ -112,7 +112,7 @@ public class RegistrationService {
         }
         else {
             transaction = cacheUtilService.getChallengeGeneratedTransaction(transactionId);
-            validateTransaction(transaction, identifier, generateChallengeRequest);
+            validateTransaction(transaction, identifier, generateChallengeRequest, transactionId);
             transaction.setVerificationAttempts(0);
         }
 
@@ -123,10 +123,6 @@ public class RegistrationService {
         transaction.increaseAttempt();
         transaction.setLocale(generateChallengeRequest.getLocale());
         cacheUtilService.createUpdateChallengeGeneratedTransaction(transactionId, transaction);
-
-        //Resend attempts exhausted, block the identifier for configured time.
-        if(transaction.getChallengeRetryAttempts() > resendAttempts)
-            cacheUtilService.blockIdentifier(transactionId, transaction.getIdentifier(), "blocked");
 
         HashMap<String, String> hashMap = new LinkedHashMap<>();
         hashMap.put("{challenge}", challenge);
@@ -327,7 +323,7 @@ public class RegistrationService {
 
 
     private void validateTransaction(RegistrationTransaction transaction, String identifier,
-                                     GenerateChallengeRequest generateChallengeRequest) {
+                                     GenerateChallengeRequest generateChallengeRequest, String transactionId) {
         if(transaction == null) {
             log.error("generate-challenge failed: validate transaction null");
             throw new InvalidTransactionException();
@@ -339,6 +335,8 @@ public class RegistrationService {
         }
 
         if(transaction.getChallengeRetryAttempts() > resendAttempts) {
+            //Resend attempts exhausted, block the identifier for configured time.
+            cacheUtilService.blockIdentifier(transactionId, transaction.getIdentifier(), "blocked");
             log.error("generate-challenge failed: too many attempts");
             throw new GenerateChallengeException(ErrorConstants.TOO_MANY_ATTEMPTS);
         }
