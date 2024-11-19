@@ -255,8 +255,53 @@
 	<test name="GetSlot">
 		<parameter name="ymlFile"
 			value="signup/GetSlot/GetSlot.yml" />
+		<parameter name="idKeyName"	value="slotId" />
 		<classes>
-			<class name="io.mosip.testrig.apirig.signup.testscripts.SimplePost" />
+			<class name="io.mosip.testrig.apirig.signup.testscripts.SimplePostForAutoGenId" />
+		</classes>
+	</test>
+	<test name="WebSocketConnection">
+		<parameter name="ymlFile"
+			value="signup/WebSocketConnection/WebSocketConnection.yml" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.signup.testscripts.WebScocketConnection" />
+		</classes>
+	</test>
+	<test name="GetIdentityVerificationStatus">
+		<parameter name="ymlFile"
+			value="signup/GetIdentityVerificationStatus/GetIdentityVerificationStatus.yml" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.signup.testscripts.GetWithParam" />
+		</classes>
+	</test>
+	<test name="CompleteSignupVerification">
+		<parameter name="ymlFile"
+			value="signup/CompleteSignupVerification/CompleteSignupVerification.yml" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.signup.testscripts.SimplePostForAutoGenId" />
+		</classes>
+	</test>
+	<test name="AuthorizationCode">
+		<parameter name="ymlFile"
+			value="signup/AuthorizationCode/AuthorizationCode.yml" />
+		<parameter name="idKeyName"	value="code" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.signup.testscripts.SimplePostForAutoGenId" />
+		</classes>
+	</test>
+	<test name="GenerateToken">
+		<parameter name="ymlFile"
+			value="signup/GenerateToken/GenerateToken.yml" />
+			<parameter name="idKeyName"	value="access_token" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.signup.testscripts.SimplePostForAutoGenIdForUrlEncoded" />
+		</classes>
+	</test>
+	<test name="GetOidcUserInfo">
+		<parameter name="ymlFile"
+			value="signup/GetOidcUserInfo/GetOidcUserInfo.yml" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.signup.testscripts.GetWithParam" />
 		</classes>
 	</test>
 	<!-- End of Sign up L2 phase test cases -->
