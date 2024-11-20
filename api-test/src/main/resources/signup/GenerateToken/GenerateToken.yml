@@ -1,0 +1,20 @@
+GenerateToken:
+   Signup_ESignet_GenerateToken_uin_Valid_Smoke_sid:
+      endPoint: $GETENDPOINTFROMWELLKNOWN$
+      description: Generating token with valid details using UIN
+      role: resident
+      restMethod: post
+      validityCheckRequired: true
+      inputTemplate: signup/GenerateToken/GenerateToken
+      outputTemplate: signup/GenerateToken/GenerateTokenResult
+      input: '{
+		  "grant_type": "authorization_code",
+		  "code": "$ID:ESignet_AuthorizationCode_uin_All_Valid_Smoke_sid_code$",
+		  "client_id": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
+		  "client_assertion_type": "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
+		  "client_assertion": "$CLIENT_ASSERTION_JWK$",
+		  "redirect_uri": "$IDPREDIRECTURI$"
+}'
+      output: '{
+   		"token_type": "Bearer" 
+}'

@@ -1,0 +1,18 @@
+AuthorizationCode:
+   Signup_ESignet_AuthorizationCode_uin_All_Valid_Smoke_sid:
+      endPoint: /v1/esignet/authorization/auth-code
+      description: Generating Authorization Code with all valid details using UIN
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: post
+      validityCheckRequired: true
+      inputTemplate: signup/AuthorizationCode/AuthorizationCode
+      outputTemplate: signup/AuthorizationCode/AuthorizationCodeResult
+      input: '{
+        "encodedHash": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_encodedResp$",
+      	"requestTime": "$TIMESTAMP$",
+      	"transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_transactionId$",
+      	"acceptedClaims": [{claim: "name"},{claim: "phone_number"},{claim: "email"}]
+}'
+      output: '{
+}'

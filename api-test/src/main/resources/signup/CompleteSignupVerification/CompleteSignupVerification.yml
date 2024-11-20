@@ -1,0 +1,16 @@
+CompleteSignupVerification:
+   Signup_ESignet_CompleteSignupVerification_AuthToken_Xsrf_uin_Valid_Smoke:
+      endPoint: /v1/esignet/authorization/complete-signup-redirect
+      description: Completing the Signup verifcation
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/CompleteSignupVerification/CompleteSignupVerification
+      outputTemplate: signup/CompleteSignupVerification/CompleteSignupVerificationResult
+      input: '{
+        "encodedHash": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_encodedResp$",
+      	"requestTime": "$TIMESTAMP$",
+      	"transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_transactionId$"
+    }'
+      output: '{
+}'
