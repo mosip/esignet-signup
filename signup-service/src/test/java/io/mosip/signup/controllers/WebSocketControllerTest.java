@@ -2,7 +2,9 @@ package io.mosip.signup.controllers;
 
 import io.mosip.signup.api.dto.IdentityVerificationResult;
 import io.mosip.signup.api.exception.IdentityVerifierException;
+import io.mosip.signup.api.util.VerificationStatus;
 import io.mosip.signup.dto.IdentityVerificationRequest;
+import io.mosip.signup.dto.IdentityVerificationTransaction;
 import io.mosip.signup.services.CacheUtilService;
 import io.mosip.signup.services.WebSocketHandler;
 import org.junit.Assert;
@@ -18,6 +20,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
@@ -109,6 +112,27 @@ public class WebSocketControllerTest {
             }
         });
         webSocketController.onDisconnected(sessionDisconnectEvent);
+        Mockito.verify(cacheUtilService, Mockito.times(1)).removeFromSlotConnected(Mockito.anyString());
+        Mockito.verify(cacheUtilService, Mockito.times(1)).evictSlotAllottedTransaction(Mockito.anyString(),Mockito.anyString());
+    }
+
+    @Test
+    public void onDisconnectedAbnormalClosedState_test() {
+        SessionDisconnectEvent sessionDisconnectEvent =  Mockito.mock(SessionDisconnectEvent.class);
+        Mockito.when(sessionDisconnectEvent.getUser()).thenReturn(new  java.security.Principal() {
+            @Override
+            public String getName() {
+                return "TID"+VALUE_SEPARATOR+"SID";
+            }
+        });
+        Mockito.when(sessionDisconnectEvent.getCloseStatus()).thenReturn(CloseStatus.SERVER_ERROR);
+
+        IdentityVerificationTransaction transaction = new IdentityVerificationTransaction();
+        transaction.setStatus(VerificationStatus.FAILED);
+        Mockito.when(cacheUtilService.getVerifiedSlotTransaction(Mockito.anyString())).thenReturn(transaction);
+        webSocketController.onDisconnected(sessionDisconnectEvent);
+
+        Mockito.verify(cacheUtilService, Mockito.times(1)).updateVerifiedSlotTransaction(Mockito.anyString(), Mockito.any());
         Mockito.verify(cacheUtilService, Mockito.times(1)).removeFromSlotConnected(Mockito.anyString());
         Mockito.verify(cacheUtilService, Mockito.times(1)).evictSlotAllottedTransaction(Mockito.anyString(),Mockito.anyString());
     }
