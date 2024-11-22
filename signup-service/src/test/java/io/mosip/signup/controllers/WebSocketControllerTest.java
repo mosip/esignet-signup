@@ -125,6 +125,9 @@ public class WebSocketControllerTest {
                 return "TID"+VALUE_SEPARATOR+"SID";
             }
         });
+        IdentityVerificationTransaction transaction = new IdentityVerificationTransaction();
+        transaction.setStatus(VerificationStatus.FAILED);
+        Mockito.when(cacheUtilService.getVerifiedSlotTransaction(Mockito.anyString())).thenReturn(transaction);
         webSocketController.onDisconnected(sessionDisconnectEvent);
         Mockito.verify(cacheUtilService, Mockito.times(1)).removeFromSlotConnected(Mockito.anyString());
         Mockito.verify(cacheUtilService, Mockito.times(1)).evictSlotAllottedTransaction(Mockito.anyString(),Mockito.anyString());
@@ -133,7 +136,7 @@ public class WebSocketControllerTest {
     }
 
     @Test
-    public void onDisconnectedAbnormalClosedState_test() {
+    public void onDisconnected_WithAbnormalClosedState_test() {
         SessionDisconnectEvent sessionDisconnectEvent =  Mockito.mock(SessionDisconnectEvent.class);
         Mockito.when(sessionDisconnectEvent.getUser()).thenReturn(new  java.security.Principal() {
             @Override
