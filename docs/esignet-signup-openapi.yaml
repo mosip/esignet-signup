@@ -766,6 +766,10 @@ paths:
                             - userinfo_failed
                         errorMessage:
                           type: string
+                          enum:
+                            - invalid_request
+                            - grant_exchange_failed
+                            - userinfo_failed
           headers:
             set-cookie:
               schema:
@@ -857,6 +861,9 @@ paths:
                             - invalid_identity_verifier_id
                         errorMessage:
                           type: string
+                          enum:
+                            - invalid_transaction
+                            - invalid_identity_verifier_id
           headers: {}
       servers:
         - url: 'https://signup.collab.mosip.net/v1/signup'
@@ -976,6 +983,10 @@ paths:
                             - invalid_identity_verifier_id
                         errorMessage:
                           type: string
+                          enum:
+                            - invalid_transaction
+                            - slot_not_available
+                            - invalid_identity_verifier_id
           headers: {}
       servers:
         - url: 'https://signup.collab.mosip.net/v1/signup'
