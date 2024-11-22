@@ -75,6 +75,7 @@ public class WebSocketController {
         String slotId = username.split(VALUE_SEPARATOR)[1];
 
         log.info("WebSocket Disconnected >>>>>> {}", username);
+        log.info("WebSocket Disconnected Status>>>>>> {}", disconnectEvent.getCloseStatus());
         if(!CloseStatus.NORMAL.equals(disconnectEvent.getCloseStatus())){
             IdentityVerificationTransaction transaction =
                     cacheUtilService.getVerifiedSlotTransaction(slotId);
