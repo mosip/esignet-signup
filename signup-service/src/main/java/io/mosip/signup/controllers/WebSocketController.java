@@ -8,7 +8,9 @@ package io.mosip.signup.controllers;
 import io.mosip.signup.api.dto.*;
 import io.mosip.signup.api.exception.IdentityVerifierException;
 import io.mosip.signup.api.spi.IdentityVerifierPlugin;
+import io.mosip.signup.api.util.VerificationStatus;
 import io.mosip.signup.dto.IdentityVerificationRequest;
+import io.mosip.signup.dto.IdentityVerificationTransaction;
 import io.mosip.signup.services.CacheUtilService;
 import io.mosip.signup.services.WebSocketHandler;
 import io.mosip.signup.util.ErrorConstants;
@@ -20,6 +22,7 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
+import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
@@ -68,9 +71,18 @@ public class WebSocketController {
     @EventListener
     public void onDisconnected(SessionDisconnectEvent disconnectEvent) {
         String username = Objects.requireNonNull(disconnectEvent.getUser()).getName();
+        String transactionId = username.split(VALUE_SEPARATOR)[0];
+        String slotId = username.split(VALUE_SEPARATOR)[1];
+
         log.info("WebSocket Disconnected >>>>>> {}", username);
+        log.info("WebSocket Disconnected Status>>>>>> {}", disconnectEvent.getCloseStatus());
+        if(!CloseStatus.NORMAL.equals(disconnectEvent.getCloseStatus())){
+            IdentityVerificationTransaction transaction =
+                    cacheUtilService.getVerifiedSlotTransaction(slotId);
+            transaction.setStatus(VerificationStatus.FAILED);
+            cacheUtilService.updateVerifiedSlotTransaction(slotId, transaction);
+        }
         cacheUtilService.removeFromSlotConnected(username);
-        cacheUtilService.evictSlotAllottedTransaction(username.split(VALUE_SEPARATOR)[0],
-                username.split(VALUE_SEPARATOR)[1]);
+        cacheUtilService.evictSlotAllottedTransaction(transactionId,slotId);
     }
 }
