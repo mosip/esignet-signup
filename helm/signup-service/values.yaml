@@ -240,7 +240,13 @@ updateStrategy:
 ##   - name: FOO
 ##     value: "bar"
 ##
+
+# Other configurations...
+kafkaConsumerGroupId: ""  # Placeholder for user input
+
 extraEnvVars: |
+  - name: KAFKA_CONSUMER_GROUP_ID
+    value: {{ .Values.kafkaConsumerGroupId | quote }}
   - name: MOSIP_ESIGNET_HOST
     valueFrom:
       configMapKeyRef:

@@ -98,10 +98,12 @@ function installing_signup() {
     fi
   done
 
+read -p "Enter KAFKA_CONSUMER_GROUP_ID: " kafkaConsumerGroupId
 
   echo Installing signup
   helm -n $NS install signup mosip/signup \
     -f values.yaml --version $CHART_VERSION $ENABLE_INSECURE $plugin_option \
+    --set kafkaConsumerGroupId="$kafkaConsumerGroupId" \
     --set metrics.serviceMonitor.enabled=$servicemonitorflag --wait
 
   kubectl -n $NS  get deploy -o name |  xargs -n1 -t  kubectl -n $NS rollout status
