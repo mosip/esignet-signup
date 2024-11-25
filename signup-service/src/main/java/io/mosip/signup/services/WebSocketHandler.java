@@ -18,6 +18,7 @@ import io.mosip.signup.api.util.VerificationStatus;
 import io.mosip.signup.dto.IdentityVerificationRequest;
 import io.mosip.signup.dto.IdentityVerificationTransaction;
 import io.mosip.signup.dto.IdentityVerifierDetail;
+import io.mosip.signup.exception.InvalidTransactionException;
 import io.mosip.signup.exception.SignUpException;
 import io.mosip.signup.util.ErrorConstants;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +31,7 @@ import org.springframework.util.CollectionUtils;
 import java.util.*;
 
 import static io.mosip.signup.api.util.ErrorConstants.IDENTITY_VERIFICATION_FAILED;
+import static io.mosip.signup.api.util.ErrorConstants.PLUGIN_NOT_FOUND;
 import static io.mosip.signup.util.ErrorConstants.VERIFIED_CLAIMS_FIELD_ID;
 import static io.mosip.signup.util.SignUpConstants.VALUE_SEPARATOR;
 
@@ -63,13 +65,13 @@ public class WebSocketHandler {
             IdentityVerificationTransaction transaction = cacheUtilService.getVerifiedSlotTransaction(identityVerificationRequest.getSlotId());
             if(transaction == null) {
                 log.error("Ignoring identity verification request received for unknown/expired transaction!");
-                return;
+                throw new InvalidTransactionException();
             }
 
             IdentityVerifierPlugin plugin = identityVerifierFactory.getIdentityVerifier(transaction.getVerifierId());
             if(plugin == null) {
                 log.error("Ignoring identity verification request received for unknown {} IDV plugin!", identityVerificationRequest.getSlotId());
-                return;
+                throw new SignUpException(PLUGIN_NOT_FOUND);
             }
 
             if(plugin.isStartStep(identityVerificationRequest.getStepCode())) {
@@ -88,12 +90,7 @@ public class WebSocketHandler {
             log.error("An error occurred while processing frames", e);
         } finally {
             if (errorCode != null) {
-                IDVProcessFeedback idvProcessFeedback= new IDVProcessFeedback();
-                idvProcessFeedback.setType(ProcessFeedbackType.ERROR);
-                idvProcessFeedback.setCode(errorCode);
-                IdentityVerificationResult identityVerificationResult=new IdentityVerificationResult();
-                identityVerificationResult.setFeedback(idvProcessFeedback);
-                simpMessagingTemplate.convertAndSend("/topic/" + identityVerificationRequest.getSlotId(), identityVerificationResult);
+                sendErrorFeedback(identityVerificationRequest.getSlotId(), errorCode);
             }
         }
     }
@@ -188,6 +185,17 @@ public class WebSocketHandler {
     private long getVerificationProcessExpireTimeInMillis(IdentityVerifierDetail identityVerifierDetail) {
         int processDurationInSeconds = identityVerifierDetail.getProcessDuration() <= 0 ? slotExpireInSeconds : identityVerifierDetail.getProcessDuration();
         return System.currentTimeMillis() + ( processDurationInSeconds * 1000L );
+    }
+
+    private void sendErrorFeedback(String slotId, String errorCode) {
+        IDVProcessFeedback idvProcessFeedback = new IDVProcessFeedback();
+        idvProcessFeedback.setType(ProcessFeedbackType.ERROR);
+        idvProcessFeedback.setCode(errorCode);
+
+        IdentityVerificationResult identityVerificationResult = new IdentityVerificationResult();
+        identityVerificationResult.setFeedback(idvProcessFeedback);
+
+        simpMessagingTemplate.convertAndSend("/topic/" + slotId, identityVerificationResult);
     }
 
     public void validate(IdentityVerificationRequest request) {

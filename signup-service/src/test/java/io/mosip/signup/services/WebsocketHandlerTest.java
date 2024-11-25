@@ -95,6 +95,30 @@ public class WebsocketHandlerTest {
     }
 
     @Test
+    public void processFrames_invalidTransaction_thenFail() {
+        IdentityVerificationRequest identityVerificationRequest = new IdentityVerificationRequest();
+        identityVerificationRequest.setSlotId("test");
+        identityVerificationRequest.setStepCode("stepCode");
+        Mockito.when(cacheUtilService.getVerifiedSlotTransaction(identityVerificationRequest.getSlotId())).thenReturn(null);
+        webSocketHandler.processFrames(identityVerificationRequest);
+        Mockito.verify(cacheUtilService, Mockito.times(1)).getVerifiedSlotTransaction(identityVerificationRequest.getSlotId());
+    }
+
+    @Test
+    public void processFrames_invalidVerifierId_thenFail() {
+        IdentityVerificationRequest identityVerificationRequest = new IdentityVerificationRequest();
+        identityVerificationRequest.setSlotId("test");
+        identityVerificationRequest.setStepCode("stepCode");
+        IdentityVerificationTransaction identityVerificationTransaction = new IdentityVerificationTransaction();
+        identityVerificationTransaction.setVerifierId("verifier-id");
+        Mockito.when(cacheUtilService.getVerifiedSlotTransaction(identityVerificationRequest.getSlotId())).thenReturn(identityVerificationTransaction);
+        Mockito.when(identityVerifierFactory.getIdentityVerifier("verifier-id")).thenReturn(null);
+        webSocketHandler.processFrames(identityVerificationRequest);
+        Mockito.verify(cacheUtilService, Mockito.times(1)).getVerifiedSlotTransaction(identityVerificationRequest.getSlotId());
+        Mockito.verify(identityVerifierFactory, Mockito.times(1)).getIdentityVerifier("verifier-id");
+    }
+
+    @Test
     public void processVerificationResult_withValidInput_thenPass() {
         IdentityVerificationResult identityVerificationResult = new IdentityVerificationResult();
         identityVerificationResult.setId("test");
