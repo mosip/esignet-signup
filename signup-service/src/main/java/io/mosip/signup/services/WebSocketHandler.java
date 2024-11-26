@@ -198,7 +198,7 @@ public class WebSocketHandler {
         simpMessagingTemplate.convertAndSend("/topic/" + slotId, identityVerificationResult);
     }
 
-    public void validate(IdentityVerificationRequest request) {
+    private void validate(IdentityVerificationRequest request) {
         if (request.getStepCode() == null || request.getStepCode().isBlank()) {
             throw new SignUpException(ErrorConstants.INVALID_STEP_CODE);
         }

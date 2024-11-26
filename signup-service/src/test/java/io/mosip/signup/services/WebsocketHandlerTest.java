@@ -314,7 +314,7 @@ public class WebsocketHandlerTest {
         request.setSlotId("validSlotId");
         request.setStepCode("validStepCode");
         request.setFrames(new ArrayList<>());
-        assertDoesNotThrow(() -> webSocketHandler.validate(request));
+        assertDoesNotThrow(() -> webSocketHandler.processFrames(request));
     }
 
     @Test
@@ -324,7 +324,7 @@ public class WebsocketHandlerTest {
         request.setStepCode(null);
 
         try{
-            webSocketHandler.validate(request);
+            webSocketHandler.processFrames(request);
         }catch (SignUpException e){
             Assert.assertEquals(e.getErrorCode(), ErrorConstants.INVALID_STEP_CODE);
         }
@@ -336,7 +336,7 @@ public class WebsocketHandlerTest {
         request.setSlotId("validSlotId");
         request.setStepCode("  ");
         try{
-            webSocketHandler.validate(request);
+            webSocketHandler.processFrames(request);
         }catch (SignUpException e){
             Assert.assertEquals(e.getErrorCode(),ErrorConstants.INVALID_STEP_CODE);
         }
@@ -356,7 +356,7 @@ public class WebsocketHandlerTest {
         request.setStepCode("validStepCode");
         request.setFrames(frames);
         try{
-            webSocketHandler.validate(request);
+            webSocketHandler.processFrames(request);
         }catch (SignUpException e){
             Assert.assertEquals(e.getErrorCode(),ErrorConstants.INVALID_FRAME);
         }
@@ -376,7 +376,7 @@ public class WebsocketHandlerTest {
         request.setStepCode("validStepCode");
         request.setFrames(frames);
         try {
-            webSocketHandler.validate(request);
+            webSocketHandler.processFrames(request);
         } catch (SignUpException e) {
             Assert.assertEquals(e.getErrorCode(), ErrorConstants.INVALID_ORDER);
         }
