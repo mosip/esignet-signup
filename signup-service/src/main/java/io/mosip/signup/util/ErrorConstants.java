@@ -58,4 +58,6 @@ public class ErrorConstants {
     public static final String INVALID_DISABILITY_TYPE = "invalid_disability_type";
     public static final String INVALID_AUTHORIZATION_CODE = "invalid_authorization_code";
     public static final String INVALID_STATE = "invalid_state";
+    public static final String INVALID_FRAME = "invalid_frame";
+    public static final String INVALID_ORDER = "invalid_order";
 }
