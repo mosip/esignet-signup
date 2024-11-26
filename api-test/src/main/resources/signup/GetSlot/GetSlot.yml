@@ -15,3 +15,71 @@ GetSlot:
       output: '{
        
 }'
+   Signup_ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_disabilityTypeVISION_Smoke_Sid:
+      endPoint: /v1/signup/identity-verification/slot
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/GetSlot/GetSlot
+      outputTemplate: signup/GetSlot/GetSlotResult
+      input: '{
+      	"requestTime": "$TIMESTAMP$",
+      	"idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeVISION_Smoke_Sid_idvTransactionID$",
+      	"verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeVISION_Smoke_Sid_id$",
+      	"consent": "AGREE",
+      	"disabilityType": "VISION"
+}'
+      output: '{
+       
+}'
+   Signup_ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_disabilityTypeAUDITORY_Smoke_Sid:
+      endPoint: /v1/signup/identity-verification/slot
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/GetSlot/GetSlot
+      outputTemplate: signup/GetSlot/GetSlotResult
+      input: '{
+      	"requestTime": "$TIMESTAMP$",
+      	"idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeAUDITORY_Smoke_Sid_idvTransactionID$",
+      	"verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeAUDITORY_Smoke_Sid_id$",
+      	"consent": "AGREE",
+      	"disabilityType": "AUDITORY"
+}'
+      output: '{
+       
+}'
+   Signup_ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_disabilityTypeMOBILITY_Smoke_Sid:
+      endPoint: /v1/signup/identity-verification/slot
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/GetSlot/GetSlot
+      outputTemplate: signup/GetSlot/GetSlotResult
+      input: '{
+      	"requestTime": "$TIMESTAMP$",
+      	"idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeMOBILITY_Smoke_Sid_idvTransactionID$",
+      	"verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeMOBILITY_Smoke_Sid_id$",
+      	"consent": "AGREE",
+      	"disabilityType": "MOBILITY"
+}'
+      output: '{
+       
+}'
+   Signup_ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_disabilityTypeNEUROLOGICAL_Smoke_Sid:
+      endPoint: /v1/signup/identity-verification/slot
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/GetSlot/GetSlot
+      outputTemplate: signup/GetSlot/GetSlotResult
+      input: '{
+      	"requestTime": "$TIMESTAMP$",
+      	"idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_Smoke_Sid_idvTransactionID$",
+      	"verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_Smoke_Sid_id$",
+      	"consent": "AGREE",
+      	"disabilityType": "NEUROLOGICAL"
+}'
+      output: '{
+       
+}'

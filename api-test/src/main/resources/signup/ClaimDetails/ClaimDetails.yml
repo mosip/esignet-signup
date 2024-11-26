@@ -13,3 +13,59 @@ ClaimDetails:
     }'
       output: '{
 }'
+   Signup_ESignet_ClaimDetails_AuthToken_Xsrf_uin_Valid_forGetSlot_disabilityTypeVISION_Smoke:
+      endPoint: /v1/esignet/authorization/claim-details
+      role: resident
+      restMethod: get
+      checkErrorsOnlyInResponse: true
+      validityCheckRequired: true
+      inputTemplate: signup/ClaimDetails/ClaimDetails
+      outputTemplate: signup/ClaimDetails/ClaimDetailsResult
+      input: '{
+        "encodedHash": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeVISION_Smoke_sid_encodedResp$",
+      	"transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeVISION_Smoke_sid_transactionId$"
+    }'
+      output: '{
+}'
+   Signup_ESignet_ClaimDetails_AuthToken_Xsrf_uin_Valid_forGetSlot_disabilityTypeAUDITORY_Smoke:
+      endPoint: /v1/esignet/authorization/claim-details
+      role: resident
+      restMethod: get
+      checkErrorsOnlyInResponse: true
+      validityCheckRequired: true
+      inputTemplate: signup/ClaimDetails/ClaimDetails
+      outputTemplate: signup/ClaimDetails/ClaimDetailsResult
+      input: '{
+        "encodedHash": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeAUDITORY_Smoke_sid_encodedResp$",
+      	"transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeAUDITORY_Smoke_sid_transactionId$"
+    }'
+      output: '{
+}'
+   Signup_ESignet_ClaimDetails_AuthToken_Xsrf_uin_Valid_forGetSlot_disabilityTypeMOBILITY_Smoke:
+      endPoint: /v1/esignet/authorization/claim-details
+      role: resident
+      restMethod: get
+      checkErrorsOnlyInResponse: true
+      validityCheckRequired: true
+      inputTemplate: signup/ClaimDetails/ClaimDetails
+      outputTemplate: signup/ClaimDetails/ClaimDetailsResult
+      input: '{
+        "encodedHash": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeMOBILITY_Smoke_sid_encodedResp$",
+      	"transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeMOBILITY_Smoke_sid_transactionId$"
+    }'
+      output: '{
+}'
+   Signup_ESignet_ClaimDetails_AuthToken_Xsrf_uin_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_Smoke:
+      endPoint: /v1/esignet/authorization/claim-details
+      role: resident
+      restMethod: get
+      checkErrorsOnlyInResponse: true
+      validityCheckRequired: true
+      inputTemplate: signup/ClaimDetails/ClaimDetails
+      outputTemplate: signup/ClaimDetails/ClaimDetailsResult
+      input: '{
+        "encodedHash": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_Smoke_sid_encodedResp$",
+      	"transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_Smoke_sid_transactionId$"
+    }'
+      output: '{
+}'
