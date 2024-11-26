@@ -134,7 +134,7 @@
     "tsconfig-paths-webpack-plugin": "^4.1.0",
     "type-fest": "^4.6.0",
     "undici": "^6.19.2",
-    "webpack": "^5.89.0",
+    "webpack": "^5.94.0",
     "whatwg-fetch": "^3.6.20"
   },
   "msw": {
