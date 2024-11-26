@@ -102,6 +102,8 @@ public class WebsocketHandlerTest {
         Mockito.when(cacheUtilService.getVerifiedSlotTransaction(identityVerificationRequest.getSlotId())).thenReturn(null);
         webSocketHandler.processFrames(identityVerificationRequest);
         Mockito.verify(cacheUtilService, Mockito.times(1)).getVerifiedSlotTransaction(identityVerificationRequest.getSlotId());
+        Mockito.verify(simpMessagingTemplate, Mockito.times(1))
+                .convertAndSend(Mockito.eq("/topic/" + identityVerificationRequest.getSlotId()), Mockito.any(IdentityVerificationResult.class));
     }
 
     @Test
@@ -116,6 +118,8 @@ public class WebsocketHandlerTest {
         webSocketHandler.processFrames(identityVerificationRequest);
         Mockito.verify(cacheUtilService, Mockito.times(1)).getVerifiedSlotTransaction(identityVerificationRequest.getSlotId());
         Mockito.verify(identityVerifierFactory, Mockito.times(1)).getIdentityVerifier("verifier-id");
+        Mockito.verify(simpMessagingTemplate, Mockito.times(1))
+                .convertAndSend(Mockito.eq("/topic/" + identityVerificationRequest.getSlotId()), Mockito.any(IdentityVerificationResult.class));
     }
 
     @Test
