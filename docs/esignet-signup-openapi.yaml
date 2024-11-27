@@ -510,7 +510,7 @@ paths:
         - name: X-XSRF-TOKEN
           in: header
           description: CSRF token as set in cookie key 'XSRF-TOKEN'
-          required: true
+          required: false
           schema:
             type: string
         - name: VERIFIED_TRANSACTION_ID
@@ -792,7 +792,7 @@ paths:
         - name: X-XSRF-TOKEN
           in: header
           description: CSRF token as set in cookie key 'XSRF-TOKEN'
-          required: true
+          required: false
           schema:
             type: string
         - schema:
@@ -891,7 +891,7 @@ paths:
         - name: X-XSRF-TOKEN
           in: header
           description: CSRF token as set in cookie key 'XSRF-TOKEN'
-          required: true
+          required: false
           schema:
             type: string
         - schema:
@@ -1185,7 +1185,7 @@ paths:
         - name: X-XSRF-TOKEN
           in: header
           description: CSRF token as set in cookie key 'XSRF-TOKEN'
-          required: true
+          required: false
           schema:
             type: string
         - name: IDV_SLOT_ALLOTTED
