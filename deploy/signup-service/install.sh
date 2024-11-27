@@ -101,7 +101,7 @@ function installing_signup() {
 echo Installing signup with KAFKA_CONSUMER_GROUP_ID="mock-signup-idv-kafka-$NS"
 
   echo Installing signup
-  helm -n $NS install signup /home/siva/Videos/DSD_recordings/DSD6684/esignet-signup/helm/signup-service \
+  helm -n $NS install signup mosip/signup \
     -f values.yaml --version $CHART_VERSION $ENABLE_INSECURE $plugin_option \
     --set kafkaConsumerGroupId="mock-signup-idv-kafka-$NS" \
     --set metrics.serviceMonitor.enabled=$servicemonitorflag --wait
