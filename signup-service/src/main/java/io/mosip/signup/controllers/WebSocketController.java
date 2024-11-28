@@ -10,6 +10,7 @@ import io.mosip.signup.api.exception.IdentityVerifierException;
 import io.mosip.signup.api.spi.IdentityVerifierPlugin;
 import io.mosip.signup.api.util.VerificationStatus;
 import io.mosip.signup.dto.IdentityVerificationRequest;
+import io.mosip.signup.dto.IdentityVerificationTransaction;
 import io.mosip.signup.helper.AuditHelper;
 import io.mosip.signup.services.CacheUtilService;
 import io.mosip.signup.services.WebSocketHandler;
