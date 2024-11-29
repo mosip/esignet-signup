@@ -92,6 +92,8 @@ spec:
           env:
             - name: container_user
               value: {{ .Values.containerSecurityContext.runAsUser }}
+            - name: KAFKA_CONSUMER_GROUP_ID
+              value: mock-signup-idv-kafka-{{ .Release.Namespace }} # Using the namespace dynamicallyb
             - name: JDK_JAVA_OPTIONS
               value: {{ .Values.additionalResources.javaOpts }}
             {{- if .Values.pluginUrlEnv }}
