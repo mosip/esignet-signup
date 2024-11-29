@@ -24,7 +24,7 @@
 			<class name="io.mosip.testrig.apirig.signup.testscripts.AddIdentity" />
 		</classes>
 	</test>
-	<!--<test name="CreatePolicyGroup">
+	<test name="CreatePolicyGroup">
 		<parameter name="ymlFile"
 			value="signup/PmsIntegration/DefinePolicyGroup/DefinePolicyGroup.yml" />
 		<parameter name="idKeyName" value="id,name" />
@@ -156,5 +156,5 @@
 		<classes>
 			<class name="io.mosip.testrig.apirig.signup.testscripts.SimplePostForAutoGenId" />
 		</classes>
-	</test>-->
+	</test>
 </suite>
