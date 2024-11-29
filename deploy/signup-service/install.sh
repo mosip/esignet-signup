@@ -98,8 +98,6 @@ function installing_signup() {
     fi
   done
 
-echo Installing signup with KAFKA_CONSUMER_GROUP_ID="mock-signup-idv-kafka-$NS"
-
   echo Installing signup
   helm -n $NS install signup mosip/signup \
     -f values.yaml --version $CHART_VERSION $ENABLE_INSECURE $plugin_option \
