@@ -420,5 +420,13 @@
 			<class name="io.mosip.testrig.apirig.signup.testscripts.SimplePost" />
 		</classes>
 	</test>
+	<test name="GetIdentityVerificationStatusNegTC">
+		<parameter name="ymlFile"
+			value="signup/GetIdentityVerificationStatusNegTC/GetIdentityVerificationStatusNegTC.yml" />
+		<classes>
+			<class
+				name="io.mosip.testrig.apirig.signup.testscripts.GetWithParam" />
+		</classes>
+	</test>
 	<!-- End of Sign up L2 phase Negative test cases -->
 </suite>
