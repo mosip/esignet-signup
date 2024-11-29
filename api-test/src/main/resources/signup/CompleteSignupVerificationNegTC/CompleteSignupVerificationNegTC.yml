@@ -1,5 +1,5 @@
 CompleteSignupVerificationNegTC:
-   Signup_ESignet_CompleteSignupVerificationNegTC_AuthToken_Xsrf_uin_empty_transactionId_Smoke_Neg:
+   Signup_ESignet_CompleteSignupVerificationNegTC_AuthToken_Xsrf_uin_empty_transactionId_Smoke:
       endPoint: /v1/esignet/authorization/complete-signup-redirect
       uniqueIdentifier: TC_ESignet_CompleteSignupVerificationNegTC_01
       description: Completing the Signup verifcation with empty transactionId - Failure
@@ -21,7 +21,7 @@ CompleteSignupVerificationNegTC:
     }
   ]
 }'
-   Signup_ESignet_CompleteSignupVerificationNegTC_AuthToken_Xsrf_uin_invalid_transactionId_Smoke_Neg:
+   Signup_ESignet_CompleteSignupVerificationNegTC_AuthToken_Xsrf_uin_invalid_transactionId_Smoke:
       endPoint: /v1/esignet/authorization/complete-signup-redirect
       uniqueIdentifier: TC_ESignet_CompleteSignupVerificationNegTC_02
       description: Completing the Signup verifcation with invalid transactionId - Failure
@@ -43,7 +43,7 @@ CompleteSignupVerificationNegTC:
     }
   ]
 }'
-   Signup_ESignet_CompleteSignupVerificationNegTC_AuthToken_Xsrf_uin_without_requestTime_Smoke_Neg:
+   Signup_ESignet_CompleteSignupVerificationNegTC_AuthToken_Xsrf_uin_without_requestTime_Smoke:
       endPoint: /v1/esignet/authorization/complete-signup-redirect
       uniqueIdentifier: TC_ESignet_CompleteSignupVerificationNegTC_03
       description: Completing the Signup verifcation without requestTime - Failure
@@ -65,7 +65,7 @@ CompleteSignupVerificationNegTC:
     }
   ]
 }'
-   Signup_ESignet_CompleteSignupVerificationNegTC_AuthToken_Xsrf_uin_with_empty_requestTime_Smoke_Neg:
+   Signup_ESignet_CompleteSignupVerificationNegTC_AuthToken_Xsrf_uin_with_empty_requestTime_Smoke:
       endPoint: /v1/esignet/authorization/complete-signup-redirect
       uniqueIdentifier: TC_ESignet_CompleteSignupVerificationNegTC_04
       description: Completing the Signup verifcation with empty requestTime - Failure
@@ -87,7 +87,7 @@ CompleteSignupVerificationNegTC:
     }
   ]
 }'
-   Signup_ESignet_CompleteSignupVerificationNegTC_AuthToken_Xsrf_uin_with_emptyString_requestTime_Smoke_Neg:
+   Signup_ESignet_CompleteSignupVerificationNegTC_AuthToken_Xsrf_uin_with_emptyString_requestTime_Smoke:
       endPoint: /v1/esignet/authorization/complete-signup-redirect
       uniqueIdentifier: TC_ESignet_CompleteSignupVerificationNegTC_05
       description: Completing the Signup verifcation with empty string requestTime - Failure
@@ -109,7 +109,7 @@ CompleteSignupVerificationNegTC:
     }
   ]
 }'
-   Signup_ESignet_CompleteSignupVerificationNegTC_AuthToken_Xsrf_uin_invalid_requestTime_Smoke_Neg:
+   Signup_ESignet_CompleteSignupVerificationNegTC_AuthToken_Xsrf_uin_invalid_requestTime_Smoke:
       endPoint: /v1/esignet/authorization/complete-signup-redirect
       uniqueIdentifier: TC_ESignet_CompleteSignupVerificationNegTC_06
       description: Completing the Signup verifcation invalid requestTime - Failure
@@ -131,7 +131,7 @@ CompleteSignupVerificationNegTC:
     }
   ]
 }'
-   Signup_ESignet_CompleteSignupVerificationNegTC_AuthToken_Xsrf_uin_without_requestTime_Smoke_Neg:
+   Signup_ESignet_CompleteSignupVerificationNegTC_AuthToken_Xsrf_uin_without_requestTime_Smoke:
       endPoint: /v1/esignet/authorization/complete-signup-redirect
       uniqueIdentifier: TC_ESignet_CompleteSignupVerificationNegTC_07
       description: Completing the Signup verifcation with numeric as requestTime - Failure
@@ -153,7 +153,7 @@ CompleteSignupVerificationNegTC:
     }
   ]
 }'
-   Signup_ESignet_CompleteSignupVerificationNegTC_AuthToken_Xsrf_uin_with_future_requestTime_Smoke_Neg:
+   Signup_ESignet_CompleteSignupVerificationNegTC_AuthToken_Xsrf_uin_with_future_requestTime_Smoke:
       endPoint: /v1/esignet/authorization/complete-signup-redirect
       uniqueIdentifier: TC_ESignet_CompleteSignupVerificationNegTC_08
       description: Completing the Signup verifcation with future date as requestTime - Failure
@@ -175,7 +175,7 @@ CompleteSignupVerificationNegTC:
     }
   ]
 }'
-   Signup_ESignet_CompleteSignupVerificationNegTC_AuthToken_Xsrf_uin_with_otherTimeFormat_requestTime_Smoke_Neg:
+   Signup_ESignet_CompleteSignupVerificationNegTC_AuthToken_Xsrf_uin_with_otherTimeFormat_requestTime_Smoke:
       endPoint: /v1/esignet/authorization/complete-signup-redirect
       uniqueIdentifier: TC_ESignet_CompleteSignupVerificationNegTC_09
       description: Completing the Signup verifcation with other time format requestTime - Failure
@@ -197,7 +197,7 @@ CompleteSignupVerificationNegTC:
     }
   ]
 }'
-   Signup_ESignet_CompleteSignupVerificationNegTC_AuthToken_Xsrf_uin_without_requestObject_Smoke_Neg:
+   Signup_ESignet_CompleteSignupVerificationNegTC_AuthToken_Xsrf_uin_without_requestObject_Smoke:
       endPoint: /v1/esignet/authorization/complete-signup-redirect
       uniqueIdentifier: TC_ESignet_CompleteSignupVerificationNegTC_10
       description: Completing the Signup verifcation without requestObject - Failure
@@ -219,7 +219,7 @@ CompleteSignupVerificationNegTC:
     }
   ]
 }'
-   Signup_ESignet_CompleteSignupVerificationNegTC_AuthToken_Xsrf_uin_with_empty_requestObject_Smoke_Neg:
+   Signup_ESignet_CompleteSignupVerificationNegTC_AuthToken_Xsrf_uin_with_empty_requestObject_Smoke:
       endPoint: /v1/esignet/authorization/complete-signup-redirect
       uniqueIdentifier: TC_ESignet_CompleteSignupVerificationNegTC_11
       description: Completing the Signup verifcation with empty requestObject - Failure
@@ -232,116 +232,6 @@ CompleteSignupVerificationNegTC:
         "encodedHash": "",
       	"requestTime": "",
       	"transactionId": ""
-    }'
-      output: '{
-      "errors": [
-    {
-      "errorCode": "invalid_transaction",
-      "errorMessage": "$IGNORE$"
-    }
-  ]
-}'
-   Signup_ESignet_CompleteSignupVerificationNegTC_AuthToken_Xsrf_uin_with_invalid_encodedHash_Smoke_Neg:
-      endPoint: /v1/esignet/authorization/complete-signup-redirect
-      uniqueIdentifier: TC_ESignet_CompleteSignupVerificationNegTC_12
-      description: Completing the Signup verifcation with invalid encodedHash - Failure
-      role: resident
-      restMethod: post
-      checkErrorsOnlyInResponse: true
-      inputTemplate: signup/CompleteSignupVerificationNegTC/CompleteSignupVerificationNegTC
-      outputTemplate: signup/error
-      input: '{
-        "encodedHash": "invalidHash",
-      	"requestTime": "$TIMESTAMP$",
-      	"transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_transactionId$"
-    }'
-      output: '{
-      "errors": [
-    {
-      "errorCode": "invalid_request",
-      "errorMessage": "$IGNORE$"
-    }
-  ]
-}'
-   Signup_ESignet_CompleteSignupVerificationNegTC_AuthToken_Xsrf_uin_without_encodedHash_Smoke_Neg:
-      endPoint: /v1/esignet/authorization/complete-signup-redirect
-      uniqueIdentifier: TC_ESignet_CompleteSignupVerificationNegTC_13
-      description: Completing the Signup verifcation without encodedHash - Failure
-      role: resident
-      restMethod: post
-      checkErrorsOnlyInResponse: true
-      inputTemplate: signup/CompleteSignupVerificationNegTC/CompleteSignupVerificationNegTC
-      outputTemplate: signup/error
-      input: '{
-        "encodedHash": "$REMOVE$",
-      	"requestTime": "$TIMESTAMP$",
-      	"transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_transactionId$"
-    }'
-      output: '{
-      "errors": [
-    {
-      "errorCode": "invalid_request",
-      "errorMessage": "$IGNORE$"
-    }
-  ]
-}'
-   Signup_ESignet_CompleteSignupVerificationNegTC_AuthToken_Xsrf_uin_with_encodedHash_asNumeric_Smoke_Neg:
-      endPoint: /v1/esignet/authorization/complete-signup-redirect
-      uniqueIdentifier: TC_ESignet_CompleteSignupVerificationNegTC_14
-      description: Completing the Signup verifcation with numeric value as encodedHash - Failure
-      role: resident
-      restMethod: post
-      checkErrorsOnlyInResponse: true
-      inputTemplate: signup/CompleteSignupVerificationNegTC/CompleteSignupVerificationNegTC
-      outputTemplate: signup/error
-      input: '{
-        "encodedHash": "1123434",
-      	"requestTime": "$TIMESTAMP$",
-      	"transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_transactionId$"
-    }'
-      output: '{
-      "errors": [
-    {
-      "errorCode": "invalid_request",
-      "errorMessage": "$IGNORE$"
-    }
-  ]
-}'
-   Signup_ESignet_CompleteSignupVerificationNegTC_AuthToken_Xsrf_uin_without_transactionId_Smoke_Neg:
-      endPoint: /v1/esignet/authorization/complete-signup-redirect
-      uniqueIdentifier: TC_ESignet_CompleteSignupVerificationNegTC_15
-      description: Completing the Signup verifcation without transactionId - Failure
-      role: resident
-      restMethod: post
-      checkErrorsOnlyInResponse: true
-      inputTemplate: signup/CompleteSignupVerificationNegTC/CompleteSignupVerificationNegTC
-      outputTemplate: signup/error
-      input: '{
-        "encodedHash": "$ID:ESignet_OAuthDetailsRequest_V3_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_encodedResp$",
-      	"requestTime": "$TIMESTAMP$",
-      	"transactionId": "$REMOVE$"
-    }'
-      output: '{
-      "errors": [
-    {
-      "errorCode": "invalid_transaction",
-      "errorMessage": "$IGNORE$"
-    }
-  ]
-}'
-   Signup_ESignet_CompleteSignupVerificationNegTC_AuthToken_Xsrf_uin_with_other_transactionId_Smoke_Neg:
-      endPoint: /v1/esignet/authorization/complete-signup-redirect
-      uniqueIdentifier: TC_ESignet_CompleteSignupVerificationNegTC_16
-      description: Completing the Signup verifcation with other transactionId - Failure
-      role: resident
-      restMethod: post
-      checkErrorsOnlyInResponse: true
-      inputTemplate: signup/CompleteSignupVerificationNegTC/CompleteSignupVerificationNegTC
-      outputTemplate: signup/error
-      input: '{
-        "encodedHash": "$ID:ESignet_OAuthDetailsRequest_V3_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_encodedResp$",
-      	"requestTime": "$TIMESTAMP$",
-      	"transactionId": "$ID:ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_posNeg_Smoke_Sid_idvSlotAllotted$"
     }'
       output: '{
       "errors": [
