@@ -420,5 +420,13 @@
 			<class name="io.mosip.testrig.apirig.signup.testscripts.SimplePost" />
 		</classes>
 	</test>
+	<test name="CompleteSignupVerificationNegTC">
+		<parameter name="ymlFile"
+			value="signup/CompleteSignupVerificationNegTC/CompleteSignupVerificationNegTC.yml" />
+		<classes>
+			<class
+				name="io.mosip.testrig.apirig.signup.testscripts.SimplePostForAutoGenId" />
+		</classes>
+	</test>
 	<!-- End of Sign up L2 phase Negative test cases -->
 </suite>
