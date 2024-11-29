@@ -502,4 +502,20 @@ GetSlotNegTC:
     }
   ]
 }'
+   Signup_ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_posNeg_Smoke_Sid:
+      endPoint: /v1/signup/identity-verification/slot
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/GetSlotNegTC/GetSlotNegTC
+      outputTemplate: signup/GetSlotNegTC/GetSlotResultNegTC
+      input: '{
+      	"requestTime": "$TIMESTAMP$",
+      	"idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_idvTransactionID$",
+      	"verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_id$",
+      	"consent": "AGREE"
+}'
+      output: '{
+       
+}'
  
