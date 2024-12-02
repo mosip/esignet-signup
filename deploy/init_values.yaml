@@ -1,0 +1,9 @@
+dbUserPasswords:
+  dbuserPassword: ""
+databases:
+  mosip_audit:
+    enabled: true
+    branch: develop
+  mosip_kernel:
+    enabled: true
+    branch: develop
