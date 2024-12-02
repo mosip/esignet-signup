@@ -25,3 +25,29 @@ WebSocketConnection:
 }'
       output: '{
 }'
+   Signup_ESignet_WebSocketConnection_uin_Incomplete:
+      endPoint: /v1/signup/ws
+      description: Creating websocket connection and sending message to it
+      role: resident
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/WebSocketConnection/WebSocketConnection
+      outputTemplate: signup/WebSocketConnection/WebSocketConnectionResult
+      input: '{
+        "slotId": "$ID:ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_disabilityTypeVISION_Smoke_Sid_slotId$",
+        "idvSlotAllotted": "$ID:ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_disabilityTypeVISION_Smoke_Sid_idvSlotAllotted$",
+        "sendDestination": "/v1/signup/ws/process-frame",
+        "message1": {
+          "stepCode": "START",
+          "frames": [
+            { "frame": "frame1", "order": "0" }
+          ]
+        },
+        "message2": {
+          "stepCode": "liveness_check",
+          "frames": [
+            { "frame": "frame1", "order": "1" }
+          ]
+        }
+}'
+      output: '{
+}'

@@ -416,8 +416,9 @@
 	<test name="GetSlotNegTC">
 		<parameter name="ymlFile"
 			value="signup/GetSlotNegTC/GetSlotNegTC.yml" />
+		<parameter name="idKeyName" value="slotId" />
 		<classes>
-			<class name="io.mosip.testrig.apirig.signup.testscripts.SimplePost" />
+			<class name="io.mosip.testrig.apirig.signup.testscripts.SimplePostForAutoGenId" />
 		</classes>
 	</test>
 	<test name="GetIdentityVerificationStatusNegTC">
