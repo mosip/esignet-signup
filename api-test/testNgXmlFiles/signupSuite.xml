@@ -8,7 +8,7 @@
 		<listener class-name="io.mosip.testrig.apirig.report.EmailableReport" />
 	</listeners>
 
-	<!--<test name="SignUpSettings">
+	<test name="SignUpSettings">
 		<parameter name="ymlFile"
 			value="signup/SignUpSettings/SignUpSettings.yml" />
 		<classes>
@@ -125,7 +125,7 @@
 		<classes>
 			<class name="io.mosip.testrig.apirig.signup.testscripts.SimplePost" />
 		</classes>
-	</test>-->
+	</test>
 
 	<test name="OIDCClientV2">
 		<parameter name="ymlFile"
@@ -136,7 +136,7 @@
 				name="io.mosip.testrig.apirig.signup.testscripts.SimplePostForAutoGenId" />
 		</classes>
 	</test>
-	<!--<test name="OAuthDetailsRequestPassword">
+	<test name="OAuthDetailsRequestPassword">
 		<parameter name="ymlFile"
 			value="signup/OAuthDetailsRequestPassword/OAuthDetailsRequestPassword.yml" />
 		<parameter name="idKeyName" value="transactionId,encodedResp" />
@@ -193,9 +193,9 @@
 		<classes>
 			<class name="io.mosip.testrig.apirig.signup.testscripts.SimplePost" />
 		</classes>
-	</test>-->
+	</test>
 
-	<!--Start of Sign up L2 phase test cases-->
+	<!-- Start of Sign up L2 phase test cases -->
 	<test name="OAuthDetailsRequestV3">
 		<parameter name="ymlFile"
 			value="signup/OAuthDetailsRequestV3/OAuthDetailsRequest.yml" />

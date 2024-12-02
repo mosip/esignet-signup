@@ -1,6 +1,8 @@
 PrepareSignupRedirect:
    Signup_ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_Smoke_sid:
       endPoint: /v1/esignet/authorization/prepare-signup-redirect
+      uniqueIdentifier: TC_Signup_ESignet_PrepareSignupRedirect_01
+      description: Create ID token for the signup service with valid data
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true
@@ -17,6 +19,8 @@ PrepareSignupRedirect:
 }'
    Signup_ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_forGetSlot_disabilityTypeVISION_Smoke_sid:
       endPoint: /v1/esignet/authorization/prepare-signup-redirect
+      uniqueIdentifier: TC_Signup_ESignet_PrepareSignupRedirect_Prerequisite
+      description: Create ID token for the signup service with valid data and this testcase is prerequisite
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true
@@ -33,6 +37,8 @@ PrepareSignupRedirect:
 }'
    Signup_ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_forGetSlot_disabilityTypeAUDITORY_Smoke_sid:
       endPoint: /v1/esignet/authorization/prepare-signup-redirect
+      uniqueIdentifier: TC_Signup_ESignet_PrepareSignupRedirect_Prerequisite
+      description: Create ID token for the signup service with valid data and this testcase is prerequisite
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true
@@ -49,6 +55,8 @@ PrepareSignupRedirect:
 }'
    Signup_ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_forGetSlot_disabilityTypeMOBILITY_Smoke_sid:
       endPoint: /v1/esignet/authorization/prepare-signup-redirect
+      uniqueIdentifier: TC_Signup_ESignet_PrepareSignupRedirect_Prerequisite
+      description: Create ID token for the signup service with valid data and this testcase is prerequisite
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true
@@ -65,6 +73,8 @@ PrepareSignupRedirect:
 }'
    Signup_ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_Smoke_sid:
       endPoint: /v1/esignet/authorization/prepare-signup-redirect
+      uniqueIdentifier: TC_Signup_ESignet_PrepareSignupRedirect_Prerequisite
+      description: Create ID token for the signup service with valid data and this testcase is prerequisite
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true
