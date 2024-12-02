@@ -1,6 +1,8 @@
 OAuthDetailsRequestV3:
    Signup_ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_Smoke_sid:
       endPoint: /v1/esignet/authorization/v3/oauth-details
+      uniqueIdentifier: TC_Signup_ESignet_OAuthDetailsRequestV3_01
+      description: Get OAuth details with valid data
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true
@@ -25,6 +27,8 @@ OAuthDetailsRequestV3:
 
    Signup_ESignet_OAuthDetailsRequest_V3_WithClaimValues_AuthToken_Xsrf_uin_all_Valid_Smoke_sid:
       endPoint: /v1/esignet/authorization/v3/oauth-details
+      uniqueIdentifier: TC_Signup_ESignet_OAuthDetailsRequestV3_02
+      description: Get OAuth details with claims values
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true
@@ -48,6 +52,8 @@ OAuthDetailsRequestV3:
 }'
    Signup_ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeVISION_Smoke_sid:
       endPoint: /v1/esignet/authorization/v3/oauth-details
+      uniqueIdentifier: TC_Signup_ESignet_OAuthDetailsRequestV3_Prerequisite
+      description: Get OAuth details with claims as prerequisite
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true
@@ -71,6 +77,8 @@ OAuthDetailsRequestV3:
 }'
    Signup_ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeAUDITORY_Smoke_sid:
       endPoint: /v1/esignet/authorization/v3/oauth-details
+      uniqueIdentifier: TC_Signup_ESignet_OAuthDetailsRequestV3_Prerequisite
+      description: Get OAuth details with claims as prerequisite
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true
@@ -94,6 +102,8 @@ OAuthDetailsRequestV3:
 }'
    Signup_ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeMOBILITY_Smoke_sid:
       endPoint: /v1/esignet/authorization/v3/oauth-details
+      uniqueIdentifier: TC_Signup_ESignet_OAuthDetailsRequestV3_Prerequisite
+      description: Get OAuth details with claims as prerequisite
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true
@@ -117,6 +127,8 @@ OAuthDetailsRequestV3:
 }'
    Signup_ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_Smoke_sid:
       endPoint: /v1/esignet/authorization/v3/oauth-details
+      uniqueIdentifier: TC_Signup_ESignet_OAuthDetailsRequestV3_Prerequisite
+      description: Get OAuth details with claims as prerequisite
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true
