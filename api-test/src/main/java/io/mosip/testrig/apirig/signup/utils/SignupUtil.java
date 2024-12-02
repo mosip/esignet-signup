@@ -138,7 +138,7 @@ public class SignupUtil extends AdminTestUtil {
 
 			if ((testCaseName.contains("_KycBioAuth_") || testCaseName.contains("_BioAuth_")
 					|| testCaseName.contains("_SendBindingOtp_uin_Email_Valid_Smoke"))
-					&& (!isElementPresent(new JSONArray(schemaRequiredField), individualBiometrics))) {
+					&& (!isElementPresent(globalRequiredFields, individualBiometrics))) {
 				throw new SkipException(GlobalConstants.FEATURE_NOT_SUPPORTED_MESSAGE);
 			}
 
