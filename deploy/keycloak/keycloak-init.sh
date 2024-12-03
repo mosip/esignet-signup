@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # Initialises signup keycloak-init
 ## Usage: ./keycloak-init.sh [kubeconfig]
 
@@ -34,7 +34,7 @@ $COPY_UTIL secret keycloak keycloak $NS
 
 echo "creating and adding roles to keycloak pms & mpartner_default_auth clients for ESIGNET"
 kubectl -n $NS delete secret --ignore-not-found=true keycloak-client-secrets
-helm -n $NS delete signup-keycloak-init
+helm -n $NS delete signup-keycloak-init || true
 helm -n $NS install signup-keycloak-init mosip/keycloak-init \
   -f keycloak-init-values.yaml \
   --set clientSecrets[0].name="$SIGNUP_CLIENT_SECRET_KEY" \
