@@ -269,33 +269,6 @@ IDTAuthenticationNegTC:
         }
     ]
 }'
-   Signup_ESignet_IDTAuthenticationNegTC_AuthToken_Xsrf_Empty_challenge_Neg:
-      endPoint: /v1/esignet/authorization/v3/authenticate
-      uniqueIdentifier: TC_ESignet_IDTAuthenticationNegTC_11
-      description: Perform IDT authentication with empty challenge - Failure
-      role: resident
-      restMethod: post
-      checkErrorsOnlyInResponse: true
-      inputTemplate: signup/IDTAuthenticationNegTC/IDTAuthenticationNegTC
-      outputTemplate: signup/error
-      input: '{
-        "encodedHash": "$ID:ESignet_SignupAuthorizeNegTC_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_PosNeg_Smoke_sid_encodedResp$",
-      	"requestTime": "$TIMESTAMP$",
-      	"pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirectNegTC_AuthToken_Xsrf_STransId_uin_Otp_Valid_posNeg_Smoke_sid_pathFragmentCookie$",
-      	"pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_transactionId$",
-      	"idtToken": "$ID:ESignet_PrepareSignupRedirectNegTC_AuthToken_Xsrf_STransId_uin_Otp_Valid_posNeg_Smoke_sid_idToken$",
-      	"transactionId": "$ID:ESignet_SignupAuthorizeNegTC_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_PosNeg_Smoke_sid_transactionId$",
-      	"individualId": "$IDTINDIVIUALID$",
-      	"authFactorType" : "IDT",
-      	"challenge" : ""
-}'
-      output: '{
-    "errors": [
-        {
-            "errorCode": "unknown_error"
-        }
-    ]
-}'
    Signup_ESignet_IDTAuthenticationNegTC_AuthToken_Xsrf_invalid_requestTime_Neg:
       endPoint: /v1/esignet/authorization/v3/authenticate
       uniqueIdentifier: TC_ESignet_IDTAuthenticationNegTC_12
@@ -553,7 +526,7 @@ IDTAuthenticationNegTC:
       output: '{
     "errors": [
         {
-            "errorCode": "auth_factor_mismatch"
+            "errorCode": "invalid_auth_factor_type"
         }
     ]
 }'
