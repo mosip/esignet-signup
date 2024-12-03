@@ -1,7 +1,12 @@
 package io.mosip.testrig.apirig.signup.utils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -13,12 +18,23 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.testng.SkipException;
 
+import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.JWSHeader;
+import com.nimbusds.jose.JWSSigner;
+import com.nimbusds.jose.crypto.RSASSASigner;
+import com.nimbusds.jose.jwk.RSAKey;
+import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.SignedJWT;
+
 import io.mosip.testrig.apirig.dto.TestCaseDTO;
 import io.mosip.testrig.apirig.signup.testrunner.MosipTestRunner;
 import io.mosip.testrig.apirig.testrunner.BaseTestCase;
 import io.mosip.testrig.apirig.testrunner.OTPListener;
 import io.mosip.testrig.apirig.utils.AdminTestUtil;
+import io.mosip.testrig.apirig.utils.CertsUtil;
 import io.mosip.testrig.apirig.utils.GlobalConstants;
+import io.mosip.testrig.apirig.utils.JWKKeyUtil;
+import io.mosip.testrig.apirig.utils.KeycloakUserManager;
 import io.mosip.testrig.apirig.utils.RestClient;
 import io.mosip.testrig.apirig.utils.SkipTestCaseHandler;
 import io.restassured.response.Response;
@@ -169,9 +185,121 @@ public class SignupUtil extends AdminTestUtil {
 	}
 	
 	public static String inputstringKeyWordHandeler(String jsonString, String testCaseName) {
-		if (jsonString.contains(GlobalConstants.TIMESTAMP))
+		if (jsonString.contains(GlobalConstants.TIMESTAMP)) {
 			jsonString = replaceKeywordValue(jsonString, GlobalConstants.TIMESTAMP, generateCurrentUTCTimeStamp());
+		}
 		
+		if (testCaseName.contains("ESignet_GenerateApiKey_")) {
+			KeycloakUserManager.createKeyCloakUsers(genPartnerName, genPartnerEmail, "AUTH_PARTNER");
+		}
+		
+		if (testCaseName.contains("ESignet_GenerateApiKeyKyc_")) {
+			KeycloakUserManager.createKeyCloakUsers(genPartnerName + "2n", "12d" + genPartnerEmail, "AUTH_PARTNER");
+		}
+		
+		if (jsonString.contains("_$REGISTEREDUSERFULLNAME$")) {
+			JSONObject inputReqJson = new JSONObject(jsonString);
+			JSONObject fullNameJson = new JSONObject();
+			String keyName = "";
+			String stringArray = "";
+			if (inputReqJson.has("request") && inputReqJson.getJSONObject("request").has("challengeInfo")
+					&& inputReqJson.getJSONObject("request").getJSONArray("challengeInfo").length() > 1 && inputReqJson
+							.getJSONObject("request").getJSONArray("challengeInfo").getJSONObject(1).has("challenge")) {
+				keyName = inputReqJson.getJSONObject("request").getJSONArray("challengeInfo").getJSONObject(1)
+						.getString("challenge");
+				if (!keyName.isBlank() && keyName != null) {
+					stringArray = CertsUtil.getCertificate(keyName);
+					if (!stringArray.isBlank() && stringArray != null) {
+						JSONArray fullNameArray = new JSONArray(stringArray);
+						fullNameJson.put("fullName", fullNameArray);
+						byte[] byteBioData = fullNameJson.toString().getBytes();
+
+						String challengeValue = Base64.getUrlEncoder().encodeToString(byteBioData);
+						logger.info(challengeValue);
+
+						jsonString = replaceKeywordValue(jsonString, keyName, challengeValue);
+					}
+				}
+			}
+		}
+		
+		if (jsonString.contains("$PASSWORDFORAUTHENTICATION$")) {
+			jsonString = replaceKeywordValue(jsonString, "$PASSWORDFORAUTHENTICATION$",
+					PASSWORD_FOR_ADDIDENTITY_AND_REGISTRATION);
+		}
+		
+		if (jsonString.contains("$RESETPASSWORDFORAUTHENTICATION$")) {
+			jsonString = replaceKeywordValue(jsonString, "$RESETPASSWORDFORAUTHENTICATION$", PASSWORD_TO_RESET);
+		}
+		
+		if (jsonString.contains("$RANDOMIDFOROIDCCLIENT$")) {
+			jsonString = replaceKeywordValue(jsonString, "$RANDOMIDFOROIDCCLIENT$",
+					"mosip" + generateRandomNumberString(2) + Calendar.getInstance().getTimeInMillis());
+		}
+		
+		if (jsonString.contains("$IDPREDIRECTURI$")) {
+			jsonString = replaceKeywordValue(jsonString, "$IDPREDIRECTURI$",
+					ApplnURI.replace(GlobalConstants.API_INTERNAL, "healthservices") + "/userprofile");
+		}
+		
+		if (jsonString.contains("$SIGNUPREDIRECTURI$")) {
+			jsonString = replaceKeywordValue(jsonString, "$SIGNUPREDIRECTURI$",
+					ApplnURI.replace(GlobalConstants.API_INTERNAL, "signup") + "/identity-verification");
+		}
+		
+		if (jsonString.contains("$OIDCJWKKEY$")) {
+			String jwkKey = "";
+			if (gettriggerESignetKeyGen1()) {
+				jwkKey = JWKKeyUtil.generateAndCacheJWKKey(OIDCJWK1);
+				settriggerESignetKeyGen1(false);
+			} else {
+				jwkKey = JWKKeyUtil.getJWKKey(OIDCJWK1);
+			}
+			jsonString = replaceKeywordValue(jsonString, "$OIDCJWKKEY$", jwkKey);
+		}
+		
+		if (jsonString.contains("$OIDCJWKKEY2$")) {
+			String jwkKey = "";
+			if (gettriggerESignetKeyGen2()) {
+				jwkKey = JWKKeyUtil.generateAndCacheJWKKey(OIDCJWK2);
+				settriggerESignetKeyGen2(false);
+			} else {
+				jwkKey = JWKKeyUtil.getJWKKey(OIDCJWK2);
+			}
+			jsonString = replaceKeywordValue(jsonString, "$OIDCJWKKEY2$", jwkKey);
+		}
+		
+		if (jsonString.contains("$OIDCJWKKEY3$")) {
+			String jwkKey = "";
+			if (gettriggerESignetKeyGen12()) {
+				jwkKey = JWKKeyUtil.generateAndCacheJWKKey(OIDCJWK3);
+				settriggerESignetKeyGen12(false);
+			} else {
+				jwkKey = JWKKeyUtil.getJWKKey(OIDCJWK3);
+			}
+			jsonString = replaceKeywordValue(jsonString, "$OIDCJWKKEY3$", jwkKey);
+		}
+		
+		if (jsonString.contains("$CLIENT_ASSERTION_JWK$")) {
+			String oidcJWKKeyString = JWKKeyUtil.getJWKKey(OIDCJWK1);
+			logger.info("oidcJWKKeyString =" + oidcJWKKeyString);
+			try {
+				oidcJWKKey1 = RSAKey.parse(oidcJWKKeyString);
+				logger.info("oidcJWKKey1 =" + oidcJWKKey1);
+			} catch (java.text.ParseException e) {
+				logger.error(e.getMessage());
+			}
+			JSONObject request = new JSONObject(jsonString);
+			String clientId = null;
+			if (request.has("client_id")) {
+				clientId = request.get("client_id").toString();
+			}
+			
+			String tempUrl = getValueFromEsignetWellKnownEndPoint("token_endpoint", SignupConfigManager.getEsignetBaseUrl());
+			
+			jsonString = replaceKeywordValue(jsonString, "$CLIENT_ASSERTION_JWK$",
+					signJWKKey(clientId, oidcJWKKey1, tempUrl));
+		}
 		
 		return jsonString;
 		
@@ -182,6 +310,228 @@ public class SignupUtil extends AdminTestUtil {
 			return jsonString.replace(keyword, value);
 		else
 			throw new SkipException("Marking testcase as skipped as required fields are empty " + keyword);
+	}
+	
+	public static JSONObject signUpSettingsResponseJson = null;
+
+	public static String getValueFromSignUpSettings(String key) {
+		String url = ApplnURI + SignupConfigManager.getproperty("signupSettingsEndPoint");
+		String actuatorCacheKey = url + key;
+		String value = actuatorValueCache.get(actuatorCacheKey);
+		if (value != null && !value.isEmpty())
+			return value;
+
+		try {
+			if (signUpSettingsResponseJson == null) {
+				Response response = null;
+				JSONObject responseJson = null;
+				response = RestClient.getRequest(url, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
+
+				responseJson = new JSONObject(response.getBody().asString());
+				signUpSettingsResponseJson = responseJson.getJSONObject("response").getJSONObject("configs");
+			}
+
+			if (signUpSettingsResponseJson.has(key)) {
+				value = signUpSettingsResponseJson.getString(key);
+				actuatorValueCache.put(actuatorCacheKey, value);
+			}
+
+			if (SignupConfigManager.IsDebugEnabled())
+				logger.info("Actuator: " + url + " key: " + key + " value: " + value);
+			return value;
+		} catch (Exception e) {
+			logger.error(GlobalConstants.EXCEPTION_STRING_2 + e);
+			return "";
+		}
+
+	}
+	
+	public static String getPhoneNumber() {
+		String phoneNumber = "";
+		// TODO Regex needs to be taken from Schema
+		String phoneNumberRegex = getValueFromSignUpSettings("identifier.pattern");
+		if (!phoneNumberRegex.isEmpty())
+			try {
+				phoneNumber = genStringAsperRegex(phoneNumberRegex);
+				return phoneNumber;
+			} catch (Exception e) {
+				logger.error(e.getMessage());
+			}
+		return phoneNumber;
+	}
+
+	public String getPasswordPattern() {
+		String password = "";
+		// TODO Regex needs to be taken from Schema
+		String passwordRegex = getValueFromSignUpSettings("password.pattern");
+		if (!passwordRegex.isEmpty())
+			try {
+				password = genStringAsperRegex(passwordRegex);
+				return password;
+			} catch (Exception e) {
+				logger.error(e.getMessage());
+			}
+		return password;
+	}
+	
+	public static String generateFullNameToRegisterUser(String inputJson, String testCaseName) {
+		JSONArray fullNameArray = new JSONArray();
+		String fullNamePattern = getValueFromSignUpSettings("fullname.pattern").toString();
+		List<String> fullnames = Arrays.asList(" ឮᨪដ", "᧦", "ᨃ", "៻៥᧿", "ᩅᨎ", "ᩭឫ", "  ឃ  ំ ដ     ៹ម");
+		String randomFullName = getRandomElement(fullnames);
+		List<String> languageList = new ArrayList<>(BaseTestCase.getLanguageList());
+//		languageList = BaseTestCase.getLanguageList();
+
+		// For current sprint eng is removed.
+		if (languageList.contains("eng"))
+			languageList.remove("eng");
+		if (testCaseName.contains("_Only_1st_Lang_On_Name_Field_Neg") && languageList.size() > 1)
+			languageList.remove(1);
+
+		for (int i = 0; i < languageList.size(); i++) {
+			if (languageList.get(i) != null && !languageList.get(i).isEmpty()) {
+				JSONObject eachValueJson = new JSONObject();
+				if (testCaseName.contains("_Invalid_Value_On_Language_Field_Neg")) {
+					eachValueJson.put(GlobalConstants.LANGUAGE, "sdbfkfj");
+				} else if (testCaseName.contains("_Empty_Value_On_Language_Field_Neg")) {
+					eachValueJson.put(GlobalConstants.LANGUAGE, "");
+				} else
+					eachValueJson.put(GlobalConstants.LANGUAGE, languageList.get(i));
+				String generatedString = "";
+
+				try {
+					if (!fullNamePattern.isEmpty()) {
+//						while (generatedString.isBlank()) {
+//							generatedString = genStringAsperRegex(fullNamePattern);
+//						}
+//						eachValueJson.put(GlobalConstants.VALUE, generatedString);
+
+						eachValueJson.put(GlobalConstants.VALUE, randomFullName);
+
+						if (testCaseName.contains("_Only_Language_On_Name_Field_Neg"))
+							eachValueJson.remove(GlobalConstants.VALUE);
+						else if (testCaseName.contains("_Only_Value_On_Name_Field_Neg"))
+							eachValueJson.remove(GlobalConstants.LANGUAGE);
+						else if (testCaseName.contains("_Empty_Value_On_Name_Field_Neg"))
+							eachValueJson.put(GlobalConstants.VALUE, "");
+						else if (testCaseName.contains("_Space_Value_On_Name_Field_Neg"))
+							eachValueJson.put(GlobalConstants.VALUE, " ");
+						else if (testCaseName.contains("_Only_SpecialChar_On_Name_Field_Neg"))
+							eachValueJson.put(GlobalConstants.VALUE, "%^&*&** ^&&&");
+						else if (testCaseName.contains("_Only_Num_Value_On_Name_Field_Neg"))
+							eachValueJson.put(GlobalConstants.VALUE, "564846841");
+						else if (testCaseName.contains("_AlphaNum_Value_On_Name_Field_Neg"))
+							eachValueJson.put(GlobalConstants.VALUE, "អានុសា765651");
+						else if (testCaseName.contains("_Exceeding_Limit_Value_On_Name_Field_Neg"))
+							eachValueJson.put(GlobalConstants.VALUE, generateRandomAlphaNumericString(50));
+
+					} else {
+						logger.error("REGEX pattern not availble in the setting API");
+						return "";
+					}
+				} catch (Exception e) {
+					logger.error(e.getMessage());
+					return "";
+				}
+				fullNameArray.put(eachValueJson);
+			}
+
+		}
+		if (testCaseName.contains("_SName_Valid")) {
+			CertsUtil.addCertificateToCache(testCaseName + "_$REGISTEREDUSERFULLNAME$", fullNameArray.toString());
+		}
+		inputJson = replaceKeywordValue(inputJson, "$FULLNAMETOREGISTERUSER$", fullNameArray.toString());
+
+		return inputJson;
+	}
+	
+	public static String signJWKKey(String clientId, RSAKey jwkKey, String tempUrl) {
+		int idTokenExpirySecs = Integer
+				.parseInt(getValueFromEsignetActuator(SignupConfigManager.getEsignetActuatorPropertySection(),
+						GlobalConstants.MOSIP_ESIGNET_ID_TOKEN_EXPIRE_SECONDS));
+		JWSSigner signer;
+
+		try {
+			signer = new RSASSASigner(jwkKey);
+
+			Date currentTime = new Date();
+
+			// Create a Calendar instance to manipulate time
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(currentTime);
+
+			// Add one hour to the current time
+			calendar.add(Calendar.HOUR_OF_DAY, (idTokenExpirySecs / 3600)); // Adding one hour
+
+			// Get the updated expiration time
+			Date expirationTime = calendar.getTime();
+
+			JWTClaimsSet claimsSet = new JWTClaimsSet.Builder().subject(clientId).audience(tempUrl).issuer(clientId)
+					.issueTime(currentTime).expirationTime(expirationTime).build();
+
+			logger.info("JWT current and expiry time " + currentTime + " & " + expirationTime);
+
+			SignedJWT signedJWT = new SignedJWT(
+					new JWSHeader.Builder(JWSAlgorithm.RS256).keyID(jwkKey.getKeyID()).build(), claimsSet);
+
+			signedJWT.sign(signer);
+			clientAssertionToken = signedJWT.serialize();
+		} catch (Exception e) {
+			logger.error("Exception while signing oidcJWKKey for client assertion: " + e.getMessage());
+		}
+		return clientAssertionToken;
+	}
+	
+	public static String getValueFromEsignetWellKnownEndPoint(String key, String baseURL) {
+		String url = baseURL + SignupConfigManager.getproperty("esignetWellKnownEndPoint");
+		Response response = null;
+		JSONObject responseJson = null;
+		if (responseJson == null) {
+			try {
+				response = RestClient.getRequest(url, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
+				responseJson = new org.json.JSONObject(response.getBody().asString());
+				return responseJson.getString(key);
+			} catch (Exception e) {
+				logger.error(GlobalConstants.EXCEPTION_STRING_2 + e);
+			}
+		}
+		return responseJson.getString(key);
+	}
+	
+	public static String clientAssertionToken;
+	
+	protected static final String OIDCJWK1 = "oidcJWK1";
+	protected static final String OIDCJWK2 = "oidcJWK2";
+	protected static final String OIDCJWK3 = "oidcJWK3";
+	
+	protected static RSAKey oidcJWKKey1 = null;
+	
+	protected static boolean triggerESignetKeyGen1 = true;
+	protected static boolean triggerESignetKeyGen2 = true;
+	protected static boolean triggerESignetKeyGen12 = true;
+	
+	private static boolean gettriggerESignetKeyGen1() {
+		return triggerESignetKeyGen1;
+	}
+	
+	private static void settriggerESignetKeyGen1(boolean value) {
+		triggerESignetKeyGen1 = value;
+	}
+	
+	private static void settriggerESignetKeyGen2(boolean value) {
+		triggerESignetKeyGen2 = value;
+	}
+
+	private static boolean gettriggerESignetKeyGen2() {
+		return triggerESignetKeyGen2;
+	}
+	
+	private static void settriggerESignetKeyGen12(boolean value) {
+		triggerESignetKeyGen12 = value;
+	}
+
+	private static boolean gettriggerESignetKeyGen12() {
+		return triggerESignetKeyGen12;
 	}
 	
 	public static String otpHandler(String inputJson, String testCaseName) {

@@ -107,7 +107,7 @@ public class PostWithAutogenIdWithOtpGenerate extends AdminTestUtil implements I
 		JSONObject req = new JSONObject(testCaseDTO.getInput());
 
 		if (inputJson.contains("$PHONENUMBERFROMREGEXFORSIGNUP$")) {
-			String phoneNumber = getPhoneNumber();
+			String phoneNumber = SignupUtil.getPhoneNumber();
 			if (phoneNumber != null && !phoneNumber.isEmpty()) {
 				inputJson = replaceKeywordWithValue(inputJson, "$PHONENUMBERFROMREGEXFORSIGNUP$", phoneNumber);
 				req = new JSONObject(inputJson);
