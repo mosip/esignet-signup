@@ -9,7 +9,7 @@ fi
 # Function to initialize the DB
 function initialize_db() {
   NS=signup
-  CHART_VERSION=0.0.1-develop
+  CHART_VERSION=1.1.0-develop
   helm repo update
 
   # Confirm if the user wants to initialize DB scripts
