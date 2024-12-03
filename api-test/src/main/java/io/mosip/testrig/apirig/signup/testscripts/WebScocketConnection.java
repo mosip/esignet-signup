@@ -128,6 +128,10 @@ public class WebScocketConnection extends AdminTestUtil implements ITest {
 		int order = 1;
 		String typeValue = "START";
 		JSONObject messageObject = new JSONObject(message2);
+		
+		if (testCaseName.contains("_Incomplete")) {
+			sendWebsocketMessage = false;
+		}
 
 		try {
 

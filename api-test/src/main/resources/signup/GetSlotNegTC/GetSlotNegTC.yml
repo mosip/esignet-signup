@@ -1,5 +1,5 @@
 GetSlotNegTC:
-   Signup_ESignet_GetSlot_without_requestTime_Neg:
+   Signup_ESignet_GetSlot_AuthToken_Xsrf_without_requestTime_Neg:
       endPoint: /v1/signup/identity-verification/slot
       uniqueIdentifier: TC_ESignet_GetSlotNegTC_01
       description: To get the slot ID to begin the video identity verification process without requestTime, Expecting error code in the response
@@ -23,7 +23,7 @@ GetSlotNegTC:
   ]
 }'
  
-   Signup_ESignet_GetSlot_with_EmptyVal_in_requestTime_Neg:
+   Signup_ESignet_GetSlot_AuthToken_Xsrf_with_EmptyVal_in_requestTime_Neg:
       endPoint: /v1/signup/identity-verification/slot
       uniqueIdentifier: TC_ESignet_GetSlotNegTC_02
       description: To get the slot ID to begin the video identity verification process with empty value in requestTime, Expecting error code in the response
@@ -47,7 +47,7 @@ GetSlotNegTC:
   ]
 }'
  
-   Signup_ESignet_GetSlot_with_space_in_requestTime_Neg:
+   Signup_ESignet_GetSlot_AuthToken_Xsrf_with_space_in_requestTime_Neg:
       endPoint: /v1/signup/identity-verification/slot
       uniqueIdentifier: TC_ESignet_GetSlotNegTC_03
       description: To get the slot ID to begin the video identity verification process with only space in requestTime, Expecting error code in the response
@@ -71,7 +71,7 @@ GetSlotNegTC:
   ]
 }'
  
-   Signup_ESignet_GetSlot_with_invalidVal_in_requestTime_Neg:
+   Signup_ESignet_GetSlot_AuthToken_Xsrf_with_invalidVal_in_requestTime_Neg:
       endPoint: /v1/signup/identity-verification/slot
       uniqueIdentifier: TC_ESignet_GetSlotNegTC_04
       description: To get the slot ID to begin the video identity verification process with invalid value in requestTime, Expecting error code in the response
@@ -95,7 +95,7 @@ GetSlotNegTC:
   ]
 }'
  
-   Signup_ESignet_GetSlot_with_numericVal_in_requestTime_Neg:
+   Signup_ESignet_GetSlot_AuthToken_Xsrf_with_numericVal_in_requestTime_Neg:
       endPoint: /v1/signup/identity-verification/slot
       uniqueIdentifier: TC_ESignet_GetSlotNegTC_05
       description: To get the slot ID to begin the video identity verification process with numeric value in requestTime, Expecting error code in the response
@@ -119,7 +119,7 @@ GetSlotNegTC:
   ]
 }'
  
-   Signup_ESignet_GetSlot_with_futureDate_in_requestTime_Neg:
+   Signup_ESignet_GetSlot_AuthToken_Xsrf_with_futureDate_in_requestTime_Neg:
       endPoint: /v1/signup/identity-verification/slot
       uniqueIdentifier: TC_ESignet_GetSlotNegTC_06
       description: To get the slot ID to begin the video identity verification process with futureDate in requestTime, Expecting error code in the response
@@ -143,7 +143,7 @@ GetSlotNegTC:
   ]
 }'
  
-   Signup_ESignet_GetSlot_with_invalidFormat_in_requestTime_Neg:
+   Signup_ESignet_GetSlot_AuthToken_Xsrf_with_invalidFormat_in_requestTime_Neg:
       endPoint: /v1/signup/identity-verification/slot
       uniqueIdentifier: TC_ESignet_GetSlotNegTC_07
       description: To get the slot ID to begin the video identity verification process with invalidFormat in requestTime, Expecting error code in the response
@@ -167,7 +167,7 @@ GetSlotNegTC:
   ]
 }'
  
-   Signup_ESignet_GetSlot_with_Empty_verifierId_Neg:
+   Signup_ESignet_GetSlot_AuthToken_Xsrf_with_Empty_verifierId_Neg:
       endPoint: /v1/signup/identity-verification/slot
       uniqueIdentifier: TC_ESignet_GetSlotNegTC_08
       description: To get the slot ID to begin the video identity verification process with empty value in verifierId, Expecting error code in the response
@@ -191,7 +191,7 @@ GetSlotNegTC:
   ]
 }'
  
-   Signup_ESignet_GetSlot_without_verifierId_Neg:
+   Signup_ESignet_GetSlot_AuthToken_Xsrf_without_verifierId_Neg:
       endPoint: /v1/signup/identity-verification/slot
       uniqueIdentifier: TC_ESignet_GetSlotNegTC_09
       description: To get the slot ID to begin the video identity verification process without verifierId, Expecting error code in the response
@@ -215,7 +215,7 @@ GetSlotNegTC:
   ]
 }'
  
-   Signup_ESignet_GetSlot_with_space_in_verifierId_Neg:
+   Signup_ESignet_GetSlot_AuthToken_Xsrf_with_space_in_verifierId_Neg:
       endPoint: /v1/signup/identity-verification/slot
       uniqueIdentifier: TC_ESignet_GetSlotNegTC_10
       description: To get the slot ID to begin the video identity verification process with only space in verifierId, Expecting error code in the response
@@ -239,7 +239,7 @@ GetSlotNegTC:
   ]
 }'
  
-   Signup_ESignet_GetSlot_with_numVal_in_verifierId_Neg:
+   Signup_ESignet_GetSlot_AuthToken_Xsrf_with_numVal_in_verifierId_Neg:
       endPoint: /v1/signup/identity-verification/slot
       uniqueIdentifier: TC_ESignet_GetSlotNegTC_11
       description: To get the slot ID to begin the video identity verification process with numeric value in verifierId, Expecting error code in the response
@@ -263,7 +263,7 @@ GetSlotNegTC:
   ]
 }'
  
-   Signup_ESignet_GetSlot_with_splChar_in_verifierId_Neg:
+   Signup_ESignet_GetSlot_AuthToken_Xsrf_with_splChar_in_verifierId_Neg:
       endPoint: /v1/signup/identity-verification/slot
       uniqueIdentifier: TC_ESignet_GetSlotNegTC_12
       description: To get the slot ID to begin the video identity verification process with special characters in verifierId, Expecting error code in the response
@@ -287,7 +287,7 @@ GetSlotNegTC:
   ]
 }'
  
-   Signup_ESignet_GetSlot_with_alphaNumVal_in_verifierId_Neg:
+   Signup_ESignet_GetSlot_AuthToken_Xsrf_with_alphaNumVal_in_verifierId_Neg:
       endPoint: /v1/signup/identity-verification/slot
       uniqueIdentifier: TC_ESignet_GetSlotNegTC_13
       description: To get the slot ID to begin the video identity verification process with alpha numeric value in verifierId, Expecting error code in the response
@@ -311,7 +311,7 @@ GetSlotNegTC:
   ]
 }'
  
-   Signup_ESignet_GetSlot_with_invalidVal_in_consent_Neg:
+   Signup_ESignet_GetSlot_AuthToken_Xsrf_with_invalidVal_in_consent_Neg:
       endPoint: /v1/signup/identity-verification/slot
       uniqueIdentifier: TC_ESignet_GetSlotNegTC_14
       description: To get the slot ID to begin the video identity verification process with invalid value in consent, Expecting error code in the response
@@ -335,7 +335,7 @@ GetSlotNegTC:
   ]
 }'
  
-   Signup_ESignet_GetSlot_with_null_in_consent_Neg:
+   Signup_ESignet_GetSlot_AuthToken_Xsrf_with_null_in_consent_Neg:
       endPoint: /v1/signup/identity-verification/slot
       uniqueIdentifier: TC_ESignet_GetSlotNegTC_15
       description: To get the slot ID to begin the video identity verification process with null in consent, Expecting error code in the response
@@ -359,7 +359,7 @@ GetSlotNegTC:
   ]
 }'
  
-   Signup_ESignet_GetSlot_without_consent_Neg:
+   Signup_ESignet_GetSlot_AuthToken_Xsrf_without_consent_Neg:
       endPoint: /v1/signup/identity-verification/slot
       uniqueIdentifier: TC_ESignet_GetSlotNegTC_16
       description: To get the slot ID to begin the video identity verification process without consent, Expecting error code in the response
@@ -383,7 +383,7 @@ GetSlotNegTC:
   ]
 }'
  
-   Signup_ESignet_GetSlot_with_space_in_consent_Neg:
+   Signup_ESignet_GetSlot_AuthToken_Xsrf_with_space_in_consent_Neg:
       endPoint: /v1/signup/identity-verification/slot
       uniqueIdentifier: TC_ESignet_GetSlotNegTC_17
       description: To get the slot ID to begin the video identity verification process with only space in consent, Expecting error code in the response
@@ -407,7 +407,7 @@ GetSlotNegTC:
   ]
 }'
  
-   Signup_ESignet_GetSlot_with_numVal_in_consent_Neg:
+   Signup_ESignet_GetSlot_AuthToken_Xsrf_with_numVal_in_consent_Neg:
       endPoint: /v1/signup/identity-verification/slot
       uniqueIdentifier: TC_ESignet_GetSlotNegTC_18
       description: To get the slot ID to begin the video identity verification process with numeric value in consent, Expecting error code in the response
@@ -431,7 +431,7 @@ GetSlotNegTC:
   ]
 }'
  
-   Signup_ESignet_GetSlot_with_splChar_in_consent_Neg:
+   Signup_ESignet_GetSlot_AuthToken_Xsrf_with_splChar_in_consent_Neg:
       endPoint: /v1/signup/identity-verification/slot
       uniqueIdentifier: TC_ESignet_GetSlotNegTC_19
       description: To get the slot ID to begin the video identity verification process with special characters in consent, Expecting error code in the response
@@ -455,7 +455,7 @@ GetSlotNegTC:
   ]
 }'
  
-   Signup_ESignet_GetSlot_with_alphaNumVal_in_consent_Neg:
+   Signup_ESignet_GetSlot_AuthToken_Xsrf_with_alphaNumVal_in_consent_Neg:
       endPoint: /v1/signup/identity-verification/slot
       uniqueIdentifier: TC_ESignet_GetSlotNegTC_20
       description: To get the slot ID to begin the video identity verification process with alpha numeric value in consent, Expecting error code in the response
@@ -479,7 +479,7 @@ GetSlotNegTC:
   ]
 }'
  
-   Signup_ESignet_GetSlot_with_ZeroVal_in_consent_Neg:
+   Signup_ESignet_GetSlot_AuthToken_Xsrf_with_ZeroVal_in_consent_Neg:
       endPoint: /v1/signup/identity-verification/slot
       uniqueIdentifier: TC_ESignet_GetSlotNegTC_21
       description: To get the slot ID to begin the video identity verification process with zero's in consent, Expecting error code in the response
@@ -501,5 +501,21 @@ GetSlotNegTC:
       "errorMessage": "$IGNORE$"
     }
   ]
+}'
+   Signup_ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_posNeg_Smoke_Sid:
+      endPoint: /v1/signup/identity-verification/slot
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/GetSlotNegTC/GetSlotNegTC
+      outputTemplate: signup/GetSlotNegTC/GetSlotResultNegTC
+      input: '{
+      	"requestTime": "$TIMESTAMP$",
+      	"idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_idvTransactionID$",
+      	"verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_id$",
+      	"consent": "AGREE"
+}'
+      output: '{
+       
 }'
  

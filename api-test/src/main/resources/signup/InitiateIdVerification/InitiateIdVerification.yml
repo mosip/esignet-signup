@@ -1,6 +1,7 @@
 InitiateIdVerification:
    Signup_ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_Smoke_Sid:
       endPoint: /v1/signup/identity-verification/initiate
+      description: Intiating Identity verification process with valid details
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true
@@ -16,6 +17,7 @@ InitiateIdVerification:
 }'
    Signup_ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeVISION_Smoke_Sid:
       endPoint: /v1/signup/identity-verification/initiate
+      description: Intiating Identity verification process with valid details and this testcase is prerequisite
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true
@@ -31,6 +33,7 @@ InitiateIdVerification:
 }'
    Signup_ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeAUDITORY_Smoke_Sid:
       endPoint: /v1/signup/identity-verification/initiate
+      description: Intiating Identity verification process with valid details and this testcase is prerequisite
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true
@@ -46,6 +49,7 @@ InitiateIdVerification:
 }'
    Signup_ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeMOBILITY_Smoke_Sid:
       endPoint: /v1/signup/identity-verification/initiate
+      description: Intiating Identity verification process with valid details and this testcase is prerequisite
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true
@@ -61,6 +65,7 @@ InitiateIdVerification:
 }'
    Signup_ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_Smoke_Sid:
       endPoint: /v1/signup/identity-verification/initiate
+      description: Intiating Identity verification process with valid details and this testcase is prerequisite
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true
