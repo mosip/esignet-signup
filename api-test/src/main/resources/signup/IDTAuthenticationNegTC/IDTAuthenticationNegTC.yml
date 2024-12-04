@@ -17,7 +17,8 @@ IDTAuthenticationNegTC:
       	"transactionId": "",
       	"individualId": "$IDTINDIVIUALID$",
       	"authFactorType" : "IDT",
-      	"challenge" : "$IDTCHALLENGE$"
+      	"challenge" : "$IDTCHALLENGE$",
+        "format" : "base64url-encoded-json"
 }'
       output: '{
     "errors": [
@@ -44,7 +45,8 @@ IDTAuthenticationNegTC:
       	"transactionId": "  ",
       	"individualId": "$IDTINDIVIUALID$",
       	"authFactorType" : "IDT",
-      	"challenge" : "$IDTCHALLENGE$"
+      	"challenge" : "$IDTCHALLENGE$",
+        "format" : "base64url-encoded-json"
 }'
       output: '{
     "errors": [
@@ -71,7 +73,8 @@ IDTAuthenticationNegTC:
         "transactionId": "$REMOVE$",
       	"individualId": "$IDTINDIVIUALID$",
       	"authFactorType" : "IDT",
-      	"challenge" : "$IDTCHALLENGE$"
+      	"challenge" : "$IDTCHALLENGE$",
+        "format" : "base64url-encoded-json"
 }'
       output: '{
     "errors": [
@@ -98,7 +101,8 @@ IDTAuthenticationNegTC:
       	"transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_transactionId$",
       	"individualId": "$IDTINDIVIUALID$",
       	"authFactorType" : "IDT",
-      	"challenge" : "$IDTCHALLENGE$"
+      	"challenge" : "$IDTCHALLENGE$",
+        "format" : "base64url-encoded-json"
 }'
       output: '{
     "errors": [
@@ -125,7 +129,8 @@ IDTAuthenticationNegTC:
       	"transactionId": "wGSAtOrEoQ_x_AFvS_uwjIkruvVXVO5hOYhc7izVDyc",
       	"individualId": "$IDTINDIVIUALID$",
       	"authFactorType" : "IDT",
-      	"challenge" : "$IDTCHALLENGE$"
+      	"challenge" : "$IDTCHALLENGE$",
+        "format" : "base64url-encoded-json"
 }'
       output: '{
     "errors": [
@@ -152,7 +157,8 @@ IDTAuthenticationNegTC:
       	"transactionId": "abcdef",
       	"individualId": "$IDTINDIVIUALID$",
       	"authFactorType" : "IDT",
-      	"challenge" : "$IDTCHALLENGE$"
+      	"challenge" : "$IDTCHALLENGE$",
+        "format" : "base64url-encoded-json"
 }'
       output: '{
     "errors": [
@@ -179,7 +185,8 @@ IDTAuthenticationNegTC:
       	"transactionId": "$ID:ESignet_SignupAuthorizeNegTC_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_PosNeg_Smoke_sid_transactionId$",
       	"individualId": "$IDTINDIVIUALID$",
       	"authFactorType" : "abcd",
-      	"challenge" : "$IDTCHALLENGE$"
+      	"challenge" : "$IDTCHALLENGE$",
+        "format" : "base64url-encoded-json"
 }'
       output: '{
     "errors": [
@@ -206,7 +213,8 @@ IDTAuthenticationNegTC:
       	"transactionId": "$ID:ESignet_SignupAuthorizeNegTC_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_PosNeg_Smoke_sid_transactionId$",
       	"individualId": "$IDTINDIVIUALID$",
       	"authFactorType" : "",
-      	"challenge" : "$IDTCHALLENGE$"
+      	"challenge" : "$IDTCHALLENGE$",
+        "format" : "base64url-encoded-json"
 }'
       output: '{
     "errors": [
@@ -233,7 +241,8 @@ IDTAuthenticationNegTC:
       	"transactionId": "$ID:ESignet_SignupAuthorizeNegTC_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_PosNeg_Smoke_sid_transactionId$",
       	"individualId": "$IDTINDIVIUALID$",
       	"authFactorType" : "$REMOVE$",
-      	"challenge" : "$IDTCHALLENGE$"
+      	"challenge" : "$IDTCHALLENGE$",
+        "format" : "base64url-encoded-json"
 }'
       output: '{
     "errors": [
@@ -260,12 +269,41 @@ IDTAuthenticationNegTC:
       	"transactionId": "$ID:ESignet_SignupAuthorizeNegTC_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_PosNeg_Smoke_sid_transactionId$",
       	"individualId": "$IDTINDIVIUALID$",
       	"authFactorType" : "  ",
-      	"challenge" : "$IDTCHALLENGE$"
+      	"challenge" : "$IDTCHALLENGE$",
+        "format" : "base64url-encoded-json"
 }'
       output: '{
     "errors": [
         {
             "errorCode": "invalid_auth_factor_type"
+        }
+    ]
+}'
+   Signup_ESignet_IDTAuthenticationNegTC_AuthToken_Xsrf_Empty_challenge_Neg:
+      endPoint: /v1/esignet/authorization/v3/authenticate
+      uniqueIdentifier: TC_ESignet_IDTAuthenticationNegTC_11
+      description: Perform IDT authentication with empty challenge - Failure
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/IDTAuthenticationNegTC/IDTAuthenticationNegTC
+      outputTemplate: signup/error
+      input: '{
+        "encodedHash": "$ID:ESignet_SignupAuthorizeNegTC_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_PosNeg_Smoke_sid_encodedResp$",
+      	"requestTime": "$TIMESTAMP$",
+      	"pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirectNegTC_AuthToken_Xsrf_STransId_uin_Otp_Valid_posNeg_Smoke_sid_pathFragmentCookie$",
+      	"pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_transactionId$",
+      	"idtToken": "$ID:ESignet_PrepareSignupRedirectNegTC_AuthToken_Xsrf_STransId_uin_Otp_Valid_posNeg_Smoke_sid_idToken$",
+      	"transactionId": "$ID:ESignet_SignupAuthorizeNegTC_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_PosNeg_Smoke_sid_transactionId$",
+      	"individualId": "$IDTINDIVIUALID$",
+      	"authFactorType" : "IDT",
+      	"challenge" : "",
+        "format" : "base64url-encoded-json"
+}'
+      output: '{
+    "errors": [
+        {
+            "errorCode": "invalid_challenge"
         }
     ]
 }'
@@ -287,7 +325,8 @@ IDTAuthenticationNegTC:
       	"transactionId": "$ID:ESignet_SignupAuthorizeNegTC_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_PosNeg_Smoke_sid_transactionId$",
       	"individualId": "$IDTINDIVIUALID$",
       	"authFactorType" : "IDT",
-      	"challenge" : "$IDTCHALLENGE$"
+      	"challenge" : "$IDTCHALLENGE$",
+        "format" : "base64url-encoded-json"
 }'
       output: '{
     "errors": [
@@ -314,7 +353,8 @@ IDTAuthenticationNegTC:
       	"transactionId": "$ID:ESignet_SignupAuthorizeNegTC_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_PosNeg_Smoke_sid_transactionId$",
       	"individualId": "$IDTINDIVIUALID$",
       	"authFactorType" : "IDT",
-      	"challenge" : "$IDTCHALLENGE$"
+      	"challenge" : "$IDTCHALLENGE$",
+        "format" : "base64url-encoded-json"
 }'
       output: '{
     "errors": [
@@ -341,7 +381,8 @@ IDTAuthenticationNegTC:
       	"transactionId": "$ID:ESignet_SignupAuthorizeNegTC_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_PosNeg_Smoke_sid_transactionId$",
       	"individualId": "$IDTINDIVIUALID$",
       	"authFactorType" : "IDT",
-      	"challenge" : "$IDTCHALLENGE$"
+      	"challenge" : "$IDTCHALLENGE$",
+        "format" : "base64url-encoded-json"
 }'
       output: '{
     "errors": [
@@ -368,7 +409,8 @@ IDTAuthenticationNegTC:
       	"transactionId": "$ID:ESignet_SignupAuthorizeNegTC_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_PosNeg_Smoke_sid_transactionId$",
       	"individualId": "$IDTINDIVIUALID$",
       	"authFactorType" : "IDT",
-      	"challenge" : "$IDTCHALLENGE$"
+      	"challenge" : "$IDTCHALLENGE$",
+        "format" : "base64url-encoded-json"
 }'
       output: '{
     "errors": [
@@ -395,7 +437,8 @@ IDTAuthenticationNegTC:
       	"transactionId": "$ID:ESignet_SignupAuthorizeNegTC_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_PosNeg_Smoke_sid_transactionId$",
       	"individualId": "$IDTINDIVIUALID$",
       	"authFactorType" : "IDT",
-      	"challenge" : "$IDTCHALLENGE$"
+      	"challenge" : "$IDTCHALLENGE$",
+        "format" : "base64url-encoded-json"
 }'
       output: '{
     "errors": [
@@ -422,7 +465,8 @@ IDTAuthenticationNegTC:
       	"transactionId": "$ID:ESignet_SignupAuthorizeNegTC_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_PosNeg_Smoke_sid_transactionId$",
       	"individualId": "$IDTINDIVIUALID$",
       	"authFactorType" : "IDT",
-      	"challenge" : "$IDTCHALLENGE$"
+      	"challenge" : "$IDTCHALLENGE$",
+        "format" : "base64url-encoded-json"
 }'
       output: '{
     "errors": [
@@ -463,11 +507,12 @@ IDTAuthenticationNegTC:
       	"requestTime": "$REMOVE$",
       	"pathFragmentCookie": "$REMOVE$",
       	"pathFragmentCookieTransactionId": "$REMOVE$",
-      	"idtToken": "$REMOVE$",
+      	"idtToken": "$ID:ESignet_PrepareSignupRedirectNegTC_AuthToken_Xsrf_STransId_uin_Otp_Valid_posNeg_Smoke_sid_idToken$",
       	"transactionId": "$REMOVE$",
       	"individualId": "$IDTINDIVIUALID$",
       	"authFactorType" : "$REMOVE$",
-      	"challenge" : "$REMOVE$"
+      	"challenge" : "$REMOVE$",
+        "format" : "$REMOVE$"
 }'
       output: '{
     "errors": [
@@ -494,7 +539,8 @@ IDTAuthenticationNegTC:
       	"transactionId": "$ID:ESignet_SignupAuthorizeNegTC_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_PosNeg_Smoke_sid_transactionId$",
       	"individualId": "$REMOVE$",
       	"authFactorType" : "$REMOVE$",
-      	"challenge" : "$REMOVE$"
+      	"challenge" : "$REMOVE$",
+        "format" : "base64url-encoded-json"
 }'
       output: '{
     "errors": [
@@ -521,7 +567,8 @@ IDTAuthenticationNegTC:
       	"transactionId": "$ID:ESignet_SignupAuthorizeNegTC_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_PosNeg_Smoke_sid_transactionId$",
       	"individualId": "$IDTINDIVIUALID$",
       	"authFactorType" : "idt",
-      	"challenge" : "$IDTCHALLENGE$"
+      	"challenge" : "$IDTCHALLENGE$",
+        "format" : "base64url-encoded-json"
 }'
       output: '{
     "errors": [
@@ -548,7 +595,8 @@ IDTAuthenticationNegTC:
       	"transactionId": "$ID:ESignet_SignupAuthorizeNegTC_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_PosNeg_Smoke_sid_transactionId$",
       	"individualId": "$IDTINDIVIUALID$",
       	"authFactorType" : "Idt",
-      	"challenge" : "$IDTCHALLENGE$"
+      	"challenge" : "$IDTCHALLENGE$",
+        "format" : "base64url-encoded-json"
 }'
       output: '{
     "errors": [
@@ -575,7 +623,8 @@ IDTAuthenticationNegTC:
       	"transactionId": "$REMOVE$",
       	"individualId": "$REMOVE$",
       	"authFactorType" : "IDT",
-      	"challenge" : "$REMOVE$"
+      	"challenge" : "$REMOVE$",
+        "format" : "base64url-encoded-json"
 }'
       output: '{
     "errors": [
@@ -602,7 +651,8 @@ IDTAuthenticationNegTC:
       	"transactionId": "$ID:ESignet_SignupAuthorizeNegTC_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_PosNeg_Smoke_sid_transactionId$",
       	"individualId": "$IDTINDIVIUALID$",
       	"authFactorType" : "IDT",
-      	"challenge" : "$IDTCHALLENGE$"
+      	"challenge" : "$IDTCHALLENGE$",
+        "format" : "base64url-encoded-json"
 }'
       output: '{
     "errors": [
@@ -629,7 +679,8 @@ IDTAuthenticationNegTC:
       	"transactionId": "$ID:ESignet_SignupAuthorizeNegTC_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_PosNeg_Smoke_sid_transactionId$",
       	"individualId": "$IDTINDIVIUALID$",
       	"authFactorType" : "IDT",
-      	"challenge" : "$IDTCHALLENGE$"
+      	"challenge" : "$IDTCHALLENGE$",
+        "format" : "base64url-encoded-json"
 }'
       output: '{
     "errors": [
@@ -656,7 +707,8 @@ IDTAuthenticationNegTC:
       	"transactionId": "$REMOVE$",
       	"individualId": "$REMOVE$",
       	"authFactorType" : "$REMOVE$",
-      	"challenge" : "$REMOVE$"
+      	"challenge" : "$REMOVE$",
+        "format" : "base64url-encoded-json"
 }'
       output: '{
     "errors": [
@@ -665,9 +717,370 @@ IDTAuthenticationNegTC:
         }
     ]
 }'
-   Signup_ESignet_IDTAuthenticationNegTC_AuthToken_Xsrf_all_Valid_PosNeg_Smoke:
+   Signup_ESignet_IDTAuthenticationNegTC_AuthToken_Xsrf_empty_individualId_Neg:
       endPoint: /v1/esignet/authorization/v3/authenticate
       uniqueIdentifier: TC_ESignet_IDTAuthenticationNegTC_27
+      description: Perform IDT authentication with empty individualId - Failure
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/IDTAuthenticationNegTC/IDTAuthenticationNegTC
+      outputTemplate: signup/error
+      input: '{
+        "encodedHash": "$ID:ESignet_SignupAuthorizeNegTC_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_PosNeg_Smoke_sid_encodedResp$",
+      	"requestTime": "$TIMESTAMP$",
+      	"pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirectNegTC_AuthToken_Xsrf_STransId_uin_Otp_Valid_posNeg_Smoke_sid_pathFragmentCookie$",
+      	"pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_transactionId$",
+      	"idtToken": "$ID:ESignet_PrepareSignupRedirectNegTC_AuthToken_Xsrf_STransId_uin_Otp_Valid_posNeg_Smoke_sid_idToken$",
+      	"transactionId": "$ID:ESignet_SignupAuthorizeNegTC_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_PosNeg_Smoke_sid_transactionId$",
+      	"individualId": "",
+      	"authFactorType" : "IDT",
+      	"challenge" : "$IDTCHALLENGE$",
+        "format" : "base64url-encoded-json"
+}'
+      output: '{
+    "errors": [
+        {
+            "errorCode": "invalid_identifier"
+        }
+    ]
+}'
+   Signup_ESignet_IDTAuthenticationNegTC_AuthToken_Xsrf_emptyString_individualId_Neg:
+      endPoint: /v1/esignet/authorization/v3/authenticate
+      description: Perform IDT authentication with empty string individualId - Failure
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/IDTAuthenticationNegTC/IDTAuthenticationNegTC
+      outputTemplate: signup/error
+      input: '{
+        "encodedHash": "$ID:ESignet_SignupAuthorizeNegTC_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_PosNeg_Smoke_sid_encodedResp$",
+      	"requestTime": "$TIMESTAMP$",
+      	"pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirectNegTC_AuthToken_Xsrf_STransId_uin_Otp_Valid_posNeg_Smoke_sid_pathFragmentCookie$",
+      	"pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_transactionId$",
+      	"idtToken": "$ID:ESignet_PrepareSignupRedirectNegTC_AuthToken_Xsrf_STransId_uin_Otp_Valid_posNeg_Smoke_sid_idToken$",
+      	"transactionId": "$ID:ESignet_SignupAuthorizeNegTC_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_PosNeg_Smoke_sid_transactionId$",
+      	"individualId": "  ",
+      	"authFactorType" : "IDT",
+      	"challenge" : "$IDTCHALLENGE$",
+        "format" : "base64url-encoded-json"
+}'
+      output: '{
+    "errors": [
+        {
+            "errorCode": "invalid_identifier"
+        }
+    ]
+}'
+   Signup_ESignet_IDTAuthenticationNegTC_AuthToken_Xsrf_without_individualId_Neg:
+      endPoint: /v1/esignet/authorization/v3/authenticate
+      uniqueIdentifier: TC_ESignet_IDTAuthenticationNegTC_29
+      description: Perform IDT authentication with empty individualId - Failure
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/IDTAuthenticationNegTC/IDTAuthenticationNegTC
+      outputTemplate: signup/error
+      input: '{
+        "encodedHash": "$ID:ESignet_SignupAuthorizeNegTC_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_PosNeg_Smoke_sid_encodedResp$",
+      	"requestTime": "$TIMESTAMP$",
+      	"pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirectNegTC_AuthToken_Xsrf_STransId_uin_Otp_Valid_posNeg_Smoke_sid_pathFragmentCookie$",
+      	"pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_transactionId$",
+      	"idtToken": "$ID:ESignet_PrepareSignupRedirectNegTC_AuthToken_Xsrf_STransId_uin_Otp_Valid_posNeg_Smoke_sid_idToken$",
+      	"transactionId": "$ID:ESignet_SignupAuthorizeNegTC_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_PosNeg_Smoke_sid_transactionId$",
+      	"individualId": "$REMOVE$",
+      	"authFactorType" : "IDT",
+      	"challenge" : "$IDTCHALLENGE$",
+        "format" : "base64url-encoded-json"
+}'
+      output: '{
+    "errors": [
+        {
+            "errorCode": "invalid_identifier"
+        }
+    ]
+}'
+   Signup_ESignet_IDTAuthenticationNegTC_AuthToken_Xsrf_without_challenge_Neg:
+      endPoint: /v1/esignet/authorization/v3/authenticate
+      uniqueIdentifier: TC_ESignet_IDTAuthenticationNegTC_30
+      description: Perform IDT authentication with without challenge - Failure
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/IDTAuthenticationNegTC/IDTAuthenticationNegTC
+      outputTemplate: signup/error
+      input: '{
+        "encodedHash": "$ID:ESignet_SignupAuthorizeNegTC_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_PosNeg_Smoke_sid_encodedResp$",
+      	"requestTime": "$TIMESTAMP$",
+      	"pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirectNegTC_AuthToken_Xsrf_STransId_uin_Otp_Valid_posNeg_Smoke_sid_pathFragmentCookie$",
+      	"pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_transactionId$",
+      	"idtToken": "$ID:ESignet_PrepareSignupRedirectNegTC_AuthToken_Xsrf_STransId_uin_Otp_Valid_posNeg_Smoke_sid_idToken$",
+      	"transactionId": "$ID:ESignet_SignupAuthorizeNegTC_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_PosNeg_Smoke_sid_transactionId$",
+      	"individualId": "$IDTINDIVIUALID$",
+      	"authFactorType" : "IDT",
+      	"challenge" : "$REMOVE$",
+        "format" : "base64url-encoded-json"
+}'
+      output: '{
+    "errors": [
+        {
+            "errorCode": "invalid_challenge"
+        }
+    ]
+}'
+   Signup_ESignet_IDTAuthenticationNegTC_AuthToken_Xsrf_invalid_challenge_Neg:
+      endPoint: /v1/esignet/authorization/v3/authenticate
+      uniqueIdentifier: TC_ESignet_IDTAuthenticationNegTC_31
+      description: Perform IDT authentication with invalid challenge - Failure
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/IDTAuthenticationNegTC/IDTAuthenticationNegTC
+      outputTemplate: signup/error
+      input: '{
+        "encodedHash": "$ID:ESignet_SignupAuthorizeNegTC_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_PosNeg_Smoke_sid_encodedResp$",
+      	"requestTime": "$TIMESTAMP$",
+      	"pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirectNegTC_AuthToken_Xsrf_STransId_uin_Otp_Valid_posNeg_Smoke_sid_pathFragmentCookie$",
+      	"pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_transactionId$",
+      	"idtToken": "$ID:ESignet_PrepareSignupRedirectNegTC_AuthToken_Xsrf_STransId_uin_Otp_Valid_posNeg_Smoke_sid_idToken$",
+      	"transactionId": "$ID:ESignet_SignupAuthorizeNegTC_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_PosNeg_Smoke_sid_transactionId$",
+      	"individualId": "$IDTINDIVIUALID$",
+      	"authFactorType" : "IDT",
+      	"challenge" : "invalidChallenge",
+        "format" : "base64url-encoded-json"
+}'
+      output: '{
+    "errors": [
+        {
+            "errorCode": "invalid_challenge"
+        }
+    ]
+}'
+   Signup_ESignet_IDTAuthenticationNegTC_AuthToken_Xsrf_without_challengeList_Neg:
+      endPoint: /v1/esignet/authorization/v3/authenticate
+      uniqueIdentifier: TC_ESignet_IDTAuthenticationNegTC_32
+      description: Perform IDT authentication with without challengeList - Failure
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/IDTAuthenticationNegTC/IDTAuthenticationNegTCwithoutChallengeList
+      outputTemplate: signup/error
+      input: '{
+        "encodedHash": "$ID:ESignet_SignupAuthorizeNegTC_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_PosNeg_Smoke_sid_encodedResp$",
+      	"requestTime": "$TIMESTAMP$",
+      	"pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirectNegTC_AuthToken_Xsrf_STransId_uin_Otp_Valid_posNeg_Smoke_sid_pathFragmentCookie$",
+      	"pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_transactionId$",
+      	"idtToken": "$ID:ESignet_PrepareSignupRedirectNegTC_AuthToken_Xsrf_STransId_uin_Otp_Valid_posNeg_Smoke_sid_idToken$",
+      	"transactionId": "$ID:ESignet_SignupAuthorizeNegTC_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_PosNeg_Smoke_sid_transactionId$",
+      	"individualId": "$IDTINDIVIUALID$"
+}'
+      output: '{
+    "errors": [
+        {
+            "errorCode": "invalid_no_of_challenges"
+        }
+    ]
+}'
+   Signup_ESignet_IDTAuthenticationNegTC_AuthToken_Xsrf_withOnlyChallengeIn_challengeList_Neg:
+      endPoint: /v1/esignet/authorization/v3/authenticate
+      uniqueIdentifier: TC_ESignet_IDTAuthenticationNegTC_33
+      description: Perform IDT authentication with empty challenge - Failure
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/IDTAuthenticationNegTC/IDTAuthenticationNegTC
+      outputTemplate: signup/error
+      input: '{
+        "encodedHash": "$ID:ESignet_SignupAuthorizeNegTC_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_PosNeg_Smoke_sid_encodedResp$",
+      	"requestTime": "$TIMESTAMP$",
+      	"pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirectNegTC_AuthToken_Xsrf_STransId_uin_Otp_Valid_posNeg_Smoke_sid_pathFragmentCookie$",
+      	"pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_transactionId$",
+      	"idtToken": "$ID:ESignet_PrepareSignupRedirectNegTC_AuthToken_Xsrf_STransId_uin_Otp_Valid_posNeg_Smoke_sid_idToken$",
+      	"transactionId": "$ID:ESignet_SignupAuthorizeNegTC_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_PosNeg_Smoke_sid_transactionId$",
+      	"individualId": "$IDTINDIVIUALID$",
+      	"authFactorType" : "",
+      	"challenge" : "$IDTCHALLENGE$",
+        "format" : "base64url-encoded-json"
+}'
+      output: '{
+    "errors": [
+        {
+            "errorCode": "invalid_auth_factor_type"
+        }
+    ]
+}'
+   Signup_ESignet_IDTAuthenticationNegTC_AuthToken_Xsrf_emptyString_challenge_Neg:
+      endPoint: /v1/esignet/authorization/v3/authenticate
+      uniqueIdentifier: TC_ESignet_IDTAuthenticationNegTC_34
+      description: Perform IDT authentication with empty String challenge - Failure
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/IDTAuthenticationNegTC/IDTAuthenticationNegTC
+      outputTemplate: signup/error
+      input: '{
+        "encodedHash": "$ID:ESignet_SignupAuthorizeNegTC_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_PosNeg_Smoke_sid_encodedResp$",
+      	"requestTime": "$TIMESTAMP$",
+      	"pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirectNegTC_AuthToken_Xsrf_STransId_uin_Otp_Valid_posNeg_Smoke_sid_pathFragmentCookie$",
+      	"pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_transactionId$",
+      	"idtToken": "$ID:ESignet_PrepareSignupRedirectNegTC_AuthToken_Xsrf_STransId_uin_Otp_Valid_posNeg_Smoke_sid_idToken$",
+      	"transactionId": "$ID:ESignet_SignupAuthorizeNegTC_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_PosNeg_Smoke_sid_transactionId$",
+      	"individualId": "$IDTINDIVIUALID$",
+      	"authFactorType" : "IDT",
+      	"challenge" : "  ",
+        "format" : "base64url-encoded-json"
+}'
+      output: '{
+    "errors": [
+        {
+            "errorCode": "invalid_challenge"
+        }
+    ]
+}'
+   Signup_ESignet_IDTAuthenticationNegTC_AuthToken_Xsrf_withOnlyFormatIn_challengeList_Neg:
+      endPoint: /v1/esignet/authorization/v3/authenticate
+      uniqueIdentifier: TC_ESignet_IDTAuthenticationNegTC_35
+      description: Perform IDT authentication with only format in challenge list- Failure
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/IDTAuthenticationNegTC/IDTAuthenticationNegTC
+      outputTemplate: signup/error
+      input: '{
+        "encodedHash": "$ID:ESignet_SignupAuthorizeNegTC_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_PosNeg_Smoke_sid_encodedResp$",
+      	"requestTime": "$TIMESTAMP$",
+      	"pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirectNegTC_AuthToken_Xsrf_STransId_uin_Otp_Valid_posNeg_Smoke_sid_pathFragmentCookie$",
+      	"pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_transactionId$",
+      	"idtToken": "$ID:ESignet_PrepareSignupRedirectNegTC_AuthToken_Xsrf_STransId_uin_Otp_Valid_posNeg_Smoke_sid_idToken$",
+      	"transactionId": "$ID:ESignet_SignupAuthorizeNegTC_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_PosNeg_Smoke_sid_transactionId$",
+      	"individualId": "$IDTINDIVIUALID$",
+      	"authFactorType" : "$REMOVE$",
+      	"challenge" : "$REMOVE$",
+        "format" : "base64url-encoded-json"
+}'
+      output: '{
+    "errors": [
+        {
+            "errorCode": "invalid_auth_factor_type"
+        }
+    ]
+}'
+   Signup_ESignet_IDTAuthenticationNegTC_AuthToken_Xsrf_without_Format_In_challengeList_Neg:
+      endPoint: /v1/esignet/authorization/v3/authenticate
+      uniqueIdentifier: TC_ESignet_IDTAuthenticationNegTC_36
+      description: Perform IDT authentication without format in challenge list - Failure
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/IDTAuthenticationNegTC/IDTAuthenticationNegTC
+      outputTemplate: signup/error
+      input: '{
+        "encodedHash": "$ID:ESignet_SignupAuthorizeNegTC_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_PosNeg_Smoke_sid_encodedResp$",
+      	"requestTime": "$TIMESTAMP$",
+      	"pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirectNegTC_AuthToken_Xsrf_STransId_uin_Otp_Valid_posNeg_Smoke_sid_pathFragmentCookie$",
+      	"pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_transactionId$",
+      	"idtToken": "$ID:ESignet_PrepareSignupRedirectNegTC_AuthToken_Xsrf_STransId_uin_Otp_Valid_posNeg_Smoke_sid_idToken$",
+      	"transactionId": "$ID:ESignet_SignupAuthorizeNegTC_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_PosNeg_Smoke_sid_transactionId$",
+      	"individualId": "$IDTINDIVIUALID$",
+      	"authFactorType" : "IDT",
+      	"challenge" : "$IDTCHALLENGE$",
+        "format" : "$REMOVE$"
+}'
+      output: '{
+    "errors": [
+        {
+            "errorCode": "invalid_challenge_format"
+        }
+    ]
+}'
+   Signup_ESignet_IDTAuthenticationNegTC_AuthToken_Xsrf_with_empty_format_In_challengeList_Neg:
+      endPoint: /v1/esignet/authorization/v3/authenticate
+      uniqueIdentifier: TC_ESignet_IDTAuthenticationNegTC_37
+      description: Perform IDT authentication with empty format in challenge list - Failure
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/IDTAuthenticationNegTC/IDTAuthenticationNegTC
+      outputTemplate: signup/error
+      input: '{
+        "encodedHash": "$ID:ESignet_SignupAuthorizeNegTC_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_PosNeg_Smoke_sid_encodedResp$",
+      	"requestTime": "$TIMESTAMP$",
+      	"pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirectNegTC_AuthToken_Xsrf_STransId_uin_Otp_Valid_posNeg_Smoke_sid_pathFragmentCookie$",
+      	"pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_transactionId$",
+      	"idtToken": "$ID:ESignet_PrepareSignupRedirectNegTC_AuthToken_Xsrf_STransId_uin_Otp_Valid_posNeg_Smoke_sid_idToken$",
+      	"transactionId": "$ID:ESignet_SignupAuthorizeNegTC_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_PosNeg_Smoke_sid_transactionId$",
+      	"individualId": "$IDTINDIVIUALID$",
+      	"authFactorType" : "IDT",
+      	"challenge" : "$IDTCHALLENGE$",
+        "format" : ""
+}'
+      output: '{
+    "errors": [
+        {
+            "errorCode": "invalid_challenge_format"
+        }
+    ]
+}'
+   Signup_ESignet_IDTAuthenticationNegTC_AuthToken_Xsrf_with_emptyString_format_In_challengeList_Neg:
+      endPoint: /v1/esignet/authorization/v3/authenticate
+      uniqueIdentifier: TC_ESignet_IDTAuthenticationNegTC_38
+      description: Perform IDT authentication with empty string format in challenge list - Failure
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/IDTAuthenticationNegTC/IDTAuthenticationNegTC
+      outputTemplate: signup/error
+      input: '{
+        "encodedHash": "$ID:ESignet_SignupAuthorizeNegTC_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_PosNeg_Smoke_sid_encodedResp$",
+      	"requestTime": "$TIMESTAMP$",
+      	"pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirectNegTC_AuthToken_Xsrf_STransId_uin_Otp_Valid_posNeg_Smoke_sid_pathFragmentCookie$",
+      	"pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_transactionId$",
+      	"idtToken": "$ID:ESignet_PrepareSignupRedirectNegTC_AuthToken_Xsrf_STransId_uin_Otp_Valid_posNeg_Smoke_sid_idToken$",
+      	"transactionId": "$ID:ESignet_SignupAuthorizeNegTC_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_PosNeg_Smoke_sid_transactionId$",
+      	"individualId": "$IDTINDIVIUALID$",
+      	"authFactorType" : "IDT",
+      	"challenge" : "$IDTCHALLENGE$",
+        "format" : "   "
+}'
+      output: '{
+    "errors": [
+        {
+            "errorCode": "invalid_challenge_format"
+        }
+    ]
+}'
+   Signup_ESignet_IDTAuthenticationNegTC_AuthToken_Xsrf_with_invalid_format_In_challengeList_Neg:
+      endPoint: /v1/esignet/authorization/v3/authenticate
+      uniqueIdentifier: TC_ESignet_IDTAuthenticationNegTC_39
+      description: Perform IDT authentication with invalid format in challenge list - Failure
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/IDTAuthenticationNegTC/IDTAuthenticationNegTC
+      outputTemplate: signup/error
+      input: '{
+        "encodedHash": "$ID:ESignet_SignupAuthorizeNegTC_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_PosNeg_Smoke_sid_encodedResp$",
+      	"requestTime": "$TIMESTAMP$",
+      	"pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirectNegTC_AuthToken_Xsrf_STransId_uin_Otp_Valid_posNeg_Smoke_sid_pathFragmentCookie$",
+      	"pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_transactionId$",
+      	"idtToken": "$ID:ESignet_PrepareSignupRedirectNegTC_AuthToken_Xsrf_STransId_uin_Otp_Valid_posNeg_Smoke_sid_idToken$",
+      	"transactionId": "$ID:ESignet_SignupAuthorizeNegTC_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_PosNeg_Smoke_sid_transactionId$",
+      	"individualId": "$IDTINDIVIUALID$",
+      	"authFactorType" : "IDT",
+      	"challenge" : "$IDTCHALLENGE$",
+        "format" : "alpha-numeric"
+}'
+      output: '{
+    "errors": [
+        {
+            "errorCode": "invalid_challenge_format"
+        }
+    ]
+}'
+
+   Signup_ESignet_IDTAuthenticationNegTC_AuthToken_Xsrf_all_Valid_PosNeg_Smoke:
+      endPoint: /v1/esignet/authorization/v3/authenticate
+      uniqueIdentifier: TC_ESignet_IDTAuthenticationNegTC_POSITIVE
       description: Perform IDT authentication with valid details - Success
       role: resident
       restMethod: post
@@ -683,7 +1096,8 @@ IDTAuthenticationNegTC:
       	"transactionId": "$ID:ESignet_SignupAuthorizeNegTC_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_PosNeg_Smoke_sid_transactionId$",
       	"individualId": "$IDTINDIVIUALID$",
       	"authFactorType" : "IDT",
-      	"challenge" : "$IDTCHALLENGE$"
+      	"challenge" : "$IDTCHALLENGE$",
+		"format" : "base64url-encoded-json"
 }'
       output: '{
        
