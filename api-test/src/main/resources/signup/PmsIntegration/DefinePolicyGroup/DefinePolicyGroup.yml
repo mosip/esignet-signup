@@ -1,5 +1,5 @@
 definePolicyGroup:
-   Esignet_DefinePolicyGroup_All_Valid_Smoke_sid:
+   Signup_Esignet_DefinePolicyGroup_All_Valid_Smoke_sid:
       endPoint: /v1/policymanager/policies/group/new
       description: Define policy group with all valid parameters
       role: partner
@@ -17,59 +17,3 @@ definePolicyGroup:
         "desc": "$IGNORE$",
         "is_Active": true
 }'
-
-   Esignet_DefinePolicyGroup_Misp_Valid_Smoke_sid:
-      endPoint: /v1/policymanager/policies/group/new
-      description: Define policy group with valid Misp
-      role: partner
-      restMethod: post
-      inputTemplate: signup/PmsIntegration/DefinePolicyGroup/definePolicyGroup
-      outputTemplate: signup/PmsIntegration/DefinePolicyGroup/definePolicyGroupResult
-      input: '{
-    "desc": "$MISPPOLICYGROUPDESC$",
-    "name": "$MISPPOLICYGROUPNAME$",
-    "requesttime": "$TIMESTAMP$"
-  }'
-      output: ' {
-      "id": "$IGNORE$",
-        "name": "$IGNORE$",
-        "desc": "$IGNORE$",
-        "is_Active": true
-}'
-
-   Esignet_DefinePolicyGroup_in_Valid_Smoke_sid:
-      endPoint: /v1/policymanager/policies/group/new
-      description: Define policy group with valid details 
-      role: partner
-      restMethod: post
-      inputTemplate: signup/PmsIntegration/DefinePolicyGroup/definePolicyGroup
-      outputTemplate: signup/PmsIntegration/DefinePolicyGroup/definePolicyGroupResult
-      input: '{
-    "desc": "$RID$",
-    "name": "$RID$",
-    "requesttime": "$TIMESTAMP$"
-  }'
-      output: ' {
-      "id": "$IGNORE$",
-        "name": "$IGNORE$",
-        "desc": "$IGNORE$",
-        "is_Active": true
-    }'
-   Esignet_DefinePolicyGroup_Valid_Smoke_sid:
-      endPoint: /v1/policymanager/policies/group/new
-      description: Define policy group with valid details
-      role: partner
-      restMethod: post
-      inputTemplate: signup/PmsIntegration/DefinePolicyGroup/definePolicyGroup
-      outputTemplate: signup/PmsIntegration/DefinePolicyGroup/definePolicyGroupResult
-      input: '{
-    "desc": "$RIDDEL$",
-    "name": "$RIDDEL$",
-    "requesttime": "$TIMESTAMP$"
-  }'
-      output: ' {
-      "id": "$IGNORE$",
-        "name": "$IGNORE$",
-        "desc": "$IGNORE$",
-        "is_Active": true
-    }'
