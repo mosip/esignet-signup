@@ -457,7 +457,7 @@ public class SignupUtil extends AdminTestUtil {
 	public static JSONObject signUpSettingsResponseJson = null;
 
 	public static String getValueFromSignUpSetting(String key) {
-		String url = ConfigManager.getSignupBaseUrl() + ConfigManager.getproperty("signupSettingsEndPoint");
+		String url = SignupConfigManager.getSignupBaseUrl() + SignupConfigManager.getproperty("signupSettingsEndPoint");
 		String actuatorCacheKey = url + key;
 		String value = actuatorValueCache.get(actuatorCacheKey);
 		if (value != null && !value.isEmpty())
@@ -478,7 +478,7 @@ public class SignupUtil extends AdminTestUtil {
 				actuatorValueCache.put(actuatorCacheKey, value);
 			}
 
-			if (ConfigManager.IsDebugEnabled())
+			if (SignupConfigManager.IsDebugEnabled())
 				logger.info("Actuator: " + url + " key: " + key + " value: " + value);
 			return value;
 		} catch (Exception e) {
