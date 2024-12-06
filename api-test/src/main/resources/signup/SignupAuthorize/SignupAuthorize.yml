@@ -1,6 +1,7 @@
 SignupAuthorize:
    Signup_ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_Smoke_sid:
       endPoint: /v1/esignet/authorization/v3/oauth-details
+      description: Create consent details and unique transactionID with valid details
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true
@@ -24,6 +25,7 @@ SignupAuthorize:
 }'
    Signup_ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeVISION_Smoke_sid:
       endPoint: /v1/esignet/authorization/v3/oauth-details
+      description: Create consent details and unique transactionID with valid details and this testcase is prerequisite
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true
@@ -47,6 +49,7 @@ SignupAuthorize:
 }'
    Signup_ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeAUDITORY_Smoke_sid:
       endPoint: /v1/esignet/authorization/v3/oauth-details
+      description: Create consent details and unique transactionID with valid details and this testcase is prerequisite
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true
@@ -70,6 +73,7 @@ SignupAuthorize:
 }'
    Signup_ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeMOBILITY_Smoke_sid:
       endPoint: /v1/esignet/authorization/v3/oauth-details
+      description: Create consent details and unique transactionID with valid details and this testcase is prerequisite
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true
@@ -93,6 +97,7 @@ SignupAuthorize:
 }'
    Signup_ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_Smoke_sid:
       endPoint: /v1/esignet/authorization/v3/oauth-details
+      description: Create consent details and unique transactionID with valid details and this testcase is prerequisite
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true
