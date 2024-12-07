@@ -406,7 +406,7 @@ GenerateChallengeNegTC:
       inputTemplate: signup/GenerateChallenge/GenerateChallenge
       outputTemplate: signup/GenerateChallenge/GenerateChallengeResult
       input: '{
-   "identifier": "+85556738924",
+   "identifier": "$ID:ESignet_GenerateChallenge_STransId_Valid_smoke_Pos_PHONE$",
    "captchaToken": "",
    "purpose": "REGISTRATION",
    "requestTime": "$TIMESTAMP$"
