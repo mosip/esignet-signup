@@ -1,4 +1,3 @@
-#!/bin/bash
 # Script to initialize the DB.
 ## Usage: ./init_db.sh [kubeconfig]
 
