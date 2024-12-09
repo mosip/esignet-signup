@@ -36,6 +36,12 @@ cd deploy
   cd deploy
   ./restart-signup.sh
   ```
+## Deploy dependent services for Signup onboarding
+1. msg-gateway
+2. config-server
+3. artifactory
+4. mock-smtp
+5. kernel
 ## Partner onboarding
 * Perform Partner onboarding for esignet Signup OIDC client using [steps](partner-onboarder/README.md) only if mosip-identity plugin is used.  
 
