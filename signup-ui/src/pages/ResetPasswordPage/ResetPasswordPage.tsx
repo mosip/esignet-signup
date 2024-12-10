@@ -1,6 +1,6 @@
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { isEqual } from "lodash";
-import { useCallback, useEffect, useMemo } from "react";
 import { Resolver, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import * as yup from "yup";
@@ -48,7 +48,8 @@ interface ResetPasswordPageProps {
 }
 
 export const ResetPasswordPage = ({ settings }: ResetPasswordPageProps) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const [previousLanguage, setPreviousLanguage] = useState(i18n.language);
 
   const { step, criticalError } = useResetPasswordStore(
     useCallback(
@@ -86,7 +87,7 @@ export const ResetPasswordPage = ({ settings }: ResetPasswordPageProps) => {
       // Step 5 - ResetPasswordConfirmation
       yup.object({}),
     ],
-    [settings, t]
+    [settings, t, i18n.language]
   );
 
   const currentValidationSchema = validationSchema[step];
@@ -100,6 +101,14 @@ export const ResetPasswordPage = ({ settings }: ResetPasswordPageProps) => {
     >,
     mode: "onBlur",
   });
+
+  useEffect(() => {
+    const oldLanguage = previousLanguage;
+    setPreviousLanguage(i18n.language);
+    if (oldLanguage !== i18n.language && document.querySelector('input[aria-invalid="true"][name^="fullname"]')) {
+      methods.trigger(); // Manually trigger validation whenever the language changes
+    }
+  }, [i18n.language]); // Trigger whenever `i18n.language` changes
 
   const {
     getValues,

@@ -1,7 +1,7 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useMutationState } from "@tanstack/react-query";
 import { isEqual } from "lodash";
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Resolver, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import * as yup from "yup";
@@ -60,7 +60,8 @@ interface SignUpPageProps {
 }
 
 export const SignUpPage = ({ settings }: SignUpPageProps) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const [previousLanguage, setPreviousLanguage] = useState(i18n.language);
 
   const { step, criticalError } = useSignUpStore(
     useCallback(
@@ -97,7 +98,7 @@ export const SignUpPage = ({ settings }: SignUpPageProps) => {
       yup.object({}),
       yup.object({}),
     ],
-    [settings, t]
+    [settings, t, i18n.language]
   );
 
   const currentValidationSchema = validationSchema[step];
@@ -111,6 +112,14 @@ export const SignUpPage = ({ settings }: SignUpPageProps) => {
     >,
     mode: "onBlur",
   });
+
+  useEffect(() => {
+    const oldLanguage = previousLanguage;
+    setPreviousLanguage(i18n.language);
+    if (oldLanguage !== i18n.language && document.querySelector('input[aria-invalid="true"][name^="fullname"]')) {
+      methods.trigger(); // Manually trigger validation whenever the language changes
+    }
+  }, [i18n.language]); // Trigger whenever `i18n.language` changes
 
   const { getValues } = methods;
 
