@@ -116,8 +116,17 @@ export const SignUpPage = ({ settings }: SignUpPageProps) => {
   useEffect(() => {
     const oldLanguage = previousLanguage;
     setPreviousLanguage(i18n.language);
-    if (oldLanguage !== i18n.language && document.querySelector('input[aria-invalid="true"][name^="fullname"]')) {
-      methods.trigger(); // Manually trigger validation whenever the language changes
+    if (oldLanguage !== i18n.language) {
+      const invalidInput = Array.from(
+        document.querySelectorAll('input[aria-invalid="true"]')
+      ).find((input) => {
+        const name = input.getAttribute('name') ?? ''; // Default to an empty string if null
+        return /fullname/i.test(name);
+      });
+  
+      if (invalidInput) {
+        methods.trigger(); // Manually trigger validation whenever the language changes
+      }
     }
   }, [i18n.language]); // Trigger whenever `i18n.language` changes
 
