@@ -82,16 +82,6 @@
 		</classes>
 	</test>
 	
-	<test name ="updatePartnerCertificate">
-		<parameter name ="ymlFile"
-			value="signup/PmsIntegration/UpdatePartnerCertificate/UpdatePartnerCertificate.yml" />
-			<parameter name="queryParams" value="partnerType,partnerName,keyFileNameByPartnerName,moduleName" />
-			<parameter name="prerequisite" value="Yes" />
-	<classes>
-			<class name="io.mosip.testrig.apirig.signup.testscripts.PostWithBodyAndQueryParamsForAutoGenId" />
-		</classes>
-	</test>
-	
 	<test name="RequestAPIKeyForAuthPartner">
 		<parameter name="ymlFile"
 			value="signup/PmsIntegration/RequestAPIKey/RequestAPIKey.yml" />
@@ -109,43 +99,6 @@
 		<parameter name="prerequisite" value="Yes" />
 		<classes>
 			<class name="io.mosip.testrig.apirig.signup.testscripts.PutWithPathParamsAndBody" />
-		</classes>
-	</test>
-	<test name="UpdatePolicy">
-		<parameter name="ymlFile"
-			value="signup/PmsIntegration/UpdatePolicy/UpdatePolicy.yml" />
-		<parameter name="pathParams" value="policyId" />
-		<parameter name="prerequisite" value="Yes" />
-		<classes>
-			<class name="io.mosip.testrig.apirig.signup.testscripts.PutWithPathParamsAndBody" />
-		</classes>
-	</test>
-	<test name="DeactivatePolicy">
-		<parameter name="ymlFile"
-			value="signup/PmsIntegration/DeactivatePolicy/DeactivatePolicy.yml" />
-		<parameter name="pathParams" value="policygroupId,policyId" />
-		<parameter name="prerequisite" value="Yes" />
-		<classes>
-			<class name="io.mosip.testrig.apirig.signup.testscripts.PatchWithPathParamsAndBody" />
-		</classes>
-	</test>
-	<test name="GenerateMispLK">
-		<parameter name="ymlFile"
-			value="signup/PmsIntegration/GenerateMispLK/GenerateMispLK.yml" />
-		<parameter name="idKeyName"	value="licenseKey" />
-		<parameter name="prerequisite" value="Yes" />
-		<classes>
-			<class name="io.mosip.testrig.apirig.signup.testscripts.SimplePostForAutoGenId" />
-		</classes>
-	</test>
-	
-	<test name="GenerateApiKey">
-		<parameter name="ymlFile"
-			value="signup/GenerateApiKey/GenerateApiKey.yml" />
-		<parameter name="idKeyName"	value="apiKey" />
-		<parameter name="prerequisite" value="Yes" />
-		<classes>
-			<class name="io.mosip.testrig.apirig.signup.testscripts.SimplePatchForAutoGenId" />
 		</classes>
 	</test>
 	<test name="OIDCClient">

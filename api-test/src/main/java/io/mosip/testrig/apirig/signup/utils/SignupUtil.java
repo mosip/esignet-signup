@@ -1,7 +1,9 @@
 package io.mosip.testrig.apirig.signup.utils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -18,6 +20,8 @@ import io.mosip.testrig.apirig.signup.testrunner.MosipTestRunner;
 import io.mosip.testrig.apirig.testrunner.BaseTestCase;
 import io.mosip.testrig.apirig.testrunner.OTPListener;
 import io.mosip.testrig.apirig.utils.AdminTestUtil;
+import io.mosip.testrig.apirig.utils.CertsUtil;
+import io.mosip.testrig.apirig.utils.ConfigManager;
 import io.mosip.testrig.apirig.utils.GlobalConstants;
 import io.mosip.testrig.apirig.utils.RestClient;
 import io.mosip.testrig.apirig.utils.SkipTestCaseHandler;
@@ -124,8 +128,9 @@ public class SignupUtil extends AdminTestUtil {
 			BaseTestCase.setSupportedIdTypes(Arrays.asList("UIN", "VID"));
 
 			String endpoint = testCaseDTO.getEndPoint();
-			if (endpoint.contains("/v1/signup/") == true || endpoint.contains("/mock-identity-system/") == true
+			if (endpoint.contains("/mock-identity-system/") == true
 					|| ((testCaseName.equals("ESignet_CreateOIDCClient_all_Valid_Smoke_sid")
+							|| testCaseName.equals("Signup_ESignet_CreateOIDCClient_all_Valid_Smoke_sid")
 							|| testCaseName.equals("ESignet_CreateOIDCClient_Misp_Valid_Smoke_sid")
 							|| testCaseName.equals("ESignet_CreateOIDCClient_NonAuth_all_Valid_Smoke_sid"))
 							&& endpoint.contains("/v1/esignet/client-mgmt/oauth-client"))) {
@@ -284,6 +289,11 @@ public class SignupUtil extends AdminTestUtil {
 			supportedLanguages = getValueFromSignupActuator("classpath:/application-default.properties",
 					"mosip.signup.supported-languages");
 		}
+		
+		if (supportedLanguages == null || supportedLanguages.isBlank() == true) {
+			supportedLanguages = getValueFromSignupActuator("mosip/mosip-config/signup",
+					"mosip.signup.supported-languages");
+		}
 
 		if (supportedLanguages != null && supportedLanguages.isBlank() == false) {
 			supportedLanguages = supportedLanguages.replace("{", "").replace("}", "").replace("'", "");
@@ -330,6 +340,180 @@ public class SignupUtil extends AdminTestUtil {
 
 		logger.info("Type is not available in the response.");
 		return null;
+	}
+	
+	public static List<String> signupSupportedLanguage = new ArrayList<>();
+	public static void getSignupSupportedLanguage() {
+		signupSupportedLanguage = new ArrayList<>();
+		
+//		List<String> signupSupportedLanguage = new ArrayList<>();
+		String supportedLanguages = getValueFromSignupActuator("systemEnvironment",
+				"MOSIP_SIGNUP_SUPPORTED_LANGUAGES");
+		
+		if (supportedLanguages == null || supportedLanguages.isBlank() == true) {
+			supportedLanguages = getValueFromSignupActuator("mosip/mosip-config/signup",
+					"mosip.signup.supported-languages");
+		}
+		
+		if (supportedLanguages == null || supportedLanguages.isBlank() == true) {
+			supportedLanguages = getValueFromSignupActuator("classpath:/application-default.properties",
+					"mosip.signup.supported-languages");
+		}
+
+		if (supportedLanguages != null && supportedLanguages.isBlank() == false) {
+			supportedLanguages = supportedLanguages.replace("{", "").replace("}", "").replace("'", "");
+
+			// Split the string by commas
+			String[] languages = supportedLanguages.split(",");
+
+			// Use a TreeSet to sort the languages
+			Set<String> sortedLanguages = new TreeSet<>();
+			for (String language : languages) {
+				sortedLanguages.add(language.trim()); // Trim to remove any extra spaces
+			}
+
+			// Add sorted languages to the languageList
+			signupSupportedLanguage.addAll(sortedLanguages);
+
+			logger.info("signupSupportedLanguage " + signupSupportedLanguage);
+		} else {
+			logger.error("Language not found");
+		}
+	}
+	
+	
+	public static String generateFullNameToRegisterUsers(String inputJson, String testCaseName) {
+		JSONArray fullNameArray = new JSONArray();
+		String fullNamePattern = getValueFromSignUpSetting("fullname.pattern").toString();
+		List<String> fullnames = Arrays.asList(" ឮᨪដ", "សុភិបាល", "វណ្ណៈ", "៻៥᧿", "គុសល", "ស្រីមុជ", "ចន្ថ័រន", "  ឃ  ំ ដ     ៹ម");
+		String randomFullName = getRandomElement(fullnames);
+		getSignupSupportedLanguage();
+		List<String> languageList =  new ArrayList<>(signupSupportedLanguage);
+//		languageList = BaseTestCase.getLanguageList();
+
+		// For current sprint eng is removed.
+		if (languageList.contains("eng"))
+			languageList.remove("eng");
+		if (testCaseName.contains("_Only_1st_Lang_On_Name_Field_Neg") && languageList.size() > 1)
+			languageList.remove(1);
+
+		for (int i = 0; i < languageList.size(); i++) {
+			if (languageList.get(i) != null && !languageList.get(i).isEmpty()) {
+				JSONObject eachValueJson = new JSONObject();
+				if (testCaseName.contains("_Invalid_Value_On_Language_Field_Neg")) {
+					eachValueJson.put(GlobalConstants.LANGUAGE, "sdbfkfj");
+				} else if (testCaseName.contains("_Empty_Value_On_Language_Field_Neg")) {
+					eachValueJson.put(GlobalConstants.LANGUAGE, "");
+				} else
+					eachValueJson.put(GlobalConstants.LANGUAGE, languageList.get(i));
+				String generatedString = "";
+
+				try {
+					if (!fullNamePattern.isEmpty()) {
+//						while (generatedString.isBlank()) {
+//							generatedString = genStringAsperRegex(fullNamePattern);
+//						}
+//						eachValueJson.put(GlobalConstants.VALUE, generatedString);
+
+						eachValueJson.put(GlobalConstants.VALUE, randomFullName);
+
+						if (testCaseName.contains("_Only_Language_On_Name_Field_Neg"))
+							eachValueJson.remove(GlobalConstants.VALUE);
+						else if (testCaseName.contains("_Only_Value_On_Name_Field_Neg"))
+							eachValueJson.remove(GlobalConstants.LANGUAGE);
+						else if (testCaseName.contains("_Empty_Value_On_Name_Field_Neg"))
+							eachValueJson.put(GlobalConstants.VALUE, "");
+						else if (testCaseName.contains("_Space_Value_On_Name_Field_Neg"))
+							eachValueJson.put(GlobalConstants.VALUE, " ");
+						else if (testCaseName.contains("_Only_SpecialChar_On_Name_Field_Neg"))
+							eachValueJson.put(GlobalConstants.VALUE, "%^&*&** ^&&&");
+						else if (testCaseName.contains("_Only_Num_Value_On_Name_Field_Neg"))
+							eachValueJson.put(GlobalConstants.VALUE, "564846841");
+						else if (testCaseName.contains("_AlphaNum_Value_On_Name_Field_Neg"))
+							eachValueJson.put(GlobalConstants.VALUE, "អានុសា765651");
+						else if (testCaseName.contains("_Exceeding_Limit_Value_On_Name_Field_Neg"))
+							eachValueJson.put(GlobalConstants.VALUE, generateRandomAlphaNumericString(50));
+
+					} else {
+						logger.error("REGEX pattern not availble in the setting API");
+						return "";
+					}
+				} catch (Exception e) {
+					logger.error(e.getMessage());
+					return "";
+				}
+				fullNameArray.put(eachValueJson);
+			}
+
+		}
+		if (testCaseName.contains("_SName_Valid")) {
+			CertsUtil.addCertificateToCache(testCaseName + "_$REGISTEREDUSERFULLNAME$", fullNameArray.toString());
+		}
+		inputJson = replaceKeywordValue(inputJson, "$FULLNAMETOREGISTERUSER$", fullNameArray.toString());
+
+		return inputJson;
+	}
+	
+	public static JSONObject signUpSettingsResponseJson = null;
+
+	public static String getValueFromSignUpSetting(String key) {
+		String url = SignupConfigManager.getSignupBaseUrl() + SignupConfigManager.getproperty("signupSettingsEndPoint");
+		String actuatorCacheKey = url + key;
+		String value = actuatorValueCache.get(actuatorCacheKey);
+		if (value != null && !value.isEmpty())
+			return value;
+
+		try {
+			if (signUpSettingsResponseJson == null) {
+				Response response = null;
+				JSONObject responseJson = null;
+				response = RestClient.getRequest(url, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
+
+				responseJson = new JSONObject(response.getBody().asString());
+				signUpSettingsResponseJson = responseJson.getJSONObject("response").getJSONObject("configs");
+			}
+
+			if (signUpSettingsResponseJson.has(key)) {
+				value = signUpSettingsResponseJson.getString(key);
+				actuatorValueCache.put(actuatorCacheKey, value);
+			}
+
+			if (SignupConfigManager.IsDebugEnabled())
+				logger.info("Actuator: " + url + " key: " + key + " value: " + value);
+			return value;
+		} catch (Exception e) {
+			logger.error(GlobalConstants.EXCEPTION_STRING_2 + e);
+			return "";
+		}
+
+	}
+	
+	public static String getPhoneNumberFromRegex() {
+		String phoneNumber = "";
+		// TODO Regex needs to be taken from Schema
+		String phoneNumberRegex = getValueFromSignUpSetting("identifier.pattern");
+		if (!phoneNumberRegex.isEmpty())
+			try {
+				phoneNumber = genStringAsperRegex(phoneNumberRegex);
+				return phoneNumber;
+			} catch (Exception e) {
+				logger.error(e.getMessage());
+			}
+		return phoneNumber;
+	}
+
+	public static String getPasswordPatternRegex() {
+		String password = "";
+		// TODO Regex needs to be taken from Schema
+		String passwordRegex = getValueFromSignUpSetting("password.pattern");
+		if (!passwordRegex.isEmpty())
+			try {
+				password = genStringAsperRegex(passwordRegex);
+				return password;
+			} catch (Exception e) {
+				logger.error(e.getMessage());
+			}
+		return password;
 	}
 	
 }
