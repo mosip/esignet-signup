@@ -14,12 +14,7 @@ function deleting_kernel() {
         then
           helm -n $NS delete auditmanager
           helm -n $NS delete authmanager
-          helm -n $NS delete idgenerator
-          helm -n $NS delete masterdata
           helm -n $NS delete otpmanager
-          helm -n $NS delete pridgenerator
-          helm -n $NS delete ridgenerator
-          helm -n $NS delete syncdata
           helm -n $NS delete notifier
           break
         else
