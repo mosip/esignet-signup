@@ -7,7 +7,7 @@ if [ $# -ge 1 ] ; then
 fi
 
 NS=kernel
-CHART_VERSION=0.0.1-develop
+CHART_VERSION=12.0.1
 
 echo Create $NS namespace
 kubectl create ns $NS
@@ -47,6 +47,21 @@ function installing_kernel() {
 
   echo Installing notifier
   helm -n $NS install notifier mosip/notifier --version $CHART_VERSION
+
+  # Array of deployment names
+  DEPLOYMENTS=("authmanager" "auditmanager" "otpmanager" "notifier")
+
+  # Patch all deployments to use esignet-global as configMapRef
+  for DEPLOYMENT in "${DEPLOYMENTS[@]}"; do
+    echo Patching $DEPLOYMENT to use esignet-global ConfigMap
+    kubectl -n $NS patch deployment $DEPLOYMENT \
+      --type=json \
+      -p='[{"op": "replace", "path": "/spec/template/spec/containers/0/envFrom/0/configMapRef/name", "value": "esignet-global"}]'
+  done
+
+  kubectl -n $NS set env deployment/notifier \
+    MOSIP_KERNEL_SMS_NUMBER_MIN_LENGTH=7 \
+    MOSIP_KERNEL_SMS_NUMBER_MAX_LENGTH=10
 
   kubectl -n $NS  get deploy -o name |  xargs -n1 -t  kubectl -n $NS rollout status
 
