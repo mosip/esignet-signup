@@ -801,8 +801,8 @@ VerifyChallengeNegTC:
 
    ESignet_VerifyChallengeNegTC_STransId_Missing_Challenge_Neg:
       endPoint: /v1/signup/registration/verify-challenge
-	  uniqueIdentifier: TC_ESignet_VerifyChallengeNegTC_24
-	  role: resident
+      uniqueIdentifier: TC_ESignet_VerifyChallengeNegTC_24
+      role: resident
       restMethod: post
       inputTemplate: esignet/VerifyChallengeNegTC/VerifyChallengeNegTC
       outputTemplate: esignet/error
