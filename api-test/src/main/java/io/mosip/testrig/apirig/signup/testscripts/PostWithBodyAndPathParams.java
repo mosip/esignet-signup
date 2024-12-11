@@ -83,7 +83,7 @@ public class PostWithBodyAndPathParams extends AdminTestUtil implements ITest {
 	@Test(dataProvider = "testcaselist")
 	public void test(TestCaseDTO testCaseDTO) throws AuthenticationTestException, AdminTestException {
 		testCaseName = testCaseDTO.getTestCaseName();
-		testCaseName = SignupUtil.isTestCaseValidForExecution(testCaseDTO);
+		testCaseDTO = SignupUtil.isTestCaseValidForTheExecution(testCaseDTO);
 		String[] templateFields = testCaseDTO.getTemplateFields();
 
 		if (HealthChecker.signalTerminateExecution) {

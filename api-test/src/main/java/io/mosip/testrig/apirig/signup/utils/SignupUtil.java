@@ -91,8 +91,9 @@ public class SignupUtil extends AdminTestUtil {
 
 	}
 	
-	public static String isTestCaseValidForExecution(TestCaseDTO testCaseDTO) {
+	public static TestCaseDTO isTestCaseValidForTheExecution(TestCaseDTO testCaseDTO) {
 		String testCaseName = testCaseDTO.getTestCaseName();
+		String inputJson = testCaseDTO.getInput();
 		
 		
 		if (MosipTestRunner.skipAll == true) {
@@ -169,8 +170,31 @@ public class SignupUtil extends AdminTestUtil {
 		if (SkipTestCaseHandler.isTestCaseInSkippedList(testCaseName)) {
 			throw new SkipException(GlobalConstants.KNOWN_ISSUES);
 		}
+		
+		if ((testCaseName.contains("ESignet_AuthenticateUserPassword") && inputJson.contains("_PHONE$")) || testCaseName.contains("AuthenticateUserPasswordNegTC_UnRegistered_IndividualId_Neg")) {
+			String suffix = getValueFromEsignetActuator("classpath:/application.properties",
+					"mosip.esignet.ui.config.username.postfix");
 
-		return testCaseName;
+			if (suffix == null || suffix.isBlank() == true) {
+				suffix = getValueFromEsignetActuator("classpath:/application-default.properties",
+						"mosip.esignet.ui.config.username.postfix");
+			}
+			
+			if (suffix == null || suffix.isBlank() == true) {
+				suffix = getValueFromEsignetActuator("mosip-config/esignet",
+						"mosip.esignet.ui.config.username.postfix");
+			}
+			
+			if (suffix != null && suffix.isBlank() == false) {
+				testCaseDTO.setInput(testCaseDTO.getInput().replace("_PHONE$", "_PHONE$" + suffix));
+				
+				if (testCaseName.contains("_UnRegistered_IndividualId_Neg")) {
+					testCaseDTO.setInput(testCaseDTO.getInput().replace("$PHONENUMBERFROMREGEXFORSIGNUP$", "$PHONENUMBERFROMREGEXFORSIGNUP$" + suffix));
+				}
+			}
+		}
+
+		return testCaseDTO;
 	}
 	
 	public static String inputstringKeyWordHandeler(String jsonString, String testCaseName) {
