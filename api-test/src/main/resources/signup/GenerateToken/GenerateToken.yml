@@ -1,6 +1,7 @@
 GenerateToken:
    Signup_ESignet_GenerateToken_uin_Valid_Smoke_sid:
       endPoint: $GETENDPOINTFROMWELLKNOWN$
+      uniqueIdentifier: TC_ESignet_GenerateToken_01
       description: Generating token with valid details using UIN
       role: resident
       restMethod: post

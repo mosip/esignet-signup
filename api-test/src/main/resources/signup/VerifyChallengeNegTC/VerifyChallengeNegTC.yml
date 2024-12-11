@@ -1,14 +1,15 @@
 VerifyChallengeNegTC:
-   Signup_ESignet_VerifyChallengeNegTC_STransId_Missing_CSRF_Neg:
+   ESignet_VerifyChallengeNegTC_STransId_Missing_CSRF_Neg:
       endPoint: /v1/signup/registration/verify-challenge
+      uniqueIdentifier: TC_ESignet_VerifyChallengeNegTC_01
       role: resident
       restMethod: post
       allowedErrorCodes: 403
-      inputTemplate: signup/VerifyChallengeNegTC/VerifyChallengeNegTC
-      outputTemplate: signup/error
+      inputTemplate: esignet/VerifyChallengeNegTC/VerifyChallengeNegTC
+      outputTemplate: esignet/error
       input: '{
-   "headerTransactionID": "$ID:ESignet_VerifyChallengeNegTC_STransId_Missing_CSRF_Neg_TransactionID$",
-   "identifier": "$ID:ESignet_VerifyChallengeNegTC_STransId_Missing_CSRF_Neg_PHONE$",
+   "headerTransactionID": "$ID:VerifyChallengeNegTC_STransId_Missing_CSRF_Neg_TransactionID$",
+   "identifier": "$ID:VerifyChallengeNegTC_STransId_Missing_CSRF_Neg_PHONE$",
    "challenge": "111111",
    "format": "alpha-numeric",
    "type": "OTP",
@@ -18,26 +19,27 @@ VerifyChallengeNegTC:
     "captchaToken": "",
     "purpose": "REGISTRATION",
     "requestTime": "$TIMESTAMP$",
-    "sendOtpReqTemplate": "signup/GenerateChallenge/GenerateChallenge",
+    "sendOtpReqTemplate": "esignet/GenerateChallenge/GenerateChallenge",
     "sendOtpEndPoint": "/v1/signup/registration/generate-challenge"
     }
 }'
       output: '{
     "sendOtpResp":{
         "status":"SUCCESS",
-        "sendOtpResTemplate":"signup/GenerateChallenge/GenerateChallengeResult"
+        "sendOtpResTemplate":"esignet/GenerateChallenge/GenerateChallengeResult"
     }
 }'
 
-   Signup_ESignet_VerifyChallengeNegTC_STransId_Invalid_TransactionId_Neg:
+   ESignet_VerifyChallengeNegTC_STransId_Invalid_TransactionId_Neg:
       endPoint: /v1/signup/registration/verify-challenge
+      uniqueIdentifier: TC_ESignet_VerifyChallengeNegTC_02
       role: resident
       restMethod: post
-      inputTemplate: signup/VerifyChallengeNegTC/VerifyChallengeNegTC
-      outputTemplate: signup/error
+      inputTemplate: esignet/VerifyChallengeNegTC/VerifyChallengeNegTC
+      outputTemplate: esignet/error
       input: '{
    "headerTransactionID": "kjsndfjksd",
-   "identifier": "$ID:ESignet_VerifyChallengeNegTC_STransId_Invalid_TransactionId_Neg_PHONE$",
+   "identifier": "$ID:VerifyChallengeNegTC_STransId_Invalid_TransactionId_Neg_PHONE$",
    "challenge": "111111",
    "format": "alpha-numeric",
    "type": "OTP",
@@ -47,7 +49,7 @@ VerifyChallengeNegTC:
     "captchaToken": "",
     "purpose": "REGISTRATION",
     "requestTime": "$TIMESTAMP$",
-    "sendOtpReqTemplate": "signup/GenerateChallenge/GenerateChallenge",
+    "sendOtpReqTemplate": "esignet/GenerateChallenge/GenerateChallenge",
     "sendOtpEndPoint": "/v1/signup/registration/generate-challenge"
     }
 }'
@@ -59,20 +61,21 @@ VerifyChallengeNegTC:
   ],
     "sendOtpResp":{
         "status":"SUCCESS",
-        "sendOtpResTemplate":"signup/GenerateChallenge/GenerateChallengeResult"
+        "sendOtpResTemplate":"esignet/GenerateChallenge/GenerateChallengeResult"
     }
 }'
 
-   Signup_ESignet_VerifyChallengeNegTC_STransId_Missing_TransactionId_Neg:
+   ESignet_VerifyChallengeNegTC_STransId_Missing_TransactionId_Neg:
       endPoint: /v1/signup/registration/verify-challenge
+      uniqueIdentifier: TC_ESignet_VerifyChallengeNegTC_03
       role: resident
       restMethod: post
       allowedErrorCodes: 400
-      inputTemplate: signup/VerifyChallengeNegTC/VerifyChallengeNegTC
-      outputTemplate: signup/error
+      inputTemplate: esignet/VerifyChallengeNegTC/VerifyChallengeNegTC
+      outputTemplate: esignet/error
       input: '{
    "headerTransactionID": "$REMOVE$",
-   "identifier": "$ID:ESignet_VerifyChallengeNegTC_STransId_Missing_TransactionId_Neg_PHONE$",
+   "identifier": "$ID:VerifyChallengeNegTC_STransId_Missing_TransactionId_Neg_PHONE$",
    "challenge": "111111",
    "format": "alpha-numeric",
    "type": "OTP",
@@ -82,7 +85,7 @@ VerifyChallengeNegTC:
     "captchaToken": "",
     "purpose": "REGISTRATION",
     "requestTime": "$TIMESTAMP$",
-    "sendOtpReqTemplate": "signup/GenerateChallenge/GenerateChallenge",
+    "sendOtpReqTemplate": "esignet/GenerateChallenge/GenerateChallenge",
     "sendOtpEndPoint": "/v1/signup/registration/generate-challenge"
     }
 }'
@@ -94,19 +97,20 @@ VerifyChallengeNegTC:
   ],
     "sendOtpResp":{
         "status":"SUCCESS",
-        "sendOtpResTemplate":"signup/GenerateChallenge/GenerateChallengeResult"
+        "sendOtpResTemplate":"esignet/GenerateChallenge/GenerateChallengeResult"
     }
 }'
 
-   Signup_ESignet_VerifyChallengeNegTC_STransId_Expired_TransactionId_Neg:
+   ESignet_VerifyChallengeNegTC_STransId_Expired_TransactionId_Neg:
       endPoint: /v1/signup/registration/verify-challenge
+      uniqueIdentifier: TC_ESignet_VerifyChallengeNegTC_04
       role: resident
       restMethod: post
-      inputTemplate: signup/VerifyChallengeNegTC/VerifyChallengeNegTC
-      outputTemplate: signup/error
+      inputTemplate: esignet/VerifyChallengeNegTC/VerifyChallengeNegTC
+      outputTemplate: esignet/error
       input: '{
    "headerTransactionID": "38JYeQCqEldh28iZTT2tjuM6HK3qzr-KQzP8G25w5n0",
-   "identifier": "$ID:ESignet_VerifyChallengeNegTC_STransId_Expired_TransactionId_Neg_PHONE$",
+   "identifier": "$ID:VerifyChallengeNegTC_STransId_Expired_TransactionId_Neg_PHONE$",
    "challenge": "111111",
    "format": "alpha-numeric",
    "type": "OTP",
@@ -116,7 +120,7 @@ VerifyChallengeNegTC:
     "captchaToken": "",
     "purpose": "REGISTRATION",
     "requestTime": "$TIMESTAMP$",
-    "sendOtpReqTemplate": "signup/GenerateChallenge/GenerateChallenge",
+    "sendOtpReqTemplate": "esignet/GenerateChallenge/GenerateChallenge",
     "sendOtpEndPoint": "/v1/signup/registration/generate-challenge"
     }
 }'
@@ -128,19 +132,20 @@ VerifyChallengeNegTC:
   ],
     "sendOtpResp":{
         "status":"SUCCESS",
-        "sendOtpResTemplate":"signup/GenerateChallenge/GenerateChallengeResult"
+        "sendOtpResTemplate":"esignet/GenerateChallenge/GenerateChallengeResult"
     }
 }'
 
-   Signup_ESignet_VerifyChallengeNegTC_STransId_DiffUser_TransactionId_Neg:
+   ESignet_VerifyChallengeNegTC_STransId_DiffUser_TransactionId_Neg:
       endPoint: /v1/signup/registration/verify-challenge
+      uniqueIdentifier: TC_ESignet_VerifyChallengeNegTC_05
       role: resident
       restMethod: post
-      inputTemplate: signup/VerifyChallengeNegTC/VerifyChallengeNegTC
-      outputTemplate: signup/error
+      inputTemplate: esignet/VerifyChallengeNegTC/VerifyChallengeNegTC
+      outputTemplate: esignet/error
       input: '{
-   "headerTransactionID": "$ID:ESignet_VerifyChallengeNegTC_STransId_Missing_CSRF_Neg_TransactionID$",
-   "identifier": "$ID:ESignet_VerifyChallengeNegTC_STransId_DiffUser_TransactionId_Neg_PHONE$",
+   "headerTransactionID": "$ID:VerifyChallengeNegTC_STransId_Missing_CSRF_Neg_TransactionID$",
+   "identifier": "$ID:VerifyChallengeNegTC_STransId_DiffUser_TransactionId_Neg_PHONE$",
    "challenge": "111111",
    "format": "alpha-numeric",
    "type": "OTP",
@@ -150,7 +155,7 @@ VerifyChallengeNegTC:
     "captchaToken": "",
     "purpose": "REGISTRATION",
     "requestTime": "$TIMESTAMP$",
-    "sendOtpReqTemplate": "signup/GenerateChallenge/GenerateChallenge",
+    "sendOtpReqTemplate": "esignet/GenerateChallenge/GenerateChallenge",
     "sendOtpEndPoint": "/v1/signup/registration/generate-challenge"
     }
 }'
@@ -162,19 +167,20 @@ VerifyChallengeNegTC:
   ],
     "sendOtpResp":{
         "status":"SUCCESS",
-        "sendOtpResTemplate":"signup/GenerateChallenge/GenerateChallengeResult"
+        "sendOtpResTemplate":"esignet/GenerateChallenge/GenerateChallengeResult"
     }
 }'
 
-   Signup_ESignet_VerifyChallengeNegTC_STransId_Empty_RequestTime_Neg:
+   ESignet_VerifyChallengeNegTC_STransId_Empty_RequestTime_Neg:
       endPoint: /v1/signup/registration/verify-challenge
+      uniqueIdentifier: TC_ESignet_VerifyChallengeNegTC_06
       role: resident
       restMethod: post
-      inputTemplate: signup/VerifyChallengeNegTC/VerifyChallengeNegTC
-      outputTemplate: signup/error
+      inputTemplate: esignet/VerifyChallengeNegTC/VerifyChallengeNegTC
+      outputTemplate: esignet/error
       input: '{
-   "headerTransactionID": "$ID:ESignet_VerifyChallengeNegTC_STransId_Empty_RequestTime_Neg_TransactionID$",
-   "identifier": "$ID:ESignet_VerifyChallengeNegTC_STransId_Empty_RequestTime_Neg_PHONE$",
+   "headerTransactionID": "$ID:VerifyChallengeNegTC_STransId_Empty_RequestTime_Neg_TransactionID$",
+   "identifier": "$ID:VerifyChallengeNegTC_STransId_Empty_RequestTime_Neg_PHONE$",
    "challenge": "111111",
    "format": "alpha-numeric",
    "type": "OTP",
@@ -184,7 +190,7 @@ VerifyChallengeNegTC:
     "captchaToken": "",
     "purpose": "REGISTRATION",
     "requestTime": "$TIMESTAMP$",
-    "sendOtpReqTemplate": "signup/GenerateChallenge/GenerateChallenge",
+    "sendOtpReqTemplate": "esignet/GenerateChallenge/GenerateChallenge",
     "sendOtpEndPoint": "/v1/signup/registration/generate-challenge"
     }
 }'
@@ -196,19 +202,20 @@ VerifyChallengeNegTC:
   ],
     "sendOtpResp":{
         "status":"SUCCESS",
-        "sendOtpResTemplate":"signup/GenerateChallenge/GenerateChallengeResult"
+        "sendOtpResTemplate":"esignet/GenerateChallenge/GenerateChallengeResult"
     }
 }'
 
-   Signup_ESignet_VerifyChallengeNegTC_STransId_SpaceVal_RequestTime_Neg:
+   ESignet_VerifyChallengeNegTC_STransId_SpaceVal_RequestTime_Neg:
       endPoint: /v1/signup/registration/verify-challenge
+      uniqueIdentifier: TC_ESignet_VerifyChallengeNegTC_07
       role: resident
       restMethod: post
-      inputTemplate: signup/VerifyChallengeNegTC/VerifyChallengeNegTC
-      outputTemplate: signup/error
+      inputTemplate: esignet/VerifyChallengeNegTC/VerifyChallengeNegTC
+      outputTemplate: esignet/error
       input: '{
-   "headerTransactionID": "$ID:ESignet_VerifyChallengeNegTC_STransId_SpaceVal_RequestTime_Neg_TransactionID$",
-   "identifier": "$ID:ESignet_VerifyChallengeNegTC_STransId_SpaceVal_RequestTime_Neg_PHONE$",
+   "headerTransactionID": "$ID:VerifyChallengeNegTC_STransId_SpaceVal_RequestTime_Neg_TransactionID$",
+   "identifier": "$ID:VerifyChallengeNegTC_STransId_SpaceVal_RequestTime_Neg_PHONE$",
    "challenge": "111111",
    "format": "alpha-numeric",
    "type": "OTP",
@@ -218,7 +225,7 @@ VerifyChallengeNegTC:
     "captchaToken": "",
     "purpose": "REGISTRATION",
     "requestTime": "$TIMESTAMP$",
-    "sendOtpReqTemplate": "signup/GenerateChallenge/GenerateChallenge",
+    "sendOtpReqTemplate": "esignet/GenerateChallenge/GenerateChallenge",
     "sendOtpEndPoint": "/v1/signup/registration/generate-challenge"
     }
 }'
@@ -230,19 +237,20 @@ VerifyChallengeNegTC:
   ],
     "sendOtpResp":{
         "status":"SUCCESS",
-        "sendOtpResTemplate":"signup/GenerateChallenge/GenerateChallengeResult"
+        "sendOtpResTemplate":"esignet/GenerateChallenge/GenerateChallengeResult"
     }
 }'
 
-   Signup_ESignet_VerifyChallengeNegTC_STransId_Invalid_RequestTime_Neg:
+   ESignet_VerifyChallengeNegTC_STransId_Invalid_RequestTime_Neg:
       endPoint: /v1/signup/registration/verify-challenge
+      uniqueIdentifier: TC_ESignet_VerifyChallengeNegTC_08
       role: resident
       restMethod: post
-      inputTemplate: signup/VerifyChallengeNegTC/VerifyChallengeNegTC
-      outputTemplate: signup/error
+      inputTemplate: esignet/VerifyChallengeNegTC/VerifyChallengeNegTC
+      outputTemplate: esignet/error
       input: '{
-   "headerTransactionID": "$ID:ESignet_VerifyChallengeNegTC_STransId_Invalid_RequestTime_Neg_TransactionID$",
-   "identifier": "$ID:ESignet_VerifyChallengeNegTC_STransId_Invalid_RequestTime_Neg_PHONE$",
+   "headerTransactionID": "$ID:VerifyChallengeNegTC_STransId_Invalid_RequestTime_Neg_TransactionID$",
+   "identifier": "$ID:VerifyChallengeNegTC_STransId_Invalid_RequestTime_Neg_PHONE$",
    "challenge": "111111",
    "format": "alpha-numeric",
    "type": "OTP",
@@ -252,7 +260,7 @@ VerifyChallengeNegTC:
     "captchaToken": "",
     "purpose": "REGISTRATION",
     "requestTime": "$TIMESTAMP$",
-    "sendOtpReqTemplate": "signup/GenerateChallenge/GenerateChallenge",
+    "sendOtpReqTemplate": "esignet/GenerateChallenge/GenerateChallenge",
     "sendOtpEndPoint": "/v1/signup/registration/generate-challenge"
     }
 }'
@@ -264,19 +272,20 @@ VerifyChallengeNegTC:
   ],
     "sendOtpResp":{
         "status":"SUCCESS",
-        "sendOtpResTemplate":"signup/GenerateChallenge/GenerateChallengeResult"
+        "sendOtpResTemplate":"esignet/GenerateChallenge/GenerateChallengeResult"
     }
 }'
 
-   Signup_ESignet_VerifyChallengeNegTC_STransId_Invalid_Num_RequestTime_Neg:
+   ESignet_VerifyChallengeNegTC_STransId_Invalid_Num_RequestTime_Neg:
       endPoint: /v1/signup/registration/verify-challenge
+      uniqueIdentifier: TC_ESignet_VerifyChallengeNegTC_09
       role: resident
       restMethod: post
-      inputTemplate: signup/VerifyChallengeNegTC/VerifyChallengeNegTC
-      outputTemplate: signup/error
+      inputTemplate: esignet/VerifyChallengeNegTC/VerifyChallengeNegTC
+      outputTemplate: esignet/error
       input: '{
-   "headerTransactionID": "$ID:ESignet_VerifyChallengeNegTC_STransId_Invalid_Num_RequestTime_Neg_TransactionID$",
-   "identifier": "$ID:ESignet_VerifyChallengeNegTC_STransId_Invalid_Num_RequestTime_Neg_PHONE$",
+   "headerTransactionID": "$ID:VerifyChallengeNegTC_STransId_Invalid_Num_RequestTime_Neg_TransactionID$",
+   "identifier": "$ID:VerifyChallengeNegTC_STransId_Invalid_Num_RequestTime_Neg_PHONE$",
    "challenge": "111111",
    "format": "alpha-numeric",
    "type": "OTP",
@@ -286,7 +295,7 @@ VerifyChallengeNegTC:
     "captchaToken": "",
     "purpose": "REGISTRATION",
     "requestTime": "$TIMESTAMP$",
-    "sendOtpReqTemplate": "signup/GenerateChallenge/GenerateChallenge",
+    "sendOtpReqTemplate": "esignet/GenerateChallenge/GenerateChallenge",
     "sendOtpEndPoint": "/v1/signup/registration/generate-challenge"
     }
 }'
@@ -298,19 +307,20 @@ VerifyChallengeNegTC:
   ],
     "sendOtpResp":{
         "status":"SUCCESS",
-        "sendOtpResTemplate":"signup/GenerateChallenge/GenerateChallengeResult"
+        "sendOtpResTemplate":"esignet/GenerateChallenge/GenerateChallengeResult"
     }
 }'
 
-   Signup_ESignet_VerifyChallengeNegTC_STransId_Invalid_Format_RequestTime_Neg:
+   ESignet_VerifyChallengeNegTC_STransId_Invalid_Format_RequestTime_Neg:
       endPoint: /v1/signup/registration/verify-challenge
+      uniqueIdentifier: TC_ESignet_VerifyChallengeNegTC_10
       role: resident
       restMethod: post
-      inputTemplate: signup/VerifyChallengeNegTC/VerifyChallengeNegTC
-      outputTemplate: signup/error
+      inputTemplate: esignet/VerifyChallengeNegTC/VerifyChallengeNegTC
+      outputTemplate: esignet/error
       input: '{
-   "headerTransactionID": "$ID:ESignet_VerifyChallengeNegTC_STransId_Invalid_Format_RequestTime_Neg_TransactionID$",
-   "identifier": "$ID:ESignet_VerifyChallengeNegTC_STransId_Invalid_Format_RequestTime_Neg_PHONE$",
+   "headerTransactionID": "$ID:VerifyChallengeNegTC_STransId_Invalid_Format_RequestTime_Neg_TransactionID$",
+   "identifier": "$ID:VerifyChallengeNegTC_STransId_Invalid_Format_RequestTime_Neg_PHONE$",
    "challenge": "111111",
    "format": "alpha-numeric",
    "type": "OTP",
@@ -320,7 +330,7 @@ VerifyChallengeNegTC:
     "captchaToken": "",
     "purpose": "REGISTRATION",
     "requestTime": "$TIMESTAMP$",
-    "sendOtpReqTemplate": "signup/GenerateChallenge/GenerateChallenge",
+    "sendOtpReqTemplate": "esignet/GenerateChallenge/GenerateChallenge",
     "sendOtpEndPoint": "/v1/signup/registration/generate-challenge"
     }
 }'
@@ -332,19 +342,20 @@ VerifyChallengeNegTC:
   ],
     "sendOtpResp":{
         "status":"SUCCESS",
-        "sendOtpResTemplate":"signup/GenerateChallenge/GenerateChallengeResult"
+        "sendOtpResTemplate":"esignet/GenerateChallenge/GenerateChallengeResult"
     }
 }'
 
-   Signup_ESignet_VerifyChallengeNegTC_STransId_Empty_Request_Body_Neg:
+   ESignet_VerifyChallengeNegTC_STransId_Empty_Request_Body_Neg:
       endPoint: /v1/signup/registration/verify-challenge
+      uniqueIdentifier: TC_ESignet_VerifyChallengeNegTC_11
       role: resident
       restMethod: post
       allowedErrorCodes: invalid_identifier,invalid_challenge_info
-      inputTemplate: signup/VerifyChallengeNegTC/VerifyChallengeNegTCEmptyReq
-      outputTemplate: signup/error
+      inputTemplate: esignet/VerifyChallengeNegTC/VerifyChallengeNegTCEmptyReq
+      outputTemplate: esignet/error
       input: '{
-   "headerTransactionID": "$ID:ESignet_VerifyChallengeNegTC_STransId_Empty_Request_Body_Neg_TransactionID$",
+   "headerTransactionID": "$ID:VerifyChallengeNegTC_STransId_Empty_Request_Body_Neg_TransactionID$",
    "identifier": "$REMOVE$",
    "challenge": "$REMOVE$",
    "format": "$REMOVE$",
@@ -355,7 +366,7 @@ VerifyChallengeNegTC:
     "captchaToken": "",
     "purpose": "REGISTRATION",
     "requestTime": "$TIMESTAMP$",
-    "sendOtpReqTemplate": "signup/GenerateChallenge/GenerateChallenge",
+    "sendOtpReqTemplate": "esignet/GenerateChallenge/GenerateChallenge",
     "sendOtpEndPoint": "/v1/signup/registration/generate-challenge"
     }
 }'
@@ -367,25 +378,26 @@ VerifyChallengeNegTC:
   ],
     "sendOtpResp":{
         "status":"SUCCESS",
-        "sendOtpResTemplate":"signup/GenerateChallenge/GenerateChallengeResult"
+        "sendOtpResTemplate":"esignet/GenerateChallenge/GenerateChallengeResult"
     }
 }'
 
-   Signup_ESignet_VerifyChallengeNegTC_STransId_Missing_ReqBody_Neg:
+   ESignet_VerifyChallengeNegTC_STransId_Missing_ReqBody_Neg:
       endPoint: /v1/signup/registration/verify-challenge
+      uniqueIdentifier: TC_ESignet_VerifyChallengeNegTC_12
       role: resident
       restMethod: post
-      inputTemplate: signup/VerifyChallengeNegTC/VerifyChallengeNegTCWOReqBody
-      outputTemplate: signup/error
+      inputTemplate: esignet/VerifyChallengeNegTC/VerifyChallengeNegTCWOReqBody
+      outputTemplate: esignet/error
       input: '{
-   "headerTransactionID": "$ID:ESignet_VerifyChallengeNegTC_STransId_Missing_ReqBody_Neg_TransactionID$",
+   "headerTransactionID": "$ID:VerifyChallengeNegTC_STransId_Missing_ReqBody_Neg_TransactionID$",
    "requestTime": "$TIMESTAMP$",
     "sendOtp":{
     "identifier": "$PHONENUMBERFROMREGEXFORSIGNUP$",
     "captchaToken": "",
     "purpose": "REGISTRATION",
     "requestTime": "$TIMESTAMP$",
-    "sendOtpReqTemplate": "signup/GenerateChallenge/GenerateChallenge",
+    "sendOtpReqTemplate": "esignet/GenerateChallenge/GenerateChallenge",
     "sendOtpEndPoint": "/v1/signup/registration/generate-challenge"
     }
 }'
@@ -397,18 +409,19 @@ VerifyChallengeNegTC:
   ],
     "sendOtpResp":{
         "status":"SUCCESS",
-        "sendOtpResTemplate":"signup/GenerateChallenge/GenerateChallengeResult"
+        "sendOtpResTemplate":"esignet/GenerateChallenge/GenerateChallengeResult"
     }
 }'
 
-   Signup_ESignet_VerifyChallengeNegTC_STransId_Missing_Identifier_Neg:
+   ESignet_VerifyChallengeNegTC_STransId_Missing_Identifier_Neg:
       endPoint: /v1/signup/registration/verify-challenge
+      uniqueIdentifier: TC_ESignet_VerifyChallengeNegTC_13
       role: resident
       restMethod: post
-      inputTemplate: signup/VerifyChallengeNegTC/VerifyChallengeNegTC
-      outputTemplate: signup/error
+      inputTemplate: esignet/VerifyChallengeNegTC/VerifyChallengeNegTC
+      outputTemplate: esignet/error
       input: '{
-   "headerTransactionID": "$ID:ESignet_VerifyChallengeNegTC_STransId_Missing_Identifier_Neg_TransactionID$",
+   "headerTransactionID": "$ID:VerifyChallengeNegTC_STransId_Missing_Identifier_Neg_TransactionID$",
    "identifier": "$REMOVE$",
    "challenge": "111111",
    "format": "alpha-numeric",
@@ -419,7 +432,7 @@ VerifyChallengeNegTC:
     "captchaToken": "",
     "purpose": "REGISTRATION",
     "requestTime": "$TIMESTAMP$",
-    "sendOtpReqTemplate": "signup/GenerateChallenge/GenerateChallenge",
+    "sendOtpReqTemplate": "esignet/GenerateChallenge/GenerateChallenge",
     "sendOtpEndPoint": "/v1/signup/registration/generate-challenge"
     }
 }'
@@ -431,19 +444,20 @@ VerifyChallengeNegTC:
   ],
     "sendOtpResp":{
         "status":"SUCCESS",
-        "sendOtpResTemplate":"signup/GenerateChallenge/GenerateChallengeResult"
+        "sendOtpResTemplate":"esignet/GenerateChallenge/GenerateChallengeResult"
     }
 }'
 
-   Signup_ESignet_VerifyChallengeNegTC_STransId_Missing_ChallengeInfo_Neg:
+   ESignet_VerifyChallengeNegTC_STransId_Missing_ChallengeInfo_Neg:
       endPoint: /v1/signup/registration/verify-challenge
+      uniqueIdentifier: TC_ESignet_VerifyChallengeNegTC_14
       role: resident
       restMethod: post
-      inputTemplate: signup/VerifyChallengeNegTC/VerifyChallengeNegTCWOChallengeInfo
-      outputTemplate: signup/error
+      inputTemplate: esignet/VerifyChallengeNegTC/VerifyChallengeNegTCWOChallengeInfo
+      outputTemplate: esignet/error
       input: '{
-   "headerTransactionID": "$ID:ESignet_VerifyChallengeNegTC_STransId_Missing_ChallengeInfo_Neg_TransactionID$",
-   "identifier": "$ID:ESignet_VerifyChallengeNegTC_STransId_Missing_ChallengeInfo_Neg_PHONE$",
+   "headerTransactionID": "$ID:VerifyChallengeNegTC_STransId_Missing_ChallengeInfo_Neg_TransactionID$",
+   "identifier": "$ID:VerifyChallengeNegTC_STransId_Missing_ChallengeInfo_Neg_PHONE$",
    "challenge": "111111",
    "format": "alpha-numeric",
    "type": "OTP",
@@ -453,7 +467,7 @@ VerifyChallengeNegTC:
     "captchaToken": "",
     "purpose": "REGISTRATION",
     "requestTime": "$TIMESTAMP$",
-    "sendOtpReqTemplate": "signup/GenerateChallenge/GenerateChallenge",
+    "sendOtpReqTemplate": "esignet/GenerateChallenge/GenerateChallenge",
     "sendOtpEndPoint": "/v1/signup/registration/generate-challenge"
     }
 }'
@@ -465,18 +479,19 @@ VerifyChallengeNegTC:
   ],
     "sendOtpResp":{
         "status":"SUCCESS",
-        "sendOtpResTemplate":"signup/GenerateChallenge/GenerateChallengeResult"
+        "sendOtpResTemplate":"esignet/GenerateChallenge/GenerateChallengeResult"
     }
 }'
 
-   Signup_ESignet_VerifyChallengeNegTC_STransId_Empty_Identifier_Neg:
+   ESignet_VerifyChallengeNegTC_STransId_Empty_Identifier_Neg:
       endPoint: /v1/signup/registration/verify-challenge
+      uniqueIdentifier: TC_ESignet_VerifyChallengeNegTC_15
       role: resident
       restMethod: post
-      inputTemplate: signup/VerifyChallengeNegTC/VerifyChallengeNegTC
-      outputTemplate: signup/error
+      inputTemplate: esignet/VerifyChallengeNegTC/VerifyChallengeNegTC
+      outputTemplate: esignet/error
       input: '{
-   "headerTransactionID": "$ID:ESignet_VerifyChallengeNegTC_STransId_Empty_Identifier_Neg_TransactionID$",
+   "headerTransactionID": "$ID:VerifyChallengeNegTC_STransId_Empty_Identifier_Neg_TransactionID$",
    "identifier": "",
    "challenge": "111111",
    "format": "alpha-numeric",
@@ -487,7 +502,7 @@ VerifyChallengeNegTC:
     "captchaToken": "",
     "purpose": "REGISTRATION",
     "requestTime": "$TIMESTAMP$",
-    "sendOtpReqTemplate": "signup/GenerateChallenge/GenerateChallenge",
+    "sendOtpReqTemplate": "esignet/GenerateChallenge/GenerateChallenge",
     "sendOtpEndPoint": "/v1/signup/registration/generate-challenge"
     }
 }'
@@ -499,18 +514,19 @@ VerifyChallengeNegTC:
   ],
     "sendOtpResp":{
         "status":"SUCCESS",
-        "sendOtpResTemplate":"signup/GenerateChallenge/GenerateChallengeResult"
+        "sendOtpResTemplate":"esignet/GenerateChallenge/GenerateChallengeResult"
     }
 }'
 
-   Signup_ESignet_VerifyChallengeNegTC_STransId_SpaceVal_Identifier_Neg:
+   ESignet_VerifyChallengeNegTC_STransId_SpaceVal_Identifier_Neg:
       endPoint: /v1/signup/registration/verify-challenge
+      uniqueIdentifier: TC_ESignet_VerifyChallengeNegTC_16
       role: resident
       restMethod: post
-      inputTemplate: signup/VerifyChallengeNegTC/VerifyChallengeNegTC
-      outputTemplate: signup/error
+      inputTemplate: esignet/VerifyChallengeNegTC/VerifyChallengeNegTC
+      outputTemplate: esignet/error
       input: '{
-   "headerTransactionID": "$ID:ESignet_VerifyChallengeNegTC_STransId_SpaceVal_Identifier_Neg_TransactionID$",
+   "headerTransactionID": "$ID:VerifyChallengeNegTC_STransId_SpaceVal_Identifier_Neg_TransactionID$",
    "identifier": " ",
    "challenge": "111111",
    "format": "alpha-numeric",
@@ -521,7 +537,7 @@ VerifyChallengeNegTC:
     "captchaToken": "",
     "purpose": "REGISTRATION",
     "requestTime": "$TIMESTAMP$",
-    "sendOtpReqTemplate": "signup/GenerateChallenge/GenerateChallenge",
+    "sendOtpReqTemplate": "esignet/GenerateChallenge/GenerateChallenge",
     "sendOtpEndPoint": "/v1/signup/registration/generate-challenge"
     }
 }'
@@ -533,18 +549,19 @@ VerifyChallengeNegTC:
   ],
     "sendOtpResp":{
         "status":"SUCCESS",
-        "sendOtpResTemplate":"signup/GenerateChallenge/GenerateChallengeResult"
+        "sendOtpResTemplate":"esignet/GenerateChallenge/GenerateChallengeResult"
     }
 }'
 
-   Signup_ESignet_VerifyChallengeNegTC_STransId_SpecialChar_Identifier_Neg:
+   ESignet_VerifyChallengeNegTC_STransId_SpecialChar_Identifier_Neg:
       endPoint: /v1/signup/registration/verify-challenge
+      uniqueIdentifier: TC_ESignet_VerifyChallengeNegTC_17
       role: resident
       restMethod: post
-      inputTemplate: signup/VerifyChallengeNegTC/VerifyChallengeNegTC
-      outputTemplate: signup/error
+      inputTemplate: esignet/VerifyChallengeNegTC/VerifyChallengeNegTC
+      outputTemplate: esignet/error
       input: '{
-   "headerTransactionID": "$ID:ESignet_VerifyChallengeNegTC_STransId_SpecialChar_Identifier_Neg_TransactionID$",
+   "headerTransactionID": "$ID:VerifyChallengeNegTC_STransId_SpecialChar_Identifier_Neg_TransactionID$",
    "identifier": "+85556$%8924",
    "challenge": "111111",
    "format": "alpha-numeric",
@@ -555,7 +572,7 @@ VerifyChallengeNegTC:
     "captchaToken": "",
     "purpose": "REGISTRATION",
     "requestTime": "$TIMESTAMP$",
-    "sendOtpReqTemplate": "signup/GenerateChallenge/GenerateChallenge",
+    "sendOtpReqTemplate": "esignet/GenerateChallenge/GenerateChallenge",
     "sendOtpEndPoint": "/v1/signup/registration/generate-challenge"
     }
 }'
@@ -567,18 +584,19 @@ VerifyChallengeNegTC:
   ],
     "sendOtpResp":{
         "status":"SUCCESS",
-        "sendOtpResTemplate":"signup/GenerateChallenge/GenerateChallengeResult"
+        "sendOtpResTemplate":"esignet/GenerateChallenge/GenerateChallengeResult"
     }
 }'
 
-   Signup_ESignet_VerifyChallengeNegTC_STransId_Alphabet_Identifier_Neg:
+   ESignet_VerifyChallengeNegTC_STransId_Alphabet_Identifier_Neg:
       endPoint: /v1/signup/registration/verify-challenge
+      uniqueIdentifier: TC_ESignet_VerifyChallengeNegTC_18
       role: resident
       restMethod: post
-      inputTemplate: signup/VerifyChallengeNegTC/VerifyChallengeNegTC
-      outputTemplate: signup/error
+      inputTemplate: esignet/VerifyChallengeNegTC/VerifyChallengeNegTC
+      outputTemplate: esignet/error
       input: '{
-   "headerTransactionID": "$ID:ESignet_VerifyChallengeNegTC_STransId_Alphabet_Identifier_Neg_TransactionID$",
+   "headerTransactionID": "$ID:VerifyChallengeNegTC_STransId_Alphabet_Identifier_Neg_TransactionID$",
    "identifier": "+85556sig8924",
    "challenge": "111111",
    "format": "alpha-numeric",
@@ -589,7 +607,7 @@ VerifyChallengeNegTC:
     "captchaToken": "",
     "purpose": "REGISTRATION",
     "requestTime": "$TIMESTAMP$",
-    "sendOtpReqTemplate": "signup/GenerateChallenge/GenerateChallenge",
+    "sendOtpReqTemplate": "esignet/GenerateChallenge/GenerateChallenge",
     "sendOtpEndPoint": "/v1/signup/registration/generate-challenge"
     }
 }'
@@ -601,18 +619,19 @@ VerifyChallengeNegTC:
   ],
     "sendOtpResp":{
         "status":"SUCCESS",
-        "sendOtpResTemplate":"signup/GenerateChallenge/GenerateChallengeResult"
+        "sendOtpResTemplate":"esignet/GenerateChallenge/GenerateChallengeResult"
     }
 }'
 
-   Signup_ESignet_VerifyChallengeNegTC_STransId_AllZero_Identifier_Neg:
+   ESignet_VerifyChallengeNegTC_STransId_AllZero_Identifier_Neg:
       endPoint: /v1/signup/registration/verify-challenge
+      uniqueIdentifier: TC_ESignet_VerifyChallengeNegTC_19
       role: resident
       restMethod: post
-      inputTemplate: signup/VerifyChallengeNegTC/VerifyChallengeNegTC
-      outputTemplate: signup/error
+      inputTemplate: esignet/VerifyChallengeNegTC/VerifyChallengeNegTC
+      outputTemplate: esignet/error
       input: '{
-   "headerTransactionID": "$ID:ESignet_VerifyChallengeNegTC_STransId_AllZero_Identifier_Neg_TransactionID$",
+   "headerTransactionID": "$ID:VerifyChallengeNegTC_STransId_AllZero_Identifier_Neg_TransactionID$",
    "identifier": "+00000000000",
    "challenge": "111111",
    "format": "alpha-numeric",
@@ -623,7 +642,7 @@ VerifyChallengeNegTC:
     "captchaToken": "",
     "purpose": "REGISTRATION",
     "requestTime": "$TIMESTAMP$",
-    "sendOtpReqTemplate": "signup/GenerateChallenge/GenerateChallenge",
+    "sendOtpReqTemplate": "esignet/GenerateChallenge/GenerateChallenge",
     "sendOtpEndPoint": "/v1/signup/registration/generate-challenge"
     }
 }'
@@ -635,19 +654,20 @@ VerifyChallengeNegTC:
   ],
     "sendOtpResp":{
         "status":"SUCCESS",
-        "sendOtpResTemplate":"signup/GenerateChallenge/GenerateChallengeResult"
+        "sendOtpResTemplate":"esignet/GenerateChallenge/GenerateChallengeResult"
     }
 }'
 
-   Signup_ESignet_VerifyChallengeNegTC_STransId_DiffUser_Identifier_Neg:
+   ESignet_VerifyChallengeNegTC_STransId_DiffUser_Identifier_Neg:
       endPoint: /v1/signup/registration/verify-challenge
+      uniqueIdentifier: TC_ESignet_VerifyChallengeNegTC_20
       role: resident
       restMethod: post
-      inputTemplate: signup/VerifyChallengeNegTC/VerifyChallengeNegTC
-      outputTemplate: signup/error
+      inputTemplate: esignet/VerifyChallengeNegTC/VerifyChallengeNegTC
+      outputTemplate: esignet/error
       input: '{
-   "headerTransactionID": "$ID:ESignet_VerifyChallengeNegTC_STransId_DiffUser_Identifier_Neg_TransactionID$",
-   "identifier": "$ID:ESignet_VerifyChallengeNegTC_STransId_Missing_CSRF_Neg_PHONE$",
+   "headerTransactionID": "$ID:VerifyChallengeNegTC_STransId_DiffUser_Identifier_Neg_TransactionID$",
+   "identifier": "$ID:VerifyChallengeNegTC_STransId_Missing_CSRF_Neg_PHONE$",
    "challenge": "111111",
    "format": "alpha-numeric",
    "type": "OTP",
@@ -657,7 +677,7 @@ VerifyChallengeNegTC:
     "captchaToken": "",
     "purpose": "REGISTRATION",
     "requestTime": "$TIMESTAMP$",
-    "sendOtpReqTemplate": "signup/GenerateChallenge/GenerateChallenge",
+    "sendOtpReqTemplate": "esignet/GenerateChallenge/GenerateChallenge",
     "sendOtpEndPoint": "/v1/signup/registration/generate-challenge"
     }
 }'
@@ -669,29 +689,30 @@ VerifyChallengeNegTC:
   ],
     "sendOtpResp":{
         "status":"SUCCESS",
-        "sendOtpResTemplate":"signup/GenerateChallenge/GenerateChallengeResult"
+        "sendOtpResTemplate":"esignet/GenerateChallenge/GenerateChallengeResult"
     }
 }'
 
-   Signup_ESignet_VerifyChallengeNegTC_STransId_Registered_User_Neg:
+   ESignet_VerifyChallengeNegTC_STransId_Registered_User_Neg:
       endPoint: /v1/signup/registration/verify-challenge
+      uniqueIdentifier: TC_ESignet_VerifyChallengeNegTC_21
       role: resident
       restMethod: post
-      inputTemplate: signup/VerifyChallengeNegTC/VerifyChallengeNegTC
-      outputTemplate: signup/error
+      inputTemplate: esignet/VerifyChallengeNegTC/VerifyChallengeNegTC
+      outputTemplate: esignet/error
       input: '{
-   "headerTransactionID": "$ID:ESignet_VerifyChallengeNegTC_STransId_Registered_User_Neg_TransactionID$",
-   "identifier": "$ID:ESignet_GenerateChallenge_STransId_Valid_smoke_Pos_PHONE$",
+   "headerTransactionID": "$ID:VerifyChallengeNegTC_STransId_Registered_User_Neg_TransactionID$",
+   "identifier": "$ID:GenerateChallenge_STransId_Valid_smoke_Pos_PHONE$",
    "challenge": "111111",
    "format": "alpha-numeric",
    "type": "OTP",
    "requestTime": "$TIMESTAMP$",
     "sendOtp":{
-    "identifier": "$ID:ESignet_GenerateChallenge_STransId_Valid_smoke_Pos_PHONE$",
+    "identifier": "$ID:GenerateChallenge_STransId_Valid_smoke_Pos_PHONE$",
     "captchaToken": "",
     "purpose": "REGISTRATION",
     "requestTime": "$TIMESTAMP$",
-    "sendOtpReqTemplate": "signup/GenerateChallenge/GenerateChallenge",
+    "sendOtpReqTemplate": "esignet/GenerateChallenge/GenerateChallenge",
     "sendOtpEndPoint": "/v1/signup/registration/generate-challenge"
     }
 }'
@@ -703,20 +724,21 @@ VerifyChallengeNegTC:
   ],
     "sendOtpResp":{
         "status":"SUCCESS",
-        "sendOtpResTemplate":"signup/GenerateChallenge/GenerateChallengeResult"
+        "sendOtpResTemplate":"esignet/GenerateChallenge/GenerateChallengeResult"
     }
 }'
 
-   Signup_ESignet_VerifyChallengeNegTC_STransId_Empty_ChallengeInfo_Neg:
+   ESignet_VerifyChallengeNegTC_STransId_Empty_ChallengeInfo_Neg:
       endPoint: /v1/signup/registration/verify-challenge
+      uniqueIdentifier: TC_ESignet_VerifyChallengeNegTC_22
       role: resident
       restMethod: post
       allowedErrorCodes: invalid_challenge,invalid_challenge_format
-      inputTemplate: signup/VerifyChallengeNegTC/VerifyChallengeNegTCEmptyChallengeInfo
-      outputTemplate: signup/error
+      inputTemplate: esignet/VerifyChallengeNegTC/VerifyChallengeNegTCEmptyChallengeInfo
+      outputTemplate: esignet/error
       input: '{
-   "headerTransactionID": "$ID:ESignet_VerifyChallengeNegTC_STransId_Empty_ChallengeInfo_Neg_TransactionID$",
-   "identifier": "$ID:ESignet_VerifyChallengeNegTC_STransId_Empty_ChallengeInfo_Neg_PHONE$",
+   "headerTransactionID": "$ID:VerifyChallengeNegTC_STransId_Empty_ChallengeInfo_Neg_TransactionID$",
+   "identifier": "$ID:VerifyChallengeNegTC_STransId_Empty_ChallengeInfo_Neg_PHONE$",
    "challenge": "111111",
    "format": "alpha-numeric",
    "type": "OTP",
@@ -726,7 +748,7 @@ VerifyChallengeNegTC:
     "captchaToken": "",
     "purpose": "REGISTRATION",
     "requestTime": "$TIMESTAMP$",
-    "sendOtpReqTemplate": "signup/GenerateChallenge/GenerateChallenge",
+    "sendOtpReqTemplate": "esignet/GenerateChallenge/GenerateChallenge",
     "sendOtpEndPoint": "/v1/signup/registration/generate-challenge"
     }
 }'
@@ -738,19 +760,20 @@ VerifyChallengeNegTC:
   ],
     "sendOtpResp":{
         "status":"SUCCESS",
-        "sendOtpResTemplate":"signup/GenerateChallenge/GenerateChallengeResult"
+        "sendOtpResTemplate":"esignet/GenerateChallenge/GenerateChallengeResult"
     }
 }'
 
-   Signup_ESignet_VerifyChallengeNegTC_STransId_Missing_Format_Neg:
+   ESignet_VerifyChallengeNegTC_STransId_Missing_Format_Neg:
       endPoint: /v1/signup/registration/verify-challenge
+      uniqueIdentifier: TC_ESignet_VerifyChallengeNegTC_23
       role: resident
       restMethod: post
-      inputTemplate: signup/VerifyChallengeNegTC/VerifyChallengeNegTC
-      outputTemplate: signup/error
+      inputTemplate: esignet/VerifyChallengeNegTC/VerifyChallengeNegTC
+      outputTemplate: esignet/error
       input: '{
-   "headerTransactionID": "$ID:ESignet_VerifyChallengeNegTC_STransId_Missing_Format_Neg_TransactionID$",
-   "identifier": "$ID:ESignet_VerifyChallengeNegTC_STransId_Missing_Format_Neg_PHONE$",
+   "headerTransactionID": "$ID:VerifyChallengeNegTC_STransId_Missing_Format_Neg_TransactionID$",
+   "identifier": "$ID:VerifyChallengeNegTC_STransId_Missing_Format_Neg_PHONE$",
    "challenge": "111111",
    "format": "$REMOVE$",
    "type": "OTP",
@@ -760,7 +783,7 @@ VerifyChallengeNegTC:
     "captchaToken": "",
     "purpose": "REGISTRATION",
     "requestTime": "$TIMESTAMP$",
-    "sendOtpReqTemplate": "signup/GenerateChallenge/GenerateChallenge",
+    "sendOtpReqTemplate": "esignet/GenerateChallenge/GenerateChallenge",
     "sendOtpEndPoint": "/v1/signup/registration/generate-challenge"
     }
 }'
@@ -772,19 +795,20 @@ VerifyChallengeNegTC:
   ],
     "sendOtpResp":{
         "status":"SUCCESS",
-        "sendOtpResTemplate":"signup/GenerateChallenge/GenerateChallengeResult"
+        "sendOtpResTemplate":"esignet/GenerateChallenge/GenerateChallengeResult"
     }
 }'
 
-   Signup_ESignet_VerifyChallengeNegTC_STransId_Missing_Challenge_Neg:
+   ESignet_VerifyChallengeNegTC_STransId_Missing_Challenge_Neg:
       endPoint: /v1/signup/registration/verify-challenge
-      role: resident
+	  uniqueIdentifier: TC_ESignet_VerifyChallengeNegTC_24
+	  role: resident
       restMethod: post
-      inputTemplate: signup/VerifyChallengeNegTC/VerifyChallengeNegTC
-      outputTemplate: signup/error
+      inputTemplate: esignet/VerifyChallengeNegTC/VerifyChallengeNegTC
+      outputTemplate: esignet/error
       input: '{
-   "headerTransactionID": "$ID:ESignet_VerifyChallengeNegTC_STransId_Missing_Challenge_Neg_TransactionID$",
-   "identifier": "$ID:ESignet_VerifyChallengeNegTC_STransId_Missing_Challenge_Neg_PHONE$",
+   "headerTransactionID": "$ID:VerifyChallengeNegTC_STransId_Missing_Challenge_Neg_TransactionID$",
+   "identifier": "$ID:VerifyChallengeNegTC_STransId_Missing_Challenge_Neg_PHONE$",
    "challenge": "$REMOVE$",
    "format": "alpha-numeric",
    "type": "OTP",
@@ -794,7 +818,7 @@ VerifyChallengeNegTC:
     "captchaToken": "",
     "purpose": "REGISTRATION",
     "requestTime": "$TIMESTAMP$",
-    "sendOtpReqTemplate": "signup/GenerateChallenge/GenerateChallenge",
+    "sendOtpReqTemplate": "esignet/GenerateChallenge/GenerateChallenge",
     "sendOtpEndPoint": "/v1/signup/registration/generate-challenge"
     }
 }'
@@ -806,19 +830,20 @@ VerifyChallengeNegTC:
   ],
     "sendOtpResp":{
         "status":"SUCCESS",
-        "sendOtpResTemplate":"signup/GenerateChallenge/GenerateChallengeResult"
+        "sendOtpResTemplate":"esignet/GenerateChallenge/GenerateChallengeResult"
     }
 }'
 
-   Signup_ESignet_VerifyChallengeNegTC_STransId_Empty_Challenge_Neg:
+   ESignet_VerifyChallengeNegTC_STransId_Empty_Challenge_Neg:
       endPoint: /v1/signup/registration/verify-challenge
+      uniqueIdentifier: TC_ESignet_VerifyChallengeNegTC_25
       role: resident
       restMethod: post
-      inputTemplate: signup/VerifyChallengeNegTC/VerifyChallengeNegTC
-      outputTemplate: signup/error
+      inputTemplate: esignet/VerifyChallengeNegTC/VerifyChallengeNegTC
+      outputTemplate: esignet/error
       input: '{
-   "headerTransactionID": "$ID:ESignet_VerifyChallengeNegTC_STransId_Empty_Challenge_Neg_TransactionID$",
-   "identifier": "$ID:ESignet_VerifyChallengeNegTC_STransId_Empty_Challenge_Neg_PHONE$",
+   "headerTransactionID": "$ID:VerifyChallengeNegTC_STransId_Empty_Challenge_Neg_TransactionID$",
+   "identifier": "$ID:VerifyChallengeNegTC_STransId_Empty_Challenge_Neg_PHONE$",
    "challenge": "",
    "format": "alpha-numeric",
    "type": "OTP",
@@ -828,7 +853,7 @@ VerifyChallengeNegTC:
     "captchaToken": "",
     "purpose": "REGISTRATION",
     "requestTime": "$TIMESTAMP$",
-    "sendOtpReqTemplate": "signup/GenerateChallenge/GenerateChallenge",
+    "sendOtpReqTemplate": "esignet/GenerateChallenge/GenerateChallenge",
     "sendOtpEndPoint": "/v1/signup/registration/generate-challenge"
     }
 }'
@@ -840,19 +865,20 @@ VerifyChallengeNegTC:
   ],
     "sendOtpResp":{
         "status":"SUCCESS",
-        "sendOtpResTemplate":"signup/GenerateChallenge/GenerateChallengeResult"
+        "sendOtpResTemplate":"esignet/GenerateChallenge/GenerateChallengeResult"
     }
 }'
 
-   Signup_ESignet_VerifyChallengeNegTC_STransId_SpaceVal_Challenge_Neg:
+   ESignet_VerifyChallengeNegTC_STransId_SpaceVal_Challenge_Neg:
       endPoint: /v1/signup/registration/verify-challenge
+      uniqueIdentifier: TC_ESignet_VerifyChallengeNegTC_26
       role: resident
       restMethod: post
-      inputTemplate: signup/VerifyChallengeNegTC/VerifyChallengeNegTC
-      outputTemplate: signup/error
+      inputTemplate: esignet/VerifyChallengeNegTC/VerifyChallengeNegTC
+      outputTemplate: esignet/error
       input: '{
-   "headerTransactionID": "$ID:ESignet_VerifyChallengeNegTC_STransId_SpaceVal_Challenge_Neg_TransactionID$",
-   "identifier": "$ID:ESignet_VerifyChallengeNegTC_STransId_SpaceVal_Challenge_Neg_PHONE$",
+   "headerTransactionID": "$ID:VerifyChallengeNegTC_STransId_SpaceVal_Challenge_Neg_TransactionID$",
+   "identifier": "$ID:VerifyChallengeNegTC_STransId_SpaceVal_Challenge_Neg_PHONE$",
    "challenge": " ",
    "format": "alpha-numeric",
    "type": "OTP",
@@ -862,7 +888,7 @@ VerifyChallengeNegTC:
     "captchaToken": "",
     "purpose": "REGISTRATION",
     "requestTime": "$TIMESTAMP$",
-    "sendOtpReqTemplate": "signup/GenerateChallenge/GenerateChallenge",
+    "sendOtpReqTemplate": "esignet/GenerateChallenge/GenerateChallenge",
     "sendOtpEndPoint": "/v1/signup/registration/generate-challenge"
     }
 }'
@@ -874,19 +900,20 @@ VerifyChallengeNegTC:
   ],
     "sendOtpResp":{
         "status":"SUCCESS",
-        "sendOtpResTemplate":"signup/GenerateChallenge/GenerateChallengeResult"
+        "sendOtpResTemplate":"esignet/GenerateChallenge/GenerateChallengeResult"
     }
 }'
 
-   Signup_ESignet_VerifyChallengeNegTC_STransId_ExtraDigit_Challenge_Neg:
+   ESignet_VerifyChallengeNegTC_STransId_ExtraDigit_Challenge_Neg:
       endPoint: /v1/signup/registration/verify-challenge
+      uniqueIdentifier: TC_ESignet_VerifyChallengeNegTC_27
       role: resident
       restMethod: post
-      inputTemplate: signup/VerifyChallengeNegTC/VerifyChallengeNegTC
-      outputTemplate: signup/error
+      inputTemplate: esignet/VerifyChallengeNegTC/VerifyChallengeNegTC
+      outputTemplate: esignet/error
       input: '{
-   "headerTransactionID": "$ID:ESignet_VerifyChallengeNegTC_STransId_ExtraDigit_Challenge_Neg_TransactionID$",
-   "identifier": "$ID:ESignet_VerifyChallengeNegTC_STransId_ExtraDigit_Challenge_Neg_PHONE$",
+   "headerTransactionID": "$ID:VerifyChallengeNegTC_STransId_ExtraDigit_Challenge_Neg_TransactionID$",
+   "identifier": "$ID:VerifyChallengeNegTC_STransId_ExtraDigit_Challenge_Neg_PHONE$",
    "challenge": "11111111",
    "format": "alpha-numeric",
    "type": "OTP",
@@ -896,7 +923,7 @@ VerifyChallengeNegTC:
     "captchaToken": "",
     "purpose": "REGISTRATION",
     "requestTime": "$TIMESTAMP$",
-    "sendOtpReqTemplate": "signup/GenerateChallenge/GenerateChallenge",
+    "sendOtpReqTemplate": "esignet/GenerateChallenge/GenerateChallenge",
     "sendOtpEndPoint": "/v1/signup/registration/generate-challenge"
     }
 }'
@@ -908,19 +935,20 @@ VerifyChallengeNegTC:
   ],
     "sendOtpResp":{
         "status":"SUCCESS",
-        "sendOtpResTemplate":"signup/GenerateChallenge/GenerateChallengeResult"
+        "sendOtpResTemplate":"esignet/GenerateChallenge/GenerateChallengeResult"
     }
 }'
 
-   Signup_ESignet_VerifyChallengeNegTC_STransId_LessDigit_Challenge_Neg:
+   ESignet_VerifyChallengeNegTC_STransId_LessDigit_Challenge_Neg:
       endPoint: /v1/signup/registration/verify-challenge
+      uniqueIdentifier: TC_ESignet_VerifyChallengeNegTC_28
       role: resident
       restMethod: post
-      inputTemplate: signup/VerifyChallengeNegTC/VerifyChallengeNegTC
-      outputTemplate: signup/error
+      inputTemplate: esignet/VerifyChallengeNegTC/VerifyChallengeNegTC
+      outputTemplate: esignet/error
       input: '{
-   "headerTransactionID": "$ID:ESignet_VerifyChallengeNegTC_STransId_LessDigit_Challenge_Neg_TransactionID$",
-   "identifier": "$ID:ESignet_VerifyChallengeNegTC_STransId_LessDigit_Challenge_Neg_PHONE$",
+   "headerTransactionID": "$ID:VerifyChallengeNegTC_STransId_LessDigit_Challenge_Neg_TransactionID$",
+   "identifier": "$ID:VerifyChallengeNegTC_STransId_LessDigit_Challenge_Neg_PHONE$",
    "challenge": "11111",
    "format": "alpha-numeric",
    "type": "OTP",
@@ -930,7 +958,7 @@ VerifyChallengeNegTC:
     "captchaToken": "",
     "purpose": "REGISTRATION",
     "requestTime": "$TIMESTAMP$",
-    "sendOtpReqTemplate": "signup/GenerateChallenge/GenerateChallenge",
+    "sendOtpReqTemplate": "esignet/GenerateChallenge/GenerateChallenge",
     "sendOtpEndPoint": "/v1/signup/registration/generate-challenge"
     }
 }'
@@ -942,19 +970,20 @@ VerifyChallengeNegTC:
   ],
     "sendOtpResp":{
         "status":"SUCCESS",
-        "sendOtpResTemplate":"signup/GenerateChallenge/GenerateChallengeResult"
+        "sendOtpResTemplate":"esignet/GenerateChallenge/GenerateChallengeResult"
     }
 }'
 
-   Signup_ESignet_VerifyChallengeNegTC_STransId_Invalid_Challenge_Neg:
+   ESignet_VerifyChallengeNegTC_STransId_Invalid_Challenge_Neg:
       endPoint: /v1/signup/registration/verify-challenge
+      uniqueIdentifier: TC_ESignet_VerifyChallengeNegTC_29
       role: resident
       restMethod: post
-      inputTemplate: signup/VerifyChallengeNegTC/VerifyChallengeNegTC
-      outputTemplate: signup/error
+      inputTemplate: esignet/VerifyChallengeNegTC/VerifyChallengeNegTC
+      outputTemplate: esignet/error
       input: '{
-   "headerTransactionID": "$ID:ESignet_VerifyChallengeNegTC_STransId_Invalid_Challenge_Neg_TransactionID$",
-   "identifier": "$ID:ESignet_VerifyChallengeNegTC_STransId_Invalid_Challenge_Neg_PHONE$",
+   "headerTransactionID": "$ID:VerifyChallengeNegTC_STransId_Invalid_Challenge_Neg_TransactionID$",
+   "identifier": "$ID:VerifyChallengeNegTC_STransId_Invalid_Challenge_Neg_PHONE$",
    "challenge": "682643",
    "format": "alpha-numeric",
    "type": "OTP",
@@ -964,7 +993,7 @@ VerifyChallengeNegTC:
     "captchaToken": "",
     "purpose": "REGISTRATION",
     "requestTime": "$TIMESTAMP$",
-    "sendOtpReqTemplate": "signup/GenerateChallenge/GenerateChallenge",
+    "sendOtpReqTemplate": "esignet/GenerateChallenge/GenerateChallenge",
     "sendOtpEndPoint": "/v1/signup/registration/generate-challenge"
     }
 }'
@@ -976,19 +1005,20 @@ VerifyChallengeNegTC:
   ],
     "sendOtpResp":{
         "status":"SUCCESS",
-        "sendOtpResTemplate":"signup/GenerateChallenge/GenerateChallengeResult"
+        "sendOtpResTemplate":"esignet/GenerateChallenge/GenerateChallengeResult"
     }
 }'
 
-   Signup_ESignet_VerifyChallengeNegTC_STransId_Alphabet_Challenge_Neg:
+   ESignet_VerifyChallengeNegTC_STransId_Alphabet_Challenge_Neg:
       endPoint: /v1/signup/registration/verify-challenge
+      uniqueIdentifier: TC_ESignet_VerifyChallengeNegTC_30
       role: resident
       restMethod: post
-      inputTemplate: signup/VerifyChallengeNegTC/VerifyChallengeNegTC
-      outputTemplate: signup/error
+      inputTemplate: esignet/VerifyChallengeNegTC/VerifyChallengeNegTC
+      outputTemplate: esignet/error
       input: '{
-   "headerTransactionID": "$ID:ESignet_VerifyChallengeNegTC_STransId_Alphabet_Challenge_Neg_TransactionID$",
-   "identifier": "$ID:ESignet_VerifyChallengeNegTC_STransId_Alphabet_Challenge_Neg_PHONE$",
+   "headerTransactionID": "$ID:VerifyChallengeNegTC_STransId_Alphabet_Challenge_Neg_TransactionID$",
+   "identifier": "$ID:VerifyChallengeNegTC_STransId_Alphabet_Challenge_Neg_PHONE$",
    "challenge": "ggfhas",
    "format": "alpha-numeric",
    "type": "OTP",
@@ -998,7 +1028,7 @@ VerifyChallengeNegTC:
     "captchaToken": "",
     "purpose": "REGISTRATION",
     "requestTime": "$TIMESTAMP$",
-    "sendOtpReqTemplate": "signup/GenerateChallenge/GenerateChallenge",
+    "sendOtpReqTemplate": "esignet/GenerateChallenge/GenerateChallenge",
     "sendOtpEndPoint": "/v1/signup/registration/generate-challenge"
     }
 }'
@@ -1010,19 +1040,20 @@ VerifyChallengeNegTC:
   ],
     "sendOtpResp":{
         "status":"SUCCESS",
-        "sendOtpResTemplate":"signup/GenerateChallenge/GenerateChallengeResult"
+        "sendOtpResTemplate":"esignet/GenerateChallenge/GenerateChallengeResult"
     }
 }'
 
-   Signup_ESignet_VerifyChallengeNegTC_STransId_AlphaNum_Challenge_Neg:
+   ESignet_VerifyChallengeNegTC_STransId_AlphaNum_Challenge_Neg:
       endPoint: /v1/signup/registration/verify-challenge
+      uniqueIdentifier: TC_ESignet_VerifyChallengeNegTC_31
       role: resident
       restMethod: post
-      inputTemplate: signup/VerifyChallengeNegTC/VerifyChallengeNegTC
-      outputTemplate: signup/error
+      inputTemplate: esignet/VerifyChallengeNegTC/VerifyChallengeNegTC
+      outputTemplate: esignet/error
       input: '{
-   "headerTransactionID": "$ID:ESignet_VerifyChallengeNegTC_STransId_AlphaNum_Challenge_Neg_TransactionID$",
-   "identifier": "$ID:ESignet_VerifyChallengeNegTC_STransId_AlphaNum_Challenge_Neg_PHONE$",
+   "headerTransactionID": "$ID:VerifyChallengeNegTC_STransId_AlphaNum_Challenge_Neg_TransactionID$",
+   "identifier": "$ID:VerifyChallengeNegTC_STransId_AlphaNum_Challenge_Neg_PHONE$",
    "challenge": "682ghy",
    "format": "alpha-numeric",
    "type": "OTP",
@@ -1032,7 +1063,7 @@ VerifyChallengeNegTC:
     "captchaToken": "",
     "purpose": "REGISTRATION",
     "requestTime": "$TIMESTAMP$",
-    "sendOtpReqTemplate": "signup/GenerateChallenge/GenerateChallenge",
+    "sendOtpReqTemplate": "esignet/GenerateChallenge/GenerateChallenge",
     "sendOtpEndPoint": "/v1/signup/registration/generate-challenge"
     }
 }'
@@ -1044,19 +1075,20 @@ VerifyChallengeNegTC:
   ],
     "sendOtpResp":{
         "status":"SUCCESS",
-        "sendOtpResTemplate":"signup/GenerateChallenge/GenerateChallengeResult"
+        "sendOtpResTemplate":"esignet/GenerateChallenge/GenerateChallengeResult"
     }
 }'
 
-   Signup_ESignet_VerifyChallengeNegTC_STransId_SpecialChar_Challenge_Neg:
+   ESignet_VerifyChallengeNegTC_STransId_SpecialChar_Challenge_Neg:
       endPoint: /v1/signup/registration/verify-challenge
+      uniqueIdentifier: TC_ESignet_VerifyChallengeNegTC_32
       role: resident
       restMethod: post
-      inputTemplate: signup/VerifyChallengeNegTC/VerifyChallengeNegTC
-      outputTemplate: signup/error
+      inputTemplate: esignet/VerifyChallengeNegTC/VerifyChallengeNegTC
+      outputTemplate: esignet/error
       input: '{
-   "headerTransactionID": "$ID:ESignet_VerifyChallengeNegTC_STransId_SpecialChar_Challenge_Neg_TransactionID$",
-   "identifier": "$ID:ESignet_VerifyChallengeNegTC_STransId_SpecialChar_Challenge_Neg_PHONE$",
+   "headerTransactionID": "$ID:VerifyChallengeNegTC_STransId_SpecialChar_Challenge_Neg_TransactionID$",
+   "identifier": "$ID:VerifyChallengeNegTC_STransId_SpecialChar_Challenge_Neg_PHONE$",
    "challenge": "#$%#%^",
    "format": "alpha-numeric",
    "type": "OTP",
@@ -1066,7 +1098,7 @@ VerifyChallengeNegTC:
     "captchaToken": "",
     "purpose": "REGISTRATION",
     "requestTime": "$TIMESTAMP$",
-    "sendOtpReqTemplate": "signup/GenerateChallenge/GenerateChallenge",
+    "sendOtpReqTemplate": "esignet/GenerateChallenge/GenerateChallenge",
     "sendOtpEndPoint": "/v1/signup/registration/generate-challenge"
     }
 }'
@@ -1078,19 +1110,20 @@ VerifyChallengeNegTC:
   ],
     "sendOtpResp":{
         "status":"SUCCESS",
-        "sendOtpResTemplate":"signup/GenerateChallenge/GenerateChallengeResult"
+        "sendOtpResTemplate":"esignet/GenerateChallenge/GenerateChallengeResult"
     }
 }'
 
-   Signup_ESignet_VerifyChallengeNegTC_STransId_Diff_Challenge_Neg:
+   ESignet_VerifyChallengeNegTC_STransId_Diff_Challenge_Neg:
       endPoint: /v1/signup/registration/verify-challenge
+      uniqueIdentifier: TC_ESignet_VerifyChallengeNegTC_33
       role: resident
       restMethod: post
-      inputTemplate: signup/VerifyChallengeNegTC/VerifyChallengeNegTC
-      outputTemplate: signup/error
+      inputTemplate: esignet/VerifyChallengeNegTC/VerifyChallengeNegTC
+      outputTemplate: esignet/error
       input: '{
-   "headerTransactionID": "$ID:ESignet_VerifyChallengeNegTC_STransId_Diff_Challenge_Neg_TransactionID$",
-   "identifier": "$ID:ESignet_VerifyChallengeNegTC_STransId_Diff_Challenge_Neg_PHONE$",
+   "headerTransactionID": "$ID:VerifyChallengeNegTC_STransId_Diff_Challenge_Neg_TransactionID$",
+   "identifier": "$ID:VerifyChallengeNegTC_STransId_Diff_Challenge_Neg_PHONE$",
    "challenge": "000000",
    "format": "alpha-numeric",
    "type": "OTP",
@@ -1100,7 +1133,7 @@ VerifyChallengeNegTC:
     "captchaToken": "",
     "purpose": "REGISTRATION",
     "requestTime": "$TIMESTAMP$",
-    "sendOtpReqTemplate": "signup/GenerateChallenge/GenerateChallenge",
+    "sendOtpReqTemplate": "esignet/GenerateChallenge/GenerateChallenge",
     "sendOtpEndPoint": "/v1/signup/registration/generate-challenge"
     }
 }'
@@ -1112,19 +1145,20 @@ VerifyChallengeNegTC:
   ],
     "sendOtpResp":{
         "status":"SUCCESS",
-        "sendOtpResTemplate":"signup/GenerateChallenge/GenerateChallengeResult"
+        "sendOtpResTemplate":"esignet/GenerateChallenge/GenerateChallengeResult"
     }
 }'
 
-   Signup_ESignet_VerifyChallengeNegTC_STransId_Empty_Format_Neg:
+   ESignet_VerifyChallengeNegTC_STransId_Empty_Format_Neg:
       endPoint: /v1/signup/registration/verify-challenge
+      uniqueIdentifier: TC_ESignet_VerifyChallengeNegTC_34
       role: resident
       restMethod: post
-      inputTemplate: signup/VerifyChallengeNegTC/VerifyChallengeNegTC
-      outputTemplate: signup/error
+      inputTemplate: esignet/VerifyChallengeNegTC/VerifyChallengeNegTC
+      outputTemplate: esignet/error
       input: '{
-   "headerTransactionID": "$ID:ESignet_VerifyChallengeNegTC_STransId_Empty_Format_Neg_TransactionID$",
-   "identifier": "$ID:ESignet_VerifyChallengeNegTC_STransId_Empty_Format_Neg_PHONE$",
+   "headerTransactionID": "$ID:VerifyChallengeNegTC_STransId_Empty_Format_Neg_TransactionID$",
+   "identifier": "$ID:VerifyChallengeNegTC_STransId_Empty_Format_Neg_PHONE$",
    "challenge": "111111",
    "format": "",
    "type": "OTP",
@@ -1134,7 +1168,7 @@ VerifyChallengeNegTC:
     "captchaToken": "",
     "purpose": "REGISTRATION",
     "requestTime": "$TIMESTAMP$",
-    "sendOtpReqTemplate": "signup/GenerateChallenge/GenerateChallenge",
+    "sendOtpReqTemplate": "esignet/GenerateChallenge/GenerateChallenge",
     "sendOtpEndPoint": "/v1/signup/registration/generate-challenge"
     }
 }'
@@ -1146,19 +1180,20 @@ VerifyChallengeNegTC:
   ],
     "sendOtpResp":{
         "status":"SUCCESS",
-        "sendOtpResTemplate":"signup/GenerateChallenge/GenerateChallengeResult"
+        "sendOtpResTemplate":"esignet/GenerateChallenge/GenerateChallengeResult"
     }
 }'
 
-   Signup_ESignet_VerifyChallengeNegTC_STransId_SpaceVal_Format_Neg:
+   ESignet_VerifyChallengeNegTC_STransId_SpaceVal_Format_Neg:
       endPoint: /v1/signup/registration/verify-challenge
+      uniqueIdentifier: TC_ESignet_VerifyChallengeNegTC_35
       role: resident
       restMethod: post
-      inputTemplate: signup/VerifyChallengeNegTC/VerifyChallengeNegTC
-      outputTemplate: signup/error
+      inputTemplate: esignet/VerifyChallengeNegTC/VerifyChallengeNegTC
+      outputTemplate: esignet/error
       input: '{
-   "headerTransactionID": "$ID:ESignet_VerifyChallengeNegTC_STransId_SpaceVal_Format_Neg_TransactionID$",
-   "identifier": "$ID:ESignet_VerifyChallengeNegTC_STransId_SpaceVal_Format_Neg_PHONE$",
+   "headerTransactionID": "$ID:VerifyChallengeNegTC_STransId_SpaceVal_Format_Neg_TransactionID$",
+   "identifier": "$ID:VerifyChallengeNegTC_STransId_SpaceVal_Format_Neg_PHONE$",
    "challenge": "111111",
    "format": " ",
    "type": "OTP",
@@ -1168,7 +1203,7 @@ VerifyChallengeNegTC:
     "captchaToken": "",
     "purpose": "REGISTRATION",
     "requestTime": "$TIMESTAMP$",
-    "sendOtpReqTemplate": "signup/GenerateChallenge/GenerateChallenge",
+    "sendOtpReqTemplate": "esignet/GenerateChallenge/GenerateChallenge",
     "sendOtpEndPoint": "/v1/signup/registration/generate-challenge"
     }
 }'
@@ -1180,19 +1215,20 @@ VerifyChallengeNegTC:
   ],
     "sendOtpResp":{
         "status":"SUCCESS",
-        "sendOtpResTemplate":"signup/GenerateChallenge/GenerateChallengeResult"
+        "sendOtpResTemplate":"esignet/GenerateChallenge/GenerateChallengeResult"
     }
 }'
 
-   Signup_ESignet_VerifyChallengeNegTC_STransId_Invalid_Format_Neg:
+   ESignet_VerifyChallengeNegTC_STransId_Invalid_Format_Neg:
       endPoint: /v1/signup/registration/verify-challenge
+      uniqueIdentifier: TC_ESignet_VerifyChallengeNegTC_36
       role: resident
       restMethod: post
-      inputTemplate: signup/VerifyChallengeNegTC/VerifyChallengeNegTC
-      outputTemplate: signup/error
+      inputTemplate: esignet/VerifyChallengeNegTC/VerifyChallengeNegTC
+      outputTemplate: esignet/error
       input: '{
-   "headerTransactionID": "$ID:ESignet_VerifyChallengeNegTC_STransId_Invalid_Format_Neg_TransactionID$",
-   "identifier": "$ID:ESignet_VerifyChallengeNegTC_STransId_Invalid_Format_Neg_PHONE$",
+   "headerTransactionID": "$ID:VerifyChallengeNegTC_STransId_Invalid_Format_Neg_TransactionID$",
+   "identifier": "$ID:VerifyChallengeNegTC_STransId_Invalid_Format_Neg_PHONE$",
    "challenge": "111111",
    "format": "ghah haag",
    "type": "OTP",
@@ -1202,7 +1238,7 @@ VerifyChallengeNegTC:
     "captchaToken": "",
     "purpose": "REGISTRATION",
     "requestTime": "$TIMESTAMP$",
-    "sendOtpReqTemplate": "signup/GenerateChallenge/GenerateChallenge",
+    "sendOtpReqTemplate": "esignet/GenerateChallenge/GenerateChallenge",
     "sendOtpEndPoint": "/v1/signup/registration/generate-challenge"
     }
 }'
@@ -1214,19 +1250,20 @@ VerifyChallengeNegTC:
   ],
     "sendOtpResp":{
         "status":"SUCCESS",
-        "sendOtpResTemplate":"signup/GenerateChallenge/GenerateChallengeResult"
+        "sendOtpResTemplate":"esignet/GenerateChallenge/GenerateChallengeResult"
     }
 }'
 
-   Signup_ESignet_VerifyChallengeNegTC_STransId_Numeric_Format_Neg:
+   ESignet_VerifyChallengeNegTC_STransId_Numeric_Format_Neg:
       endPoint: /v1/signup/registration/verify-challenge
+      uniqueIdentifier: TC_ESignet_VerifyChallengeNegTC_37
       role: resident
       restMethod: post
-      inputTemplate: signup/VerifyChallengeNegTC/VerifyChallengeNegTC
-      outputTemplate: signup/error
+      inputTemplate: esignet/VerifyChallengeNegTC/VerifyChallengeNegTC
+      outputTemplate: esignet/error
       input: '{
-   "headerTransactionID": "$ID:ESignet_VerifyChallengeNegTC_STransId_Numeric_Format_Neg_TransactionID$",
-   "identifier": "$ID:ESignet_VerifyChallengeNegTC_STransId_Numeric_Format_Neg_PHONE$",
+   "headerTransactionID": "$ID:VerifyChallengeNegTC_STransId_Numeric_Format_Neg_TransactionID$",
+   "identifier": "$ID:VerifyChallengeNegTC_STransId_Numeric_Format_Neg_PHONE$",
    "challenge": "111111",
    "format": "numeric",
    "type": "OTP",
@@ -1236,7 +1273,7 @@ VerifyChallengeNegTC:
     "captchaToken": "",
     "purpose": "REGISTRATION",
     "requestTime": "$TIMESTAMP$",
-    "sendOtpReqTemplate": "signup/GenerateChallenge/GenerateChallenge",
+    "sendOtpReqTemplate": "esignet/GenerateChallenge/GenerateChallenge",
     "sendOtpEndPoint": "/v1/signup/registration/generate-challenge"
     }
 }'
@@ -1248,19 +1285,20 @@ VerifyChallengeNegTC:
   ],
     "sendOtpResp":{
         "status":"SUCCESS",
-        "sendOtpResTemplate":"signup/GenerateChallenge/GenerateChallengeResult"
+        "sendOtpResTemplate":"esignet/GenerateChallenge/GenerateChallengeResult"
     }
 }'
 
-   Signup_ESignet_VerifyChallengeNegTC_STransId_RandomVal_Format_Neg:
+   ESignet_VerifyChallengeNegTC_STransId_RandomVal_Format_Neg:
       endPoint: /v1/signup/registration/verify-challenge
+      uniqueIdentifier: TC_ESignet_VerifyChallengeNegTC_38
       role: resident
       restMethod: post
-      inputTemplate: signup/VerifyChallengeNegTC/VerifyChallengeNegTC
-      outputTemplate: signup/error
+      inputTemplate: esignet/VerifyChallengeNegTC/VerifyChallengeNegTC
+      outputTemplate: esignet/error
       input: '{
-   "headerTransactionID": "$ID:ESignet_VerifyChallengeNegTC_STransId_RandomVal_Format_Neg_TransactionID$",
-   "identifier": "$ID:ESignet_VerifyChallengeNegTC_STransId_RandomVal_Format_Neg_PHONE$",
+   "headerTransactionID": "$ID:VerifyChallengeNegTC_STransId_RandomVal_Format_Neg_TransactionID$",
+   "identifier": "$ID:VerifyChallengeNegTC_STransId_RandomVal_Format_Neg_PHONE$",
    "challenge": "111111",
    "format": "ahja1897",
    "type": "OTP",
@@ -1270,7 +1308,7 @@ VerifyChallengeNegTC:
     "captchaToken": "",
     "purpose": "REGISTRATION",
     "requestTime": "$TIMESTAMP$",
-    "sendOtpReqTemplate": "signup/GenerateChallenge/GenerateChallenge",
+    "sendOtpReqTemplate": "esignet/GenerateChallenge/GenerateChallenge",
     "sendOtpEndPoint": "/v1/signup/registration/generate-challenge"
     }
 }'
@@ -1282,19 +1320,20 @@ VerifyChallengeNegTC:
   ],
     "sendOtpResp":{
         "status":"SUCCESS",
-        "sendOtpResTemplate":"signup/GenerateChallenge/GenerateChallengeResult"
+        "sendOtpResTemplate":"esignet/GenerateChallenge/GenerateChallengeResult"
     }
 }'
 
-   Signup_ESignet_VerifyChallengeNegTC_STransId_SpecialChar_Format_Neg:
+   ESignet_VerifyChallengeNegTC_STransId_SpecialChar_Format_Neg:
       endPoint: /v1/signup/registration/verify-challenge
+      uniqueIdentifier: TC_ESignet_VerifyChallengeNegTC_39
       role: resident
       restMethod: post
-      inputTemplate: signup/VerifyChallengeNegTC/VerifyChallengeNegTC
-      outputTemplate: signup/error
+      inputTemplate: esignet/VerifyChallengeNegTC/VerifyChallengeNegTC
+      outputTemplate: esignet/error
       input: '{
-   "headerTransactionID": "$ID:ESignet_VerifyChallengeNegTC_STransId_SpecialChar_Format_Neg_TransactionID$",
-   "identifier": "$ID:ESignet_VerifyChallengeNegTC_STransId_SpecialChar_Format_Neg_PHONE$",
+   "headerTransactionID": "$ID:VerifyChallengeNegTC_STransId_SpecialChar_Format_Neg_TransactionID$",
+   "identifier": "$ID:VerifyChallengeNegTC_STransId_SpecialChar_Format_Neg_PHONE$",
    "challenge": "111111",
    "format": "^^&*&^&",
    "type": "OTP",
@@ -1304,7 +1343,7 @@ VerifyChallengeNegTC:
     "captchaToken": "",
     "purpose": "REGISTRATION",
     "requestTime": "$TIMESTAMP$",
-    "sendOtpReqTemplate": "signup/GenerateChallenge/GenerateChallenge",
+    "sendOtpReqTemplate": "esignet/GenerateChallenge/GenerateChallenge",
     "sendOtpEndPoint": "/v1/signup/registration/generate-challenge"
     }
 }'
@@ -1316,19 +1355,20 @@ VerifyChallengeNegTC:
   ],
     "sendOtpResp":{
         "status":"SUCCESS",
-        "sendOtpResTemplate":"signup/GenerateChallenge/GenerateChallengeResult"
+        "sendOtpResTemplate":"esignet/GenerateChallenge/GenerateChallengeResult"
     }
 }'
 
-   Signup_ESignet_VerifyChallengeNegTC_STransId_Valid_Smoke_Pos:
+   ESignet_VerifyChallengeNegTC_STransId_Valid_Smoke_Pos:
       endPoint: /v1/signup/registration/verify-challenge
+      uniqueIdentifier: TC_ESignet_VerifyChallengeNegTC_40
       role: resident
       restMethod: post
-      inputTemplate: signup/VerifyChallengeNegTC/VerifyChallengeNegTC
-      outputTemplate: signup/VerifyChallengeNegTC/VerifyChallengeNegTCResult
+      inputTemplate: esignet/VerifyChallengeNegTC/VerifyChallengeNegTC
+      outputTemplate: esignet/VerifyChallengeNegTC/VerifyChallengeNegTCResult
       input: '{
-   "headerTransactionID": "$ID:ESignet_VerifyChallengeNegTC_STransId_Valid_Smoke_Pos_TransactionID$",
-   "identifier": "$ID:ESignet_VerifyChallengeNegTC_STransId_Valid_Smoke_Pos_PHONE$",
+   "headerTransactionID": "$ID:VerifyChallengeNegTC_STransId_Valid_Smoke_Pos_TransactionID$",
+   "identifier": "$ID:VerifyChallengeNegTC_STransId_Valid_Smoke_Pos_PHONE$",
    "challenge": "111111",
    "format": "alpha-numeric",
    "type": "OTP",
@@ -1338,7 +1378,7 @@ VerifyChallengeNegTC:
     "captchaToken": "",
     "purpose": "REGISTRATION",
     "requestTime": "$TIMESTAMP$",
-    "sendOtpReqTemplate": "signup/GenerateChallenge/GenerateChallenge",
+    "sendOtpReqTemplate": "esignet/GenerateChallenge/GenerateChallenge",
     "sendOtpEndPoint": "/v1/signup/registration/generate-challenge"
     }
 }'
@@ -1346,19 +1386,20 @@ VerifyChallengeNegTC:
     "status":"SUCCESS",
     "sendOtpResp":{
         "status":"SUCCESS",
-        "sendOtpResTemplate":"signup/GenerateChallenge/GenerateChallengeResult"
+        "sendOtpResTemplate":"esignet/GenerateChallenge/GenerateChallengeResult"
     }
 }'
 
-   Signup_ESignet_VerifyChallengeNegTC_STransId_For_Pos_Sce_2:
+   ESignet_VerifyChallengeNegTC_STransId_For_Pos_Sce_2:
       endPoint: /v1/signup/registration/verify-challenge
+      uniqueIdentifier: TC_ESignet_VerifyChallengeNegTC_41
       role: resident
       restMethod: post
-      inputTemplate: signup/VerifyChallengeNegTC/VerifyChallengeNegTC
-      outputTemplate: signup/VerifyChallengeNegTC/VerifyChallengeNegTCResult
+      inputTemplate: esignet/VerifyChallengeNegTC/VerifyChallengeNegTC
+      outputTemplate: esignet/VerifyChallengeNegTC/VerifyChallengeNegTCResult
       input: '{
-   "headerTransactionID": "$ID:ESignet_VerifyChallengeNegTC_STransId_For_Pos_Sce_2_TransactionID$",
-   "identifier": "$ID:ESignet_VerifyChallengeNegTC_STransId_For_Pos_Sce_2_PHONE$",
+   "headerTransactionID": "$ID:VerifyChallengeNegTC_STransId_For_Pos_Sce_2_TransactionID$",
+   "identifier": "$ID:VerifyChallengeNegTC_STransId_For_Pos_Sce_2_PHONE$",
    "challenge": "111111",
    "format": "alpha-numeric",
    "type": "OTP",
@@ -1368,7 +1409,7 @@ VerifyChallengeNegTC:
     "captchaToken": "",
     "purpose": "REGISTRATION",
     "requestTime": "$TIMESTAMP$",
-    "sendOtpReqTemplate": "signup/GenerateChallenge/GenerateChallenge",
+    "sendOtpReqTemplate": "esignet/GenerateChallenge/GenerateChallenge",
     "sendOtpEndPoint": "/v1/signup/registration/generate-challenge"
     }
 }'
@@ -1376,19 +1417,20 @@ VerifyChallengeNegTC:
     "status":"SUCCESS",
     "sendOtpResp":{
         "status":"SUCCESS",
-        "sendOtpResTemplate":"signup/GenerateChallenge/GenerateChallengeResult"
+        "sendOtpResTemplate":"esignet/GenerateChallenge/GenerateChallengeResult"
     }
 }'
 
-   Signup_ESignet_VerifyChallengeNegTC_STransId_For_Pos_Sce_3:
+   ESignet_VerifyChallengeNegTC_STransId_For_Pos_Sce_3:
       endPoint: /v1/signup/registration/verify-challenge
+      uniqueIdentifier: TC_ESignet_VerifyChallengeNegTC_42
       role: resident
       restMethod: post
-      inputTemplate: signup/VerifyChallengeNegTC/VerifyChallengeNegTC
-      outputTemplate: signup/VerifyChallengeNegTC/VerifyChallengeNegTCResult
+      inputTemplate: esignet/VerifyChallengeNegTC/VerifyChallengeNegTC
+      outputTemplate: esignet/VerifyChallengeNegTC/VerifyChallengeNegTCResult
       input: '{
-   "headerTransactionID": "$ID:ESignet_VerifyChallengeNegTC_STransId_For_Pos_Sce_3_TransactionID$",
-   "identifier": "$ID:ESignet_VerifyChallengeNegTC_STransId_For_Pos_Sce_3_PHONE$",
+   "headerTransactionID": "$ID:VerifyChallengeNegTC_STransId_For_Pos_Sce_3_TransactionID$",
+   "identifier": "$ID:VerifyChallengeNegTC_STransId_For_Pos_Sce_3_PHONE$",
    "challenge": "111111",
    "format": "alpha-numeric",
    "type": "OTP",
@@ -1398,7 +1440,7 @@ VerifyChallengeNegTC:
     "captchaToken": "",
     "purpose": "REGISTRATION",
     "requestTime": "$TIMESTAMP$",
-    "sendOtpReqTemplate": "signup/GenerateChallenge/GenerateChallenge",
+    "sendOtpReqTemplate": "esignet/GenerateChallenge/GenerateChallenge",
     "sendOtpEndPoint": "/v1/signup/registration/generate-challenge"
     }
 }'
@@ -1406,19 +1448,20 @@ VerifyChallengeNegTC:
     "status":"SUCCESS",
     "sendOtpResp":{
         "status":"SUCCESS",
-        "sendOtpResTemplate":"signup/GenerateChallenge/GenerateChallengeResult"
+        "sendOtpResTemplate":"esignet/GenerateChallenge/GenerateChallengeResult"
     }
 }'
 
-   Signup_ESignet_VerifyChallengeNegTC_STransId_For_Pos_Sce_4:
+   ESignet_VerifyChallengeNegTC_STransId_For_Pos_Sce_4:
       endPoint: /v1/signup/registration/verify-challenge
+      uniqueIdentifier: TC_ESignet_VerifyChallengeNegTC_43
       role: resident
       restMethod: post
-      inputTemplate: signup/VerifyChallengeNegTC/VerifyChallengeNegTC
-      outputTemplate: signup/VerifyChallengeNegTC/VerifyChallengeNegTCResult
+      inputTemplate: esignet/VerifyChallengeNegTC/VerifyChallengeNegTC
+      outputTemplate: esignet/VerifyChallengeNegTC/VerifyChallengeNegTCResult
       input: '{
-   "headerTransactionID": "$ID:ESignet_VerifyChallengeNegTC_STransId_For_Pos_Sce_4_TransactionID$",
-   "identifier": "$ID:ESignet_VerifyChallengeNegTC_STransId_For_Pos_Sce_4_PHONE$",
+   "headerTransactionID": "$ID:VerifyChallengeNegTC_STransId_For_Pos_Sce_4_TransactionID$",
+   "identifier": "$ID:VerifyChallengeNegTC_STransId_For_Pos_Sce_4_PHONE$",
    "challenge": "111111",
    "format": "alpha-numeric",
    "type": "OTP",
@@ -1428,7 +1471,7 @@ VerifyChallengeNegTC:
     "captchaToken": "",
     "purpose": "REGISTRATION",
     "requestTime": "$TIMESTAMP$",
-    "sendOtpReqTemplate": "signup/GenerateChallenge/GenerateChallenge",
+    "sendOtpReqTemplate": "esignet/GenerateChallenge/GenerateChallenge",
     "sendOtpEndPoint": "/v1/signup/registration/generate-challenge"
     }
 }'
@@ -1436,19 +1479,20 @@ VerifyChallengeNegTC:
     "status":"SUCCESS",
     "sendOtpResp":{
         "status":"SUCCESS",
-        "sendOtpResTemplate":"signup/GenerateChallenge/GenerateChallengeResult"
+        "sendOtpResTemplate":"esignet/GenerateChallenge/GenerateChallengeResult"
     }
 }'
 
-   Signup_ESignet_VerifyChallengeNegTC_STransId_For_Pos_Sce_5:
+   ESignet_VerifyChallengeNegTC_STransId_For_Pos_Sce_5:
       endPoint: /v1/signup/registration/verify-challenge
+      uniqueIdentifier: TC_ESignet_VerifyChallengeNegTC_44
       role: resident
       restMethod: post
-      inputTemplate: signup/VerifyChallengeNegTC/VerifyChallengeNegTC
-      outputTemplate: signup/VerifyChallengeNegTC/VerifyChallengeNegTCResult
+      inputTemplate: esignet/VerifyChallengeNegTC/VerifyChallengeNegTC
+      outputTemplate: esignet/VerifyChallengeNegTC/VerifyChallengeNegTCResult
       input: '{
-   "headerTransactionID": "$ID:ESignet_VerifyChallengeNegTC_STransId_For_Pos_Sce_5_TransactionID$",
-   "identifier": "$ID:ESignet_VerifyChallengeNegTC_STransId_For_Pos_Sce_5_PHONE$",
+   "headerTransactionID": "$ID:VerifyChallengeNegTC_STransId_For_Pos_Sce_5_TransactionID$",
+   "identifier": "$ID:VerifyChallengeNegTC_STransId_For_Pos_Sce_5_PHONE$",
    "challenge": "111111",
    "format": "alpha-numeric",
    "type": "OTP",
@@ -1458,7 +1502,7 @@ VerifyChallengeNegTC:
     "captchaToken": "",
     "purpose": "REGISTRATION",
     "requestTime": "$TIMESTAMP$",
-    "sendOtpReqTemplate": "signup/GenerateChallenge/GenerateChallenge",
+    "sendOtpReqTemplate": "esignet/GenerateChallenge/GenerateChallenge",
     "sendOtpEndPoint": "/v1/signup/registration/generate-challenge"
     }
 }'
@@ -1466,19 +1510,20 @@ VerifyChallengeNegTC:
     "status":"SUCCESS",
     "sendOtpResp":{
         "status":"SUCCESS",
-        "sendOtpResTemplate":"signup/GenerateChallenge/GenerateChallengeResult"
+        "sendOtpResTemplate":"esignet/GenerateChallenge/GenerateChallengeResult"
     }
 }'
 
-   Signup_ESignet_VerifyChallengeNegTC_STransId_For_Pos_Sce_6:
+   ESignet_VerifyChallengeNegTC_STransId_For_Pos_Sce_6:
       endPoint: /v1/signup/registration/verify-challenge
+      uniqueIdentifier: TC_ESignet_VerifyChallengeNegTC_45
       role: resident
       restMethod: post
-      inputTemplate: signup/VerifyChallengeNegTC/VerifyChallengeNegTC
-      outputTemplate: signup/VerifyChallengeNegTC/VerifyChallengeNegTCResult
+      inputTemplate: esignet/VerifyChallengeNegTC/VerifyChallengeNegTC
+      outputTemplate: esignet/VerifyChallengeNegTC/VerifyChallengeNegTCResult
       input: '{
-   "headerTransactionID": "$ID:ESignet_VerifyChallengeNegTC_STransId_For_Pos_Sce_6_TransactionID$",
-   "identifier": "$ID:ESignet_VerifyChallengeNegTC_STransId_For_Pos_Sce_6_PHONE$",
+   "headerTransactionID": "$ID:VerifyChallengeNegTC_STransId_For_Pos_Sce_6_TransactionID$",
+   "identifier": "$ID:VerifyChallengeNegTC_STransId_For_Pos_Sce_6_PHONE$",
    "challenge": "111111",
    "format": "alpha-numeric",
    "type": "OTP",
@@ -1488,7 +1533,7 @@ VerifyChallengeNegTC:
     "captchaToken": "",
     "purpose": "REGISTRATION",
     "requestTime": "$TIMESTAMP$",
-    "sendOtpReqTemplate": "signup/GenerateChallenge/GenerateChallenge",
+    "sendOtpReqTemplate": "esignet/GenerateChallenge/GenerateChallenge",
     "sendOtpEndPoint": "/v1/signup/registration/generate-challenge"
     }
 }'
@@ -1496,19 +1541,20 @@ VerifyChallengeNegTC:
     "status":"SUCCESS",
     "sendOtpResp":{
         "status":"SUCCESS",
-        "sendOtpResTemplate":"signup/GenerateChallenge/GenerateChallengeResult"
+        "sendOtpResTemplate":"esignet/GenerateChallenge/GenerateChallengeResult"
     }
 }'
 
-   Signup_ESignet_VerifyChallengeNegTC_STransId_For_Pos_Sce_7:
+   ESignet_VerifyChallengeNegTC_STransId_For_Pos_Sce_7:
       endPoint: /v1/signup/registration/verify-challenge
+      uniqueIdentifier: TC_ESignet_VerifyChallengeNegTC_46
       role: resident
       restMethod: post
-      inputTemplate: signup/VerifyChallengeNegTC/VerifyChallengeNegTC
-      outputTemplate: signup/VerifyChallengeNegTC/VerifyChallengeNegTCResult
+      inputTemplate: esignet/VerifyChallengeNegTC/VerifyChallengeNegTC
+      outputTemplate: esignet/VerifyChallengeNegTC/VerifyChallengeNegTCResult
       input: '{
-   "headerTransactionID": "$ID:ESignet_VerifyChallengeNegTC_STransId_For_Pos_Sce_7_TransactionID$",
-   "identifier": "$ID:ESignet_VerifyChallengeNegTC_STransId_For_Pos_Sce_7_PHONE$",
+   "headerTransactionID": "$ID:VerifyChallengeNegTC_STransId_For_Pos_Sce_7_TransactionID$",
+   "identifier": "$ID:VerifyChallengeNegTC_STransId_For_Pos_Sce_7_PHONE$",
    "challenge": "111111",
    "format": "alpha-numeric",
    "type": "OTP",
@@ -1518,7 +1564,7 @@ VerifyChallengeNegTC:
     "captchaToken": "",
     "purpose": "REGISTRATION",
     "requestTime": "$TIMESTAMP$",
-    "sendOtpReqTemplate": "signup/GenerateChallenge/GenerateChallenge",
+    "sendOtpReqTemplate": "esignet/GenerateChallenge/GenerateChallenge",
     "sendOtpEndPoint": "/v1/signup/registration/generate-challenge"
     }
 }'
@@ -1526,19 +1572,20 @@ VerifyChallengeNegTC:
     "status":"SUCCESS",
     "sendOtpResp":{
         "status":"SUCCESS",
-        "sendOtpResTemplate":"signup/GenerateChallenge/GenerateChallengeResult"
+        "sendOtpResTemplate":"esignet/GenerateChallenge/GenerateChallengeResult"
     }
 }'
 
-   Signup_ESignet_VerifyChallengeNegTC_STransId_Valid_Smoke_Pos_For_Authentication:
+   ESignet_VerifyChallengeNegTC_STransId_Valid_Smoke_Pos_For_Authentication:
       endPoint: /v1/signup/registration/verify-challenge
+      uniqueIdentifier: TC_ESignet_VerifyChallengeNegTC_47
       role: resident
       restMethod: post
-      inputTemplate: signup/VerifyChallengeNegTC/VerifyChallengeNegTC
-      outputTemplate: signup/VerifyChallengeNegTC/VerifyChallengeNegTCResult
+      inputTemplate: esignet/VerifyChallengeNegTC/VerifyChallengeNegTC
+      outputTemplate: esignet/VerifyChallengeNegTC/VerifyChallengeNegTCResult
       input: '{
-   "headerTransactionID": "$ID:ESignet_VerifyChallengeNegTC_STransId_Valid_Smoke_Pos_For_Authentication_TransactionID$",
-   "identifier": "$ID:ESignet_VerifyChallengeNegTC_STransId_Valid_Smoke_Pos_For_Authentication_PHONE$",
+   "headerTransactionID": "$ID:VerifyChallengeNegTC_STransId_Valid_Smoke_Pos_For_Authentication_TransactionID$",
+   "identifier": "$ID:VerifyChallengeNegTC_STransId_Valid_Smoke_Pos_For_Authentication_PHONE$",
    "challenge": "111111",
    "format": "alpha-numeric",
    "type": "OTP",
@@ -1548,7 +1595,7 @@ VerifyChallengeNegTC:
     "captchaToken": "",
     "purpose": "REGISTRATION",
     "requestTime": "$TIMESTAMP$",
-    "sendOtpReqTemplate": "signup/GenerateChallenge/GenerateChallenge",
+    "sendOtpReqTemplate": "esignet/GenerateChallenge/GenerateChallenge",
     "sendOtpEndPoint": "/v1/signup/registration/generate-challenge"
     }
 }'
@@ -1556,6 +1603,6 @@ VerifyChallengeNegTC:
     "status":"SUCCESS",
     "sendOtpResp":{
         "status":"SUCCESS",
-        "sendOtpResTemplate":"signup/GenerateChallenge/GenerateChallengeResult"
+        "sendOtpResTemplate":"esignet/GenerateChallenge/GenerateChallengeResult"
     }
 }'

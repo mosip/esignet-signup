@@ -1,10 +1,11 @@
 GenerateChallenge:
-   Signup_ESignet_GenerateChallenge_STransId_Valid_smoke_Pos:
+   ESignet_GenerateChallenge_STransId_Valid_smoke_Pos:
       endPoint: /v1/signup/registration/generate-challenge
+      uniqueIdentifier: TC_ESignet_GenerateChallenge_01
       role: resident
       restMethod: post
-      inputTemplate: signup/GenerateChallenge/GenerateChallenge
-      outputTemplate: signup/GenerateChallenge/GenerateChallengeResult
+      inputTemplate: esignet/GenerateChallenge/GenerateChallenge
+      outputTemplate: esignet/GenerateChallenge/GenerateChallengeResult
       input: '{
    "identifier": "$PHONENUMBERFROMREGEXFORSIGNUP$",
    "captchaToken": "",
@@ -15,12 +16,13 @@ GenerateChallenge:
   "status":"SUCCESS"
 }'
 
-   Signup_ESignet_GenerateChallenge_STransId_With_1stLang_Valid_smoke_Pos:
+   ESignet_GenerateChallenge_STransId_With_1stLang_Valid_smoke_Pos:
       endPoint: /v1/signup/registration/generate-challenge
+      uniqueIdentifier: TC_ESignet_GenerateChallenge_02
       role: resident
       restMethod: post
-      inputTemplate: signup/GenerateChallenge/GenerateChallenge
-      outputTemplate: signup/GenerateChallenge/GenerateChallengeResult
+      inputTemplate: esignet/GenerateChallenge/GenerateChallenge
+      outputTemplate: esignet/GenerateChallenge/GenerateChallengeResult
       input: '{
    "identifier": "$PHONENUMBERFROMREGEXFORSIGNUP$",
    "captchaToken": "",

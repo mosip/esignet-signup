@@ -1,10 +1,11 @@
 GetRegistrationStatusNegTC:
-   Signup_ESignet_GetRegistrationStatusNegTC_without_TransactionID:
+   ESignet_GetRegistrationStatusNegTC_without_TransactionID:
       endPoint: /v1/signup/registration/status
+      uniqueIdentifier: TC_ESignet_GetRegistrationStatusNegTC_01
       role: resident
       restMethod: post
-      inputTemplate: signup/GetRegistrationStatus/GetRegistrationStatus
-      outputTemplate: signup/error
+      inputTemplate: esignet/GetRegistrationStatus/GetRegistrationStatus
+      outputTemplate: esignet/error
       input: '{
   "verifiedTransactionID": ""
 }'
@@ -16,12 +17,13 @@ GetRegistrationStatusNegTC:
     }
   ]
 }'
-   Signup_ESignet_GetRegistrationStatusNegTC_with_invalid_TransactionID:
+   ESignet_GetRegistrationStatusNegTC_with_invalid_TransactionID:
       endPoint: /v1/signup/registration/status
+      uniqueIdentifier: TC_ESignet_GetRegistrationStatusNegTC_02
       role: resident
       restMethod: post
-      inputTemplate: signup/GetRegistrationStatus/GetRegistrationStatus
-      outputTemplate: signup/error
+      inputTemplate: esignet/GetRegistrationStatus/GetRegistrationStatus
+      outputTemplate: esignet/error
       input: '{
   "verifiedTransactionID": "@363gssh"
 }'
@@ -33,12 +35,13 @@ GetRegistrationStatusNegTC:
     }
   ]
 }'
-   Signup_ESignet_GetRegistrationStatusNegTC_with_invalid_TransactionID:
+   ESignet_GetRegistrationStatusNegTC_with_invalid_TransactionID:
       endPoint: /v1/signup/registration/status
+      uniqueIdentifier: TC_ESignet_GetRegistrationStatusNegTC_03
       role: resident
       restMethod: post
-      inputTemplate: signup/GetRegistrationStatus/GetRegistrationStatus
-      outputTemplate: signup/error
+      inputTemplate: esignet/GetRegistrationStatus/GetRegistrationStatus
+      outputTemplate: esignet/error
       input: '{
   "verifiedTransactionID": "@363gssh"
 }'
@@ -50,12 +53,13 @@ GetRegistrationStatusNegTC:
     }
   ]
 }'
-   Signup_ESignet_GetRegistrationStatusNegTC_with_expired_TransactionID_wait:
+   ESignet_GetRegistrationStatusNegTC_with_expired_TransactionID_wait:
       endPoint: /v1/signup/registration/status
+      uniqueIdentifier: TC_ESignet_GetRegistrationStatusNegTC_04
       role: resident
       restMethod: post
-      inputTemplate: signup/GetRegistrationStatus/GetRegistrationStatus
-      outputTemplate: signup/error
+      inputTemplate: esignet/GetRegistrationStatus/GetRegistrationStatus
+      outputTemplate: esignet/error
       input: '{
   "verifiedTransactionID": "c6HmSfLCj-GK6VfozWbJA0ox4CrMfQZ9Ln8jkBequCg"
 }'

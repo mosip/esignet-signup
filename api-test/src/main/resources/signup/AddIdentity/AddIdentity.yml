@@ -1,6 +1,7 @@
 AddIdentity:
    Signup_AddIdentity_Password_Auth_smoke_Pos:
       endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_ESignet_AddIdentity_22
       description: Add identity with password authentication
       role: idrepo
       restMethod: post
@@ -29,6 +30,7 @@ AddIdentity:
 
    Signup_AddIdentity_L2_Valid_Parameters_smoke_Pos:
       endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_ESignet_AddIdentity_23
       role: idrepo
       restMethod: post
       inputTemplate: signup/AddIdentity/addIdentity_$LANGNUMBER$
