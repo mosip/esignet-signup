@@ -109,29 +109,31 @@ export const VideoPreview = ({
   // if camera permission granted then set the state
   const cameraPermissionAllowed = useCallback((stream: MediaStream) => {
     window.videoLocalStream = stream;
-    if (!permissionGranted) {
-      setPermissionGranted(true);
-    }
+    setPermissionGranted(true);
   }, []);
 
   // if camera permission denied then set the state
   const cameraPermissionDenied = useCallback((error: any) => {
-    if (permissionGranted) {
-      setPermissionGranted(false);
-      if (error.name === "NotReadableError") {
-        if (permissionErrMsg.header !== "not_accessible_header") {
-          setPermissionErrMsg({
-            header: "not_accessible_header",
-            description: "not_accessible_description",
-          });
-        }
-      } else if (permissionErrMsg.header !== "permission_denied_header") {
-        setPermissionErrMsg({
-          header: "permission_denied_header",
-          description: "permission_denied_description",
-        });
-      }
-    }
+    setPermissionGranted(false);
+
+    // doing this type of setting the state 
+    // so that it not re render anything
+    // it will only render when state is  actually changed
+    setPermissionErrMsg((_) =>
+      error.name === "NotReadableError"
+        ? _.header !== "not_accessible_header"
+          ? {
+              header: "not_accessible_header",
+              description: "not_accessible_description",
+            }
+          : _
+        : _.header !== "permission_denied_header"
+          ? {
+              header: "permission_denied_header",
+              description: "permission_denied_description",
+            }
+          : _
+    );
   }, []);
 
   // video preview div, it will show the video preview if camera permission granted
