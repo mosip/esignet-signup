@@ -1,5 +1,5 @@
 :root {
-  --primary-color: #eb6f2d;
+  --default: #eb6f2d;
   --font-inter: "Inter";
   --font-kantumruypro: "Kantumruy Pro Variable";
   --background-body: #f7f9fd;
@@ -7,7 +7,7 @@
   --foreground-color: 222.2 47.4% 11.2%;
 
   --language-icon-color: #ffffff;
-  --language-icon-bg-color: var(--primary-color);
+  --language-icon-bg-color: var(--default);
   --brand-only-logo-url: url("/logo.png");
   --brand-logo-url: url("/images/brand_logo.png");
 
@@ -46,6 +46,7 @@
   --primary-step: 0 0% 100%;
   --primary-step-foreground: 222.2 47.4% 11.2%;
 
+  --primary: 21 83% 55%;
   --primary-color: 21 83% 55%;
   --primary-foreground-color: 0 0% 100%;
 
@@ -64,17 +65,17 @@
 
   --radius-font-size: 0.5rem;
 
-  --vertical-stepper-bg-color: var(--primary-color);
+  --vertical-stepper-bg-color: var(--default);
   --vertical-stepper-bg-opacity: 0.55;
   --vertical-stepper-description-font: normal normal normal 14px/17px Inter;
   --vertical-stepper-label-font: normal normal 600 16px/20px Inter;
-  --vertical-stepper-node-bg: var(--primary-color);
+  --vertical-stepper-node-bg: var(--default);
 
-  --cancel-button-border: 2px solid var(--primary-color);
+  --cancel-button-border: 2px solid var(--default);
   --cancel-button-border-radius: 8px;
-  --cancel-button-color: var(--primary-color);
+  --cancel-button-color: var(--default);
 
-  --checkbox-background: var(--primary-color);
+  --checkbox-background: var(--default);
 
   --video-message-bg-color: #505050;
   --video-message-text-color: #fff;
@@ -90,7 +91,7 @@
   --error-banner-font: normal normal 600 14px/17px Inter;
   
   --kyc-box-border: 2px solid #b2b2b2;
-  --kyc-box-selected-border: 2px solid var(--primary-color);
+  --kyc-box-selected-border: 2px solid var(--default);
   --kyc-box-icon-border: 1px solid #d8d8d8;
   --kyc-box-icon-shadow: 0 3px 6px 3px rgba(0, 0, 0, 0.1);
   --kyc-box-header-font: normal normal 600 16px/20px Inter;
@@ -100,7 +101,7 @@
   --kyc-box-subheader-font-detail: normal normal normal 14px/24px Inter;
   --kyc-header-font: normal normal 600 22px/26px Inter;
   --kyc-header-color: #2b3840;
-  --loading-indicator-color: var(--primary-color);
+  --loading-indicator-color: var(--default);
 
   --tnc-header-font: normal normal 600 22px/26px Inter;
   --tnc-header-color: #2b3840;
@@ -112,7 +113,7 @@
   --tnc-consent-font: normal normal 700 15px/19px Inter;
   --tnc-consent-color: #333333;
 
-  --video-preview-border-color: var(--primary-color);
+  --video-preview-border-color: var(--default);
   --video-preview-header-font: normal normal 600 22px/26px Inter;
   --video-preview-header-color: #2b3840;
   --video-preview-content-font: normal normal normal 16px/20px Helvetica Neue;
@@ -161,7 +162,7 @@
 }
 
 [class="blue"] {
-  --primary-color: #1262C9;
+  --default: #1262C9;
   --font-inter: "Inter";
   --font-kantumruypro: "Kantumruy Pro Variable";
   --background-body: #f7f9fd;
@@ -169,7 +170,7 @@
   --foreground-color: 222.2 47.4% 11.2%;
 
   --language-icon-color: #ffffff;
-  --language-icon-bg-color: var(--primary-color);
+  --language-icon-bg-color: var(--default);
   --brand-only-logo-url: url("/logo.png");
   --brand-logo-url: url("/images/brand_logo.png");
 
@@ -178,16 +179,16 @@
   --top-left-bg-logo-url: url("/images/top.png");
   --top-left-bg-logo-display: none;
   --bottom-left-bg-logo-url: url("/images/bg_bottom_left.png");
-  --bottom-left-bg-logo-display: block;
+  --bottom-left-bg-logo-display: none;
   --top-right-bg-logo-url: url("/images/bg_bottom_left.png");
   --top-right-bg-logo-display: none;
   --bottom-right-bg-logo-url: url("/images/bottom.png");
   --bottom-right-bg-logo-display: none;
 
   --footer-brand-logo-url: url("/images/footer_logo.png");
-  --footer-text-color: #ffffff;
+  --footer-text-color: #898989;
   --footer-text-size: 14px;
-  --footer-bg-color: var(--primary-color);
+  --footer-bg-color: #ffffff;
   --footer-padding-top: 15px;
   --footer-padding-bottom: 15px;
 
@@ -208,7 +209,8 @@
   --primary-step: 0 0% 100%;
   --primary-step-foreground: 222.2 47.4% 11.2%;
 
-  --primary-color: 210 100% 25%;
+  --primary: 213 76% 46%;
+  --primary-color: 213 76% 46%;
   --primary-foreground-color: 0 0% 100%;
 
   --secondary-color: 210 40% 96.1%;
@@ -225,19 +227,19 @@
   --ring-color: 215 20.2% 65.1%;
 
   --radius-font-size: 0.5rem;
-  --video-preview-border-color: var(--primary-color);
+  --video-preview-border-color: var(--default);
 
-  --vertical-stepper-bg-color: var(--primary-color);
+  --vertical-stepper-bg-color: var(--default);
   --vertical-stepper-bg-opacity: 0.55;
   --vertical-stepper-description-font: normal normal normal 14px/17px Inter;
   --vertical-stepper-label-font: normal normal 600 16px/20px Inter;
-  --vertical-stepper-node-bg: var(--primary-color);
+  --vertical-stepper-node-bg: var(--default);
 
-  --cancel-button-border: 2px solid var(--primary-color);
+  --cancel-button-border: 2px solid var(--default);
   --cancel-button-border-radius: 8px;
-  --cancel-button-color: var(--primary-color);
+  --cancel-button-color: var(--default);
 
-  --checkbox-background: var(--primary-color);
+  --checkbox-background: var(--default);
 
   --video-message-bg-color: #505050;
   --video-message-text-color: #fff;
@@ -253,7 +255,7 @@
   --error-banner-font: normal normal 600 14px/17px Inter;
 
   --kyc-box-border: 2px solid #b2b2b2;
-  --kyc-box-selected-border: 2px solid var(--primary-color);
+  --kyc-box-selected-border: 2px solid var(--default);
   --kyc-box-icon-border: 1px solid #d8d8d8;
   --kyc-box-icon-shadow: 0 3px 6px 3px rgba(0, 0, 0, 0.1);
   --kyc-box-header-font: normal normal 600 16px/20px Inter;
@@ -263,7 +265,7 @@
   --kyc-box-subheader-font-detail: normal normal normal 14px/24px Inter;
   --kyc-header-font: normal normal 600 22px/26px Inter;
   --kyc-header-color: #2b3840;
-  --loading-indicator-color: var(--primary-color);
+  --loading-indicator-color: var(--default);
 
   --tnc-header-font: normal normal 600 22px/26px Inter;
   --tnc-header-color: #2b3840;
@@ -275,7 +277,7 @@
   --tnc-consent-font: normal normal 700 15px/19px Inter;
   --tnc-consent-color: #333333;
 
-  --video-preview-border-color: var(--primary-color);
+  --video-preview-border-color: var(--default);
   --video-preview-header-font: normal normal 600 22px/26px Inter;
   --video-preview-header-color: #2b3840;
   --video-preview-content-font: normal normal normal 16px/20px Helvetica Neue;
@@ -289,7 +291,7 @@
 }
 
 [class="green"] {
-  --primary-color: #32CD32;
+  --default: #32CD32;
   --font-inter: "Inter";
   --font-kantumruypro: "Kantumruy Pro Variable";
   --background-body: #f7f9fd;
@@ -297,25 +299,25 @@
   --foreground-color: 222.2 47.4% 11.2%;
 
   --language-icon-color: #ffffff;
-  --language-icon-bg-color: var(--primary-color);
+  --language-icon-bg-color: var(--default);
   --brand-only-logo-url: url("/logo.png");
   --brand-logo-url: url("/images/brand_logo.png");
 
-  --signup-background: url("/images/section-bg.png") no-repeat;
-  --side-section-bg-with: 320px;
+  --signup-background: #f7f9fd;
+  --side-section-bg-with: 225px;
   --top-left-bg-logo-url: url("/images/top.png");
-  --top-left-bg-logo-display: none;
+  --top-left-bg-logo-display: block;
   --bottom-left-bg-logo-url: url("/images/bg_bottom_left.png");
-  --bottom-left-bg-logo-display: block;
+  --bottom-left-bg-logo-display: none;
   --top-right-bg-logo-url: url("/images/bg_bottom_left.png");
   --top-right-bg-logo-display: none;
   --bottom-right-bg-logo-url: url("/images/bottom.png");
-  --bottom-right-bg-logo-display: none;
+  --bottom-right-bg-logo-display: block;
 
   --footer-brand-logo-url: url("/images/footer_logo.png");
-  --footer-text-color: #ffffff;
+  --footer-text-color: #898989;
   --footer-text-size: 14px;
-  --footer-bg-color: var(--primary-color);
+  --footer-bg-color: #ffffff;
   --footer-padding-top: 15px;
   --footer-padding-bottom: 15px;
 
@@ -336,7 +338,8 @@
   --primary-step: 0 0% 100%;
   --primary-step-foreground: 222.2 47.4% 11.2%;
 
-  --primary-color: 210 100% 25%;
+  --primary: 120 60% 50%;
+  --primary-color: 120 60% 50%;
   --primary-foreground-color: 0 0% 100%;
 
   --secondary-color: 210 40% 96.1%;
@@ -353,19 +356,18 @@
   --ring-color: 215 20.2% 65.1%;
 
   --radius-font-size: 0.5rem;
-  --video-preview-border-color: var(--primary-color);
 
-  --vertical-stepper-bg-color: var(--primary-color);
+  --vertical-stepper-bg-color: var(--default);
   --vertical-stepper-bg-opacity: 0.55;
   --vertical-stepper-description-font: normal normal normal 14px/17px Inter;
   --vertical-stepper-label-font: normal normal 600 16px/20px Inter;
-  --vertical-stepper-node-bg: var(--primary-color);
+  --vertical-stepper-node-bg: var(--default);
 
-  --cancel-button-border: 2px solid var(--primary-color);
+  --cancel-button-border: 2px solid var(--default);
   --cancel-button-border-radius: 8px;
-  --cancel-button-color: var(--primary-color);
+  --cancel-button-color: var(--default);
 
-  --checkbox-background: var(--primary-color);
+  --checkbox-background: var(--default);
 
   --video-message-bg-color: #505050;
   --video-message-text-color: #fff;
@@ -379,9 +381,9 @@
   --error-banner-text-color: #d52929;
   --error-banner-bg-color: #faefef;
   --error-banner-font: normal normal 600 14px/17px Inter;
-
+  
   --kyc-box-border: 2px solid #b2b2b2;
-  --kyc-box-selected-border: 2px solid var(--primary-color);
+  --kyc-box-selected-border: 2px solid var(--default);
   --kyc-box-icon-border: 1px solid #d8d8d8;
   --kyc-box-icon-shadow: 0 3px 6px 3px rgba(0, 0, 0, 0.1);
   --kyc-box-header-font: normal normal 600 16px/20px Inter;
@@ -391,7 +393,7 @@
   --kyc-box-subheader-font-detail: normal normal normal 14px/24px Inter;
   --kyc-header-font: normal normal 600 22px/26px Inter;
   --kyc-header-color: #2b3840;
-  --loading-indicator-color: var(--primary-color);
+  --loading-indicator-color: var(--default);
 
   --tnc-header-font: normal normal 600 22px/26px Inter;
   --tnc-header-color: #2b3840;
@@ -403,7 +405,7 @@
   --tnc-consent-font: normal normal 700 15px/19px Inter;
   --tnc-consent-color: #333333;
 
-  --video-preview-border-color: var(--primary-color);
+  --video-preview-border-color: var(--default);
   --video-preview-header-font: normal normal 600 22px/26px Inter;
   --video-preview-header-color: #2b3840;
   --video-preview-content-font: normal normal normal 16px/20px Helvetica Neue;
