@@ -123,7 +123,7 @@ export const useSlotAvailability = ({
     mutationFn: (slotAvailabilityRequestDto: SlotAvailabilityRequestDto) => {
       return checkSlotAvailability(slotAvailabilityRequestDto);
     },
-    retry: retryAttempt,
+    retry: retryAttempt - 1,
     retryDelay: retryDelay * 1000,
   });
 
