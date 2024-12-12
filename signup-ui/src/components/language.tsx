@@ -70,7 +70,7 @@ export const Language = () => {
       <DropdownMenu.Root>
         <DropdownMenu.Trigger id="language-select-button" asChild>
           <span
-            className="inline-flex items-center justify-center bg-white text-[14px] outline-none hover:cursor-pointer"
+            className="inline-flex items-center justify-center bg-white outline-none hover:cursor-pointer"
             aria-label="Customise options"
           >
             {
