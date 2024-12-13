@@ -5,19 +5,25 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { ReactComponent as SomethingWentWrongSvg } from "~assets/svg/something-went-wrong.svg";
 import { RESET_PASSWORD, SIGNUP_ROUTE } from "~constants/routes";
 import { Button } from "~components/ui/button";
+import { useSignUpStore } from "~pages/SignUpPage/useSignUpStore";
+import { useResetPasswordStore } from "~pages/ResetPasswordPage/useResetPasswordStore";
 
 export const LandingPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { hash: fromSignInHash } = useLocation();
+  const resetSignupStore = useSignUpStore.getState().reset;
+  const resetForgotPasswordStore = useResetPasswordStore.getState().reset;
 
   const handleResetPassword = (e: any) => {
     e.preventDefault();
+    resetForgotPasswordStore();
     navigate(`${RESET_PASSWORD}${fromSignInHash}`);
   };
 
   const handleRegister = (e: any) => {
     e.preventDefault();
+    resetSignupStore();
     navigate(`${SIGNUP_ROUTE}${fromSignInHash}`);
   };
 
