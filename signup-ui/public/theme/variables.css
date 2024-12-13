@@ -174,7 +174,7 @@
   --brand-only-logo-url: url("/logo.png");
   --brand-logo-url: url("/images/brand_logo.png");
 
-  --signup-background: url("/images/section-bg.png") no-repeat;
+  --signup-background: #f7f9fd;
   --side-section-bg-with: 320px;
   --top-left-bg-logo-url: url("/images/top.png");
   --top-left-bg-logo-display: none;
