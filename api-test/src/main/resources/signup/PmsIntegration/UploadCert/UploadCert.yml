@@ -1,0 +1,17 @@
+uploadPartnerCert:
+   Signup_Esignet_UploadPartnerCert_All_Valid_Smoke:
+      endPoint: /v1/partnermanager/partners/certificate/upload
+      description: Upload partner certificate with all valid details
+      role: partner
+      checkErrorsOnlyInResponse: true
+      restMethod: post
+      inputTemplate: signup/PmsIntegration/UploadCert/uploadCert
+      outputTemplate: signup/PmsIntegration/UploadCert/uploadCertResult
+      input: '{
+  "certificateData": "$PARTNERCERT$",
+  "partnerId": "$ID:Esignet_PartnerSelfRegistration_All_Valid_Smoke_sid_partnerId$",
+  "requesttime": "$TIMESTAMP$"
+}'
+      output: ' {
+  "errors": "$IGNORE$"
+}'

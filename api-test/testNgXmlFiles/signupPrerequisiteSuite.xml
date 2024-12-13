@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+
+	<suite name="esignet-Signup Prerequisite Suite">
+	<!-- Passing Group as parmeter unsing "testType" Possible Groups are: smoke 
+		regression smokeAndRegression -->
+	<listeners>
+		<listener class-name="io.mosip.testrig.apirig.report.EmailableReport"/>
+	</listeners>
+	
+	<test name="AddIdentityMock">
+		<parameter name="ymlFile"
+			value="signup/AddIdentityMock/AddIdentity.yml" />
+			<parameter name="prerequisite" value="Yes" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.signup.testscripts.AddIdentity" />
+		</classes>
+	</test>
+	<test name="AddIdentity">
+		<parameter name="ymlFile"
+			value="signup/AddIdentity/AddIdentity.yml" />
+			<parameter name="prerequisite" value="Yes" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.signup.testscripts.AddIdentity" />
+		</classes>
+	</test>
+	<test name="CreatePolicyGroup">
+		<parameter name="ymlFile"
+			value="signup/PmsIntegration/DefinePolicyGroup/DefinePolicyGroup.yml" />
+		<parameter name="idKeyName" value="id,name" />
+		<parameter name="prerequisite" value="Yes" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.signup.testscripts.SimplePostForAutoGenId" />
+		</classes>
+	</test>
+	
+	<test name="DefinePolicy">
+		<parameter name="ymlFile"
+			value="signup/PmsIntegration/DefinePolicy/DefinePolicy.yml" />
+		<parameter name="idKeyName" value="id,name" />
+		<parameter name="prerequisite" value="Yes" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.signup.testscripts.SimplePostForAutoGenId" />
+		</classes>
+	</test>
+	
+	<test name="PublishPolicy">
+		<parameter name="ymlFile"
+			value="signup/PmsIntegration/PublishPolicy/PublishPolicy.yml" />
+			<parameter name="prerequisite" value="Yes" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.signup.testscripts.PostWithOnlyPathParam" />
+		</classes>
+	</test>
+	
+	 <test name="CreatePartner">
+		<parameter name="ymlFile"
+			value="signup/PmsIntegration/CreatePartner/CreatePartner.yml" />
+			<parameter name="idKeyName" value="partnerId" />
+			<parameter name="prerequisite" value="Yes" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.signup.testscripts.SimplePostForAutoGenId" />
+		</classes>
+	</test>
+	
+	<test name ="UploadCACertificate">
+		<parameter name ="ymlFile"
+			value="signup/PmsIntegration/UploadCertificate/UploadCertificate.yml" />
+			<parameter name="prerequisite" value="Yes" />
+	<classes>
+			<class name="io.mosip.testrig.apirig.signup.testscripts.SimplePost" />
+		</classes>
+	</test> 
+	
+	<test name ="UploadPartnerCertificate">
+		<parameter name ="ymlFile"
+			value="signup/PmsIntegration/UploadCert/UploadCert.yml" />
+			<parameter name="idKeyName" value="signedCertificateData" />
+			<parameter name="prerequisite" value="Yes" />
+	<classes>
+			<class name="io.mosip.testrig.apirig.signup.testscripts.SimplePostForAutoGenId" />
+		</classes>
+	</test>
+	
+	<test name="RequestAPIKeyForAuthPartner">
+		<parameter name="ymlFile"
+			value="signup/PmsIntegration/RequestAPIKey/RequestAPIKey.yml" />
+		<parameter name="idKeyName" value="mappingkey" />
+		<parameter name="prerequisite" value="Yes" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.signup.testscripts.SimplePostForAutoGenId" />
+		</classes>
+	</test>
+	
+	<test name="ApproveAPIKey">
+		<parameter name="ymlFile"
+			value="signup/PmsIntegration/ApproveAPIKey/ApproveAPIKey.yml" />
+		<parameter name="pathParams" value="mappingkey" />
+		<parameter name="prerequisite" value="Yes" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.signup.testscripts.PutWithPathParamsAndBody" />
+		</classes>
+	</test>
+	<test name="OIDCClient">
+		<parameter name="ymlFile"
+			value="signup/OidcClient/OIDCClient.yml" />
+			<parameter name="idKeyName"	value="clientId" />
+			<parameter name="prerequisite" value="Yes" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.signup.testscripts.SimplePostForAutoGenId" />
+		</classes>
+	</test>
+</suite>
