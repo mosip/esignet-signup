@@ -1,0 +1,77 @@
+GetIdentityVerificationStatusNegTC:
+   Signup_ESignet_GetIdentityVerificationStatus_AuthToken_Xsrf_STransId_uin_all_before_initiating_websocket_connection_Neg:
+      endPoint: /v1/signup/identity-verification/status
+      uniqueIdentifier: TC_Signup_ESignet_GetIdentityVerificationStatusNegTC_04
+      description: Get Identity Verification Status with invalid an IDV slot assigned in the cookie
+      role: resident
+      restMethod: get
+      inputTemplate: signup/GetIdentityVerificationStatusNegTC/GetIdentityVerificationStatusNegTC
+      outputTemplate: signup/error
+      input: '{
+        "idvSlotAllotted": "$ID:ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_posNeg_Smoke_Sid_idvSlotAllotted$"
+}'
+      output: '{
+      "errors": [
+    {
+      "errorCode": "invalid_transaction",
+      "errorMessage": "invalid_transaction"
+    }
+  ]
+}'
+   Signup_ESignet_GetIdentityVerificationStatus_AuthToken_Xsrf_STransId_uin_Empty_GetSlot_Id_Neg:
+      endPoint: /v1/signup/identity-verification/status
+      uniqueIdentifier: TC_Signup_ESignet_GetIdentityVerificationStatusNegTC_01
+      description: Get Identity Verification Status with an empty getSlotId
+      role: resident
+      restMethod: get
+      inputTemplate: signup/GetIdentityVerificationStatusNegTC/GetIdentityVerificationStatusNegTC
+      outputTemplate: signup/error
+      input: '{
+        "idvSlotAllotted": ""
+}'
+      output: '{
+      "errors": [
+    {
+      "errorCode": "invalid_transaction",
+      "errorMessage": "invalid_transaction"
+    }
+  ]
+}'
+   Signup_ESignet_GetIdentityVerificationStatus_AuthToken_Xsrf_STransId_uin_all_without_IDV_SLOT_ALLOTTED_in_the_cookie_Neg:
+      endPoint: /v1/signup/identity-verification/status
+      uniqueIdentifier: TC_Signup_ESignet_GetIdentityVerificationStatusNegTC_02
+      description: Get Identity Verification Status without an IDV slot assigned in the cookie
+      role: resident
+      restMethod: get
+      inputTemplate: signup/GetIdentityVerificationStatusNegTC/GetIdentityVerificationStatusNegTC
+      outputTemplate: signup/error
+      input: '{
+        "idvSlotAllotted": "$REMOVE$"
+}'
+      output: '{
+      "errors": [
+    {
+      "errorCode": "invalid_transaction",
+      "errorMessage": "invalid_transaction"
+    }
+  ]
+}'
+   Signup_ESignet_GetIdentityVerificationStatus_AuthToken_Xsrf_STransId_uin_all_with_invalid_IDV_SLOT_ALLOTTED_in_the_cookie_Neg:
+      endPoint: /v1/signup/identity-verification/status
+      uniqueIdentifier: TC_Signup_ESignet_GetIdentityVerificationStatusNegTC_03
+      description: Get Identity Verification Status with invalid an IDV slot assigned in the cookie
+      role: resident
+      restMethod: get
+      inputTemplate: signup/GetIdentityVerificationStatusNegTC/GetIdentityVerificationStatusNegTC
+      outputTemplate: signup/error
+      input: '{
+        "idvSlotAllotted": "1234567892"
+}'
+      output: '{
+      "errors": [
+    {
+      "errorCode": "invalid_transaction",
+      "errorMessage": "invalid_transaction"
+    }
+  ]
+}'

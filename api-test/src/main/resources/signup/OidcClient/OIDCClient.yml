@@ -1,0 +1,22 @@
+CreateOIDCClient:
+   Signup_Esignet_CreateOIDCClient_all_Valid_Smoke_sid:
+      endPoint: /v1/partnermanager/oidc/client
+      description: Create OIDC client with all valid details
+      role: partner
+      restMethod: post
+      inputTemplate: signup/OidcClient/OIDCClient
+      outputTemplate: signup/OidcClient/OIDCClientResult
+      input: '{
+        "name": "$RANDOMID$",
+        "policyId": "$ID:Esignet_DefinePolicy_All_Valid_Smoke_sid_id$",
+        "publicKey": "$OIDCJWKKEY$",
+        "authPartnerId": "$ID:Esignet_PartnerSelfRegistration_All_Valid_Smoke_sid_partnerId$",
+        "logoUri": "https://health-services.com/logo.png",
+        "redirectUris": "$IDPREDIRECTURI$",
+        "grantTypes": "authorization_code",
+        "clientAuthMethods": "private_key_jwt"
+}'
+      output: '{
+        "clientId": "$IGNORE$",
+        "status": "ACTIVE"
+}'

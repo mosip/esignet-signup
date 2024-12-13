@@ -1,0 +1,17 @@
+RequestAPIKeyForAuthPartner:
+   Signup_Esignet_SubmitPartnerApiKeyRequest_Rejection_All_Valid_Smoke_sid:
+      endPoint: /v1/partnermanager/partners/$ID:Esignet_PartnerSelfRegistration_All_Valid_Smoke_sid_partnerId$/policy/map
+      description: Submit partner Api Key request rejection all valid details
+      role: partner
+      restMethod: post 
+      inputTemplate: signup/PmsIntegration/RequestAPIKey/requestApiKey
+      outputTemplate: signup/PmsIntegration/RequestAPIKey/requestAPIKeyResult
+      input: '{
+        "policyName": "$ID:Esignet_DefinePolicy_All_Valid_Smoke_sid_name$",
+        "useCaseDescription": "Need to submit the payment",
+        "requesttime": "$TIMESTAMP$"
+    }'
+      output: '{
+        "mappingkey": "$IGNORE$",
+        "message": "Policy mapping request submitted successfully."
+}'
