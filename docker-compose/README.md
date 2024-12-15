@@ -35,3 +35,5 @@ As esignet only supports confidential OIDC clients, we should generate a RSA key
 stored in the oidckeystore.p12 file and the corresponding public key is written to public_key.jwk file. 
 
 Copy the public key in public_key.jwk file and update the same in the `Register Signup OIDC/Create Signup OIDC client` request body.
+
+Run `Register Signup OIDC/Create Signup OIDC client` in postman before starting the identity verification flow.
