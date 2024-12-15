@@ -1,9 +1,4 @@
-## Dependency
-Add this dependency in your pom.xml file.
-```
-<dependency>
-    <groupId>io.mosip.signup</groupId>
-    <artifactId>signup-integration-api</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
-</dependency>
-```
+## Signup integration interfaces
+
+This module contains all the interface defined for external integrations with signup-service. Kindly find the default implementations 
+for the plugins in [esignet-plugins](https://github.com/mosip/esignet-plugins) repository.
