@@ -1,8 +1,9 @@
-# E-Signet Sign Up Web Application
+# Signup UI
 
-## Description
+## Overview
 
-The E-Signet Sign Up web application is a platform allowing users to register their identities.
+Signup UI has provision to verify the user's phone number with OTP and on successful verification user is allowed to 
+register in the integrated ID registry.Both register and reset password requires OTP verification.
 
 ## Local Development
 
