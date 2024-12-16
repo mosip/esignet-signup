@@ -764,6 +764,8 @@ paths:
                             - invalid_request
                             - grant_exchange_failed
                             - userinfo_failed
+                            - invalid_authorization_code
+                            - invalid_state
                         errorMessage:
                           type: string
           headers:
@@ -891,7 +893,7 @@ paths:
         - name: X-XSRF-TOKEN
           in: header
           description: CSRF token as set in cookie key 'XSRF-TOKEN'
-          required: false
+          required: true
           schema:
             type: string
         - schema:
@@ -1133,6 +1135,8 @@ paths:
               type: object
               required:
                 - slotId
+                - stepCode
+                - frames
               properties:
                 slotId:
                   type: string
