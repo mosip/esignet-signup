@@ -408,6 +408,11 @@ body {
   @apply text-center text-2xl font-semibold;
 }
 
+input[type='password']::-ms-reveal,
+input[type='password']::-ms-clear {
+  display: none;
+}
+
 @layer base {
   :root {
     --font-inter: "Inter";
