@@ -74,3 +74,8 @@ By default, the environment variables are:
 #### Translation
 
 New translations can be added in the `locales` folder of the `public` folder. Also, newly added key(s) need to be added to `resource.d.ts` to fulfill the type and get the key suggestion.
+
+## NPM Highlights
+* `react-webcam`: It allows to easily capture video and still images directly from the user's webcam, offering a range of options for customization and control.
+* `socket.io-client`: It allows bi-directional communication between client and server.
+* `zustand`: A small, fast and scalable bear bones state-management solution using simplified flux principles. Has a comfy API based on hooks, isn't  boilerplate or opinionated.

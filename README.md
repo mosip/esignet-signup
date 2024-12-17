@@ -42,10 +42,5 @@ cd deploy
 ## APIs
 API documentation is available [here](https://mosip.stoplight.io/docs/identity-provider/branches/signupV1/t9tvfbteqqokf-e-signet-signup-portal-ap-is).
 
-## NPM Highlights
-* `react-webcam`: It allows to easily capture video and still images directly from the user's webcam, offering a range of options for customization and control.
-* `socket.io-client`: It allows bi-directional communication between client and server.
-* `zustand`: A small, fast and scalable bear bones state-management solution using simplified flux principles. Has a comfy API based on hooks, isn't  boilerplate or opinionated.
-
 ## License
 This project is licensed under the terms of [Mozilla Public License 2.0](LICENSE).
