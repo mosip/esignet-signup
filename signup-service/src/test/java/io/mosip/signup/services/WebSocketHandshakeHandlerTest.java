@@ -104,4 +104,23 @@ public class WebSocketHandshakeHandlerTest {
         }
     }
 
+    @Test
+    public void determineUser_withInvalidCookieLength_thenFail() throws Exception {
+
+        IdentityVerificationTransaction transaction = new IdentityVerificationTransaction();
+        transaction.setSlotId("123");
+        Mockito.when(cacheUtilService.getSlotAllottedTransaction(Mockito.anyString())).thenReturn(transaction);
+
+        ServerHttpRequest request = Mockito.mock(ServerHttpRequest.class);
+        HttpHeaders headers=new HttpHeaders();
+        headers.set("Cookie","IDV_SLOT_ALLOTTED=");
+        Mockito.when(request.getHeaders()).thenReturn(headers);
+        Mockito.when(request.getURI()).thenReturn(new URI("http://localhost?slotId=123"));
+        try{
+            webSocketHandshakeHandler.determineUser(request, Mockito.mock(WebSocketHandler.class), attributes);
+        }catch (HandshakeFailureException e){
+            Assert.assertEquals(ErrorConstants.INVALID_TRANSACTION, e.getMessage());
+        }
+    }
+
 }
