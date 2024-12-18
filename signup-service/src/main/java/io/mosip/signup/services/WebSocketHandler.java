@@ -13,6 +13,7 @@ import io.mosip.signup.api.exception.IdentityVerifierException;
 import io.mosip.signup.api.exception.ProfileException;
 import io.mosip.signup.api.spi.IdentityVerifierPlugin;
 import io.mosip.signup.api.spi.ProfileRegistryPlugin;
+import io.mosip.signup.api.util.ProcessFeedbackType;
 import io.mosip.signup.api.util.VerificationStatus;
 import io.mosip.signup.dto.IdentityVerificationRequest;
 import io.mosip.signup.dto.IdentityVerificationTransaction;
@@ -22,6 +23,7 @@ import io.mosip.signup.exception.SignUpException;
 import io.mosip.signup.helper.AuditHelper;
 import io.mosip.signup.util.AuditEvent;
 import io.mosip.signup.util.AuditEventType;
+import io.mosip.signup.util.ErrorConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,10 +31,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static io.mosip.signup.api.util.ErrorConstants.IDENTITY_VERIFICATION_FAILED;
 import static io.mosip.signup.api.util.ErrorConstants.PLUGIN_NOT_FOUND;
@@ -66,25 +65,36 @@ public class WebSocketHandler {
 
 
     public void processFrames(IdentityVerificationRequest identityVerificationRequest) {
-        IdentityVerificationTransaction transaction = cacheUtilService.getVerifiedSlotTransaction(identityVerificationRequest.getSlotId());
-        if(transaction == null)
-            throw new InvalidTransactionException();
+        String errorCode = null;
+        try {
+            validate(identityVerificationRequest);
+            IdentityVerificationTransaction transaction = cacheUtilService.getVerifiedSlotTransaction(identityVerificationRequest.getSlotId());
+            if(transaction == null)
+                throw new InvalidTransactionException();
 
-        IdentityVerifierPlugin plugin = identityVerifierFactory.getIdentityVerifier(transaction.getVerifierId());
-        if(plugin == null)
-            throw new SignUpException(PLUGIN_NOT_FOUND);
+            IdentityVerifierPlugin plugin = identityVerifierFactory.getIdentityVerifier(transaction.getVerifierId());
+            if(plugin == null)
+                throw new SignUpException(PLUGIN_NOT_FOUND);
 
-        if(plugin.isStartStep(identityVerificationRequest.getStepCode())) {
-            IdentityVerificationInitDto identityVerificationInitDto = new IdentityVerificationInitDto();
-            identityVerificationInitDto.setIndividualId(transaction.getIndividualId());
-            identityVerificationInitDto.setDisabilityType(transaction.getDisabilityType());
-            plugin.initialize(identityVerificationRequest.getSlotId(), identityVerificationInitDto);
+            if(plugin.isStartStep(identityVerificationRequest.getStepCode())) {
+                IdentityVerificationInitDto identityVerificationInitDto = new IdentityVerificationInitDto();
+                identityVerificationInitDto.setIndividualId(transaction.getIndividualId());
+                identityVerificationInitDto.setDisabilityType(transaction.getDisabilityType());
+                plugin.initialize(identityVerificationRequest.getSlotId(), identityVerificationInitDto);
+            }
+
+            IdentityVerificationDto dto = new IdentityVerificationDto();
+            dto.setStepCode(identityVerificationRequest.getStepCode());
+            dto.setFrames(identityVerificationRequest.getFrames());
+            plugin.verify(identityVerificationRequest.getSlotId(), dto);
+        } catch (SignUpException e) {
+            errorCode = e.getErrorCode();
+            log.error("An error occurred while processing frames", e);
+        } finally {
+            if (errorCode != null) {
+                sendErrorFeedback(identityVerificationRequest.getSlotId(), errorCode);
+            }
         }
-
-        IdentityVerificationDto dto = new IdentityVerificationDto();
-        dto.setStepCode(identityVerificationRequest.getStepCode());
-        dto.setFrames(identityVerificationRequest.getFrames());
-        plugin.verify(identityVerificationRequest.getSlotId(), dto);
     }
 
     public void processVerificationResult(IdentityVerificationResult identityVerificationResult) {
@@ -177,5 +187,30 @@ public class WebSocketHandler {
     private long getVerificationProcessExpireTimeInMillis(IdentityVerifierDetail identityVerifierDetail) {
         int processDurationInSeconds = identityVerifierDetail.getProcessDuration() <= 0 ? slotExpireInSeconds : identityVerifierDetail.getProcessDuration();
         return System.currentTimeMillis() + ( processDurationInSeconds * 1000L );
+    }
+
+    private void sendErrorFeedback(String slotId, String errorCode) {
+        IDVProcessFeedback idvProcessFeedback = new IDVProcessFeedback();
+        idvProcessFeedback.setType(ProcessFeedbackType.ERROR);
+        idvProcessFeedback.setCode(errorCode);
+        IdentityVerificationResult identityVerificationResult = new IdentityVerificationResult();
+        identityVerificationResult.setFeedback(idvProcessFeedback);
+        simpMessagingTemplate.convertAndSend("/topic/" + slotId, identityVerificationResult);
+    }
+    private void validate(IdentityVerificationRequest request) {
+        if (request.getStepCode() == null || request.getStepCode().isBlank()) {
+            throw new SignUpException(ErrorConstants.INVALID_STEP_CODE);
+        }
+        List<FrameDetail> frames = request.getFrames();
+        if (frames != null && !frames.isEmpty()) {
+            for (FrameDetail frame : frames) {
+                if (frame.getFrame() == null || frame.getFrame().isBlank()) {
+                    throw new SignUpException(ErrorConstants.INVALID_FRAME);
+                }
+                if (frame.getOrder() < 0) {
+                    throw new SignUpException(ErrorConstants.INVALID_ORDER);
+                }
+            }
+        }
     }
 }

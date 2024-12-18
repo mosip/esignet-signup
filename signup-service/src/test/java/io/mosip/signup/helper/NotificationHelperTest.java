@@ -46,6 +46,7 @@ public class NotificationHelperTest {
         ReflectionTestUtils.setField(notificationHelper, "sendNotificationEndpoint", sendNotificationEndpoint);
         ReflectionTestUtils.setField(notificationHelper, "defaultLanguage", defaultLanguage);
         ReflectionTestUtils.setField(notificationHelper, "encodedLangCodes", encodedLangCodes);
+        ReflectionTestUtils.setField(notificationHelper, "identifierPrefix", "");
     }
 
     @Test

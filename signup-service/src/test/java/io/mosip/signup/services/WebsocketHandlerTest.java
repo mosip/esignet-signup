@@ -10,11 +10,11 @@ import io.mosip.signup.api.spi.ProfileRegistryPlugin;
 import io.mosip.signup.api.util.VerificationStatus;
 import io.mosip.signup.dto.IdentityVerificationRequest;
 import io.mosip.signup.dto.IdentityVerificationTransaction;
-import io.mosip.signup.exception.InvalidTransactionException;
 import io.mosip.signup.exception.SignUpException;
 import io.mosip.signup.helper.AuditHelper;
 import io.mosip.signup.util.AuditEvent;
 import io.mosip.signup.util.AuditEventType;
+import io.mosip.signup.util.ErrorConstants;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,7 +32,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import static io.mosip.signup.api.util.ErrorConstants.IDENTITY_VERIFICATION_FAILED;
-import static io.mosip.signup.api.util.ErrorConstants.PLUGIN_NOT_FOUND;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 @RunWith(SpringRunner.class)
@@ -105,29 +104,26 @@ public class WebsocketHandlerTest {
         identityVerificationRequest.setSlotId("test");
         identityVerificationRequest.setStepCode("stepCode");
         Mockito.when(cacheUtilService.getVerifiedSlotTransaction(identityVerificationRequest.getSlotId())).thenReturn(null);
-        try {
-            webSocketHandler.processFrames(identityVerificationRequest);
-            Assert.fail();
-        } catch (InvalidTransactionException e) {
-            Assert.assertNotNull(e.getErrorCode());
-        }
+        webSocketHandler.processFrames(identityVerificationRequest);
+        Mockito.verify(cacheUtilService, Mockito.times(1)).getVerifiedSlotTransaction(identityVerificationRequest.getSlotId());
+        Mockito.verify(simpMessagingTemplate, Mockito.times(1))
+                .convertAndSend(Mockito.eq("/topic/" + identityVerificationRequest.getSlotId()), Mockito.any(IdentityVerificationResult.class));
     }
 
     @Test
     public void processFrames_invalidVerifierId_thenFail() {
         IdentityVerificationRequest identityVerificationRequest = new IdentityVerificationRequest();
         identityVerificationRequest.setSlotId("test");
-
+        identityVerificationRequest.setStepCode("stepCode");
         IdentityVerificationTransaction identityVerificationTransaction = new IdentityVerificationTransaction();
         identityVerificationTransaction.setVerifierId("verifier-id");
         Mockito.when(cacheUtilService.getVerifiedSlotTransaction(identityVerificationRequest.getSlotId())).thenReturn(identityVerificationTransaction);
         Mockito.when(identityVerifierFactory.getIdentityVerifier("verifier-id")).thenReturn(null);
-        try {
-            webSocketHandler.processFrames(identityVerificationRequest);
-            Assert.fail();
-        } catch (SignUpException e) {
-            Assert.assertEquals(PLUGIN_NOT_FOUND, e.getErrorCode());
-        }
+        webSocketHandler.processFrames(identityVerificationRequest);
+        Mockito.verify(cacheUtilService, Mockito.times(1)).getVerifiedSlotTransaction(identityVerificationRequest.getSlotId());
+        Mockito.verify(identityVerifierFactory, Mockito.times(1)).getIdentityVerifier("verifier-id");
+        Mockito.verify(simpMessagingTemplate, Mockito.times(1))
+                .convertAndSend(Mockito.eq("/topic/" + identityVerificationRequest.getSlotId()), Mockito.any(IdentityVerificationResult.class));
     }
 
     @Test
@@ -369,7 +365,7 @@ public class WebsocketHandlerTest {
         try{
             webSocketHandler.processFrames(request);
         }catch (SignUpException e){
-            Assert.assertEquals(e.getErrorCode(),ErrorConstants.INVALID_FRAME);
+            Assert.assertEquals(e.getErrorCode(), ErrorConstants.INVALID_FRAME);
         }
     }
 
