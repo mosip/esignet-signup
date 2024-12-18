@@ -12,7 +12,9 @@ import io.mosip.signup.dto.IdentityVerificationRequest;
 import io.mosip.signup.dto.IdentityVerificationTransaction;
 import io.mosip.signup.exception.InvalidTransactionException;
 import io.mosip.signup.exception.SignUpException;
-import io.mosip.signup.util.ErrorConstants;
+import io.mosip.signup.helper.AuditHelper;
+import io.mosip.signup.util.AuditEvent;
+import io.mosip.signup.util.AuditEventType;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -50,6 +52,9 @@ public class WebsocketHandlerTest {
 
     @Mock
     private CacheUtilService cacheUtilService;
+
+    @Mock
+    private AuditHelper auditHelper;
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
@@ -100,26 +105,29 @@ public class WebsocketHandlerTest {
         identityVerificationRequest.setSlotId("test");
         identityVerificationRequest.setStepCode("stepCode");
         Mockito.when(cacheUtilService.getVerifiedSlotTransaction(identityVerificationRequest.getSlotId())).thenReturn(null);
-        webSocketHandler.processFrames(identityVerificationRequest);
-        Mockito.verify(cacheUtilService, Mockito.times(1)).getVerifiedSlotTransaction(identityVerificationRequest.getSlotId());
-        Mockito.verify(simpMessagingTemplate, Mockito.times(1))
-                .convertAndSend(Mockito.eq("/topic/" + identityVerificationRequest.getSlotId()), Mockito.any(IdentityVerificationResult.class));
+        try {
+            webSocketHandler.processFrames(identityVerificationRequest);
+            Assert.fail();
+        } catch (InvalidTransactionException e) {
+            Assert.assertNotNull(e.getErrorCode());
+        }
     }
 
     @Test
     public void processFrames_invalidVerifierId_thenFail() {
         IdentityVerificationRequest identityVerificationRequest = new IdentityVerificationRequest();
         identityVerificationRequest.setSlotId("test");
-        identityVerificationRequest.setStepCode("stepCode");
+
         IdentityVerificationTransaction identityVerificationTransaction = new IdentityVerificationTransaction();
         identityVerificationTransaction.setVerifierId("verifier-id");
         Mockito.when(cacheUtilService.getVerifiedSlotTransaction(identityVerificationRequest.getSlotId())).thenReturn(identityVerificationTransaction);
         Mockito.when(identityVerifierFactory.getIdentityVerifier("verifier-id")).thenReturn(null);
-        webSocketHandler.processFrames(identityVerificationRequest);
-        Mockito.verify(cacheUtilService, Mockito.times(1)).getVerifiedSlotTransaction(identityVerificationRequest.getSlotId());
-        Mockito.verify(identityVerifierFactory, Mockito.times(1)).getIdentityVerifier("verifier-id");
-        Mockito.verify(simpMessagingTemplate, Mockito.times(1))
-                .convertAndSend(Mockito.eq("/topic/" + identityVerificationRequest.getSlotId()), Mockito.any(IdentityVerificationResult.class));
+        try {
+            webSocketHandler.processFrames(identityVerificationRequest);
+            Assert.fail();
+        } catch (SignUpException e) {
+            Assert.assertEquals(PLUGIN_NOT_FOUND, e.getErrorCode());
+        }
     }
 
     @Test
@@ -263,6 +271,7 @@ public class WebsocketHandlerTest {
         IdentityVerificationTransaction transaction = new IdentityVerificationTransaction();
         transaction.setVerifierId("verifier-id");
         transaction.setApplicationId("application-id");
+        transaction.setSlotId("slotId");
         Mockito.when(cacheUtilService.getVerifiedSlotTransaction(identityVerificationResult.getId())).thenReturn(transaction);
         IdentityVerifierPlugin identityVerifierPlugin = Mockito.mock(IdentityVerifierPlugin.class);
         Mockito.when(identityVerifierFactory.getIdentityVerifier("verifier-id")).thenReturn(identityVerifierPlugin);
@@ -270,6 +279,8 @@ public class WebsocketHandlerTest {
 
         webSocketHandler.processVerificationResult(identityVerificationResult);
         Mockito.verify(profileRegistryPlugin, Mockito.times(0)).updateProfile(Mockito.anyString(), Mockito.any());
+        Mockito.verify(auditHelper, Mockito.times(1))
+                .sendAuditTransaction(AuditEvent.PROCESS_FRAMES, AuditEventType.ERROR, "slotId", null);
         Assert.assertEquals(VerificationStatus.FAILED, transaction.getStatus());
         Assert.assertEquals("verification_failed", transaction.getErrorCode());
     }
