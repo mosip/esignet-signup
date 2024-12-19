@@ -335,9 +335,9 @@ public class RegistrationService {
         }
 
         if(transaction.getChallengeRetryAttempts() > resendAttempts) {
+            log.error("generate-challenge failed: too many attempts, blocking the identifier");
             //Resend attempts exhausted, block the identifier for configured time.
             cacheUtilService.blockIdentifier(transactionId, transaction.getIdentifier(), "blocked");
-            log.error("generate-challenge failed: too many attempts");
             throw new GenerateChallengeException(ErrorConstants.TOO_MANY_ATTEMPTS);
         }
 
