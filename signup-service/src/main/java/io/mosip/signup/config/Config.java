@@ -31,7 +31,7 @@ public class Config {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(taskCorePoolSize);
         executor.setMaxPoolSize(taskMaxPoolSize);
-        executor.setThreadNamePrefix("ES-SIGNUP-Async-Thread-");
+        executor.setThreadNamePrefix("MOSIP-SIGNUP-Async-Thread-");
         executor.initialize();
         return executor;
     }

@@ -74,12 +74,6 @@ public class IdentityVerificationService {
     @Value("${mosip.signup.identity-verification.txn.timeout}")
     private int identityVerificationTransactionTimeout;
 
-    @Value("${mosip.signup.slot-allotted.timeout:1000}")
-    private int slotAllottedTimeout;
-
-    @Value("${mosip.signup.verified-slot.timeout:1000}")
-    private int verifiedSlotTimeout;
-
     @Value("${mosip.signup.oauth.client-id}")
     private String oauthClientId;
 
@@ -282,8 +276,7 @@ public class IdentityVerificationService {
         response.addCookie(unsetCookie);
 
         Cookie cookie = new Cookie(SignUpConstants.IDV_SLOT_ALLOTTED, value);
-        int maxAge = identityVerifierDetail.getProcessDuration() > 0 ? identityVerifierDetail.getProcessDuration() : verifiedSlotTimeout;
-        cookie.setMaxAge(slotAllottedTimeout+maxAge);
+        cookie.setMaxAge(identityVerifierDetail.getProcessDuration() > 0 ? identityVerifierDetail.getProcessDuration() : identityVerificationTransactionTimeout);
         cookie.setHttpOnly(true);
         cookie.setSecure(true);
         cookie.setPath("/");
