@@ -1,6 +1,7 @@
 import { useCallback, useEffect } from "react";
 
 import { useSlotAvailability } from "~pages/shared/mutations";
+import { ApiError } from "~typings/core";
 import {
   DefaultEkyVerificationProp,
   SlotAvailabilityRequestDto,
@@ -58,13 +59,18 @@ export const SlotChecking = ({ settings }: DefaultEkyVerificationProp) => {
           setStep(EkycVerificationStep.VerificationScreen);
         }
       },
+      onError: (error: ApiError) => {
+        setCriticalError({
+          errorCode: error.message as any,
+          errorMessage: error.message,
+        });
+      },
     });
   }, []);
 
   if (slotAvailabilityMutation.isPending) {
     return <SlotCheckingLoading />;
   } else if (
-    slotAvailabilityMutation.isSuccess &&
     criticalError?.errorCode === "slot_not_available"
   ) {
     return <SlotUnavailableAlert />;

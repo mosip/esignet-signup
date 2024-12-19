@@ -12,6 +12,13 @@ export enum ResetPasswordStep {
   ResetPasswordConfirmation,
 }
 
+const initialState = {
+  step: ResetPasswordStep.UserInfo,
+  criticalError: null as Error | null,
+  resendOtp: false,
+  resendAttempts: null,
+};
+
 export type ResetPasswordStore = {
   step: ResetPasswordStep;
   setStep: (step: ResetPasswordStep) => void;
@@ -21,34 +28,33 @@ export type ResetPasswordStore = {
   setResendOtp: (resendOtp: boolean) => void;
   resendAttempts: any;
   setResendAttempts: (resendAttempts: any) => void;
+  reset: () => void;
 };
 
 export const useResetPasswordStore = create<ResetPasswordStore>()(
   devtools((set, get) => ({
-    step: ResetPasswordStep.UserInfo,
+    ...initialState,
     setStep: (step: ResetPasswordStep) => {
       const current = get();
       if (isEqual(current.step, step)) return;
-      set((state) => ({ step }));
+      set(() => ({ step }));
     },
-    criticalError: null,
     setCriticalError: (criticalError: Error | null) => {
       const current = get();
       if (isEqual(current.criticalError, criticalError)) return;
-      set((state) => ({ criticalError }));
+      set(() => ({ criticalError }));
     },
-    resendOtp: false,
     setResendOtp: (resendOtp: boolean) => {
       const current = get();
       if (isEqual(current.resendOtp, resendOtp)) return;
-      set((state) => ({ resendOtp }));
+      set(() => ({ resendOtp }));
     },
-    resendAttempts: null,
     setResendAttempts: (resendAttempts: any) => {
       const current = get();
       if (isEqual(current.resendAttempts, resendAttempts)) return;
-      set((state) => ({ resendAttempts }));
+      set(() => ({ resendAttempts }));
     },
+    reset: () => set(() => initialState)
   }))
 );
 
