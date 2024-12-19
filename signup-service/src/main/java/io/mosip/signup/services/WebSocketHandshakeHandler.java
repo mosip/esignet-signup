@@ -6,6 +6,9 @@
 package io.mosip.signup.services;
 
 import io.mosip.signup.dto.IdentityVerificationTransaction;
+import io.mosip.signup.helper.AuditHelper;
+import io.mosip.signup.util.AuditEvent;
+import io.mosip.signup.util.AuditEventType;
 import io.mosip.signup.util.ErrorConstants;
 import io.mosip.signup.util.SignUpConstants;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +34,9 @@ public class WebSocketHandshakeHandler extends DefaultHandshakeHandler {
 
     @Autowired
     CacheUtilService cacheUtilService;
+
+    @Autowired
+    AuditHelper auditHelper;
 
     private static final String SLOTID_QUERY_PARAM = "slotId=";
     private static final String SLOT_COOKIE_NAME = SignUpConstants.IDV_SLOT_ALLOTTED+"=";
@@ -66,11 +72,13 @@ public class WebSocketHandshakeHandler extends DefaultHandshakeHandler {
                 !transaction.getSlotId().equals(queryParam.split(SLOTID_QUERY_PARAM)[1]) ||
                 !transaction.getSlotId().equals(cookieValue.split(VALUE_SEPARATOR)[1])) {
             log.error("SlotId in the handshake url doesn't match the slotId in the transaction");
+            auditHelper.sendAuditTransaction(AuditEvent.HANDSHAKE_FAILED, AuditEventType.ERROR, transactionId,null);
             throw new HandshakeFailureException(ErrorConstants.INVALID_TRANSACTION);
         }
 
         final String username = transactionId.concat(VALUE_SEPARATOR).concat(transaction.getSlotId());
         cacheUtilService.setVerifiedSlotTransaction(transactionId, transaction.getSlotId(), transaction);
+        auditHelper.sendAuditTransaction(AuditEvent.HANDSHAKE_SUCCESS, AuditEventType.SUCCESS, transactionId,null);
 
         return new Principal() {
             @Override
