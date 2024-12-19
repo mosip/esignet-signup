@@ -1,18 +1,17 @@
-#!/bin/sh
-# Initialises signup keycloak-init
+#!/bin/bash
+# Initialises signup keycloak-init and manages secrets in keycloak-client-secrets
 ## Usage: ./keycloak-init.sh [kubeconfig]
 
-if [ $# -ge 1 ] ; then
+if [ $# -ge 1 ]; then
   export KUBECONFIG=$1
 fi
 
-# set commands for error handling.
+# Set commands for error handling
 set -e
-set -o errexit   ## set -e : exit the script if any statement returns a non-true return value
-set -o nounset   ## set -u : exit the script if you try to use an uninitialised variable
-set -o errtrace  # trace ERR through 'time command' and other functions
-set -o pipefail  # trace ERR through pipes
-
+set -o errexit   ## Exit the script if any statement returns a non-true return value
+set -o nounset   ## Exit the script if you try to use an uninitialized variable
+set -o errtrace  # Trace ERR through 'time command' and other functions
+set -o pipefail  # Trace ERR through pipes
 
 NS=signup
 CHART_VERSION=0.0.1-develop
@@ -23,18 +22,17 @@ helm repo update
 
 kubectl create ns $NS || true
 
-echo "checking if mosip-pms-client, mosip-ida-client & mpartner_default_auth client is created already"
-IAMHOST_URL=$(kubectl -n esignet get cm esignet-global -o jsonpath={.data.mosip-iam-external-host})
+echo "mosip-signup-client secret  is created already"
 SIGNUP_CLIENT_SECRET_KEY='mosip_signup_client_secret'
 SIGNUP_CLIENT_SECRET_VALUE=$(kubectl -n keycloak get secrets keycloak-client-secrets -o jsonpath={.data.$SIGNUP_CLIENT_SECRET_KEY} | base64 -d)
+
 echo "Copying keycloak configmaps and secret"
 $COPY_UTIL configmap keycloak-host keycloak $NS
 $COPY_UTIL configmap keycloak-env-vars keycloak $NS
 $COPY_UTIL secret keycloak keycloak $NS
 
-echo "creating and adding roles to keycloak pms & mpartner_default_auth clients for ESIGNET"
-kubectl -n $NS delete secret --ignore-not-found=true keycloak-client-secrets
-helm -n $NS delete signup-keycloak-init
+echo "Creating and adding roles to mosip-signup-client  for SIGNUP"
+helm -n $NS delete signup-keycloak-init || true
 helm -n $NS install signup-keycloak-init mosip/keycloak-init \
   -f keycloak-init-values.yaml \
   --set clientSecrets[0].name="$SIGNUP_CLIENT_SECRET_KEY" \
@@ -52,3 +50,23 @@ else
   echo "Secret 'keycloak-client-secrets' does not exist. Copying the secret to the keycloak namespace."
   $COPY_UTIL secret keycloak-client-secrets $NS keycloak
 fi
+
+# Process remaining secrets for Kernel
+SECRETS=(
+  "mosip-prereg-client-secret"
+  "mosip-auth-client-secret"
+  "mosip-ida-client-secret"
+  "mosip-admin-client-secret"
+)
+
+for SECRET in "${SECRETS[@]}"; do
+  read -p "Enter value for $SECRET (leave empty to create an empty key): " SECRET_VALUE
+  if [[ -z "$SECRET_VALUE" ]]; then
+    echo "No value entered for $SECRET. Creating it with an empty value."
+    SECRET_VALUE=""
+    kubectl patch secret keycloak-client-secrets --namespace=$NS --type=json -p='[{"op": "add", "path": "/data/'$SECRET'", "value": "'$SECRET_VALUE'"}]'
+    $COPY_UTIL secret keycloak-client-secrets $NS keycloak
+  fi
+done
+
+echo "All specified secrets have been updated in keycloak-client-secrets."
