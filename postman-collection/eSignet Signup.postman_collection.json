@@ -38,7 +38,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"requestTime\": \"{{$isoTimestamp}}\",\n    \"request\": {\n        \"clientId\": \"mosip-signup-oauth-client\",\n        \"clientName\": \"mosip-signup-oauth-client\",\n        \"publicKey\":{\n        \"kty\": \"RSA\",\n        \"n\": \"om6aewZ1ls3bwIt0BdAJcxw8N1GjHN4S0pIqZRlxcUtoZCHSi5bTli4kIb0tb9VSrv4FxPbVOL8sJVDv2T5O4prKZUHMfghlgjqOSR_h9vfxqKH8PyBS-AMrkjeNSNf5wIrZQGBcjw45v24GpseHu1O-VAqJQkmGDAIdnj5Cpmoo-_rI45_hTNWPIp-8tLIPB7SqdNd104PdbmDePpVVRQhe3iquGC6x41ATgd2LblVji8_BMm4lP5L9-17AV20yGcO8w_9IciPQIwz0_7c8ApS-mLH1IJ4LuItu-y_Dl4x7_Q-glfobc2JTDPEhpHYEJxIlszGJIwN3A9AAmhqXyQ\",\n        \"e\": \"AQAB\",\n        \"alg\": \"RS256\",\n        \"use\": \"sig\"\n        },\n        \"relyingPartyId\": \"mosip-signup-oauth-client\",\n        \"userClaims\": [],\n        \"authContextRefs\": [\n            \"mosip:idp:acr:id-token\"\n        ],\n        \"logoUri\": \"{{$randomImageUrl}}\",\n        \"redirectUris\": [\n            \"http://localhost:8089/identity-verification\"\n        ],\n        \"grantTypes\": [\n            \"authorization_code\"\n        ],\n        \"clientAuthMethods\": [\n            \"private_key_jwt\"\n        ]\n    }\n}",
+							"raw": "{\n    \"requestTime\": \"{{$isoTimestamp}}\",\n    \"request\": {\n        \"clientId\": \"mosip-signup-oauth-client\",\n        \"clientName\": \"mosip-signup-oauth-client\",\n        \"publicKey\": {\n            \"kty\": \"RSA\",\n            \"n\": \"lfq9e7C3aHIXeMdVV5LnuiC8WRI6jvRdXqNeFwUh6t2jASN4Ku3ENlPGdsIY3VIoR5YXoogfKUkR3suld3pDGzyeuGp8v1gkRJ0IZtPioXyBLa4PET3-9CsdsH5H7MV0Vz6606h1ZfN95vGWjsWyqjbZbzeWc8xbcVQ2-GVMVGVZNrCP-iJ0v7m7f89FXtZH4kzvzKwFt_KJy1_7xD3op2Xu5NtR2-PENDJLwh501slBuJczcagplfZTm4Hz7v9coCx3QHuMOv4iwMhFnpcpymiY7YT1geUDoUzR3MY-1OT-SKzWWnyLC8p8s0EkfvsXXHSr9zVTtqhGqjlZjQP9pQ\",\n            \"e\": \"AQAB\",\n            \"alg\": \"RS256\",\n            \"use\": \"sig\"\n        },\n        \"relyingPartyId\": \"mosip-signup-oauth-client\",\n        \"userClaims\": [],\n        \"authContextRefs\": [\n            \"mosip:idp:acr:id-token\"\n        ],\n        \"logoUri\": \"{{$randomImageUrl}}\",\n        \"redirectUris\": [\n            \"http://localhost:8089/identity-verification\"\n        ],\n        \"grantTypes\": [\n            \"authorization_code\"\n        ],\n        \"clientAuthMethods\": [\n            \"private_key_jwt\"\n        ]\n    }\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -712,20 +712,11 @@
 					"name": "Initiate",
 					"event": [
 						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						},
-						{
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									""
+									"code = pm.environment.get(\"idt_auth_code\");",
+									"pm.environment.set(\"code\", code);"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -743,7 +734,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"requestTime\": \"{{$isoTimestamp}}\",\r\n    \"request\": {\r\n        \"authorizationCode\": \"{{idt_auth_code}}\",\r\n        \"state\": \"urlInfo1724138417665\"\r\n    }\r\n}",
+							"raw": "{\r\n    \"requestTime\": \"{{$isoTimestamp}}\",\r\n    \"request\": {\r\n        \"authorizationCode\": \"{{code}}\",\r\n        \"state\": \"urlInfo1724138417665\"\r\n    }\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -800,27 +791,7 @@
 							"script": {
 								"exec": [
 									"var jsonData = pm.response.json();\r",
-									"pm.globals.set(\"slot_id\", jsonData.response.slotId);\r",
-									"\r",
-									"// Get all Set-Cookie headers\r",
-									"let setCookieHeaders = pm.response.headers.filter(function(header) {\r",
-									"    return header.key.toLowerCase() === \"set-cookie\";\r",
-									"});\r",
-									"\r",
-									"// Loop through each Set-Cookie header and extract the values\r",
-									"setCookieHeaders.forEach(function(cookieHeader, index) {\r",
-									"    console.log(\"Set-Cookie Header #\" + (index + 1) + \": \" + cookieHeader.value);\r",
-									"\r",
-									"    // You can split the cookie into name=value and other attributes\r",
-									"    let cookieParts = cookieHeader.value.split(';'); // Split by ';' to separate name=value from attributes\r",
-									"    let cookieNameValue = cookieParts[0]; // The first part is the cookie name=value\r",
-									"   \r",
-									"    if(cookieNameValue.split('=')[0].trim() === \"IDV_SLOT_ALLOTTED\") {\r",
-									"        console.log(\"IDV_SLOT_ALLOTTED matched\");\r",
-									"        pm.globals.set(\"idv_slot_allotted\", cookieNameValue.split('=')[1].trim());\r",
-									"    }\r",
-									"});\r",
-									""
+									"pm.environment.set(\"slot-id\", jsonData.response.slotId);"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -868,11 +839,6 @@
 							{
 								"key": "X-XSRF-TOKEN",
 								"value": "{{csrf_token}}",
-								"type": "text"
-							},
-							{
-								"key": "Cookie",
-								"value": "IDV_SLOT_ALLOTTED={{idv_slot_allotted}}",
 								"type": "text"
 							}
 						],

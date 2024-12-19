@@ -1,10 +1,10 @@
-# Deployment of eSignet Signup with reduced version of MOSIP environment
+# eSignet Signup
 
-signup-service is part of the esignet modules, This module is used to register end user into any integrated ID registry.
+signup-service is part of the esignet modules, This module is used to register end users into any integrated registry.
 
-Below diagram depicts the high level deployment architecture for signup service with MOSIP ID-repository(registry).
+Below diagram depicts the high level deployment architecture for signup service with MOSIP ID-repo(registry).
 
-![signup-with-mosip-id-repo.png](../signup-with-mosip-id-repo.png)
+![signup-with-mosip-id-repo.png](signup-with-mosip-id-repo.png)
 
 **Note:**
 
@@ -35,6 +35,8 @@ mosip.default.template-languages=eng,khm
 ```
 request.idtypes.allowed=UIN,HANDLE
 
+request.idtypes.allowed.internalauth=UIN
+
 ida.mosip.external.auth.filter.classes.in.execution.order=io.mosip.authentication.hotlistfilter.impl.PartnerIdHotlistFilterImpl,io.mosip.authentication.hotlistfilter.impl.IndividualIdHotlistFilterImpl,io.mosip.authentication.hotlistfilter.impl.DeviceProviderHotlistFilterImpl,io.mosip.authentication.hotlistfilter.impl.DeviceHotlistFilterImpl,io.mosip.authentication.authtypelockfilter.impl.AuthTypeLockFilterImpl
 
 mosip.ida.handle-types.regex={ '@phone' : '^\\+91[1-9][0-9]{7,9}@phone$' }
@@ -52,10 +54,6 @@ mosip.identity.fieldid.handle-postfix.mapping={'phone':'@phone'}
 ```
 
 #### kernel-default.properties
-```
+``
 mosip.kernel.sms.country.code=+91
-
-mosip.kernel.sms.number.min.length=8
-
-mosip.kernel.sms.number.max.length=10
-```
+``

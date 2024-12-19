@@ -9,17 +9,16 @@ Signup service is a spring boot application with endpoints to
 5. Reset the password of the registered user
 6. Websocket handler and endpoints to support video identity verification process.
 
-In this version, signup-service require below MOSIP kernel modules and its dependents:
-1. kernel otpmanager
-2. kernel auditmanager
-3. kernel authmanager
-4. kernel notifier
+Signup service connects to MOSIP IDRepo Identity service to register the verified user as an identity record.
+ID Repo identity service publishes the registered identity to MOSIP IDA. This enables authentication with the registered
+username and password with eSignet.
 
-**Note:** To run signup-service locally `mosip.internal.domain.url` property should be set with a valid base URL of any MOSIP(LTS) environment.
+Publishing registered/updated identity to MOSIP IDA is an async process. Hence, status endpoint is configured to check
+the latest status from server after every configured interval from signup UI.
 
 ### Signup service uses spring cache to store the transaction details.
 
-#### Registration flow:
+Registration flow:
 
 | Endpoint          | Cache                                                                | Evict                                                                |
 |-------------------|----------------------------------------------------------------------|----------------------------------------------------------------------|
@@ -28,7 +27,7 @@ In this version, signup-service require below MOSIP kernel modules and its depen
 | register          | status_check (k: verified-transactionId, v: SignupTransaction)       | challenge_verified (k: verified-transactionId, v: SignupTransaction) |
 | status            | status_check (k: verified-transactionId, v: SignupTransaction)       |                                                                      |
 
-#### Reset Password flow:
+Reset Password flow:
 
 | Endpoint          | Cache                                                                | Evict                                                                |
 |-------------------|----------------------------------------------------------------------|----------------------------------------------------------------------|
@@ -38,7 +37,7 @@ In this version, signup-service require below MOSIP kernel modules and its depen
 | status            | status_check (k: verified-transactionId, v: SignupTransaction)       |                                                                      |
 
 
-#### Identity Verification flow:
+Identity Verification flow:
 
 | Endpoint                        | Cache                                                                    | Evict                                                                                                                                                                        |
 |---------------------------------|--------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -64,31 +63,31 @@ In this version, signup-service require below MOSIP kernel modules and its depen
 > Note: The connection-id is concatenation of transactionId and slotId with a separator.
 
 
-## Build & Run (for developers)
+## Build & run (for developers)
 The project requires JDK 11.
 1. Build and install:
     ```
-    $ mvn clean install -Dgpg.skip=true -Dmaven.gitcommitid.skip=true
+    $ mvn clean install -Dgpg.skip=true
     ```
-2. Run with IntelliJ IDE
+2. Build Docker for a service:
+    ```
+    $ docker build -f Dockerfile
+    ```
+   3. Run with IntelliJ IDEA
 
-   3.1 Right click on signup-service and click on "Open module settings".
+      3.1 Right click on parent POM file (pom.xml) and click on button "Add as Maven Project".
 
-   3.2 Click on "+" to add jars from external directory.
+      3.2 Add below dependency in the signup-service pom.xml
 
-   3.3 Choose below jars under signup-service/target/signup-plugins and click on "Apply" and "Ok" button.
+   ```
+            <dependency>
+               <groupId>io.mosip.kernel</groupId>
+               <artifactId>kernel-auth-adapter-lite</artifactId>
+               <version>1.2.0.1-B4</version>
+           </dependency>
+   ```
 
-      -> [kernel-auth-adapter-lite.jar](target/signup-plugins/kernel-auth-adapter-lite.jar)
+      3.3 Add that file to "signup-service" in Project Structure settings of IntelliJ, and Apply.
 
-      -> [esignet-mock-plugin.jar](target/signup-plugins/esignet-mock-plugin.jar)
-   
-   3.4 Update below properties in [application-local.properties](src/main/resources/application-local.properties) to point to right MOSIP environment.
-
-      -> `mosip.internal.domain.url=https://api-internal.dev.mosip.net`
-
-      -> `keycloak.external.url=https://iam.dev.mosip.net`
-
-      -> `mosip.signup.client.secret=actual-secret`
-
-   3.4 Go to [SignUpServiceApplication.java](src/main/java/io/mosip/signup/SignUpServiceApplication.java) and run from the main class.
+      3.4 Open signup-service/src/main/java/io/mosip/signup/SignUpServiceApplication.java and click on Run
 

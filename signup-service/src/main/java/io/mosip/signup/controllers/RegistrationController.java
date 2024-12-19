@@ -45,7 +45,7 @@ public class RegistrationController {
     protected void initBinder(WebDataBinder binder) {
         if(binder.getTarget() != null && RequestWrapper.class.equals(binder.getTarget().getClass())) {
             RequestWrapper dto = (RequestWrapper) binder.getTarget();
-            if(dto.getRequest() != null && RegisterRequest.class.equals(dto.getRequest().getClass())) {
+            if(RegisterRequest.class.equals(dto.getRequest().getClass())) {
                 RegisterRequest registerRequest = (RegisterRequest) dto.getRequest();
                 //TODO remove this logic after changes in the UI is done to pass password inside userinfo
                 registerRequest.setUserInfo(
