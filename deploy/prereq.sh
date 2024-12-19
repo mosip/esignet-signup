@@ -50,7 +50,7 @@ function installing_prereq() {
         kubectl -n $NS create secret generic signup-captcha --from-literal=signup-captcha-site-key=$SSITE_KEY --from-literal=signup-captcha-secret-key=$SSECRET_KEY --dry-run=client -o yaml | kubectl apply -f -
         echo "Captcha secrets for esignet configured sucessfully"
 
-        ../copy_cm_func.sh secret signup-captcha $NS captcha
+        ./copy_cm_func.sh secret signup-captcha $NS captcha
 
         # Check if the first environment variable exists
         ENV_VAR_EXISTS=$(kubectl -n captcha get deployment captcha -o jsonpath="{.spec.template.spec.containers[0].env[?(@.name=='MOSIP_CAPTCHA_SECRET_SIGNUP')].name}")
@@ -64,10 +64,9 @@ function installing_prereq() {
             echo "Environment variable 'MOSIP_CAPTCHA_SECRET_SIGNUP' exists. Updating it..."
             kubectl patch deployment -n captcha captcha --type='json' -p='[{"op": "replace", "path": "/spec/template/spec/containers/0/env[?(@.name==\"MOSIP_CAPTCHA_SECRET_SIGNUP\")]", "value": {"name": "MOSIP_CAPTCHA_SECRET_SIGNUP", "valueFrom": {"secretKeyRef": {"name": "signup-captcha", "key": "signup-captcha-secret-key"}}}}]'
         fi
-        break
+
       elif [ "$ans" = "N" ] || [ "$ans" = "n" ]; then
-        echo "Exiting captcha configuration."
-        break  # Exit the loop
+        exit 1
       else
         echo "Please provide a correct option (Y or N)"
       fi

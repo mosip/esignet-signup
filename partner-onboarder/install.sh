@@ -111,7 +111,6 @@ function installing_onboarder() {
       --set extraEnvVarsCM[2]=keycloak-host \
       $ENABLE_INSECURE \
       -f values.yaml \
-      --set image.repository=mosipdev/partner-onboarder --set image.tag=MOSIP-35987 \
       --version $CHART_VERSION \
       --wait --wait-for-jobs
     echo "Partner onboarder executed and reports are moved to S3 or NFS please check the same to make sure partner was onboarded sucessfully."
