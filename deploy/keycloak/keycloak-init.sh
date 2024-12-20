@@ -53,10 +53,10 @@ fi
 
 # Process remaining secrets for Kernel
 SECRETS=(
-  "mosip-prereg-client-secret"
-  "mosip-auth-client-secret"
-  "mosip-ida-client-secret"
-  "mosip-admin-client-secret"
+  "mosip_prereg_client_secret"
+  "mosip_auth_client_secret"
+  "mosip_ida_client_secret"
+  "mosip_admin_client_secret"
 )
 
 for SECRET in "${SECRETS[@]}"; do
