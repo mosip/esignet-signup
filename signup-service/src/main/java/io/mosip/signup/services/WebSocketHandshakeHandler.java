@@ -60,7 +60,11 @@ public class WebSocketHandshakeHandler extends DefaultHandshakeHandler {
         if(transactionCookie.isEmpty())
             throw new HandshakeFailureException(ErrorConstants.INVALID_TRANSACTION);
 
-        String cookieValue = transactionCookie.get().split(SLOT_COOKIE_NAME)[1];
+        String[] cookieParts = transactionCookie.get().split(SLOT_COOKIE_NAME);
+        if (cookieParts.length < 2) {
+            throw new HandshakeFailureException(ErrorConstants.INVALID_TRANSACTION);
+        }
+        String cookieValue = cookieParts[1].trim();
         log.info("cookie  transactionId; {}", cookieValue);
         String transactionId = cookieValue.split(VALUE_SEPARATOR)[0].trim();
         IdentityVerificationTransaction transaction = cacheUtilService.getSlotAllottedTransaction(transactionId);
