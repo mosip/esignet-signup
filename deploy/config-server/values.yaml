@@ -65,11 +65,11 @@ envVariables:
         key: admin-password
     enabled: true
 
-  - name: SPRING_CLOUD_CONFIG_SERVER_OVERRIDES_MPARTNER_DEFAULT_AUTH_SECRET
+  - name: SPRING_CLOUD_CONFIG_SERVER_OVERRIDES_MOSIP_AUTH_CLIENT_SECRET
     valueFrom:
       secretKeyRef:
         name: keycloak-client-secrets
-        key: mpartner_default_auth_secret
+        key: mosip_auth_client_secret
     enabled: true
 
   - name: SPRING_CLOUD_CONFIG_SERVER_OVERRIDES_MOSIP_PMS_CLIENT_SECRET
