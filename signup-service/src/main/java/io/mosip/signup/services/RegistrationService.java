@@ -120,7 +120,13 @@ public class RegistrationService {
         String challenge = challengeManagerService.generateChallenge(transaction);
         String challengeHash = IdentityProviderUtil.generateB64EncodedHash(IdentityProviderUtil.ALGO_SHA3_256, challenge);
         transaction.setChallengeHash(challengeHash);
+
         transaction.increaseAttempt();
+        if(transaction.getChallengeRetryAttempts() > resendAttempts) {
+            //Resend attempts exhausted, block the identifier for configured time.
+            cacheUtilService.blockIdentifier(transactionId, transaction.getIdentifier(), "blocked");
+        }
+
         transaction.setLocale(generateChallengeRequest.getLocale());
         cacheUtilService.createUpdateChallengeGeneratedTransaction(transactionId, transaction);
 
@@ -332,13 +338,6 @@ public class RegistrationService {
         if(!transaction.isValidIdentifier(identifier)) {
             log.error("generate-challenge failed: invalid identifier");
             throw new SignUpException(ErrorConstants.IDENTIFIER_MISMATCH);
-        }
-
-        if(transaction.getChallengeRetryAttempts() > resendAttempts) {
-            log.error("generate-challenge failed: too many attempts, blocking the identifier");
-            //Resend attempts exhausted, block the identifier for configured time.
-            cacheUtilService.blockIdentifier(transactionId, transaction.getIdentifier(), "blocked");
-            throw new GenerateChallengeException(ErrorConstants.TOO_MANY_ATTEMPTS);
         }
 
         if(transaction.getLastRetryToNow() <= resendDelay) {
