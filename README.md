@@ -80,7 +80,7 @@ To complete the signup portal deployment below MOSIP kernel services are require
   
 ```  
 ## Partner onboarding
-* Perform Partner onboarding for esignet Signup OIDC client using [steps](partner-onboarder/README.md) only if mosip-identity plugin is used.  
+* Partner onboarding for esignet Signup OIDC client can be performed with either mosip-identity plugin or mock-identity plugin through the partner-onboarder script using [steps](partner-onboarder/README.md). 
 
 ## APIs
 API documentation is available [here](docs/esignet-signup-openapi.yaml).
