@@ -287,6 +287,16 @@ extraEnvVars: |
       secretKeyRef:
         name: keycloak-client-secrets
         key: mosip_signup_client_secret
+  - name: MOSIP_SIGNUP_MOCK_MANDATORY_ATTRIBUTES_CREATE
+    value: fullName,phone,password,preferredLang
+  - name: MOSIP_SIGNUP_MOCK_USERNAME_FIELD
+    value: phone
+  - name: MOSIP_SIGNUP_SUPPORTED_LANGUAGES
+    value: '{''eng'',''khm''}'
+  - name: MOSIP_SIGNUP_FULLNAME_PATTERN
+    value: ^[\u1780-\u17FF\u19E0-\u19FF\u1A00-\u1A9F\u0020]{1,30}$
+  - name: MOSIP_SIGNUP_UI_CONFIG_KEY_VALUES_FULLNAME_ALLOWED_CHARACTERS
+    value: ^[\u1780-\u17FF\u19E0-\u19FF\u1A00-\u1A9F\u0020]
 
 ## ConfigMap with extra environment variables that used
 ##

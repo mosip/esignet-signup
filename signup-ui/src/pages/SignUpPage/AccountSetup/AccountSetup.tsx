@@ -327,14 +327,14 @@ export const AccountSetup = ({ settings, methods }: AccountSetupProps) => {
                       components={{
                         TermsAndConditionsAnchor: (
                           <span
-                            className="text-primary underline"
+                            className="text-primary underline hover:cursor-pointer"
                             aria-label="Terms and Conditions"
                             onClick={onOpenTerm}
                           />
                         ),
                         PrivacyPolicyAnchor: (
                           <span
-                            className="text-primary underline"
+                            className="text-primary underline hover:cursor-pointer"
                             aria-label="Terms and Conditions"
                             onClick={onOpenPrivacy}
                           />

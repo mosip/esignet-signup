@@ -7,6 +7,9 @@ package io.mosip.signup.services;
 
 
 import io.mosip.signup.dto.IdentityVerificationTransaction;
+import io.mosip.signup.helper.AuditHelper;
+import io.mosip.signup.util.AuditEvent;
+import io.mosip.signup.util.AuditEventType;
 import io.mosip.signup.util.ErrorConstants;
 import org.junit.Assert;
 import org.junit.Test;
@@ -36,6 +39,9 @@ public class WebSocketHandshakeHandlerTest {
     @Mock
     private CacheUtilService cacheUtilService;
 
+    @Mock
+    private AuditHelper auditHelper;
+
     private Map<String, Object> attributes;
 
     @BeforeEach
@@ -61,6 +67,7 @@ public class WebSocketHandshakeHandlerTest {
 
         Assert.assertNotNull(principal);
         Assert.assertEquals("Slot###123", principal.getName());
+        Mockito.verify(auditHelper).sendAuditTransaction(AuditEvent.HANDSHAKE_SUCCESS, AuditEventType.SUCCESS, "Slot", null);
     }
 
     @Test
@@ -95,6 +102,26 @@ public class WebSocketHandshakeHandlerTest {
         ServerHttpRequest request = Mockito.mock(ServerHttpRequest.class);
         HttpHeaders headers=new HttpHeaders();
         headers.set("Cookie","IDV_SLOT_ALLOTTED=Slot###1234");
+        Mockito.when(request.getHeaders()).thenReturn(headers);
+        Mockito.when(request.getURI()).thenReturn(new URI("http://localhost?slotId=123"));
+        try{
+            webSocketHandshakeHandler.determineUser(request, Mockito.mock(WebSocketHandler.class), attributes);
+        }catch (HandshakeFailureException e){
+            Assert.assertEquals(ErrorConstants.INVALID_TRANSACTION, e.getMessage());
+        }
+        Mockito.verify(auditHelper).sendAuditTransaction(AuditEvent.HANDSHAKE_FAILED, AuditEventType.ERROR, "Slot", null);
+    }
+
+    @Test
+    public void determineUser_withInvalidCookieLength_thenFail() throws Exception {
+
+        IdentityVerificationTransaction transaction = new IdentityVerificationTransaction();
+        transaction.setSlotId("123");
+        Mockito.when(cacheUtilService.getSlotAllottedTransaction(Mockito.anyString())).thenReturn(transaction);
+
+        ServerHttpRequest request = Mockito.mock(ServerHttpRequest.class);
+        HttpHeaders headers=new HttpHeaders();
+        headers.set("Cookie","IDV_SLOT_ALLOTTED=");
         Mockito.when(request.getHeaders()).thenReturn(headers);
         Mockito.when(request.getURI()).thenReturn(new URI("http://localhost?slotId=123"));
         try{

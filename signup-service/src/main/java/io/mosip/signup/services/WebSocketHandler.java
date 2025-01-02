@@ -20,6 +20,9 @@ import io.mosip.signup.dto.IdentityVerificationTransaction;
 import io.mosip.signup.dto.IdentityVerifierDetail;
 import io.mosip.signup.exception.InvalidTransactionException;
 import io.mosip.signup.exception.SignUpException;
+import io.mosip.signup.helper.AuditHelper;
+import io.mosip.signup.util.AuditEvent;
+import io.mosip.signup.util.AuditEventType;
 import io.mosip.signup.util.ErrorConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,22 +60,21 @@ public class WebSocketHandler {
     @Autowired
     private SimpMessagingTemplate simpMessagingTemplate;
 
+    @Autowired
+    AuditHelper auditHelper;
+
 
     public void processFrames(IdentityVerificationRequest identityVerificationRequest) {
         String errorCode = null;
         try {
             validate(identityVerificationRequest);
             IdentityVerificationTransaction transaction = cacheUtilService.getVerifiedSlotTransaction(identityVerificationRequest.getSlotId());
-            if(transaction == null) {
-                log.error("Ignoring identity verification request received for unknown/expired transaction!");
+            if(transaction == null)
                 throw new InvalidTransactionException();
-            }
 
             IdentityVerifierPlugin plugin = identityVerifierFactory.getIdentityVerifier(transaction.getVerifierId());
-            if(plugin == null) {
-                log.error("Ignoring identity verification request received for unknown {} IDV plugin!", identityVerificationRequest.getSlotId());
+            if(plugin == null)
                 throw new SignUpException(PLUGIN_NOT_FOUND);
-            }
 
             if(plugin.isStartStep(identityVerificationRequest.getStepCode())) {
                 IdentityVerificationInitDto identityVerificationInitDto = new IdentityVerificationInitDto();
@@ -137,7 +139,7 @@ public class WebSocketHandler {
                 .filter(idv -> idv.isActive() && idv.getId().equals(transaction.getVerifierId()))
                 .findFirst();
 
-        result.ifPresent(identityVerifierDetail -> cacheUtilService.addToSlotConnected(username, getVerificationProcessExpireTimeInMillis(identityVerifierDetail)));
+        result.ifPresent(identityVerifierDetail -> cacheUtilService.updateSlotExpireTime(username, getVerificationProcessExpireTimeInMillis(identityVerifierDetail)));
     }
 
     private void handleVerificationResult(IdentityVerifierPlugin plugin, IdentityVerificationResult identityVerificationResult,
@@ -169,14 +171,13 @@ public class WebSocketHandler {
                     break;
             }
 
-        } catch (IdentityVerifierException e) {
-            log.error("Failed to fetch verified result from the plugin", e);
-            transaction.setStatus(VerificationStatus.FAILED);
-            transaction.setErrorCode(e.getErrorCode());
-        } catch (ProfileException e) {
+        } catch (IdentityVerifierException | ProfileException e) {
             log.error("Failed to update profile", e);
             transaction.setStatus(VerificationStatus.FAILED);
-            transaction.setErrorCode(e.getErrorCode());
+            transaction.setErrorCode(e instanceof IdentityVerifierException ?
+                    ((IdentityVerifierException) e).getErrorCode() :
+                    ((ProfileException) e).getErrorCode());
+            auditHelper.sendAuditTransaction(AuditEvent.PROCESS_FRAMES, AuditEventType.ERROR,transaction.getSlotId(), null);
         }
         cacheUtilService.updateVerifiedSlotTransaction(identityVerificationResult.getId(), transaction);
         cacheUtilService.updateVerificationStatus(transaction.getAccessTokenSubject(), transaction.getStatus().toString(),
@@ -192,18 +193,14 @@ public class WebSocketHandler {
         IDVProcessFeedback idvProcessFeedback = new IDVProcessFeedback();
         idvProcessFeedback.setType(ProcessFeedbackType.ERROR);
         idvProcessFeedback.setCode(errorCode);
-
         IdentityVerificationResult identityVerificationResult = new IdentityVerificationResult();
         identityVerificationResult.setFeedback(idvProcessFeedback);
-
         simpMessagingTemplate.convertAndSend("/topic/" + slotId, identityVerificationResult);
     }
-
     private void validate(IdentityVerificationRequest request) {
         if (request.getStepCode() == null || request.getStepCode().isBlank()) {
             throw new SignUpException(ErrorConstants.INVALID_STEP_CODE);
         }
-
         List<FrameDetail> frames = request.getFrames();
         if (frames != null && !frames.isEmpty()) {
             for (FrameDetail frame : frames) {
