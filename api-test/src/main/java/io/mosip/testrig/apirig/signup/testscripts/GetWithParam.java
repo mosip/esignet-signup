@@ -131,35 +131,38 @@ public class GetWithParam extends AdminTestUtil implements ITest {
 		}
 
 		else {
+			String inputJson = getJsonFromTemplate(testCaseDTO.getInput(), testCaseDTO.getInputTemplate());
+			inputJson = SignupUtil.inputstringKeyWordHandeler(inputJson, testCaseName);
+			
 			if (testCaseName.contains("ESignet_")) {
 				String tempUrl = SignupConfigManager.getEsignetBaseUrl();
 				if (testCaseDTO.getEndPoint().contains("/signup/"))
 					tempUrl = SignupConfigManager.getSignupBaseUrl();
-				
+
 				if (testCaseDTO.getEndPoint().startsWith("$SUNBIRDBASEURL$") && testCaseName.contains("SunBirdR")) {
 
 					if (SignupConfigManager.isInServiceNotDeployedList("sunbirdrc"))
 						throw new SkipException(GlobalConstants.SERVICE_NOT_DEPLOYED_MESSAGE);
 
-					if (SignupConfigManager.getSunBirdBaseURL() != null && !SignupConfigManager.getSunBirdBaseURL().isBlank())
+					if (SignupConfigManager.getSunBirdBaseURL() != null
+							&& !SignupConfigManager.getSunBirdBaseURL().isBlank())
 						tempUrl = SignupConfigManager.getSunBirdBaseURL();
-						//Once sunbird registry is pointing to specific env, remove the above line and uncomment below line
-						//tempUrl = ApplnURI.replace(GlobalConstants.API_INTERNAL, ConfigManager.getSunBirdBaseURL());
+					// Once sunbird registry is pointing to specific env, remove the above line and
+					// uncomment below line
+					// tempUrl = ApplnURI.replace(GlobalConstants.API_INTERNAL,
+					// ConfigManager.getSunBirdBaseURL());
 					testCaseDTO.setEndPoint(testCaseDTO.getEndPoint().replace("$SUNBIRDBASEURL$", ""));
 				}
-				
+
 				if (testCaseName.contains("_AuthToken_Xsrf_")) {
 					response = getRequestWithCookieAuthHeaderAndXsrfToken(tempUrl + testCaseDTO.getEndPoint(),
-							getJsonFromTemplate(testCaseDTO.getInput(), testCaseDTO.getInputTemplate()), COOKIENAME,
-							testCaseDTO.getRole(), testCaseDTO.getTestCaseName());
+							inputJson, COOKIENAME, testCaseDTO.getRole(), testCaseDTO.getTestCaseName());
 				} else {
-					response = getWithPathParamAndCookie(tempUrl + testCaseDTO.getEndPoint(),
-							getJsonFromTemplate(testCaseDTO.getInput(), testCaseDTO.getInputTemplate()), COOKIENAME,
+					response = getWithPathParamAndCookie(tempUrl + testCaseDTO.getEndPoint(), inputJson, COOKIENAME,
 							testCaseDTO.getRole(), testCaseDTO.getTestCaseName());
 				}
 			} else {
-				response = getWithPathParamAndCookie(ApplnURI + testCaseDTO.getEndPoint(),
-						getJsonFromTemplate(testCaseDTO.getInput(), testCaseDTO.getInputTemplate()), auditLogCheck,
+				response = getWithPathParamAndCookie(ApplnURI + testCaseDTO.getEndPoint(), inputJson, auditLogCheck,
 						COOKIENAME, testCaseDTO.getRole(), testCaseDTO.getTestCaseName(), sendEsignetToken);
 			}
 			Map<String, List<OutputValidationDto>> ouputValid = null;
