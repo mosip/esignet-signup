@@ -18,7 +18,10 @@
   },
   "errors": {
     "low_light": { "eng" : "Low light, consider facing the sun or switching on the lights" },
-    "id_card_too_far": { "eng" : "Unable to read card as its too far" }
+    "id_card_too_far": { "eng" : "Unable to read card as its too far" },
+    "invalid_frames": { "eng" : "invalid_frames"},
+    "invalid_order": { "eng" : "invalid_order"},
+    "invalid_step_code": { "eng" :  "invalid_step_code"}
   },
   "messages": {
     "turn_left": { "eng" : "Turn your head to left" },
