@@ -44,7 +44,7 @@ cat > $JWK_FILE <<EOL
 {
   "kty": "RSA",
   "n": "$MODULUS_BASE64URL",
-  "e": "$EXPONENT_BASE64URL",
+  "e": "AQAB",
   "alg": "RS256",
   "use": "sig"
 }

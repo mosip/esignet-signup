@@ -22,17 +22,17 @@ const NavBar = () => {
   );
 
   const [navbarStyle, setNavbarStyle] = useState(
-    "sticky top-0 z-40 h-[70px] w-full border-gray-500 bg-white px-2 py-2 sm:px-0 shadow-md"
+    "sticky top-0 z-40 h-auto w-full border-gray-500 bg-white py-0 sm:px-0 shadow-md"
   );
 
   useEffect(() => {
     if (errorBannerMessage !== null && errorBannerMessage !== "") {
       setNavbarStyle(
-        "sticky top-0 z-40 h-[70px] w-full border-gray-500 bg-white px-2 py-2 sm:px-0"
+        "sticky top-0 z-40 h-auto w-full border-gray-500 bg-white py-0 px-0 sm:px-0"
       );
     } else {
       setNavbarStyle(
-        "sticky top-0 z-40 h-[70px] w-full border-gray-500 bg-white px-2 py-2 sm:px-0 shadow-md"
+        "sticky top-0 z-40 h-auto w-full border-gray-500 bg-white py-0 sm:px-0 shadow-md"
       );
     }
   }, [errorBannerMessage]);
@@ -80,14 +80,14 @@ const NavBar = () => {
       <div className="row">
         <div>
           <Offline polling={pollingConfig} onChange={handleOnchangeOffline}>
-            <div className="top-[70px] left-0 w-full h-[40px] opacity-100 flex justify-center items-center bg-[#FAEFEF]">
+            <div className="top-[70px] left-0 w-full h-auto py-3 opacity-100 flex justify-center items-center bg-[#FAEFEF] text-center">
               <p className="font-inter font-semibold text-[14px] leading-[17px] tracking-[0px] opacity-100 text-[#D52929]">
                 {t("offline_polling_prompt")}
               </p>
             </div>
           </Offline>
           {showBackOnline &&
-            <div className="top-[70px] left-0 w-full h-[40px] opacity-100 flex justify-center items-center bg-[#EAFAE4]">
+            <div className="top-[70px] left-0 w-full h-auto py-3 opacity-100 flex justify-center items-center bg-[#EAFAE4] text-center">
               <p className="font-inter font-semibold text-[14px] leading-[17px] tracking-[0px] opacity-100 text-[#419533]">
                 {t("online_polling_prompt")}
               </p>
