@@ -10,8 +10,11 @@ import io.mosip.signup.api.spi.ProfileRegistryPlugin;
 import io.mosip.signup.api.util.VerificationStatus;
 import io.mosip.signup.dto.IdentityVerificationRequest;
 import io.mosip.signup.dto.IdentityVerificationTransaction;
-import io.mosip.signup.exception.InvalidTransactionException;
 import io.mosip.signup.exception.SignUpException;
+import io.mosip.signup.helper.AuditHelper;
+import io.mosip.signup.util.AuditEvent;
+import io.mosip.signup.util.AuditEventType;
+import io.mosip.signup.util.ErrorConstants;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,11 +26,13 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 import static io.mosip.signup.api.util.ErrorConstants.IDENTITY_VERIFICATION_FAILED;
-import static io.mosip.signup.api.util.ErrorConstants.PLUGIN_NOT_FOUND;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 @RunWith(SpringRunner.class)
 public class WebsocketHandlerTest {
@@ -46,6 +51,9 @@ public class WebsocketHandlerTest {
 
     @Mock
     private CacheUtilService cacheUtilService;
+
+    @Mock
+    private AuditHelper auditHelper;
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
@@ -94,30 +102,28 @@ public class WebsocketHandlerTest {
     public void processFrames_invalidTransaction_thenFail() {
         IdentityVerificationRequest identityVerificationRequest = new IdentityVerificationRequest();
         identityVerificationRequest.setSlotId("test");
+        identityVerificationRequest.setStepCode("stepCode");
         Mockito.when(cacheUtilService.getVerifiedSlotTransaction(identityVerificationRequest.getSlotId())).thenReturn(null);
-        try {
-            webSocketHandler.processFrames(identityVerificationRequest);
-            Assert.fail();
-        } catch (InvalidTransactionException e) {
-            Assert.assertNotNull(e.getErrorCode());
-        }
+        webSocketHandler.processFrames(identityVerificationRequest);
+        Mockito.verify(cacheUtilService, Mockito.times(1)).getVerifiedSlotTransaction(identityVerificationRequest.getSlotId());
+        Mockito.verify(simpMessagingTemplate, Mockito.times(1))
+                .convertAndSend(Mockito.eq("/topic/" + identityVerificationRequest.getSlotId()), Mockito.any(IdentityVerificationResult.class));
     }
 
     @Test
     public void processFrames_invalidVerifierId_thenFail() {
         IdentityVerificationRequest identityVerificationRequest = new IdentityVerificationRequest();
         identityVerificationRequest.setSlotId("test");
-
+        identityVerificationRequest.setStepCode("stepCode");
         IdentityVerificationTransaction identityVerificationTransaction = new IdentityVerificationTransaction();
         identityVerificationTransaction.setVerifierId("verifier-id");
         Mockito.when(cacheUtilService.getVerifiedSlotTransaction(identityVerificationRequest.getSlotId())).thenReturn(identityVerificationTransaction);
         Mockito.when(identityVerifierFactory.getIdentityVerifier("verifier-id")).thenReturn(null);
-        try {
-            webSocketHandler.processFrames(identityVerificationRequest);
-            Assert.fail();
-        } catch (SignUpException e) {
-            Assert.assertEquals(PLUGIN_NOT_FOUND, e.getErrorCode());
-        }
+        webSocketHandler.processFrames(identityVerificationRequest);
+        Mockito.verify(cacheUtilService, Mockito.times(1)).getVerifiedSlotTransaction(identityVerificationRequest.getSlotId());
+        Mockito.verify(identityVerifierFactory, Mockito.times(1)).getIdentityVerifier("verifier-id");
+        Mockito.verify(simpMessagingTemplate, Mockito.times(1))
+                .convertAndSend(Mockito.eq("/topic/" + identityVerificationRequest.getSlotId()), Mockito.any(IdentityVerificationResult.class));
     }
 
     @Test
@@ -261,6 +267,7 @@ public class WebsocketHandlerTest {
         IdentityVerificationTransaction transaction = new IdentityVerificationTransaction();
         transaction.setVerifierId("verifier-id");
         transaction.setApplicationId("application-id");
+        transaction.setSlotId("slotId");
         Mockito.when(cacheUtilService.getVerifiedSlotTransaction(identityVerificationResult.getId())).thenReturn(transaction);
         IdentityVerifierPlugin identityVerifierPlugin = Mockito.mock(IdentityVerifierPlugin.class);
         Mockito.when(identityVerifierFactory.getIdentityVerifier("verifier-id")).thenReturn(identityVerifierPlugin);
@@ -268,6 +275,8 @@ public class WebsocketHandlerTest {
 
         webSocketHandler.processVerificationResult(identityVerificationResult);
         Mockito.verify(profileRegistryPlugin, Mockito.times(0)).updateProfile(Mockito.anyString(), Mockito.any());
+        Mockito.verify(auditHelper, Mockito.times(1))
+                .sendAuditTransaction(AuditEvent.PROCESS_FRAMES, AuditEventType.ERROR, "slotId", null);
         Assert.assertEquals(VerificationStatus.FAILED, transaction.getStatus());
         Assert.assertEquals("verification_failed", transaction.getErrorCode());
     }
@@ -305,4 +314,79 @@ public class WebsocketHandlerTest {
         Mockito.verify(profileRegistryPlugin, Mockito.times(0)).updateProfile(Mockito.anyString(), Mockito.any());
         Mockito.verify(identityVerifierFactory, Mockito.times(1)).getIdentityVerifier(Mockito.anyString());
     }
+
+    @Test
+    public void testValidate_withValidRequest_thenPass() {
+        IdentityVerificationRequest request = new IdentityVerificationRequest();
+        request.setSlotId("validSlotId");
+        request.setStepCode("validStepCode");
+        request.setFrames(new ArrayList<>());
+        assertDoesNotThrow(() -> webSocketHandler.processFrames(request));
+    }
+
+    @Test
+    public void testValidate_withNullStepCode_thenFail() {
+        IdentityVerificationRequest request = new IdentityVerificationRequest();
+        request.setSlotId("validSlotId");
+        request.setStepCode(null);
+
+        try{
+            webSocketHandler.processFrames(request);
+        }catch (SignUpException e){
+            Assert.assertEquals(e.getErrorCode(), ErrorConstants.INVALID_STEP_CODE);
+        }
+    }
+
+    @Test
+    public void testValidate_withBlankStepCode_thenFail() {
+        IdentityVerificationRequest request = new IdentityVerificationRequest();
+        request.setSlotId("validSlotId");
+        request.setStepCode("  ");
+        try{
+            webSocketHandler.processFrames(request);
+        }catch (SignUpException e){
+            Assert.assertEquals(e.getErrorCode(),ErrorConstants.INVALID_STEP_CODE);
+        }
+    }
+
+    @Test
+    public void testValidate_WithInvalidFrameContent_thenFail() {
+        FrameDetail frameDetail = new FrameDetail();
+        frameDetail.setFrame("  ");
+        frameDetail.setOrder(1);
+
+        List<FrameDetail> frames = new ArrayList<>();
+        frames.add(frameDetail);
+
+        IdentityVerificationRequest request = new IdentityVerificationRequest();
+        request.setSlotId("validSlotId");
+        request.setStepCode("validStepCode");
+        request.setFrames(frames);
+        try{
+            webSocketHandler.processFrames(request);
+        }catch (SignUpException e){
+            Assert.assertEquals(e.getErrorCode(), ErrorConstants.INVALID_FRAME);
+        }
+    }
+
+    @Test
+    public void testValidate_WithInvalidOrder_thenFail() {
+        FrameDetail frameDetail = new FrameDetail();
+        frameDetail.setFrame("turn left");
+        frameDetail.setOrder(-1);
+
+        List<FrameDetail> frames = new ArrayList<>();
+        frames.add(frameDetail);
+
+        IdentityVerificationRequest request = new IdentityVerificationRequest();
+        request.setSlotId("validSlotId");
+        request.setStepCode("validStepCode");
+        request.setFrames(frames);
+        try {
+            webSocketHandler.processFrames(request);
+        } catch (SignUpException e) {
+            Assert.assertEquals(e.getErrorCode(), ErrorConstants.INVALID_ORDER);
+        }
+    }
+
 }

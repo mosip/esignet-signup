@@ -44,22 +44,38 @@ body {
 
 .section-background .top_left_bg_logo {
   display: var(--top-left-bg-logo-display);
-  content: var(--top-left-bg-logo-url);
+  -webkit-mask-image: var(--top-left-bg-logo-url);
+  mask-image: var(--top-left-bg-logo-url);
+  background-color: var(--default);
+  width: var(--top-left-bg-width);
+  height: var(--top-left-bg-height);
 }
 
 .section-background .top_right_bg_logo {
   display: var(--top-right-bg-logo-display);
-  content: var(--top-right-bg-logo-url);
+  -webkit-mask-image: var(--top-right-bg-logo-url);
+  mask-image: var(--top-right-bg-logo-url);
+  background-color: var(--default);
+  width: var(--top-right-bg-width);
+  height: var(--top-right-bg-height);
 }
 
 .section-background .bottom_right_bg_logo {
   display: var(--bottom-right-bg-logo-display);
-  content: var(--bottom-right-bg-logo-url);
+  -webkit-mask-image: var(--bottom-right-bg-logo-url);
+  mask-image: var(--bottom-right-bg-logo-url);
+  background-color: var(--default);
+  width: var(--bottom-right-bg-width);
+  height: var(--bottom-right-bg-height);
 }
 
 .section-background .bottom_left_bg_logo {
   display: var(--bottom-left-bg-logo-display);
-  content: var(--bottom-left-bg-logo-url);
+  -webkit-mask-image: var(--bottom-left-bg-logo-url);
+  mask-image: var(--bottom-left-bg-logo-url);
+  background-color: var(--default);
+  width: var(--bottom-left-bg-width);
+  height: var(--bottom-left-bg-height);
 }
 
 .verticalStepper {
@@ -83,6 +99,7 @@ body {
   left: 0.9em;
   font-size: 1em;
   font: var(--vertical-stepper-description-font);
+  font-family: inherit;
   margin-right: 1.25rem;
   text-align: left;
   overflow-wrap: anywhere;
@@ -95,6 +112,7 @@ body {
 .verticalLabelRight .label {
   padding-left: 0.5em;
   font: var(--vertical-stepper-label-font);
+  font-family: inherit;
   text-align: left;
   overflow-wrap: anywhere;
 }
@@ -123,6 +141,7 @@ body {
   width: var(--video-message-banner-width);
   padding: var(--video-message-banner-padding);
   font: var(--video-message-banner-font);
+  font-family: inherit;
   border-radius: var(--video-message-banner-border-radius);
 }
 
@@ -165,6 +184,7 @@ body {
   color: var(--error-banner-text-color);
   background-color: var(--error-banner-bg-color);
   font: var(--error-banner-font);
+  font-family: inherit;
 }
 
 @media screen and (max-width: 640px) {
@@ -265,6 +285,7 @@ body {
 
 .kyc-header {
   font: var(--kyc-header-font);
+  font-family: inherit;
   color: var(--kyc-header-color);
   letter-spacing: 0px;
 }
@@ -285,18 +306,21 @@ body {
 
 .kyc-box-header {
   font: var(--kyc-box-header-font);
+  font-family: inherit;
   color: var(--kyc-box-header-font-color);
   letter-spacing: 0px;
 }
 
 .kyc-box-subheader-title {
   font: var(--kyc-box-subheader-font);
+  font-family: inherit;
   color: var(--kyc-box-subheader-font-color);
   letter-spacing: 0px;
 }
 
 .kyc-box-subheader-detail {
   font: var(--kyc-box-subheader-font-detail);
+  font-family: inherit;
   color: var(--kyc-box-subheader-font-color);
   letter-spacing: 0px;
 }
@@ -307,18 +331,21 @@ body {
 
 .tnc-header {
   font: var(--tnc-header-font);
+  font-family: inherit;
   color: var(--tnc-header-color);
   letter-spacing: 0px;
 }
 
 .tnc-subheader {
   font: var(--tnc-subheader-font);
+  font-family: inherit;
   color: var(--tnc-subheader-color);
   letter-spacing: 0px;
 }
 
 .tnc-content {
   font: var(--tnc-content-font);
+  font-family: inherit;
   color: var(--tnc-content-color);
   letter-spacing: 0px;
   padding-right: 1.1em;
@@ -330,30 +357,35 @@ body {
 
 .tnc-consent-text {
   font: var(--tnc-consent-font);
+  font-family: inherit;
   color: var(--tnc-consent-color);
   letter-spacing: 0px;
 }
 
 .video-preview-header {
   font: var(--video-preview-header-font);
+  font-family: inherit;
   color: var(--video-preview-header-color);
   letter-spacing: 0px;
 }
 
 .video-preview-content {
   font: var(--video-preview-content-font);
+  font-family: inherit;
   color: var(--video-preview-content-color);
   letter-spacing: 0px;
 }
 
 .video-preview-disabled-header {
   font: var(--video-preview-disabled-header-font);
+  font-family: inherit;
   color: var(--video-preview-disabled-header-color);
   letter-spacing: 0px;
 }
 
 .video-preview-disabled-subheader {
   font: var(--video-preview-disabled-subheader-font);
+  font-family: inherit;
   color: var(--video-preview-disabled-subheader-color);
   letter-spacing: 0px;
 }
@@ -390,6 +422,11 @@ body {
 
 .status-loader__title {
   @apply text-center text-2xl font-semibold;
+}
+
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: none;
 }
 
 @layer base {

@@ -21,7 +21,6 @@ public class ErrorConstants {
     public static final String INVALID_CAPTCHA="invalid_captcha";
     public static final String GENERATE_CHALLENGE_FAILED ="generate_challenge_failed";
     public static final String UNKNOWN_ERROR="unknown_error";
-    public static final String TOO_MANY_ATTEMPTS="too_many_attempts";
     public static final String TOO_MANY_VERIFY_ATTEMPTS="too_many_verify_attempts";
     public static final String INVALID_REQUEST="invalid_request";
     public static final String INVALID_CHALLENGE="invalid_challenge";
@@ -58,4 +57,6 @@ public class ErrorConstants {
     public static final String INVALID_DISABILITY_TYPE = "invalid_disability_type";
     public static final String INVALID_AUTHORIZATION_CODE = "invalid_authorization_code";
     public static final String INVALID_STATE = "invalid_state";
+    public static final String INVALID_FRAME = "invalid_frame";
+    public static final String INVALID_ORDER = "invalid_order";
 }

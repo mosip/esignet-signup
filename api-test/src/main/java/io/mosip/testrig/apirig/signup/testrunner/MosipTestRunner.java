@@ -149,13 +149,13 @@ public class MosipTestRunner {
 		BaseTestCase.certsForModule = GlobalConstants.SIGNUP;
 		DBManager.executeDBQueries(SignupConfigManager.getKMDbUrl(), SignupConfigManager.getKMDbUser(),
 				SignupConfigManager.getKMDbPass(), SignupConfigManager.getKMDbSchema(),
-				getGlobalResourcePath() + "/" + "config/keyManagerDataDeleteQueriesForEsignet.txt");
+				getGlobalResourcePath() + "/" + "config/keyManagerCertDataDeleteQueries.txt");
 		DBManager.executeDBQueries(SignupConfigManager.getIdaDbUrl(), SignupConfigManager.getIdaDbUser(),
 				SignupConfigManager.getPMSDbPass(), SignupConfigManager.getIdaDbSchema(),
-				getGlobalResourcePath() + "/" + "config/idaDeleteQueriesForEsignet.txt");
+				getGlobalResourcePath() + "/" + "config/idaCertDataDeleteQueries.txt");
 		DBManager.executeDBQueries(SignupConfigManager.getMASTERDbUrl(), SignupConfigManager.getMasterDbUser(),
 				SignupConfigManager.getMasterDbPass(), SignupConfigManager.getMasterDbSchema(),
-				getGlobalResourcePath() + "/" + "config/masterDataDeleteQueriesForEsignet.txt");
+				getGlobalResourcePath() + "/" + "config/masterDataCertDataDeleteQueries.txt");
 		AdminTestUtil.initiateSignupTest();
 		BaseTestCase.otpListener = new OTPListener();
 		BaseTestCase.otpListener.run();

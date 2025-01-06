@@ -108,10 +108,6 @@ export const VerificationScreen = ({
       request.frames = imageFrames.map((frame: IdvFrames) => {
         return { frame: "", order: frame.order };
       });
-    } else {
-      request.frames = Array.from(Array(4).keys()).map((i: number) => {
-        return { frame: "", order: i };
-      });
     }
     publish(PUBLISH_TOPIC, JSON.stringify(request));
     setImageFrames([]);
@@ -414,9 +410,7 @@ export const VerificationScreen = ({
         ? frameArray.map((frame: IdvFrames) => {
             return { ...frame };
           })
-        : Array.from(Array(4).keys()).map((i: number) => {
-            return { frame: "", order: i };
-          });
+        : [];
       publish(PUBLISH_TOPIC, JSON.stringify(request));
       frameArray = [];
     } else {

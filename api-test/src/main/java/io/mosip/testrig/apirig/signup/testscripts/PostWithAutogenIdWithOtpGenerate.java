@@ -85,7 +85,7 @@ public class PostWithAutogenIdWithOtpGenerate extends AdminTestUtil implements I
 	public void test(TestCaseDTO testCaseDTO)
 			throws AuthenticationTestException, AdminTestException, NumberFormatException, InterruptedException {
 		testCaseName = testCaseDTO.getTestCaseName();
-		testCaseName = SignupUtil.isTestCaseValidForExecution(testCaseDTO);
+		testCaseDTO = SignupUtil.isTestCaseValidForTheExecution(testCaseDTO);
 		if (HealthChecker.signalTerminateExecution) {
 			throw new SkipException(
 					GlobalConstants.TARGET_ENV_HEALTH_CHECK_FAILED + HealthChecker.healthCheckFailureMapS);
@@ -102,7 +102,7 @@ public class PostWithAutogenIdWithOtpGenerate extends AdminTestUtil implements I
 		JSONObject req = new JSONObject(testCaseDTO.getInput());
 
 		if (inputJson.contains("$PHONENUMBERFROMREGEXFORSIGNUP$")) {
-			String phoneNumber = SignupUtil.getPhoneNumber();
+			String phoneNumber = SignupUtil.getPhoneNumberFromRegex();
 			if (phoneNumber != null && !phoneNumber.isEmpty()) {
 				inputJson = replaceKeywordWithValue(inputJson, "$PHONENUMBERFROMREGEXFORSIGNUP$", phoneNumber);
 				req = new JSONObject(inputJson);

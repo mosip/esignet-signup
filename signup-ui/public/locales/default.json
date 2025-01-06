@@ -3,7 +3,7 @@
     "km": "ខ្មែរ",
     "en": "English"
   },
-  "rtlLanguages": ["ar"],
+  "rtlLanguages": [],
   "langCodeMapping": {
     "khm": "km",
     "eng": "en"

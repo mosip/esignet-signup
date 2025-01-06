@@ -26,13 +26,10 @@ public class IdentityVerifierFactory {
 
 
    public IdentityVerifierPlugin getIdentityVerifier(String id) {
-       log.info("Request to fetch identity verifier with id : {}", id);
-       log.info("List of identity verifiers found : {}", identityVerifiers);
+       log.debug("Request to fetch identity verifier with id : {} in the available list of verifiers: {}", id, identityVerifiers);
        Optional<IdentityVerifierPlugin> result = identityVerifiers.stream()
                .filter(idv -> idv.getVerifierId().equals(id) )
                .findFirst();
-
-       log.info("Identity verifiers result : {}", result);
 
        if(result.isEmpty())
            throw new IdentityVerifierException(PLUGIN_NOT_FOUND);

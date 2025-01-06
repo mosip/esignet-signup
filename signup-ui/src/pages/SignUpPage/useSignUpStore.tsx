@@ -13,6 +13,14 @@ export enum SignUpStep {
   AccountRegistrationStatus,
 }
 
+const initialState = {
+  step: SignUpStep.Phone,
+  criticalError: null as Error | null,
+  resendOtp: false,
+  resendAttempts: null,
+  verificationChallengeError: null as Error | null,
+};
+
 export type SignUpStore = {
   step: SignUpStep;
   setStep: (step: SignUpStep) => void;
@@ -24,35 +32,32 @@ export type SignUpStore = {
   setResendAttempts: (resendAttempts: any) => void;
   verificationChallengeError: Error | null;
   setVerificationChallengeError: (verificationChallengeError: any) => void;
+  reset: () => void;
 };
 
 export const useSignUpStore = create<SignUpStore>()(
   devtools((set, get) => ({
-    step: SignUpStep.Phone,
+    ...initialState,
     setStep: (step: SignUpStep) => {
       const current = get();
       if (isEqual(current.step, step)) return;
-      set((state) => ({ step }));
+      set(() => ({ step }));
     },
-    criticalError: null,
     setCriticalError: (criticalError: Error | null) => {
       const current = get();
       if (isEqual(current.criticalError, criticalError)) return;
-      set((state) => ({ criticalError }));
+      set(() => ({ criticalError }));
     },
-    resendOtp: false,
     setResendOtp: (resendOtp: boolean) => {
       const current = get();
       if (isEqual(current.resendOtp, resendOtp)) return;
-      set((state) => ({ resendOtp }));
+      set(() => ({ resendOtp }));
     },
-    resendAttempts: null,
     setResendAttempts: (resendAttempts: any) => {
       const current = get();
       if (isEqual(current.resendAttempts, resendAttempts)) return;
-      set((state) => ({ resendAttempts }));
+      set(() => ({ resendAttempts }));
     },
-    verificationChallengeError: null,
     setVerificationChallengeError: (
       verificationChallengeError: Error | null
     ) => {
@@ -61,8 +66,9 @@ export const useSignUpStore = create<SignUpStore>()(
         isEqual(current.verificationChallengeError, verificationChallengeError)
       )
         return;
-      set((state) => ({ verificationChallengeError }));
+      set(() => ({ verificationChallengeError }));
     },
+    reset: () => set(() => initialState)
   }))
 );
 
