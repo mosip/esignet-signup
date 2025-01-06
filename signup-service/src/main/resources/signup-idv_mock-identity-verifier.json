@@ -51,6 +51,18 @@
     "id_card_too_far": {
       "eng": "Unable to read card as its too far",
       "khm": "មិនអាចអានកាតបានទេ ព្រោះនៅឆ្ងាយពេក"
+    },
+    "invalid_frames": {
+      "eng": "The provided frames are not valid. Please check the input and try again.",
+      "khm": "រូបបន្ទាត់ដែលបានផ្ដល់មិនត្រឹមត្រូវទេ។ សូមពិនិត្យការបញ្ចូលហើយព្យាយាមម្តងទៀត។"
+    },
+    "invalid_order": {
+      "eng": "The order provided is invalid. Please ensure the correct sequence and try again.",
+      "khm": "លំដាប់ដែលបានផ្ដល់មិនត្រឹមត្រូវទេ។ សូមធ្វើការត្រួតពិនិត្យលំដាប់ត្រឹមត្រូវហើយព្យាយាមម្តងទៀត។"
+    },
+    "invalid_step_code": {
+      "eng": "The step code is incorrect. Please verify the step and provide a valid code.",
+      "khm": "កូដជំហានមិនត្រឹមត្រូវទេ។ សូមពិនិត្យជំហាននិងផ្ដល់កូដត្រឹមត្រូវ។"
     }
   },
   "messages": {
