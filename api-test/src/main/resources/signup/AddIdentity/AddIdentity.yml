@@ -1,6 +1,7 @@
 AddIdentity:
    Signup_AddIdentity_Password_Auth_smoke_Pos:
       endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_IdRepo_Dependent_AddIdentity_01
       description: Add identity with password authentication
       role: idrepo
       restMethod: post
@@ -29,6 +30,8 @@ AddIdentity:
 
    Signup_AddIdentity_L2_Valid_Parameters_smoke_Pos:
       endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_IdRepo_Dependent_AddIdentity_02
+      description: Creating the identity with id repo api
       role: idrepo
       restMethod: post
       inputTemplate: signup/AddIdentity/addIdentity_$LANGNUMBER$
@@ -56,6 +59,8 @@ AddIdentity:
 
    Signup_AddIdentity_L2_Valid_Parameters_smoke_Neg_Pos:
       endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_IdRepo_Dependent_AddIdentity_03
+      description: Creating the identity with id repo api
       role: idrepo
       restMethod: post
       inputTemplate: signup/AddIdentity/addIdentity_$LANGNUMBER$
@@ -82,6 +87,7 @@ AddIdentity:
 }'
    Signup_AddIdentity_L2_Valid_forGetSlot_disabilityTypeVISION_Parameters_smoke_Pos:
       endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_IdRepo_Dependent_AddIdentity_04
       description: Add identity with password authentication for disabilityType VISION
       role: idrepo
       restMethod: post
@@ -109,6 +115,7 @@ AddIdentity:
 }'
    Signup_AddIdentity_L2_Valid_forGetSlot_disabilityTypeAUDITORY_Parameters_smoke_Pos:
       endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_IdRepo_Dependent_AddIdentity_05
       description: Add identity with password authentication for disabilityType AUDITORY
       role: idrepo
       restMethod: post
@@ -136,6 +143,7 @@ AddIdentity:
 }'
    Signup_AddIdentity_L2_Valid_forGetSlot_disabilityTypeMOBILITY_Parameters_smoke_Pos:
       endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_IdRepo_Dependent_AddIdentity_06
       description: Add identity with password authentication for disabilityType MOBILITY
       role: idrepo
       restMethod: post
@@ -163,6 +171,7 @@ AddIdentity:
 }'
    Signup_AddIdentity_L2_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_Parameters_smoke_Pos:
       endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_IdRepo_Dependent_AddIdentity_07
       description: Add identity with password authentication for disabilityType NEUROLOGICAL
       role: idrepo
       restMethod: post

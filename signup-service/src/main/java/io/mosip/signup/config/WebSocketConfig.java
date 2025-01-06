@@ -22,13 +22,14 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-        registry.enableSimpleBroker("/topic");
         registry.setApplicationDestinationPrefixes("/v1/signup/ws");
     }
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         //By default, only same origin requests are allowed, should take the origin from properties
-        registry.addEndpoint("/ws").setAllowedOrigins("*").setHandshakeHandler(webSocketHandshakeHandler);
+        registry.addEndpoint("/ws")
+                .setAllowedOrigins("*")
+                .setHandshakeHandler(webSocketHandshakeHandler);
     }
 }

@@ -72,7 +72,7 @@ export const Language = () => {
       <TranslationIcon className="mr-2 h-9 w-9" />
       {pathname === EKYC_VERIFICATION && (
         <span
-          className="inline-flex items-center justify-center bg-white text-[14px] outline-none"
+          className="inline-flex items-center justify-center bg-white outline-none"
           aria-label="Customise options"
         >
           {languages_2Letters[i18n.language as keyof typeof languages_2Letters]}
