@@ -67,7 +67,7 @@ export const useEkycVerificationStore = create<EkycVerificationStore>()(
       if (isEqual(current.kycProviderDetail, kycProviderDetail)) return;
       set((state) => ({ kycProviderDetail }));
     },
-    kycProvidersList: [],
+    kycProvidersList: null,
     setKycProvidersList: (kycProvidersList: KycProvider[] | null) => {
       const current = get();
       if (isEqual(current.kycProvidersList, kycProvidersList)) return;

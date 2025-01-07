@@ -13,6 +13,7 @@ import {
   StepHeader,
   StepTitle,
 } from "~components/ui/step";
+import { useL2Hash } from "~hooks/useL2Hash";
 import { useKycProvidersList } from "~pages/shared/mutations";
 import langConfigService from "~services/langConfig.service";
 import {
@@ -27,9 +28,7 @@ import {
   hashCodeSelector,
   kycProviderSelector,
   kycProvidersListSelector,
-  setCriticalErrorSelector,
   setKycProviderSelector,
-  setKycProvidersListSelector,
   setStepSelector,
   useEkycVerificationStore,
 } from "../useEkycVerificationStore";
@@ -43,23 +42,21 @@ export const KycProviderList = ({
     keyPrefix: "kyc_provider",
   });
 
+  const { state } = useL2Hash();
+
   const {
     setStep,
-    setCriticalError,
     setKycProvider,
     kycProvider,
     providerListStore,
-    setProviderListStore,
     hashCode,
   } = useEkycVerificationStore(
     useCallback(
       (state: EkycVerificationStore) => ({
         setStep: setStepSelector(state),
-        setCriticalError: setCriticalErrorSelector(state),
         setKycProvider: setKycProviderSelector(state),
         kycProvider: kycProviderSelector(state),
         providerListStore: kycProvidersListSelector(state),
-        setProviderListStore: setKycProvidersListSelector(state),
         hashCode: hashCodeSelector(state),
       }),
       []
@@ -88,7 +85,12 @@ export const KycProviderList = ({
    */
   const handleCancel = (e: any) => {
     e.preventDefault();
-    setCancelButton(true);
+    if (kycProvidersList === null || kycProvidersList.length === 0) {
+      window.onbeforeunload = null;
+      window.location.href = `${settings?.configs["esignet-consent.redirect-url"]}?key=${state}&error=no_ekyc_provider`;
+    } else {
+      setCancelButton(true);
+    }
   };
 
   /**
@@ -195,12 +197,12 @@ export const KycProviderList = ({
 
     // if kycProvidersList is empty, then get the kyc data
     // else set the kycProvidersList from the store
-    if (!providerListStore || providerListStore.length === 0) {
-      getKycData();
-    } else {
+    // if (!providerListStore || providerListStore.length === 0) {
+    //   getKycData();
+    // } else {
       setKycProvidersList(providerListStore);
       setIsLoading(false);
-    }
+    // }
   }, []);
 
   return (

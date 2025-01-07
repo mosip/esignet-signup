@@ -120,7 +120,7 @@ export const VerificationSteps = ({
   };
 
   useEffect(() => {
-    if (providerListStore && providerListStore.length > 0) {
+    if (providerListStore !== null) {
       setIsLoading(false);
     }
   }, [providerListStore]);
