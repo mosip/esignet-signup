@@ -80,16 +80,18 @@ public class WebSocketController {
     @EventListener
     public void onDisconnected(SessionDisconnectEvent disconnectEvent) {
         String username = Objects.requireNonNull(disconnectEvent.getUser()).getName();
+        String transactionId = username.split(VALUE_SEPARATOR)[0];
+        String slotId = username.split(VALUE_SEPARATOR)[1];
+
         log.info("WebSocket Disconnected >>>>>> {}", username);
-        if(disconnectEvent.getCloseStatus()!=null && !disconnectEvent.getCloseStatus().equals(CloseStatus.NORMAL)){
+        if(!CloseStatus.NORMAL.equals(disconnectEvent.getCloseStatus())){
             IdentityVerificationTransaction transaction =
-                    cacheUtilService.getVerifiedSlotTransaction(username.split(VALUE_SEPARATOR)[1]);
+                    cacheUtilService.getVerifiedSlotTransaction(slotId);
             transaction.setStatus(VerificationStatus.FAILED);
-            cacheUtilService.updateVerifiedSlotTransaction(username.split(VALUE_SEPARATOR)[1], transaction);
+            cacheUtilService.updateVerifiedSlotTransaction(slotId, transaction);
         }
         cacheUtilService.removeFromSlotConnected(username);
-        cacheUtilService.evictSlotAllottedTransaction(username.split(VALUE_SEPARATOR)[0],
-                username.split(VALUE_SEPARATOR)[1]);
+        cacheUtilService.evictSlotAllottedTransaction(transactionId,slotId);
         auditHelper.sendAuditTransaction(AuditEvent.ON_DISCONNECTED,AuditEventType.SUCCESS,username.split(VALUE_SEPARATOR)[0],null);
     }
 }
