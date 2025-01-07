@@ -14,7 +14,6 @@ import {
   StepTitle,
 } from "~components/ui/step";
 import { useL2Hash } from "~hooks/useL2Hash";
-import { useKycProvidersList } from "~pages/shared/mutations";
 import langConfigService from "~services/langConfig.service";
 import {
   DefaultEkyVerificationProp,
@@ -111,45 +110,6 @@ export const KycProviderList = ({
     setSelectedKycProvider(e.id);
   };
 
-  const { kycProvidersList: kycApiCall } = useKycProvidersList();
-
-  /**
-   * Get the kyc data from the api call
-   */
-  const getKycData = () => {
-    if (hashCode !== null && hashCode !== undefined) {
-      const hasState = hashCode.hasOwnProperty("state");
-      const hasCode = hashCode.hasOwnProperty("code");
-
-      if (hasState && hasCode) {
-        if (kycApiCall.isPending) return;
-        const updateProcessRequestDto: UpdateProcessRequestDto = {
-          requestTime: new Date().toISOString(),
-          request: {
-            authorizationCode: hashCode.code,
-            state: hashCode.state,
-          },
-        };
-
-        return kycApiCall.mutate(updateProcessRequestDto, {
-          onSuccess: ({ response, errors }) => {
-            if (errors !== null && errors.length > 0) {
-              setIsLoading(false);
-              return;
-            }
-            setKycProvidersList(response?.identityVerifiers);
-            setIsLoading(false);
-            if (response?.identityVerifiers.length === 1) {
-              setKycProvider(response?.identityVerifiers[0]);
-            }
-            return;
-          },
-          onError: () => {},
-        });
-      }
-    }
-  };
-
   /**
    * Filter the kyc providers list based on the search text
    */
@@ -195,14 +155,8 @@ export const KycProviderList = ({
       setStep(EkycVerificationStep.TermsAndCondition);
     }
 
-    // if kycProvidersList is empty, then get the kyc data
-    // else set the kycProvidersList from the store
-    // if (!providerListStore || providerListStore.length === 0) {
-    //   getKycData();
-    // } else {
-      setKycProvidersList(providerListStore);
-      setIsLoading(false);
-    // }
+    setKycProvidersList(providerListStore);
+    setIsLoading(false);
   }, []);
 
   return (
