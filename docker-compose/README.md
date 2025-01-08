@@ -5,9 +5,9 @@ This is the docker-compose setup to run eSignet Signup service with mock identit
 ## Run signup service in local with all its dependencies
 
 1. Run `docker compose --file dependent-docker-compose.yml up` to start all the dependent services.
-2. Go to command line for the project root directory and run `mvn clean install -Dgpg.skip=true -DskipTests=true`
-3. Add [esignet-mock-plugin.jar](../signup-service/target/signup-plugins/esignet-mock-plugin.jar) to signup-service classpath in your IDE.
-4. Add [kernel-auth-adapter-lite.jar](../signup-service/target/signup-plugins/kernel-auth-adapter-lite.jar) to signup-service classpath in your IDE.
+2. Go to [signup-with-plugins](../signup-with-plugins) folder and run `mvn clean install -Dgpg.skip=true` from the command line.
+3. Add [esignet-mock-plugin.jar](../signup-with-plugins/target/esignet-mock-plugin.jar) to signup-service classpath in your IDE.
+4. Add [kernel-auth-adapter-lite.jar](../signup-with-plugins/target/kernel-auth-adapter-lite.jar) to signup-service classpath in your IDE.
 5. Update below properties in [application-local.properties](../signup-service/src/main/resources/application-local.properties) with valid values:
 
        mosip.internal.domain.url=https://api-internal.dev.mosip.net
