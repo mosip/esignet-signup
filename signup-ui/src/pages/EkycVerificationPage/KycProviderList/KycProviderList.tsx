@@ -15,10 +15,7 @@ import {
 } from "~components/ui/step";
 import { useL2Hash } from "~hooks/useL2Hash";
 import langConfigService from "~services/langConfig.service";
-import {
-  DefaultEkyVerificationProp,
-  UpdateProcessRequestDto,
-} from "~typings/types";
+import { DefaultEkyVerificationProp } from "~typings/types";
 import LoadingIndicator from "~/common/LoadingIndicator";
 
 import {
@@ -43,24 +40,18 @@ export const KycProviderList = ({
 
   const { state } = useL2Hash();
 
-  const {
-    setStep,
-    setKycProvider,
-    kycProvider,
-    providerListStore,
-    hashCode,
-  } = useEkycVerificationStore(
-    useCallback(
-      (state: EkycVerificationStore) => ({
-        setStep: setStepSelector(state),
-        setKycProvider: setKycProviderSelector(state),
-        kycProvider: kycProviderSelector(state),
-        providerListStore: kycProvidersListSelector(state),
-        hashCode: hashCodeSelector(state),
-      }),
-      []
-    )
-  );
+  const { setStep, setKycProvider, kycProvider, providerListStore } =
+    useEkycVerificationStore(
+      useCallback(
+        (state: EkycVerificationStore) => ({
+          setStep: setStepSelector(state),
+          setKycProvider: setKycProviderSelector(state),
+          kycProvider: kycProviderSelector(state),
+          providerListStore: kycProvidersListSelector(state),
+        }),
+        []
+      )
+    );
 
   const [cancelButton, setCancelButton] = useState<boolean>(false);
   const [kycProvidersList, setKycProvidersList] = useState<any>([]);

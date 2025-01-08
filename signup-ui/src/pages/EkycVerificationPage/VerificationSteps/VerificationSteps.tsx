@@ -21,6 +21,7 @@ import {
   EkycVerificationStore,
   kycProvidersListSelector,
   setStepSelector,
+  providerListStatusSelector,
   useEkycVerificationStore,
 } from "../useEkycVerificationStore";
 import { checkBrowserCompatible } from "./utils/checkBrowserCompatible";
@@ -34,12 +35,13 @@ export const VerificationSteps = ({
   });
   const [cancelButton, setCancelButton] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const { setStep, providerListStore } =
+  const { setStep, providerListStore, providerListStatus } =
     useEkycVerificationStore(
       useCallback(
         (state: EkycVerificationStore) => ({
           setStep: setStepSelector(state),
           providerListStore: kycProvidersListSelector(state),
+          providerListStatus: providerListStatusSelector(state),
         }),
         []
       )
@@ -120,10 +122,10 @@ export const VerificationSteps = ({
   };
 
   useEffect(() => {
-    if (providerListStore !== null) {
+    if (providerListStatus) {
       setIsLoading(false);
     }
-  }, [providerListStore]);
+  }, [providerListStatus]);
 
   return (
     <>
