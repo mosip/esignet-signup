@@ -24,8 +24,6 @@
 		<signup-mock-plugin.fileName>esignet-mock-plugin.jar</signup-mock-plugin.fileName>
 		<mosip-identity-plugin.version>1.3.1-SNAPSHOT</mosip-identity-plugin.version>
 		<mosip-identity-plugin.fileName>mosip-identity-plugin.jar</mosip-identity-plugin.fileName>
-		<kernel-auth-adapter-lite.version>1.2.0.1-B4</kernel-auth-adapter-lite.version>
-		<kernel-auth-adapter-lite.fileName>kernel-auth-adapter-lite.jar</kernel-auth-adapter-lite.fileName>
 	</properties>
 
 	<build>
@@ -45,14 +43,6 @@
 				</executions>
 				<configuration>
 					<artifactItems>
-						<artifactItem>
-							<groupId>io.mosip.kernel</groupId>
-							<artifactId>kernel-auth-adapter-lite</artifactId>
-							<version>${kernel-auth-adapter-lite.version}</version>
-							<outputDirectory>${signup-plugins.location}</outputDirectory>
-							<destFileName>${kernel-auth-adapter-lite.fileName}</destFileName>
-							<type>jar</type>
-						</artifactItem>
 						<artifactItem>
 							<groupId>io.mosip.esignet</groupId>
 							<artifactId>mosip-identity-plugin</artifactId>
