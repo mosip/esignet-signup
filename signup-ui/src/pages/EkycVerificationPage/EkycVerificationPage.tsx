@@ -27,6 +27,7 @@ import {
   setHashCodeSelector,
   setKycProviderSelector,
   setKycProvidersListSelector,
+  setProviderListStatusSelector,
   stepSelector,
   useEkycVerificationStore,
 } from "./useEkycVerificationStore";
@@ -51,6 +52,7 @@ export const EkycVerificationPage = ({
     setKycProvider,
     setKycProviderList,
     setHashCode,
+    setProviderListStatus,
   } = useEkycVerificationStore(
     useCallback(
       (state) => ({
@@ -60,6 +62,7 @@ export const EkycVerificationPage = ({
         setKycProvider: setKycProviderSelector(state),
         setKycProviderList: setKycProvidersListSelector(state),
         setHashCode: setHashCodeSelector(state),
+        setProviderListStatus: setProviderListStatusSelector(state),
       }),
       []
     )
@@ -109,6 +112,7 @@ export const EkycVerificationPage = ({
                 setCriticalError(errors[0]);
               } else {
                 setKycProviderList(response?.identityVerifiers);
+                setProviderListStatus(true);
                 if (response?.identityVerifiers.length === 1) {
                   setKycProvider(response?.identityVerifiers[0]);
                 }

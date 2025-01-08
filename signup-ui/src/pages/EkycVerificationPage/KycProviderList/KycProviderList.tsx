@@ -13,12 +13,9 @@ import {
   StepHeader,
   StepTitle,
 } from "~components/ui/step";
-import { useKycProvidersList } from "~pages/shared/mutations";
+import { useL2Hash } from "~hooks/useL2Hash";
 import langConfigService from "~services/langConfig.service";
-import {
-  DefaultEkyVerificationProp,
-  UpdateProcessRequestDto,
-} from "~typings/types";
+import { DefaultEkyVerificationProp } from "~typings/types";
 import LoadingIndicator from "~/common/LoadingIndicator";
 
 import {
@@ -27,9 +24,7 @@ import {
   hashCodeSelector,
   kycProviderSelector,
   kycProvidersListSelector,
-  setCriticalErrorSelector,
   setKycProviderSelector,
-  setKycProvidersListSelector,
   setStepSelector,
   useEkycVerificationStore,
 } from "../useEkycVerificationStore";
@@ -43,28 +38,20 @@ export const KycProviderList = ({
     keyPrefix: "kyc_provider",
   });
 
-  const {
-    setStep,
-    setCriticalError,
-    setKycProvider,
-    kycProvider,
-    providerListStore,
-    setProviderListStore,
-    hashCode,
-  } = useEkycVerificationStore(
-    useCallback(
-      (state: EkycVerificationStore) => ({
-        setStep: setStepSelector(state),
-        setCriticalError: setCriticalErrorSelector(state),
-        setKycProvider: setKycProviderSelector(state),
-        kycProvider: kycProviderSelector(state),
-        providerListStore: kycProvidersListSelector(state),
-        setProviderListStore: setKycProvidersListSelector(state),
-        hashCode: hashCodeSelector(state),
-      }),
-      []
-    )
-  );
+  const { state } = useL2Hash();
+
+  const { setStep, setKycProvider, kycProvider, providerListStore } =
+    useEkycVerificationStore(
+      useCallback(
+        (state: EkycVerificationStore) => ({
+          setStep: setStepSelector(state),
+          setKycProvider: setKycProviderSelector(state),
+          kycProvider: kycProviderSelector(state),
+          providerListStore: kycProvidersListSelector(state),
+        }),
+        []
+      )
+    );
 
   const [cancelButton, setCancelButton] = useState<boolean>(false);
   const [kycProvidersList, setKycProvidersList] = useState<any>([]);
@@ -88,7 +75,12 @@ export const KycProviderList = ({
    */
   const handleCancel = (e: any) => {
     e.preventDefault();
-    setCancelButton(true);
+    if (kycProvidersList === null || kycProvidersList.length === 0) {
+      window.onbeforeunload = null;
+      window.location.href = `${settings?.configs["esignet-consent.redirect-url"]}?key=${state}&error=no_ekyc_provider`;
+    } else {
+      setCancelButton(true);
+    }
   };
 
   /**
@@ -107,45 +99,6 @@ export const KycProviderList = ({
   const selectingKycProviders = (e: any) => {
     setKycProvider(e);
     setSelectedKycProvider(e.id);
-  };
-
-  const { kycProvidersList: kycApiCall } = useKycProvidersList();
-
-  /**
-   * Get the kyc data from the api call
-   */
-  const getKycData = () => {
-    if (hashCode !== null && hashCode !== undefined) {
-      const hasState = hashCode.hasOwnProperty("state");
-      const hasCode = hashCode.hasOwnProperty("code");
-
-      if (hasState && hasCode) {
-        if (kycApiCall.isPending) return;
-        const updateProcessRequestDto: UpdateProcessRequestDto = {
-          requestTime: new Date().toISOString(),
-          request: {
-            authorizationCode: hashCode.code,
-            state: hashCode.state,
-          },
-        };
-
-        return kycApiCall.mutate(updateProcessRequestDto, {
-          onSuccess: ({ response, errors }) => {
-            if (errors !== null && errors.length > 0) {
-              setIsLoading(false);
-              return;
-            }
-            setKycProvidersList(response?.identityVerifiers);
-            setIsLoading(false);
-            if (response?.identityVerifiers.length === 1) {
-              setKycProvider(response?.identityVerifiers[0]);
-            }
-            return;
-          },
-          onError: () => {},
-        });
-      }
-    }
   };
 
   /**
@@ -193,14 +146,8 @@ export const KycProviderList = ({
       setStep(EkycVerificationStep.TermsAndCondition);
     }
 
-    // if kycProvidersList is empty, then get the kyc data
-    // else set the kycProvidersList from the store
-    if (!providerListStore || providerListStore.length === 0) {
-      getKycData();
-    } else {
-      setKycProvidersList(providerListStore);
-      setIsLoading(false);
-    }
+    setKycProvidersList(providerListStore);
+    setIsLoading(false);
   }, []);
 
   return (
