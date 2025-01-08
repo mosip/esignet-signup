@@ -116,8 +116,9 @@ public class PostWithOnlyPathParam extends AdminTestUtil implements ITest {
 		}
 
 		else {
-			response = postWithOnlyPathParamAndCookie(ApplnURI + testCaseDTO.getEndPoint(),
-					getJsonFromTemplate(testCaseDTO.getInput(), testCaseDTO.getInputTemplate()), COOKIENAME,
+			String inputJson = getJsonFromTemplate(testCaseDTO.getInput(), testCaseDTO.getInputTemplate());
+			inputJson = SignupUtil.inputstringKeyWordHandeler(inputJson, testCaseName);
+			response = postWithOnlyPathParamAndCookie(ApplnURI + testCaseDTO.getEndPoint(), inputJson, COOKIENAME,
 					testCaseDTO.getRole(), testCaseDTO.getTestCaseName(), sendEsignetToken);
 
 			Map<String, List<OutputValidationDto>> ouputValid = null;
