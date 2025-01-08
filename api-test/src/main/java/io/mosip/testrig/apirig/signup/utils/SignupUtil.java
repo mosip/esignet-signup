@@ -274,7 +274,7 @@ public class SignupUtil extends AdminTestUtil {
 		
 		if (jsonString.contains("$SIGNUPREDIRECTURI$")) {
 			jsonString = replaceKeywordValue(jsonString, "$SIGNUPREDIRECTURI$",
-					ApplnURI.replace(GlobalConstants.API_INTERNAL, "signup") + "/identity-verification");
+					SignupConfigManager.getSignupBaseUrl() + "/identity-verification");
 		}
 		
 		if (jsonString.contains("$OIDCJWKKEY$")) {
