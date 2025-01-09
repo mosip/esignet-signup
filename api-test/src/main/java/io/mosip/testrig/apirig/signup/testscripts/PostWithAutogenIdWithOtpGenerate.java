@@ -136,15 +136,13 @@ public class PostWithAutogenIdWithOtpGenerate extends AdminTestUtil implements I
 					throw new SkipException("esignet is not deployed hence skipping the testcase");
 				}
 				String tempUrl = SignupConfigManager.getEsignetBaseUrl();
-				
+
 				if (testCaseDTO.getEndPoint().contains("/signup/"))
 					tempUrl = SignupConfigManager.getSignupBaseUrl();
-				otpResponse = postRequestWithCookieAuthHeaderAndXsrfToken(tempUrl + sendOtpEndPoint,
-						getJsonFromTemplate(otpReqJson.toString(), sendOtpReqTemplate), COOKIENAME,
+				otpResponse = postRequestWithCookieAuthHeaderAndXsrfToken(tempUrl + sendOtpEndPoint, input, COOKIENAME,
 						testCaseDTO.getTestCaseName());
 			} else {
-				otpResponse = postWithBodyAndCookie(ApplnURI + sendOtpEndPoint,
-						getJsonFromTemplate(otpReqJson.toString(), sendOtpReqTemplate), COOKIENAME,
+				otpResponse = postWithBodyAndCookie(ApplnURI + sendOtpEndPoint, input, COOKIENAME,
 						GlobalConstants.RESIDENT, testCaseDTO.getTestCaseName());
 			}
 
@@ -197,8 +195,8 @@ public class PostWithAutogenIdWithOtpGenerate extends AdminTestUtil implements I
 			throw new AdminTestException("Invalid otp response");
 		}
 		
-		String jsonInput = getJsonFromTemplate(testCaseDTO.getInput(), testCaseDTO.getInputTemplate());
-		jsonInput = SignupUtil.inputstringKeyWordHandeler(inputJson, testCaseName);
+		String jsonInput = getJsonFromTemplate(req.toString(), testCaseDTO.getInputTemplate());
+		jsonInput = SignupUtil.inputstringKeyWordHandeler(jsonInput, testCaseName);
 
 		if (testCaseName.contains(GlobalConstants.ESIGNET_)) {
 			if (SignupConfigManager.isInServiceNotDeployedList(GlobalConstants.ESIGNET)) {
