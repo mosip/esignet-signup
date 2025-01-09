@@ -117,7 +117,6 @@ public class PostWithAutogenIdWithOtpGenerate extends AdminTestUtil implements I
 		if (req.has(GlobalConstants.SENDOTP)) {
 			otpRequest = req.get(GlobalConstants.SENDOTP).toString();
 			req.remove(GlobalConstants.SENDOTP);
-			logger.info("req = " + req);
 		}
 		JSONObject otpReqJson = new JSONObject(otpRequest);
 		sendOtpReqTemplate = otpReqJson.getString("sendOtpReqTemplate");
@@ -198,8 +197,6 @@ public class PostWithAutogenIdWithOtpGenerate extends AdminTestUtil implements I
 		
 		String jsonInput = getJsonFromTemplate(req.toString(), testCaseDTO.getInputTemplate());
 		jsonInput = SignupUtil.inputstringKeyWordHandeler(jsonInput, testCaseName);
-		
-		logger.info("jsonInput = " + jsonInput);
 
 		if (testCaseName.contains(GlobalConstants.ESIGNET_)) {
 			if (SignupConfigManager.isInServiceNotDeployedList(GlobalConstants.ESIGNET)) {
