@@ -52,7 +52,7 @@
       "eng": "Unable to read card as its too far",
       "khm": "មិនអាចអានកាតបានទេ ព្រោះនៅឆ្ងាយពេក"
     },
-    "invalid_frames": {
+    "invalid_frame": {
       "eng": "The provided frames are not valid. Please check the input and try again.",
       "khm": "រូបបន្ទាត់ដែលបានផ្ដល់មិនត្រឹមត្រូវទេ។ សូមពិនិត្យការបញ្ចូលហើយព្យាយាមម្តងទៀត។"
     },
