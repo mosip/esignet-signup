@@ -53,6 +53,11 @@ export const SlotChecking = ({ settings }: DefaultEkyVerificationProp) => {
     slotAvailabilityMutation.mutate(slotAvailabilityRequestDto, {
       onSuccess: ({ response, errors }) => {
         if (errors.length > 0) {
+          if (window.videoLocalStream) {
+            window.videoLocalStream
+              .getTracks()
+              .forEach((track) => track.stop());
+          }
           setCriticalError(errors[0]);
         } else {
           setSlotId(response.slotId);
