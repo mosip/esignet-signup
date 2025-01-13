@@ -93,6 +93,6 @@ public class WebSocketController {
         }
         cacheUtilService.removeFromSlotConnected(username);
         cacheUtilService.evictSlotAllottedTransaction(transactionId,slotId);
-        auditHelper.sendAuditTransaction(AuditEvent.ON_DISCONNECTED,AuditEventType.SUCCESS,username.split(VALUE_SEPARATOR)[0],null);
+        auditHelper.sendAuditTransaction(AuditEvent.ON_DISCONNECTED,AuditEventType.SUCCESS,transactionId,null);
     }
 }
