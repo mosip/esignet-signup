@@ -1,5 +1,5 @@
 #!/bin/bash
-# Installs signup helm chart
+# Installs signup-with-plugins helm chart
 ## Usage: ./install.sh [kubeconfig]
 
 if [ $# -ge 1 ] ; then
@@ -20,7 +20,7 @@ while true; do
     fi
 done
 
-function installing_signup() {
+function installing_signup_with_plugins() {
 
     while true; do
       read -p "Do you want to continue installing signup service? (y/n): "
@@ -69,21 +69,43 @@ function installing_signup() {
     ENABLE_INSECURE='--set enable_insecure=true';
   fi
 
-  read -p "Provide the URL to download the plugins zip " plugin_url
-  read -p "Provide the plugin jar name (with extension eg., test-plugin.jar) " plugin_jar
-  plugin_option="--set pluginNameEnv=$plugin_jar --set pluginUrlEnv=$plugin_url"
+  while true; do
+    read -p "Do you want to use the default plugins? (y/n): " ans
+    if [[ "$ans" == "y" || "$ans" == "Y" ]]; then
+      echo "Default plugins are listed below, please provide the correct plugin number."
+      echo "1. esignet-mock-plugin.jar"
+      echo "2. mosip-identity-plugin.jar"
+      read -p "Enter the plugin number: " plugin_no
+        while true; do
+          if [[ "$plugin_no" == "1" ]]; then
+            plugin_option="--set plugin_name_env=esignet-mock-plugin.jar"
+            break
+          elif [[ "$plugin_no" == "2" ]]; then
+            plugin_option="--set plugin_name_env=mosip-identity-plugin.jar"
+            break
+          else
+            echo "please provide the correct plugin number (1 or 2)."
+          fi
+        done
+      break
+    elif [[ "$ans" == "n" || "$ans" == "N" ]]; then
+      read -p "Provide the URL to download the plugins zip " plugin_url
+      read -p "Provide the plugin jar name (with extension eg., test-plugin.jar) " plugin_jar
+      plugin_option="--set pluginNameEnv=$plugin_jar --set pluginUrlEnv=$plugin_url"
+      break
+    else
+      echo " Invalid response. Please respond with y (yes) or n (no)."
+    fi
+  done
 
-
-  echo Installing signup
-  helm -n $NS install signup mosip/signup \
-    -f values.yaml --version $CHART_VERSION \
-    --set image.repository=mosipdev/signup --set image.tag=develop \
-    $ENABLE_INSECURE $plugin_option \
+  echo Installing signup-with-plugins
+  helm -n $NS install signup-with-plugins mosip/signup \
+    -f values.yaml --version $CHART_VERSION $ENABLE_INSECURE $plugin_option \
     --set metrics.serviceMonitor.enabled=$servicemonitorflag --wait
 
   kubectl -n $NS  get deploy -o name |  xargs -n1 -t  kubectl -n $NS rollout status
 
-  echo Installed signup
+  echo Installed signup-with-plugins
   return 0
 }
 
@@ -93,4 +115,4 @@ set -o errexit   ## set -e : exit the script if any statement returns a non-true
 set -o nounset   ## set -u : exit the script if you try to use an uninitialised variable
 set -o errtrace  # trace ERR through 'time command' and other functions
 set -o pipefail  # trace ERR through pipes
-installing_signup   # calling function
+installing_signup_with_plugins   # calling function
