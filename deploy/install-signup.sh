@@ -12,7 +12,7 @@ function installing_signup() {
 
   helm repo add mosip https://mosip.github.io/mosip-helm
   # List of modules to install
-  declare -a modules=("signup-service" "signup-ui")
+  declare -a modules=("signup-with-plugins" "signup-ui")
 
   echo "Installing signup services"
 
