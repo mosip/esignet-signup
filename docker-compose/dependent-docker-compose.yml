@@ -54,7 +54,7 @@ services:
 
 
   esignet:
-    image: 'mosipdev/esignet:release-1.5.x'
+    image: 'mosipdev/esignet-with-plugins:release-1.5.x'
     user: root
     ports:
       - 8088:8088
