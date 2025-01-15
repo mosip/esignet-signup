@@ -200,6 +200,12 @@
 			<artifactId>shedlock-provider-redis-spring</artifactId>
 			<version>4.47.0</version>
 		</dependency>
+
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-auth-adapter-lite</artifactId>
+			<version>1.2.0.1-B4</version>
+		</dependency>
     </dependencies>
 
 	<build>
@@ -220,51 +226,6 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<version>3.5.0</version>
-				<executions>
-					<execution>
-						<id>copy</id>
-						<phase>package</phase>
-						<goals>
-							<goal>copy</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<artifactItems>
-						<artifactItem>
-							<groupId>io.mosip.kernel</groupId>
-							<artifactId>kernel-auth-adapter-lite</artifactId>
-							<version>${kernel-auth-adapter-lite.version}</version>
-							<outputDirectory>${signup-plugins.location}</outputDirectory>
-							<destFileName>${kernel-auth-adapter-lite.fileName}</destFileName>
-							<type>jar</type>
-						</artifactItem>
-						<artifactItem>
-							<groupId>io.mosip.esignet</groupId>
-							<artifactId>mosip-identity-plugin</artifactId>
-							<version>${mosip-identity-plugin.version}</version>
-							<outputDirectory>${signup-plugins.location}</outputDirectory>
-							<destFileName>${mosip-identity-plugin.fileName}</destFileName>
-							<type>jar</type>
-						</artifactItem>
-						<artifactItem>
-							<groupId>io.mosip.esignet</groupId>
-							<artifactId>mock-plugin</artifactId>
-							<version>${signup-mock-plugin.version}</version>
-							<outputDirectory>${signup-plugins.location}</outputDirectory>
-							<destFileName>${signup-mock-plugin.fileName}</destFileName>
-							<type>jar</type>
-						</artifactItem>
-					</artifactItems>
-					<overWriteReleases>true</overWriteReleases>
-					<overWriteSnapshots>true</overWriteSnapshots>
-					<overWriteIfNewer>true</overWriteIfNewer>
-				</configuration>
 			</plugin>
 		</plugins>
 	</build>
