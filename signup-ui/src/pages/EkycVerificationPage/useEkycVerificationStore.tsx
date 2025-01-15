@@ -39,6 +39,8 @@ export type EkycVerificationStore = {
   setErrorBannerMessage: (errorBannerMessage: string | null) => void;
   slotId: string | null;
   setSlotId: (slotId: string | null) => void;
+  providerListStatus: boolean;
+  setProviderListStatus: (providerListStatus: boolean) => void;
 };
 
 export const useEkycVerificationStore = create<EkycVerificationStore>()(
@@ -67,7 +69,7 @@ export const useEkycVerificationStore = create<EkycVerificationStore>()(
       if (isEqual(current.kycProviderDetail, kycProviderDetail)) return;
       set((state) => ({ kycProviderDetail }));
     },
-    kycProvidersList: [],
+    kycProvidersList: null,
     setKycProvidersList: (kycProvidersList: KycProvider[] | null) => {
       const current = get();
       if (isEqual(current.kycProvidersList, kycProvidersList)) return;
@@ -96,6 +98,12 @@ export const useEkycVerificationStore = create<EkycVerificationStore>()(
       const current = get();
       if (isEqual(current.slotId, slotId)) return;
       set((state) => ({ slotId }));
+    },
+    providerListStatus: false,
+    setProviderListStatus: (providerListStatus: boolean) => {
+      const current = get();
+      if (isEqual(current.providerListStatus, providerListStatus)) return;
+      set((state) => ({ providerListStatus }));
     },
   }))
 );
@@ -172,3 +180,11 @@ export const slotIdSelector = (
 export const setSlotIdSelector = (
   state: EkycVerificationStore
 ): EkycVerificationStore["setSlotId"] => state.setSlotId;
+
+export const providerListStatusSelector = (
+  state: EkycVerificationStore
+): EkycVerificationStore["providerListStatus"] => state.providerListStatus;
+
+export const setProviderListStatusSelector = (
+  state: EkycVerificationStore
+): EkycVerificationStore["setProviderListStatus"] => state.setProviderListStatus;

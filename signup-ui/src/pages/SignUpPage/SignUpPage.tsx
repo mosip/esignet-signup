@@ -1,11 +1,12 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useMutationState } from "@tanstack/react-query";
 import { isEqual } from "lodash";
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Resolver, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import * as yup from "yup";
 
+import { criticalErrorsToPopup } from "~constants/criticalErrors";
 import { Form } from "~components/ui/form";
 import { keys as mutationKeys } from "~pages/shared/mutations";
 import {
@@ -59,7 +60,8 @@ interface SignUpPageProps {
 }
 
 export const SignUpPage = ({ settings }: SignUpPageProps) => {
-  const { t, i18n} = useTranslation();
+  const { t, i18n } = useTranslation();
+  const [previousLanguage, setPreviousLanguage] = useState(i18n.language);
 
   const { step, criticalError } = useSignUpStore(
     useCallback(
@@ -96,7 +98,7 @@ export const SignUpPage = ({ settings }: SignUpPageProps) => {
       yup.object({}),
       yup.object({}),
     ],
-    [settings, t]
+    [settings, t, i18n.language]
   );
 
   const currentValidationSchema = validationSchema[step];
@@ -110,6 +112,23 @@ export const SignUpPage = ({ settings }: SignUpPageProps) => {
     >,
     mode: "onBlur",
   });
+
+  useEffect(() => {
+    const oldLanguage = previousLanguage;
+    setPreviousLanguage(i18n.language);
+    if (oldLanguage !== i18n.language) {
+      const invalidInput = Array.from(
+        document.querySelectorAll('input[aria-invalid="true"]')
+      ).find((input) => {
+        const name = input.getAttribute('name') ?? ''; // Default to an empty string if null
+        return /fullname/i.test(name);
+      });
+  
+      if (invalidInput) {
+        methods.trigger(); // Manually trigger validation whenever the language changes
+      }
+    }
+  }, [i18n.language]); // Trigger whenever `i18n.language` changes
 
   const { getValues } = methods;
 
@@ -166,13 +185,12 @@ export const SignUpPage = ({ settings }: SignUpPageProps) => {
         return "unknown step";
     }
   };
-
   return (
     <>
       {criticalError &&
-        ["invalid_transaction", "identifier_already_registered"].includes(
-          criticalError.errorCode
-        ) && <SignUpPopover />}
+        criticalErrorsToPopup.includes(criticalError.errorCode) && (
+          <SignUpPopover />
+        )}
       <Form {...methods}>
         <form noValidate>{getSignUpStepContent(step)}</form>
       </Form>
