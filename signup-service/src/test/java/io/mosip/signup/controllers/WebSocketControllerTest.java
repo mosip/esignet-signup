@@ -6,6 +6,7 @@ import io.mosip.signup.api.exception.IdentityVerifierException;
 import io.mosip.signup.api.util.VerificationStatus;
 import io.mosip.signup.dto.IdentityVerificationRequest;
 import io.mosip.signup.dto.IdentityVerificationTransaction;
+import io.mosip.signup.exception.SignUpException;
 import io.mosip.signup.helper.AuditHelper;
 import io.mosip.signup.services.CacheUtilService;
 import io.mosip.signup.services.WebSocketHandler;
@@ -62,29 +63,6 @@ public class WebSocketControllerTest {
         ReflectionTestUtils.setField(webSocketController, "webSocketHandler", webSocketHandler);
         ReflectionTestUtils.setField(webSocketController, "cacheUtilService", cacheUtilService);
         ReflectionTestUtils.setField(webSocketController,"auditHelper",auditHelper);
-    }
-
-    @Test
-    public void processFrames_withInvalidSlotId_thenFail() {
-        IdentityVerificationRequest identityVerificationRequest = new IdentityVerificationRequest();
-        try {
-            webSocketController.processFrames(identityVerificationRequest);
-            Assert.fail();
-        } catch (IdentityVerifierException e) {
-            Assert.assertEquals(INVALID_SLOT_ID, e.getErrorCode());
-        }
-    }
-
-    @Test
-    public void processFrames_withInvalidStepCode_thenFail() {
-        IdentityVerificationRequest identityVerificationRequest = new IdentityVerificationRequest();
-        identityVerificationRequest.setSlotId("slot-id");
-        try {
-            webSocketController.processFrames(identityVerificationRequest);
-            Assert.fail();
-        } catch (IdentityVerifierException e) {
-            Assert.assertEquals(INVALID_STEP_CODE, e.getErrorCode());
-        }
     }
 
     @Test

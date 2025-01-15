@@ -51,12 +51,6 @@ public class WebSocketController {
     @MessageMapping("/process-frame")
     public void processFrames(final @Payload IdentityVerificationRequest identityVerificationRequest) {
         log.debug("Process frame invoked with payload : {}", identityVerificationRequest);
-        if(identityVerificationRequest == null || StringUtils.isEmpty(identityVerificationRequest.getSlotId()))
-            throw new IdentityVerifierException(ErrorConstants.INVALID_SLOT_ID);
-
-        if(StringUtils.isEmpty(identityVerificationRequest.getStepCode()))
-            throw new IdentityVerifierException(ErrorConstants.INVALID_STEP_CODE);
-
         webSocketHandler.processFrames(identityVerificationRequest);
         auditHelper.sendAuditTransaction(AuditEvent.PROCESS_FRAMES, AuditEventType.SUCCESS, identityVerificationRequest.getSlotId(),null);
     }
