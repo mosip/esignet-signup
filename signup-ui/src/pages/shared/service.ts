@@ -121,8 +121,8 @@ export const checkSlotAvailability = async (
     "/identity-verification/slot",
     slotAvailabilityRequestDto
   ).then(({ data }) => {
-    if (data.errors.some((error) => error.errorCode === "slot_unavailable")) {
-      throw new Error("No slot available");
+    if (data.errors.some((error) => error.errorCode === "slot_not_available")) {
+      throw new Error("slot_not_available");
     }
 
     return data;

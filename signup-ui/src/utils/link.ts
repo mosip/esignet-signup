@@ -11,6 +11,17 @@ export const getSignInRedirectURL = (
   return defaultPath + "?ui_locales=" + locale;
 };
 
+export const generateRandomString = (strLength = 16) => {
+  let result = '';
+  const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+
+  for (let i = 0; i < strLength; i++) {
+    const randomInd = Math.floor(Math.random() * characters.length);
+    result += characters.charAt(randomInd);
+  }
+  return result;
+};
+
 export const replaceUILocales = (
   hash: string,
   locale: string | null
@@ -36,6 +47,8 @@ export const replaceUILocales = (
       Object.entries(jsonObject).forEach(([key, value]) => {
         urlSearchParams.set(key, value);
       });
+
+      urlSearchParams.set("nonce", generateRandomString());
 
       return urlSearchParams;
     }

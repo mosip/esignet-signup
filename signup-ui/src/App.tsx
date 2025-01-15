@@ -92,7 +92,7 @@ function App() {
   }, [langFontMapping, i18n.language])
 
   return (
-    <div className={langFontMapping[i18n.language]}>
+    <div className={langFontMapping[i18n.language] ?? Object.values(langFontMapping)[0]}>
       {isDev && (
         <Inspector
           // props see docs:
