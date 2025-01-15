@@ -84,27 +84,24 @@ export const VideoPreview = ({
     facingMode: "user",
   };
 
+  const cameraPermissionCheck = () => {
+    navigator.mediaDevices
+      .getUserMedia({ video: true })
+      .then(cameraPermissionAllowed)
+      .catch(cameraPermissionDenied);
+  };
+
+  navigator.permissions.query({ name: "camera" as PermissionName}).then((permissionStatus) => {
+
+    // Listen for changes in the permission state
+    permissionStatus.onchange = () => {
+      cameraPermissionCheck();
+    };
+  });
+
   useEffect(() => {
-    const cameraPermissionCheck = () => {
-      navigator.mediaDevices
-        .getUserMedia({ video: true })
-        .then(cameraPermissionAllowed)
-        .catch(cameraPermissionDenied);
-    };
-
-    // checking camera permission in every 1 second
-    const cameraPermissionCheckInterval = setInterval(
-      cameraPermissionCheck,
-      1000
-    );
-
-    return () => {
-      clearInterval(cameraPermissionCheckInterval);
-      if (window.videoLocalStream) {
-        window.videoLocalStream.getTracks().forEach((track) => track.stop());
-      }
-    };
-  }, [permissionGranted]);
+    cameraPermissionCheck();
+  }, []);
 
   // if camera permission granted then set the state
   const cameraPermissionAllowed = useCallback((stream: MediaStream) => {
