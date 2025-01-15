@@ -10,7 +10,6 @@ on:
         type: string
 
 jobs:
-
   build_maven_signup_with_plugins:
     uses: mosip/kattu/.github/workflows/maven-build.yml@master
     with:
