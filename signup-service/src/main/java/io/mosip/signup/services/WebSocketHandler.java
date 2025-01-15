@@ -30,6 +30,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.*;
 
@@ -198,6 +199,8 @@ public class WebSocketHandler {
         simpMessagingTemplate.convertAndSend("/topic/" + slotId, identityVerificationResult);
     }
     private void validate(IdentityVerificationRequest request) {
+        if(request == null || StringUtils.isEmpty(request.getSlotId()))
+            throw new SignUpException(ErrorConstants.INVALID_SLOT_ID);
         if (request.getStepCode() == null || request.getStepCode().isBlank()) {
             throw new SignUpException(ErrorConstants.INVALID_STEP_CODE);
         }
