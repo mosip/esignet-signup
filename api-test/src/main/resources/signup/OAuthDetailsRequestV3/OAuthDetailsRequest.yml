@@ -16,7 +16,7 @@ OAuthDetailsRequestV3:
       	"display": "popup",
       	"prompt": "login",
       	"acrValues": "mosip:idp:acr:generated-code",
-      	"nonce": "973eieljzng",
+      	"nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
       	"state": "urlInfo1724138417665",
       	"claimsLocales": "en",
       	"uiLocales": "en-US"
@@ -42,7 +42,7 @@ OAuthDetailsRequestV3:
       	"display": "popup",
       	"prompt": "login",
       	"acrValues": "mosip:idp:acr:generated-code",
-      	"nonce": "973eieljzng",
+      	"nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
       	"state": "urlInfo1724138417665",
       	"claimsLocales": "en",
       	"uiLocales": "en-US"
@@ -67,7 +67,7 @@ OAuthDetailsRequestV3:
       	"display": "popup",
       	"prompt": "login",
       	"acrValues": "mosip:idp:acr:generated-code",
-      	"nonce": "973eieljzng",
+      	"nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
       	"state": "urlInfo1724138417665",
       	"claimsLocales": "en",
       	"uiLocales": "en-US"
@@ -92,7 +92,7 @@ OAuthDetailsRequestV3:
       	"display": "popup",
       	"prompt": "login",
       	"acrValues": "mosip:idp:acr:generated-code",
-      	"nonce": "973eieljzng",
+      	"nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
       	"state": "urlInfo1724138417665",
       	"claimsLocales": "en",
       	"uiLocales": "en-US"
@@ -117,7 +117,7 @@ OAuthDetailsRequestV3:
       	"display": "popup",
       	"prompt": "login",
       	"acrValues": "mosip:idp:acr:generated-code",
-      	"nonce": "973eieljzng",
+      	"nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
       	"state": "urlInfo1724138417665",
       	"claimsLocales": "en",
       	"uiLocales": "en-US"
@@ -142,7 +142,7 @@ OAuthDetailsRequestV3:
       	"display": "popup",
       	"prompt": "login",
       	"acrValues": "mosip:idp:acr:generated-code",
-      	"nonce": "973eieljzng",
+      	"nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
       	"state": "urlInfo1724138417665",
       	"claimsLocales": "en",
       	"uiLocales": "en-US"
