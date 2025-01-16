@@ -227,6 +227,11 @@ public class SignupUtil extends AdminTestUtil {
 			KeycloakUserManager.createKeyCloakUsers(genPartnerName + "2n", "12d" + genPartnerEmail, "AUTH_PARTNER");
 		}
 		
+		if (jsonString.contains("$UNIQUENONCEVALUEFORSIGNUP$")) {
+			jsonString = replaceKeywordValue(jsonString, "$UNIQUENONCEVALUEFORSIGNUP$",
+					String.valueOf(Calendar.getInstance().getTimeInMillis()));
+		}
+		
 		if (jsonString.contains("_$REGISTEREDUSERFULLNAME$")) {
 			JSONObject inputReqJson = new JSONObject(jsonString);
 			JSONObject fullNameJson = new JSONObject();
