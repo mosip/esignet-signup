@@ -1,0 +1,60 @@
+## Uncomment required parms added with single '#' when needed.
+#image:
+#  registry: docker.io
+#  repository: mosipdev/signup-service
+#  tag: develop
+
+#extraEnvVars: |
+#  - name: MOSIP_ESIGNET_HOST
+#    valueFrom:
+#      configMapKeyRef:
+#        name: esignet-global
+#        key: mosip-esignet-host
+#  - name: MOSIP_SIGNUP_HOST
+#    valueFrom:
+#      configMapKeyRef:
+#        name: esignet-global
+#        key: mosip-signup-host
+#  - name: KEYCLOAK_EXTERNAL_URL
+#    valueFrom:
+#      configMapKeyRef:
+#        name: keycloak-host
+#        key: keycloak-external-url
+#  - name: MOSIP_SIGNUP_CAPTCHA_SITE_KEY
+#    valueFrom:
+#      secretKeyRef:
+#        name: signup-captcha
+#        key: signup-captcha-site-key
+#  - name: MOSIP_SIGNUP_OIDC_KEYSTORE_PWD
+#    valueFrom:
+#      secretKeyRef:
+#        name: signup-keystore-password
+#        key: signup-keystore-password
+#  - name: REDIS_HOST
+#    valueFrom:
+#      configMapKeyRef:
+#        name: redis-config
+#        key: redis-host
+#  - name: REDIS_PORT
+#    valueFrom:
+#      configMapKeyRef:
+#        name: redis-config
+#        key: redis-port
+#  - name: REDIS_PASSWORD
+#    valueFrom:
+#      secretKeyRef:
+#        name: redis
+#        key: redis-password
+#  - name: MOSIP_SIGNUP_CLIENT_SECRET
+#    valueFrom:
+#      secretKeyRef:
+#        name: keycloak-client-secrets
+#        key: mosip_signup_client_secret
+
+## ConfigMap with extra environment variables that used
+##
+#extraEnvVarsCM: []
+
+## Secret with extra environment variables
+##
+#extraEnvVarsSecret: []

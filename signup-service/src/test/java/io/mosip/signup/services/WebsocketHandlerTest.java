@@ -325,6 +325,30 @@ public class WebsocketHandlerTest {
     }
 
     @Test
+    public void testValidate_withEmptySlotId_thenFail() {
+        IdentityVerificationRequest request = new IdentityVerificationRequest();
+        request.setSlotId("");
+        request.setStepCode("START");
+        try{
+            webSocketHandler.processFrames(request);
+        }catch (SignUpException e){
+            Assert.assertEquals(e.getErrorCode(),ErrorConstants.INVALID_SLOT_ID);
+        }
+    }
+
+    @Test
+    public void testValidate_withNullSlotId_thenFail() {
+        IdentityVerificationRequest request = new IdentityVerificationRequest();
+        request.setSlotId(null);
+        request.setStepCode("START");
+        try{
+            webSocketHandler.processFrames(request);
+        }catch (SignUpException e){
+            Assert.assertEquals(e.getErrorCode(),ErrorConstants.INVALID_SLOT_ID);
+        }
+    }
+
+    @Test
     public void testValidate_withNullStepCode_thenFail() {
         IdentityVerificationRequest request = new IdentityVerificationRequest();
         request.setSlotId("validSlotId");
