@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import io.mosip.kernel.auth.defaultadapter.config.SecurityConfig;
 import io.mosip.signup.dto.*;
 import io.mosip.esignet.core.dto.RequestWrapper;
 import io.mosip.signup.dto.InitiateIdentityVerificationRequest;
@@ -26,6 +27,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -38,7 +41,9 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(value = IdentityVerificationController.class, excludeAutoConfiguration = {SecurityAutoConfiguration.class})
+@WebMvcTest(value = IdentityVerificationController.class,
+        excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = {SecurityConfig.class}),
+        excludeAutoConfiguration = {SecurityAutoConfiguration.class})
 @ActiveProfiles(value = {"test"})
 public class IdentityVerificationControllerTest {
 
