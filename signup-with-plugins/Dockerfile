@@ -1,13 +1,4 @@
-FROM mosipid/signup-service:1.1.0
-
-ARG SOURCE
-ARG COMMIT_HASH
-ARG COMMIT_ID
-ARG BUILD_TIME
-LABEL source=${SOURCE}
-LABEL commit_hash=${COMMIT_HASH}
-LABEL commit_id=${COMMIT_ID}
-LABEL build_time=${BUILD_TIME}
+FROM mosipdev/signup-service:release-1.1.1-temp
 
 ARG SOURCE
 ARG COMMIT_HASH
