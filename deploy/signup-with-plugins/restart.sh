@@ -7,7 +7,7 @@ fi
 
 function Restarting_signup_with-plugins() {
   NS=signup
-  kubectl -n $NS rollout restart deploy signup-with-plugins
+  kubectl -n $NS rollout restart deploy signup
 
   kubectl -n $NS  get deploy -o name |  xargs -n1 -t  kubectl -n $NS rollout status
 
