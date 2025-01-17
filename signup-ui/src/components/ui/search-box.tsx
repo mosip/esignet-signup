@@ -43,7 +43,7 @@ const SearchBox = React.forwardRef<HTMLInputElement, SearchBoxProps>(
           <button
             id={props.id ? `${props.id}-search-icon` : undefined}
             type="button"
-            className="absolute block pl-4 pr-3"
+            className="absolute block px-3"
           >
             <Icons.searchIcon />
           </button>
@@ -51,7 +51,7 @@ const SearchBox = React.forwardRef<HTMLInputElement, SearchBoxProps>(
             <button
               id={props.id ? `${props.id}-clear-input` : undefined}
               type="button"
-              className="absolute block cursor-pointer right-[12px] px-3"
+              className="absolute block cursor-pointer right-[12px] ps-2"
               onClick={clearInput}
             >
               <Icons.closeIcon />

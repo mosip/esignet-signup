@@ -186,6 +186,11 @@ export const KycProviderList = ({
                                 className="py-6"
                                 searchRef={searchTextRef}
                                 onChange={filterKycProvidersList}
+                                onKeyDown={(event:any) => {
+                                  if (event.key === "Enter" || event.keyCode === 13) {
+                                    event.preventDefault(); // Prevent default action for Enter key
+                                  }
+                                }}
                               />
                             </FormControl>
                           </div>
