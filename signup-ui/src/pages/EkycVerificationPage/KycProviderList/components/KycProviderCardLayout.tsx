@@ -48,7 +48,7 @@ export const KycProviderCardLayout = ({
       <div
         id={id}
         className={cn(
-          "col-span-1 flex cursor-pointer flex-col rounded-lg bg-white p-4",
+          "col-span-1 flex cursor-pointer flex-col rounded-lg bg-white px-4 py-3",
           selected ? "check-box kyc-box-selected" : "kyc-box"
         )}
         onClick={onKycProvidersSelection}
