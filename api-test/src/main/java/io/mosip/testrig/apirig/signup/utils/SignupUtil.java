@@ -2,6 +2,7 @@ package io.mosip.testrig.apirig.signup.utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -198,9 +199,19 @@ public class SignupUtil extends AdminTestUtil {
 	}
 	
 	public static String inputstringKeyWordHandeler(String jsonString, String testCaseName) {
-		if (jsonString.contains(GlobalConstants.TIMESTAMP))
+		if (jsonString.contains(GlobalConstants.TIMESTAMP)) {
 			jsonString = replaceKeywordValue(jsonString, GlobalConstants.TIMESTAMP, generateCurrentUTCTimeStamp());
+		}
 		
+		if (jsonString.contains("$UNIQUENONCEVALUEFORSIGNUP$")) {
+			jsonString = replaceKeywordValue(jsonString, "$UNIQUENONCEVALUEFORSIGNUP$",
+					String.valueOf(Calendar.getInstance().getTimeInMillis()));
+		}
+
+		if (jsonString.contains("$SIGNUPREDIRECTURI$")) {
+			jsonString = replaceKeywordValue(jsonString, "$SIGNUPREDIRECTURI$",
+					SignupConfigManager.getSignupBaseUrl() + "/identity-verification");
+		}
 		
 		return jsonString;
 		
