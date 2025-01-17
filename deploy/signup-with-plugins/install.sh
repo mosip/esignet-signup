@@ -99,7 +99,7 @@ function installing_signup_with_plugins() {
   done
 
   echo Installing signup-with-plugins
-  helm -n $NS install signup-with-plugins mosip/signup \
+  helm -n $NS install signup mosip/signup \
     -f values.yaml --version $CHART_VERSION $ENABLE_INSECURE $plugin_option \
     --set metrics.serviceMonitor.enabled=$servicemonitorflag --wait
 
