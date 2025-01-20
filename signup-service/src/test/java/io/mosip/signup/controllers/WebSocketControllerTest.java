@@ -1,5 +1,6 @@
 package io.mosip.signup.controllers;
 
+import io.mosip.kernel.auth.defaultadapter.config.SecurityConfig;
 import io.mosip.signup.api.dto.IdentityVerificationResult;
 import io.mosip.signup.api.exception.IdentityVerifierException;
 import io.mosip.signup.dto.IdentityVerificationRequest;
@@ -17,6 +18,8 @@ import org.mockito.Mockito;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -30,7 +33,9 @@ import static io.mosip.signup.util.SignUpConstants.VALUE_SEPARATOR;
 
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(value = WebSocketController.class, excludeAutoConfiguration = {SecurityAutoConfiguration.class})
+@WebMvcTest(value = WebSocketController.class,
+        excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = {SecurityConfig.class}),
+        excludeAutoConfiguration = {SecurityAutoConfiguration.class})
 @ActiveProfiles(value = {"test"})
 public class WebSocketControllerTest {
 
