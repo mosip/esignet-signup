@@ -77,7 +77,7 @@ function installing_signup() {
   echo Installing signup
   helm -n $NS install signup mosip/signup \
     -f values.yaml --version $CHART_VERSION \
-    --set image.repository=mosipdev/signup --set image.tag=develop \
+    --set image.repository=mosipdev/signup --set image.tag=release-1.1.x \
     $ENABLE_INSECURE $plugin_option \
     --set metrics.serviceMonitor.enabled=$servicemonitorflag --wait
 
