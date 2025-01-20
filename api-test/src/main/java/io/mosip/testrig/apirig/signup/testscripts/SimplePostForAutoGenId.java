@@ -164,6 +164,7 @@ public class SimplePostForAutoGenId extends AdminTestUtil implements ITest {
 						//tempUrl = ApplnURI.replace(GlobalConstants.API_INTERNAL, ConfigManager.getSunBirdBaseURL());
 					testCaseDTO.setEndPoint(testCaseDTO.getEndPoint().replace("$SUNBIRDBASEURL$", ""));
 				}
+				inputJson = SignupUtil.inputstringKeyWordHandeler(inputJson, testCaseName);
 				if ((testCaseName.contains("_AuthorizationCode_")) || (testCaseName.contains("_AuthToken_Xsrf_"))) {
 					response = postRequestWithCookieAuthHeaderAndXsrfTokenForAutoGenId(
 							tempUrl + testCaseDTO.getEndPoint(), inputJson, COOKIENAME, testCaseDTO.getTestCaseName(),
