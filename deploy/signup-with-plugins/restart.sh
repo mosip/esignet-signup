@@ -1,25 +1,17 @@
 #!/bin/bash
-# restarts signup services in correct order
-## Usage: ./restart-all.sh [kubeconfig]
+# Restart the signup-with-plugins services
 
 if [ $# -ge 1 ] ; then
   export KUBECONFIG=$1
 fi
 
-function Restarting_All() {
-  ROOT_DIR=`pwd`
+function Restarting_signup_with-plugins() {
+  NS=signup
+  kubectl -n $NS rollout restart deploy signup
 
-  declare -a module=("signup-with-plugins" "signup-ui")
+  kubectl -n $NS  get deploy -o name |  xargs -n1 -t  kubectl -n $NS rollout status
 
-  echo restarting signup services
-
-  for i in "${module[@]}"
-  do
-    cd $ROOT_DIR/"$i"
-    ./restart.sh
-  done
-
-  echo All signup services restarted sucessfully.
+  echo Restarted signup-with-plugins services
   return 0
 }
 
@@ -29,4 +21,4 @@ set -o errexit   ## set -e : exit the script if any statement returns a non-true
 set -o nounset   ## set -u : exit the script if you try to use an uninitialised variable
 set -o errtrace  # trace ERR through 'time command' and other functions
 set -o pipefail  # trace ERR through pipes
-Restarting_All   # calling function
+Restarting_signup_with-plugins   # calling function
