@@ -290,6 +290,8 @@ extraEnvVars: |
     value: fullName,phone,password,preferredLang
   - name: MOSIP_SIGNUP_MOCK_USERNAME_FIELD
     value: phone
+  - name: MOSIP_SIGNUP_SEND_CHALLANGE_CAPTCHA_REQUIRED
+    value: 'true'
   - name: MOSIP_SIGNUP_SUPPORTED_LANGUAGES
     value: '{''eng'',''khm''}'
   - name: MOSIP_SIGNUP_FULLNAME_PATTERN
