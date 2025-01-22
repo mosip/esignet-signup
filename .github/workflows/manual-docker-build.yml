@@ -25,7 +25,7 @@ jobs:
 
   build_dockers_esignet_with_plugins:
     needs: build_maven_signup_with_plugins
-    if: ${{ needs.check_snapshot_version.outputs.is_condition == 'true' }}
+    if: ${{ github.event_name == 'workflow_dispatch' }}  # Runs only when triggered manually
     strategy:
       matrix:
         include:
