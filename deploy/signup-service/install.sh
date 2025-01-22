@@ -7,7 +7,7 @@ if [ $# -ge 1 ] ; then
 fi
 
 NS=signup
-CHART_VERSION=1.1.0-develop
+CHART_VERSION=1.1.0
 
 while true; do
     read -p "Do you want to continue installing signup services? (y/n): " ans
@@ -77,7 +77,7 @@ function installing_signup() {
   echo Installing signup
   helm -n $NS install signup mosip/signup \
     -f values.yaml --version $CHART_VERSION \
-    --set image.repository=mosipdev/signup --set image.tag=release-1.1.x \
+    --set image.repository=mosipid/signup --set image.tag=1.1.0 \
     $ENABLE_INSECURE $plugin_option \
     --set metrics.serviceMonitor.enabled=$servicemonitorflag --wait
 

@@ -14,7 +14,7 @@ set -o errtrace  # Trace ERR through 'time command' and other functions
 set -o pipefail  # Trace ERR through pipes
 
 NS=signup
-CHART_VERSION=0.0.1-develop
+CHART_VERSION=12.0.1
 COPY_UTIL=../copy_cm_func.sh
 
 helm repo add mosip https://mosip.github.io/mosip-helm
