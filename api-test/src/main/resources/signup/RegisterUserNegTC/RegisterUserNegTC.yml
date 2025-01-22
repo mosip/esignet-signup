@@ -1064,7 +1064,7 @@ RegisterUserNegTC:
       endPoint: /v1/signup/registration/register
       role: resident
       restMethod: post
-      allowedErrorCodes: invalid_phone,invalid_phone_number
+      allowedErrorCodes: invalid_phone,invalid_phone_number,identifier_mismatch
       inputTemplate: signup/RegisterUser/RegisterUser
       outputTemplate: signup/error
       input: '{
@@ -1080,7 +1080,7 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_phone_number",
+      "errorCode": "identifier_mismatch",
       "errorMessage": "$IGNORE$"
     }
   ]
@@ -1089,7 +1089,7 @@ RegisterUserNegTC:
       endPoint: /v1/signup/registration/register
       role: resident
       restMethod: post
-      allowedErrorCodes: invalid_phone_number,invalid_phone
+      allowedErrorCodes: invalid_phone_number,invalid_phone,identifier_mismatch
       inputTemplate: signup/RegisterUser/RegisterUser
       outputTemplate: signup/error
       input: '{
@@ -1105,7 +1105,7 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_phone_number",
+      "errorCode": "identifier_mismatch",
       "errorMessage": "$IGNORE$"
     }
   ]
@@ -1421,7 +1421,7 @@ RegisterUserNegTC:
     "fullName": "$FULLNAMETOREGISTERUSER$",
     "requestTime": "$TIMESTAMP$",
     "phone": "$ID:ESignet_VerifyChallengeNegTC_STransId_Valid_Smoke_Pos_PHONE$",
-    "preferredLang": "ara"
+    "preferredLang": "araa"
 }'
       output: '{
       	"errors": [
@@ -1609,6 +1609,31 @@ RegisterUserNegTC:
       inputTemplate: signup/RegisterUser/RegisterUser
       outputTemplate: signup/error
       input: '{
+    "verifiedTransactionID": "$ID:ESignet_VerifyChallengeNegTC_STransId_Valid_Smoke_Pos_For_Authentication_VTransactionID$",
+    "username": "$ID:ESignet_VerifyChallengeNegTC_STransId_Valid_Smoke_Pos_For_Authentication_PHONE$",
+    "password": "$PASSWORDFORAUTHENTICATION$",
+    "consent": "AGREE",
+    "fullName": "$FULLNAMETOREGISTERUSER$",
+    "requestTime": "$TIMESTAMP$",
+    "phone": "$ID:ESignet_VerifyChallengeNegTC_STransId_Valid_Smoke_Pos_For_Authentication_PHONE$",
+    "preferredLang": "khm"
+}'
+      output: '{
+      	"errors": [
+    {
+      "errorCode": "invalid_transaction",
+      "errorMessage": "$IGNORE$"
+    }
+  ]
+}'
+
+   Signup_ESignet_RegisterUserNegTC_Valid_smoke_For_Neg_Scenario:
+      endPoint: /v1/signup/registration/register
+      role: resident
+      restMethod: post
+      inputTemplate: signup/RegisterUser/RegisterUser
+      outputTemplate: signup/RegisterUser/RegisterUserResult
+      input: '{
     "verifiedTransactionID": "$ID:ESignet_VerifyChallengeNegTC_STransId_Valid_Smoke_Pos_VTransactionID$",
     "username": "$ID:ESignet_VerifyChallengeNegTC_STransId_Valid_Smoke_Pos_PHONE$",
     "password": "$PASSWORDFORAUTHENTICATION$",
@@ -1619,12 +1644,7 @@ RegisterUserNegTC:
     "preferredLang": "khm"
 }'
       output: '{
-      	"errors": [
-    {
-      "errorCode": "invalid_transaction",
-      "errorMessage": "$IGNORE$"
-    }
-  ]
+       "status":"PENDING"
 }'
 
    Signup_ESignet_RegisterUserNegTC_with_khm_preferredLang:
