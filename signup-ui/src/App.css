@@ -187,6 +187,11 @@ body {
   font-family: inherit;
 }
 
+input {
+  overflow: hidden;
+  text-overflow: ellipsis !important;
+}
+
 @media screen and (max-width: 640px) {
   .section-background .top_left_bg_logo,
   .section-background .top_right_bg_logo,
