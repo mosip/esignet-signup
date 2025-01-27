@@ -389,7 +389,7 @@ SignupAuthorizeNegTC:
     }
   ]
 }'
-   Signup_ESignet_SignupAuthorizeNegTC_OAuthDetailsRequest_AuthToken_Xsrf_multipleSpacesInBetween_scope_Pos:
+   Signup_ESignet_SignupAuthorizeNegTC_OAuthDetailsRequest_AuthToken_Xsrf_multipleSpacesInBetween_scope_Neg:
       endPoint: /v1/esignet/authorization/v3/oauth-details
       uniqueIdentifier: TC_ESignet_SignupAuthorizeNegTC_14
       description: Create consent details and unique transactionID with multiple spaces in between scope - Failure
