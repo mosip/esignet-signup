@@ -88,9 +88,13 @@ Update the "client_secret" and iam_url(keycoak) in the request body.
 Run the requests under
 
 a. "OIDC Client Mgmt" -> "Mock" -> "Get Auth token"
+
 b. "OIDC Client Mgmt" -> "Mock" -> "Get CSRF token"
+
 c. Before executing the "Create OIDC client" request, user needs to update url,logo-uri, redirect-uri, client-name, client-id in the request
+
 d. The user also needs to store the private-key of private-public keypair in p12 format and mount it as a signup-keystore secret to the signup deployment. User also needs to update the public-key in the "Create OIDC client" request in jwk format.
+
 e. "OIDC Client Mgmt" -> "Mock" -> "Create OIDC client"
 
 ## APIs
