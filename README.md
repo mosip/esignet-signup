@@ -81,7 +81,7 @@ To complete the signup portal deployment below MOSIP kernel services are require
 ```  
 ## Partner onboarding
 * Partner onboarding for esignet Signup OIDC client with mock can be performed manually with below steps
-* Download and import eSignet-with-mock.postman_environment.json and eSignet.postman_collection.json postman collection from [here](../postman-collection) 
+* Download and import eSignet-with-mock.postman_environment.json and eSignet.postman_collection.json postman collection from [here]([../postman-collection](https://github.com/mosip/esignet-signup/tree/release-1.1.x/postman-collection)) 
 
 Update the "client_secret" and iam_url(keycoak) in the request body.
 
