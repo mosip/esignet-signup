@@ -93,21 +93,24 @@ Run the requests under
 
 2. Navigate to **"OIDC Client Mgmt"** -> **"Mock"** -> **"Get CSRF token"** to fetch the CSRF token.
 
-3. **Before executing the "Create OIDC client" request**, update the following fields in the request:
+3. To Onboard signup-service as a OIDC client in esignet-service
+   
+    1. Follow [prerequisite step as metioned here](https://github.com/mosip/esignet-signup/blob/v1.1.0/docker-compose/README.md#prerequisite-to-run-identity-verification-flow-from-postman-collection)
+   
+    2. Mount oidckeystore.p12 as a `signup-keystore` secret to the **signup deployment**.
+       
+    3. Make sure to update the `signup-keystore-password` in the secrets as passed while creating the p12 file.
+
+5. **Before executing the "Create OIDC client" request**, update the following fields in the request:
    - `url`
    - `logo-uri`
    - `redirect-uri`
    - `client-name`
    - `client-id`
 
-4. Store the private key of the private-public key pair in `.p12` format and:
-   - Mount it as a `signup-keystore` secret to the **signup deployment**.
-   - Make sure to update the `signup-keystore-password` in the secrets as passed while creating the p12 file.
+6. Copy the public key in public_key.jwk file and update the same in the Register Signup OIDC/Create Signup OIDC client request body.
 
-5. Update the public key in the **"Create OIDC client"** request in **JWK format**.
-
-6. Navigate to **"OIDC Client Mgmt"** -> **"Mock"** -> **"Create OIDC client"** to execute the request.
-
+7. Execute the request.
 
 ## APIs
 API documentation is available [here](docs/esignet-signup-openapi.yaml).
