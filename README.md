@@ -87,15 +87,26 @@ Update the "client_secret" and iam_url(keycoak) in the request body.
 
 Run the requests under
 
-a. "OIDC Client Mgmt" -> "Mock" -> "Get Auth token"
+# OIDC Client Management Instructions
 
-b. "OIDC Client Mgmt" -> "Mock" -> "Get CSRF token"
+1. Navigate to **"OIDC Client Mgmt"** -> **"Mock"** -> **"Get Auth token"** to fetch the authentication token.
 
-c. Before executing the "Create OIDC client" request, user needs to update url,logo-uri, redirect-uri, client-name, client-id in the request
+2. Navigate to **"OIDC Client Mgmt"** -> **"Mock"** -> **"Get CSRF token"** to fetch the CSRF token.
 
-d. The user also needs to store the private-key of private-public keypair in p12 format and mount it as a signup-keystore secret to the signup deployment. User also needs to update the public-key in the "Create OIDC client" request in jwk format.
+3. **Before executing the "Create OIDC client" request**, update the following fields in the request:
+   - `url`
+   - `logo-uri`
+   - `redirect-uri`
+   - `client-name`
+   - `client-id`
 
-e. "OIDC Client Mgmt" -> "Mock" -> "Create OIDC client"
+4. Store the private key of the private-public key pair in `.p12` format and:
+   - Mount it as a `signup-keystore` secret to the **signup deployment**.
+
+5. Update the public key in the **"Create OIDC client"** request in **JWK format**.
+
+6. Navigate to **"OIDC Client Mgmt"** -> **"Mock"** -> **"Create OIDC client"** to execute the request.
+
 
 ## APIs
 API documentation is available [here](docs/esignet-signup-openapi.yaml).
