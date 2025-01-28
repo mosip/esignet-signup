@@ -102,6 +102,7 @@ Run the requests under
 
 4. Store the private key of the private-public key pair in `.p12` format and:
    - Mount it as a `signup-keystore` secret to the **signup deployment**.
+   - Make sure to update the `signup-keystore-password` in the secrets as passed while creating the p12 file.
 
 5. Update the public key in the **"Create OIDC client"** request in **JWK format**.
 
