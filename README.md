@@ -101,16 +101,16 @@ Run the requests under
        
     3. Make sure to update the `signup-keystore-password` in the secrets as passed while creating the p12 file.
 
-5. **Before executing the "Create OIDC client" request**, update the following fields in the request:
+4. **Before executing the "Create OIDC client" request**, update the following fields in the request:
    - `url`
    - `logo-uri`
    - `redirect-uri`
    - `client-name`
    - `client-id`
 
-6. Copy the public key in public_key.jwk file and update the same in the Register Signup OIDC/Create Signup OIDC client request body.
+5. Copy the public key in public_key.jwk file and update the same in the Register Signup OIDC/Create Signup OIDC client request body.
 
-7. Execute the request.
+6. Execute the request.
 
 ## APIs
 API documentation is available [here](docs/esignet-signup-openapi.yaml).
