@@ -80,7 +80,18 @@ To complete the signup portal deployment below MOSIP kernel services are require
   
 ```  
 ## Partner onboarding
-* Partner onboarding for esignet Signup OIDC client can be performed with either mosip-identity plugin or mock-identity plugin through the partner-onboarder script using [steps](partner-onboarder/README.md). 
+* Partner onboarding for esignet Signup OIDC client with mock can be performed manually with below steps
+* Download and import eSignet-with-mock.postman_environment.json and eSignet.postman_collection.json postman collection from [here](../postman-collection) 
+
+Update the "client_secret" and iam_url(keycoak) in the request body.
+
+Run the requests under
+
+a. "OIDC Client Mgmt" -> "Mock" -> "Get Auth token"
+b. "OIDC Client Mgmt" -> "Mock" -> "Get CSRF token"
+c. Before executing the "Create OIDC client" request, user needs to update url,logo-uri, redirect-uri, client-name, client-id in the request
+d. The user also needs to store the private-key of private-public keypair in p12 format and mount it as a signup-keystore secret to the signup deployment. User also needs to update the public-key in the "Create OIDC client" request in jwk format.
+e. "OIDC Client Mgmt" -> "Mock" -> "Create OIDC client"
 
 ## APIs
 API documentation is available [here](docs/esignet-signup-openapi.yaml).
