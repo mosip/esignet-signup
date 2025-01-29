@@ -66,15 +66,14 @@ The connection is established with ws.run_forever(), which keeps the connection 
 
 3. Provide Input: When prompted, enter the base URL (WebSocket server address), slot ID, and cookie value.
 
-4. Sending Messages: When prompted, to enter message to send, type the message as below, there are 3 different messages
+4. Sending Messages: When prompted, to enter message to send, type the message as below, there are 2 different messages
 
 START step message -> `{"slotId":"<allotted slotId>","stepCode":"START","frames":[{"frame":"","order":"0"}]}`
 
 Other step messages -> `{"slotId":"<allotted slotId>","stepCode":"<step_name as in the received messages>","frames":[{"frame":"","order":"0"}]}`
 
-END step message -> `{"slotId":"<allotted slotId>","stepCode":"END","frames":[{"frame":"","order":"0"}]}`
-
-5. Receiving Messages: Any messages sent from the server to the subscribed topic will be printed to the console as they are received.
+5. Receiving Messages: Any messages sent from the server to the subscribed topic will be printed to the console as they are received. On receiving message
+with step code as "END" from the server denotes the closure of frame verification process. Hence the websocket connection can be closed by the client.
 
 
 ## Example interaction
