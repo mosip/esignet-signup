@@ -19,7 +19,6 @@ import lombok.extern.slf4j.Slf4j;
 import net.javacrumbs.shedlock.core.LockAssert;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
@@ -27,11 +26,13 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.ReturnType;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import static io.mosip.signup.util.SignUpConstants.*;
 
@@ -46,6 +47,9 @@ public class CacheUtilService {
 
     @Autowired
     private RedisConnectionFactory redisConnectionFactory;
+
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
 
 
     private static final String CLEANUP_SCRIPT = "local function binary_to_long(binary_str)\n" +
@@ -227,7 +231,8 @@ public class CacheUtilService {
         return cacheManager.getCache(SignUpConstants.SLOT_ALLOTTED).get(transactionId, IdentityVerificationTransaction.class); //NOSONAR getCache() will not be returning null here.
     }
 
-    public IdentityVerificationTransaction getVerifiedSlotTransaction(String slotId) {
+    public IdentityVerificationTransaction
+    getVerifiedSlotTransaction(String slotId) {
         return cacheManager.getCache(SignUpConstants.VERIFIED_SLOT).get(slotId, IdentityVerificationTransaction.class); //NOSONAR getCache() will not be returning null here.
     }
 
@@ -242,13 +247,13 @@ public class CacheUtilService {
     }
 
     public void updateVerificationStatus(String haltedTransactionId, String status, String errorCode) {
-        if(cacheManager.getCache(Constants.HALTED_CACHE) != null) {
-            OIDCTransaction oidcTransaction = cacheManager.getCache(Constants.HALTED_CACHE).get(haltedTransactionId, OIDCTransaction.class);
-            if(oidcTransaction != null) {
-                oidcTransaction.setVerificationStatus(status);
-                oidcTransaction.setVerificationErrorCode(errorCode);
-                cacheManager.getCache(Constants.HALTED_CACHE).put(haltedTransactionId, oidcTransaction);
-            }
+        String cacheKey = Constants.HALTED_CACHE + "::" + haltedTransactionId;
+        OIDCTransaction oidcTransaction = (OIDCTransaction) redisTemplate.opsForValue().get(cacheKey);
+        if(oidcTransaction != null) {
+            oidcTransaction.setVerificationStatus(status);
+            oidcTransaction.setVerificationErrorCode(errorCode);
+            long ttl = redisTemplate.getExpire(cacheKey);
+            redisTemplate.opsForValue().set(cacheKey, oidcTransaction, ttl, TimeUnit.SECONDS);
         }
     }
 
