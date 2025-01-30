@@ -85,6 +85,7 @@ const SlotAvailabilityPossibleErrors = [
   "invalid_request",
   "reset_pwd_failed",
   "slot_unavailable",
+  "slot_not_available",
 ] as const;
 
 export type SlotAvailabilityErrors =

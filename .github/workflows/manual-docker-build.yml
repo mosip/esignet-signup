@@ -24,8 +24,8 @@ jobs:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
 
   build_dockers_esignet_with_plugins:
-    needs: build_maven_signup_with_plugins
-    if: ${{ github.event_name == 'workflow_dispatch' }}  # Runs only when triggered manually
+    needs: [ build_maven_signup_with_plugins, check_snapshot_version, publish_to_nexus ]
+    if: ${{ needs.check_snapshot_version.outputs.is_condition == 'true' }}
     strategy:
       matrix:
         include:

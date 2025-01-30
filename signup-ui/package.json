@@ -26,7 +26,7 @@
     "@types/node": "^20.8.9",
     "@types/react": "^18.2.32",
     "@types/react-dom": "^18.2.14",
-    "axios": "^1.6.0",
+    "axios": "^1.7.8",
     "bowser": "^2.11.0",
     "buffer": "^6.0.3",
     "class-variance-authority": "^0.7.0",
