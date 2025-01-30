@@ -1,15 +1,72 @@
 {
 	"info": {
-		"_postman_id": "13a15511-b515-4f4c-ae9a-5ae79437e213",
+		"_postman_id": "2c31b759-dcf6-4d95-a607-b79823d2ffca",
 		"name": "eSignet Signup",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "20579541",
-		"_collection_link": "https://mosip-idp.postman.co/workspace/MOSIP-Team-Workspace~76ac5ada-d630-4817-8d7b-25f499b093d4/collection/20579541-13a15511-b515-4f4c-ae9a-5ae79437e213?action=share&source=collection_link&creator=20579541"
+		"_collection_link": "https://mosip-idp.postman.co/workspace/MOSIP-Team-Workspace~76ac5ada-d630-4817-8d7b-25f499b093d4/collection/20579541-2c31b759-dcf6-4d95-a607-b79823d2ffca?action=share&source=collection_link&creator=20579541"
 	},
 	"item": [
 		{
 			"name": "Register Signup OIDC",
 			"item": [
+				{
+					"name": "Get Auth token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(pm.response.text());",
+									"var data = jsonData.access_token;",
+									"console.log(data);",
+									"pm.environment.set(\"authtoken\",data);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "client_secret",
+									"value": "ysd1exB4FXsZebbA",
+									"type": "text"
+								},
+								{
+									"key": "client_id",
+									"value": "mosip-pms-client",
+									"type": "text"
+								},
+								{
+									"key": "grant_type",
+									"value": "client_credentials",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{iam_url}}/auth/realms/mosip/protocol/openid-connect/token",
+							"host": [
+								"{{iam_url}}"
+							],
+							"path": [
+								"auth",
+								"realms",
+								"mosip",
+								"protocol",
+								"openid-connect",
+								"token"
+							]
+						}
+					},
+					"response": []
+				},
 				{
 					"name": "Create Signup OIDC client",
 					"event": [
@@ -26,7 +83,14 @@
 					],
 					"request": {
 						"auth": {
-							"type": "noauth"
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authtoken}}",
+									"type": "string"
+								}
+							]
 						},
 						"method": "POST",
 						"header": [
