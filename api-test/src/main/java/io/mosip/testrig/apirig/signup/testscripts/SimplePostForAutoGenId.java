@@ -133,19 +133,19 @@ public class SimplePostForAutoGenId extends AdminTestUtil implements ITest {
 					throw new AdminTestException("Failed at output validation");
 			}
 		} else {
+			inputJson = SignupUtil.inputstringKeyWordHandeler(inputJson, testCaseName);
 			if (testCaseName.contains("ESignet_")) {
 				if (SignupConfigManager.isInServiceNotDeployedList(GlobalConstants.ESIGNET)) {
 					throw new SkipException("esignet is not deployed hence skipping the testcase");
 				}
-				
+
 				String tempUrl = null;
 				if (testCaseDTO.getEndPoint().contains("/signup/")) {
 					tempUrl = SignupConfigManager.getSignupBaseUrl();
 				} else {
 					tempUrl = SignupConfigManager.getEsignetBaseUrl();
 				}
-				if (testCaseDTO.getEndPoint().startsWith("$ESIGNETMOCKBASEURL$")
-						&& testCaseName.contains("SunBirdC")) {
+				if (testCaseDTO.getEndPoint().startsWith("$ESIGNETMOCKBASEURL$") && testCaseName.contains("SunBirdC")) {
 					if (SignupConfigManager.isInServiceNotDeployedList("sunbirdrc"))
 						throw new SkipException(GlobalConstants.SERVICE_NOT_DEPLOYED_MESSAGE);
 
@@ -153,15 +153,19 @@ public class SimplePostForAutoGenId extends AdminTestUtil implements ITest {
 							&& !SignupConfigManager.getEsignetMockBaseURL().isBlank())
 						tempUrl = ApplnURI.replace("api-internal.", SignupConfigManager.getEsignetMockBaseURL());
 					testCaseDTO.setEndPoint(testCaseDTO.getEndPoint().replace("$ESIGNETMOCKBASEURL$", ""));
-				} else if (testCaseDTO.getEndPoint().startsWith("$SUNBIRDBASEURL$") && testCaseName.contains("SunBirdR")) {
+				} else if (testCaseDTO.getEndPoint().startsWith("$SUNBIRDBASEURL$")
+						&& testCaseName.contains("SunBirdR")) {
 
 					if (SignupConfigManager.isInServiceNotDeployedList("sunbirdrc"))
 						throw new SkipException(GlobalConstants.SERVICE_NOT_DEPLOYED_MESSAGE);
 
-					if (SignupConfigManager.getSunBirdBaseURL() != null && !SignupConfigManager.getSunBirdBaseURL().isBlank())
+					if (SignupConfigManager.getSunBirdBaseURL() != null
+							&& !SignupConfigManager.getSunBirdBaseURL().isBlank())
 						tempUrl = SignupConfigManager.getSunBirdBaseURL();
-						//Once sunbird registry is pointing to specific env, remove the above line and uncomment below line
-						//tempUrl = ApplnURI.replace(GlobalConstants.API_INTERNAL, ConfigManager.getSunBirdBaseURL());
+					// Once sunbird registry is pointing to specific env, remove the above line and
+					// uncomment below line
+					// tempUrl = ApplnURI.replace(GlobalConstants.API_INTERNAL,
+					// ConfigManager.getSunBirdBaseURL());
 					testCaseDTO.setEndPoint(testCaseDTO.getEndPoint().replace("$SUNBIRDBASEURL$", ""));
 				}
 				if ((testCaseName.contains("_AuthorizationCode_")) || (testCaseName.contains("_AuthToken_Xsrf_"))) {

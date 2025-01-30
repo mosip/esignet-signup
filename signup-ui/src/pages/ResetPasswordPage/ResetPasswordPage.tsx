@@ -1,10 +1,11 @@
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { isEqual } from "lodash";
-import { useCallback, useEffect, useMemo } from "react";
 import { Resolver, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import * as yup from "yup";
 
+import { criticalErrorsToPopup } from "~constants/criticalErrors";
 import { Form } from "~components/ui/form";
 import {
   validateCaptchaToken,
@@ -14,7 +15,11 @@ import {
   validatePassword,
   validateUsername,
 } from "~pages/shared/validation";
-import { ResetPasswordForm, ResetPasswordPossibleInvalid, SettingsDto } from "~typings/types";
+import {
+  ResetPasswordForm,
+  ResetPasswordPossibleInvalid,
+  SettingsDto,
+} from "~typings/types";
 
 import Otp from "./Otp";
 import ResetPassword from "./ResetPassword";
@@ -43,7 +48,8 @@ interface ResetPasswordPageProps {
 }
 
 export const ResetPasswordPage = ({ settings }: ResetPasswordPageProps) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const [previousLanguage, setPreviousLanguage] = useState(i18n.language);
 
   const { step, criticalError } = useResetPasswordStore(
     useCallback(
@@ -60,7 +66,7 @@ export const ResetPasswordPage = ({ settings }: ResetPasswordPageProps) => {
       // Step 1 - UserInfo
       yup.object({
         username: validateUsername(settings),
-        fullname: validateFullName(settings,t),
+        fullname: validateFullName(settings, t),
         captchaToken: validateCaptchaToken(settings),
       }),
       // Step 2 - Otp
@@ -81,7 +87,7 @@ export const ResetPasswordPage = ({ settings }: ResetPasswordPageProps) => {
       // Step 5 - ResetPasswordConfirmation
       yup.object({}),
     ],
-    [settings, t]
+    [settings, t, i18n.language]
   );
 
   const currentValidationSchema = validationSchema[step];
@@ -95,6 +101,24 @@ export const ResetPasswordPage = ({ settings }: ResetPasswordPageProps) => {
     >,
     mode: "onBlur",
   });
+
+  useEffect(() => {
+    const oldLanguage = previousLanguage;
+    setPreviousLanguage(i18n.language);
+
+    if (oldLanguage !== i18n.language) {
+      const invalidInput = Array.from(
+        document.querySelectorAll('input[aria-invalid="true"]')
+      ).find((input) => {
+        const name = input.getAttribute("name") ?? ""; // Default to an empty string if null
+        return /fullname/i.test(name);
+      });
+
+      if (invalidInput) {
+        methods.trigger(); // Manually trigger validation whenever the language changes
+      }
+    }
+  }, [i18n.language]); // Trigger whenever `i18n.language` changes
 
   const {
     getValues,
@@ -152,9 +176,13 @@ export const ResetPasswordPage = ({ settings }: ResetPasswordPageProps) => {
   return (
     <>
       {criticalError &&
-        ["invalid_transaction", ...ResetPasswordPossibleInvalid].includes(
-          criticalError.errorCode
-        ) && <ResetPasswordPopover />}
+        [
+          ...new Set([
+            "invalid_transaction",
+            ...ResetPasswordPossibleInvalid,
+            ...criticalErrorsToPopup
+          ])
+        ].includes(criticalError.errorCode) && <ResetPasswordPopover />}
       <Form {...methods}>
         <form noValidate>{getResetPasswordContent(step)}</form>
       </Form>

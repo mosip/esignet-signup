@@ -1131,20 +1131,18 @@ public class RegistrationServiceTest {
         generateChallengeRequest.setRegenerateChallenge(true);
         generateChallengeRequest.setPurpose(Purpose.REGISTRATION);
         String transactionId = "TRAN-1234";
-        RegistrationTransaction transaction = new RegistrationTransaction(identifier, Purpose.REGISTRATION);
-        transaction.setLastRetryAt(LocalDateTime.now(ZoneOffset.UTC).minusSeconds(40));
-        transaction.setChallengeRetryAttempts(3);
-
-        when(cacheUtilService.getChallengeGeneratedTransaction(transactionId)).thenReturn(transaction);
-        when(challengeManagerService.generateChallenge(transaction)).thenReturn("1111");
         when(captchaHelper.validateCaptcha(
                 generateChallengeRequest.getCaptchaToken())).thenReturn(true);
-
-        GenerateChallengeResponse generateChallengeResponse =
-                registrationService.generateChallenge(
-                        generateChallengeRequest, transactionId);
-        Assert.assertNotNull(generateChallengeResponse);
-        Assert.assertEquals("SUCCESS", generateChallengeResponse.getStatus());
+        when(cacheUtilService.isIdentifierBlocked(generateChallengeRequest.getIdentifier())).thenReturn(true);
+        try {
+            registrationService.generateChallenge(
+                            generateChallengeRequest, transactionId);
+            Assert.fail("Signup exception not thrown");
+        } catch (SignUpException ex) {
+            Assert.assertEquals(ex.getErrorCode(), ErrorConstants.IDENTIFIER_BLOCKED);
+        } catch (Exception ex) {
+            Assert.fail("Unexpected exception thrown");
+        }
     }
 
     @Test
@@ -1202,12 +1200,12 @@ public class RegistrationServiceTest {
         generateChallengeRequest.setCaptchaToken("mock-invalid-captcha");
         ReflectionTestUtils.setField(registrationService, "captchaRequired", true);
         when(captchaHelper.validateCaptcha(
-                generateChallengeRequest.getCaptchaToken())).thenReturn(false);
+                generateChallengeRequest.getCaptchaToken())).thenThrow(new EsignetException(ErrorConstants.INVALID_CAPTCHA));
         when(challengeManagerService.generateChallenge(any())).thenReturn("1111");
         try {
             registrationService.generateChallenge(generateChallengeRequest, "");
             Assert.fail();
-        } catch (CaptchaException ex) {
+        } catch (EsignetException ex) {
             Assert.assertEquals("invalid_captcha", ex.getErrorCode());
         }
     }
@@ -1254,29 +1252,6 @@ public class RegistrationServiceTest {
             Assert.fail();
         } catch (SignUpException ex) {
             Assert.assertEquals(ErrorConstants.IDENTIFIER_MISMATCH, ex.getErrorCode());
-        }
-    }
-
-    @Test
-    public void doGenerateChallenge_withTooManyAttemptTransactionId_throwTooManyAttempts() throws SignUpException {
-        String identifier = "+85577410541";
-        GenerateChallengeRequest generateChallengeRequest = new GenerateChallengeRequest();
-        generateChallengeRequest.setIdentifier(identifier);
-        generateChallengeRequest.setCaptchaToken("mock-captcha");
-        generateChallengeRequest.setRegenerateChallenge(true);
-        String transactionId = "TRAN-1234";
-        RegistrationTransaction transaction = new RegistrationTransaction(identifier, Purpose.REGISTRATION);
-        transaction.setChallengeRetryAttempts(4);
-
-        when(cacheUtilService.getChallengeGeneratedTransaction(transactionId)).thenReturn(transaction);
-        when(captchaHelper.validateCaptcha(
-                generateChallengeRequest.getCaptchaToken())).thenReturn(true);
-
-        try {
-            registrationService.generateChallenge(generateChallengeRequest, transactionId);
-            Assert.fail();
-        } catch (GenerateChallengeException ex) {
-            Assert.assertEquals("too_many_attempts", ex.getErrorCode());
         }
     }
 
