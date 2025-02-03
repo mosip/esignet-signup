@@ -80,7 +80,21 @@ To complete the signup portal deployment below MOSIP kernel services are require
   
 ```  
 ## Partner onboarding
-* Perform Partner onboarding for esignet Signup OIDC client using [steps](partner-onboarder/README.md) only if mosip-identity plugin is used.  
+* Partner onboarding for esignet Signup OIDC client with mock can be performed manually with below steps
+* Download and import eSignet Signup.postman_collection.json and eSignet Signup.postman_environment.json postman collection from [here](./postman-collection)
+
+# OIDC Client Management Instructions
+1. Fetch the Authentication Token
+   * Navigate to **"Register Signup Oidc "** → "Get Auth Token" to retrieve the authentication token.
+     * Update the client_secret (retrieve it from the keycloak-client-secrets).
+     * Update the iam_url (Keycloak URL) in the request body.
+     * Retrieve the Keycloak URL from the config-map under keycloak-host → keycloak-external-url.
+
+2. Navigate to **"Register"** → **"Get CSRF token"** →  **generate CSRF token** → to fetch the CSRF token.
+
+3. Execute `create-signup-oidc-keystore.sh` [here](./docs/create-signup-oidc-keystore.sh) to generate a keypair. This script after successful execution creates 2 files in the project root directory:
+    oidckeystore.p12
+    public_key.jwk
 
 ## APIs
 API documentation is available [here](docs/esignet-signup-openapi.yaml).
