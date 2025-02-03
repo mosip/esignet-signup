@@ -80,9 +80,43 @@ To complete the signup portal deployment below MOSIP kernel services are require
   
 ```  
 ## Partner onboarding
-* Partner onboarding for esignet Signup OIDC client can be performed with either mosip-identity plugin or mock-identity plugin through the partner-onboarder script using [steps](partner-onboarder/README.md). 
+* Partner onboarding for esignet Signup OIDC client with mock can be performed manually with below steps
+* Download and import eSignet Signup.postman_collection.json and eSignet Signup.postman_environment.json postman collection from [here](./postman-collection)
 
-## APIs
+# OIDC Client Management Instructions
+1. Fetch the Authentication Token
+   * Navigate to **"Register Signup Oidc "** → "Get Auth Token" to retrieve the authentication token.
+     * Update the client_secret (retrieve it from the keycloak-client-secrets).
+     * Update the iam_url (Keycloak URL) in the request body.
+     * Retrieve the Keycloak URL from the config-map under keycloak-host → keycloak-external-url.
+
+2. Navigate to **"Register"** → **"Get CSRF token"** →  **generate CSRF token** → to fetch the CSRF token.
+
+3. Execute `create-signup-oidc-keystore.sh` [here](./docs/create-signup-oidc-keystore.sh) to generate a keypair. This script after successful execution creates 2 files in the project root directory:
+    oidckeystore.p12
+    public_key.jwk
+
+    * As esignet only supports confidential OIDC clients, we should generate a RSA keypair to onboard signup-service. RSA private key is stored in the oidckeystore.p12 file and the corresponding public key is written to public_key.jwk file.
+    * Copy the public key in public_key.jwk file and update the same in the Register Signup OIDC/Create Signup OIDC client request body.
+      * ![postman-image.png](./postman-collection/public-key.png)
+
+4. Run Register Signup OIDC/Create Signup OIDC client in postman before starting the identity verification flow.
+   * Navigate to **"Register Signup Oidc "** -> **"Create Signup OIDC client"**
+     * Update the Request Fields for OIDC Client Creation
+     * Before executing the "Create Signup OIDC Client" request, update the following fields in the request body:
+         * esignet_url
+         * client-name
+         * client-id
+         * logo-uri
+         * redirect-uri
+     * Execute the request.
+    *  Make sure to update the `signup-keystore-password` in the secrets as passed while creating the p12 file.
+
+5. Mount oidckeystore.p12 as a `signup-keystore` secret to the **signup deployment**.
+
+6. Make sure to update the `signup-keystore-password` in the secrets as passed while creating the p12 file.
+
+# APIs
 API documentation is available [here](docs/esignet-signup-openapi.yaml).
 
 ## License
