@@ -151,7 +151,8 @@ public class SignupUtil extends AdminTestUtil {
 			String endpoint = testCaseDTO.getEndPoint();
 			if (endpoint.contains("/mock-identity-system/") == true
 					|| (endpoint.contains("v1/esignet/authorization/v3/oauth-details") == true)
-					|| (endpoint.contains("/v1/esignet/authorization/v3/authenticate") == true)
+					|| (endpoint.startsWith("Signup_ESignet_AuthenticateUser_V3_") == true)
+					|| (endpoint.startsWith("Signup_ESignet_AuthenticateUserNegTC_V3_") == true)
 					|| (endpoint.contains("v1/esignet/authorization/claim-details") == true)
 					|| (endpoint.contains("v1/esignet/authorization/prepare-signup-redirect") == true)
 					|| (endpoint.contains("v1/signup/identity-verification/initiate") == true)
