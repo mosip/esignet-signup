@@ -131,9 +131,15 @@ public class SignupUtil extends AdminTestUtil {
 					&& endpoint.contains("$GETENDPOINTFROMWELLKNOWN$") == false) {
 				throw new SkipException(GlobalConstants.FEATURE_NOT_SUPPORTED_MESSAGE);
 			}
-			if ((testCaseName.contains("_KycBioAuth_") || testCaseName.contains("_BioAuth_")
-					|| testCaseName.contains("_SendBindingOtp_uin_Email_Valid_Smoke")
-					|| testCaseName.contains("ESignet_AuthenticateUserIDP_NonAuth_uin_Otp_Valid_Smoke"))) {
+			if ((testCaseName.equals("Signup_ESignet_RegisterUserNegTC_WITH_less_then_8digit_number")
+					|| testCaseName.equals("Signup_ESignet_RegisterUserNegTC_WITH_more_than_9digit_number")
+					|| testCaseName.equals("Signup_ESignet_RegisterUserNegTC_WITHout_country_code")
+					|| testCaseName.equals("Signup_ESignet_RegisterUserNegTC_WITHout_plus_country_code")
+					|| testCaseName.equals("Signup_ESignet_RegisterUserNegTC_by_different_country_code")
+					|| testCaseName.equals("Signup_ESignet_RegisterUserNegTC_with_phone_starts_with_zero")
+					|| testCaseName.equals("Signup_ESignet_RegisterUserNegTC_with_phone_with_all_zero")
+					|| testCaseName.equals("Signup_ESignet_RegisterUserNegTC_with_phone_with_alpha_numeric")
+					|| testCaseName.equals("Signup_ESignet_RegisterUserNegTC_with_phone_with_special_char"))) {
 				throw new SkipException(GlobalConstants.FEATURE_NOT_SUPPORTED_MESSAGE);
 			}
 
@@ -144,6 +150,21 @@ public class SignupUtil extends AdminTestUtil {
 
 			String endpoint = testCaseDTO.getEndPoint();
 			if (endpoint.contains("/mock-identity-system/") == true
+					|| (endpoint.contains("v1/esignet/authorization/v3/oauth-details") == true)
+					|| (endpoint.contains("/v1/esignet/authorization/v3/authenticate") == true)
+					|| (endpoint.contains("v1/esignet/authorization/claim-details") == true)
+					|| (endpoint.contains("v1/esignet/authorization/prepare-signup-redirect") == true)
+					|| (endpoint.contains("v1/signup/identity-verification/initiate") == true)
+					|| (endpoint.contains("v1/signup/identity-verification/identity-verifier/") == true)
+					|| (endpoint.contains("v1/signup/identity-verification/slot") == true)
+					|| (endpoint.contains("v1/signup/ws") == true)
+					|| (endpoint.contains("v1/signup/identity-verification/status") == true)
+					|| (endpoint.contains("v1/esignet/authorization/complete-signup-redirect") == true)
+					|| (testCaseName.contains("_SignupAuthorizeCode") == true)
+					|| (testCaseName.equals(
+							"Signup_ESignet_GetOidcUserInfo_uin_IdpAccessToken_StatusCode_L2_Valid_Smoke_sid") == true)
+					|| (testCaseName.equals("Signup_ESignet_GenerateToken_uin_L2_Valid_Smoke_sid") == true)
+					|| (testCaseName.equals("Signup_ESignet_AuthorizationCode_uin_L2_All_Valid_Smoke_sid") == true)
 					|| ((testCaseName.equals("ESignet_CreateOIDCClient_all_Valid_Smoke_sid")
 							|| testCaseName.equals("Signup_ESignet_CreateOIDCClient_all_Valid_Smoke_sid")
 							|| testCaseName.equals("ESignet_CreateOIDCClient_Misp_Valid_Smoke_sid")
