@@ -96,7 +96,7 @@ public class MosipTestRunner {
 //			trigger.start();
 
 			if (SignupUtil.getIdentityPluginNameFromEsignetActuator().toLowerCase()
-					.contains("mockauthenticationservice") == false) {
+					.contains("idaauthenticatorimpl") == true) {
 				KeycloakUserManager.removeUser();
 				KeycloakUserManager.createUsers();
 				KeycloakUserManager.closeKeycloakInstance();
@@ -104,10 +104,6 @@ public class MosipTestRunner {
 
 				List<String> localLanguageList = new ArrayList<>(BaseTestCase.getLanguageList());
 				AdminTestUtil.getLocationData();
-
-				String partnerKeyURL = "";
-				String updatedPartnerKeyURL = "";
-				String ekycPartnerKeyURL = "";
 
 				PartnerRegistration.deleteCertificates();
 				AdminTestUtil.createAndPublishPolicy();

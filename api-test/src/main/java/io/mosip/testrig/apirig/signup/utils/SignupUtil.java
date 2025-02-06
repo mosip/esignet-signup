@@ -33,10 +33,12 @@ import io.mosip.testrig.apirig.testrunner.OTPListener;
 import io.mosip.testrig.apirig.utils.AdminTestUtil;
 import io.mosip.testrig.apirig.utils.CertsUtil;
 import io.mosip.testrig.apirig.utils.GlobalConstants;
+import io.mosip.testrig.apirig.utils.GlobalMethods;
 import io.mosip.testrig.apirig.utils.JWKKeyUtil;
 import io.mosip.testrig.apirig.utils.KeycloakUserManager;
 import io.mosip.testrig.apirig.utils.RestClient;
 import io.mosip.testrig.apirig.utils.SkipTestCaseHandler;
+import io.restassured.RestAssured;
 import io.restassured.response.Response;
 
 public class SignupUtil extends AdminTestUtil {
@@ -761,6 +763,85 @@ public class SignupUtil extends AdminTestUtil {
 				logger.error(e.getMessage());
 			}
 		return password;
+	}
+	
+	private static final String TOKEN_URL = SignupConfigManager.getproperty("keycloak-external-url")
+			+ SignupConfigManager.getproperty("keycloakAuthTokenEndPoint");
+	private static final String GRANT_TYPE = "client_credentials";
+	private static final String CLIENT_ID = "client_id";
+	private static final String CLIENT_SECRET = "client_secret";
+	private static final String GRANT_TYPE_KEY = "grant_type";
+	private static final String ACCESS_TOKEN = "access_token";
+
+    private static String partnerCookie = null;
+    private static String mobileAuthCookie = null;
+    
+	private static Response sendPostRequest(String url, Map<String, String> params) {
+		try {
+			return RestAssured.given().contentType("application/x-www-form-urlencoded; charset=utf-8")
+					.formParams(params).log().all().when().log().all().post(url);
+		} catch (Exception e) {
+			logger.error("Error sending POST request to URL: " + url, e);
+			return null;
+		}
+	}
+	
+    public static String getAuthTokenFromKeyCloak(String clientId, String clientSecret) {
+        Map<String, String> params = new HashMap<>();
+        params.put(CLIENT_ID, clientId);
+        params.put(CLIENT_SECRET, clientSecret);
+        params.put(GRANT_TYPE_KEY, GRANT_TYPE);
+
+        Response response = sendPostRequest(TOKEN_URL, params);
+
+        if (response == null) {
+            return "";
+        }
+        logger.info(response.getBody().asString());
+
+        JSONObject responseJson = new JSONObject(response.getBody().asString());
+        return responseJson.optString(ACCESS_TOKEN, "");
+    }
+	
+	public static String getAuthTokenByRole(String role) {
+		if (role == null)
+			return "";
+
+		String roleLowerCase = role.toLowerCase();
+		switch (roleLowerCase) {
+		case "partner":
+			if (!AdminTestUtil.isValidToken(partnerCookie)) {
+				partnerCookie = getAuthTokenFromKeyCloak(SignupConfigManager.getPmsClientId(),
+						SignupConfigManager.getPmsClientSecret());
+			}
+			return partnerCookie;
+		default:
+			return "";
+		}
+	}
+	
+	public static Response postWithBodyAndBearerToken(String url, String jsonInput, String cookieName,
+			String role, String testCaseName, String idKeyName) {
+		Response response = null;
+		if (testCaseName.contains("Invalid_Token")) {
+			token = "xyz";
+		} else if (testCaseName.contains("NOAUTH")) {
+			token = "";
+		} else {
+			token = getAuthTokenByRole(role);
+		}
+		logger.info(GlobalConstants.POST_REQ_URL + url);
+		GlobalMethods.reportRequest(null, jsonInput, url);
+		try {
+			response = RestClient.postRequestWithBearerToken(url, jsonInput, MediaType.APPLICATION_JSON,
+					MediaType.APPLICATION_JSON, cookieName, token);
+			GlobalMethods.reportResponse(response.getHeaders().asList().toString(), url, response);
+
+			return response;
+		} catch (Exception e) {
+			logger.error(GlobalConstants.EXCEPTION_STRING_2 + e);
+			return response;
+		}
 	}
 	
 }
