@@ -153,6 +153,8 @@ public class SignupUtil extends AdminTestUtil {
 					|| (endpoint.contains("v1/esignet/authorization/v3/oauth-details") == true)
 					|| (testCaseName.startsWith("Signup_ESignet_AuthenticateUser_V3_") == true)
 					|| (testCaseName.startsWith("Signup_ESignet_AuthenticateUserNegTC_V3_") == true)
+					|| (testCaseName.startsWith("Signup_ESignet_IDTAuthenticationNegTC_") == true)
+					|| (testCaseName.startsWith("Signup_ESignet_IDTAuthentication_") == true)
 					|| (endpoint.contains("v1/esignet/authorization/claim-details") == true)
 					|| (endpoint.contains("v1/esignet/authorization/prepare-signup-redirect") == true)
 					|| (endpoint.contains("v1/signup/identity-verification/initiate") == true)
