@@ -147,10 +147,6 @@ public class GetWithParam extends AdminTestUtil implements ITest {
 					if (SignupConfigManager.getSunBirdBaseURL() != null
 							&& !SignupConfigManager.getSunBirdBaseURL().isBlank())
 						tempUrl = SignupConfigManager.getSunBirdBaseURL();
-					// Once sunbird registry is pointing to specific env, remove the above line and
-					// uncomment below line
-					// tempUrl = ApplnURI.replace(GlobalConstants.API_INTERNAL,
-					// ConfigManager.getSunBirdBaseURL());
 					testCaseDTO.setEndPoint(testCaseDTO.getEndPoint().replace("$SUNBIRDBASEURL$", ""));
 				}
 
@@ -158,8 +154,39 @@ public class GetWithParam extends AdminTestUtil implements ITest {
 					response = getRequestWithCookieAuthHeaderAndXsrfToken(tempUrl + testCaseDTO.getEndPoint(),
 							inputJson, COOKIENAME, testCaseDTO.getRole(), testCaseDTO.getTestCaseName());
 				} else {
-					response = getWithPathParamAndCookie(tempUrl + testCaseDTO.getEndPoint(), inputJson, COOKIENAME,
-							testCaseDTO.getRole(), testCaseDTO.getTestCaseName());
+					if (testCaseName.startsWith("Signup_ESignet_GetRegistrationStatus_")
+							&& SignupUtil.getIdentityPluginNameFromEsignetActuator().toLowerCase()
+									.contains("idaauthenticatorimpl") == true) {
+						// Retrieve and convert values from getValueFromEsignetActuator method, using
+						// default value 1 if null or empty
+						int signupStatusReqLimit = SignupUtil.parseToInt(SignupUtil.getValueFromEsignetActuator(
+								SignupConfigManager.getEsignetActuatorPropertySection(),
+								"mosip.signup.status.request.limit"), 1);
+						int signupStatusReqDelayTimeInSecs = SignupUtil.parseToInt(SignupUtil
+								.getValueFromEsignetActuator(SignupConfigManager.getEsignetActuatorPropertySection(),
+										"mosip.signup.status.request.delay"),
+								20);
+						int currLoopCount = 0;
+
+						while (currLoopCount < signupStatusReqLimit) {
+							response = getWithPathParamAndCookie(tempUrl + testCaseDTO.getEndPoint(), inputJson,
+									COOKIENAME, testCaseDTO.getRole(), testCaseDTO.getTestCaseName());
+							if (response != null && response.asString().toLowerCase().contains("status")) {
+								break; // Exit the loop if the condition is met
+							}
+
+							try {
+								Thread.sleep(signupStatusReqDelayTimeInSecs * 1000); // sleep in milliseconds
+							} catch (InterruptedException e) {
+								Thread.currentThread().interrupt(); // Handle the exception if needed
+							}
+
+							currLoopCount++;
+						}
+					} else {
+						response = getWithPathParamAndCookie(tempUrl + testCaseDTO.getEndPoint(), inputJson, COOKIENAME,
+								testCaseDTO.getRole(), testCaseDTO.getTestCaseName());
+					}
 				}
 			} else {
 				response = getWithPathParamAndCookie(ApplnURI + testCaseDTO.getEndPoint(), inputJson, auditLogCheck,

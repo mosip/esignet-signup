@@ -868,4 +868,16 @@ public class SignupUtil extends AdminTestUtil {
 		}
 	}
 	
+	// Helper method to parse string to integer with default value
+	public static int parseToInt(String value, int defaultValue) {
+	    if (value != null && !value.isEmpty()) {
+	        try {
+	            return Integer.parseInt(value);
+	        } catch (NumberFormatException e) {
+	            System.err.println("Invalid number format: " + value);
+	        }
+	    }
+	    return defaultValue;
+	}
+	
 }
