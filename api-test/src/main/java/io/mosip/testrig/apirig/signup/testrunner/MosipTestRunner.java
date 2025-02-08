@@ -102,8 +102,7 @@ public class MosipTestRunner {
 				KeycloakUserManager.closeKeycloakInstance();
 				AdminTestUtil.getRequiredField();
 
-				List<String> localLanguageList = new ArrayList<>(BaseTestCase.getLanguageList());
-				AdminTestUtil.getLocationData();
+				SignupUtil.getSupportedLanguage();
 
 				PartnerRegistration.deleteCertificates();
 				AdminTestUtil.createAndPublishPolicy();

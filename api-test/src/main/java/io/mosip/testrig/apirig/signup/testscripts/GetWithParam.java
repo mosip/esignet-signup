@@ -24,6 +24,7 @@ import org.testng.internal.TestResult;
 import io.mosip.testrig.apirig.dto.OutputValidationDto;
 import io.mosip.testrig.apirig.dto.TestCaseDTO;
 import io.mosip.testrig.apirig.signup.utils.SignupConfigManager;
+import io.mosip.testrig.apirig.signup.utils.SignupConstants;
 import io.mosip.testrig.apirig.signup.utils.SignupUtil;
 import io.mosip.testrig.apirig.testrunner.BaseTestCase;
 import io.mosip.testrig.apirig.testrunner.HealthChecker;
@@ -159,19 +160,24 @@ public class GetWithParam extends AdminTestUtil implements ITest {
 									.contains("idaauthenticatorimpl") == true) {
 						// Retrieve and convert values from getValueFromEsignetActuator method, using
 						// default value 1 if null or empty
-						int signupStatusReqLimit = SignupUtil.parseToInt(SignupUtil.getValueFromEsignetActuator(
+						int signupStatusReqLimit = SignupUtil.parseToInt(SignupUtil.getValueFromSignupActuator(
 								SignupConfigManager.getEsignetActuatorPropertySection(),
-								"mosip.signup.status.request.limit"), 1);
+								SignupConstants.MOSIP_SIGNUP_STATUS_REQUEST_LIMIT_STRING), 1);
 						int signupStatusReqDelayTimeInSecs = SignupUtil.parseToInt(SignupUtil
-								.getValueFromEsignetActuator(SignupConfigManager.getEsignetActuatorPropertySection(),
-										"mosip.signup.status.request.delay"),
+								.getValueFromSignupActuator(SignupConfigManager.getEsignetActuatorPropertySection(),
+										SignupConstants.MOSIP_SIGNUP_STATUS_REQUEST_DELAY_STRING),
 								20);
 						int currLoopCount = 0;
 
 						while (currLoopCount < signupStatusReqLimit) {
 							response = getWithPathParamAndCookie(tempUrl + testCaseDTO.getEndPoint(), inputJson,
 									COOKIENAME, testCaseDTO.getRole(), testCaseDTO.getTestCaseName());
-							if (response != null && response.asString().toLowerCase().contains("status")) {
+							if (response != null
+									&& response.asString().toLowerCase().contains(SignupConstants.STATUS_STRING)) {
+								break; // Exit the loop if the condition is met
+							} else if (response != null && response.asString().toLowerCase().contains("errorcode")
+									&& response.asString().toLowerCase()
+											.contains(SignupConstants.UNKNOWN_EROOR_STRING) == false) {
 								break; // Exit the loop if the condition is met
 							}
 
