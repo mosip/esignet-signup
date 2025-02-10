@@ -783,12 +783,12 @@ public class SignupUtil extends AdminTestUtil {
 		List<String> fullnames = Arrays.asList(" ឮᨪដ", "សុភិបាល", "វណ្ណៈ", "៻៥᧿", "គុសល", "ស្រីមុជ", "ចន្ថ័រន", "  ឃ  ំ ដ     ៹ម");
 		String randomFullName = getRandomElement(fullnames);
 		List<String> languageList =  new ArrayList<>(signupSupportedLanguage);
-
-		// For current sprint eng is removed.
-//		if (languageList.contains("eng"))
-//			languageList.remove("eng");
-		if (testCaseName.contains("_Only_1st_Lang_On_Name_Field_Neg") && languageList.size() > 1)
-			languageList.remove(1);
+		
+		if (testCaseName.contains("_Only_1st_Lang_On_Name_Field_Neg") && languageList.size() > 1) {
+			String firstLang = signupSupportedLanguage.getFirst();
+			languageList = new ArrayList<>();
+			languageList.add(firstLang);
+		}
 
 		for (int i = 0; i < languageList.size(); i++) {
 			if (languageList.get(i) != null && !languageList.get(i).isEmpty()) {
@@ -803,12 +803,12 @@ public class SignupUtil extends AdminTestUtil {
 
 				try {
 					if (!fullNamePattern.isEmpty()) {
-//						while (generatedString.isBlank()) {
-//							generatedString = genStringAsperRegex(fullNamePattern);
-//						}
-//						eachValueJson.put(GlobalConstants.VALUE, generatedString);
+						while (generatedString.isBlank()) {
+							generatedString = genStringAsperRegex(fullNamePattern);
+						}
+						eachValueJson.put(GlobalConstants.VALUE, generatedString);
 
-						eachValueJson.put(GlobalConstants.VALUE, randomFullName);
+//						eachValueJson.put(GlobalConstants.VALUE, randomFullName);
 
 						if (testCaseName.contains("_Only_Language_On_Name_Field_Neg"))
 							eachValueJson.remove(GlobalConstants.VALUE);
