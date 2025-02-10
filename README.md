@@ -100,10 +100,12 @@ To complete the signup portal deployment below MOSIP kernel services are require
         * Update the Request Fields for OIDC Client Creation
         * Before executing the "Create Signup OIDC Client" request, update the following fields in the request body:
             * esignet_url
+            * public-key
             * client-name
             * client-id
             * logo-uri
             * redirect-uri
+
         * Execute the request.
     *  Make sure to update the `signup-keystore-password` in the secrets as passed while creating the p12 file.
 5. Mount oidckeystore.p12 as a `signup-keystore` secret to the **signup deployment**.
