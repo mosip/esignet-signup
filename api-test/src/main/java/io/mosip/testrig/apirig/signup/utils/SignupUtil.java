@@ -36,6 +36,7 @@ import io.mosip.testrig.apirig.utils.CertsUtil;
 import io.mosip.testrig.apirig.utils.GlobalConstants;
 import io.mosip.testrig.apirig.utils.GlobalMethods;
 import io.mosip.testrig.apirig.utils.JWKKeyUtil;
+import io.mosip.testrig.apirig.utils.KernelAuthentication;
 import io.mosip.testrig.apirig.utils.KeycloakUserManager;
 import io.mosip.testrig.apirig.utils.RestClient;
 import io.mosip.testrig.apirig.utils.SkipTestCaseHandler;
@@ -779,7 +780,7 @@ public class SignupUtil extends AdminTestUtil {
 	
 	public static String generateFullNameToRegisterUsers(String inputJson, String testCaseName) {
 		JSONArray fullNameArray = new JSONArray();
-		String fullNamePattern = getValueFromSignUpSetting("fullname.pattern").toString();
+		String fullNamePattern = getFullNameRegexPattern(SignupConstants.FULL_NAME_STRING);
 		List<String> fullnames = Arrays.asList(" ឮᨪដ", "សុភិបាល", "វណ្ណៈ", "៻៥᧿", "គុសល", "ស្រីមុជ", "ចន្ថ័រន", "  ឃ  ំ ដ     ៹ម");
 		String randomFullName = getRandomElement(fullnames);
 		List<String> languageList =  new ArrayList<>(signupSupportedLanguage);
@@ -803,12 +804,12 @@ public class SignupUtil extends AdminTestUtil {
 
 				try {
 					if (!fullNamePattern.isEmpty()) {
-						while (generatedString.isBlank()) {
-							generatedString = genStringAsperRegex(fullNamePattern);
-						}
-						eachValueJson.put(GlobalConstants.VALUE, generatedString);
+//						while (generatedString.isBlank()) {
+//							generatedString = genStringAsperRegex(fullNamePattern);
+//						}
+//						eachValueJson.put(GlobalConstants.VALUE, generatedString);
 
-//						eachValueJson.put(GlobalConstants.VALUE, randomFullName);
+						eachValueJson.put(GlobalConstants.VALUE, randomFullName);
 
 						if (testCaseName.contains("_Only_Language_On_Name_Field_Neg"))
 							eachValueJson.remove(GlobalConstants.VALUE);
@@ -847,6 +848,179 @@ public class SignupUtil extends AdminTestUtil {
 		return inputJson;
 	}
 	
+//	public static JSONObject signUpSchemaIdentityJson = null;
+//
+//	public static String getValueFromSignUpSchema(String key) {
+//		String value = null;
+//
+//		if (SignupUtil.getIdentityPluginNameFromEsignetActuator().toLowerCase()
+//				.contains("idaauthenticatorimpl") == true) {
+//
+//			if (signUpSchemaIdentityJson == null) {
+//				kernelAuthLib = new KernelAuthentication();
+//				String token = kernelAuthLib.getTokenByRole(GlobalConstants.ADMIN);
+//				String url = getSchemaURL();
+//
+//				Response response = RestClient.getRequestWithCookie(url, MediaType.APPLICATION_JSON,
+//						MediaType.APPLICATION_JSON, GlobalConstants.AUTHORIZATION, token);
+//
+//				JSONObject responseJson = new JSONObject(response.asString());
+//				signUpSchemaIdentityJson = new JSONObject(responseJson.getJSONObject(GlobalConstants.RESPONSE)
+//						.getJSONObject(SignupConstants.PROPERTIES_STRING)
+//						.getJSONObject(SignupConstants.IDENTITY_STRING));
+//			}
+//
+//			if (signUpSchemaIdentityJson.has(SignupConstants.PROPERTIES_STRING)
+//					&& signUpSchemaIdentityJson.getJSONObject(SignupConstants.PROPERTIES_STRING).has(key)
+//					&& signUpSchemaIdentityJson.getJSONObject(SignupConstants.PROPERTIES_STRING).getJSONObject(key)
+//							.has(SignupConstants.VALIDATORS_STRING)
+//					&& signUpSchemaIdentityJson.getJSONObject(SignupConstants.PROPERTIES_STRING).getJSONObject(key)
+//							.getJSONArray(SignupConstants.VALIDATORS_STRING).length() > 0
+//					&& signUpSchemaIdentityJson.getJSONObject(SignupConstants.PROPERTIES_STRING).getJSONObject(key)
+//							.getJSONArray(SignupConstants.VALIDATORS_STRING).getJSONObject(0)
+//							.has(SignupConstants.VALIDATOR_STRING)) {
+//
+//				value = signUpSchemaIdentityJson.getJSONObject(SignupConstants.PROPERTIES_STRING).getJSONObject(key)
+//						.getJSONArray(SignupConstants.VALIDATORS_STRING).getJSONObject(0)
+//						.getString(SignupConstants.VALIDATOR_STRING);
+//
+//			}
+//
+//		}
+//
+//		return value;
+//	}
+	
+    public static JSONObject signUpSchemaIdentityJson = null;
+
+	public static String getValueFromSignUpSchema(String key) {
+		String value = null;
+
+		// Check if the identity plugin name contains "idaauthenticatorimpl"
+		if (SignupUtil.getIdentityPluginNameFromEsignetActuator().toLowerCase()
+				.contains("idaauthenticatorimpl") == true) {
+			try {
+				// Initialize signUpSchemaIdentityJson if null
+				if (signUpSchemaIdentityJson == null) {
+					loadSignUpSchema();
+				}
+
+				// Check if the key exists and validate its structure
+				if (isValidKeyStructure(key)) {
+					value = extractValidatorValue(key);
+				}
+
+			} catch (Exception e) {
+				logger.error("Error retrieving value for key: " + key, e);
+			}
+		} else if (SignupUtil.getIdentityPluginNameFromEsignetActuator().toLowerCase()
+				.contains("mockauthenticationservice") == true) {
+
+			if (key == SignupConstants.FULL_NAME_STRING) {
+				value = getValueFromSignupActuator(SignupConstants.SYSTEM_ENV_SECTION,
+						SignupConstants.MOSIP_SIGNUP_FULLNAME_PATTERN_STRING);
+			} else if (key == SignupConstants.PHONE_STRING) {
+				value = getValueFromSignupActuator(SignupConstants.SYSTEM_ENV_SECTION,
+						SignupConstants.MOSIP_SIGNUP_IDENTIFIER_REGEX_STRING);
+			} else if (key == SignupConstants.PASSWORD_STRING) {
+				value = getValueFromSignupActuator(SignupConstants.CLASS_PATH_APPLICATION_DEFAULT_PROPERTIES,
+						SignupConstants.MOSIP_SIGNUP_PASSWORD_PATTERN_STRING);
+			}
+
+		}
+
+		return value;
+	}
+
+    private static void loadSignUpSchema() {
+        try {
+            kernelAuthLib = new KernelAuthentication();
+            String token = kernelAuthLib.getTokenByRole(GlobalConstants.ADMIN);
+            String url = getSchemaURL();
+
+            Response response = RestClient.getRequestWithCookie(url, MediaType.APPLICATION_JSON,
+                    MediaType.APPLICATION_JSON, GlobalConstants.AUTHORIZATION, token);
+
+            JSONObject responseJson = new JSONObject(response.asString());
+            
+			JSONObject schemaJson = new JSONObject(
+					responseJson.getJSONObject(GlobalConstants.RESPONSE).getString(SignupConstants.SCHEMA_JSON_STRING));
+
+			signUpSchemaIdentityJson = schemaJson.getJSONObject(SignupConstants.PROPERTIES_STRING)
+					.getJSONObject(SignupConstants.IDENTITY_STRING);
+        } catch (Exception e) {
+            logger.error("Error loading signUpSchemaIdentityJson", e);
+            throw new RuntimeException("Failed to load sign up schema", e);
+        }
+    }
+
+    private static boolean isValidKeyStructure(String key) {
+        try {
+            return signUpSchemaIdentityJson.has(SignupConstants.PROPERTIES_STRING)
+                    && signUpSchemaIdentityJson.getJSONObject(SignupConstants.PROPERTIES_STRING).has(key)
+                    && signUpSchemaIdentityJson.getJSONObject(SignupConstants.PROPERTIES_STRING).getJSONObject(key)
+                            .has(SignupConstants.VALIDATORS_STRING)
+                    && signUpSchemaIdentityJson.getJSONObject(SignupConstants.PROPERTIES_STRING).getJSONObject(key)
+                            .getJSONArray(SignupConstants.VALIDATORS_STRING).length() > 0
+                    && signUpSchemaIdentityJson.getJSONObject(SignupConstants.PROPERTIES_STRING).getJSONObject(key)
+                            .getJSONArray(SignupConstants.VALIDATORS_STRING).getJSONObject(0)
+                            .has(SignupConstants.VALIDATOR_STRING);
+        } catch (Exception e) {
+            logger.error("Error validating key structure for: " + key, e);
+            return false;
+        }
+    }
+
+    private static String extractValidatorValue(String key) {
+        try {
+            return signUpSchemaIdentityJson.getJSONObject(SignupConstants.PROPERTIES_STRING).getJSONObject(key)
+                    .getJSONArray(SignupConstants.VALIDATORS_STRING).getJSONObject(0)
+                    .getString(SignupConstants.VALIDATOR_STRING);
+        } catch (Exception e) {
+            logger.error("Error extracting validator value for key: " + key, e);
+            return null;
+        }
+    }
+    
+    public static String getFullNameRegexPattern(String key) {
+    	String value = null;
+    	
+    	value = getValueFromSignUpSchema(key);
+    	
+    	if (value == null) {
+    		value = SignupConfigManager.getproperty(SignupConstants.FULL_NAME_REGEX_PATTERN_STRING);
+    	}
+    	
+    	return value;
+    	
+    }
+    
+    public static String getPhoneNumberRegexPattern(String key) {
+    	String value = null;
+    	
+    	value = getValueFromSignUpSchema(key);
+    	
+    	if (value == null) {
+    		value = SignupConfigManager.getproperty(SignupConstants.PHONE_NUMBER_REGEX_PATTERN_STRING);
+    	}
+    	
+    	return value;
+    	
+    }
+    
+    public static String getPasswordRegexPattern(String key) {
+    	String value = null;
+    	
+    	value = getValueFromSignUpSchema(key);
+    	
+    	if (value == null) {
+    		value = SignupConfigManager.getproperty(SignupConstants.PASSWORD_REGEX_PATTERN_STRING);
+    	}
+    	
+    	return value;
+    	
+    }
+	
 	public static JSONObject signUpSettingsResponseJson = null;
 
 	public static String getValueFromSignUpSetting(String key) {
@@ -884,7 +1058,7 @@ public class SignupUtil extends AdminTestUtil {
 	public static String getPhoneNumberFromRegex() {
 		String phoneNumber = "";
 		// TODO Regex needs to be taken from Schema
-		String phoneNumberRegex = getValueFromSignUpSetting("identifier.pattern");
+		String phoneNumberRegex = getPhoneNumberRegexPattern(SignupConstants.PHONE_STRING);
 		if (!phoneNumberRegex.isEmpty())
 			try {
 				phoneNumber = genStringAsperRegex(phoneNumberRegex);
@@ -898,7 +1072,7 @@ public class SignupUtil extends AdminTestUtil {
 	public static String getPasswordPatternRegex() {
 		String password = "";
 		// TODO Regex needs to be taken from Schema
-		String passwordRegex = getValueFromSignUpSetting("password.pattern");
+		String passwordRegex = getPasswordRegexPattern(SignupConstants.PASSWORD_STRING);
 		if (!passwordRegex.isEmpty())
 			try {
 				password = genStringAsperRegex(passwordRegex);

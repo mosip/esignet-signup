@@ -36,5 +36,33 @@ public class SignupConstants {
 	public static final String STATUS_STRING = "status";
 	
 	public static final String UNKNOWN_EROOR_STRING = "unknown_error";
+	
+	public static final String PROPERTIES_STRING = "properties";
+	
+	public static final String IDENTITY_STRING = "identity";
+	
+	public static final String VALIDATORS_STRING = "validators";
+	
+	public static final String VALIDATOR_STRING = "validator";
+	
+	public static final String FULL_NAME_REGEX_PATTERN_STRING = "fullNameRegexPattern";
+	
+	public static final String PHONE_NUMBER_REGEX_PATTERN_STRING = "phoneNumberRegexPattern";
+	
+	public static final String PASSWORD_REGEX_PATTERN_STRING = "passwordRegexPattern";
+	
+	public static final String PHONE_STRING = "phone";
+	
+	public static final String FULL_NAME_STRING = "fullName";
+	
+	public static final String PASSWORD_STRING = "password";
+	
+	public static final String SCHEMA_JSON_STRING = "schemaJson";
+	
+	public static final String MOSIP_SIGNUP_FULLNAME_PATTERN_STRING = "MOSIP_SIGNUP_FULLNAME_PATTERN";
+	
+	public static final String MOSIP_SIGNUP_IDENTIFIER_REGEX_STRING = "MOSIP_SIGNUP_IDENTIFIER_REGEX";
+	
+	public static final String MOSIP_SIGNUP_PASSWORD_PATTERN_STRING =  "mosip.signup.password.pattern";
 
 }
