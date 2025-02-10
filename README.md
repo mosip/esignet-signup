@@ -107,7 +107,6 @@ To complete the signup portal deployment below MOSIP kernel services are require
         * Execute the request.
     *  Make sure to update the `signup-keystore-password` in the secrets as passed while creating the p12 file.
 5. Mount oidckeystore.p12 as a `signup-keystore` secret to the **signup deployment**.
-6. Make sure to update the `signup-keystore-password` in the secrets as passed while creating the p12 file.
 
 ## APIs
 API documentation is available [here](docs/esignet-signup-openapi.yaml).
