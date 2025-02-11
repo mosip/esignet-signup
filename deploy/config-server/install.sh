@@ -29,7 +29,7 @@ CHART_VERSION=0.0.1-develop
     $COPY_UTIL configmap msg-gateway msg-gateways $NS
 
     $COPY_UTIL secret keycloak keycloak $NS
-    $COPY_UTIL secret db-common-secrets postgres $NS
+    $COPY_UTIL secret db-common-secrets esignet $NS
     $COPY_UTIL secret keycloak-client-secrets keycloak $NS
     $COPY_UTIL secret msg-gateway msg-gateways $NS
 

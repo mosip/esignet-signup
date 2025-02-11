@@ -1,9 +1,10 @@
+
 dbUserPasswords:
   dbuserPassword: ""
 databases:
   mosip_audit:
     enabled: true
-    host: "esignet-postgres.<sandbox>.mosip.net"
+    host: "postgres-postgresql"
     port: 5432
     su:
       user: postgres
@@ -15,7 +16,7 @@ databases:
     branch: develop
   mosip_kernel:
     enabled: true
-    host: "esignet-postgres.<sandbox>.mosip.net"
+    host: "postgres-postgresql"
     port: 5432
     su:
       user: postgres
@@ -27,7 +28,7 @@ databases:
     branch: develop
   mosip_otp:
     enabled: true
-    host: "esignet-postgres.<sandbox>.mosip.net"
+    host: "postgres-postgresql"
     port: 5432
     su:
       user: postgres
@@ -37,3 +38,26 @@ databases:
     dml: 0
     repoUrl: https://github.com/mosip/otp-manager.git
     branch: develop
+  mosip_master:
+    enabled: false
+
+  mosip_keymgr:
+    enabled: false
+
+  mosip_idmap:
+    enabled: false
+
+  mosip_prereg:
+    enabled: false
+
+  mosip_idrepo:
+    enabled: false
+
+  mosip_ida:
+    enabled: false
+
+  mosip_credential:
+    enabled: false
+
+  mosip_regprc:
+    enabled: false
