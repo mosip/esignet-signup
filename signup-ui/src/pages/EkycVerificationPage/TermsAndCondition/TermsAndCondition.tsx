@@ -182,7 +182,7 @@ export const TermsAndCondition = ({
                   disabled={!termsAndCondition || !tncMessage}
                   className="h-5 w-5 rounded-[2px] text-white data-[state=checked]:border-primary data-[state=checked]:bg-primary"
                 />
-                <p className="tnc-consent-text ml-2 cursor-pointer" onClick={() => changeAgreeTerms(!agreeTerms)}>{t("agree_text")}</p>
+                <p className="tnc-consent-text ml-2">{t("agree_text")}</p>
               </ActionMessage>
             </StepAlert>
             <StepDivider />

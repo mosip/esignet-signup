@@ -500,7 +500,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"requestTime\": \"{{$isoTimestamp}}\",\n    \"request\": {\n        \"clientId\": \"mosip-signup-oauth-client\",\n        \"scope\": \"openid\",\n        \"responseType\": \"code\",\n        \"redirectUri\": \"http://localhost:8089/identity-verification\",\n        \"display\": \"popup\",\n        \"prompt\": \"login\",\n        \"acrValues\": \"mosip:idp:acr:id-token\",\n        \"nonce\" : \"{{nonce}}\",\n        \"state\" : \"{{state}}\",\n        \"idTokenHint\" : \"{{id_token_hint}}\"\n    }\n}",
+							"raw": "{\n    \"requestTime\": \"{{$isoTimestamp}}\",\n    \"request\": {\n        \"clientId\": \"mosip-signup-oauth-client\",\n        \"scope\": \"openid\",\n        \"responseType\": \"code\",\n        \"redirectUri\": \"http://localhost:8089/identity-verification\",\n        \"display\": \"popup\",\n        \"prompt\": \"login\",\n        \"acrValues\": \"mosip:idp:acr:id-token\",\n        \"nonce\" : \"{{$randomAlphaNumeric}}\",\n        \"state\" : \"{{state}}\",\n        \"idTokenHint\" : \"{{id_token_hint}}\"\n    }\n}",
 							"options": {
 								"raw": {
 									"language": "json"
