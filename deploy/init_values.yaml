@@ -4,7 +4,7 @@ dbUserPasswords:
 databases:
   mosip_audit:
     enabled: true
-    host: "postgres-postgresql"
+    host: "postgres-postgresql.postgres"
     port: 5432
     su:
       user: postgres
@@ -16,7 +16,7 @@ databases:
     branch: develop
   mosip_kernel:
     enabled: true
-    host: "postgres-postgresql"
+    host: "postgres-postgresql.postgres"
     port: 5432
     su:
       user: postgres
@@ -28,7 +28,7 @@ databases:
     branch: develop
   mosip_otp:
     enabled: true
-    host: "postgres-postgresql"
+    host: "postgres-postgresql.postgres"
     port: 5432
     su:
       user: postgres
