@@ -4,14 +4,31 @@ Collection contains 3 folder, each containing requests for 3 different operation
 
 1. Registration - contains sequence of requests to register a new user in the plugged in ID registry
 2. Reset password - contains sequence of requests to reset password for an already created user.
-3. Identity(eKYC) verification - Sequence of requests to initiate identity verification process. Priori to this 
+3. Identity(eKYC) verification - Sequence of requests to initiate identity verification process. Prior to this 
 request a valid authorization code should be generated. Using eSignet collection/verified claims folder one
 can obtain the authorization code and the id-token-hint.
 
 In the identity verification folder once the slot-id is returned in the "slot" endpoint response. One should run the ws_client.py to 
-carry out the video identity(eKYC) verification process using a WebSocket connection.
+carry out the video identity(eKYC) verification process using a WebSocket connection. Kindly refer `Usage of ws_client.py` section below.
 
 **Note:** Mock plugin does not validate the frames in the current version.
+
+## Prerequisite to run Identity verification flow from postman collection
+
+1. Onboard signup-service as a OIDC client in esignet-service:
+
+Execute [create-signup-oidc-keystore.sh](create-signup-oidc-keystore.sh) to generate a keypair. This script after
+successful execution creates 2 files in the project root directory:
+
+* oidckeystore.p12
+* public_key.jwk
+
+As esignet only supports confidential OIDC clients, we should generate a RSA keypair to onboard signup-service. RSA private key is
+stored in the oidckeystore.p12 file and the corresponding public key is written to public_key.jwk file.
+
+Copy the public key in public_key.jwk file and update the same in the `Register Signup OIDC/Create Signup OIDC client` request body.
+
+Run `Register Signup OIDC/Create Signup OIDC client` in postman before starting the identity verification flow.
 
 ## Usage of [ws_client.py](ws_client.py)
 
