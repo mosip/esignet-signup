@@ -42,6 +42,45 @@ Before running the automation tests, ensure the following software is installed 
 
 ---
 
+# API Test Rig Signup Configuration
+
+The API Test Rig is configured to work with different core service plugins, such as MOSIP-ID and Mock-Identity-System. It allows for dynamic testing and validation of workflows related to identity management and authentication, specifically for the signup process.
+
+## Integration of eSignet-signup API Test Rig with Core Service Plugins
+
+The Test Rig is dynamically configured based on the core service plugin being tested (either MOSIP-ID or Mock-Identity-System). The configuration is as follows:
+
+### 1. Configuration for MOSIP-ID Plugin:
+- **eSignetbaseurl**: The Test Rig will use the live eSignet instance integrated with the MOSIP-ID service.
+- **signupBaseUrl**: The Test Rig will use the live Signup instance integrated with the MOSIP-ID service.
+- **schemaVersion**: Specifies the schema version in case the environment has multiple schemas (e.g., "v1.0", "v2.0", etc.).
+- **mosip_components_base_urls**: A string defining the base URLs for various components.
+- **esignetActuatorPropertySection**: To fetch the configuration and properties from the actuator for service interactions.
+
+### 2. Configuration for Mock-Identity-System Plugin:
+- **eSignetbaseurl**: The Test Rig will use the live eSignet instance integrated with the Mock-Identity-service.
+- **signupBaseUrl**: The Test Rig will use the live Signup instance integrated with the Mock-Identity-service.
+- **usePreConfiguredOtp**: A flag to use pre-configured OTPs. Set to "true" for OTP-based workflows.
+- **esignetActuatorPropertySection**: To fetch the configuration and properties from the actuator for service interactions.
+
+
+### Deployment Configuration (Required for API Test Rig):
+These configurations need to be added as part of the eSignet service deployment to support the API Test Rig:
+
+- **MOSIP_ESIGNET_AUTHENTICATE_ATTEMPTS**: 300
+- **MOSIP_ESIGNET_SEND_OTP_ATTEMPTS**: 300
+- **MOSIP_ESIGNET_AUTH_CHALLENGE_BIO_MAX_LENGTH**: 200000
+- **MOSIP_ESIGNET_PREAUTHENTICATION_EXPIRE_IN_SECS**: 600
+- **MOSIP_ESIGNET_CAPTCHA_REQUIRED**: (empty)
+
+These configurations need to be added as part of the Signup service deployment to support the API Test Rig:
+
+- **MOSIP_SIGNUP_SEND_CHALLENGE_CAPTCHA_REQUIRED**: false
+
+
+These parameters must be included in the eSignet and signup deployment YAML for the API Test Rig to function correctly, independent of which plugin is being used.
+
+
 ## Access Test Automation Code
 
 You can access the test automation code using either of the following methods:
@@ -146,9 +185,9 @@ To execute the tests using Eclipse IDE, use the following steps:
 ## 6. **View Test Results**
 
    - After the tests are executed, you can view the detailed results in the `api-test\testng-report` directory.
-   - Two reports will gets generated
-       - First report is for pre-requisite testcases
-       - Second report is for core testcases
+   - The report will have two sections:
+       - One section for pre-requisite APIs test cases.
+       - Another section for core test cases.
 
 ---
 
