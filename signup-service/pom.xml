@@ -13,7 +13,7 @@
 	</parent>
 
 	<artifactId>signup-service</artifactId>
-	<version>${project.parent.version}</version>
+	<version>1.1.2-SNAPSHOT</version>
 	<name>signup-service</name>
 	<description>Sign Up Service</description>
 	<url>https://github.com/mosip/esignet-signup</url>
