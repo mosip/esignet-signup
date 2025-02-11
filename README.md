@@ -92,7 +92,7 @@ To complete the signup portal deployment below MOSIP kernel services are require
 
 2. Navigate to **"Register"** → **"Get CSRF token"** →  **generate CSRF token** → to fetch the CSRF token.
 
-3. Execute `create-signup-oidc-keystore.sh` [here](./docs/create-signup-oidc-keystore.sh) to generate a keypair. This script after successful execution creates 2 files in the project root directory:
+3. Execute `create-signup-oidc-keystore.sh` [here](postman-collection/create-signup-oidc-keystore.sh) to generate a keypair. This script after successful execution creates 2 files in the project root directory:
     oidckeystore.p12
     public_key.jwk
 
