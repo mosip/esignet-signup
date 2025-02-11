@@ -48,7 +48,7 @@ if kubectl get secret keycloak-client-secrets -n keycloak >/dev/null 2>&1; then
   kubectl apply -f -
 else
   echo "Secret 'keycloak-client-secrets' does not exist. Copying the secret to the keycloak namespace."
-  $COPY_UTIL secret keycloak-client-secrets $NS keycloak
+  $COPY_UTIL secret keycloak-client-secrets keycloak $NS
 fi
 
 # Process remaining secrets for Kernel
@@ -64,8 +64,8 @@ for SECRET in "${SECRETS[@]}"; do
   if [[ -z "$SECRET_VALUE" ]]; then
     echo "No value entered for $SECRET. Creating it with an empty value."
     SECRET_VALUE=""
-    kubectl patch secret keycloak-client-secrets --namespace=$NS --type=json -p='[{"op": "add", "path": "/data/'$SECRET'", "value": "'$SECRET_VALUE'"}]'
-    $COPY_UTIL secret keycloak-client-secrets $NS keycloak
+    kubectl patch secret keycloak-client-secrets --namespace=keycloak --type=json -p='[{"op": "add", "path": "/data/'$SECRET'", "value": "'$SECRET_VALUE'"}]'
+    $COPY_UTIL secret keycloak-client-secrets keycloak $NS
   fi
 done
 

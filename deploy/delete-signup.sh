@@ -9,7 +9,7 @@ fi
 function Deleting_All() {
   ROOT_DIR=`pwd`
 
-  declare -a module=("signup-service" "signup-ui")
+  declare -a module=("signup-with-plugins" "signup-ui")
 
   echo restarting signup services
 
