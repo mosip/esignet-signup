@@ -14,7 +14,7 @@ openssl genpkey -algorithm RSA -out $PRIVATE_KEY_FILE -pkeyopt rsa_keygen_bits:2
 openssl rsa -pubout -in $PRIVATE_KEY_FILE -out $PUBLIC_KEY_FILE
 
 # Step 2: Create a self-signed certificate for the private key
-openssl req -new -x509 -key $PRIVATE_KEY_FILE -out $CERT_FILE -days 365 \
+MSYS_NO_PATHCONV=1 openssl req -new -x509 -key $PRIVATE_KEY_FILE -out $CERT_FILE -days 365 \
   -subj "/C=IN/ST=State/L=City/O=Organization/OU=OrgUnit/CN=example.com"
 
 # Step 3: Generate a PKCS12 keystore containing the private key and certificate

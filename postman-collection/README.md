@@ -6,12 +6,28 @@ Collection contains 3 folder, each containing requests for 3 different operation
 2. Reset password - contains sequence of requests to reset password for an already created user.
 3. Identity(eKYC) verification - Sequence of requests to initiate identity verification process. Prior to this 
 request a valid authorization code should be generated. Using eSignet collection/verified claims folder one
-can obtain the authorization code and the id-token-hint.
+can obtain the authorization code and the id-token-hint. Highlighted requests in the below screenshot(eSignet postman collection) should be executed
+before starting with Identity verification flow in signup postman collection.
+
+![postman-ss-1.png](postman-ss-1.png)
+
+Once above highlighted requests are successfully completed, continue with below sequence of requests
+
+![postman-ss-2.png](postman-ss-2.png)
 
 In the identity verification folder once the slot-id is returned in the "slot" endpoint response. One should run the ws_client.py to 
 carry out the video identity(eKYC) verification process using a WebSocket connection. Kindly refer `Usage of ws_client.py` section below.
 
 **Note:** Mock plugin does not validate the frames in the current version.
+
+With completion of verification process with web socket client, invoke the last status endpoint. status returned in the response should be "completed" 
+in the flow.
+
+![postman-ss-3.png](postman-ss-3.png)
+
+With completion of sequence of request we should resume back the flow in the eSignet collection to complete E2E OIDC flow.
+
+![postman-ss-4.png](postman-ss-4.png)
 
 ## Prerequisite to run Identity verification flow from postman collection
 
@@ -85,9 +101,9 @@ The connection is established with ws.run_forever(), which keeps the connection 
 
 4. Sending Messages: When prompted, to enter message to send, type the message as below, there are 2 different messages
 
-START step message -> `{"slotId":"<allotted slotId>","stepCode":"START","frames":[{"frame":"","order":"0"}]}`
+START step message -> `{"slotId":"<allotted slotId>","stepCode":"START","frames":[{"frame":"dummy-frame","order":"0"}]}`
 
-Other step messages -> `{"slotId":"<allotted slotId>","stepCode":"<step_name as in the received messages>","frames":[{"frame":"","order":"0"}]}`
+Other step messages -> `{"slotId":"<allotted slotId>","stepCode":"<step_name as in the received messages>","frames":[{"frame":"dummy-frame","order":"0"}]}`
 
 5. Receiving Messages: Any messages sent from the server to the subscribed topic will be printed to the console as they are received. On receiving message
 with step code as "END" from the server denotes the closure of frame verification process. Hence the websocket connection can be closed by the client.
