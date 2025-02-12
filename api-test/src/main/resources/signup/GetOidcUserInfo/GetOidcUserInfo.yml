@@ -1,5 +1,5 @@
 GetOidcUserInfo:
-   Signup_ESignet_GetOidcUserInfo_uin_IdpAccessToken_StatusCode_Valid_Smoke_sid:
+   Signup_ESignet_GetOidcUserInfo_uin_IdpAccessToken_StatusCode_L2_Valid_Smoke_sid:
       endPoint: /v1/esignet/oidc/userinfo
       description: Getting OIDC user info with all valid details using UIN
       role: resident
@@ -8,6 +8,6 @@ GetOidcUserInfo:
       inputTemplate: signup/GetOidcUserInfo/GetOidcUserInfo
       outputTemplate: signup/GetOidcUserInfo/GetOidcUserInfoResult
       input: '{
-      	"idpAccessToken": "$ID:ESignet_GenerateToken_uin_Valid_Smoke_sid_access_token$"
+      	"idpAccessToken": "$ID:ESignet_GenerateToken_uin_L2_Valid_Smoke_sid_access_token$"
 }'
       output: "200"

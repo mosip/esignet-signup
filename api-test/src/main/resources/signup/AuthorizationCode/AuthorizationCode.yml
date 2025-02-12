@@ -1,5 +1,5 @@
 AuthorizationCode:
-   Signup_ESignet_AuthorizationCode_uin_All_Valid_Smoke_sid:
+   Signup_ESignet_AuthorizationCode_uin_L2_All_Valid_Smoke_sid:
       endPoint: /v1/esignet/authorization/auth-code
       uniqueIdentifier: TC_ESignet_AuthorizationCode_01
       description: Generating Authorization Code with all valid details using UIN

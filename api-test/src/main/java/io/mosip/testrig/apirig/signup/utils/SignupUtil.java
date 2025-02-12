@@ -15,6 +15,7 @@ import javax.ws.rs.core.MediaType;
 
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.testng.SkipException;
 
@@ -33,74 +34,176 @@ import io.mosip.testrig.apirig.testrunner.OTPListener;
 import io.mosip.testrig.apirig.utils.AdminTestUtil;
 import io.mosip.testrig.apirig.utils.CertsUtil;
 import io.mosip.testrig.apirig.utils.GlobalConstants;
+import io.mosip.testrig.apirig.utils.GlobalMethods;
 import io.mosip.testrig.apirig.utils.JWKKeyUtil;
+import io.mosip.testrig.apirig.utils.KernelAuthentication;
 import io.mosip.testrig.apirig.utils.KeycloakUserManager;
 import io.mosip.testrig.apirig.utils.RestClient;
 import io.mosip.testrig.apirig.utils.SkipTestCaseHandler;
+import io.restassured.RestAssured;
 import io.restassured.response.Response;
 
 public class SignupUtil extends AdminTestUtil {
 
 	private static final Logger logger = Logger.getLogger(SignupUtil.class);
+	public static JSONArray esignetActiveProfiles = null;
+	public static JSONArray signupActiveProfiles = null;
 	
 	public static String getIdentityPluginNameFromEsignetActuator() {
 		// Possible values = IdaAuthenticatorImpl, MockAuthenticationService
-
 		String plugin = getValueFromEsignetActuator("classpath:/application.properties",
 				"mosip.esignet.integration.authenticator");
-
-		if (plugin == null || plugin.isBlank() == true) {
-			plugin = getValueFromEsignetActuator("classpath:/application-default.properties",
-					"mosip.esignet.integration.authenticator");
-		}
-		
-		if (plugin == null || plugin.isBlank() == true) {
-			plugin = getValueFromEsignetActuator("mosip-config/esignet",
-					"mosip.esignet.integration.authenticator");
-		}
 
 		return plugin;
 	}
 	
-	private static final Map<String, String> actuatorValueCache = new HashMap<>();
-	
-	public static JSONArray esignetActuatorResponseArray = null;
-
-	public static String getValueFromEsignetActuator(String section, String key) {
-		String url = SignupConfigManager.getEsignetBaseUrl() + SignupConfigManager.getproperty("actuatorEsignetEndpoint");
-		String actuatorCacheKey = url + section + key;
-		String value = actuatorValueCache.get(actuatorCacheKey);
-		if (value != null && !value.isEmpty())
-			return value;
+	public static JSONArray getActiveProfilesFromActuator(String url, String key) {
+		JSONArray activeProfiles = null;
 
 		try {
+			Response response = RestClient.getRequest(url, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
+			JSONObject responseJson = new JSONObject(response.getBody().asString());
+
+			// If the key exists in the response, return the associated JSONArray
+			if (responseJson.has(key)) {
+				activeProfiles = responseJson.getJSONArray(key);
+			} else {
+				logger.warn("The key '" + key + "' was not found in the response.");
+			}
+
+		} catch (Exception e) {
+			// Handle other errors like network issues, etc.
+			logger.error("Error fetching active profiles from the actuator: " + e.getMessage());
+		}
+
+		return activeProfiles;
+	}
+	
+	public static String getValueFromEsignetActuator(String section, String key) {
+		String value = null;
+
+		// Try to fetch profiles if not already fetched
+		if (esignetActiveProfiles == null || esignetActiveProfiles.length() == 0) {
+			esignetActiveProfiles = getActiveProfilesFromActuator(SignupConstants.ESIGNET_ACTUATOR_URL,
+					SignupConstants.ACTIVE_PROFILES);
+		}
+
+		// Normalize the key
+		String keyForEnvVariableSection = key.toUpperCase().replace("-", "_").replace(".", "_");
+
+		// Try fetching the value from different sections
+		value = getValueFromEsignetActuator(SignupConstants.SYSTEM_ENV_SECTION, keyForEnvVariableSection,
+				SignupConstants.ESIGNET_ACTUATOR_URL);
+
+		// Fallback to other sections if value is not found
+		if (value == null || value.isBlank()) {
+			value = getValueFromEsignetActuator(SignupConstants.CLASS_PATH_APPLICATION_PROPERTIES, key,
+					SignupConstants.ESIGNET_ACTUATOR_URL);
+		}
+
+		if (value == null || value.isBlank()) {
+			value = getValueFromEsignetActuator(SignupConstants.CLASS_PATH_APPLICATION_DEFAULT_PROPERTIES, key,
+					SignupConstants.ESIGNET_ACTUATOR_URL);
+		}
+
+		// Try profiles from active profiles if available
+		if (value == null || value.isBlank()) {
+			if (esignetActiveProfiles != null && esignetActiveProfiles.length() > 0) {
+				for (int i = 0; i < esignetActiveProfiles.length(); i++) {
+					String propertySection = esignetActiveProfiles.getString(i).equals(SignupConstants.DEFAULT_STRING)
+							? SignupConstants.MOSIP_CONFIG_APPLICATION_HYPHEN_STRING
+									+ esignetActiveProfiles.getString(i) + SignupConstants.DOT_PROPERTIES_STRING
+							: esignetActiveProfiles.getString(i) + SignupConstants.DOT_PROPERTIES_STRING;
+
+					value = getValueFromEsignetActuator(propertySection, key, SignupConstants.ESIGNET_ACTUATOR_URL);
+
+					if (value != null && !value.isBlank()) {
+						break;
+					}
+				}
+			} else {
+				logger.warn("No active profiles were retrieved.");
+			}
+		}
+
+		// Fallback to a default section
+		if (value == null || value.isBlank()) {
+			value = getValueFromEsignetActuator(SignupConfigManager.getEsignetActuatorPropertySection(), key,
+					SignupConstants.ESIGNET_ACTUATOR_URL);
+		}
+
+		// Final fallback to the original section if no value was found
+		if (value == null || value.isBlank()) {
+			value = getValueFromEsignetActuator(section, key, SignupConstants.ESIGNET_ACTUATOR_URL);
+		}
+
+		// Log the final result or an error message if not found
+		if (value == null || value.isBlank()) {
+			logger.error("Value not found for section: " + section + ", key: " + key);
+		}
+
+		return value;
+	}
+
+	
+	private static final Map<String, String> actuatorValueCache = new HashMap<>();
+	public static JSONArray esignetActuatorResponseArray = null;
+
+	public static String getValueFromEsignetActuator(String section, String key, String url) {
+		// Combine the cache key to uniquely identify each request
+		String actuatorCacheKey = url + section + key;
+
+		// Check if the value is already cached
+		String value = actuatorValueCache.get(actuatorCacheKey);
+		if (value != null && !value.isEmpty()) {
+			return value; // Return cached value if available
+		}
+
+		try {
+			// Fetch the actuator response array if it's not already populated
 			if (esignetActuatorResponseArray == null) {
-				Response response = null;
-				JSONObject responseJson = null;
-				response = RestClient.getRequest(url, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
-				responseJson = new JSONObject(response.getBody().asString());
+				Response response = RestClient.getRequest(url, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
+				JSONObject responseJson = new JSONObject(response.getBody().asString());
 				esignetActuatorResponseArray = responseJson.getJSONArray("propertySources");
 			}
 
+			// Loop through the "propertySources" to find the matching section and key
 			for (int i = 0, size = esignetActuatorResponseArray.length(); i < size; i++) {
 				JSONObject eachJson = esignetActuatorResponseArray.getJSONObject(i);
+				// Check if the section matches
 				if (eachJson.get("name").toString().contains(section)) {
-					logger.info(eachJson.getJSONObject(GlobalConstants.PROPERTIES));
-					value = eachJson.getJSONObject(GlobalConstants.PROPERTIES).getJSONObject(key)
-							.get(GlobalConstants.VALUE).toString();
-					if (SignupConfigManager.IsDebugEnabled())
-						logger.info("Actuator: " + url + " key: " + key + " value: " + value);
-					break;
+					// Get the value from the properties object
+					JSONObject properties = eachJson.getJSONObject(GlobalConstants.PROPERTIES);
+					if (properties.has(key)) {
+						value = properties.getJSONObject(key).get(GlobalConstants.VALUE).toString();
+						// Log the value if debug is enabled
+						if (SignupConfigManager.IsDebugEnabled()) {
+							logger.info("Actuator: " + url + " key: " + key + " value: " + value);
+						}
+						break; // Exit the loop once the value is found
+					} else {
+						logger.warn("Key '" + key + "' not found in section '" + section + "'.");
+					}
 				}
 			}
-			actuatorValueCache.put(actuatorCacheKey, value);
+
+			// Cache the retrieved value for future lookups
+			if (value != null && !value.isEmpty()) {
+				actuatorValueCache.put(actuatorCacheKey, value);
+			} else {
+				logger.warn("No value found for section: " + section + ", key: " + key);
+			}
 
 			return value;
+		} catch (JSONException e) {
+			// Handle JSON parsing exceptions separately
+			logger.error("JSON parsing error for section: " + section + ", key: " + key + " - " + e.getMessage());
+			return null; // Return null if JSON parsing fails
 		} catch (Exception e) {
-			logger.error(GlobalConstants.EXCEPTION_STRING_2 + e);
-			return value;
+			// Catch any other exceptions (e.g., network issues)
+			logger.error("Error fetching value for section: " + section + ", key: " + key + " - " + e.getMessage());
+			return null; // Return null if any other exception occurs
 		}
-
 	}
 	
 	public static TestCaseDTO isTestCaseValidForTheExecution(TestCaseDTO testCaseDTO) {
@@ -129,9 +232,15 @@ public class SignupUtil extends AdminTestUtil {
 					&& endpoint.contains("$GETENDPOINTFROMWELLKNOWN$") == false) {
 				throw new SkipException(GlobalConstants.FEATURE_NOT_SUPPORTED_MESSAGE);
 			}
-			if ((testCaseName.contains("_KycBioAuth_") || testCaseName.contains("_BioAuth_")
-					|| testCaseName.contains("_SendBindingOtp_uin_Email_Valid_Smoke")
-					|| testCaseName.contains("ESignet_AuthenticateUserIDP_NonAuth_uin_Otp_Valid_Smoke"))) {
+			if ((testCaseName.equals("Signup_ESignet_RegisterUserNegTC_WITH_less_then_8digit_number")
+					|| testCaseName.equals("Signup_ESignet_RegisterUserNegTC_WITH_more_than_9digit_number")
+					|| testCaseName.equals("Signup_ESignet_RegisterUserNegTC_WITHout_country_code")
+					|| testCaseName.equals("Signup_ESignet_RegisterUserNegTC_WITHout_plus_country_code")
+					|| testCaseName.equals("Signup_ESignet_RegisterUserNegTC_by_different_country_code")
+					|| testCaseName.equals("Signup_ESignet_RegisterUserNegTC_with_phone_starts_with_zero")
+					|| testCaseName.equals("Signup_ESignet_RegisterUserNegTC_with_phone_with_all_zero")
+					|| testCaseName.equals("Signup_ESignet_RegisterUserNegTC_with_phone_with_alpha_numeric")
+					|| testCaseName.equals("Signup_ESignet_RegisterUserNegTC_with_phone_with_special_char"))) {
 				throw new SkipException(GlobalConstants.FEATURE_NOT_SUPPORTED_MESSAGE);
 			}
 
@@ -142,6 +251,24 @@ public class SignupUtil extends AdminTestUtil {
 
 			String endpoint = testCaseDTO.getEndPoint();
 			if (endpoint.contains("/mock-identity-system/") == true
+					|| (endpoint.contains("v1/esignet/authorization/v3/oauth-details") == true)
+					|| (testCaseName.startsWith("Signup_ESignet_AuthenticateUser_V3_") == true)
+					|| (testCaseName.startsWith("Signup_ESignet_AuthenticateUserNegTC_V3_") == true)
+					|| (testCaseName.startsWith("Signup_ESignet_IDTAuthenticationNegTC_") == true)
+					|| (testCaseName.startsWith("Signup_ESignet_IDTAuthentication_") == true)
+					|| (endpoint.contains("v1/esignet/authorization/claim-details") == true)
+					|| (endpoint.contains("v1/esignet/authorization/prepare-signup-redirect") == true)
+					|| (endpoint.contains("v1/signup/identity-verification/initiate") == true)
+					|| (endpoint.contains("v1/signup/identity-verification/identity-verifier/") == true)
+					|| (endpoint.contains("v1/signup/identity-verification/slot") == true)
+					|| (endpoint.contains("v1/signup/ws") == true)
+					|| (endpoint.contains("v1/signup/identity-verification/status") == true)
+					|| (endpoint.contains("v1/esignet/authorization/complete-signup-redirect") == true)
+					|| (testCaseName.contains("_SignupAuthorizeCode") == true)
+					|| (testCaseName.equals(
+							"Signup_ESignet_GetOidcUserInfo_uin_IdpAccessToken_StatusCode_L2_Valid_Smoke_sid") == true)
+					|| (testCaseName.equals("Signup_ESignet_GenerateToken_uin_L2_Valid_Smoke_sid") == true)
+					|| (testCaseName.equals("Signup_ESignet_AuthorizationCode_uin_L2_All_Valid_Smoke_sid") == true)
 					|| ((testCaseName.equals("ESignet_CreateOIDCClient_all_Valid_Smoke_sid")
 							|| testCaseName.equals("Signup_ESignet_CreateOIDCClient_all_Valid_Smoke_sid")
 							|| testCaseName.equals("ESignet_CreateOIDCClient_Misp_Valid_Smoke_sid")
@@ -186,16 +313,6 @@ public class SignupUtil extends AdminTestUtil {
 		if ((testCaseName.contains("ESignet_AuthenticateUserPassword") && inputJson.contains("_PHONE$")) || testCaseName.contains("AuthenticateUserPasswordNegTC_UnRegistered_IndividualId_Neg")) {
 			String suffix = getValueFromEsignetActuator("classpath:/application.properties",
 					"mosip.esignet.ui.config.username.postfix");
-
-			if (suffix == null || suffix.isBlank() == true) {
-				suffix = getValueFromEsignetActuator("classpath:/application-default.properties",
-						"mosip.esignet.ui.config.username.postfix");
-			}
-			
-			if (suffix == null || suffix.isBlank() == true) {
-				suffix = getValueFromEsignetActuator("mosip-config/esignet",
-						"mosip.esignet.ui.config.username.postfix");
-			}
 			
 			if (suffix != null && suffix.isBlank() == false) {
 				testCaseDTO.setInput(testCaseDTO.getInput().replace("_PHONE$", "_PHONE$" + suffix));
@@ -492,55 +609,121 @@ public class SignupUtil extends AdminTestUtil {
 	public static JSONArray signupActuatorResponseArray = null;
 
 	public static String getValueFromSignupActuator(String section, String key) {
-		String url = SignupConfigManager.getSignupBaseUrl() + SignupConfigManager.getproperty("actuatorSignupEndpoint");
+		
+		String value = null;
+		// Normalize the key for environment variables
+		String keyForEnvVariableSection = key.toUpperCase().replace("-", "_").replace(".", "_");
+
+		// Try to fetch profiles if not already fetched
+		if (signupActiveProfiles == null || signupActiveProfiles.length() == 0) {
+			signupActiveProfiles = getActiveProfilesFromActuator(SignupConstants.SIGNUP_ACTUATOR_URL,
+					SignupConstants.ACTIVE_PROFILES);
+		}
+
+		// First try to fetch the value from system environment
+		value = getValueFromSignupActuatorWithUrl(SignupConstants.SYSTEM_ENV_SECTION, keyForEnvVariableSection,
+				SignupConstants.SIGNUP_ACTUATOR_URL);
+
+		// Fallback to other sections if value is not found
+		if (value == null || value.isBlank()) {
+			value = getValueFromSignupActuatorWithUrl(SignupConstants.CLASS_PATH_APPLICATION_PROPERTIES, key,
+					SignupConstants.SIGNUP_ACTUATOR_URL);
+		}
+
+		if (value == null || value.isBlank()) {
+			value = getValueFromSignupActuatorWithUrl(SignupConstants.CLASS_PATH_APPLICATION_DEFAULT_PROPERTIES, key,
+					SignupConstants.SIGNUP_ACTUATOR_URL);
+		}
+
+		// Try fetching from active profiles if available
+		if (value == null || value.isBlank()) {
+			if (signupActiveProfiles != null && signupActiveProfiles.length() > 0) {
+				for (int i = 0; i < signupActiveProfiles.length(); i++) {
+					String propertySection = signupActiveProfiles.getString(i).equals(SignupConstants.DEFAULT_STRING)
+							? SignupConstants.MOSIP_CONFIG_APPLICATION_HYPHEN_STRING + signupActiveProfiles.getString(i)
+									+ SignupConstants.DOT_PROPERTIES_STRING
+							: signupActiveProfiles.getString(i) + SignupConstants.DOT_PROPERTIES_STRING;
+
+					value = getValueFromSignupActuatorWithUrl(propertySection, key,
+							SignupConstants.SIGNUP_ACTUATOR_URL);
+
+					if (value != null && !value.isBlank()) {
+						break;
+					}
+				}
+			} else {
+				logger.warn("No active profiles were retrieved.");
+			}
+		}
+
+		// Fallback to a default section if no value found
+		if (value == null || value.isBlank()) {
+			value = getValueFromSignupActuatorWithUrl(SignupConfigManager.getEsignetActuatorPropertySection(), key,
+					SignupConstants.SIGNUP_ACTUATOR_URL);
+		}
+
+		// Final fallback to the original section if no value was found
+		if (value == null || value.isBlank()) {
+			value = getValueFromSignupActuatorWithUrl(section, key, SignupConstants.SIGNUP_ACTUATOR_URL);
+		}
+
+		// Log the final result or an error message if not found
+		if (value == null || value.isBlank()) {
+			logger.error("Value not found for section: " + section + ", key: " + key);
+		}
+
+		return value;
+	}
+
+	public static String getValueFromSignupActuatorWithUrl(String section, String key, String url) {
+		// Generate cache key based on the url, section, and key
 		String actuatorCacheKey = url + section + key;
 		String value = actuatorValueCache.get(actuatorCacheKey);
-		if (value != null && !value.isEmpty())
-			return value;
+
+		if (value != null && !value.isEmpty()) {
+			return value; // Return cached value if available
+		}
 
 		try {
+			// Fetch the actuator response array if not already populated
 			if (signupActuatorResponseArray == null) {
-				Response response = null;
-				JSONObject responseJson = null;
-				response = RestClient.getRequest(url, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
-				responseJson = new JSONObject(response.getBody().asString());
+				Response response = RestClient.getRequest(url, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
+				JSONObject responseJson = new JSONObject(response.getBody().asString());
 				signupActuatorResponseArray = responseJson.getJSONArray("propertySources");
 			}
 
+			// Search through the property sources for the section
 			for (int i = 0, size = signupActuatorResponseArray.length(); i < size; i++) {
 				JSONObject eachJson = signupActuatorResponseArray.getJSONObject(i);
 				if (eachJson.get("name").toString().contains(section)) {
-					logger.info(eachJson.getJSONObject(GlobalConstants.PROPERTIES));
+					logger.info("Found properties: " + eachJson.getJSONObject(GlobalConstants.PROPERTIES));
 					value = eachJson.getJSONObject(GlobalConstants.PROPERTIES).getJSONObject(key)
 							.get(GlobalConstants.VALUE).toString();
-					if (SignupConfigManager.IsDebugEnabled())
+					if (SignupConfigManager.IsDebugEnabled()) {
 						logger.info("Actuator: " + url + " key: " + key + " value: " + value);
+					}
 					break;
 				}
 			}
-			actuatorValueCache.put(actuatorCacheKey, value);
+
+			// Cache the retrieved value
+			if (value != null && !value.isEmpty()) {
+				actuatorValueCache.put(actuatorCacheKey, value);
+			}
 
 			return value;
+		} catch (JSONException e) {
+			logger.error("Error parsing JSON for section: " + section + ", key: " + key + " - " + e.getMessage());
+			return null;
 		} catch (Exception e) {
-			logger.error(GlobalConstants.EXCEPTION_STRING_2 + e);
-			return value;
+			logger.error("Error fetching value for section: " + section + ", key: " + key + " - " + e.getMessage());
+			return null;
 		}
-
 	}
 	
 	public static void getSupportedLanguage() {
-		String supportedLanguages = getValueFromSignupActuator("systemEnvironment",
-				"MOSIP_SIGNUP_SUPPORTED_LANGUAGES");
-		
-		if (supportedLanguages == null || supportedLanguages.isBlank() == true) {
-			supportedLanguages = getValueFromSignupActuator("classpath:/application-default.properties",
-					"mosip.signup.supported-languages");
-		}
-		
-		if (supportedLanguages == null || supportedLanguages.isBlank() == true) {
-			supportedLanguages = getValueFromSignupActuator("mosip/mosip-config/signup",
-					"mosip.signup.supported-languages");
-		}
+		String supportedLanguages = getValueFromSignupActuator("classpath:/application-default.properties",
+				"mosip.signup.supported-languages");
 
 		if (supportedLanguages != null && supportedLanguages.isBlank() == false) {
 			supportedLanguages = supportedLanguages.replace("{", "").replace("}", "").replace("'", "");
@@ -556,6 +739,9 @@ public class SignupUtil extends AdminTestUtil {
 
 			// Add sorted languages to the languageList
 			BaseTestCase.languageList.addAll(sortedLanguages);
+			signupSupportedLanguage.addAll(sortedLanguages);
+
+			logger.info("signupSupportedLanguage " + signupSupportedLanguage);
 
 			logger.info("languageList " + BaseTestCase.languageList);
 		} else {
@@ -590,59 +776,20 @@ public class SignupUtil extends AdminTestUtil {
 	}
 	
 	public static List<String> signupSupportedLanguage = new ArrayList<>();
-	public static void getSignupSupportedLanguage() {
-		signupSupportedLanguage = new ArrayList<>();
-		
-//		List<String> signupSupportedLanguage = new ArrayList<>();
-		String supportedLanguages = getValueFromSignupActuator("systemEnvironment",
-				"MOSIP_SIGNUP_SUPPORTED_LANGUAGES");
-		
-		if (supportedLanguages == null || supportedLanguages.isBlank() == true) {
-			supportedLanguages = getValueFromSignupActuator("mosip/mosip-config/signup",
-					"mosip.signup.supported-languages");
-		}
-		
-		if (supportedLanguages == null || supportedLanguages.isBlank() == true) {
-			supportedLanguages = getValueFromSignupActuator("classpath:/application-default.properties",
-					"mosip.signup.supported-languages");
-		}
-
-		if (supportedLanguages != null && supportedLanguages.isBlank() == false) {
-			supportedLanguages = supportedLanguages.replace("{", "").replace("}", "").replace("'", "");
-
-			// Split the string by commas
-			String[] languages = supportedLanguages.split(",");
-
-			// Use a TreeSet to sort the languages
-			Set<String> sortedLanguages = new TreeSet<>();
-			for (String language : languages) {
-				sortedLanguages.add(language.trim()); // Trim to remove any extra spaces
-			}
-
-			// Add sorted languages to the languageList
-			signupSupportedLanguage.addAll(sortedLanguages);
-
-			logger.info("signupSupportedLanguage " + signupSupportedLanguage);
-		} else {
-			logger.error("Language not found");
-		}
-	}
 	
 	
 	public static String generateFullNameToRegisterUsers(String inputJson, String testCaseName) {
 		JSONArray fullNameArray = new JSONArray();
-		String fullNamePattern = getValueFromSignUpSetting("fullname.pattern").toString();
+		String fullNamePattern = getFullNameRegexPattern(SignupConstants.FULL_NAME_STRING);
 		List<String> fullnames = Arrays.asList(" ឮᨪដ", "សុភិបាល", "វណ្ណៈ", "៻៥᧿", "គុសល", "ស្រីមុជ", "ចន្ថ័រន", "  ឃ  ំ ដ     ៹ម");
 		String randomFullName = getRandomElement(fullnames);
-		getSignupSupportedLanguage();
 		List<String> languageList =  new ArrayList<>(signupSupportedLanguage);
-//		languageList = BaseTestCase.getLanguageList();
-
-		// For current sprint eng is removed.
-		if (languageList.contains("eng"))
-			languageList.remove("eng");
-		if (testCaseName.contains("_Only_1st_Lang_On_Name_Field_Neg") && languageList.size() > 1)
-			languageList.remove(1);
+		
+		if (testCaseName.contains("_Only_1st_Lang_On_Name_Field_Neg") && languageList.size() > 1) {
+			String firstLang = signupSupportedLanguage.getFirst();
+			languageList = new ArrayList<>();
+			languageList.add(firstLang);
+		}
 
 		for (int i = 0; i < languageList.size(); i++) {
 			if (languageList.get(i) != null && !languageList.get(i).isEmpty()) {
@@ -701,6 +848,179 @@ public class SignupUtil extends AdminTestUtil {
 		return inputJson;
 	}
 	
+//	public static JSONObject signUpSchemaIdentityJson = null;
+//
+//	public static String getValueFromSignUpSchema(String key) {
+//		String value = null;
+//
+//		if (SignupUtil.getIdentityPluginNameFromEsignetActuator().toLowerCase()
+//				.contains("idaauthenticatorimpl") == true) {
+//
+//			if (signUpSchemaIdentityJson == null) {
+//				kernelAuthLib = new KernelAuthentication();
+//				String token = kernelAuthLib.getTokenByRole(GlobalConstants.ADMIN);
+//				String url = getSchemaURL();
+//
+//				Response response = RestClient.getRequestWithCookie(url, MediaType.APPLICATION_JSON,
+//						MediaType.APPLICATION_JSON, GlobalConstants.AUTHORIZATION, token);
+//
+//				JSONObject responseJson = new JSONObject(response.asString());
+//				signUpSchemaIdentityJson = new JSONObject(responseJson.getJSONObject(GlobalConstants.RESPONSE)
+//						.getJSONObject(SignupConstants.PROPERTIES_STRING)
+//						.getJSONObject(SignupConstants.IDENTITY_STRING));
+//			}
+//
+//			if (signUpSchemaIdentityJson.has(SignupConstants.PROPERTIES_STRING)
+//					&& signUpSchemaIdentityJson.getJSONObject(SignupConstants.PROPERTIES_STRING).has(key)
+//					&& signUpSchemaIdentityJson.getJSONObject(SignupConstants.PROPERTIES_STRING).getJSONObject(key)
+//							.has(SignupConstants.VALIDATORS_STRING)
+//					&& signUpSchemaIdentityJson.getJSONObject(SignupConstants.PROPERTIES_STRING).getJSONObject(key)
+//							.getJSONArray(SignupConstants.VALIDATORS_STRING).length() > 0
+//					&& signUpSchemaIdentityJson.getJSONObject(SignupConstants.PROPERTIES_STRING).getJSONObject(key)
+//							.getJSONArray(SignupConstants.VALIDATORS_STRING).getJSONObject(0)
+//							.has(SignupConstants.VALIDATOR_STRING)) {
+//
+//				value = signUpSchemaIdentityJson.getJSONObject(SignupConstants.PROPERTIES_STRING).getJSONObject(key)
+//						.getJSONArray(SignupConstants.VALIDATORS_STRING).getJSONObject(0)
+//						.getString(SignupConstants.VALIDATOR_STRING);
+//
+//			}
+//
+//		}
+//
+//		return value;
+//	}
+	
+    public static JSONObject signUpSchemaIdentityJson = null;
+
+	public static String getValueFromSignUpSchema(String key) {
+		String value = null;
+
+		// Check if the identity plugin name contains "idaauthenticatorimpl"
+		if (SignupUtil.getIdentityPluginNameFromEsignetActuator().toLowerCase()
+				.contains("idaauthenticatorimpl") == true) {
+			try {
+				// Initialize signUpSchemaIdentityJson if null
+				if (signUpSchemaIdentityJson == null) {
+					loadSignUpSchema();
+				}
+
+				// Check if the key exists and validate its structure
+				if (isValidKeyStructure(key)) {
+					value = extractValidatorValue(key);
+				}
+
+			} catch (Exception e) {
+				logger.error("Error retrieving value for key: " + key, e);
+			}
+		} else if (SignupUtil.getIdentityPluginNameFromEsignetActuator().toLowerCase()
+				.contains("mockauthenticationservice") == true) {
+
+			if (key == SignupConstants.FULL_NAME_STRING) {
+				value = getValueFromSignupActuator(SignupConstants.SYSTEM_ENV_SECTION,
+						SignupConstants.MOSIP_SIGNUP_FULLNAME_PATTERN_STRING);
+			} else if (key == SignupConstants.PHONE_STRING) {
+				value = getValueFromSignupActuator(SignupConstants.SYSTEM_ENV_SECTION,
+						SignupConstants.MOSIP_SIGNUP_IDENTIFIER_REGEX_STRING);
+			} else if (key == SignupConstants.PASSWORD_STRING) {
+				value = getValueFromSignupActuator(SignupConstants.CLASS_PATH_APPLICATION_DEFAULT_PROPERTIES,
+						SignupConstants.MOSIP_SIGNUP_PASSWORD_PATTERN_STRING);
+			}
+
+		}
+
+		return value;
+	}
+
+    private static void loadSignUpSchema() {
+        try {
+            kernelAuthLib = new KernelAuthentication();
+            String token = kernelAuthLib.getTokenByRole(GlobalConstants.ADMIN);
+            String url = getSchemaURL();
+
+            Response response = RestClient.getRequestWithCookie(url, MediaType.APPLICATION_JSON,
+                    MediaType.APPLICATION_JSON, GlobalConstants.AUTHORIZATION, token);
+
+            JSONObject responseJson = new JSONObject(response.asString());
+            
+			JSONObject schemaJson = new JSONObject(
+					responseJson.getJSONObject(GlobalConstants.RESPONSE).getString(SignupConstants.SCHEMA_JSON_STRING));
+
+			signUpSchemaIdentityJson = schemaJson.getJSONObject(SignupConstants.PROPERTIES_STRING)
+					.getJSONObject(SignupConstants.IDENTITY_STRING);
+        } catch (Exception e) {
+            logger.error("Error loading signUpSchemaIdentityJson", e);
+            throw new RuntimeException("Failed to load sign up schema", e);
+        }
+    }
+
+    private static boolean isValidKeyStructure(String key) {
+        try {
+            return signUpSchemaIdentityJson.has(SignupConstants.PROPERTIES_STRING)
+                    && signUpSchemaIdentityJson.getJSONObject(SignupConstants.PROPERTIES_STRING).has(key)
+                    && signUpSchemaIdentityJson.getJSONObject(SignupConstants.PROPERTIES_STRING).getJSONObject(key)
+                            .has(SignupConstants.VALIDATORS_STRING)
+                    && signUpSchemaIdentityJson.getJSONObject(SignupConstants.PROPERTIES_STRING).getJSONObject(key)
+                            .getJSONArray(SignupConstants.VALIDATORS_STRING).length() > 0
+                    && signUpSchemaIdentityJson.getJSONObject(SignupConstants.PROPERTIES_STRING).getJSONObject(key)
+                            .getJSONArray(SignupConstants.VALIDATORS_STRING).getJSONObject(0)
+                            .has(SignupConstants.VALIDATOR_STRING);
+        } catch (Exception e) {
+            logger.error("Error validating key structure for: " + key, e);
+            return false;
+        }
+    }
+
+    private static String extractValidatorValue(String key) {
+        try {
+            return signUpSchemaIdentityJson.getJSONObject(SignupConstants.PROPERTIES_STRING).getJSONObject(key)
+                    .getJSONArray(SignupConstants.VALIDATORS_STRING).getJSONObject(0)
+                    .getString(SignupConstants.VALIDATOR_STRING);
+        } catch (Exception e) {
+            logger.error("Error extracting validator value for key: " + key, e);
+            return null;
+        }
+    }
+    
+    public static String getFullNameRegexPattern(String key) {
+    	String value = null;
+    	
+    	value = getValueFromSignUpSchema(key);
+    	
+    	if (value == null) {
+    		value = SignupConfigManager.getproperty(SignupConstants.FULL_NAME_REGEX_PATTERN_STRING);
+    	}
+    	
+    	return value;
+    	
+    }
+    
+    public static String getPhoneNumberRegexPattern(String key) {
+    	String value = null;
+    	
+    	value = getValueFromSignUpSchema(key);
+    	
+    	if (value == null) {
+    		value = SignupConfigManager.getproperty(SignupConstants.PHONE_NUMBER_REGEX_PATTERN_STRING);
+    	}
+    	
+    	return value;
+    	
+    }
+    
+    public static String getPasswordRegexPattern(String key) {
+    	String value = null;
+    	
+    	value = getValueFromSignUpSchema(key);
+    	
+    	if (value == null) {
+    		value = SignupConfigManager.getproperty(SignupConstants.PASSWORD_REGEX_PATTERN_STRING);
+    	}
+    	
+    	return value;
+    	
+    }
+	
 	public static JSONObject signUpSettingsResponseJson = null;
 
 	public static String getValueFromSignUpSetting(String key) {
@@ -738,7 +1058,7 @@ public class SignupUtil extends AdminTestUtil {
 	public static String getPhoneNumberFromRegex() {
 		String phoneNumber = "";
 		// TODO Regex needs to be taken from Schema
-		String phoneNumberRegex = getValueFromSignUpSetting("identifier.pattern");
+		String phoneNumberRegex = getPhoneNumberRegexPattern(SignupConstants.PHONE_STRING);
 		if (!phoneNumberRegex.isEmpty())
 			try {
 				phoneNumber = genStringAsperRegex(phoneNumberRegex);
@@ -752,7 +1072,7 @@ public class SignupUtil extends AdminTestUtil {
 	public static String getPasswordPatternRegex() {
 		String password = "";
 		// TODO Regex needs to be taken from Schema
-		String passwordRegex = getValueFromSignUpSetting("password.pattern");
+		String passwordRegex = getPasswordRegexPattern(SignupConstants.PASSWORD_STRING);
 		if (!passwordRegex.isEmpty())
 			try {
 				password = genStringAsperRegex(passwordRegex);
@@ -761,6 +1081,97 @@ public class SignupUtil extends AdminTestUtil {
 				logger.error(e.getMessage());
 			}
 		return password;
+	}
+	
+	private static final String TOKEN_URL = SignupConfigManager.getproperty("keycloak-external-url")
+			+ SignupConfigManager.getproperty("keycloakAuthTokenEndPoint");
+	private static final String GRANT_TYPE = "client_credentials";
+	private static final String CLIENT_ID = "client_id";
+	private static final String CLIENT_SECRET = "client_secret";
+	private static final String GRANT_TYPE_KEY = "grant_type";
+	private static final String ACCESS_TOKEN = "access_token";
+
+    private static String partnerCookie = null;
+    private static String mobileAuthCookie = null;
+    
+	private static Response sendPostRequest(String url, Map<String, String> params) {
+		try {
+			return RestAssured.given().contentType("application/x-www-form-urlencoded; charset=utf-8")
+					.formParams(params).log().all().when().log().all().post(url);
+		} catch (Exception e) {
+			logger.error("Error sending POST request to URL: " + url, e);
+			return null;
+		}
+	}
+	
+    public static String getAuthTokenFromKeyCloak(String clientId, String clientSecret) {
+        Map<String, String> params = new HashMap<>();
+        params.put(CLIENT_ID, clientId);
+        params.put(CLIENT_SECRET, clientSecret);
+        params.put(GRANT_TYPE_KEY, GRANT_TYPE);
+
+        Response response = sendPostRequest(TOKEN_URL, params);
+
+        if (response == null) {
+            return "";
+        }
+        logger.info(response.getBody().asString());
+
+        JSONObject responseJson = new JSONObject(response.getBody().asString());
+        return responseJson.optString(ACCESS_TOKEN, "");
+    }
+	
+	public static String getAuthTokenByRole(String role) {
+		if (role == null)
+			return "";
+
+		String roleLowerCase = role.toLowerCase();
+		switch (roleLowerCase) {
+		case "partner":
+			if (!AdminTestUtil.isValidToken(partnerCookie)) {
+				partnerCookie = getAuthTokenFromKeyCloak(SignupConfigManager.getPmsClientId(),
+						SignupConfigManager.getPmsClientSecret());
+			}
+			return partnerCookie;
+		default:
+			return "";
+		}
+	}
+	
+	public static Response postWithBodyAndBearerToken(String url, String jsonInput, String cookieName,
+			String role, String testCaseName, String idKeyName) {
+		Response response = null;
+		if (testCaseName.contains("Invalid_Token")) {
+			token = "xyz";
+		} else if (testCaseName.contains("NOAUTH")) {
+			token = "";
+		} else {
+			token = getAuthTokenByRole(role);
+		}
+		logger.info(GlobalConstants.POST_REQ_URL + url);
+		GlobalMethods.reportRequest(null, jsonInput, url);
+		try {
+			response = RestClient.postRequestWithBearerToken(url, jsonInput, MediaType.APPLICATION_JSON,
+					MediaType.APPLICATION_JSON, cookieName, token);
+			GlobalMethods.reportResponse(response.getHeaders().asList().toString(), url, response);
+
+			return response;
+		} catch (Exception e) {
+			logger.error(GlobalConstants.EXCEPTION_STRING_2 + e);
+			return response;
+		}
+	}
+	
+	// Helper method to parse string to integer with default value
+	public static int parseToInt(String value, int defaultValue) {
+	    if (value != null && !value.isEmpty()) {
+	        try {
+	            return Integer.parseInt(value);
+	        } catch (NumberFormatException e) {
+	            System.err.println("Invalid number format: " + value);
+	        }
+	    }
+	    return defaultValue;
 	}
 	
 }
