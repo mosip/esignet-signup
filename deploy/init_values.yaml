@@ -36,7 +36,7 @@ databases:
         key: postgres-password
     dml: 0
     repoUrl: https://github.com/mosip/otp-manager.git
-    branch: v1.2.0.1
+    branch: develop
 
   mosip_master:
     enabled: false
