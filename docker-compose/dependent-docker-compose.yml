@@ -22,8 +22,8 @@ services:
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=postgres
       - MOSIP_MOCK_IDA_KYC_TRANSACTION_TIMEOUT_SECS=1200
-      - MOSIP_MOCK_IDENTITY_CREATE_REQUIRED_FIELDS=individualId,fullName,phone,password
-      - MOSIP_MOCK_IDENTITY_UPDATE_REQUIRED_FIELDS=individualId
+      - MOSIP_MOCK_IDA_UPDATE_IDENTITY_NON_MANDATORY_FIELDS={"fullName","givenName","familyName","middleName","nickName","preferredUsername","gender","streetAddress","locality","region","country","pin","preferredLang","dateOfBirth","postalCode","encodedPhoto","email","phone","zoneInfo","locale","password"}
+      - MOSIP_MOCK_IDA_IDENTITY_SCHEMA_URL=classpath:/mock-identity-signup-schema.json
     depends_on:
       - database
 
@@ -42,9 +42,9 @@ services:
 
   kafka:
     image: wurstmeister/kafka
-    container_name: kafka
     ports:
       - "9092:9092"
+      - "9093:9093"
     environment:
       KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka:9092,OUTSIDE://localhost:9093
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
