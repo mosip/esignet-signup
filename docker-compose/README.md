@@ -25,8 +25,13 @@ This is the docker-compose setup to run eSignet Signup service with mock identit
        mosip.signup.oauth.keystore-path=../../oidckeystore.p12
 
 5. Go to [signup-service](../signup-service) folder and run `mvn clean install -Dgpg.skip=true -DskipTests=true` from command prompt.
-6. Start the eSignet signup-service with the below command. <plugin-path> should be replaced with the absolute path to the plugin jar built and saved under [signup-with-plugins/target folder](../signup-with-plugins/target)
-   `java -Dloader.path=<plugin-path> -jar signup-service-1.1.1-SNAPSHOT.jar`
+6. Start the eSignet signup-service with the below command. `<plugin-path>` should be replaced with the absolute path to the plugin jar built and saved under [signup-with-plugins/target folder](../signup-with-plugins/target)
+   ```c
+   // change directory to target
+   cd target
+   // running the signup-service jar file, with external plugin
+   java -Dloader.path=<plugin-path> -jar signup-service-1.1.1-SNAPSHOT.jar
+   ```
 
 7. Access the service swagger with this URL - http://localhost:8089/v1/signup/swagger-ui.html
 8. Import files under [postman-collection](../postman-collection) folder into your postman to test/validate registration flow. Kindly refer [README.md](../postman-collection/README.md) before starting with the postman collection.
