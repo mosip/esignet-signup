@@ -1,2 +1,9 @@
 ##### JIRA number;testcase 
-#MOSIP-12456------Mimoto_AddIdentity_Binding_smoke_Pos
+#MOSIP-12456------Test_Case_Name
+ES-2217------Signup_ESignet_RegisterUserNegTC_WITHout_phone
+ES-2168------Signup_ESignet_GenerateChallengeNegTC_SpaceVal_Regenerate_Field3_Neg
+ES-2225------Signup_ESignet_RegisterUserNegTC_AlphaNum_Value_On_Name_Field_Neg
+ES-2225------Signup_ESignet_RegisterUserNegTC_Exceeding_Limit_Value_On_Name_Field_Neg
+ES-2225------Signup_ESignet_RegisterUserNegTC_Only_1st_Lang_On_Name_Field_Neg
+ES-2225------Signup_ESignet_RegisterUserNegTC_Only_Num_Value_On_Name_Field_Neg
+ES-2225------Signup_ESignet_RegisterUserNegTC_Only_SpecialChar_On_Name_Field_Neg
