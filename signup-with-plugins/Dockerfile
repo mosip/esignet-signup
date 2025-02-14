@@ -1,4 +1,4 @@
-FROM mosipdev/signup-service:release-1.1.x
+FROM mosipid/signup-service:1.1.1
 
 ARG SOURCE
 ARG COMMIT_HASH

@@ -7,7 +7,7 @@ if [ $# -ge 1 ] ; then
 fi
 
 NS=signup
-CHART_VERSION=1.1.0
+CHART_VERSION=1.1.1
 
 while true; do
     read -p "Do you want to continue installing signup services? (y/n): " ans
