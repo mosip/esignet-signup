@@ -2,9 +2,28 @@ modules:
   esignet-signup:
     enabled: true
     image:
-      repository: mosipqa/apitest-esignet-signup
-      tag: 1.1.x
+      repository: mosipid/apitest-esignet-signup
+      tag: 1.1.1
       pullPolicy: Always
+  esignet:
+    enabled: false
+  prereg:
+    enabled: false
+  masterdata:
+    enabled: false
+  idrepo:
+    enabled: false
+  partner:
+    enabled: false
+  pms:
+    enabled: false
+    image:
+  resident:
+    enabled: false
+  auth:
+    enabled: false
+  mimoto:
+    enabled: false
 
 resources:
   limits:

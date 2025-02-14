@@ -7,7 +7,7 @@ if [ $# -ge 1 ] ; then
 fi
 
 NS=signup
-CHART_VERSION=1.1.0
+CHART_VERSION=1.3.1
 COPY_UTIL=../copy_cm_func.sh
 
 echo Create $NS namespace
