@@ -277,7 +277,7 @@ public class CacheUtilService {
     public void clearExpiredSlots() {
         log.info("Scheduled Task - clearExpiredSlots triggered");
         if (redisConnectionFactory.getConnection() != null) {
-            if (scriptHash == null) {
+            if (scriptHash == null || !redisConnectionFactory.getConnection().scriptingCommands().scriptExists(scriptHash).get(0)) {
                 scriptHash = redisConnectionFactory.getConnection().scriptingCommands().scriptLoad(CLEANUP_SCRIPT.getBytes());
             }
             LockAssert.assertLocked();
@@ -296,7 +296,7 @@ public class CacheUtilService {
 
     public Long getSetSlotCount(String field, long expireTimeInMillis, Integer maxCount) {
         if (redisConnectionFactory.getConnection() != null) {
-            if (addSlotScriptHash == null) {
+            if (addSlotScriptHash == null || !redisConnectionFactory.getConnection().scriptingCommands().scriptExists(addSlotScriptHash).get(0)) {
                 addSlotScriptHash = redisConnectionFactory.getConnection().scriptingCommands().scriptLoad(ADD_SLOT_SCRIPT.getBytes());
             }
             log.info("Running ADD_SLOT_SCRIPT script: {} {} {}", addSlotScriptHash, SLOTS_CONNECTED, maxCount);
@@ -317,7 +317,7 @@ public class CacheUtilService {
 
     public void updateSlotExpireTime(String field, long expireTimeInMillis) {
         if (redisConnectionFactory.getConnection() != null) {
-            if (updateSlotExpireDtScriptHash == null) {
+            if (updateSlotExpireDtScriptHash == null || !redisConnectionFactory.getConnection().scriptingCommands().scriptExists(updateSlotExpireDtScriptHash).get(0)) {
                 updateSlotExpireDtScriptHash = redisConnectionFactory.getConnection().scriptingCommands().scriptLoad(UPDATE_SLOT_EXPIRE_DT_SCRIPT.getBytes());
             }
             log.info("Running UPDATE_SLOT_EXPIRE_DT_SCRIPT script: {} {} {}", updateSlotExpireDtScriptHash, SLOTS_CONNECTED, field);
