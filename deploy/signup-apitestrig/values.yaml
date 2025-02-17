@@ -5,3 +5,11 @@ modules:
       repository: mosipqa/apitest-esignet-signup
       tag: develop
       pullPolicy: Always
+
+resources:
+  limits:
+    cpu: 300m
+    memory: 500Mi
+  requests:
+    cpu: 300m
+    memory: 500Mi
