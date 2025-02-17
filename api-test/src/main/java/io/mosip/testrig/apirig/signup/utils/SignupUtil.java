@@ -13,6 +13,7 @@ import java.util.TreeSet;
 
 import javax.ws.rs.core.MediaType;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -49,6 +50,13 @@ public class SignupUtil extends AdminTestUtil {
 	public static JSONArray esignetActiveProfiles = null;
 	public static JSONArray signupActiveProfiles = null;
 	public static String pluginName = null;
+	
+	public static void setLogLevel() {
+		if (SignupConfigManager.IsDebugEnabled())
+			logger.setLevel(Level.ALL);
+		else
+			logger.setLevel(Level.ERROR);
+	}
 	
 	public static String getIdentityPluginNameFromEsignetActuator() {
 		// Possible values = IdaAuthenticatorImpl, MockAuthenticationService
