@@ -13,6 +13,7 @@ import java.util.TreeSet;
 
 import javax.ws.rs.core.MediaType;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -49,6 +50,13 @@ public class SignupUtil extends AdminTestUtil {
 	public static JSONArray esignetActiveProfiles = null;
 	public static JSONArray signupActiveProfiles = null;
 	public static String pluginName = null;
+	
+	public static void setLogLevel() {
+		if (SignupConfigManager.IsDebugEnabled())
+			logger.setLevel(Level.ALL);
+		else
+			logger.setLevel(Level.ERROR);
+	}
 	
 	public static String getIdentityPluginNameFromEsignetActuator() {
 		// Possible values = IdaAuthenticatorImpl, MockAuthenticationService
@@ -1100,13 +1108,7 @@ public class SignupUtil extends AdminTestUtil {
     
 	private static Response sendPostRequest(String url, Map<String, String> params) {
 		try {
-			if (SignupConfigManager.IsDebugEnabled()) {
-				return RestAssured.given().contentType("application/x-www-form-urlencoded; charset=utf-8")
-						.formParams(params).log().all().when().log().all().post(url);
-			} else {
-				return RestAssured.given().contentType("application/x-www-form-urlencoded; charset=utf-8")
-						.formParams(params).when().post(url);
-			}
+			return RestClient.postRequestWithFormDataBody(url, params);
 		} catch (Exception e) {
 			logger.error("Error sending POST request to URL: " + url, e);
 			return null;
