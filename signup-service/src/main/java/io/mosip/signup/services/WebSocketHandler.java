@@ -70,12 +70,16 @@ public class WebSocketHandler {
         try {
             validate(identityVerificationRequest);
             IdentityVerificationTransaction transaction = cacheUtilService.getVerifiedSlotTransaction(identityVerificationRequest.getSlotId());
-            if(transaction == null)
+            if(transaction == null) {
+                log.error("Ignoring identity verification request received for unknown/expired transaction!");
                 throw new InvalidTransactionException();
+            }
 
             IdentityVerifierPlugin plugin = identityVerifierFactory.getIdentityVerifier(transaction.getVerifierId());
-            if(plugin == null)
+            if(plugin == null) {
+                log.error("Ignoring identity verification request received for unknown {} IDV plugin!", identityVerificationRequest.getSlotId());
                 throw new SignUpException(PLUGIN_NOT_FOUND);
+            }
 
             if(plugin.isStartStep(identityVerificationRequest.getStepCode())) {
                 IdentityVerificationInitDto identityVerificationInitDto = new IdentityVerificationInitDto();
@@ -194,10 +198,13 @@ public class WebSocketHandler {
         IDVProcessFeedback idvProcessFeedback = new IDVProcessFeedback();
         idvProcessFeedback.setType(ProcessFeedbackType.ERROR);
         idvProcessFeedback.setCode(errorCode);
+
         IdentityVerificationResult identityVerificationResult = new IdentityVerificationResult();
         identityVerificationResult.setFeedback(idvProcessFeedback);
+
         simpMessagingTemplate.convertAndSend("/topic/" + slotId, identityVerificationResult);
     }
+
     private void validate(IdentityVerificationRequest request) {
         if(request == null || StringUtils.isEmpty(request.getSlotId()))
             throw new SignUpException(ErrorConstants.INVALID_SLOT_ID);
