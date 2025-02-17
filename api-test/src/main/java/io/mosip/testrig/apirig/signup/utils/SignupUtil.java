@@ -48,13 +48,17 @@ public class SignupUtil extends AdminTestUtil {
 	private static final Logger logger = Logger.getLogger(SignupUtil.class);
 	public static JSONArray esignetActiveProfiles = null;
 	public static JSONArray signupActiveProfiles = null;
+	public static String pluginName = null;
 	
 	public static String getIdentityPluginNameFromEsignetActuator() {
 		// Possible values = IdaAuthenticatorImpl, MockAuthenticationService
-		String plugin = getValueFromEsignetActuator("classpath:/application.properties",
+		if (pluginName != null && !pluginName.isBlank()) {
+			return pluginName;
+		}
+		pluginName = getValueFromEsignetActuator("classpath:/application.properties",
 				"mosip.esignet.integration.authenticator");
 
-		return plugin;
+		return pluginName;
 	}
 	
 	public static JSONArray getActiveProfilesFromActuator(String url, String key) {
@@ -1096,8 +1100,13 @@ public class SignupUtil extends AdminTestUtil {
     
 	private static Response sendPostRequest(String url, Map<String, String> params) {
 		try {
-			return RestAssured.given().contentType("application/x-www-form-urlencoded; charset=utf-8")
-					.formParams(params).log().all().when().log().all().post(url);
+			if (SignupConfigManager.IsDebugEnabled()) {
+				return RestAssured.given().contentType("application/x-www-form-urlencoded; charset=utf-8")
+						.formParams(params).log().all().when().log().all().post(url);
+			} else {
+				return RestAssured.given().contentType("application/x-www-form-urlencoded; charset=utf-8")
+						.formParams(params).when().post(url);
+			}
 		} catch (Exception e) {
 			logger.error("Error sending POST request to URL: " + url, e);
 			return null;
