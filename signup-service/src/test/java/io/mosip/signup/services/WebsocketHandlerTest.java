@@ -32,6 +32,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import static io.mosip.signup.api.util.ErrorConstants.IDENTITY_VERIFICATION_FAILED;
+import static io.mosip.signup.api.util.ErrorConstants.PLUGIN_NOT_FOUND;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 @RunWith(SpringRunner.class)

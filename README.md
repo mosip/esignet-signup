@@ -89,9 +89,11 @@ To complete the signup portal deployment below MOSIP kernel services are require
         * Update the iam_url (Keycloak URL) in the request body.
         * Retrieve the Keycloak URL from the config-map under keycloak-host → keycloak-external-url.
 2. Navigate to **"Register"** → **"Get CSRF token"** →  **generate CSRF token** → to fetch the CSRF token.
-3. Execute `create-signup-oidc-keystore.sh` [here](./docs/create-signup-oidc-keystore.sh) to generate a keypair. This script after successful execution creates 2 files in the project root directory:
-   oidckeystore.p12
-   public_key.jwk
+
+3. Execute `create-signup-oidc-keystore.sh` [here](postman-collection/create-signup-oidc-keystore.sh) to generate a keypair. This script after successful execution creates 2 files in the project root directory:
+    oidckeystore.p12
+    public_key.jwk
+
     * As esignet only supports confidential OIDC clients, we should generate a RSA keypair to onboard signup-service. RSA private key is stored in the oidckeystore.p12 file and the corresponding public key is written to public_key.jwk file.
     * Copy the public key in public_key.jwk file and update the same in the Register Signup OIDC/Create Signup OIDC client request body.
         * ![postman-image.png](./postman-collection/public-key.png)
