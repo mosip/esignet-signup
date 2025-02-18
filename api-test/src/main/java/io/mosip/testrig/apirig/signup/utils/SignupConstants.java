@@ -59,9 +59,9 @@ public class SignupConstants {
 	
 	public static final String SCHEMA_JSON_STRING = "schemaJson";
 	
-	public static final String MOSIP_SIGNUP_FULLNAME_PATTERN_STRING = "MOSIP_SIGNUP_FULLNAME_PATTERN";
+	public static final String MOSIP_SIGNUP_FULLNAME_PATTERN_STRING = "mosip.signup.fullname.pattern";
 	
-	public static final String MOSIP_SIGNUP_IDENTIFIER_REGEX_STRING = "MOSIP_SIGNUP_IDENTIFIER_REGEX";
+	public static final String MOSIP_SIGNUP_IDENTIFIER_REGEX_STRING = "mosip.signup.identifier.regex";
 	
 	public static final String MOSIP_SIGNUP_PASSWORD_PATTERN_STRING =  "mosip.signup.password.pattern";
 

@@ -929,10 +929,10 @@ public class SignupUtil extends AdminTestUtil {
 				.contains("mockauthenticationservice") == true) {
 
 			if (key == SignupConstants.FULL_NAME_STRING) {
-				value = getValueFromSignupActuator(SignupConstants.SYSTEM_ENV_SECTION,
+				value = getValueFromSignupActuator(SignupConstants.CLASS_PATH_APPLICATION_DEFAULT_PROPERTIES,
 						SignupConstants.MOSIP_SIGNUP_FULLNAME_PATTERN_STRING);
 			} else if (key == SignupConstants.PHONE_STRING) {
-				value = getValueFromSignupActuator(SignupConstants.SYSTEM_ENV_SECTION,
+				value = getValueFromSignupActuator(SignupConstants.CLASS_PATH_APPLICATION_DEFAULT_PROPERTIES,
 						SignupConstants.MOSIP_SIGNUP_IDENTIFIER_REGEX_STRING);
 			} else if (key == SignupConstants.PASSWORD_STRING) {
 				value = getValueFromSignupActuator(SignupConstants.CLASS_PATH_APPLICATION_DEFAULT_PROPERTIES,
