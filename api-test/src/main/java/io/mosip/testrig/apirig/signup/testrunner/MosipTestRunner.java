@@ -37,6 +37,7 @@ import io.mosip.testrig.apirig.utils.AuthTestsUtil;
 import io.mosip.testrig.apirig.utils.CertificateGenerationUtil;
 import io.mosip.testrig.apirig.utils.CertsUtil;
 import io.mosip.testrig.apirig.utils.GlobalConstants;
+import io.mosip.testrig.apirig.utils.GlobalMethods;
 import io.mosip.testrig.apirig.utils.JWKKeyUtil;
 import io.mosip.testrig.apirig.utils.KernelAuthentication;
 import io.mosip.testrig.apirig.utils.KeyCloakUserAndAPIKeyGeneration;
@@ -82,6 +83,7 @@ public class MosipTestRunner {
 			SignupConfigManager.init();
 			suiteSetup(getRunType());
 			SkipTestCaseHandler.loadTestcaseToBeSkippedList("testCaseSkippedList.txt");
+			GlobalMethods.setModuleNameAndReCompilePattern(SignupConfigManager.getproperty("moduleNamePattern"));
 			setLogLevels();
 
 //			HealthChecker healthcheck = new HealthChecker();
