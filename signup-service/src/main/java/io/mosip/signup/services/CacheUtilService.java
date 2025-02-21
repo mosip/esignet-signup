@@ -6,7 +6,6 @@
 package io.mosip.signup.services;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.google.common.primitives.Longs;
 import io.mosip.esignet.core.constants.Constants;
 import io.mosip.esignet.core.dto.OIDCTransaction;
 import io.mosip.esignet.core.util.IdentityProviderUtil;
@@ -31,6 +30,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
@@ -91,7 +91,7 @@ public class CacheUtilService {
             "    delcount=redis.call('hdel', hash_name, unpack(fields_to_delete))\n" +
             "end\n" +
             "return delcount\n";
-    private String scriptHash = null;
+    private String cleanupScriptHash = null;
 
 
     private static final String ADD_SLOT_SCRIPT = "local function add_to_hset(key, field, value, max_count)\n" +
@@ -277,15 +277,15 @@ public class CacheUtilService {
     public void clearExpiredSlots() {
         log.info("Scheduled Task - clearExpiredSlots triggered");
         if (redisConnectionFactory.getConnection() != null) {
-            if (scriptHash == null) {
-                scriptHash = redisConnectionFactory.getConnection().scriptingCommands().scriptLoad(CLEANUP_SCRIPT.getBytes());
+            if (isScriptNotLoaded(cleanupScriptHash)) {
+                cleanupScriptHash = redisConnectionFactory.getConnection().scriptingCommands().scriptLoad(CLEANUP_SCRIPT.getBytes());
             }
             LockAssert.assertLocked();
-            log.info("Running scheduled cleanup task - task to clear expired slots with script hash: {} {}", scriptHash,
+            log.info("Running scheduled cleanup task - task to clear expired slots with script hash: {} {}", cleanupScriptHash,
                     SLOTS_CONNECTED);
 
             long keysDeleted = redisConnectionFactory.getConnection().scriptingCommands().evalSha(
-                    scriptHash,
+                    cleanupScriptHash,
                     ReturnType.INTEGER,
                     1,  // Number of keys
                     SLOTS_CONNECTED.getBytes() // The Redis hash name (key)
@@ -296,7 +296,7 @@ public class CacheUtilService {
 
     public Long getSetSlotCount(String field, long expireTimeInMillis, Integer maxCount) {
         if (redisConnectionFactory.getConnection() != null) {
-            if (addSlotScriptHash == null) {
+            if (isScriptNotLoaded(addSlotScriptHash)) {
                 addSlotScriptHash = redisConnectionFactory.getConnection().scriptingCommands().scriptLoad(ADD_SLOT_SCRIPT.getBytes());
             }
             log.info("Running ADD_SLOT_SCRIPT script: {} {} {}", addSlotScriptHash, SLOTS_CONNECTED, maxCount);
@@ -317,7 +317,7 @@ public class CacheUtilService {
 
     public void updateSlotExpireTime(String field, long expireTimeInMillis) {
         if (redisConnectionFactory.getConnection() != null) {
-            if (updateSlotExpireDtScriptHash == null) {
+            if (isScriptNotLoaded(updateSlotExpireDtScriptHash)) {
                 updateSlotExpireDtScriptHash = redisConnectionFactory.getConnection().scriptingCommands().scriptLoad(UPDATE_SLOT_EXPIRE_DT_SCRIPT.getBytes());
             }
             log.info("Running UPDATE_SLOT_EXPIRE_DT_SCRIPT script: {} {} {}", updateSlotExpireDtScriptHash, SLOTS_CONNECTED, field);
@@ -331,6 +331,12 @@ public class CacheUtilService {
                     String.valueOf(expireTimeInMillis).getBytes(StandardCharsets.UTF_8) // value
             );
         }
+    }
+
+    private boolean isScriptNotLoaded(String scriptHash) {
+        if(scriptHash == null) return true;
+        List<Boolean> scriptExists = redisConnectionFactory.getConnection().scriptingCommands().scriptExists(scriptHash);
+        return scriptExists == null || !scriptExists.get(0);
     }
 
 }
