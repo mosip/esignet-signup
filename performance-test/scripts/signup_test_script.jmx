@@ -115,7 +115,7 @@
         <stringProp name="connectionProperties"></stringProp>
       </JDBCDataSource>
       <hashTree/>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Creating KBI Challenge Value for Reset Password usecase (Setup)" enabled="true">
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Creating KBI Challenge Value For Reset Password Usecase (Setup)" enabled="true">
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
@@ -507,16 +507,16 @@ vars.put(&quot;encodedString&quot;,encodedString);
             <stringProp name="scriptLanguage">groovy</stringProp>
           </JSR223PostProcessor>
           <hashTree/>
-          <BeanShellPostProcessor guiclass="TestBeanGUI" testclass="BeanShellPostProcessor" testname="Store Auth Token To File" enabled="true">
+          <BeanShellPostProcessor guiclass="TestBeanGUI" testclass="BeanShellPostProcessor" testname="Store identities To File" enabled="true">
             <stringProp name="filename"></stringProp>
             <stringProp name="parameters"></stringProp>
             <boolProp name="resetInterpreter">false</boolProp>
-            <stringProp name="script">${__StringToFile(${runTimeFilePath}/identities_reset_password.txt,${identifierPrefix}${identifier}\,${encodedString}\n,false,)}</stringProp>
+            <stringProp name="script">${__StringToFile(${runTimeFilePath}/identities_reset_password.txt,${identifierPrefix}${identifier}\,${encodedString}\n,true,)}</stringProp>
           </BeanShellPostProcessor>
           <hashTree/>
         </hashTree>
       </hashTree>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="S01 User SignUp (Execution)" enabled="true">
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="S01 User Registration (Execution)" enabled="true">
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
