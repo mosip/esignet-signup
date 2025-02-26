@@ -172,6 +172,9 @@ public class MosipTestRunner {
 		KernelAuthentication.setLogLevel();
 		BaseTestCase.setLogLevel();
 		SignupUtil.setLogLevel();
+		KeycloakUserManager.setLogLevel();
+		DBManager.setLogLevel();
+		BiometricDataProvider.setLogLevel();
 	}
 
 	/**

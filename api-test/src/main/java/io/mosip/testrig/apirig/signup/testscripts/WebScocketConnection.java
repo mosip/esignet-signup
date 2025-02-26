@@ -33,7 +33,7 @@ import io.mosip.testrig.apirig.utils.GlobalMethods;
 import io.mosip.testrig.apirig.utils.WebSocketClientUtil;
 import io.restassured.response.Response;
 
-public class WebScocketConnection extends AdminTestUtil implements ITest {
+public class WebScocketConnection extends SignupUtil implements ITest {
 	private static final Logger logger = Logger.getLogger(WebScocketConnection.class);
 	protected String testCaseName = "";
 	public String idKeyName = null;
