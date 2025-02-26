@@ -1673,7 +1673,7 @@ String createdTime=vars.get(&quot;cr_dtimes_${loopIndex}&quot;);
 String updatedTime=vars.get(&quot;upd_dtimes_1&quot;);
 if (updatedTime == null) {
     
-    vars.put(&quot;time_difference_ms&quot;, &quot;0&quot;);
+    vars.put(&quot;timeDifferenceMs&quot;, &quot;0&quot;);
     vars.put(&quot;status&quot;,&quot;FAIL&quot;);
 } else {
 
@@ -1689,7 +1689,7 @@ if (updatedTime == null) {
     long millisDiff = Duration.between(dt1, dt2).toMillis()
 
     // Store the result in a JMeter variable
-    vars.put(&quot;time_difference_ms&quot;, String.valueOf(millisDiff))
+    vars.put(&quot;timeDifferenceMs&quot;, String.valueOf(millisDiff))
 
     // Log output
     //log.info(&quot;Time Difference: ${millisDiff} milliseconds&quot;)
@@ -1712,7 +1712,7 @@ prev.setIgnore();
               <stringProp name="RESPONSE_MESSAGE">OK</stringProp>
               <stringProp name="REQUEST_DATA"></stringProp>
               <stringProp name="RESPONSE_DATA">${status}</stringProp>
-              <stringProp name="RESPONSE_TIME">${time_difference_ms}</stringProp>
+              <stringProp name="RESPONSE_TIME">${timeDifferenceMs}</stringProp>
               <stringProp name="LATENCY">0</stringProp>
               <stringProp name="CONNECT">0</stringProp>
               <stringProp name="URL"></stringProp>
