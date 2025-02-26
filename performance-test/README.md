@@ -4,7 +4,7 @@
     1. Creating KBI Challenge Value For Reset Password Usecase (Setup)
     2. S01 User SignUp (Execution)
     3. S02 User Reset Password (Execution)
-	4. S03 Idrepo To IDA (Results)
+	4. S03 Status Call From Idrepo To IDA (Results)
 
 
 * Open source Tools used,
@@ -90,24 +90,24 @@
 
 *signup_test_script.jmx
 	
-	* Creating KBI Challenge value for Reset Password usecase (Setup) : This thread contains 3 API's i.e. generate challenge, verify challenge and register API endpoints. Will be generating base64url-encoded json value with the name details with the json body. We will be saving the encoded value along with the name in csv file;.
+	* Creating KBI Challenge value for Reset Password usecase (Setup) : This thread contains 3 API's i.e. generate challenge, verify challenge and register API endpoints. Will be generating base64url-encoded json value with the name details with the json body. We will be saving the encoded value along with the name in csv file.
 	
 	*S01 User SignUp (Execution):
 		*S01 T01 Get Csrf Token: This API endpoint generats CSRF token. It contains JSR223 Pre-Processor to capture start time of test to access credentials data from idrepo database.
-		*S01 T02 Generate Challenge: This API endpoint Generate Challenge endpoint for user registration. We need to pass an identifier value which is nothing but a 9-10 digit phone number with country code as the prefix.
-		*S01 T03 Verify Challenge: This API endpoint performs verify challenge API, which we will pass the value of identifier i.e. phone number.
+		*S01 T02 Generate Challenge: This API endpoint generates challenge for user registration. We need to pass an identifier value which is nothing but a 9-10 digit phone number with country code as the prefix.
+		*S01 T03 Verify Challenge: This API endpoint performs verify challenge, which we will pass the value of identifier i.e. phone number.
 		*S01 T04 Register: This API endpoint performs SignUp Registration for the user.
 		*S01 T05 Registration Status: The API endpoint verifies the status of the registration.
 		
 	*S02 User Reset Password (Execution):
 	    *S02 T01 Get Csrf Token: This API endpoint generats CSRF token. It contains JSR223 Pre-Processor to capture start time of test to access credentials data from idrepo database.
-		*S02 T02 Generate Challenge: This API endpoint Generate Challenge endpoint for user reset password. We need to pass an identifier value which is nothing but a 9-10 digit phone number with country code as the prefix.
+		*S02 T02 Generate Challenge: This API endpoint generates challenge for user reset password. We need to pass an identifier value which is nothing but a 9-10 digit phone number with country code as the prefix.
 		*S02 T03 Verify Challenge: This API endpoint performs verify challenge API, which we will pass the value of identifier i.e. phone number  and encoded KBI value.
-		*S02 T04 Reset Password: This thread contains Reset Password API endpoint. We will be generating new password from the JSR223- Preprocessor and passing it in request body.
+		*S02 T04 Reset Password: This API endpoint performs Reset Password operation. We will be generating new password from the JSR223- Preprocessor and passing it in request body.
 		*S02 T05 Registration: This thread contains Registration status API endpoint. This API checks whether we have successfully reset the password.
 		
-	*S03 Idrepo To IDA (Results):
-		*We will be fetching the request_id, cr_dtimes from idrepo.credential_request_status table by passing start and end time in the query. The query provides list of request Ids. These request Ids will passed in credential_transaction table of mosip_credential DB to fetch upd_dtiimes value. In JSR223 post-processor of the "Fetch Updated Time From Credential Table Query" , we compute response time of asynchronous call of request id by substracting upd_dtimes with cr_dtimes. The final value as well as status will be passed in transaction controller S03 T01 Asynchronous status.
+	*S03 Status Call From Idrepo To IDA (Results):
+		*We will be fetching the request_id, cr_dtimes from idrepo.credential_request_status table by passing start and end time in the query. The query provides list of request Ids. These request Ids will be passed in credential_transaction table of mosip_credential DB to fetch upd_dtiimes value. In JSR223 post-processor of the "Fetch Updated Time From Credential Table Query" , we compute response time of asynchronous call of request id by subtracting upd_dtimes with cr_dtimes. The final value as well as status will be passed in transaction controller S03 T01 ${status} Status Call.
 			
 ### Designing the workload model for performance test execution
 * Calculation of number of users depending on Transactions per second (TPS) provided by client
