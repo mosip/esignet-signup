@@ -1,5 +1,5 @@
 
-### Contains
+### Overview
 * This folder contains performance test script of below API endpoint categories.
     1. Creating KBI Challenge Value For Reset Password Usecase (Setup)
     2. S01 User SignUp (Execution)
