@@ -5,6 +5,10 @@
  */
 package io.mosip.signup.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.module.afterburner.AfterburnerModule;
 import net.javacrumbs.shedlock.core.LockProvider;
 import net.javacrumbs.shedlock.provider.redis.spring.RedisLockProvider;
 import net.javacrumbs.shedlock.spring.annotation.EnableSchedulerLock;
@@ -25,6 +29,14 @@ public class Config {
 
     @Value("${mosip.signup.task.max.pool.size:20}")
     private int taskMaxPoolSize;
+
+    @Bean
+    public ObjectMapper objectMapper() {
+        return JsonMapper.builder()
+                .addModule(new AfterburnerModule())
+                .addModule(new JavaTimeModule())
+                .build();
+    }
 
     @Bean
     public Executor taskExecutor() {
