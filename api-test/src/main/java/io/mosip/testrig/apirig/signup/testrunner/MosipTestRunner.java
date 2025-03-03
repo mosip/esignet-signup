@@ -118,7 +118,7 @@ public class MosipTestRunner {
 				BiometricDataProvider.generateBiometricTestData("Registration");
 				startTestRunner();
 			} else {
-				BaseTestCase.isTargetEnvLatest = true;
+//				BaseTestCase.isTargetEnvLatest = true;
 				SignupUtil.getSupportedLanguage();
 				startTestRunner();
 			}
@@ -172,6 +172,9 @@ public class MosipTestRunner {
 		KernelAuthentication.setLogLevel();
 		BaseTestCase.setLogLevel();
 		SignupUtil.setLogLevel();
+		KeycloakUserManager.setLogLevel();
+		DBManager.setLogLevel();
+		BiometricDataProvider.setLogLevel();
 	}
 
 	/**

@@ -35,7 +35,7 @@ import io.mosip.testrig.apirig.utils.OutputValidationUtil;
 import io.mosip.testrig.apirig.utils.ReportUtil;
 import io.restassured.response.Response;
 
-public class SimplePostForAutoGenIdForUrlEncoded extends AdminTestUtil implements ITest {
+public class SimplePostForAutoGenIdForUrlEncoded extends SignupUtil implements ITest {
 	private static final Logger logger = Logger.getLogger(SimplePostForAutoGenIdForUrlEncoded.class);
 	protected String testCaseName = "";
 	public String idKeyName = null;
@@ -152,11 +152,11 @@ public class SimplePostForAutoGenIdForUrlEncoded extends AdminTestUtil implement
 					testCaseDTO.setEndPoint(testCaseDTO.getEndPoint().replace("$ESIGNETMOCKBASEURL$", ""));
 				}
 				String endPoint = tempUrl + testCaseDTO.getEndPoint();
-				if (testCaseDTO.getEndPoint().contains("$GETENDPOINTFROMRESIDENTACTUATOR$")
-						&& BaseTestCase.currentModule.equalsIgnoreCase("resident")) {
-					endPoint = getValueFromActuator("mosip-config/resident-default.properties",
-							"mosip.iam.token_endpoint");
-				}
+//				if (testCaseDTO.getEndPoint().contains("$GETENDPOINTFROMRESIDENTACTUATOR$")
+//						&& BaseTestCase.currentModule.equalsIgnoreCase("resident")) {
+//					endPoint = getValueFromActuator("mosip-config/resident-default.properties",
+//							"mosip.iam.token_endpoint");
+//				}
 				if (testCaseDTO.getEndPoint().contains("$GETENDPOINTFROMWELLKNOWN$")
 						&& BaseTestCase.currentModule.equalsIgnoreCase("signup")) {
 					endPoint = SignupUtil.getValueFromEsignetWellKnownEndPoint("token_endpoint", SignupConfigManager.getEsignetBaseUrl());
