@@ -162,7 +162,7 @@ jobs:
       GPG_SECRET: ${{ secrets.GPG_SECRET }}
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
 
-  build_dockers_esignet_with_plugins:
+  build_dockers_signup_with_plugins:
     needs: [ build_maven_signup_with_plugins, check_snapshot_version, publish_to_nexus ]
     if: ${{ needs.check_snapshot_version.outputs.is_condition == 'true' }}
     strategy:
@@ -184,41 +184,6 @@ jobs:
       RELEASE_DOCKER_HUB: ${{ secrets.RELEASE_DOCKER_HUB }}
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
       
-  build_maven_signup_with_plugins:
-    uses: mosip/kattu/.github/workflows/maven-build.yml@master
-    with:
-      SERVICE_LOCATION: ./signup-with-plugins
-      BUILD_ARTIFACT: signup-with-plugins
-      MAVEN_NON_EXEC_ARTIFACTS: "esignet-mock-plugin.jar,mosip-identity-plugin.jar"
-    secrets:
-      OSSRH_USER: ${{ secrets.OSSRH_USER }}
-      OSSRH_SECRET: ${{ secrets.OSSRH_SECRET }}
-      OSSRH_TOKEN: ${{ secrets.OSSRH_TOKEN }}
-      GPG_SECRET: ${{ secrets.GPG_SECRET }}
-      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
-
-  build_dockers_esignet_with_plugins:
-    needs: [ build_maven_signup_with_plugins, check_snapshot_version, publish_to_nexus ]
-    if: ${{ needs.check_snapshot_version.outputs.is_condition == 'true' }}
-    strategy:
-      matrix:
-        include:
-          - SERVICE_LOCATION: 'signup-with-plugins'
-            SERVICE_NAME: 'signup-with-plugins'
-            BUILD_ARTIFACT: 'signup-with-plugins'
-      fail-fast: false
-    name: ${{ matrix.SERVICE_NAME }}
-    uses: mosip/kattu/.github/workflows/docker-build.yml@master
-    with:
-      SERVICE_LOCATION: ${{ matrix.SERVICE_LOCATION }}
-      SERVICE_NAME: ${{ matrix.SERVICE_NAME }}
-      BUILD_ARTIFACT: ${{ matrix.BUILD_ARTIFACT }}
-    secrets:
-      DEV_NAMESPACE_DOCKER_HUB: ${{ secrets.DEV_NAMESPACE_DOCKER_HUB }}
-      ACTOR_DOCKER_HUB: ${{ secrets.ACTOR_DOCKER_HUB }}
-      RELEASE_DOCKER_HUB: ${{ secrets.RELEASE_DOCKER_HUB }}
-      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
-
   build_dockers_signup_ui:
     strategy:
       matrix:
