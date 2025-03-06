@@ -86,15 +86,6 @@ public class MosipTestRunner {
 			GlobalMethods.setModuleNameAndReCompilePattern(SignupConfigManager.getproperty("moduleNamePattern"));
 			setLogLevels();
 
-//			HealthChecker healthcheck = new HealthChecker();
-//			healthcheck.setCurrentRunningModule(BaseTestCase.currentModule);
-
-			// TODO: Implement this
-			// healthcheck.setAcutatorList(getAcutuatorListFromHealthCheckfile())
-
-//			Thread trigger = new Thread(healthcheck);
-//			trigger.start();
-
 			if (SignupUtil.getIdentityPluginNameFromEsignetActuator().toLowerCase()
 					.contains("idaauthenticatorimpl") == true) {
 				KeycloakUserManager.removeUser();
@@ -113,7 +104,6 @@ public class MosipTestRunner {
 				BiometricDataProvider.generateBiometricTestData("Registration");
 				startTestRunner();
 			} else {
-//				BaseTestCase.isTargetEnvLatest = true;
 				SignupUtil.getSupportedLanguage();
 				startTestRunner();
 			}

@@ -155,39 +155,15 @@ public class SimplePost extends SignupUtil implements ITest {
 			if (testCaseDTO.getEndPoint().contains("/signup/"))
 				tempUrl = SignupConfigManager.getSignupBaseUrl();
 			if (testCaseName.contains("ESignet_")) {
-				if (testCaseDTO.getEndPoint().startsWith("$ESIGNETMOCKBASEURL$") && testCaseName.contains("SunBirdC")) {
-					if (SignupConfigManager.isInServiceNotDeployedList("sunbirdrc"))
-						throw new SkipException(GlobalConstants.SERVICE_NOT_DEPLOYED_MESSAGE);
-
-					if (SignupConfigManager.getEsignetMockBaseURL() != null
-							&& !SignupConfigManager.getEsignetMockBaseURL().isBlank())
-						tempUrl = ApplnURI.replace("api-internal.", SignupConfigManager.getEsignetMockBaseURL());
-					testCaseDTO.setEndPoint(testCaseDTO.getEndPoint().replace("$ESIGNETMOCKBASEURL$", ""));
-				} else if (testCaseDTO.getEndPoint().startsWith("$SUNBIRDBASEURL$")
-						&& testCaseName.contains("SunBirdR")) {
-
-					if (SignupConfigManager.isInServiceNotDeployedList("sunbirdrc"))
-						throw new SkipException(GlobalConstants.SERVICE_NOT_DEPLOYED_MESSAGE);
-
-					if (SignupConfigManager.getSunBirdBaseURL() != null && !SignupConfigManager.getSunBirdBaseURL().isBlank())
-						tempUrl = SignupConfigManager.getSunBirdBaseURL();
-						//Once sunbird registry is pointing to specific env, remove the above line and uncomment below line
-						//tempUrl = ApplnURI.replace(GlobalConstants.API_INTERNAL, ConfigManager.getSunBirdBaseURL());
-						testCaseDTO.setEndPoint(testCaseDTO.getEndPoint().replace("$SUNBIRDBASEURL$", ""));
-
-						response = postWithBodyAndCookie(tempUrl + testCaseDTO.getEndPoint(), inputJson, auditLogCheck,
-								COOKIENAME, testCaseDTO.getRole(), testCaseDTO.getTestCaseName(), sendEsignetToken);
-
-					}
-					if (testCaseName.contains("ESignet_SendBindingOtp")) {
-						response = postRequestWithCookieAuthHeader(tempUrl + testCaseDTO.getEndPoint(), inputJson,
-								COOKIENAME, testCaseDTO.getRole(), testCaseDTO.getTestCaseName());
-					} else {
-						response = postRequestWithCookieAuthHeaderAndXsrfToken(tempUrl + testCaseDTO.getEndPoint(),
-								inputJson, COOKIENAME, testCaseDTO.getTestCaseName());
-
-					}
+				if (testCaseName.contains("ESignet_SendBindingOtp")) {
+					response = postRequestWithCookieAuthHeader(tempUrl + testCaseDTO.getEndPoint(), inputJson,
+							COOKIENAME, testCaseDTO.getRole(), testCaseDTO.getTestCaseName());
 				} else {
+					response = postRequestWithCookieAuthHeaderAndXsrfToken(tempUrl + testCaseDTO.getEndPoint(),
+							inputJson, COOKIENAME, testCaseDTO.getTestCaseName());
+
+				}
+			} else {
 					response = postWithBodyAndCookie(ApplnURI + testCaseDTO.getEndPoint(), inputJson, auditLogCheck,
 							COOKIENAME, testCaseDTO.getRole(), testCaseDTO.getTestCaseName(), sendEsignetToken);
 				}

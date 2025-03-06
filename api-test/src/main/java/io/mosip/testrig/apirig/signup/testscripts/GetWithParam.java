@@ -140,17 +140,6 @@ public class GetWithParam extends SignupUtil implements ITest {
 				if (testCaseDTO.getEndPoint().contains("/signup/"))
 					tempUrl = SignupConfigManager.getSignupBaseUrl();
 
-				if (testCaseDTO.getEndPoint().startsWith("$SUNBIRDBASEURL$") && testCaseName.contains("SunBirdR")) {
-
-					if (SignupConfigManager.isInServiceNotDeployedList("sunbirdrc"))
-						throw new SkipException(GlobalConstants.SERVICE_NOT_DEPLOYED_MESSAGE);
-
-					if (SignupConfigManager.getSunBirdBaseURL() != null
-							&& !SignupConfigManager.getSunBirdBaseURL().isBlank())
-						tempUrl = SignupConfigManager.getSunBirdBaseURL();
-					testCaseDTO.setEndPoint(testCaseDTO.getEndPoint().replace("$SUNBIRDBASEURL$", ""));
-				}
-
 				if (testCaseName.contains("_AuthToken_Xsrf_")) {
 					response = getRequestWithCookieAuthHeaderAndXsrfToken(tempUrl + testCaseDTO.getEndPoint(),
 							inputJson, COOKIENAME, testCaseDTO.getRole(), testCaseDTO.getTestCaseName());
