@@ -75,7 +75,7 @@ GetIdVerifierNegTC:
       inputTemplate: signup/GetIdVerifierNegTC/GetIdVerifierNegTC
       outputTemplate: signup/error
       input: '{
-      	"idvTransactionID": null,
+      	"idvTransactionID": "null",
       	"verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_id$"
 }'
       output: '{
@@ -129,4 +129,36 @@ GetIdVerifierNegTC:
       "errorMessage": "$IGNORE$"
     }
   ]
+}'
+
+   Signup_ESignet_GetIdVerifierNegTC_with_Missing_CSRF_Pos:
+      endPoint: /v1/signup/identity-verification/identity-verifier/{verifierId}
+      uniqueIdentifier: TC_ESignet_GetIdVerifierNegTC_07
+      description: To get the details of specific identity verifier with out CSRF token in the header
+      role: resident
+      restMethod: get
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/GetIdVerifierNegTC/GetIdVerifierNegTC
+      outputTemplate: signup/GetIdVerifierNegTC/GetIdentityVerificationStatusResultNegTC
+      input: '{
+      	"idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_idvTransactionID$",
+      	"verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_id$"
+}'
+      output: '{
+}'
+
+   Signup_ESignet_GetIdVerifierNegTC_with_Invalid_CSRF_Pos:
+      endPoint: /v1/signup/identity-verification/identity-verifier/{verifierId}
+      uniqueIdentifier: TC_ESignet_GetIdVerifierNegTC_08
+      description: To get the details of specific identity verifier with invalid CSRF token in the header
+      role: resident
+      restMethod: get
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/GetIdVerifierNegTC/GetIdVerifierNegTC
+      outputTemplate: signup/GetIdVerifierNegTC/GetIdentityVerificationStatusResultNegTC
+      input: '{
+      	"idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_idvTransactionID$",
+      	"verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_id$"
+}'
+      output: '{
 }'
