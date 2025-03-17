@@ -30,6 +30,7 @@ import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 
+import io.mosip.testrig.apirig.dbaccess.DBManager;
 import io.mosip.testrig.apirig.dto.TestCaseDTO;
 import io.mosip.testrig.apirig.signup.testrunner.MosipTestRunner;
 import io.mosip.testrig.apirig.testrunner.BaseTestCase;
@@ -58,6 +59,24 @@ public class SignupUtil extends AdminTestUtil {
 			logger.setLevel(Level.ALL);
 		else
 			logger.setLevel(Level.ERROR);
+	}
+	
+	public static void dBCleanUp() {
+		DBManager.executeDBQueries(SignupConfigManager.getKMDbUrl(), SignupConfigManager.getKMDbUser(),
+				SignupConfigManager.getKMDbPass(), SignupConfigManager.getKMDbSchema(),
+				getGlobalResourcePath() + "/" + "config/keyManagerCertDataDeleteQueries.txt");
+
+		DBManager.executeDBQueries(SignupConfigManager.getIdaDbUrl(), SignupConfigManager.getIdaDbUser(),
+				SignupConfigManager.getPMSDbPass(), SignupConfigManager.getIdaDbSchema(),
+				getGlobalResourcePath() + "/" + "config/idaCertDataDeleteQueries.txt");
+
+		DBManager.executeDBQueries(SignupConfigManager.getMASTERDbUrl(), SignupConfigManager.getMasterDbUser(),
+				SignupConfigManager.getMasterDbPass(), SignupConfigManager.getMasterDbSchema(),
+				getGlobalResourcePath() + "/" + "config/masterDataCertDataDeleteQueries.txt");
+
+		DBManager.executeDBQueries(SignupConfigManager.getPMSDbUrl(), SignupConfigManager.getPMSDbUser(),
+				SignupConfigManager.getPMSDbPass(), SignupConfigManager.getPMSDbSchema(),
+				getGlobalResourcePath() + "/" + "config/pmsDataDeleteQueries.txt");
 	}
 	
 	public static String getIdentityPluginNameFromEsignetActuator() {

@@ -88,6 +88,8 @@ public class MosipTestRunner {
 
 			if (SignupUtil.getIdentityPluginNameFromEsignetActuator().toLowerCase()
 					.contains("idaauthenticatorimpl") == true) {
+				SignupUtil.dBCleanUp();
+				
 				KeycloakUserManager.removeUser();
 				KeycloakUserManager.createUsers();
 				KeycloakUserManager.closeKeycloakInstance();
@@ -103,6 +105,7 @@ public class MosipTestRunner {
 				// Generating biometric details with mock MDS
 				BiometricDataProvider.generateBiometricTestData("Registration");
 				startTestRunner();
+				SignupUtil.dBCleanUp();
 			} else {
 				SignupUtil.getSupportedLanguage();
 				startTestRunner();
@@ -132,15 +135,6 @@ public class MosipTestRunner {
 		}
 		BaseTestCase.currentModule = GlobalConstants.SIGNUP;
 		BaseTestCase.certsForModule = GlobalConstants.SIGNUP;
-		DBManager.executeDBQueries(SignupConfigManager.getKMDbUrl(), SignupConfigManager.getKMDbUser(),
-				SignupConfigManager.getKMDbPass(), SignupConfigManager.getKMDbSchema(),
-				getGlobalResourcePath() + "/" + "config/keyManagerCertDataDeleteQueries.txt");
-		DBManager.executeDBQueries(SignupConfigManager.getIdaDbUrl(), SignupConfigManager.getIdaDbUser(),
-				SignupConfigManager.getPMSDbPass(), SignupConfigManager.getIdaDbSchema(),
-				getGlobalResourcePath() + "/" + "config/idaCertDataDeleteQueries.txt");
-		DBManager.executeDBQueries(SignupConfigManager.getMASTERDbUrl(), SignupConfigManager.getMasterDbUser(),
-				SignupConfigManager.getMasterDbPass(), SignupConfigManager.getMasterDbSchema(),
-				getGlobalResourcePath() + "/" + "config/masterDataCertDataDeleteQueries.txt");
 		AdminTestUtil.initiateSignupTest();
 		BaseTestCase.otpListener = new OTPListener();
 		BaseTestCase.otpListener.run();
