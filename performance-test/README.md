@@ -77,7 +77,7 @@
 	*lib/ext
 
 * Please refer to following link to download JMeter jars.
-	https://mosip.atlassian.net/wiki/spaces/PT/pages/1227751491/Steps+to+set+up+the+local+system#PluginManager
+	https://www.blazemeter.com/blog/jmeter-plugins-manager
 	
 * Please make sure the postgres JDBC jar file in lib/ folder of JMeter
 	* postgresql-42.7.5.jar
