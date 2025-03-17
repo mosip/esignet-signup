@@ -74,6 +74,11 @@
             <stringProp name="Argument.value">postgres</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
+          <elementProp name="dbPassword" elementType="Argument">
+            <stringProp name="Argument.name">dbPassword</stringProp>
+            <stringProp name="Argument.value">797mKZO1Bo</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
         </collectionProp>
       </Arguments>
       <hashTree/>
@@ -85,7 +90,7 @@
         <stringProp name="dbUrl">jdbc:postgresql://${dbHost}:${dbPort}/mosip_credential</stringProp>
         <stringProp name="driver">org.postgresql.Driver</stringProp>
         <boolProp name="keepAlive">true</boolProp>
-        <stringProp name="password">797mKZO1Bo</stringProp>
+        <stringProp name="password">${dbPassword}</stringProp>
         <stringProp name="poolMax">5</stringProp>
         <stringProp name="timeout">10000</stringProp>
         <stringProp name="transactionIsolation">TRANSACTION_READ_COMMITTED</stringProp>
@@ -104,7 +109,7 @@
         <stringProp name="dbUrl">jdbc:postgresql://${dbHost}:${dbPort}/mosip_idrepo</stringProp>
         <stringProp name="driver">org.postgresql.Driver</stringProp>
         <boolProp name="keepAlive">true</boolProp>
-        <stringProp name="password">797mKZO1Bo</stringProp>
+        <stringProp name="password">${dbPassword}</stringProp>
         <stringProp name="poolMax">5</stringProp>
         <stringProp name="timeout">10000</stringProp>
         <stringProp name="transactionIsolation">TRANSACTION_READ_COMMITTED</stringProp>

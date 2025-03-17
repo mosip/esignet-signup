@@ -13,7 +13,7 @@
 ### How to run performance scripts using Apache JMeter tool
 * Download Apache JMeter from https://jmeter.apache.org/download_jmeter.cgi
 * Download scripts for the required module.
-* Start JMeter by running the jmeter.bat file for Windows or jmeter file for Unix. 
+* Start JMeter by running the jmeter.bat file for Windows or jmeter.sh file for Unix. 
 * Validate the scripts for one user.
 * Execute a dry run for 10 min.
 * Execute performance run with various loads in order to achieve targeted NFR's.
