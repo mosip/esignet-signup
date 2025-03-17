@@ -84,8 +84,9 @@
 	
 ### Schema update for the Password authentication.
 
-* We have created new schema with version 0.4 in cellbox1 environment to support user registration with password where default schema does not password authentication.
-
+* We have created new schema with version 0.4 in cellbox1 environment to support user registration with password where default schema does not password authentication. The identity schema is provided under the path 
+	*performance-test/support-files/identity_schema.txt
+	
 ### Execution points for eSignet Sign Up Services API's
 
 *signup_test_script.jmx
