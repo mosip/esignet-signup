@@ -20,6 +20,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.testng.SkipException;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;
 import com.nimbusds.jose.JWSSigner;
@@ -28,6 +30,7 @@ import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 
+import io.mosip.testrig.apirig.dbaccess.DBManager;
 import io.mosip.testrig.apirig.dto.TestCaseDTO;
 import io.mosip.testrig.apirig.signup.testrunner.MosipTestRunner;
 import io.mosip.testrig.apirig.testrunner.BaseTestCase;
@@ -56,6 +59,24 @@ public class SignupUtil extends AdminTestUtil {
 			logger.setLevel(Level.ALL);
 		else
 			logger.setLevel(Level.ERROR);
+	}
+	
+	public static void dBCleanUp() {
+		DBManager.executeDBQueries(SignupConfigManager.getKMDbUrl(), SignupConfigManager.getKMDbUser(),
+				SignupConfigManager.getKMDbPass(), SignupConfigManager.getKMDbSchema(),
+				getGlobalResourcePath() + "/" + "config/keyManagerCertDataDeleteQueries.txt");
+
+		DBManager.executeDBQueries(SignupConfigManager.getIdaDbUrl(), SignupConfigManager.getIdaDbUser(),
+				SignupConfigManager.getPMSDbPass(), SignupConfigManager.getIdaDbSchema(),
+				getGlobalResourcePath() + "/" + "config/idaCertDataDeleteQueries.txt");
+
+		DBManager.executeDBQueries(SignupConfigManager.getMASTERDbUrl(), SignupConfigManager.getMasterDbUser(),
+				SignupConfigManager.getMasterDbPass(), SignupConfigManager.getMasterDbSchema(),
+				getGlobalResourcePath() + "/" + "config/masterDataCertDataDeleteQueries.txt");
+
+		DBManager.executeDBQueries(SignupConfigManager.getPMSDbUrl(), SignupConfigManager.getPMSDbUser(),
+				SignupConfigManager.getPMSDbPass(), SignupConfigManager.getPMSDbSchema(),
+				getGlobalResourcePath() + "/" + "config/pmsDataDeleteQueries.txt");
 	}
 	
 	public static String getIdentityPluginNameFromEsignetActuator() {
@@ -1143,6 +1164,188 @@ public class SignupUtil extends AdminTestUtil {
 	        }
 	    }
 	    return defaultValue;
+	}
+	
+	protected Response postRequestWithCookieAuthHeadersAndXsrfTokenForAutoGenId(String url, String jsonInput,
+			String cookieName, String testCaseName, String idKeyName) {
+		Response response = null;
+		HashMap<String, String> headers = new HashMap<>();
+		String inputJson = inputJsonKeyWordHandeler(jsonInput, testCaseName);
+		JSONObject request = new JSONObject(inputJson);
+		String encodedResp = null;
+		String transactionId = null;
+		String headerTransactionID = "";
+		String pathFragmentCookie = null;
+		String pathFragmentCookieTransactionId = null;
+		Map<String, String> cookiesMap = new HashMap<>();
+		
+		if (request.has(GlobalConstants.ENCODEDHASH)) {
+			encodedResp = request.get(GlobalConstants.ENCODEDHASH).toString();
+			request.remove(GlobalConstants.ENCODEDHASH);
+		}
+		if (request.has(GlobalConstants.REQUEST) && request.get(GlobalConstants.REQUEST) instanceof JSONObject
+				&& request.getJSONObject(GlobalConstants.REQUEST).has(GlobalConstants.TRANSACTIONID)) {
+			transactionId = request.getJSONObject(GlobalConstants.REQUEST).get(GlobalConstants.TRANSACTIONID)
+					.toString();
+
+		}
+		headers.put(XSRF_HEADERNAME, properties.getProperty(GlobalConstants.XSRFTOKEN));
+		headers.put(OAUTH_HASH_HEADERNAME, encodedResp);
+		headers.put(OAUTH_TRANSID_HEADERNAME, transactionId);
+		
+		if (request.has(GlobalConstants.PATH_FRAGMENT_COOKIE_TRANSACTIONID) && request.has(GlobalConstants.PATH_FRAGMENT_COOKIE)) {
+			pathFragmentCookieTransactionId = request.get(GlobalConstants.PATH_FRAGMENT_COOKIE_TRANSACTIONID).toString();
+			pathFragmentCookie = request.get(GlobalConstants.PATH_FRAGMENT_COOKIE).toString();
+			request.remove(GlobalConstants.PATH_FRAGMENT_COOKIE_TRANSACTIONID);
+			request.remove(GlobalConstants.PATH_FRAGMENT_COOKIE);
+		}
+		
+		inputJson = request.toString();
+		if (BaseTestCase.currentModule.equals(GlobalConstants.MIMOTO) || BaseTestCase.currentModule.equals("auth")
+				|| BaseTestCase.currentModule.equals(GlobalConstants.ESIGNET)
+				|| BaseTestCase.currentModule.equals(GlobalConstants.RESIDENT)) {
+			inputJson = smtpOtpHandler(inputJson, testCaseName);
+		}
+
+		token = properties.getProperty(GlobalConstants.XSRFTOKEN);
+		
+		if (request.has(GlobalConstants.IDV_TRANSACTION_ID)) {
+			headerTransactionID = request.get(GlobalConstants.IDV_TRANSACTION_ID).toString();
+			headers.put(GlobalConstants.IDV_TRANSACTION_ID_KEY, headerTransactionID);
+			cookiesMap.put(GlobalConstants.IDV_TRANSACTION_ID_KEY, headerTransactionID);
+			cookiesMap.put(GlobalConstants.XSRF_TOKEN, token);
+			request.remove(GlobalConstants.IDV_TRANSACTION_ID);
+		}
+		
+		if (testCaseName.contains("_Missing_CSRF_")) {
+			headers.remove(XSRF_HEADERNAME);
+		}
+		if (testCaseName.contains("_Invalid_CSRF_")) {
+			headers.put(XSRF_HEADERNAME, GlobalConstants.INVALID_STRING);
+		}
+		
+		logger.info(GlobalConstants.POST_REQ_URL + url);
+		GlobalMethods.reportRequest(headers.toString(), inputJson, url);
+		try {
+			if (pathFragmentCookie!=null) {
+				response = RestClient.postRequestWithMultipleHeadersAndMultipleCookies(url, inputJson, MediaType.APPLICATION_JSON,
+						MediaType.APPLICATION_JSON, pathFragmentCookieTransactionId, pathFragmentCookie, headers);
+			} else if (cookiesMap.containsKey(GlobalConstants.IDV_TRANSACTION_ID_KEY)) {
+				response = RestClient.postRequestWithMultipleHeadersAndCookies(url, inputJson,
+						MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON, cookiesMap, headers);
+			} else {
+				response = RestClient.postRequestWithMultipleHeadersAndCookies(url, inputJson, MediaType.APPLICATION_JSON,
+						MediaType.APPLICATION_JSON, cookieName, token, headers);
+			}
+			GlobalMethods.reportResponse(response.getHeaders().asList().toString(), url, response);
+			if (testCaseName.toLowerCase().contains("_sid")) {
+				writeAutoGeneratedId(response, idKeyName, testCaseName);
+			}
+			if (testCaseName.contains("_STransId")) {
+				getvalueFromResponseHeader(response, testCaseName);
+			}
+			return response;
+		} catch (Exception e) {
+			logger.error(GlobalConstants.EXCEPTION_STRING_2 + e);
+			return response;
+		}
+	}
+	
+	protected Response getWithPathParamAndCookies(String url, String jsonInput, String cookieName, String role,
+			String testCaseName) {
+		return getWithPathParamAndCookies(url, jsonInput, false, cookieName, role, testCaseName, false);
+	}
+	
+	protected Response getWithPathParamAndCookies(String url, String jsonInput, boolean auditLogCheck, String cookieName,
+			String role, String testCaseName, boolean bothAccessAndIdToken) {
+		Response response = null;
+		jsonInput = inputJsonKeyWordHandeler(jsonInput, testCaseName);
+		HashMap<String, String> map = null;
+		String headerTransactionID = "";
+		Map<String, String> cookiesMap = new HashMap<>();
+		try {
+			map = new Gson().fromJson(jsonInput, new TypeToken<HashMap<String, String>>() {
+			}.getType());
+		} catch (Exception e) {
+			logger.error(
+					GlobalConstants.ERROR_STRING_1 + jsonInput + GlobalConstants.EXCEPTION_STRING_1 + e.getMessage());
+		}
+
+		if (map != null && map.containsKey(GlobalConstants.HEADERTRANSACTIONID)) {
+			headerTransactionID = map.get(GlobalConstants.HEADERTRANSACTIONID).toString();
+			cookiesMap.put(GlobalConstants.TRANSACTION_ID_KEY, headerTransactionID);
+			cookiesMap.put(GlobalConstants.XSRF_TOKEN, token);
+			map.remove(GlobalConstants.HEADERTRANSACTIONID);
+		}
+
+		if (map != null && map.containsKey(GlobalConstants.VERIFIEDTRANSACTIONID)) {
+			headerTransactionID = map.get(GlobalConstants.VERIFIEDTRANSACTIONID).toString();
+			cookiesMap.put(GlobalConstants.VERIFIED_TRANSACTION_ID_KEY, headerTransactionID);
+			cookiesMap.put(GlobalConstants.XSRF_TOKEN, token);
+			map.remove(GlobalConstants.VERIFIEDTRANSACTIONID);
+		}
+		
+		if (map != null && map.containsKey(GlobalConstants.IDV_TRANSACTION_ID)) {
+			headerTransactionID = map.get(GlobalConstants.IDV_TRANSACTION_ID).toString();
+			cookiesMap.put(GlobalConstants.IDV_TRANSACTION_ID_KEY, headerTransactionID);
+			cookiesMap.put(GlobalConstants.XSRF_TOKEN, token);
+			map.remove(GlobalConstants.IDV_TRANSACTION_ID);
+		}
+
+		if (testCaseName.contains("NOAUTH")) {
+			token = "";
+		} else {
+			token = kernelAuthLib.getTokenByRole(role);
+		}
+		
+		if (testCaseName.contains("_Missing_CSRF_")) {
+			cookiesMap.remove(GlobalConstants.XSRF_TOKEN);
+		}
+		if (testCaseName.contains("_Invalid_CSRF_")) {
+			cookiesMap.put(GlobalConstants.XSRF_TOKEN, GlobalConstants.INVALID_STRING);
+		}
+		
+		logger.info(GlobalConstants.GET_REQ_STRING + url);
+		GlobalMethods.reportRequest(null, jsonInput, url);
+		try {
+			if (url.contains("{") || url.contains("?")) {
+				if (cookiesMap.containsKey(GlobalConstants.IDV_TRANSACTION_ID_KEY)) {
+					response = RestClient.getRequestWithMultipleCookieAndPathParam(url, map, MediaType.APPLICATION_JSON,
+							MediaType.APPLICATION_JSON, cookiesMap);
+				} else {
+					response = RestClient.getRequestWithCookieAndPathParm(url, map, MediaType.APPLICATION_JSON,
+							MediaType.APPLICATION_JSON, cookieName, token);
+				}
+
+			} else if (testCaseName.contains("_IdpAccessToken_")) {
+				JSONObject request = new JSONObject(jsonInput);
+				if (request.has(GlobalConstants.IDP_ACCESS_TOKEN)) {
+					token = request.get(GlobalConstants.IDP_ACCESS_TOKEN).toString();
+					request.remove(GlobalConstants.IDP_ACCESS_TOKEN);
+				}
+				response = RestClient.getRequestWithBearerToken(url, MediaType.APPLICATION_JSON,
+						MediaType.APPLICATION_JSON, cookieName, token);
+			} else if (cookiesMap.containsKey(GlobalConstants.TRANSACTION_ID_KEY)
+					|| cookiesMap.containsKey(GlobalConstants.VERIFIED_TRANSACTION_ID_KEY)) {
+				response = RestClient.getRequestWithMultipleCookie(url, MediaType.APPLICATION_JSON,
+						MediaType.APPLICATION_JSON, cookiesMap);
+			} else {
+					response = RestClient.getRequestWithCookie(url, MediaType.APPLICATION_JSON,
+							MediaType.APPLICATION_JSON, cookieName, token);
+
+				if (auditLogCheck) {
+					JSONObject jsonObject = new JSONObject(jsonInput);
+					String timeStamp1 = jsonObject.getString(GlobalConstants.REQUESTTIME);
+					String dbChecker = GlobalConstants.TEST_FULLNAME + BaseTestCase.getLanguageList().get(0);
+					checkDbAndValidate(timeStamp1, dbChecker);
+				}
+			}
+			GlobalMethods.reportResponse(response.getHeaders().asList().toString(), url, response);
+
+		} catch (Exception e) {
+			logger.error(GlobalConstants.EXCEPTION_STRING_2 + e);
+		}
+		return response;
 	}
 	
 }

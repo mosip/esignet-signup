@@ -179,7 +179,7 @@ public class GetWithParam extends SignupUtil implements ITest {
 							currLoopCount++;
 						}
 					} else {
-						response = getWithPathParamAndCookie(tempUrl + testCaseDTO.getEndPoint(), inputJson, COOKIENAME,
+						response = getWithPathParamAndCookies(tempUrl + testCaseDTO.getEndPoint(), inputJson, COOKIENAME,
 								testCaseDTO.getRole(), testCaseDTO.getTestCaseName());
 					}
 				}

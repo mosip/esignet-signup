@@ -148,7 +148,7 @@ public class SimplePostForAutoGenId extends SignupUtil implements ITest {
 
 				if ((testCaseName.contains("_AuthorizationCode_")) || (testCaseName.contains("_AuthToken_Xsrf_"))
 						|| (testCaseName.contains("_OAuthDetailsRequest"))) {
-					response = postRequestWithCookieAuthHeaderAndXsrfTokenForAutoGenId(
+					response = postRequestWithCookieAuthHeadersAndXsrfTokenForAutoGenId(
 							tempUrl + testCaseDTO.getEndPoint(), inputJson, COOKIENAME, testCaseDTO.getTestCaseName(),
 							idKeyName);
 				} else {
