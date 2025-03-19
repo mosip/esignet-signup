@@ -185,7 +185,6 @@ export const Otp = ({ methods, settings }: OtpProps) => {
               identifier: `${
                 settings.response.configs["identifier.prefix"]
               }${getValues("username")}`,
-              fullname: getValues("fullname"),
               captchaToken: getValues("captchaToken"),
               locale: getLocale(i18n.language, langCodeMapping),
               regenerateChallenge: true,
