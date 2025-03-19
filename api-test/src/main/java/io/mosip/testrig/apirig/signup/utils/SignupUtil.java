@@ -1228,6 +1228,7 @@ public class SignupUtil extends AdminTestUtil {
 		if (request.has(GlobalConstants.ENCODEDHASH)) {
 			encodedResp = request.get(GlobalConstants.ENCODEDHASH).toString();
 			request.remove(GlobalConstants.ENCODEDHASH);
+			inputJson = request.toString();
 		}
 		if (request.has(GlobalConstants.REQUEST) && request.get(GlobalConstants.REQUEST) instanceof JSONObject
 				&& request.getJSONObject(GlobalConstants.REQUEST).has(GlobalConstants.TRANSACTIONID)) {
@@ -1244,9 +1245,9 @@ public class SignupUtil extends AdminTestUtil {
 			pathFragmentCookie = request.get(GlobalConstants.PATH_FRAGMENT_COOKIE).toString();
 			request.remove(GlobalConstants.PATH_FRAGMENT_COOKIE_TRANSACTIONID);
 			request.remove(GlobalConstants.PATH_FRAGMENT_COOKIE);
+			inputJson = request.toString();
 		}
 		
-		inputJson = request.toString();
 		if (BaseTestCase.currentModule.equals(GlobalConstants.MIMOTO) || BaseTestCase.currentModule.equals("auth")
 				|| BaseTestCase.currentModule.equals(GlobalConstants.ESIGNET)
 				|| BaseTestCase.currentModule.equals(GlobalConstants.RESIDENT)) {
@@ -1261,6 +1262,7 @@ public class SignupUtil extends AdminTestUtil {
 			cookiesMap.put(GlobalConstants.IDV_TRANSACTION_ID_KEY, headerTransactionID);
 			cookiesMap.put(GlobalConstants.XSRF_TOKEN, token);
 			request.remove(GlobalConstants.IDV_TRANSACTION_ID);
+			inputJson = request.toString();
 		}
 		
 		if (testCaseName.contains("_Missing_CSRF_")) {
