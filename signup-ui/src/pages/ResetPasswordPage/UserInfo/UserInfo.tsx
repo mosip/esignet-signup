@@ -173,7 +173,6 @@ export const UserInfo = ({ settings, methods }: UserInfoProps) => {
             identifier: `${
               settings.response.configs["identifier.prefix"]
             }${getValues("username")}`,
-            fullname: getValues("fullname"),
             captchaToken: getValues("captchaToken"),
             locale: getLocale(i18n.language, langCodeMapping),
             regenerateChallenge: resendOtp ? true : false,
