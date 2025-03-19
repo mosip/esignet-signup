@@ -311,12 +311,21 @@ public class SignupUtil extends AdminTestUtil {
 			}
 
 			JSONArray individualBiometricsArray = new JSONArray(
-					getValueFromAuthActuator("json-property", "individualBiometrics"));
+					getValueFromAuthActuator(SignupConstants.JSON_PROPERTY_STRING, "individualBiometrics"));
 			String individualBiometrics = individualBiometricsArray.getString(0);
+			
+			JSONArray phoneArray = new JSONArray(
+					getValueFromAuthActuator(SignupConstants.JSON_PROPERTY_STRING, SignupConstants.PHONE_STRING));
+			String phoneFieldValue = phoneArray.getString(0);
 
 			if ((testCaseName.contains("_KycBioAuth_") || testCaseName.contains("_BioAuth_")
 					|| testCaseName.contains("_SendBindingOtp_uin_Email_Valid_Smoke"))
 					&& (!isElementPresent(globalRequiredFields, individualBiometrics))) {
+				throw new SkipException(GlobalConstants.FEATURE_NOT_SUPPORTED_MESSAGE);
+			}
+			
+			if ((testCaseName.contains("_RegisterUserNegTC_WITHout_phone"))
+					&& (!isElementPresent(globalRequiredFields, phoneFieldValue))) {
 				throw new SkipException(GlobalConstants.FEATURE_NOT_SUPPORTED_MESSAGE);
 			}
 
@@ -824,6 +833,13 @@ public class SignupUtil extends AdminTestUtil {
 		if (testCaseName.contains("_Only_1st_Lang_On_Name_Field_Neg") && languageList.size() > 1) {
 			String firstLang = signupSupportedLanguage.getFirst();
 			languageList = new ArrayList<>();
+			
+			if (SignupUtil.getIdentityPluginNameFromEsignetActuator().toLowerCase()
+					.contains("idaauthenticatorimpl") == true) {
+				firstLang = getValueFromSignupActuator(SignupConstants.CLASS_PATH_APPLICATION_PROPERTIES,
+						SignupConstants.MOSIP_SIGNUP_IDREPO_MANDATORY_LANGUAGE);
+			}
+			
 			languageList.add(firstLang);
 		}
 
@@ -876,12 +892,42 @@ public class SignupUtil extends AdminTestUtil {
 			}
 
 		}
+		
+		doRegexValidationForFullName(fullNamePattern, fullNameArray, testCaseName);
 		if (testCaseName.contains("_SName_Valid")) {
 			CertsUtil.addCertificateToCache(testCaseName + "_$REGISTEREDUSERFULLNAME$", fullNameArray.toString());
 		}
 		inputJson = replaceKeywordValue(inputJson, "$FULLNAMETOREGISTERUSER$", fullNameArray.toString());
 
 		return inputJson;
+	}
+	
+	public static void doRegexValidationForFullName(String fullNamePattern, JSONArray fullNameArray,
+			String testCaseName) {
+
+		if (testCaseName.contains("_AlphaNum_Value_On_Name_Field_Neg")
+				|| testCaseName.contains("_Exceeding_Limit_Value_On_Name_Field_Neg")
+				|| testCaseName.contains("_Only_Num_Value_On_Name_Field_Neg")
+				|| testCaseName.contains("_Only_SpecialChar_On_Name_Field_Neg")) {
+
+			if (fullNameArray.length() > 0) {
+				// Ensure the first element is a JSONObject before accessing it
+				Object firstElement = fullNameArray.get(0);
+
+				if (firstElement instanceof JSONObject) {
+					JSONObject jsonObject = (JSONObject) firstElement;
+
+					// Check if "value" key exists
+					if (jsonObject.has("value")) {
+						String value = jsonObject.getString("value");
+						if (value != null && value.isBlank() == false && value.matches(fullNamePattern)) {
+							throw new SkipException(GlobalConstants.FEATURE_NOT_SUPPORTED_MESSAGE);
+						}
+					}
+				}
+			}
+		}
+
 	}
 	
     public static JSONObject signUpSchemaIdentityJson = null;

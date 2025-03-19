@@ -64,5 +64,9 @@ public class SignupConstants {
 	public static final String MOSIP_SIGNUP_IDENTIFIER_REGEX_STRING = "mosip.signup.identifier.regex";
 	
 	public static final String MOSIP_SIGNUP_PASSWORD_PATTERN_STRING =  "mosip.signup.password.pattern";
+	
+	public static final String MOSIP_SIGNUP_IDREPO_MANDATORY_LANGUAGE = "mosip.signup.idrepo.mandatory-language";
+	
+	public static final String JSON_PROPERTY_STRING = "json-property";
 
 }
