@@ -186,7 +186,6 @@ type RegistrationChallengeGenerationRequest = BaseChallengeGenerationRequest & {
 
 type ResetPasswordChallengeGenerationRequest =
   BaseChallengeGenerationRequest & {
-    fullname: string;
     purpose: "RESET_PASSWORD";
   };
 
