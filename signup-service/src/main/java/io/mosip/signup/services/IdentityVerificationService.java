@@ -314,6 +314,7 @@ public class IdentityVerificationService {
                     .subject(oauthClientId)
                     .issuer(oauthClientId)
                     .audience(audience)
+                    .jwtID(IdentityProviderUtil.createTransactionId(null))
                     .issueTime(new Date(issuedTime))
                     .expirationTime(new Date(issuedTime+(60*1000)));
             JWSHeader jwsHeader = new JWSHeader(JWSAlgorithm.RS256);
