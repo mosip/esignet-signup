@@ -110,7 +110,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{esignet_url}}/v1/esignet/client-mgmt/oidc-client",
+							"raw": "{{esignet_url}}/v1/esignet/client-mgmt/client",
 							"host": [
 								"{{esignet_url}}"
 							],
@@ -118,7 +118,7 @@
 								"v1",
 								"esignet",
 								"client-mgmt",
-								"oidc-client"
+								"client"
 							]
 						}
 					},
