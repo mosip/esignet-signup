@@ -58,8 +58,8 @@ export const AccountRegistrationStatus = () => {
   ) {
     return (
       <AccountRegistrationStatusLayout
-        status="failed"
-        message={t("error_response.request_limit")}
+        status="warning"
+        message={t("error_response.signup_request_delay")}
       />
     );
   }

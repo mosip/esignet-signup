@@ -58,8 +58,8 @@ export const ResetPasswordConfirmation = () => {
   ) {
     return (
       <ResetPasswordConfirmationLayout
-        status="failed"
-        message={t("error_response.reset_pwd_request_limit")}
+        status="warning"
+        message={t("error_response.reset_pwd_request_delay")}
       />
     );
   }
