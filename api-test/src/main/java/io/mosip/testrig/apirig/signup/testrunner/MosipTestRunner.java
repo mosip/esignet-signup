@@ -106,6 +106,8 @@ public class MosipTestRunner {
 				BiometricDataProvider.generateBiometricTestData("Registration");
 				startTestRunner();
 				SignupUtil.dBCleanUp();
+				KeycloakUserManager.removeUser();
+				KeycloakUserManager.closeKeycloakInstance();
 			} else {
 				SignupUtil.getSupportedLanguage();
 				startTestRunner();
