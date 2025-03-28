@@ -527,7 +527,7 @@ public class SignupUtil extends AdminTestUtil {
 			Date expirationTime = calendar.getTime();
 
 			JWTClaimsSet claimsSet = new JWTClaimsSet.Builder().subject(clientId).audience(tempUrl).issuer(clientId)
-					.issueTime(currentTime).expirationTime(expirationTime).build();
+					.issueTime(currentTime).expirationTime(expirationTime).jwtID(clientId).build();
 
 			logger.info("JWT current and expiry time " + currentTime + " & " + expirationTime);
 
