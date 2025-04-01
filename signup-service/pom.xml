@@ -45,9 +45,9 @@
 		<esignet.version>1.6.0-RC</esignet.version>
 
 		<signup-plugins.location>target/signup-plugins</signup-plugins.location>
-		<signup-mock-plugin.version>1.3.0-beta.1</signup-mock-plugin.version>
+		<signup-mock-plugin.version>1.3.0</signup-mock-plugin.version>
 		<signup-mock-plugin.fileName>esignet-mock-plugin.jar</signup-mock-plugin.fileName>
-		<mosip-identity-plugin.version>1.3.0-beta.1</mosip-identity-plugin.version>
+		<mosip-identity-plugin.version>1.3.0</mosip-identity-plugin.version>
 		<mosip-identity-plugin.fileName>mosip-identity-plugin.jar</mosip-identity-plugin.fileName>
 		<kernel-auth-adapter-lite.version>1.2.0.1-B4</kernel-auth-adapter-lite.version>
 		<kernel-auth-adapter-lite.fileName>kernel-auth-adapter-lite.jar</kernel-auth-adapter-lite.fileName>
