@@ -5,33 +5,30 @@
  */
 package io.mosip.signup;
 
+import brave.Tracer;
 import io.mosip.esignet.core.config.*;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.ComponentScans;
-import org.springframework.context.annotation.FilterType;
-import org.springframework.context.annotation.Import;
+import org.springframework.cloud.sleuth.autoconfig.TraceAutoConfiguration;
+import org.springframework.context.annotation.*;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @EnableScheduling
 @EnableCaching
 @EnableAsync
-@SpringBootApplication
-@ComponentScans({
-        @ComponentScan(basePackages = "io.mosip.signup.*"),
-        @ComponentScan(basePackages = "io.mosip.kernel.auth.defaultadapter"),
-        @ComponentScan(basePackages = "${mosip.signup.integration.impl.basepackage}"),
-        @ComponentScan(basePackages = "io.mosip.esignet.core.config", includeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = SleuthValve.class))
-})
-/*@SpringBootApplication(scanBasePackages = "io.mosip.signup.*," +
+@SpringBootApplication(scanBasePackages = "io.mosip.signup.*," +
         "io.mosip.kernel.auth.defaultadapter," +
-        "io.mosip.esignet.core.config.SleuthValve," +
-        "${mosip.signup.integration.impl.basepackage}", )*/
-@Import({SharedComponentConfig.class, RedisCacheConfig.class, SimpleCacheConfig.class, AccessLogSleuthConfiguration.class})
+        "${mosip.signup.integration.impl.basepackage}")
+@Import({SharedComponentConfig.class, RedisCacheConfig.class, SimpleCacheConfig.class,
+        AccessLogSleuthConfiguration.class, TraceAutoConfiguration.class})
 public class SignUpServiceApplication {
+
+    @Bean
+    public SleuthValve sleuthValve(Tracer tracer) {
+        return new SleuthValve(tracer);
+    }
 
     public static void main(String[] args) {
         SpringApplication.run(SignUpServiceApplication.class, args);
