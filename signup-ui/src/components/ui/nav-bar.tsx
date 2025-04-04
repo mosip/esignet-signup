@@ -10,6 +10,10 @@ import {
 } from "~pages/EkycVerificationPage/useEkycVerificationStore";
 import { useSettings } from "~pages/shared/queries";
 
+const POLLING_BASE_URL =
+  process.env.NODE_ENV === "development"
+    ? process.env.REACT_APP_API_BASE_URL
+    : window.origin + "/v1/signup";
 
 const NavBar = () => {
   const { errorBannerMessage } = useEkycVerificationStore(
@@ -44,11 +48,13 @@ const NavBar = () => {
 
   const { data: settings, isLoading } = useSettings();
 
+  const pollingUrl = POLLING_BASE_URL + "/actuator/health";
+
   const pollingConfig: PollingConfig = {
     timeout: settings?.response?.configs?.["offline.polling.timeout"] ?? 5000,
-    interval: settings?.response?.configs?.["offline.polling.interval"] ?? 5000,
+    interval: settings?.response?.configs?.["offline.polling.interval"] ?? 10000,
     enabled: settings?.response?.configs?.["offline.polling.enabled"] ?? true,
-    url: settings?.response?.configs?.["offline.polling.url"] ?? "https://ipv4.icanhazip.com/"
+    url: settings?.response?.configs?.["offline.polling.url"] ?? pollingUrl
   };
 
   let onlineTimeout: ReturnType<typeof setTimeout>;
