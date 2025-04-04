@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Detector } from "react-detect-offline";
+import { Detector, PollingConfig } from "react-detect-offline";
 import { useTranslation } from "react-i18next";
 
 import { Button } from "~components/ui/button";
@@ -30,6 +30,11 @@ import {
 } from "../useEkycVerificationStore";
 import { KycProviderCardLayout } from "./components/KycProviderCardLayout";
 
+const POLLING_BASE_URL =
+  process.env.NODE_ENV === "development"
+    ? process.env.REACT_APP_API_BASE_URL
+    : window.origin + "/v1/signup";
+
 export const KycProviderList = ({
   cancelPopup,
   settings,
@@ -39,6 +44,14 @@ export const KycProviderList = ({
   });
 
   const { state } = useL2Hash();
+  const pollingUrl = POLLING_BASE_URL + "/actuator/health";
+
+   const pollingConfig: PollingConfig = {
+        timeout: settings?.configs?.["offline.polling.timeout"] ?? 5000,
+        interval: settings?.configs?.["offline.polling.interval"] ?? 10000,
+        enabled: settings?.configs?.["offline.polling.enabled"] ?? true,
+        url: settings?.configs?.["offline.polling.url"] ?? pollingUrl
+      };
 
   const { setStep, setKycProvider, kycProvider, providerListStore } =
     useEkycVerificationStore(
@@ -233,6 +246,7 @@ export const KycProviderList = ({
                   {t("cancel_button")}
                 </Button>
                 <Detector
+                  polling={pollingConfig}
                   render={({ online }) => (
                     <Button
                       id="proceed-preview-button"
