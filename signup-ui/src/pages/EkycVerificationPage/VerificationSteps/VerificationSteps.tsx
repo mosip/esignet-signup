@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import Stepper from "@keyvaluesystems/react-stepper";
-import { Detector } from "react-detect-offline";
+import { Detector, PollingConfig } from "react-detect-offline";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
@@ -26,6 +26,11 @@ import {
 } from "../useEkycVerificationStore";
 import { checkBrowserCompatible } from "./utils/checkBrowserCompatible";
 
+const POLLING_BASE_URL =
+  process.env.NODE_ENV === "development"
+    ? process.env.REACT_APP_API_BASE_URL
+    : window.origin + "/v1/signup";
+
 export const VerificationSteps = ({
   cancelPopup,
   settings,
@@ -49,6 +54,14 @@ export const VerificationSteps = ({
   const navigate = useNavigate();
   const base64Regex =
     /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/;
+
+  const pollingUrl = POLLING_BASE_URL + "/actuator/health";
+  const pollingConfig: PollingConfig = {
+      timeout: settings?.configs?.["offline.polling.timeout"] ?? 5000,
+      interval: settings?.configs?.["offline.polling.interval"] ?? 10000,
+      enabled: settings?.configs?.["offline.polling.enabled"] ?? true,
+      url: settings?.configs?.["offline.polling.url"] ?? pollingUrl
+    };
 
   const hashCode = window.location.hash.substring(1);
   var decodedBase64;
@@ -163,6 +176,7 @@ export const VerificationSteps = ({
                     {t("cancel")}
                   </Button>
                   <Detector
+                    polling={pollingConfig}
                     render={({ online }) => (
                       <Button
                         className="px-[6rem] font-semibold sm:w-full sm:p-4"

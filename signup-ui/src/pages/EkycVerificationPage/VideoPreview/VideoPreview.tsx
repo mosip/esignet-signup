@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Detector } from "react-detect-offline";
+import { Detector, PollingConfig } from "react-detect-offline";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
 import Webcam from "react-webcam";
@@ -24,6 +24,11 @@ import {
   useEkycVerificationStore,
 } from "../useEkycVerificationStore";
 
+const POLLING_BASE_URL =
+  process.env.NODE_ENV === "development"
+    ? process.env.REACT_APP_API_BASE_URL
+    : window.origin + "/v1/signup";
+
 export const VideoPreview = ({
   cancelPopup,
   settings,
@@ -32,6 +37,7 @@ export const VideoPreview = ({
     keyPrefix: "video_preview",
   });
   const webcamRef = useRef(null);
+  const pollingUrl = POLLING_BASE_URL + "/actuator/health";
 
   const { setStep, setCriticalError } = useEkycVerificationStore(
     useCallback(
@@ -42,6 +48,13 @@ export const VideoPreview = ({
       []
     )
   );
+
+  const pollingConfig: PollingConfig = {
+      timeout: settings?.configs?.["offline.polling.timeout"] ?? 5000,
+      interval: settings?.configs?.["offline.polling.interval"] ?? 10000,
+      enabled: settings?.configs?.["offline.polling.enabled"] ?? true,
+      url: settings?.configs?.["offline.polling.url"] ?? pollingUrl
+    };
 
   const [cancelButton, setCancelButton] = useState<boolean>(false);
   const [permissionGranted, setPermissionGranted] = useState(false);
@@ -113,7 +126,7 @@ export const VideoPreview = ({
   const cameraPermissionDenied = useCallback((error: any) => {
     setPermissionGranted(false);
 
-    // doing this type of setting the state 
+    // doing this type of setting the state
     // so that it not re render anything
     // it will only render when state is  actually changed
     setPermissionErrMsg((_) =>
@@ -218,6 +231,7 @@ export const VideoPreview = ({
                 {t("cancel_button")}
               </Button>
               <Detector
+                polling={pollingConfig}
                 render={({ online }) => (
                   <Button
                     id="proceed-preview-button"

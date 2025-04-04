@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import purify from "dompurify";
-import { Detector } from "react-detect-offline";
+import { Detector, PollingConfig } from "react-detect-offline";
 import { useTranslation } from "react-i18next";
 
 import { ActionMessage } from "~components/ui/action-message";
@@ -31,6 +31,11 @@ import {
   useEkycVerificationStore,
 } from "../useEkycVerificationStore";
 
+const POLLING_BASE_URL =
+  process.env.NODE_ENV === "development"
+    ? process.env.REACT_APP_API_BASE_URL
+    : window.origin + "/v1/signup";
+
 export const TermsAndCondition = ({
   cancelPopup,
   settings,
@@ -38,6 +43,14 @@ export const TermsAndCondition = ({
   const { i18n, t } = useTranslation("translation", {
     keyPrefix: "terms_and_conditions",
   });
+
+    const pollingUrl = POLLING_BASE_URL + "/actuator/health";
+    const pollingConfig: PollingConfig = {
+        timeout: settings?.configs?.["offline.polling.timeout"] ?? 5000,
+        interval: settings?.configs?.["offline.polling.interval"] ?? 10000,
+        enabled: settings?.configs?.["offline.polling.enabled"] ?? true,
+        url: settings?.configs?.["offline.polling.url"] ?? pollingUrl
+      };
 
   const { setStep, setCriticalError, kycProvider, setKycProviderDetail } =
     useEkycVerificationStore(
@@ -198,6 +211,7 @@ export const TermsAndCondition = ({
                   {t("cancel_button")}
                 </Button>
                 <Detector
+                  polling={pollingConfig}
                   render={({ online }) => (
                     <Button
                       id="proceed-tnc-button"
