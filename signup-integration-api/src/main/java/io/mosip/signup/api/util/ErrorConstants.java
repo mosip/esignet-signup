@@ -13,4 +13,5 @@ public class ErrorConstants {
     public static final String UNKNOWN_ERROR = "unknown_error";
     public static final String PLUGIN_NOT_FOUND = "plugin_not_found";
     public static final String IDENTITY_VERIFICATION_FAILED = "identity_verification_failed";
+    public static final String  UI_SPEC_NOT_FOUND="ui_spec_not_found";
 }

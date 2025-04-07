@@ -6,6 +6,7 @@
 package io.mosip.signup.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.esignet.core.util.CaptchaHelper;
 import io.mosip.esignet.core.util.IdentityProviderUtil;
@@ -285,6 +286,12 @@ public class RegistrationService {
         RegistrationStatusResponse registrationStatusResponse = new RegistrationStatusResponse();
         registrationStatusResponse.setStatus(transaction.getRegistrationStatus());
         return registrationStatusResponse;
+    }
+
+    public JsonNode getSchema() {
+        Map<String, Object> uiSpecification = profileRegistryPlugin.getUISpecification();
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper.valueToTree(uiSpecification);
     }
 
     private void fetchAndCheckIdentity(RegistrationTransaction registrationTransaction,
