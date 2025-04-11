@@ -30,6 +30,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -43,9 +44,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
 
 import static io.mosip.signup.util.ErrorConstants.INVALID_KBI_CHALLENGE;
 import static io.mosip.signup.util.ErrorConstants.KNOWLEDGEBASE_MISMATCH;
@@ -58,7 +57,6 @@ import javax.servlet.http.HttpServletResponse;
 import io.mosip.esignet.core.exception.EsignetException;
 
 import java.time.LocalDateTime;
-import java.util.Map;
 
 
 @RunWith(SpringRunner.class)
@@ -1857,4 +1855,20 @@ public class RegistrationServiceTest {
         Assert.assertNotNull(registrationStatusResponse);
         Assert.assertEquals(ProfileCreateUpdateStatus.PENDING, registrationStatusResponse.getStatus());
     }
+
+    @Test
+    public void getSchema_returnValidJsonNode_thenPass() {
+        Map<String, Object> uiSpec = new HashMap<>();
+        uiSpec.put("type", "object");
+        uiSpec.put("title", "Test Form");
+
+        Mockito.when(profileRegistryPlugin.getUISpecification()).thenReturn(uiSpec);
+
+        JsonNode result = registrationService.getSchema();
+
+        Assert.assertNotNull(result);
+        Assert.assertEquals("object", result.get("type").asText());
+        Assert.assertEquals("Test Form", result.get("title").asText());
+    }
+
 }

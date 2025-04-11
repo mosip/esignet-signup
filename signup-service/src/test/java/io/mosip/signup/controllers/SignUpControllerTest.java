@@ -5,12 +5,15 @@
  */
 package io.mosip.signup.controllers;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.kernel.auth.defaultadapter.config.SecurityConfig;
 import io.mosip.signup.helper.AuditHelper;
 import io.mosip.signup.services.RegistrationService;
+import io.mosip.signup.util.SignUpConstants;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -22,6 +25,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.client.RestTemplate;
+
+import javax.servlet.http.Cookie;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -67,6 +72,24 @@ public class SignUpControllerTest {
                 .andExpect(jsonPath("$['response']['configs']['status.request.delay']").value(20))
                 .andExpect(jsonPath("$['response']['configs']['status.request.limit']").value(10))
                 .andExpect(jsonPath("$['response']['configs']['signin.redirect-url']").value("https://esignet.dev.mosip.net/authorize"))
+                .andExpect(jsonPath("$.errors").isEmpty());
+    }
+
+    @Test
+    public void getUiSpec_thenReturnSchema() throws Exception {
+        String json = "{ \"type\": \"object\", \"properties\": { \"name\": { \"type\": \"string\" } } }";
+        JsonNode schema = objectMapper.readTree(json);
+
+        Mockito.when(registrationService.getSchema()).thenReturn(schema);
+
+        mockMvc.perform(get("/ui-spec")
+                        .cookie(new Cookie(SignUpConstants.IDV_SLOT_ALLOTTED, "txn12345"))
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(header().string("Content-Type", "application/json"))
+                .andExpect(jsonPath("$.responseTime").isNotEmpty())
+                .andExpect(jsonPath("$.response.type").value("object"))
+                .andExpect(jsonPath("$.response.properties.name.type").value("string"))
                 .andExpect(jsonPath("$.errors").isEmpty());
     }
 
