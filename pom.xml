@@ -14,7 +14,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.mosip.signup</groupId>
 	<artifactId>signup-parent</artifactId>
-	<version>1.1.2-SNAPSHOT</version>
+	<version>1.1.2-RC</version>
 	<packaging>pom</packaging>
 	<name>esignet-signup</name>
 	<description>Parent project of MOSIP e-Signet</description>
@@ -287,18 +287,6 @@
 					<doclint>none</doclint>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>org.sonatype.plugins</groupId>
-				<artifactId>nexus-staging-maven-plugin</artifactId>
-				<version>1.6.7</version>
-				<extensions>true</extensions>
-				<configuration>
-					<serverId>ossrh</serverId>
-					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
-					<autoReleaseAfterClose>false</autoReleaseAfterClose>
-				</configuration>
-			</plugin>
-
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
