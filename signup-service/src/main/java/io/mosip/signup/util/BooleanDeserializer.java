@@ -8,7 +8,7 @@ import io.mosip.kernel.core.util.StringUtils;
 
 import java.io.IOException;
 
-public class BooleanValidatorDeserializer extends JsonDeserializer<Boolean> {
+public class BooleanDeserializer extends JsonDeserializer<Boolean> {
 
     @Override
     public Boolean deserialize(JsonParser parser, DeserializationContext context) throws IOException {
