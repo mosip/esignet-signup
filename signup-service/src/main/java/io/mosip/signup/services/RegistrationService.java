@@ -289,9 +289,7 @@ public class RegistrationService {
     }
 
     public JsonNode getSchema() {
-        Map<String, Object> uiSpecification = profileRegistryPlugin.getUISpecification();
-        ObjectMapper objectMapper = new ObjectMapper();
-        return objectMapper.valueToTree(uiSpecification);
+        return profileRegistryPlugin.getUISpecification();
     }
 
     private void fetchAndCheckIdentity(RegistrationTransaction registrationTransaction,

@@ -1857,18 +1857,16 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    public void getSchema_returnValidJsonNode_thenPass() {
-        Map<String, Object> uiSpec = new HashMap<>();
-        uiSpec.put("type", "object");
-        uiSpec.put("title", "Test Form");
+    public void getSchema_returnValidJsonNode_thenPass() throws JsonProcessingException {
+        String json = "{ \"type\": \"object\", \"properties\": { \"name\": { \"type\": \"string\" } } }";
+        JsonNode schema = objectMapper.readTree(json);
 
-        Mockito.when(profileRegistryPlugin.getUISpecification()).thenReturn(uiSpec);
+        Mockito.when(profileRegistryPlugin.getUISpecification()).thenReturn(schema);
 
         JsonNode result = registrationService.getSchema();
 
         Assert.assertNotNull(result);
         Assert.assertEquals("object", result.get("type").asText());
-        Assert.assertEquals("Test Form", result.get("title").asText());
     }
 
 }

@@ -61,10 +61,10 @@ public interface ProfileRegistryPlugin {
 
     /**
      * Default method to get the UI specification for the registration screen.
-     * @return A map containing the UI specification details.
+     * @return A JsonNode containing the UI specification details.
      * If not implemented, it throws a custom exception to indicate that the UI specification was not found.
      */
-    default Map<String, Object> getUISpecification() {
+    default JsonNode getUISpecification() {
         throw new ProfileException(ErrorConstants.UI_SPEC_NOT_FOUND);
     }
 }
