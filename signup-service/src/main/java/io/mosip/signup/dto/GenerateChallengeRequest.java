@@ -5,6 +5,8 @@
  */
 package io.mosip.signup.dto;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import io.mosip.signup.util.BooleanDeserializer;
 import io.mosip.signup.util.Purpose;
 import io.mosip.signup.validator.Identifier;
 import io.mosip.signup.validator.Language;
@@ -18,6 +20,7 @@ public class GenerateChallengeRequest {
     private String captchaToken;
     @Language(required = false)
     private String locale;
+    @JsonDeserialize(using = BooleanDeserializer.class)
     private boolean regenerateChallenge;
 
     @io.mosip.signup.validator.Purpose
