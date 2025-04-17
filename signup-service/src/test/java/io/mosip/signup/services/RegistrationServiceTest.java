@@ -41,7 +41,9 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.time.ZoneOffset;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 import static io.mosip.signup.util.ErrorConstants.INVALID_KBI_CHALLENGE;
 import static io.mosip.signup.util.ErrorConstants.KNOWLEDGEBASE_MISMATCH;
@@ -54,6 +56,7 @@ import javax.servlet.http.HttpServletResponse;
 import io.mosip.esignet.core.exception.EsignetException;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 
 @RunWith(SpringRunner.class)
