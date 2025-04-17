@@ -994,7 +994,7 @@
 					}
 				],
 				"url": {
-					"raw": "{{url}}/v1/register/ui-spec",
+					"raw": "{{url}}/v1/registration/ui-spec",
 					"host": [
 						"{{url}}"
 					],
