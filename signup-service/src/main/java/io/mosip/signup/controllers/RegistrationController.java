@@ -138,12 +138,8 @@ public class RegistrationController {
             @Valid @NotBlank(message = ErrorConstants.INVALID_TRANSACTION)
             @CookieValue(value = SignUpConstants.VERIFIED_TRANSACTION_ID, defaultValue = EMTPY) String transactionId) {
         ResponseWrapper<JsonNode> responseWrapper = new ResponseWrapper<>();
-        try {
-            responseWrapper.setResponseTime(IdentityProviderUtil.getUTCDateTime());
-            responseWrapper.setResponse(registrationService.getSchema(transactionId));
-        }catch (SignUpException signUpException){
-            throw signUpException;
-        }
+        responseWrapper.setResponseTime(IdentityProviderUtil.getUTCDateTime());
+        responseWrapper.setResponse(registrationService.getSchema(transactionId));
         return responseWrapper;
     }
 
