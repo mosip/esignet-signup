@@ -1856,17 +1856,4 @@ public class RegistrationServiceTest {
         Assert.assertEquals(ProfileCreateUpdateStatus.PENDING, registrationStatusResponse.getStatus());
     }
 
-    @Test
-    public void getSchema_returnValidJsonNode_thenPass() throws JsonProcessingException {
-        String json = "{ \"type\": \"object\", \"properties\": { \"name\": { \"type\": \"string\" } } }";
-        JsonNode schema = objectMapper.readTree(json);
-
-        Mockito.when(profileRegistryPlugin.getUISpecification()).thenReturn(schema);
-
-        JsonNode result = registrationService.getSchema();
-
-        Assert.assertNotNull(result);
-        Assert.assertEquals("object", result.get("type").asText());
-    }
-
 }

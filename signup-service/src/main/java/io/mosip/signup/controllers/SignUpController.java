@@ -42,14 +42,4 @@ public class SignUpController {
         responseWrapper.setResponse(response);
         return responseWrapper;
     }
-
-    @GetMapping("/ui-spec")
-    public ResponseWrapper<JsonNode> getUiSpec(
-            @Valid @NotBlank(message = ErrorConstants.INVALID_TRANSACTION)
-            @CookieValue(value = SignUpConstants.IDV_SLOT_ALLOTTED, defaultValue = EMTPY) String transactionId) {
-        ResponseWrapper<JsonNode> responseWrapper = new ResponseWrapper<>();
-        responseWrapper.setResponseTime(IdentityProviderUtil.getUTCDateTime());
-        responseWrapper.setResponse(registrationService.getSchema());
-        return responseWrapper;
-    }
 }

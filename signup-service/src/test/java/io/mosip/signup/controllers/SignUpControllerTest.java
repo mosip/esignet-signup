@@ -75,22 +75,4 @@ public class SignUpControllerTest {
                 .andExpect(jsonPath("$.errors").isEmpty());
     }
 
-    @Test
-    public void getUiSpec_thenReturnSchema() throws Exception {
-        String json = "{ \"type\": \"object\", \"properties\": { \"name\": { \"type\": \"string\" } } }";
-        JsonNode schema = objectMapper.readTree(json);
-
-        Mockito.when(registrationService.getSchema()).thenReturn(schema);
-
-        mockMvc.perform(get("/ui-spec")
-                        .cookie(new Cookie(SignUpConstants.IDV_SLOT_ALLOTTED, "txn12345"))
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(header().string("Content-Type", "application/json"))
-                .andExpect(jsonPath("$.responseTime").isNotEmpty())
-                .andExpect(jsonPath("$.response.type").value("object"))
-                .andExpect(jsonPath("$.response.properties.name.type").value("string"))
-                .andExpect(jsonPath("$.errors").isEmpty());
-    }
-
 }
