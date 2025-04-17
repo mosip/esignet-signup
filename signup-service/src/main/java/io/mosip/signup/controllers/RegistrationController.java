@@ -5,6 +5,7 @@
  */
 package io.mosip.signup.controllers;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.mosip.esignet.core.dto.RequestWrapper;
@@ -131,4 +132,15 @@ public class RegistrationController {
                 transactionId, null);
         return responseWrapper;
     }
+
+    @GetMapping("/ui-spec")
+    public ResponseWrapper<JsonNode> getUiSpec(
+            @Valid @NotBlank(message = ErrorConstants.INVALID_TRANSACTION)
+            @CookieValue(value = SignUpConstants.VERIFIED_TRANSACTION_ID, defaultValue = EMTPY) String transactionId) {
+        ResponseWrapper<JsonNode> responseWrapper = new ResponseWrapper<>();
+        responseWrapper.setResponseTime(IdentityProviderUtil.getUTCDateTime());
+        responseWrapper.setResponse(registrationService.getSchema(transactionId));
+        return responseWrapper;
+    }
+
 }

@@ -10,7 +10,10 @@ import io.mosip.signup.api.dto.ProfileDto;
 import io.mosip.signup.api.dto.ProfileResult;
 import io.mosip.signup.api.exception.InvalidProfileException;
 import io.mosip.signup.api.exception.ProfileException;
+import io.mosip.signup.api.util.ErrorConstants;
 import io.mosip.signup.api.util.ProfileCreateUpdateStatus;
+
+import java.util.Map;
 
 public interface ProfileRegistryPlugin {
 
@@ -55,5 +58,14 @@ public interface ProfileRegistryPlugin {
      * @return
      */
     boolean isMatch(JsonNode identity, JsonNode inputChallenge);
+
+    /**
+     * Default method to get the UI specification for the registration screen.
+     * @return A JsonNode containing the UI specification details.
+     * If not implemented, it throws a custom exception to indicate that the UI specification was not found.
+     */
+    default JsonNode getUISpecification() {
+        throw new ProfileException(ErrorConstants.UI_SPEC_NOT_FOUND);
+    }
 }
 

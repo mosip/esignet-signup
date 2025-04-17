@@ -981,6 +981,31 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "ui-spec",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-XSRF-TOKEN",
+						"value": "{{csrf_token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/v1/registration/ui-spec",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"v1",
+						"signup",
+						"ui-spec"
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }

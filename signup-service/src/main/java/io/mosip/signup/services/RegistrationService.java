@@ -6,6 +6,7 @@
 package io.mosip.signup.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.esignet.core.util.CaptchaHelper;
 import io.mosip.esignet.core.util.IdentityProviderUtil;
@@ -285,6 +286,18 @@ public class RegistrationService {
         RegistrationStatusResponse registrationStatusResponse = new RegistrationStatusResponse();
         registrationStatusResponse.setStatus(transaction.getRegistrationStatus());
         return registrationStatusResponse;
+    }
+
+    public JsonNode getSchema(String transactionId) {
+        if (transactionId == null || transactionId.isEmpty())
+            throw new InvalidTransactionException();
+
+        RegistrationTransaction transaction = cacheUtilService.getChallengeVerifiedTransaction(transactionId);
+        if(transaction == null) {
+            log.error("Transaction {} : not found in ChallengeVerifiedTransaction cache", transactionId);
+            throw new InvalidTransactionException();
+        }
+        return profileRegistryPlugin.getUISpecification();
     }
 
     private void fetchAndCheckIdentity(RegistrationTransaction registrationTransaction,
