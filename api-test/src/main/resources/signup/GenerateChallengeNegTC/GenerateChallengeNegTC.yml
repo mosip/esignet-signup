@@ -784,7 +784,7 @@ GenerateChallengeNegTC:
       role: resident
       restMethod: post
       inputTemplate: signup/GenerateChallengeNegTC/GenerateChallengeWithRegenField
-      outputTemplate: signup/GenerateChallenge/GenerateChallengeResult
+      outputTemplate: signup/error
       input: '{
    "identifier": "$PHONENUMBERFROMREGEXFORSIGNUP$",
    "captchaToken": "",
@@ -793,7 +793,11 @@ GenerateChallengeNegTC:
    "regenerateChallenge": ""
 }'
       output: '{
-  "status":"SUCCESS"
+  "errors": [
+    {
+      "errorCode": "invalid_request"
+    }
+   ]
 }'
 
    Signup_ESignet_GenerateChallengeNegTC_Null_Regenerate_Field3_Neg:
@@ -802,7 +806,7 @@ GenerateChallengeNegTC:
       role: resident
       restMethod: post
       inputTemplate: signup/GenerateChallengeNegTC/GenerateChallengeWithRegenField
-      outputTemplate: signup/GenerateChallenge/GenerateChallengeResult
+      outputTemplate: signup/error
       input: '{
    "identifier": "$PHONENUMBERFROMREGEXFORSIGNUP$",
    "captchaToken": "",
@@ -811,7 +815,11 @@ GenerateChallengeNegTC:
    "regenerateChallenge": "null"
 }'
       output: '{
-  "status":"SUCCESS"
+  "errors": [
+    {
+      "errorCode": "invalid_request"
+    }
+   ]
 }'
 
    Signup_ESignet_GenerateChallengeNegTC_SpaceVal_Regenerate_Field3_Neg:
