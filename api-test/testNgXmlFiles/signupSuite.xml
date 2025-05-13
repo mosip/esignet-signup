@@ -2,8 +2,8 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
 
 <suite name="eSignet-Signup API Test">
-	<!-- Passing Group as parmeter unsing "testType" Possible Groups are: smoke 
-		regression smokeAndRegression -->
+	<!-- Passing Group as parameter using "testType" Possible Groups are: smoke 
+		smokeAndRegression -->
 	<listeners>
 		<listener class-name="io.mosip.testrig.apirig.report.EmailableReport" />
 	</listeners>
