@@ -1,6 +1,7 @@
 OAuthDetailsRequestV3Neg:
    Signup_ESignet_OAuthDetailsRequestNegTC_V3_with_invalid_RequestTime_Neg:
       endPoint: /v1/esignet/authorization/v3/oauth-details
+	  uniqueIdentifier: TC_ESignet_OAuthDetailsRequestV3Neg_01
       description: To get OAuthDetails with invalid RequestTime and all valid data
       role: resident
       restMethod: post
@@ -32,6 +33,7 @@ OAuthDetailsRequestV3Neg:
 
    Signup_ESignet_OAuthDetailsRequestNegTC_V3_with_Null_value_RequestTime_Neg:
       endPoint: /v1/esignet/authorization/v3/oauth-details
+	  uniqueIdentifier: TC_ESignet_OAuthDetailsRequestV3Neg_02
       description: To get OAuthDetails with null value RequestTime and all valid data
       role: resident
       restMethod: post
@@ -62,6 +64,7 @@ OAuthDetailsRequestV3Neg:
 
    Signup_ESignet_OAuthDetailsRequestNegTC_V3_with_empty_RequestTime_Neg:
       endPoint: /v1/esignet/authorization/v3/oauth-details
+	  uniqueIdentifier: TC_ESignet_OAuthDetailsRequestV3Neg_03
       description: To get OAuthDetails with empty RequestTime and all valid data
       role: resident
       restMethod: post
@@ -92,6 +95,7 @@ OAuthDetailsRequestV3Neg:
 
    Signup_ESignet_OAuthDetailsRequestNegTC_V3_with_Space_value_RequestTime_Neg:
       endPoint: /v1/esignet/authorization/v3/oauth-details
+	  uniqueIdentifier: TC_ESignet_OAuthDetailsRequestV3Neg_04
       description: To get OAuthDetails with space value in RequestTime and all valid data
       role: resident
       restMethod: post
@@ -122,6 +126,7 @@ OAuthDetailsRequestV3Neg:
 
    Signup_ESignet_OAuthDetailsRequestNegTC_V3_with_missing_RequestTime_Neg:
       endPoint: /v1/esignet/authorization/v3/oauth-details
+	  uniqueIdentifier: TC_ESignet_OAuthDetailsRequestV3Neg_05
       description: To get OAuthDetails with missing RequestTime and all valid data      
       role: resident
       restMethod: post
@@ -152,6 +157,7 @@ OAuthDetailsRequestV3Neg:
 
    Signup_ESignet_OAuthDetailsRequestNegTC_V3_with_invalid_ClientID_Neg:
       endPoint: /v1/esignet/authorization/v3/oauth-details
+	  uniqueIdentifier: TC_ESignet_OAuthDetailsRequestV3Neg_06
       description: To get OAuthDetails with invalid ClientID and all valid data
       role: resident
       restMethod: post
@@ -182,6 +188,7 @@ OAuthDetailsRequestV3Neg:
 
    Signup_ESignet_OAuthDetailsRequestNegTC_V3_with_Null_ClientID_Neg:
       endPoint: /v1/esignet/authorization/v3/oauth-details
+	  uniqueIdentifier: TC_ESignet_OAuthDetailsRequestV3Neg_07
       description: To get OAuthDetails with null ClientID and all valid data
       role: resident
       restMethod: post
@@ -212,6 +219,7 @@ OAuthDetailsRequestV3Neg:
 
    Signup_ESignet_OAuthDetailsRequestNegTC_V3_with_empty_ClientID_Neg:
       endPoint: /v1/esignet/authorization/v3/oauth-details
+	  uniqueIdentifier: TC_ESignet_OAuthDetailsRequestV3Neg_08
       description: To get OAuthDetails with an empty ClientID and all valid data
       role: resident
       restMethod: post
@@ -242,6 +250,7 @@ OAuthDetailsRequestV3Neg:
 
    Signup_ESignet_OAuthDetailsRequestNegTC_V3_with_Space_value_ClientID_Neg:
       endPoint: /v1/esignet/authorization/v3/oauth-details
+	  uniqueIdentifier: TC_ESignet_OAuthDetailsRequestV3Neg_09
       description: To get OAuthDetails with space value in ClientID and all valid data
       role: resident
       restMethod: post
@@ -272,6 +281,7 @@ OAuthDetailsRequestV3Neg:
 
    Signup_ESignet_OAuthDetailsRequestNegTC_V3_with_missing_ClientID_Neg:
       endPoint: /v1/esignet/authorization/v3/oauth-details
+	  uniqueIdentifier: TC_ESignet_OAuthDetailsRequestV3Neg_10
       description:  To get OAuthDetails with missing ClientID and all valid data
       role: resident
       restMethod: post
@@ -302,6 +312,7 @@ OAuthDetailsRequestV3Neg:
 
    Signup_ESignet_OAuthDetailsRequestNegTC_V3_with_invalid_Scope_Neg:
       endPoint: /v1/esignet/authorization/v3/oauth-details
+	  uniqueIdentifier: TC_ESignet_OAuthDetailsRequestV3Neg_11
       description:  To get OAuthDetails with invalid scope and all valid data
       role: resident
       restMethod: post
@@ -332,6 +343,7 @@ OAuthDetailsRequestV3Neg:
 
    Signup_ESignet_OAuthDetailsRequestNegTC_V3_with_Null_Scope_value_Neg:
       endPoint: /v1/esignet/authorization/v3/oauth-details
+	  uniqueIdentifier: TC_ESignet_OAuthDetailsRequestV3Neg_12
       description: To get OAuthDetails with null scope value and all valid data
       role: resident
       restMethod: post
@@ -362,6 +374,7 @@ OAuthDetailsRequestV3Neg:
 
    Signup_ESignet_OAuthDetailsRequestNegTC_V3_with_empty_Scope_Neg:
       endPoint: /v1/esignet/authorization/v3/oauth-details
+	  uniqueIdentifier: TC_ESignet_OAuthDetailsRequestV3Neg_13
       description: To get OAuthDetails with an empty scope and all valid data
       role: resident
       restMethod: post
@@ -392,6 +405,7 @@ OAuthDetailsRequestV3Neg:
 
    Signup_ESignet_OAuthDetailsRequestNegTC_V3_with_Space_value_Scope_Neg:
       endPoint: /v1/esignet/authorization/v3/oauth-details
+	  uniqueIdentifier: TC_ESignet_OAuthDetailsRequestV3Neg_14
       description: To get OAuthDetails with space value in scope and all valid data
       role: resident
       restMethod: post
@@ -422,6 +436,7 @@ OAuthDetailsRequestV3Neg:
 
    Signup_ESignet_OAuthDetailsRequestNegTC_V3_with_missing_Scope_Neg:
       endPoint: /v1/esignet/authorization/v3/oauth-details
+	  uniqueIdentifier: TC_ESignet_OAuthDetailsRequestV3Neg_15
       description: To get OAuthDetails with missing scope and all valid data
       role: resident
       restMethod: post
@@ -452,6 +467,7 @@ OAuthDetailsRequestV3Neg:
 
    Signup_ESignet_OAuthDetailsRequestNegTC_V3_with_invalid_ResponseType_Neg:
       endPoint: /v1/esignet/authorization/v3/oauth-details
+	  uniqueIdentifier: TC_ESignet_OAuthDetailsRequestV3Neg_16
       description: To get OAuthDetails with invalid ResponseType and all valid data
       role: resident
       restMethod: post
@@ -482,6 +498,7 @@ OAuthDetailsRequestV3Neg:
 
    Signup_ESignet_OAuthDetailsRequestNegTC_V3_with_Null_ResponseType_value_Neg:
       endPoint: /v1/esignet/authorization/v3/oauth-details
+	  uniqueIdentifier: TC_ESignet_OAuthDetailsRequestV3Neg_17
       description: To get OAuthDetails with null ResponseType value and all valid data
       role: resident
       restMethod: post
@@ -512,6 +529,7 @@ OAuthDetailsRequestV3Neg:
 
    Signup_ESignet_OAuthDetailsRequestNegTC_V3_with_empty_ResponseType_Neg:
       endPoint: /v1/esignet/authorization/v3/oauth-details
+	  uniqueIdentifier: TC_ESignet_OAuthDetailsRequestV3Neg_18
       description: To get OAuthDetails with an empty ResponseType and all valid data
       role: resident
       restMethod: post
@@ -542,6 +560,7 @@ OAuthDetailsRequestV3Neg:
 
    Signup_ESignet_OAuthDetailsRequestNegTC_V3_with_Space_value_ResponseType_Neg:
       endPoint: /v1/esignet/authorization/v3/oauth-details
+	  uniqueIdentifier: TC_ESignet_OAuthDetailsRequestV3Neg_19
       description: To get OAuthDetails with space value in ResponseType and all valid data
       role: resident
       restMethod: post
@@ -572,6 +591,7 @@ OAuthDetailsRequestV3Neg:
 
    Signup_ESignet_OAuthDetailsRequestNegTC_V3_with_missing_ResponseType_Neg:
       endPoint: /v1/esignet/authorization/v3/oauth-details
+	  uniqueIdentifier: TC_ESignet_OAuthDetailsRequestV3Neg_20
       description: To get OAuthDetails with missing ResponseType and all valid data
       role: resident
       restMethod: post
@@ -602,6 +622,7 @@ OAuthDetailsRequestV3Neg:
 
    Signup_ESignet_OAuthDetailsRequestNegTC_V3_with_invalid_RedirectURI_Neg:
       endPoint: /v1/esignet/authorization/v3/oauth-details
+	  uniqueIdentifier: TC_ESignet_OAuthDetailsRequestV3Neg_21
       description: To get OAuthDetails with invalid RedirectURI and all valid data
       role: resident
       restMethod: post
@@ -632,6 +653,7 @@ OAuthDetailsRequestV3Neg:
 
    Signup_ESignet_OAuthDetailsRequestNegTC_V3_with_Null_RedirectURI_value_Neg:
       endPoint: /v1/esignet/authorization/v3/oauth-details
+	  uniqueIdentifier: TC_ESignet_OAuthDetailsRequestV3Neg_22
       description: To get OAuthDetails with null value in RedirectURI and all valid data
       role: resident
       restMethod: post
@@ -662,6 +684,7 @@ OAuthDetailsRequestV3Neg:
 
    Signup_ESignet_OAuthDetailsRequestNegTC_V3_with_empty_RedirectURI_Neg:
       endPoint: /v1/esignet/authorization/v3/oauth-details
+	  uniqueIdentifier: TC_ESignet_OAuthDetailsRequestV3Neg_23
       description: To get OAuthDetails with an empty RedirectURI and all valid data
       role: resident
       restMethod: post
@@ -692,6 +715,7 @@ OAuthDetailsRequestV3Neg:
 
    Signup_ESignet_OAuthDetailsRequestNegTC_V3_with_Space_value_RedirectURI_Neg:
       endPoint: /v1/esignet/authorization/v3/oauth-details
+	  uniqueIdentifier: TC_ESignet_OAuthDetailsRequestV3Neg_24
       description: To get OAuthDetails with space value in RedirectURI and all valid data
       role: resident
       restMethod: post
@@ -722,6 +746,7 @@ OAuthDetailsRequestV3Neg:
 
    Signup_ESignet_OAuthDetailsRequestNegTC_V3_with_missing_RedirectURI_Neg:
       endPoint: /v1/esignet/authorization/v3/oauth-details
+	  uniqueIdentifier: TC_ESignet_OAuthDetailsRequestV3Neg_25
       description: To get OAuthDetails with missing RedirectURI and all valid data
       role: resident
       restMethod: post
@@ -752,6 +777,7 @@ OAuthDetailsRequestV3Neg:
 
    Signup_ESignet_OAuthDetailsRequestNegTC_V3_with_invalid_Display_Neg:
       endPoint: /v1/esignet/authorization/v3/oauth-details
+	  uniqueIdentifier: TC_ESignet_OAuthDetailsRequestV3Neg_26
       description: To get OAuthDetails with invalid Display and all valid data
       role: resident
       restMethod: post
@@ -782,6 +808,7 @@ OAuthDetailsRequestV3Neg:
 
    Signup_ESignet_OAuthDetailsRequestNegTC_V3_with_invalid_Prompt_Neg:
       endPoint: /v1/esignet/authorization/v3/oauth-details
+	  uniqueIdentifier: TC_ESignet_OAuthDetailsRequestV3Neg_27
       description: To get OAuthDetails with invalid Prompt and all valid data
       role: resident
       restMethod: post
@@ -812,6 +839,7 @@ OAuthDetailsRequestV3Neg:
 
    Signup_ESignet_OAuthDetailsRequest_V3_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid:
       endPoint: /v1/esignet/authorization/v3/oauth-details
+	  uniqueIdentifier: TC_ESignet_OAuthDetailsRequestV3Neg_28
       description: To get OAuthDetails with all valid data
       role: resident
       restMethod: post

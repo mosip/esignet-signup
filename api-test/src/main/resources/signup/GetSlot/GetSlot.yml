@@ -1,6 +1,7 @@
 GetSlot:
    Signup_ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_Smoke_Sid:
       endPoint: /v1/signup/identity-verification/slot
+	  uniqueIdentifier: TC_ESignet_GetSlot_01
       description: To get the slot ID to begin the video identity verification process with vaild details
       role: resident
       restMethod: post
@@ -18,6 +19,7 @@ GetSlot:
 }'
    Signup_ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_disabilityTypeVISION_Smoke_Sid:
       endPoint: /v1/signup/identity-verification/slot
+	  uniqueIdentifier: TC_ESignet_GetSlot_02
       description: To get the slot ID to begin the video identity verification process with vaild details for vision type disability
       role: resident
       restMethod: post
@@ -36,6 +38,7 @@ GetSlot:
 }'
    Signup_ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_disabilityTypeAUDITORY_Smoke_Sid:
       endPoint: /v1/signup/identity-verification/slot
+	  uniqueIdentifier: TC_ESignet_GetSlot_03
       description: To get the slot ID to begin the video identity verification process with vaild details for auditory type disability
       role: resident
       restMethod: post
@@ -54,6 +57,7 @@ GetSlot:
 }'
    Signup_ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_disabilityTypeMOBILITY_Smoke_Sid:
       endPoint: /v1/signup/identity-verification/slot
+	  uniqueIdentifier: TC_ESignet_GetSlot_04
       description: To get the slot ID to begin the video identity verification process with vaild details for mobility type disability
       role: resident
       restMethod: post
@@ -72,6 +76,7 @@ GetSlot:
 }'
    Signup_ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_disabilityTypeNEUROLOGICAL_Smoke_Sid:
       endPoint: /v1/signup/identity-verification/slot
+	  uniqueIdentifier: TC_ESignet_GetSlot_05
       description: To get the slot ID to begin the video identity verification process with vaild details for neurology type disability
       role: resident
       restMethod: post

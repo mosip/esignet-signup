@@ -1,6 +1,7 @@
 OIDCClientV2:
    Signup_ESignet_CreateOIDCClient_all_Valid_Smoke_sid:
       endPoint: /v1/esignet/client-mgmt/oauth-client
+	  uniqueIdentifier: TC_ESignet_OIDCClientV2_01
       description: To create OIDC Client V2 with all valid data
       role: partner
       restMethod: post

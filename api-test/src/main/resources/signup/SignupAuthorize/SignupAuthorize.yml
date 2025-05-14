@@ -1,6 +1,7 @@
 SignupAuthorize:
    Signup_ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_Smoke_sid:
       endPoint: /v1/esignet/authorization/v3/oauth-details
+	  uniqueIdentifier: TC_ESignet_SignupAuthorize_01
       description: Create consent details and unique transactionID with valid details
       role: resident
       restMethod: post
@@ -25,6 +26,7 @@ SignupAuthorize:
 }'
    Signup_ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeVISION_Smoke_sid:
       endPoint: /v1/esignet/authorization/v3/oauth-details
+	  uniqueIdentifier: TC_ESignet_SignupAuthorize_02
       description: Create consent details and unique transactionID with valid details and this testcase is prerequisite
       role: resident
       restMethod: post
@@ -49,6 +51,7 @@ SignupAuthorize:
 }'
    Signup_ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeAUDITORY_Smoke_sid:
       endPoint: /v1/esignet/authorization/v3/oauth-details
+	  uniqueIdentifier: TC_ESignet_SignupAuthorize_03
       description: Create consent details and unique transactionID with valid details and this testcase is prerequisite
       role: resident
       restMethod: post
@@ -73,6 +76,7 @@ SignupAuthorize:
 }'
    Signup_ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeMOBILITY_Smoke_sid:
       endPoint: /v1/esignet/authorization/v3/oauth-details
+	  uniqueIdentifier: TC_ESignet_SignupAuthorize_04
       description: Create consent details and unique transactionID with valid details and this testcase is prerequisite
       role: resident
       restMethod: post
@@ -97,6 +101,7 @@ SignupAuthorize:
 }'
    Signup_ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_Smoke_sid:
       endPoint: /v1/esignet/authorization/v3/oauth-details
+	  uniqueIdentifier: TC_ESignet_SignupAuthorize_05
       description: Create consent details and unique transactionID with valid details and this testcase is prerequisite
       role: resident
       restMethod: post

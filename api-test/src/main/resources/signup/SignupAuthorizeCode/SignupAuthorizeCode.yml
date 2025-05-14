@@ -1,6 +1,7 @@
 SignupAuthorizeCode:
    Signup_ESignet_SignupAuthorizeCode_AuthToken_Xsrf_uin_all_Valid_Smoke_sid:
       endPoint: /v1/esignet/authorization/auth-code
+	  uniqueIdentifier: TC_ESignet_SignupAuthorizeCode_01
       description: Create authorization code with valid details
       role: resident
       restMethod: post
@@ -20,6 +21,7 @@ SignupAuthorizeCode:
 }'
    Signup_ESignet_SignupAuthorizeCode_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeVISION_Smoke_sid:
       endPoint: /v1/esignet/authorization/auth-code
+	  uniqueIdentifier: TC_ESignet_SignupAuthorizeCode_02
       description: Create authorization code with valid details and this testcase is prerequisite
       role: resident
       restMethod: post
@@ -39,6 +41,7 @@ SignupAuthorizeCode:
 }'
    Signup_ESignet_SignupAuthorizeCode_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeAUDITORY_Smoke_sid:
       endPoint: /v1/esignet/authorization/auth-code
+	  uniqueIdentifier: TC_ESignet_SignupAuthorizeCode_03
       description: Create authorization code with valid details and this testcase is prerequisite
       role: resident
       restMethod: post
@@ -58,6 +61,7 @@ SignupAuthorizeCode:
 }'
    Signup_ESignet_SignupAuthorizeCode_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeMOBILITY_Smoke_sid:
       endPoint: /v1/esignet/authorization/auth-code
+	  uniqueIdentifier: TC_ESignet_SignupAuthorizeCode_04
       description: Create authorization code with valid details and this testcase is prerequisite
       role: resident
       restMethod: post
@@ -76,7 +80,8 @@ SignupAuthorizeCode:
        
 }'
    Signup_ESignet_SignupAuthorizeCode_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_Smoke_sid:
-      endPoint: /v1/esignet/authorization/auth-code
+      endPoint: /v1/esignet/authorization/auth-
+		uniqueIdentifier: TC_ESignet_SignupAuthorizeCode_05
       description: Create authorization code with valid details and this testcase is prerequisite
       role: resident
       restMethod: post
