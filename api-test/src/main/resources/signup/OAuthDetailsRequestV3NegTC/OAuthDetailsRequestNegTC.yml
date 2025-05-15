@@ -783,48 +783,12 @@ OAuthDetailsRequestV3Neg:
     }
   ]
 }'
-   Signup_ESignet_OAuthDetailsRequest_V3_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid:
-      endPoint: /v1/esignet/authorization/v3/oauth-details
-      description: To get OAuthDetails with all valid data
-      role: resident
-      restMethod: post
-      checkErrorsOnlyInResponse: true
-      inputTemplate: signup/OAuthDetailsRequestV3/OAuthDetailsWithClaimValueRequest
-      input: '{
-      	"requestTime": "$TIMESTAMP$",
-      	"clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
-      	"scope": "openid profile",
-      	"responseType": "code",
-      	"redirectUri": "$IDPREDIRECTURI$",
-      	"display": "popup",
-      	"prompt": "login",
-      	"acrValues": "mosip:idp:acr:generated-code",
-      	"nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
-      	"state": "urlInfo1724138417665",
-        "claimsLocales": "en",
-        "uiLocales": "en-US",
-		"trust_framework": ["de_aml","jp_aml"],
-		"assurance_level": "high",
-		"max_age": 63113852,
-		"evidence_type": "document",
-		"evidence_method": "test",
-		"given_name": ["automation", "test"],
-		"purpose": "Name given by user",
-		"name_value": "automation",
-		"name_values": ["ab","cd"],
-		"phone_number": "1234567890",
-		"email_essential": true 
-}'
-      output: '{
-       
-}'
    Signup_ESignet_OAuthDetailsRequest_V3_with_null_VerifiedClaim_Neg:
       endPoint: /v1/esignet/authorization/v3/oauth-details
       uniqueIdentifier: TC_Signup_ESignet_OAuthDetailsRequestV3_03
       description: To get OAuthDetails with null as verified claim
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/OAuthDetailsRequestV3NegTC/OAuthDetailsRequestNeg
       outputTemplate: signup/error
       input: '{
@@ -868,7 +832,6 @@ OAuthDetailsRequestV3Neg:
       description: To get OAuthDetails with null as verification
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/OAuthDetailsRequestV3NegTC/OAuthDetailsRequestNeg
       outputTemplate: signup/error
       input: '{
@@ -912,7 +875,6 @@ OAuthDetailsRequestV3Neg:
       description: To get OAuthDetails with null as claims
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/OAuthDetailsRequestV3NegTC/OAuthDetailsRequestNeg
       outputTemplate: signup/error
       input: '{
@@ -956,7 +918,6 @@ OAuthDetailsRequestV3Neg:
       description: To get OAuthDetails with empty claims
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/OAuthDetailsRequestV3NegTC/OAuthDetailsRequestNeg
       outputTemplate: signup/error
       input: '{
@@ -1000,7 +961,6 @@ OAuthDetailsRequestV3Neg:
       description: To get OAuthDetails with empty string value in claims
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/OAuthDetailsRequestV3NegTC/OAuthDetailsRequestNeg
       outputTemplate: signup/error
       input: '{
@@ -1044,7 +1004,6 @@ OAuthDetailsRequestV3Neg:
       description: To get OAuthDetails with empty verification
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/OAuthDetailsRequestV3NegTC/OAuthDetailsRequestNeg
       outputTemplate: signup/error
       input: '{
@@ -1088,7 +1047,6 @@ OAuthDetailsRequestV3Neg:
       description: To get OAuthDetails with empty string value in verification
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/OAuthDetailsRequestV3NegTC/OAuthDetailsRequestNeg
       outputTemplate: signup/error
       input: '{
@@ -1132,7 +1090,6 @@ OAuthDetailsRequestV3Neg:
       description: To get OAuthDetails with empty string value in verification and in claims
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/OAuthDetailsRequestV3NegTC/OAuthDetailsRequestNeg
       outputTemplate: signup/error
       input: '{
@@ -1176,7 +1133,6 @@ OAuthDetailsRequestV3Neg:
       description: To get OAuthDetails with empty value in verification and in claims
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/OAuthDetailsRequestV3NegTC/OAuthDetailsRequestNeg
       outputTemplate: signup/error
       input: '{
@@ -1220,7 +1176,6 @@ OAuthDetailsRequestV3Neg:
       description: To get OAuthDetails with missing claims
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/OAuthDetailsRequestV3NegTC/OAuthDetailsRequestNeg2
       outputTemplate: signup/error
       input: '{
@@ -1265,7 +1220,6 @@ OAuthDetailsRequestV3Neg:
       description: To get OAuthDetails with missing verification
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/OAuthDetailsRequestV3NegTC/OAuthDetailsRequestNeg2
       outputTemplate: signup/error
       input: '{
@@ -1310,7 +1264,6 @@ OAuthDetailsRequestV3Neg:
       description: To get OAuthDetails with integer_in_VerifiedClaims
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/OAuthDetailsRequestV3NegTC/OAuthDetailsRequestNeg
       outputTemplate: signup/error
       input: '{
@@ -1354,7 +1307,6 @@ OAuthDetailsRequestV3Neg:
       description: To get OAuthDetails with emptyArray_verified_claims
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/OAuthDetailsRequestV3NegTC/OAuthDetailsRequestNeg2
       outputTemplate: signup/error
       input: '{
@@ -1399,7 +1351,6 @@ OAuthDetailsRequestV3Neg:
       description: To get OAuthDetails with purpose
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/OAuthDetailsRequestV3NegTC/OAuthDetailsRequestNeg2
       outputTemplate: signup/error
       input: '{
