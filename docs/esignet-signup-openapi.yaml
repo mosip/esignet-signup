@@ -1247,13 +1247,14 @@ paths:
       servers:
         - url: 'https://signup.collab.mosip.net/v1/signup'
       x-stoplight:
-        id: la7g39zt72bvl
+        id: dub1wcgovwhwl
+    parameters: []
   /registration/ui-spec:
     get:
       tags:
         - UI
       summary: Get registration UI Specification
-      description: |-
+      description: |
         Endpoint to get the details on how and what to render in the registration screen.
 
         1. Validates the cookie with valid VERIFIED_TRANSACTION_ID.
@@ -1265,12 +1266,12 @@ paths:
           required: false
           schema:
             type: string
-        - name: VERIFIED_TRANSACTION_ID
+        - schema:
+            type: string
           in: cookie
+          name: VERIFIED_TRANSACTION_ID
           description: Transaction ID set after successful OTP verification
           required: true
-          schema:
-            type: string
       responses:
         '200':
           description: OK
@@ -1278,20 +1279,56 @@ paths:
             application/json:
               schema:
                 type: object
+                required:
+                  - responseTime
+                  - response
                 properties:
                   responseTime:
                     type: string
-                    description: Current date and time when the request is sent
                     format: date-time
+                    description: Current date and time when the request is sent
                   response:
                     type: object
+                    required:
+                      - schema
+                      - allowedValues
                     properties:
                       schema:
+                        type: array
+                        description: |
+                          List of registration field display and validation specifications.
+                        items:
+                          x-stoplight:
+                            id: 4undyvawkzv7d
+                          type: object
+                      allowedValues:
                         type: object
-                        description: Schema of UI Specification.
+                        description: |
+                          List of registration field with their allowed values in multiple language usually used to build dropdowns/radiobuttons/checkboxes.
+                        additionalProperties:
+                          x-stoplight:
+                            id: 2thyc3cylcxqm
+                          type: object
+                          additionalProperties:
+                            x-stoplight:
+                              id: 61cgmqx27jkve
+                            type: object
+                      mandatoryLanguages:
+                        type: array
+                        description: Mandatory languages
+                        x-stoplight:
+                          id: kifhqwkskzf6e
+                        items:
+                          type: string
+                      optionalLanguages:
+                        type: array
+                        description: Optional languages
+                        x-stoplight:
+                          id: kifhqwkskzf6e
+                        items:
+                          type: string
                   errors:
                     type: array
-                    description: List of Errors in case of request validation / processing failure in the server.
                     items:
                       type: object
                       properties:
@@ -1300,24 +1337,101 @@ paths:
                           enum:
                             - invalid_transaction
                             - ui_spec_not_found
-                            - unknown_error
                         errorMessage:
                           type: string
-                          enum:
-                            - invalid_transaction
-                            - ui_spec_not_found
-                            - unknown_error
               examples:
                 Example 1:
                   value:
-                    responseTime: '2023-11-03T11:03:49.770Z'
+                    responseTime: '2011-10-05T14:48:00.000Z'
                     response:
-                      schema: {}
-                    errors: []
+                      schema:
+                        - id: fullName
+                          controlType: textbox
+                          type: simpleType
+                          label:
+                            eng: Full Name
+                            fra: Nom complet
+                          validators:
+                            - type: regex
+                              validator: '^[a-zA-Z\s]{2,30}$'
+                              langCode: eng
+                              errorCode: UI_100001
+                          alignmentGroup: groupA
+                          cssClasses:
+                            - classA
+                            - classB
+                          required: true
+                        - id: birthDate
+                          controlType: date
+                          type: date
+                          label:
+                            eng: Birth Date
+                            fra: Date de naissance
+                          alignmentGroup: groupB
+                          cssClasses:
+                            - classA
+                            - classB
+                          required: true
+                        - id: gender
+                          controlType: dropdown
+                          type: simpleType
+                          label:
+                            eng: Gender
+                            fra: Le genre
+                          alignmentGroup: groupC
+                          cssClasses:
+                            - classA
+                            - classB
+                          required: true
+                        - id: nationality
+                          controlType: dropdown
+                          type: string
+                          label:
+                            eng: Nationality
+                            fra: Nationalité
+                          alignmentGroup: groupC
+                          cssClasses:
+                            - classA
+                            - classB
+                          required: true
+                        - id: password
+                          controlType: password
+                          type: string
+                          label:
+                            eng: Password
+                          alignmentGroup: groupD
+                          required: true
+                          validators:
+                            - type: regex
+                              validator: '^[a-zA-Z]{8,30}$'
+                              errorCode: invalid_pwd
+                      allowedValues:
+                        gender:
+                          MLE:
+                            eng: Male
+                            fra: Mâle
+                          FLE:
+                            eng: Female
+                            fra: Femelle
+                        nationality:
+                          IND:
+                            eng: Indian
+                            fra: Indienne
+                          FR:
+                            eng: Foreigner
+                            fra: Étrangère
+                      mandatoryLanguages:
+                        - eng
+                      optionalLanguages:
+                        - fra
+                    errors:
+                      - errorCode: invalid_transaction
+                        errorMessage: invalid_transaction
+          headers: {}
       servers:
         - url: 'https://signup.collab.mosip.net/v1/signup'
       x-stoplight:
-        id: la7g39zt72bvl
+        id: 7ejnxosdv55w1
     parameters: []
 tags:
   - name: UI
