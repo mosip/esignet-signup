@@ -7,19 +7,19 @@ OAuthDetailsRequestV3Neg:
       inputTemplate: signup/OAuthDetailsRequestV3NegTC/OAuthDetailsRequestNegTC
       outputTemplate: signup/error
       input: '{
-      	"requestTime": "apknktokd",
-      	"clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
-      	"scope": "openid profile",
-      	"responseType": "code",
-      	"redirectUri": "$IDPREDIRECTURI$",
-      	"display": "popup",
-      	"prompt": "login",
-      	"acrValues": "mosip:idp:acr:generated-code",
-      	"nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
-      	"state": "urlInfo1724138417665",
-      	"claimsLocales": "en",
-      	"uiLocales": "en-US",
-      	"trust_framework": "jp_aml"
+        "requestTime": "apknktokd",
+        "clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
+        "scope": "openid profile",
+        "responseType": "code",
+        "redirectUri": "$IDPREDIRECTURI$",
+        "display": "popup",
+        "prompt": "login",
+        "acrValues": "mosip:idp:acr:generated-code",
+        "nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
+        "state": "urlInfo1724138417665",
+        "claimsLocales": "en",
+        "uiLocales": "en-US",
+        "trust_framework": "jp_aml"
 }'
       output: '{
    "errors": [
@@ -37,18 +37,18 @@ OAuthDetailsRequestV3Neg:
       inputTemplate: signup/OAuthDetailsRequestV3NegTC/OAuthDetailsRequestNegTC
       outputTemplate: signup/error
       input: '{
-      	"requestTime": null,
-      	"clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
-      	"scope": "openid profile",
-      	"responseType": "code",
-      	"redirectUri": "$IDPREDIRECTURI$",
-      	"display": "popup",
-      	"prompt": "login",
-      	"acrValues": "mosip:idp:acr:generated-code",
-      	"nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
-      	"state": "urlInfo1724138417665",
-      	"claimsLocales": "en",
-      	"uiLocales": "en-US"
+        "requestTime": null,
+        "clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
+        "scope": "openid profile",
+        "responseType": "code",
+        "redirectUri": "$IDPREDIRECTURI$",
+        "display": "popup",
+        "prompt": "login",
+        "acrValues": "mosip:idp:acr:generated-code",
+        "nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
+        "state": "urlInfo1724138417665",
+        "claimsLocales": "en",
+        "uiLocales": "en-US"
 }'
       output: '{
    "errors": [
@@ -66,18 +66,18 @@ OAuthDetailsRequestV3Neg:
       inputTemplate: signup/OAuthDetailsRequestV3NegTC/OAuthDetailsRequestNegTC
       outputTemplate: signup/error
       input: '{
-      	"requestTime": "",
-      	"clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
-      	"scope": "openid profile",
-      	"responseType": "code",
-      	"redirectUri": "$IDPREDIRECTURI$",
-      	"display": "popup",
-      	"prompt": "login",
-      	"acrValues": "mosip:idp:acr:generated-code",
-      	"nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
-      	"state": "urlInfo1724138417665",
-      	"claimsLocales": "en",
-      	"uiLocales": "en-US"
+        "requestTime": "",
+        "clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
+        "scope": "openid profile",
+        "responseType": "code",
+        "redirectUri": "$IDPREDIRECTURI$",
+        "display": "popup",
+        "prompt": "login",
+        "acrValues": "mosip:idp:acr:generated-code",
+        "nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
+        "state": "urlInfo1724138417665",
+        "claimsLocales": "en",
+        "uiLocales": "en-US"
 }'
       output: '{
    "errors": [
@@ -95,18 +95,18 @@ OAuthDetailsRequestV3Neg:
       inputTemplate: signup/OAuthDetailsRequestV3NegTC/OAuthDetailsRequestNegTC
       outputTemplate: signup/error
       input: '{
-      	"requestTime": " ",
-      	"clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
-      	"scope": "openid profile",
-      	"responseType": "code",
-      	"redirectUri": "$IDPREDIRECTURI$",
-      	"display": "popup",
-      	"prompt": "login",
-      	"acrValues": "mosip:idp:acr:generated-code",
-      	"nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
-      	"state": "urlInfo1724138417665",
-      	"claimsLocales": "en",
-      	"uiLocales": "en-US"
+        "requestTime": " ",
+        "clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
+        "scope": "openid profile",
+        "responseType": "code",
+        "redirectUri": "$IDPREDIRECTURI$",
+        "display": "popup",
+        "prompt": "login",
+        "acrValues": "mosip:idp:acr:generated-code",
+        "nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
+        "state": "urlInfo1724138417665",
+        "claimsLocales": "en",
+        "uiLocales": "en-US"
 }'
       output: '{
    "errors": [
@@ -124,18 +124,18 @@ OAuthDetailsRequestV3Neg:
       inputTemplate: signup/OAuthDetailsRequestV3NegTC/OAuthDetailsRequestNegTC
       outputTemplate: signup/error
       input: '{
-      	"requestTime": "$REMOVE$",
-      	"clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
-      	"scope": "openid profile",
-      	"responseType": "code",
-      	"redirectUri": "$IDPREDIRECTURI$",
-      	"display": "popup",
-      	"prompt": "login",
-      	"acrValues": "mosip:idp:acr:generated-code",
-      	"nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
-      	"state": "urlInfo1724138417665",
-      	"claimsLocales": "en",
-      	"uiLocales": "en-US"
+        "requestTime": "$REMOVE$",
+        "clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
+        "scope": "openid profile",
+        "responseType": "code",
+        "redirectUri": "$IDPREDIRECTURI$",
+        "display": "popup",
+        "prompt": "login",
+        "acrValues": "mosip:idp:acr:generated-code",
+        "nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
+        "state": "urlInfo1724138417665",
+        "claimsLocales": "en",
+        "uiLocales": "en-US"
 }'
       output: '{
    "errors": [
@@ -153,18 +153,18 @@ OAuthDetailsRequestV3Neg:
       inputTemplate: signup/OAuthDetailsRequestV3NegTC/OAuthDetailsRequestNegTC
       outputTemplate: signup/error
       input: '{
-      	"requestTime": "$TIMESTAMP$",
-      	"clientId": "jkjdangjfkdjnlkfkgjdsfnlkfjdkf",
-      	"scope": "openid profile",
-      	"responseType": "code",
-      	"redirectUri": "$IDPREDIRECTURI$",
-      	"display": "popup",
-      	"prompt": "login",
-      	"acrValues": "mosip:idp:acr:generated-code",
-      	"nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
-      	"state": "urlInfo1724138417665",
-      	"claimsLocales": "en",
-      	"uiLocales": "en-US"
+        "requestTime": "$TIMESTAMP$",
+        "clientId": "jkjdangjfkdjnlkfkgjdsfnlkfjdkf",
+        "scope": "openid profile",
+        "responseType": "code",
+        "redirectUri": "$IDPREDIRECTURI$",
+        "display": "popup",
+        "prompt": "login",
+        "acrValues": "mosip:idp:acr:generated-code",
+        "nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
+        "state": "urlInfo1724138417665",
+        "claimsLocales": "en",
+        "uiLocales": "en-US"
 }'
       output: '{
    "errors": [
@@ -182,18 +182,18 @@ OAuthDetailsRequestV3Neg:
       inputTemplate: signup/OAuthDetailsRequestV3NegTC/OAuthDetailsRequestNegTC
       outputTemplate: signup/error
       input: '{
-      	"requestTime": $TIMESTAMP$,
-      	"clientId": null,
-      	"scope": "openid profile",
-      	"responseType": "code",
-      	"redirectUri": "$IDPREDIRECTURI$",
-      	"display": "popup",
-      	"prompt": "login",
-      	"acrValues": "mosip:idp:acr:generated-code",
-      	"nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
-      	"state": "urlInfo1724138417665",
-      	"claimsLocales": "en",
-      	"uiLocales": "en-US"
+        "requestTime": $TIMESTAMP$,
+        "clientId": null,
+        "scope": "openid profile",
+        "responseType": "code",
+        "redirectUri": "$IDPREDIRECTURI$",
+        "display": "popup",
+        "prompt": "login",
+        "acrValues": "mosip:idp:acr:generated-code",
+        "nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
+        "state": "urlInfo1724138417665",
+        "claimsLocales": "en",
+        "uiLocales": "en-US"
 }'
       output: '{
    "errors": [
@@ -211,18 +211,18 @@ OAuthDetailsRequestV3Neg:
       inputTemplate: signup/OAuthDetailsRequestV3NegTC/OAuthDetailsRequestNegTC
       outputTemplate: signup/error
       input: '{
-      	"requestTime": $TIMESTAMP$,
-      	"clientId": "",
-      	"scope": "openid profile",
-      	"responseType": "code",
-      	"redirectUri": "$IDPREDIRECTURI$",
-      	"display": "popup",
-      	"prompt": "login",
-      	"acrValues": "mosip:idp:acr:generated-code",
-      	"nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
-      	"state": "urlInfo1724138417665",
-      	"claimsLocales": "en",
-      	"uiLocales": "en-US"
+        "requestTime": $TIMESTAMP$,
+        "clientId": "",
+        "scope": "openid profile",
+        "responseType": "code",
+        "redirectUri": "$IDPREDIRECTURI$",
+        "display": "popup",
+        "prompt": "login",
+        "acrValues": "mosip:idp:acr:generated-code",
+        "nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
+        "state": "urlInfo1724138417665",
+        "claimsLocales": "en",
+        "uiLocales": "en-US"
 }'
       output: '{
    "errors": [
@@ -240,18 +240,18 @@ OAuthDetailsRequestV3Neg:
       inputTemplate: signup/OAuthDetailsRequestV3NegTC/OAuthDetailsRequestNegTC
       outputTemplate: signup/error
       input: '{
-      	"requestTime": "$TIMESTAMP$",
-      	"clientId": " ",
-      	"scope": "openid profile",
-      	"responseType": "code",
-      	"redirectUri": "$IDPREDIRECTURI$",
-      	"display": "popup",
-      	"prompt": "login",
-      	"acrValues": "mosip:idp:acr:generated-code",
-      	"nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
-      	"state": "urlInfo1724138417665",
-      	"claimsLocales": "en",
-      	"uiLocales": "en-US"
+        "requestTime": "$TIMESTAMP$",
+        "clientId": " ",
+        "scope": "openid profile",
+        "responseType": "code",
+        "redirectUri": "$IDPREDIRECTURI$",
+        "display": "popup",
+        "prompt": "login",
+        "acrValues": "mosip:idp:acr:generated-code",
+        "nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
+        "state": "urlInfo1724138417665",
+        "claimsLocales": "en",
+        "uiLocales": "en-US"
 }'
       output: '{
    "errors": [
@@ -269,18 +269,18 @@ OAuthDetailsRequestV3Neg:
       inputTemplate: signup/OAuthDetailsRequestV3NegTC/OAuthDetailsRequestNegTC
       outputTemplate: signup/error
       input: '{
-      	"requestTime": "$TIMESTAMP$",
-      	"clientId": "$REMOVE$",
-      	"scope": "openid profile",
-      	"responseType": "code",
-      	"redirectUri": "$IDPREDIRECTURI$",
-      	"display": "popup",
-      	"prompt": "login",
-      	"acrValues": "mosip:idp:acr:generated-code",
-      	"nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
-      	"state": "urlInfo1724138417665",
-      	"claimsLocales": "en",
-      	"uiLocales": "en-US"
+        "requestTime": "$TIMESTAMP$",
+        "clientId": "$REMOVE$",
+        "scope": "openid profile",
+        "responseType": "code",
+        "redirectUri": "$IDPREDIRECTURI$",
+        "display": "popup",
+        "prompt": "login",
+        "acrValues": "mosip:idp:acr:generated-code",
+        "nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
+        "state": "urlInfo1724138417665",
+        "claimsLocales": "en",
+        "uiLocales": "en-US"
 }'
       output: '{
    "errors": [
@@ -298,18 +298,18 @@ OAuthDetailsRequestV3Neg:
       inputTemplate: signup/OAuthDetailsRequestV3NegTC/OAuthDetailsRequestNegTC
       outputTemplate: signup/error
       input: '{
-      	"requestTime": "$TIMESTAMP$",
-      	"clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
-      	"scope": "aegaegegadd",
-      	"responseType": "code",
-      	"redirectUri": "$IDPREDIRECTURI$",
-      	"display": "popup",
-      	"prompt": "login",
-      	"acrValues": "mosip:idp:acr:generated-code",
-      	"nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
-      	"state": "urlInfo1724138417665",
-      	"claimsLocales": "en",
-      	"uiLocales": "en-US"
+        "requestTime": "$TIMESTAMP$",
+        "clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
+        "scope": "aegaegegadd",
+        "responseType": "code",
+        "redirectUri": "$IDPREDIRECTURI$",
+        "display": "popup",
+        "prompt": "login",
+        "acrValues": "mosip:idp:acr:generated-code",
+        "nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
+        "state": "urlInfo1724138417665",
+        "claimsLocales": "en",
+        "uiLocales": "en-US"
 }'
       output: '{
    "errors": [
@@ -327,18 +327,18 @@ OAuthDetailsRequestV3Neg:
       inputTemplate: signup/OAuthDetailsRequestV3NegTC/OAuthDetailsRequestNegTC
       outputTemplate: signup/error
       input: '{
-      	"requestTime": $TIMESTAMP$,
-      	"clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
-      	"scope": null,
-      	"responseType": "code",
-      	"redirectUri": "$IDPREDIRECTURI$",
-      	"display": "popup",
-      	"prompt": "login",
-      	"acrValues": "mosip:idp:acr:generated-code",
-      	"nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
-      	"state": "urlInfo1724138417665",
-      	"claimsLocales": "en",
-      	"uiLocales": "en-US"
+        "requestTime": $TIMESTAMP$,
+        "clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
+        "scope": null,
+        "responseType": "code",
+        "redirectUri": "$IDPREDIRECTURI$",
+        "display": "popup",
+        "prompt": "login",
+        "acrValues": "mosip:idp:acr:generated-code",
+        "nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
+        "state": "urlInfo1724138417665",
+        "claimsLocales": "en",
+        "uiLocales": "en-US"
 }'
       output: '{
    "errors": [
@@ -356,18 +356,18 @@ OAuthDetailsRequestV3Neg:
       inputTemplate: signup/OAuthDetailsRequestV3NegTC/OAuthDetailsRequestNegTC
       outputTemplate: signup/error
       input: '{
-      	"requestTime": $TIMESTAMP$,
-      	"clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
-      	"scope": "",
-      	"responseType": "code",
-      	"redirectUri": "$IDPREDIRECTURI$",
-      	"display": "popup",
-      	"prompt": "login",
-      	"acrValues": "mosip:idp:acr:generated-code",
-      	"nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
-      	"state": "urlInfo1724138417665",
-      	"claimsLocales": "en",
-      	"uiLocales": "en-US"
+        "requestTime": $TIMESTAMP$,
+        "clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
+        "scope": "",
+        "responseType": "code",
+        "redirectUri": "$IDPREDIRECTURI$",
+        "display": "popup",
+        "prompt": "login",
+        "acrValues": "mosip:idp:acr:generated-code",
+        "nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
+        "state": "urlInfo1724138417665",
+        "claimsLocales": "en",
+        "uiLocales": "en-US"
 }'
       output: '{
    "errors": [
@@ -385,18 +385,18 @@ OAuthDetailsRequestV3Neg:
       inputTemplate: signup/OAuthDetailsRequestV3NegTC/OAuthDetailsRequestNegTC
       outputTemplate: signup/error
       input: '{
-      	"requestTime": "$TIMESTAMP$",
-      	"clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
-      	"scope": " ",
-      	"responseType": "code",
-      	"redirectUri": "$IDPREDIRECTURI$",
-      	"display": "popup",
-      	"prompt": "login",
-      	"acrValues": "mosip:idp:acr:generated-code",
-      	"nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
-      	"state": "urlInfo1724138417665",
-      	"claimsLocales": "en",
-      	"uiLocales": "en-US"
+        "requestTime": "$TIMESTAMP$",
+        "clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
+        "scope": " ",
+        "responseType": "code",
+        "redirectUri": "$IDPREDIRECTURI$",
+        "display": "popup",
+        "prompt": "login",
+        "acrValues": "mosip:idp:acr:generated-code",
+        "nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
+        "state": "urlInfo1724138417665",
+        "claimsLocales": "en",
+        "uiLocales": "en-US"
 }'
       output: '{
    "errors": [
@@ -414,18 +414,18 @@ OAuthDetailsRequestV3Neg:
       inputTemplate: signup/OAuthDetailsRequestV3NegTC/OAuthDetailsRequestNegTC
       outputTemplate: signup/error
       input: '{
-      	"requestTime": "$TIMESTAMP$",
-      	"clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
-      	"scope": "$REMOVE$",
-      	"responseType": "code",
-      	"redirectUri": "$IDPREDIRECTURI$",
-      	"display": "popup",
-      	"prompt": "login",
-      	"acrValues": "mosip:idp:acr:generated-code",
-      	"nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
-      	"state": "urlInfo1724138417665",
-      	"claimsLocales": "en",
-      	"uiLocales": "en-US"
+        "requestTime": "$TIMESTAMP$",
+        "clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
+        "scope": "$REMOVE$",
+        "responseType": "code",
+        "redirectUri": "$IDPREDIRECTURI$",
+        "display": "popup",
+        "prompt": "login",
+        "acrValues": "mosip:idp:acr:generated-code",
+        "nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
+        "state": "urlInfo1724138417665",
+        "claimsLocales": "en",
+        "uiLocales": "en-US"
 }'
       output: '{
    "errors": [
@@ -443,18 +443,18 @@ OAuthDetailsRequestV3Neg:
       inputTemplate: signup/OAuthDetailsRequestV3NegTC/OAuthDetailsRequestNegTC
       outputTemplate: signup/error
       input: '{
-      	"requestTime": "$TIMESTAMP$",
-      	"clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
-      	"scope": "openid profile",
-      	"responseType": "tfyjii",
-      	"redirectUri": "$IDPREDIRECTURI$",
-      	"display": "popup",
-      	"prompt": "login",
-      	"acrValues": "mosip:idp:acr:generated-code",
-      	"nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
-      	"state": "urlInfo1724138417665",
-      	"claimsLocales": "en",
-      	"uiLocales": "en-US"
+        "requestTime": "$TIMESTAMP$",
+        "clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
+        "scope": "openid profile",
+        "responseType": "tfyjii",
+        "redirectUri": "$IDPREDIRECTURI$",
+        "display": "popup",
+        "prompt": "login",
+        "acrValues": "mosip:idp:acr:generated-code",
+        "nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
+        "state": "urlInfo1724138417665",
+        "claimsLocales": "en",
+        "uiLocales": "en-US"
 }'
       output: '{
    "errors": [
@@ -472,18 +472,18 @@ OAuthDetailsRequestV3Neg:
       inputTemplate: signup/OAuthDetailsRequestV3NegTC/OAuthDetailsRequestNegTC
       outputTemplate: signup/error
       input: '{
-      	"requestTime": $TIMESTAMP$,
-      	"clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
-      	"scope": "openid profile",
-      	"responseType": null,
-      	"redirectUri": "$IDPREDIRECTURI$",
-      	"display": "popup",
-      	"prompt": "login",
-      	"acrValues": "mosip:idp:acr:generated-code",
-      	"nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
-      	"state": "urlInfo1724138417665",
-      	"claimsLocales": "en",
-      	"uiLocales": "en-US"
+        "requestTime": $TIMESTAMP$,
+        "clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
+        "scope": "openid profile",
+        "responseType": null,
+        "redirectUri": "$IDPREDIRECTURI$",
+        "display": "popup",
+        "prompt": "login",
+        "acrValues": "mosip:idp:acr:generated-code",
+        "nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
+        "state": "urlInfo1724138417665",
+        "claimsLocales": "en",
+        "uiLocales": "en-US"
 }'
       output: '{
    "errors": [
@@ -501,18 +501,18 @@ OAuthDetailsRequestV3Neg:
       inputTemplate: signup/OAuthDetailsRequestV3NegTC/OAuthDetailsRequestNegTC
       outputTemplate: signup/error
       input: '{
-      	"requestTime": $TIMESTAMP$,
-      	"clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
-      	"scope": "openid profile",
-      	"responseType": "",
-      	"redirectUri": "$IDPREDIRECTURI$",
-      	"display": "popup",
-      	"prompt": "login",
-      	"acrValues": "mosip:idp:acr:generated-code",
-      	"nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
-      	"state": "urlInfo1724138417665",
-      	"claimsLocales": "en",
-      	"uiLocales": "en-US"
+        "requestTime": $TIMESTAMP$,
+        "clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
+        "scope": "openid profile",
+        "responseType": "",
+        "redirectUri": "$IDPREDIRECTURI$",
+        "display": "popup",
+        "prompt": "login",
+        "acrValues": "mosip:idp:acr:generated-code",
+        "nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
+        "state": "urlInfo1724138417665",
+        "claimsLocales": "en",
+        "uiLocales": "en-US"
 }'
       output: '{
    "errors": [
@@ -530,18 +530,18 @@ OAuthDetailsRequestV3Neg:
       inputTemplate: signup/OAuthDetailsRequestV3NegTC/OAuthDetailsRequestNegTC
       outputTemplate: signup/error
       input: '{
-      	"requestTime": "$TIMESTAMP$",
-      	"clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
-      	"scope": "openid profile",
-      	"responseType": " ",
-      	"redirectUri": "$IDPREDIRECTURI$",
-      	"display": "popup",
-      	"prompt": "login",
-      	"acrValues": "mosip:idp:acr:generated-code",
-      	"nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
-      	"state": "urlInfo1724138417665",
-      	"claimsLocales": "en",
-      	"uiLocales": "en-US"
+        "requestTime": "$TIMESTAMP$",
+        "clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
+        "scope": "openid profile",
+        "responseType": " ",
+        "redirectUri": "$IDPREDIRECTURI$",
+        "display": "popup",
+        "prompt": "login",
+        "acrValues": "mosip:idp:acr:generated-code",
+        "nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
+        "state": "urlInfo1724138417665",
+        "claimsLocales": "en",
+        "uiLocales": "en-US"
 }'
       output: '{
    "errors": [
@@ -559,18 +559,18 @@ OAuthDetailsRequestV3Neg:
       inputTemplate: signup/OAuthDetailsRequestV3NegTC/OAuthDetailsRequestNegTC
       outputTemplate: signup/error
       input: '{
-      	"requestTime": "$TIMESTAMP$",
-      	"clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
-      	"scope": "openid profile",
-      	"responseType": "$REMOVE$",
-      	"redirectUri": "$IDPREDIRECTURI$",
-      	"display": "popup",
-      	"prompt": "login",
-      	"acrValues": "mosip:idp:acr:generated-code",
-      	"nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
-      	"state": "urlInfo1724138417665",
-      	"claimsLocales": "en",
-      	"uiLocales": "en-US"
+        "requestTime": "$TIMESTAMP$",
+        "clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
+        "scope": "openid profile",
+        "responseType": "$REMOVE$",
+        "redirectUri": "$IDPREDIRECTURI$",
+        "display": "popup",
+        "prompt": "login",
+        "acrValues": "mosip:idp:acr:generated-code",
+        "nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
+        "state": "urlInfo1724138417665",
+        "claimsLocales": "en",
+        "uiLocales": "en-US"
 }'
       output: '{
    "errors": [
@@ -588,18 +588,18 @@ OAuthDetailsRequestV3Neg:
       inputTemplate: signup/OAuthDetailsRequestV3NegTC/OAuthDetailsRequestNegTC
       outputTemplate: signup/error
       input: '{
-      	"requestTime": "$TIMESTAMP$",
-      	"clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
-      	"scope": "openid profile",
-      	"responseType": "code",
-      	"redirectUri": "adaklfjfods",
-      	"display": "popup",
-      	"prompt": "login",
-      	"acrValues": "mosip:idp:acr:generated-code",
-      	"nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
-      	"state": "urlInfo1724138417665",
-      	"claimsLocales": "en",
-      	"uiLocales": "en-US"
+        "requestTime": "$TIMESTAMP$",
+        "clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
+        "scope": "openid profile",
+        "responseType": "code",
+        "redirectUri": "adaklfjfods",
+        "display": "popup",
+        "prompt": "login",
+        "acrValues": "mosip:idp:acr:generated-code",
+        "nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
+        "state": "urlInfo1724138417665",
+        "claimsLocales": "en",
+        "uiLocales": "en-US"
 }'
       output: '{
    "errors": [
@@ -617,18 +617,18 @@ OAuthDetailsRequestV3Neg:
       inputTemplate: signup/OAuthDetailsRequestV3NegTC/OAuthDetailsRequestNegTC
       outputTemplate: signup/error
       input: '{
-      	"requestTime": $TIMESTAMP$,
-      	"clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
-      	"scope": "openid profile",
-      	"responseType": "code",
-      	"redirectUri": null,
-      	"display": "popup",
-      	"prompt": "login",
-      	"acrValues": "mosip:idp:acr:generated-code",
-      	"nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
-      	"state": "urlInfo1724138417665",
-      	"claimsLocales": "en",
-      	"uiLocales": "en-US"
+        "requestTime": $TIMESTAMP$,
+        "clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
+        "scope": "openid profile",
+        "responseType": "code",
+        "redirectUri": null,
+        "display": "popup",
+        "prompt": "login",
+        "acrValues": "mosip:idp:acr:generated-code",
+        "nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
+        "state": "urlInfo1724138417665",
+        "claimsLocales": "en",
+        "uiLocales": "en-US"
 }'
       output: '{
    "errors": [
@@ -646,18 +646,18 @@ OAuthDetailsRequestV3Neg:
       inputTemplate: signup/OAuthDetailsRequestV3NegTC/OAuthDetailsRequestNegTC
       outputTemplate: signup/error
       input: '{
-      	"requestTime": $TIMESTAMP$,
-      	"clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
-      	"scope": "openid profile",
-      	"responseType": "code",
-      	"redirectUri": "",
-      	"display": "popup",
-      	"prompt": "login",
-      	"acrValues": "mosip:idp:acr:generated-code",
-      	"nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
-      	"state": "urlInfo1724138417665",
-      	"claimsLocales": "en",
-      	"uiLocales": "en-US"
+        "requestTime": $TIMESTAMP$,
+        "clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
+        "scope": "openid profile",
+        "responseType": "code",
+        "redirectUri": "",
+        "display": "popup",
+        "prompt": "login",
+        "acrValues": "mosip:idp:acr:generated-code",
+        "nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
+        "state": "urlInfo1724138417665",
+        "claimsLocales": "en",
+        "uiLocales": "en-US"
 }'
       output: '{
    "errors": [
@@ -675,18 +675,18 @@ OAuthDetailsRequestV3Neg:
       inputTemplate: signup/OAuthDetailsRequestV3NegTC/OAuthDetailsRequestNegTC
       outputTemplate: signup/error
       input: '{
-      	"requestTime": "$TIMESTAMP$",
-      	"clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
-      	"scope": "openid profile",
-      	"responseType": "code",
-      	"redirectUri": " ",
-      	"display": "popup",
-      	"prompt": "login",
-      	"acrValues": "mosip:idp:acr:generated-code",
-      	"nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
-      	"state": "urlInfo1724138417665",
-      	"claimsLocales": "en",
-      	"uiLocales": "en-US"
+        "requestTime": "$TIMESTAMP$",
+        "clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
+        "scope": "openid profile",
+        "responseType": "code",
+        "redirectUri": " ",
+        "display": "popup",
+        "prompt": "login",
+        "acrValues": "mosip:idp:acr:generated-code",
+        "nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
+        "state": "urlInfo1724138417665",
+        "claimsLocales": "en",
+        "uiLocales": "en-US"
 }'
       output: '{
    "errors": [
@@ -704,18 +704,18 @@ OAuthDetailsRequestV3Neg:
       inputTemplate: signup/OAuthDetailsRequestV3NegTC/OAuthDetailsRequestNegTC
       outputTemplate: signup/error
       input: '{
-      	"requestTime": "$TIMESTAMP$",
-      	"clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
-      	"scope": "openid profile",
-      	"responseType": "code",
-      	"redirectUri": "$REMOVE$",
-      	"display": "popup",
-      	"prompt": "login",
-      	"acrValues": "mosip:idp:acr:generated-code",
-      	"nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
-      	"state": "urlInfo1724138417665",
-      	"claimsLocales": "en",
-      	"uiLocales": "en-US"
+        "requestTime": "$TIMESTAMP$",
+        "clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
+        "scope": "openid profile",
+        "responseType": "code",
+        "redirectUri": "$REMOVE$",
+        "display": "popup",
+        "prompt": "login",
+        "acrValues": "mosip:idp:acr:generated-code",
+        "nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
+        "state": "urlInfo1724138417665",
+        "claimsLocales": "en",
+        "uiLocales": "en-US"
 }'
       output: '{
    "errors": [
@@ -733,18 +733,18 @@ OAuthDetailsRequestV3Neg:
       inputTemplate: signup/OAuthDetailsRequestV3NegTC/OAuthDetailsRequestNegTC
       outputTemplate: signup/error
       input: '{
-      	"requestTime": "$TIMESTAMP$",
-      	"clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
-      	"scope": "openid profile",
-      	"responseType": "code",
-      	"redirectUri": "$IDPREDIRECTURI$",
-      	"display": "ajodinvalidoaoi",
-      	"prompt": "login",
-      	"acrValues": "mosip:idp:acr:generated-code",
-      	"nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
-      	"state": "urlInfo1724138417665",
-      	"claimsLocales": "en",
-      	"uiLocales": "en-US"
+        "requestTime": "$TIMESTAMP$",
+        "clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
+        "scope": "openid profile",
+        "responseType": "code",
+        "redirectUri": "$IDPREDIRECTURI$",
+        "display": "ajodinvalidoaoi",
+        "prompt": "login",
+        "acrValues": "mosip:idp:acr:generated-code",
+        "nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
+        "state": "urlInfo1724138417665",
+        "claimsLocales": "en",
+        "uiLocales": "en-US"
 }'
       output: '{
    "errors": [
@@ -762,18 +762,18 @@ OAuthDetailsRequestV3Neg:
       inputTemplate: signup/OAuthDetailsRequestV3NegTC/OAuthDetailsRequestNegTC
       outputTemplate: signup/error
       input: '{
-      	"requestTime": "$TIMESTAMP$",
-      	"clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
-      	"scope": "openid profile",
-      	"responseType": "code",
-      	"redirectUri": "$IDPREDIRECTURI$",
-      	"display": "popup",
-      	"prompt": "oaidnoadi",
-      	"acrValues": "mosip:idp:acr:generated-code",
-      	"nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
-      	"state": "urlInfo1724138417665",
-      	"claimsLocales": "en",
-      	"uiLocales": "en-US"
+        "requestTime": "$TIMESTAMP$",
+        "clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
+        "scope": "openid profile",
+        "responseType": "code",
+        "redirectUri": "$IDPREDIRECTURI$",
+        "display": "popup",
+        "prompt": "oaidnoadi",
+        "acrValues": "mosip:idp:acr:generated-code",
+        "nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
+        "state": "urlInfo1724138417665",
+        "claimsLocales": "en",
+        "uiLocales": "en-US"
 }'
       output: '{
    "errors": [
@@ -782,6 +782,41 @@ OAuthDetailsRequestV3Neg:
       "errorMessage": "request.prompt: invalid_prompt"
     }
   ]
+}'
+   Signup_ESignet_OAuthDetailsRequest_V3_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid:
+      endPoint: /v1/esignet/authorization/v3/oauth-details
+      description: To get OAuthDetails with all valid data
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/OAuthDetailsRequestV3/OAuthDetailsWithClaimValueRequest
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
+        "scope": "openid profile",
+        "responseType": "code",
+        "redirectUri": "$IDPREDIRECTURI$",
+        "display": "popup",
+        "prompt": "login",
+        "acrValues": "mosip:idp:acr:generated-code",
+        "nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
+        "state": "urlInfo1724138417665",
+        "claimsLocales": "en",
+        "uiLocales": "en-US",
+        "trust_framework": ["de_aml","jp_aml"],
+        "assurance_level": "high",
+        "max_age": 63113852,
+        "evidence_type": "document",
+        "evidence_method": "test",
+        "given_name": ["automation", "test"],
+        "purpose": "Name given by user",
+        "name_value": "automation",
+        "name_values": ["ab","cd"],
+        "phone_number": "1234567890",
+        "email_essential": true 
+}'
+      output: '{
+       
 }'
    Signup_ESignet_OAuthDetailsRequest_V3_with_null_VerifiedClaim_Neg:
       endPoint: /v1/esignet/authorization/v3/oauth-details
@@ -792,31 +827,31 @@ OAuthDetailsRequestV3Neg:
       inputTemplate: signup/OAuthDetailsRequestV3NegTC/OAuthDetailsRequestNeg
       outputTemplate: signup/error
       input: '{
-		"requestTime": "$TIMESTAMP$",
-	    "clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
-	    "scope": "openid profile",
-	    "responseType": "code",
-	    "redirectUri": "$IDPREDIRECTURI$",
-	    "display": "popup",
-	    "prompt": "login",
-	    "acrValues": "mosip:idp:acr:generated-code",
-	    "nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
-	    "state": "urlInfo1724138417665",
-	    "claimsLocales": "en",
-	    "uiLocales": "en-US",
-	    "userinfo_name_essential": true,
-	    "userinfo_phone_number_essential": false,
-	    "trust_framework": null,
-	    "assurance_level": null,
-	    "max_age": null,
-	    "evidence_type": null,
-	    "evidence_method": null,
-	    "given_name_values": null,
-	    "purpose": null,
-	    "given_name_essential": true,
-	    "name_value": null,
-	    "phone_number": null,
-	    "email_essential": false
+        "requestTime": "$TIMESTAMP$",
+        "clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
+        "scope": "openid profile",
+        "responseType": "code",
+        "redirectUri": "$IDPREDIRECTURI$",
+        "display": "popup",
+        "prompt": "login",
+        "acrValues": "mosip:idp:acr:generated-code",
+        "nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
+        "state": "urlInfo1724138417665",
+        "claimsLocales": "en",
+        "uiLocales": "en-US",
+        "userinfo_name_essential": true,
+        "userinfo_phone_number_essential": false,
+        "trust_framework": null,
+        "assurance_level": null,
+        "max_age": null,
+        "evidence_type": null,
+        "evidence_method": null,
+        "given_name_values": null,
+        "purpose": null,
+        "given_name_essential": true,
+        "name_value": null,
+        "phone_number": null,
+        "email_essential": false
 }'
       output: '{
    "errors": [
@@ -835,31 +870,31 @@ OAuthDetailsRequestV3Neg:
       inputTemplate: signup/OAuthDetailsRequestV3NegTC/OAuthDetailsRequestNeg
       outputTemplate: signup/error
       input: '{
-		"requestTime": "$TIMESTAMP$",
-		"clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
-		"scope": "openid profile",
-		"responseType": "code",
-		"redirectUri": "$IDPREDIRECTURI$",
-		"display": "popup",
-		"prompt": "login",
-		"acrValues": "mosip:idp:acr:generated-code",
-		"nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
-		"state": "urlInfo1724138417665",
-		"claimsLocales": "en",
-		"uiLocales": "en-US",
-		"userinfo_name_essential": true,
-		"userinfo_phone_number_essential": false,
-		"trust_framework": null,
-		"assurance_level": null,
-		"max_age": null,
-		"evidence_type": null,
-		"evidence_method": null,
-		"given_name_values": "def",
-		"purpose": "login",
-		"given_name_essential": true,
-		"name_value": "abc",
-		"phone_number": 123456789,
-		"email_essential": false
+        "requestTime": "$TIMESTAMP$",
+        "clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
+        "scope": "openid profile",
+        "responseType": "code",
+        "redirectUri": "$IDPREDIRECTURI$",
+        "display": "popup",
+        "prompt": "login",
+        "acrValues": "mosip:idp:acr:generated-code",
+        "nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
+        "state": "urlInfo1724138417665",
+        "claimsLocales": "en",
+        "uiLocales": "en-US",
+        "userinfo_name_essential": true,
+        "userinfo_phone_number_essential": false,
+        "trust_framework": null,
+        "assurance_level": null,
+        "max_age": null,
+        "evidence_type": null,
+        "evidence_method": null,
+        "given_name_values": "def",
+        "purpose": "login",
+        "given_name_essential": true,
+        "name_value": "abc",
+        "phone_number": 123456789,
+        "email_essential": false
 }'
       output: '{
    "errors": [
@@ -878,31 +913,31 @@ OAuthDetailsRequestV3Neg:
       inputTemplate: signup/OAuthDetailsRequestV3NegTC/OAuthDetailsRequestNeg
       outputTemplate: signup/error
       input: '{
-		"requestTime": "$TIMESTAMP$",
-		"clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
-		"scope": "openid profile",
-		"responseType": "code",
-		"redirectUri": "$IDPREDIRECTURI$",
-		"display": "popup",
-		"prompt": "login",
-		"acrValues": "mosip:idp:acr:generated-code",
-		"nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
-		"state": "urlInfo1724138417665",
-		"claimsLocales": "en",
-		"uiLocales": "en-US",
-		"userinfo_name_essential": true,
-		"userinfo_phone_number_essential": false,
-		"trust_framework": "de_aml",
-		"assurance_level": "high",
-		"max_age": 63113852,
-		"evidence_type": "document",
-		"evidence_method": "test",
-		"given_name_values": null,
-		"purpose": null,
-		"given_name_essential": null,
-		"name_value": null,
-		"phone_number": null,
-		"email_essential": null
+        "requestTime": "$TIMESTAMP$",
+        "clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
+        "scope": "openid profile",
+        "responseType": "code",
+        "redirectUri": "$IDPREDIRECTURI$",
+        "display": "popup",
+        "prompt": "login",
+        "acrValues": "mosip:idp:acr:generated-code",
+        "nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
+        "state": "urlInfo1724138417665",
+        "claimsLocales": "en",
+        "uiLocales": "en-US",
+        "userinfo_name_essential": true,
+        "userinfo_phone_number_essential": false,
+        "trust_framework": "de_aml",
+        "assurance_level": "high",
+        "max_age": 63113852,
+        "evidence_type": "document",
+        "evidence_method": "test",
+        "given_name_values": null,
+        "purpose": null,
+        "given_name_essential": null,
+        "name_value": null,
+        "phone_number": null,
+        "email_essential": null
 }'
       output: '{
    "errors": [
@@ -921,31 +956,31 @@ OAuthDetailsRequestV3Neg:
       inputTemplate: signup/OAuthDetailsRequestV3NegTC/OAuthDetailsRequestNeg
       outputTemplate: signup/error
       input: '{
-		"requestTime": "$TIMESTAMP$",
-		"clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
-		"scope": "openid profile",
-		"responseType": "code",
-		"redirectUri": "$IDPREDIRECTURI$",
-		"display": "popup",
-		"prompt": "login",
-		"acrValues": "mosip:idp:acr:generated-code",
-		"nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
-		"state": "urlInfo1724138417665",
-		"claimsLocales": "en",
-		"uiLocales": "en-US",
-		"userinfo_name_essential": true,
-		"userinfo_phone_number_essential": false,
-		"trust_framework": "de_aml",
-		"assurance_level": "high",
-		"max_age": 63113852,
-		"evidence_type": "document",
-		"evidence_method": "test",
-		"given_name_values": "",
-		"purpose": "",
-		"given_name_essential": "",
-		"name_value": "",
-		"phone_number": "",
-		"email_essential": ""
+        "requestTime": "$TIMESTAMP$",
+        "clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
+        "scope": "openid profile",
+        "responseType": "code",
+        "redirectUri": "$IDPREDIRECTURI$",
+        "display": "popup",
+        "prompt": "login",
+        "acrValues": "mosip:idp:acr:generated-code",
+        "nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
+        "state": "urlInfo1724138417665",
+        "claimsLocales": "en",
+        "uiLocales": "en-US",
+        "userinfo_name_essential": true,
+        "userinfo_phone_number_essential": false,
+        "trust_framework": "de_aml",
+        "assurance_level": "high",
+        "max_age": 63113852,
+        "evidence_type": "document",
+        "evidence_method": "test",
+        "given_name_values": "",
+        "purpose": "",
+        "given_name_essential": "",
+        "name_value": "",
+        "phone_number": "",
+        "email_essential": ""
 }'
       output: '{
    "errors": [
@@ -964,31 +999,31 @@ OAuthDetailsRequestV3Neg:
       inputTemplate: signup/OAuthDetailsRequestV3NegTC/OAuthDetailsRequestNeg
       outputTemplate: signup/error
       input: '{
-		"requestTime": "$TIMESTAMP$",
-		"clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
-		"scope": "openid profile",
-		"responseType": "code",
-		"redirectUri": "$IDPREDIRECTURI$",
-		"display": "popup",
-		"prompt": "login",
-		"acrValues": "mosip:idp:acr:generated-code",
-		"nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
-		"state": "urlInfo1724138417665",
-		"claimsLocales": "en",
-		"uiLocales": "en-US",
-		"userinfo_name_essential": true,
-		"userinfo_phone_number_essential": false,
-		"trust_framework": "de_aml",
-		"assurance_level": "high",
-		"max_age": 63113852,
-		"evidence_type": "document",
-		"evidence_method": "test",
-		"given_name_values": " ",
-		"purpose": " ",
-		"given_name_essential": false,
-		"name_value": " ",
-		"phone_number": " ",
-		"email_essential": false
+        "requestTime": "$TIMESTAMP$",
+        "clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
+        "scope": "openid profile",
+        "responseType": "code",
+        "redirectUri": "$IDPREDIRECTURI$",
+        "display": "popup",
+        "prompt": "login",
+        "acrValues": "mosip:idp:acr:generated-code",
+        "nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
+        "state": "urlInfo1724138417665",
+        "claimsLocales": "en",
+        "uiLocales": "en-US",
+        "userinfo_name_essential": true,
+        "userinfo_phone_number_essential": false,
+        "trust_framework": "de_aml",
+        "assurance_level": "high",
+        "max_age": 63113852,
+        "evidence_type": "document",
+        "evidence_method": "test",
+        "given_name_values": " ",
+        "purpose": " ",
+        "given_name_essential": false,
+        "name_value": " ",
+        "phone_number": " ",
+        "email_essential": false
 }'
       output: '{
    "errors": [
@@ -1007,31 +1042,31 @@ OAuthDetailsRequestV3Neg:
       inputTemplate: signup/OAuthDetailsRequestV3NegTC/OAuthDetailsRequestNeg
       outputTemplate: signup/error
       input: '{
-		"requestTime": "$TIMESTAMP$",
-		"clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
-		"scope": "openid profile",
-		"responseType": "code",
-		"redirectUri": "$IDPREDIRECTURI$",
-		"display": "popup",
-		"prompt": "login",
-		"acrValues": "mosip:idp:acr:generated-code",
-		"nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
-		"state": "urlInfo1724138417665",
-		"claimsLocales": "en",
-		"uiLocales": "en-US",
-		"userinfo_name_essential": true,
-		"userinfo_phone_number_essential": false,
-		"trust_framework": "",
-		"assurance_level": "",
-		"max_age": "",
-		"evidence_type": "",
-		"evidence_method": "",
-		"given_name_values": "def",
-		"purpose": "login",
-		"given_name_essential": true,
-		"name_value": "abc",
-		"phone_number": 123456789,
-		"email_essential": false
+        "requestTime": "$TIMESTAMP$",
+        "clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
+        "scope": "openid profile",
+        "responseType": "code",
+        "redirectUri": "$IDPREDIRECTURI$",
+        "display": "popup",
+        "prompt": "login",
+        "acrValues": "mosip:idp:acr:generated-code",
+        "nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
+        "state": "urlInfo1724138417665",
+        "claimsLocales": "en",
+        "uiLocales": "en-US",
+        "userinfo_name_essential": true,
+        "userinfo_phone_number_essential": false,
+        "trust_framework": "",
+        "assurance_level": "",
+        "max_age": "",
+        "evidence_type": "",
+        "evidence_method": "",
+        "given_name_values": "def",
+        "purpose": "login",
+        "given_name_essential": true,
+        "name_value": "abc",
+        "phone_number": 123456789,
+        "email_essential": false
 }'
       output: '{
    "errors": [
@@ -1050,31 +1085,31 @@ OAuthDetailsRequestV3Neg:
       inputTemplate: signup/OAuthDetailsRequestV3NegTC/OAuthDetailsRequestNeg
       outputTemplate: signup/error
       input: '{
-		"requestTime": "$TIMESTAMP$",
-		"clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
-		"scope": "openid profile",
-		"responseType": "code",
-		"redirectUri": "$IDPREDIRECTURI$",
-		"display": "popup",
-		"prompt": "login",
-		"acrValues": "mosip:idp:acr:generated-code",
-		"nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
-		"state": "urlInfo1724138417665",
-		"claimsLocales": "en",
-		"uiLocales": "en-US",
-		"userinfo_name_essential": true,
-		"userinfo_phone_number_essential": false,
-		"trust_framework": " ",
-		"assurance_level": " ",
-		"max_age": " ",
-		"evidence_type": " ",
-		"evidence_method": " ",
-		"given_name_values": "def",
-		"purpose": "login",
-		"given_name_essential": true,
-		"name_value": "abc",
-		"phone_number": 123456789,
-		"email_essential": false
+        "requestTime": "$TIMESTAMP$",
+        "clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
+        "scope": "openid profile",
+        "responseType": "code",
+        "redirectUri": "$IDPREDIRECTURI$",
+        "display": "popup",
+        "prompt": "login",
+        "acrValues": "mosip:idp:acr:generated-code",
+        "nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
+        "state": "urlInfo1724138417665",
+        "claimsLocales": "en",
+        "uiLocales": "en-US",
+        "userinfo_name_essential": true,
+        "userinfo_phone_number_essential": false,
+        "trust_framework": " ",
+        "assurance_level": " ",
+        "max_age": " ",
+        "evidence_type": " ",
+        "evidence_method": " ",
+        "given_name_values": "def",
+        "purpose": "login",
+        "given_name_essential": true,
+        "name_value": "abc",
+        "phone_number": 123456789,
+        "email_essential": false
 }'
       output: '{
    "errors": [
@@ -1093,31 +1128,31 @@ OAuthDetailsRequestV3Neg:
       inputTemplate: signup/OAuthDetailsRequestV3NegTC/OAuthDetailsRequestNeg
       outputTemplate: signup/error
       input: '{
-		"requestTime": "$TIMESTAMP$",
-		"clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
-		"scope": "openid profile",
-		"responseType": "code",
-		"redirectUri": "$IDPREDIRECTURI$",
-		"display": "popup",
-		"prompt": "login",
-		"acrValues": "mosip:idp:acr:generated-code",
-		"nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
-		"state": "urlInfo1724138417665",
-		"claimsLocales": "en",
-		"uiLocales": "en-US",
-		"userinfo_name_essential": true,
-		"userinfo_phone_number_essential": false,
-		"trust_framework": " ",
-		"assurance_level": " ",
-		"max_age": " ",
-		"evidence_type": " ",
-		"evidence_method": " ",
-		"given_name_values": " ",
-		"purpose": " ",
-		"given_name_essential": false,
-		"name_value": " ",
-		"phone_number": " ",
-		"email_essential": false
+        "requestTime": "$TIMESTAMP$",
+        "clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
+        "scope": "openid profile",
+        "responseType": "code",
+        "redirectUri": "$IDPREDIRECTURI$",
+        "display": "popup",
+        "prompt": "login",
+        "acrValues": "mosip:idp:acr:generated-code",
+        "nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
+        "state": "urlInfo1724138417665",
+        "claimsLocales": "en",
+        "uiLocales": "en-US",
+        "userinfo_name_essential": true,
+        "userinfo_phone_number_essential": false,
+        "trust_framework": " ",
+        "assurance_level": " ",
+        "max_age": " ",
+        "evidence_type": " ",
+        "evidence_method": " ",
+        "given_name_values": " ",
+        "purpose": " ",
+        "given_name_essential": false,
+        "name_value": " ",
+        "phone_number": " ",
+        "email_essential": false
 }'
       output: '{
    "errors": [
@@ -1136,31 +1171,31 @@ OAuthDetailsRequestV3Neg:
       inputTemplate: signup/OAuthDetailsRequestV3NegTC/OAuthDetailsRequestNeg
       outputTemplate: signup/error
       input: '{
-		"requestTime": "$TIMESTAMP$",
-		"clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
-		"scope": "openid profile",
-		"responseType": "code",
-		"redirectUri": "$IDPREDIRECTURI$",
-		"display": "popup",
-		"prompt": "login",
-		"acrValues": "mosip:idp:acr:generated-code",
-		"nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
-		"state": "urlInfo1724138417665",
-		"claimsLocales": "en",
-		"uiLocales": "en-US",
-		"userinfo_name_essential": true,
-		"userinfo_phone_number_essential": false,
-		"trust_framework": "",
-		"assurance_level": "",
-		"max_age": "",
-		"evidence_type": "",
-		"evidence_method": "",
-		"given_name_values": "",
-		"purpose": "",
-		"given_name_essential": "",
-		"name_value": "",
-		"phone_number": "",
-		"email_essential": ""
+        "requestTime": "$TIMESTAMP$",
+        "clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
+        "scope": "openid profile",
+        "responseType": "code",
+        "redirectUri": "$IDPREDIRECTURI$",
+        "display": "popup",
+        "prompt": "login",
+        "acrValues": "mosip:idp:acr:generated-code",
+        "nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
+        "state": "urlInfo1724138417665",
+        "claimsLocales": "en",
+        "uiLocales": "en-US",
+        "userinfo_name_essential": true,
+        "userinfo_phone_number_essential": false,
+        "trust_framework": "",
+        "assurance_level": "",
+        "max_age": "",
+        "evidence_type": "",
+        "evidence_method": "",
+        "given_name_values": "",
+        "purpose": "",
+        "given_name_essential": "",
+        "name_value": "",
+        "phone_number": "",
+        "email_essential": ""
 }'
       output: '{
    "errors": [
@@ -1179,32 +1214,32 @@ OAuthDetailsRequestV3Neg:
       inputTemplate: signup/OAuthDetailsRequestV3NegTC/OAuthDetailsRequestNeg2
       outputTemplate: signup/error
       input: '{
-		"requestTime": "$TIMESTAMP$",
-		"clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
-		"scope": "openid profile",
-		"responseType": "code",
-		"redirectUri": "$IDPREDIRECTURI$",
-		"display": "popup",
-		"prompt": "login",
-		"acrValues": "mosip:idp:acr:generated-code",
-		"nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
-		"state": "urlInfo1724138417665",
-		"claimsLocales": "en",
-		"uiLocales": "en-US",
-		"userinfo_name_essential": true,
-		"userinfo_phone_number_essential": false,
-		"verified_claims": true,
-		"trust_framework": "mosip",
-		"assurance_level": "abc",
-		"max_age": null,
-		"evidence_type": "abc",
-		"evidence_method": "abc",
-		"given_name_values": null,
-		"purpose": null,
-		"given_name_essential": false,
-		"name_value": null,
-		"phone_number": null,
-		"email_essential": null
+        "requestTime": "$TIMESTAMP$",
+        "clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
+        "scope": "openid profile",
+        "responseType": "code",
+        "redirectUri": "$IDPREDIRECTURI$",
+        "display": "popup",
+        "prompt": "login",
+        "acrValues": "mosip:idp:acr:generated-code",
+        "nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
+        "state": "urlInfo1724138417665",
+        "claimsLocales": "en",
+        "uiLocales": "en-US",
+        "userinfo_name_essential": true,
+        "userinfo_phone_number_essential": false,
+        "verified_claims": true,
+        "trust_framework": "mosip",
+        "assurance_level": "abc",
+        "max_age": null,
+        "evidence_type": "abc",
+        "evidence_method": "abc",
+        "given_name_values": null,
+        "purpose": null,
+        "given_name_essential": false,
+        "name_value": null,
+        "phone_number": null,
+        "email_essential": null
 }'
       output: '{
    "errors": [
@@ -1223,32 +1258,32 @@ OAuthDetailsRequestV3Neg:
       inputTemplate: signup/OAuthDetailsRequestV3NegTC/OAuthDetailsRequestNeg2
       outputTemplate: signup/error
       input: '{
-		"requestTime": "$TIMESTAMP$",
-		"clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
-		"scope": "openid profile",
-		"responseType": "code",
-		"redirectUri": "$IDPREDIRECTURI$",
-		"display": "popup",
-		"prompt": "login",
-		"acrValues": "mosip:idp:acr:generated-code",
-		"nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
-		"state": "urlInfo1724138417665",
-		"claimsLocales": "en",
-		"uiLocales": "en-US",
-		"userinfo_name_essential": true,
-		"userinfo_phone_number_essential": false,
-		"verified_claims": true,
-		"trust_framework": null,
-		"assurance_level": null,
-		"max_age": null,
-		"evidence_type": null,
-		"evidence_method": null,
-		"given_name_values": "abc",
-		"purpose": null,
-		"given_name_essential": false,
-		"name_value": null,
-		"phone_number": 12344567891,
-		"email_essential": false
+        "requestTime": "$TIMESTAMP$",
+        "clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
+        "scope": "openid profile",
+        "responseType": "code",
+        "redirectUri": "$IDPREDIRECTURI$",
+        "display": "popup",
+        "prompt": "login",
+        "acrValues": "mosip:idp:acr:generated-code",
+        "nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
+        "state": "urlInfo1724138417665",
+        "claimsLocales": "en",
+        "uiLocales": "en-US",
+        "userinfo_name_essential": true,
+        "userinfo_phone_number_essential": false,
+        "verified_claims": true,
+        "trust_framework": null,
+        "assurance_level": null,
+        "max_age": null,
+        "evidence_type": null,
+        "evidence_method": null,
+        "given_name_values": "abc",
+        "purpose": null,
+        "given_name_essential": false,
+        "name_value": null,
+        "phone_number": 12344567891,
+        "email_essential": false
 }'
       output: '{
    "errors": [
@@ -1267,31 +1302,31 @@ OAuthDetailsRequestV3Neg:
       inputTemplate: signup/OAuthDetailsRequestV3NegTC/OAuthDetailsRequestNeg
       outputTemplate: signup/error
       input: '{
-		"requestTime": "$TIMESTAMP$",
-		"clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
-		"scope": "openid profile",
-		"responseType": "code",
-		"redirectUri": "$IDPREDIRECTURI$",
-		"display": "popup",
-		"prompt": "login",
-		"acrValues": "mosip:idp:acr:generated-code",
-		"nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
-		"state": "urlInfo1724138417665",
-		"claimsLocales": "en",
-		"uiLocales": "en-US",
-		"userinfo_name_essential": true,
-		"userinfo_phone_number_essential": false,
-		"trust_framework": "de_aml",
-		"assurance_level": "high",
-		"max_age": 63113852,
-		"evidence_type": "document",
-		"evidence_method": "test",
-		"given_name_values": 10,
-		"purpose": "login",
-		"given_name_essential": true,
-		"name_value": "abc",
-		"phone_number": 123456789,
-		"email_essential": false
+        "requestTime": "$TIMESTAMP$",
+        "clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
+        "scope": "openid profile",
+        "responseType": "code",
+        "redirectUri": "$IDPREDIRECTURI$",
+        "display": "popup",
+        "prompt": "login",
+        "acrValues": "mosip:idp:acr:generated-code",
+        "nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
+        "state": "urlInfo1724138417665",
+        "claimsLocales": "en",
+        "uiLocales": "en-US",
+        "userinfo_name_essential": true,
+        "userinfo_phone_number_essential": false,
+        "trust_framework": "de_aml",
+        "assurance_level": "high",
+        "max_age": 63113852,
+        "evidence_type": "document",
+        "evidence_method": "test",
+        "given_name_values": 10,
+        "purpose": "login",
+        "given_name_essential": true,
+        "name_value": "abc",
+        "phone_number": 123456789,
+        "email_essential": false
 }'
       output: '{
    "errors": [
@@ -1310,32 +1345,32 @@ OAuthDetailsRequestV3Neg:
       inputTemplate: signup/OAuthDetailsRequestV3NegTC/OAuthDetailsRequestNeg2
       outputTemplate: signup/error
       input: '{
-		"requestTime": "$TIMESTAMP$",
-		"clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
-		"scope": "openid profile",
-		"responseType": "code",
-		"redirectUri": "$IDPREDIRECTURI$",
-		"display": "popup",
-		"prompt": "login",
-		"acrValues": "mosip:idp:acr:generated-code",
-		"nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
-		"state": "urlInfo1724138417665",
-		"claimsLocales": "en",
-		"uiLocales": "en-US",
-		"userinfo_name_essential": true,
-		"userinfo_phone_number_essential": false,
-		"verified_claims": false,
-		"trust_framework": null,
-		"assurance_level": null,
-		"max_age": null,
-		"evidence_type": null,
-		"evidence_method": null,
-		"given_name_values": "abc",
-		"purpose": null,
-		"given_name_essential": false,
-		"name_value": null,
-		"phone_number": 12344567891,
-		"email_essential": false
+        "requestTime": "$TIMESTAMP$",
+        "clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
+        "scope": "openid profile",
+        "responseType": "code",
+        "redirectUri": "$IDPREDIRECTURI$",
+        "display": "popup",
+        "prompt": "login",
+        "acrValues": "mosip:idp:acr:generated-code",
+        "nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
+        "state": "urlInfo1724138417665",
+        "claimsLocales": "en",
+        "uiLocales": "en-US",
+        "userinfo_name_essential": true,
+        "userinfo_phone_number_essential": false,
+        "verified_claims": false,
+        "trust_framework": null,
+        "assurance_level": null,
+        "max_age": null,
+        "evidence_type": null,
+        "evidence_method": null,
+        "given_name_values": "abc",
+        "purpose": null,
+        "given_name_essential": false,
+        "name_value": null,
+        "phone_number": 12344567891,
+        "email_essential": false
 }'
       output: '{
    "errors": [
@@ -1354,32 +1389,32 @@ OAuthDetailsRequestV3Neg:
       inputTemplate: signup/OAuthDetailsRequestV3NegTC/OAuthDetailsRequestNeg2
       outputTemplate: signup/error
       input: '{
-		"requestTime": "$TIMESTAMP$",
-		"clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
-		"scope": "openid profile",
-		"responseType": "code",
-		"redirectUri": "$IDPREDIRECTURI$",
-		"display": "popup",
-		"prompt": "login",
-		"acrValues": "mosip:idp:acr:generated-code",
-		"nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
-		"state": "urlInfo1724138417665",
-		"claimsLocales": "en",
-		"uiLocales": "en-US",
-		"userinfo_name_essential": true,
-		"userinfo_phone_number_essential": false,
-		"verified_claims": true,
-		"trust_framework": "abcde",
-		"assurance_level": "akc",
-		"max_age": 1234,
-		"evidence_type": "type",
-		"evidence_method": "method",
-		"given_name_values": "abc",
-		"purpose": "m",
-		"given_name_essential": false,
-		"name_value": "abc",
-		"phone_number": 12344567891,
-		"email_essential": false
+        "requestTime": "$TIMESTAMP$",
+        "clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
+        "scope": "openid profile",
+        "responseType": "code",
+        "redirectUri": "$IDPREDIRECTURI$",
+        "display": "popup",
+        "prompt": "login",
+        "acrValues": "mosip:idp:acr:generated-code",
+        "nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
+        "state": "urlInfo1724138417665",
+        "claimsLocales": "en",
+        "uiLocales": "en-US",
+        "userinfo_name_essential": true,
+        "userinfo_phone_number_essential": false,
+        "verified_claims": true,
+        "trust_framework": "abcde",
+        "assurance_level": "akc",
+        "max_age": 1234,
+        "evidence_type": "type",
+        "evidence_method": "method",
+        "given_name_values": "abc",
+        "purpose": "m",
+        "given_name_essential": false,
+        "name_value": "abc",
+        "phone_number": 12344567891,
+        "email_essential": false
 }'
       output: '{
    "errors": [
