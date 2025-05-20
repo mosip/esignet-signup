@@ -68,5 +68,13 @@ public class SignupConstants {
 	public static final String MOSIP_SIGNUP_IDREPO_MANDATORY_LANGUAGE = "mosip.signup.idrepo.mandatory-language";
 	
 	public static final String JSON_PROPERTY_STRING = "json-property";
+	
+	public static final String USE_PRE_CONFIGURED_OTP_STRING = "usePreConfiguredOtp";
+	
+	public static final String PRE_CONFIGURED_OTP_STRING = "preconfiguredOtp";
+	
+	public static final String TRUE_STRING = "true";
+	
+	public static final String ALL_ONE_OTP_STRING = "111111";
 
 }
