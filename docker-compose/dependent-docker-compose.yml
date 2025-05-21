@@ -11,7 +11,7 @@ services:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 
   mock-identity-system:
-    image: 'mosipdev/mock-identity-system:develop'
+    image: 'mosipdev/mock-identity-system:release-0.11.x'
     user: root
     ports:
       - 8082:8082
@@ -24,6 +24,7 @@ services:
       - MOSIP_MOCK_IDA_KYC_TRANSACTION_TIMEOUT_SECS=1200
       - MOSIP_MOCK_IDA_UPDATE_IDENTITY_NON_MANDATORY_FIELDS={"fullName","givenName","familyName","middleName","nickName","preferredUsername","gender","streetAddress","locality","region","country","pin","preferredLang","dateOfBirth","postalCode","encodedPhoto","email","phone","zoneInfo","locale","password"}
       - MOSIP_MOCK_IDA_IDENTITY_SCHEMA_URL=classpath:/mock-identity-signup-schema.json
+      - MOSIP_ESIGNET_HOST=localhost:8088
     depends_on:
       - database
 
@@ -54,7 +55,7 @@ services:
 
 
   esignet:
-    image: 'mosipdev/esignet-with-plugins:develop'
+    image: 'mosipdev/esignet-with-plugins:release-1.6.x'
     user: root
     ports:
       - 8088:8088
@@ -76,7 +77,7 @@ services:
       - mock-identity-system
 
   esignet-ui:
-    image: 'mosipdev/oidc-ui:develop'
+    image: 'mosipdev/oidc-ui:release-1.6.x'
     user: root
     ports:
       - 3000:3000
