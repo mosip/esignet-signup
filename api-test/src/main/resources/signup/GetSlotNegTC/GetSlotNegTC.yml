@@ -5,14 +5,13 @@ GetSlotNegTC:
       description: To get the slot ID to begin the video identity verification process without requestTime, Expecting error code in the response
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/GetSlotNegTC/GetSlotNegTC
       outputTemplate: signup/error
       input: '{
-      	"requestTime": "$REMOVE$",
-      	"idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_idvTransactionID$",
-      	"verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_id$",
-      	"consent": "AGREE"
+        "requestTime": "$REMOVE$",
+        "idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_idvTransactionID$",
+        "verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_id$",
+        "consent": "AGREE"
 }'
       output: '{
       "errors": [
@@ -29,14 +28,13 @@ GetSlotNegTC:
       description: To get the slot ID to begin the video identity verification process with empty value in requestTime, Expecting error code in the response
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/GetSlotNegTC/GetSlotNegTC
       outputTemplate: signup/error
       input: '{
-      	"requestTime": "",
-      	"idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_idvTransactionID$",
-      	"verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_id$",
-      	"consent": "AGREE"
+        "requestTime": "",
+        "idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_idvTransactionID$",
+        "verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_id$",
+        "consent": "AGREE"
 }'
       output: '{
       "errors": [
@@ -53,14 +51,13 @@ GetSlotNegTC:
       description: To get the slot ID to begin the video identity verification process with only space in requestTime, Expecting error code in the response
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/GetSlotNegTC/GetSlotNegTC
       outputTemplate: signup/error
       input: '{
-      	"requestTime": "       ",
-      	"idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_idvTransactionID$",
-      	"verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_id$",
-      	"consent": "AGREE"
+        "requestTime": "       ",
+        "idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_idvTransactionID$",
+        "verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_id$",
+        "consent": "AGREE"
 }'
       output: '{
       "errors": [
@@ -77,14 +74,13 @@ GetSlotNegTC:
       description: To get the slot ID to begin the video identity verification process with invalid value in requestTime, Expecting error code in the response
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/GetSlotNegTC/GetSlotNegTC
       outputTemplate: signup/error
       input: '{
-      	"requestTime": "ggasv541265 ",
-      	"idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_idvTransactionID$",
-      	"verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_id$",
-      	"consent": "AGREE"
+        "requestTime": "ggasv541265 ",
+        "idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_idvTransactionID$",
+        "verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_id$",
+        "consent": "AGREE"
 }'
       output: '{
       "errors": [
@@ -101,14 +97,13 @@ GetSlotNegTC:
       description: To get the slot ID to begin the video identity verification process with numeric value in requestTime, Expecting error code in the response
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/GetSlotNegTC/GetSlotNegTC
       outputTemplate: signup/error
       input: '{
-      	"requestTime": "67567541265",
-      	"idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_idvTransactionID$",
-      	"verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_id$",
-      	"consent": "AGREE"
+        "requestTime": "67567541265",
+        "idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_idvTransactionID$",
+        "verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_id$",
+        "consent": "AGREE"
 }'
       output: '{
       "errors": [
@@ -125,14 +120,13 @@ GetSlotNegTC:
       description: To get the slot ID to begin the video identity verification process with futureDate in requestTime, Expecting error code in the response
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/GetSlotNegTC/GetSlotNegTC
       outputTemplate: signup/error
       input: '{
-      	"requestTime": "67567541265",
-      	"idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_idvTransactionID$",
-      	"verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_id$",
-      	"consent": "AGREE"
+        "requestTime": "67567541265",
+        "idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_idvTransactionID$",
+        "verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_id$",
+        "consent": "AGREE"
 }'
       output: '{
       "errors": [
@@ -149,14 +143,13 @@ GetSlotNegTC:
       description: To get the slot ID to begin the video identity verification process with invalidFormat in requestTime, Expecting error code in the response
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/GetSlotNegTC/GetSlotNegTC
       outputTemplate: signup/error
       input: '{
-      	"requestTime": "2024-10-03 04:10:22.360",
-      	"idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_idvTransactionID$",
-      	"verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_id$",
-      	"consent": "AGREE"
+        "requestTime": "2024-10-03 04:10:22.360",
+        "idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_idvTransactionID$",
+        "verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_id$",
+        "consent": "AGREE"
 }'
       output: '{
       "errors": [
@@ -173,14 +166,13 @@ GetSlotNegTC:
       description: To get the slot ID to begin the video identity verification process with empty value in verifierId, Expecting error code in the response
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/GetSlotNegTC/GetSlotNegTC
       outputTemplate: signup/error
       input: '{
-      	"requestTime": "$TIMESTAMP$",
-      	"idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_idvTransactionID$",
-      	"verifierId": "",
-      	"consent": "AGREE"
+        "requestTime": "$TIMESTAMP$",
+        "idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_idvTransactionID$",
+        "verifierId": "",
+        "consent": "AGREE"
 }'
       output: '{
       "errors": [
@@ -197,14 +189,13 @@ GetSlotNegTC:
       description: To get the slot ID to begin the video identity verification process without verifierId, Expecting error code in the response
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/GetSlotNegTC/GetSlotNegTC
       outputTemplate: signup/error
       input: '{
-      	"requestTime": "$TIMESTAMP$",
-      	"idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_idvTransactionID$",
-      	"verifierId": "$REMOVE$",
-      	"consent": "AGREE"
+        "requestTime": "$TIMESTAMP$",
+        "idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_idvTransactionID$",
+        "verifierId": "$REMOVE$",
+        "consent": "AGREE"
 }'
       output: '{
       "errors": [
@@ -221,14 +212,13 @@ GetSlotNegTC:
       description: To get the slot ID to begin the video identity verification process with only space in verifierId, Expecting error code in the response
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/GetSlotNegTC/GetSlotNegTC
       outputTemplate: signup/error
       input: '{
-      	"requestTime": "$TIMESTAMP$",
-      	"idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_idvTransactionID$",
-      	"verifierId": "    ",
-      	"consent": "AGREE"
+        "requestTime": "$TIMESTAMP$",
+        "idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_idvTransactionID$",
+        "verifierId": "    ",
+        "consent": "AGREE"
 }'
       output: '{
       "errors": [
@@ -245,14 +235,13 @@ GetSlotNegTC:
       description: To get the slot ID to begin the video identity verification process with numeric value in verifierId, Expecting error code in the response
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/GetSlotNegTC/GetSlotNegTC
       outputTemplate: signup/error
       input: '{
-      	"requestTime": "$TIMESTAMP$",
-      	"idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_idvTransactionID$",
-      	"verifierId": "545642516717",
-      	"consent": "AGREE"
+        "requestTime": "$TIMESTAMP$",
+        "idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_idvTransactionID$",
+        "verifierId": "545642516717",
+        "consent": "AGREE"
 }'
       output: '{
       "errors": [
@@ -269,14 +258,13 @@ GetSlotNegTC:
       description: To get the slot ID to begin the video identity verification process with special characters in verifierId, Expecting error code in the response
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/GetSlotNegTC/GetSlotNegTC
       outputTemplate: signup/error
       input: '{
-      	"requestTime": "$TIMESTAMP$",
-      	"idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_idvTransactionID$",
-      	"verifierId": "^%&^%&^%",
-      	"consent": "AGREE"
+        "requestTime": "$TIMESTAMP$",
+        "idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_idvTransactionID$",
+        "verifierId": "^%&^%&^%",
+        "consent": "AGREE"
 }'
       output: '{
       "errors": [
@@ -293,14 +281,13 @@ GetSlotNegTC:
       description: To get the slot ID to begin the video identity verification process with alpha numeric value in verifierId, Expecting error code in the response
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/GetSlotNegTC/GetSlotNegTC
       outputTemplate: signup/error
       input: '{
-      	"requestTime": "$TIMESTAMP$",
-      	"idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_idvTransactionID$",
-      	"verifierId": "abc67816",
-      	"consent": "AGREE"
+        "requestTime": "$TIMESTAMP$",
+        "idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_idvTransactionID$",
+        "verifierId": "abc67816",
+        "consent": "AGREE"
 }'
       output: '{
       "errors": [
@@ -317,14 +304,13 @@ GetSlotNegTC:
       description: To get the slot ID to begin the video identity verification process with invalid value in consent, Expecting error code in the response
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/GetSlotNegTC/GetSlotNegTC
       outputTemplate: signup/error
       input: '{
-      	"requestTime": "$TIMESTAMP$",
-      	"idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_idvTransactionID$",
-      	"verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_id$",
-      	"consent": "User agreed to consent12"
+        "requestTime": "$TIMESTAMP$",
+        "idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_idvTransactionID$",
+        "verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_id$",
+        "consent": "User agreed to consent12"
 }'
       output: '{
       "errors": [
@@ -341,14 +327,13 @@ GetSlotNegTC:
       description: To get the slot ID to begin the video identity verification process with null in consent, Expecting error code in the response
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/GetSlotNegTC/GetSlotNegTC
       outputTemplate: signup/error
       input: '{
-      	"requestTime": "$TIMESTAMP$",
-      	"idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_idvTransactionID$",
-      	"verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_id$",
-      	"consent": null
+        "requestTime": "$TIMESTAMP$",
+        "idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_idvTransactionID$",
+        "verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_id$",
+        "consent": null
 }'
       output: '{
       "errors": [
@@ -365,14 +350,13 @@ GetSlotNegTC:
       description: To get the slot ID to begin the video identity verification process without consent, Expecting error code in the response
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/GetSlotNegTC/GetSlotNegTC
       outputTemplate: signup/error
       input: '{
-      	"requestTime": "$TIMESTAMP$",
-      	"idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_idvTransactionID$",
-      	"verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_id$",
-      	"consent": "$REMOVE$"
+        "requestTime": "$TIMESTAMP$",
+        "idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_idvTransactionID$",
+        "verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_id$",
+        "consent": "$REMOVE$"
 }'
       output: '{
       "errors": [
@@ -389,14 +373,13 @@ GetSlotNegTC:
       description: To get the slot ID to begin the video identity verification process with only space in consent, Expecting error code in the response
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/GetSlotNegTC/GetSlotNegTC
       outputTemplate: signup/error
       input: '{
-      	"requestTime": "$TIMESTAMP$",
-      	"idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_idvTransactionID$",
-      	"verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_id$",
-      	"consent": "    "
+        "requestTime": "$TIMESTAMP$",
+        "idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_idvTransactionID$",
+        "verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_id$",
+        "consent": "    "
 }'
       output: '{
       "errors": [
@@ -413,14 +396,13 @@ GetSlotNegTC:
       description: To get the slot ID to begin the video identity verification process with numeric value in consent, Expecting error code in the response
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/GetSlotNegTC/GetSlotNegTC
       outputTemplate: signup/error
       input: '{
-      	"requestTime": "$TIMESTAMP$",
-      	"idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_idvTransactionID$",
-      	"verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_id$",
-      	"consent": "6757625"
+        "requestTime": "$TIMESTAMP$",
+        "idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_idvTransactionID$",
+        "verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_id$",
+        "consent": "6757625"
 }'
       output: '{
       "errors": [
@@ -437,14 +419,13 @@ GetSlotNegTC:
       description: To get the slot ID to begin the video identity verification process with special characters in consent, Expecting error code in the response
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/GetSlotNegTC/GetSlotNegTC
       outputTemplate: signup/error
       input: '{
-      	"requestTime": "$TIMESTAMP$",
-      	"idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_idvTransactionID$",
-      	"verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_id$",
-      	"consent": "%$%^^&%^&"
+        "requestTime": "$TIMESTAMP$",
+        "idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_idvTransactionID$",
+        "verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_id$",
+        "consent": "%$%^^&%^&"
 }'
       output: '{
       "errors": [
@@ -461,14 +442,13 @@ GetSlotNegTC:
       description: To get the slot ID to begin the video identity verification process with alpha numeric value in consent, Expecting error code in the response
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/GetSlotNegTC/GetSlotNegTC
       outputTemplate: signup/error
       input: '{
-      	"requestTime": "$TIMESTAMP$",
-      	"idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_idvTransactionID$",
-      	"verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_id$",
-      	"consent": "652fdFF"
+        "requestTime": "$TIMESTAMP$",
+        "idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_idvTransactionID$",
+        "verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_id$",
+        "consent": "652fdFF"
 }'
       output: '{
       "errors": [
@@ -485,14 +465,13 @@ GetSlotNegTC:
       description: To get the slot ID to begin the video identity verification process with zero's in consent, Expecting error code in the response
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/GetSlotNegTC/GetSlotNegTC
       outputTemplate: signup/error
       input: '{
-      	"requestTime": "$TIMESTAMP$",
-      	"idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_idvTransactionID$",
-      	"verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_id$",
-      	"consent": "00000000"
+        "requestTime": "$TIMESTAMP$",
+        "idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_idvTransactionID$",
+        "verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_id$",
+        "consent": "00000000"
 }'
       output: '{
       "errors": [
@@ -504,18 +483,272 @@ GetSlotNegTC:
 }'
    Signup_ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_posNeg_Smoke_Sid:
       endPoint: /v1/signup/identity-verification/slot
+      uniqueIdentifier: TC_Signup_ESignet_GetSlotNegTC_22
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true
       inputTemplate: signup/GetSlotNegTC/GetSlotNegTC
       outputTemplate: signup/GetSlotNegTC/GetSlotResultNegTC
       input: '{
-      	"requestTime": "$TIMESTAMP$",
-      	"idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_idvTransactionID$",
-      	"verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_id$",
-      	"consent": "AGREE"
+        "requestTime": "$TIMESTAMP$",
+        "idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_idvTransactionID$",
+        "verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_id$",
+        "consent": "AGREE"
 }'
       output: '{
        
+}'
+   Signup_ESignet_GetSlot_AuthToken_Xsrf_with_invalid_consent_Neg:
+      endPoint: /v1/signup/identity-verification/slot
+      uniqueIdentifier: TC_Signup_ESignet_GetSlotNegTC_23
+      description: To get the slot ID with invalid consent
+      role: resident
+      restMethod: post
+      inputTemplate: signup/GetSlotNegTC/GetSlotNegTC2
+      outputTemplate: signup/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_idvTransactionID$",
+        "verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_id$",
+        "consent": "Allow",
+        "disabilityType": "VISION"
+}'
+      output: '{
+      "errors": [
+    {
+      "errorCode": "consent_required",
+      "errorMessage": "$IGNORE$"
+    }
+  ]
+}'
+   Signup_ESignet_GetSlot_AuthToken_Xsrf_with_expired_IDVtransaction_Neg:
+      endPoint: /v1/signup/identity-verification/slot
+      uniqueIdentifier: TC_Signup_ESignet_GetSlotNegTC_24
+      description: To get the slot ID with expired transaction
+      role: resident
+      restMethod: post
+      inputTemplate: signup/GetSlotNegTC/GetSlotNegTC2
+      outputTemplate: signup/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "idvTransactionID": "0V2DAZokWhL3jHCel_6w8n-weMdWMpcWmFFRUPOskWM",
+        "verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_id$",
+        "consent": "AGREE",
+        "disabilityType": "VISION"
+}'
+      output: '{
+      "errors": [
+    {
+      "errorCode": "invalid_transaction",
+      "errorMessage": "$IGNORE$"
+    }
+  ]
+}'
+   Signup_ESignet_GetSlot_AuthToken_Xsrf_with_disabilityType_Null_Neg:
+      endPoint: /v1/signup/identity-verification/slot
+      uniqueIdentifier: TC_Signup_ESignet_GetSlotNegTC_25
+      description: To get the slot ID with disabilityType Null
+      role: resident
+      restMethod: post
+      inputTemplate: signup/GetSlotNegTC/GetSlotNegTC2
+      outputTemplate: signup/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_idvTransactionID$",
+        "verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_id$",
+        "consent": "AGREE",
+        "disabilityType": "NULL"
+}'
+      output: '{
+      "errors": [
+    {
+      "errorCode": "invalid_disability_type",
+      "errorMessage": "$IGNORE$"
+    }
+  ]
+}'
+   Signup_ESignet_GetSlot_AuthToken_Xsrf_with_invalid_disabilityType_Neg:
+      endPoint: /v1/signup/identity-verification/slot
+      uniqueIdentifier: TC_Signup_ESignet_GetSlotNegTC_26
+      description: To get the slot ID with invalid disabilityType
+      role: resident
+      restMethod: post
+      inputTemplate: signup/GetSlotNegTC/GetSlotNegTC2
+      outputTemplate: signup/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_idvTransactionID$",
+        "verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_id$",
+        "consent": "AGREE",
+        "disabilityType": "0"
+}'
+      output: '{
+      "errors": [
+    {
+      "errorCode": "invalid_disability_type",
+      "errorMessage": "$IGNORE$"
+    }
+  ]
+}'
+   Signup_ESignet_GetSlot_AuthToken_Xsrf_with_multiple_disabilityType_Neg:
+      endPoint: /v1/signup/identity-verification/slot
+      uniqueIdentifier: TC_Signup_ESignet_GetSlotNegTC_27
+      description: To get the slot ID with multiple disabilityType
+      role: resident
+      restMethod: post
+      inputTemplate: signup/GetSlotNegTC/GetSlotNegTC2
+      outputTemplate: signup/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_idvTransactionID$",
+        "verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_id$",
+        "consent": "AGREE",
+        "disabilityType": "VISION AUDITORY MOBILITY NEUROLOGICAL"
+}'
+      output: '{
+      "errors": [
+    {
+      "errorCode": "invalid_disability_type",
+      "errorMessage": "$IGNORE$"
+    }
+  ]
+}'
+   Signup_ESignet_GetSlot_AuthToken_Xsrf_with_empty_disabilityType_Neg:
+      endPoint: /v1/signup/identity-verification/slot
+      uniqueIdentifier: TC_Signup_ESignet_GetSlotNegTC_28
+      description: To get the slot ID with empty disabilityType
+      role: resident
+      restMethod: post
+      inputTemplate: signup/GetSlotNegTC/GetSlotNegTC2
+      outputTemplate: signup/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_idvTransactionID$",
+        "verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_id$",
+        "consent": "AGREE",
+        "disabilityType": ""
+}'
+      output: '{
+      "errors": [
+    {
+      "errorCode": "invalid_disability_type",
+      "errorMessage": "$IGNORE$"
+    }
+  ]
+}'
+   Signup_ESignet_GetSlot_AuthToken_Xsrf_with_emptyString_disabilityType_Neg:
+      endPoint: /v1/signup/identity-verification/slot
+      uniqueIdentifier: TC_Signup_ESignet_GetSlotNegTC_29
+      description: To get the slot ID with empty disabilityType
+      role: resident
+      restMethod: post
+      inputTemplate: signup/GetSlotNegTC/GetSlotNegTC2
+      outputTemplate: signup/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_idvTransactionID$",
+        "verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_id$",
+        "consent": "AGREE",
+        "disabilityType": " "
+}'
+      output: '{
+      "errors": [
+    {
+      "errorCode": "invalid_disability_type",
+      "errorMessage": "$IGNORE$"
+    }
+  ]
+}'
+   Signup_ESignet_GetSlot_AuthToken_Xsrf_with_numericValue_disabilityType_Neg:
+      endPoint: /v1/signup/identity-verification/slot
+      uniqueIdentifier: TC_Signup_ESignet_GetSlotNegTC_30
+      description: To get the slot ID with numeric value in disabilityType
+      role: resident
+      restMethod: post
+      inputTemplate: signup/GetSlotNegTC/GetSlotNegTC2
+      outputTemplate: signup/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_idvTransactionID$",
+        "verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_id$",
+        "consent": "AGREE",
+        "disabilityType": "234527481"
+}'
+      output: '{
+      "errors": [
+    {
+      "errorCode": "invalid_disability_type",
+      "errorMessage": "$IGNORE$"
+    }
+  ]
+}'
+   Signup_ESignet_GetSlot_AuthToken_Xsrf_with_specialCharacters_disabilityType_Neg:
+      endPoint: /v1/signup/identity-verification/slot
+      uniqueIdentifier: TC_Signup_ESignet_GetSlotNegTC_31
+      description: To get the slot ID with specialCharacters in disabilityType
+      role: resident
+      restMethod: post
+      inputTemplate: signup/GetSlotNegTC/GetSlotNegTC2
+      outputTemplate: signup/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_idvTransactionID$",
+        "verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_id$",
+        "consent": "AGREE",
+        "disabilityType": "@#$!$%%^^%^"
+}'
+      output: '{
+      "errors": [
+    {
+      "errorCode": "invalid_disability_type",
+      "errorMessage": "$IGNORE$"
+    }
+  ]
+}'
+   Signup_ESignet_GetSlot_AuthToken_Xsrf_with_alphanumeric_disabilityType_Neg:
+      endPoint: /v1/signup/identity-verification/slot
+      uniqueIdentifier: TC_Signup_ESignet_GetSlotNegTC_32
+      description: To get the slot ID with alphanumeric in disabilityType
+      role: resident
+      restMethod: post
+      inputTemplate: signup/GetSlotNegTC/GetSlotNegTC2
+      outputTemplate: signup/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_idvTransactionID$",
+        "verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_id$",
+        "consent": "AGREE",
+        "disabilityType": "PJJJ672882"
+}'
+      output: '{
+      "errors": [
+    {
+      "errorCode": "invalid_disability_type",
+      "errorMessage": "$IGNORE$"
+    }
+  ]
+}'
+   Signup_ESignet_GetSlot_AuthToken_Xsrf_with_disabilityType_otherThanAllowed_Neg:
+      endPoint: /v1/signup/identity-verification/slot
+      uniqueIdentifier: TC_Signup_ESignet_GetSlotNegTC_33
+      description: To get the slot ID with  disabilityType other than allowed
+      role: resident
+      restMethod: post
+      inputTemplate: signup/GetSlotNegTC/GetSlotNegTC2
+      outputTemplate: signup/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_idvTransactionID$",
+        "verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_id$",
+        "consent": "AGREE",
+        "disabilityType": "abc, def, abc_def"
+}'
+      output: '{
+      "errors": [
+    {
+      "errorCode": "invalid_disability_type",
+      "errorMessage": "$IGNORE$"
+    }
+  ]
 }'
  
