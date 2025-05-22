@@ -12,12 +12,15 @@ import io.mosip.esignet.core.util.IdentityProviderUtil;
 import io.mosip.signup.dto.IdentityVerificationTransaction;
 import io.mosip.signup.dto.IdentityVerifierDetail;
 import io.mosip.signup.dto.RegistrationTransaction;
+import io.mosip.signup.exception.SignUpException;
 import io.mosip.signup.helper.CryptoHelper;
+import io.mosip.signup.util.ErrorConstants;
 import io.mosip.signup.util.SignUpConstants;
 import lombok.extern.slf4j.Slf4j;
 import net.javacrumbs.shedlock.core.LockAssert;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
@@ -26,12 +29,20 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.ReturnType;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import static io.mosip.signup.util.SignUpConstants.*;
@@ -51,6 +62,16 @@ public class CacheUtilService {
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
 
+    private RestTemplate restTemplate = new RestTemplate();
+
+    @Value("${mosip.iam.token-endpoint}")
+    private String authTokenEndpoint;
+
+    @Value("${mosip.iam.clientid}")
+    private String clientId;
+
+    @Value("${mosip.iam.clientsecret}")
+    private String clientSecret;
 
     private static final String CLEANUP_SCRIPT = "local function binary_to_long(binary_str)\n" +
             "    local result = 0\n" +
@@ -147,6 +168,28 @@ public class CacheUtilService {
     @CachePut(value = SignUpConstants.KEY_ALIAS, key = "#key")
     public String setActiveKeyAlias(String key, String alias) {
         return alias;
+    }
+
+    @Cacheable(value = SignUpConstants.ACCESS_TOKEN, key = "'access_token'")
+    public String getToken() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+        body.add("client_id", clientId);
+        body.add("client_secret", clientSecret);
+        body.add("grant_type", "client_credentials");
+
+        HttpEntity<?> entity = new HttpEntity<>(body, headers);
+
+        ResponseEntity<Map> response = restTemplate.postForEntity(authTokenEndpoint, entity, Map.class);
+
+        if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
+            return (String) response.getBody().get("access_token");
+        } else {
+            log.debug("Failed to retrieve token from IAM: {}", response.getBody());
+            throw new SignUpException(ErrorConstants.UNKNOWN_ERROR);
+        }
     }
 
     public RegistrationTransaction createUpdateChallengeGeneratedTransaction(String transactionId,

@@ -9,7 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.afterburner.AfterburnerModule;
-import io.mosip.signup.util.IAMTokenService;
+import io.mosip.signup.services.CacheUtilService;
 import net.javacrumbs.shedlock.core.LockProvider;
 import net.javacrumbs.shedlock.provider.redis.spring.RedisLockProvider;
 import net.javacrumbs.shedlock.spring.annotation.EnableSchedulerLock;
@@ -68,10 +68,10 @@ public class Config {
     }
 
     @Bean
-    public RestTemplate selfTokenRestTemplate(IAMTokenService IAMTokenService) {
+    public RestTemplate selfTokenRestTemplate(CacheUtilService cacheUtilService) {
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.getInterceptors().add((request, body, execution) -> {
-            String token = IAMTokenService.getToken();
+            String token = cacheUtilService.getToken();
             request.getHeaders().set("Cookie", "Authorization="+token);
             return execution.execute(request, body);
         });
