@@ -77,8 +77,7 @@ public class CacheUtilServiceTest {
     }
 
     @Test
-    public void testGetActiveKeyAlias() {
-        // Arrange
+    public void getActiveKeyAlias_withValidCacheKey_thenPass() {
         String expectedAlias = "activeKeyAlias";
         Mockito.when(cacheManager.getCache(SignUpConstants.KEY_ALIAS)).thenReturn(cache);
         Mockito.when(cache.get(Mockito.eq(CryptoHelper.ALIAS_CACHE_KEY), Mockito.eq(String.class))).thenReturn(expectedAlias);
@@ -87,23 +86,20 @@ public class CacheUtilServiceTest {
     }
 
     @Test
-    public void testGetSetSlotCount_NullRedisConnection() {
+    public void getSetSlotCount_withNullRedisConnection_thenFail() {
         Mockito.when(redisConnectionFactory.getConnection()).thenReturn(null);
         Long result = cacheUtilService.getSetSlotCount("testField", 1000L, 10);
         Assert.assertEquals(Long.valueOf(-1L), result);
     }
 
     @Test
-    public void testGetSetSlotCount_ValidRedisConnection() {
-        // Arrange
+    public void getSetSlotCount_withValidRedisConnection_thenPass() {
         RedisConnection redisConnection = Mockito.mock(RedisConnection.class);
         RedisScriptingCommands scriptingCommands = Mockito.mock(RedisScriptingCommands.class);
         String scriptHash = "mockScriptHash";
         Long expectedResult = 1L;
-        // Mock Redis connection and scripting commands
         Mockito.when(redisConnectionFactory.getConnection()).thenReturn(redisConnection);
         Mockito.when(redisConnection.scriptingCommands()).thenReturn(scriptingCommands);
-        // Mock script loading behavior
         Mockito.when(scriptingCommands.scriptLoad(Mockito.any(byte[].class))).thenReturn(scriptHash);
         Mockito.when(scriptingCommands.evalSha(
                 Mockito.eq(scriptHash),
@@ -114,11 +110,8 @@ public class CacheUtilServiceTest {
                 Mockito.any(byte[].class),
                 Mockito.any(byte[].class)
         )).thenReturn(expectedResult);
-        // Act
         Long result = cacheUtilService.getSetSlotCount("testField", 1000L, 10);
-        // Assert
         Assert.assertEquals(expectedResult, result);
-        // Verify that the script was loaded and executed
         Mockito.verify(scriptingCommands).scriptLoad(Mockito.any(byte[].class));
         Mockito.verify(scriptingCommands).evalSha(
                 Mockito.eq(scriptHash),
@@ -132,19 +125,14 @@ public class CacheUtilServiceTest {
     }
 
     @Test
-    public void testUpdateSlotExpireTime_ValidRedisConnection() {
-        // Arrange
+    public void updateSlotExpireTime_withValidRedisConnection_thenPass() {
         String field = "testField";
         long expireTimeInMillis = 1000L;
         RedisConnection redisConnection = Mockito.mock(RedisConnection.class);
         RedisScriptingCommands scriptingCommands = Mockito.mock(RedisScriptingCommands.class);
         String scriptHash = "mockScriptHash";
-
-        // Mock Redis connection and scripting commands
         Mockito.when(redisConnectionFactory.getConnection()).thenReturn(redisConnection);
         Mockito.when(redisConnection.scriptingCommands()).thenReturn(scriptingCommands);
-
-        // Mock script loading behavior
         Mockito.when(scriptingCommands.scriptLoad(Mockito.any(byte[].class))).thenReturn(scriptHash);
         Mockito.when(redisConnection.scriptingCommands().evalSha(
                 Mockito.eq(scriptHash),
@@ -154,11 +142,7 @@ public class CacheUtilServiceTest {
                 Mockito.any(byte[].class),
                 Mockito.any(byte[].class)
         )).thenReturn(1L);
-
-        // Act
         cacheUtilService.updateSlotExpireTime(field, expireTimeInMillis);
-
-        // Assert
         Mockito.verify(scriptingCommands).scriptLoad(Mockito.any(byte[].class));
         Mockito.verify(scriptingCommands).evalSha(
                 Mockito.eq(scriptHash),
