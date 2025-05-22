@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.afterburner.AfterburnerModule;
+import io.mosip.signup.util.IAMTokenService;
 import net.javacrumbs.shedlock.core.LockProvider;
 import net.javacrumbs.shedlock.provider.redis.spring.RedisLockProvider;
 import net.javacrumbs.shedlock.spring.annotation.EnableSchedulerLock;
@@ -20,6 +21,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.concurrent.Executor;
 
@@ -64,4 +66,16 @@ public class Config {
         template.setValueSerializer(new JdkSerializationRedisSerializer());
         return template;
     }
+
+    @Bean
+    public RestTemplate selfTokenRestTemplate(IAMTokenService IAMTokenService) {
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getInterceptors().add((request, body, execution) -> {
+            String token = IAMTokenService.getToken();
+            request.getHeaders().set("Cookie", "Authorization="+token);
+            return execution.execute(request, body);
+        });
+        return restTemplate;
+    }
+
 }
