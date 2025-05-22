@@ -68,6 +68,11 @@ public class Config {
     }
 
     @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
+
+    @Bean
     public RestTemplate selfTokenRestTemplate(CacheUtilService cacheUtilService) {
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.getInterceptors().add((request, body, execution) -> {

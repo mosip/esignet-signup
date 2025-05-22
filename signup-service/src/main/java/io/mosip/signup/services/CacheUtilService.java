@@ -62,7 +62,8 @@ public class CacheUtilService {
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
 
-    private RestTemplate restTemplate = new RestTemplate();
+    @Autowired
+    private RestTemplate restTemplate;
 
     @Value("${mosip.iam.token-endpoint}")
     private String authTokenEndpoint;
