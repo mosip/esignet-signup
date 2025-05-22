@@ -333,7 +333,7 @@ public class CacheUtilService {
         }
     }
 
-    public boolean isScriptNotLoaded(String scriptHash) {
+    private boolean isScriptNotLoaded(String scriptHash) {
         if(scriptHash == null) return true;
         List<Boolean> scriptExists = redisConnectionFactory.getConnection().scriptingCommands().scriptExists(scriptHash);
         return scriptExists == null || !scriptExists.get(0);
