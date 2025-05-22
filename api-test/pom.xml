@@ -57,7 +57,11 @@
 		<dependency>
 			<groupId>io.mosip.testrig.apitest.commons</groupId>
 			<artifactId>apitest-commons</artifactId>
+<<<<<<< HEAD
 			<version>1.3.3-SNAPSHOT</version>
+=======
+			<version>1.3.2</version>
+>>>>>>> 1fc15de (MOSIP-41339: Automated oauthdetails v3 scenarios (#631))
 		</dependency>
 	</dependencies>
 
