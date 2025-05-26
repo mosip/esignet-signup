@@ -1,7 +1,7 @@
 IDTAuthentication:
    Signup_ESignet_IDTAuthentication_AuthToken_Xsrf_uin_all_Valid_Smoke:
       endPoint: /v1/esignet/authorization/v3/authenticate
-	  uniqueIdentifier: TC_ESignet_IDTAuthentication_01
+      uniqueIdentifier: TC_ESignet_IDTAuthentication_01
       description: Create transaction Id and consentAction with valid details
       role: resident
       restMethod: post
@@ -24,7 +24,7 @@ IDTAuthentication:
 }'
    Signup_ESignet_IDTAuthentication_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeVISION_Smoke:
       endPoint: /v1/esignet/authorization/v3/authenticate
-	  uniqueIdentifier: TC_ESignet_IDTAuthentication_02
+      uniqueIdentifier: TC_ESignet_IDTAuthentication_02
       description: Create transaction Id and consentAction with valid details and this testcase is prerequisite
       role: resident
       restMethod: post
@@ -47,7 +47,7 @@ IDTAuthentication:
 }'
    Signup_ESignet_IDTAuthentication_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeAUDITORY_Smoke:
       endPoint: /v1/esignet/authorization/v3/authenticate
-	  uniqueIdentifier: TC_ESignet_IDTAuthentication_03
+      uniqueIdentifier: TC_ESignet_IDTAuthentication_03
       description: Create transaction Id and consentAction with valid details and this testcase is prerequisite
       role: resident
       restMethod: post
@@ -70,7 +70,7 @@ IDTAuthentication:
 }'
    Signup_ESignet_IDTAuthentication_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeMOBILITY_Smoke:
       endPoint: /v1/esignet/authorization/v3/authenticate
-	  uniqueIdentifier: TC_ESignet_IDTAuthentication_04
+      uniqueIdentifier: TC_ESignet_IDTAuthentication_04
       description: Create transaction Id and consentAction with valid details and this testcase is prerequisite
       role: resident
       restMethod: post
@@ -93,7 +93,7 @@ IDTAuthentication:
 }'
    Signup_ESignet_IDTAuthentication_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_Smoke:
       endPoint: /v1/esignet/authorization/v3/authenticate
-	  uniqueIdentifier: TC_ESignet_IDTAuthentication_05
+      uniqueIdentifier: TC_ESignet_IDTAuthentication_05
       description: Create transaction Id and consentAction with valid details and this testcase is prerequisite
       role: resident
       restMethod: post
