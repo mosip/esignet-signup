@@ -189,7 +189,7 @@ public class CacheUtilService {
             return (String) response.getBody().get("access_token");
         }
         log.error("Failed to retrieve token from IAM: {}", response.getBody());
-        throw new SignUpException(ErrorConstants.UNKNOWN_ERROR);
+        throw new SignUpException(ErrorConstants.TOKEN_REQUEST_FAILED);
     }
 
     public RegistrationTransaction createUpdateChallengeGeneratedTransaction(String transactionId,
