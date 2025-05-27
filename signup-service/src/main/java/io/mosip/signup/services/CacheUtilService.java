@@ -65,13 +65,13 @@ public class CacheUtilService {
     @Autowired
     private RestTemplate restTemplate;
 
-    @Value("${mosip.iam.token-endpoint}")
+    @Value("${mosip.signup.iam.token.endpoint}")
     private String authTokenEndpoint;
 
-    @Value("${mosip.iam.clientid}")
+    @Value("${mosip.signup.iam.client-id}")
     private String clientId;
 
-    @Value("${mosip.iam.clientsecret}")
+    @Value("${mosip.signup.iam.client-secret}")
     private String clientSecret;
 
     private static final String CLEANUP_SCRIPT = "local function binary_to_long(binary_str)\n" +
@@ -172,7 +172,7 @@ public class CacheUtilService {
     }
 
     @Cacheable(value = SignUpConstants.ACCESS_TOKEN, key = "'access_token'")
-    public String getToken() {
+    public String fetchAccessTokenFromIAMServer() {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
@@ -187,10 +187,9 @@ public class CacheUtilService {
 
         if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
             return (String) response.getBody().get("access_token");
-        } else {
-            log.debug("Failed to retrieve token from IAM: {}", response.getBody());
-            throw new SignUpException(ErrorConstants.UNKNOWN_ERROR);
         }
+        log.error("Failed to retrieve token from IAM: {}", response.getBody());
+        throw new SignUpException(ErrorConstants.UNKNOWN_ERROR);
     }
 
     public RegistrationTransaction createUpdateChallengeGeneratedTransaction(String transactionId,

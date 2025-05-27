@@ -76,7 +76,7 @@ public class Config {
     public RestTemplate selfTokenRestTemplate(CacheUtilService cacheUtilService) {
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.getInterceptors().add((request, body, execution) -> {
-            String token = cacheUtilService.getToken();
+            String token = cacheUtilService.fetchAccessTokenFromIAMServer();
             request.getHeaders().set("Cookie", "Authorization="+token);
             return execution.execute(request, body);
         });
