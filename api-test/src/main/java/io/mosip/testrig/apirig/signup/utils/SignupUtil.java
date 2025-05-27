@@ -852,7 +852,7 @@ public class SignupUtil extends AdminTestUtil {
 					eachValueJson.put(GlobalConstants.LANGUAGE, "");
 				} else
 					eachValueJson.put(GlobalConstants.LANGUAGE, languageList.get(i));
-				String generatedString = "";
+//				String generatedString = "";
 
 				try {
 					if (!fullNamePattern.isEmpty()) {
@@ -1131,7 +1131,7 @@ public class SignupUtil extends AdminTestUtil {
 	private static final String ACCESS_TOKEN = "access_token";
 
     private static String partnerCookie = null;
-    private static String mobileAuthCookie = null;
+//    private static String mobileAuthCookie = null;
     
 	private static Response sendPostRequest(String url, Map<String, String> params) {
 		try {
