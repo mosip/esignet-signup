@@ -59,4 +59,6 @@ public class ErrorConstants {
     public static final String INVALID_STATE = "invalid_state";
     public static final String INVALID_FRAME = "invalid_frame";
     public static final String INVALID_ORDER = "invalid_order";
+
+    public static final String TOKEN_REQUEST_FAILED = "token_request_failed";
 }
