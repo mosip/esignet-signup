@@ -30,6 +30,7 @@ import io.mosip.testrig.apirig.utils.AdminTestUtil;
 import io.mosip.testrig.apirig.utils.AuthenticationTestException;
 import io.mosip.testrig.apirig.utils.GlobalConstants;
 import io.mosip.testrig.apirig.utils.GlobalMethods;
+import io.mosip.testrig.apirig.utils.SecurityXSSException;
 import io.mosip.testrig.apirig.utils.WebSocketClientUtil;
 import io.restassured.response.Response;
 
@@ -84,7 +85,7 @@ public class WebScocketConnection extends SignupUtil implements ITest {
 	 */
 	@Test(dataProvider = "testcaselist")
 	public void test(TestCaseDTO testCaseDTO)
-			throws AuthenticationTestException, AdminTestException, NumberFormatException, InterruptedException {
+			throws AuthenticationTestException, AdminTestException, NumberFormatException, InterruptedException, SecurityXSSException {
 
 		testCaseName = testCaseDTO.getTestCaseName();
 		testCaseDTO = SignupUtil.isTestCaseValidForTheExecution(testCaseDTO);

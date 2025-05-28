@@ -1,28 +1,21 @@
 package io.mosip.signup.controllers;
 
-import io.mosip.kernel.auth.defaultadapter.config.SecurityConfig;
 import io.mosip.signup.api.dto.IdentityVerificationResult;
-import io.mosip.signup.api.exception.IdentityVerifierException;
 import io.mosip.signup.api.util.VerificationStatus;
 import io.mosip.signup.dto.IdentityVerificationRequest;
 import io.mosip.signup.dto.IdentityVerificationTransaction;
-import io.mosip.signup.exception.SignUpException;
 import io.mosip.signup.helper.AuditHelper;
 import io.mosip.signup.services.CacheUtilService;
 import io.mosip.signup.services.WebSocketHandler;
 import io.mosip.signup.util.AuditEvent;
 import io.mosip.signup.util.AuditEventType;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mockito;
-import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -31,15 +24,11 @@ import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
-import static io.mosip.signup.util.ErrorConstants.INVALID_SLOT_ID;
-import static io.mosip.signup.util.ErrorConstants.INVALID_STEP_CODE;
 import static io.mosip.signup.util.SignUpConstants.VALUE_SEPARATOR;
 
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(value = WebSocketController.class,
-        excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = {SecurityConfig.class}),
-        excludeAutoConfiguration = {SecurityAutoConfiguration.class})
+@WebMvcTest(value = WebSocketController.class)
 @ActiveProfiles(value = {"test"})
 public class WebSocketControllerTest {
 
