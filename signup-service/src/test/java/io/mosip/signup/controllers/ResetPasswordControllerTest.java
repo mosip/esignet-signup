@@ -7,8 +7,8 @@ package io.mosip.signup.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.esignet.core.dto.RequestWrapper;
-import io.mosip.kernel.auth.defaultadapter.config.SecurityConfig;
 import io.mosip.signup.api.util.ProfileCreateUpdateStatus;
+import io.mosip.signup.config.SecurityConfig;
 import io.mosip.signup.dto.RegistrationStatusResponse;
 import io.mosip.signup.dto.ResetPasswordRequest;
 import io.mosip.signup.helper.AuditHelper;

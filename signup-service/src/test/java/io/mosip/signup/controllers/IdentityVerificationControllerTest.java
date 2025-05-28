@@ -7,7 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import io.mosip.kernel.auth.defaultadapter.config.SecurityConfig;
+import io.mosip.signup.config.SecurityConfig;
 import io.mosip.signup.dto.*;
 import io.mosip.esignet.core.dto.RequestWrapper;
 import io.mosip.signup.dto.InitiateIdentityVerificationRequest;
