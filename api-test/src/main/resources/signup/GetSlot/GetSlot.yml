@@ -93,3 +93,22 @@ GetSlot:
       output: '{
        
 }'
+   Signup_ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_disabilityTypeNEUROLOGICAL_ForVerStatus_Without_websocket_Smoke_Sid:
+      endPoint: /v1/signup/identity-verification/slot
+      uniqueIdentifier: TC_Signup_ESignet_GetSlot_06
+      description: To get the slot ID for identity verification status without websocket connection
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/GetSlotNegTC/GetSlotNegTC2
+      outputTemplate: signup/GetSlot/GetSlotResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdVerStatusWithoutWebsocket_Smoke_Sid_idvTransactionID$",
+        "verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdVerStatusWithoutWebsocket_Smoke_Sid_id$",
+        "consent": "AGREE",
+        "disabilityType": "VISION"
+}'
+      output: '{
+       
+}'

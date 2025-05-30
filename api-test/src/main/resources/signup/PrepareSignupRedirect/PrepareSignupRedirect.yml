@@ -19,7 +19,7 @@ PrepareSignupRedirect:
 }'
    Signup_ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_forGetSlot_disabilityTypeVISION_Smoke_sid:
       endPoint: /v1/esignet/authorization/prepare-signup-redirect
-      uniqueIdentifier: TC_Signup_ESignet_PrepareSignupRedirect_Prerequisite
+      uniqueIdentifier: TC_Signup_ESignet_PrepareSignupRedirect_Prerequisite_02
       description: Create ID token for the signup service with valid data and this testcase is prerequisite
       role: resident
       restMethod: post
@@ -37,7 +37,7 @@ PrepareSignupRedirect:
 }'
    Signup_ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_forGetSlot_disabilityTypeAUDITORY_Smoke_sid:
       endPoint: /v1/esignet/authorization/prepare-signup-redirect
-      uniqueIdentifier: TC_Signup_ESignet_PrepareSignupRedirect_Prerequisite
+      uniqueIdentifier: TC_Signup_ESignet_PrepareSignupRedirect_Prerequisite_03
       description: Create ID token for the signup service with valid data and this testcase is prerequisite
       role: resident
       restMethod: post
@@ -55,7 +55,7 @@ PrepareSignupRedirect:
 }'
    Signup_ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_forGetSlot_disabilityTypeMOBILITY_Smoke_sid:
       endPoint: /v1/esignet/authorization/prepare-signup-redirect
-      uniqueIdentifier: TC_Signup_ESignet_PrepareSignupRedirect_Prerequisite
+      uniqueIdentifier: TC_Signup_ESignet_PrepareSignupRedirect_Prerequisite_04
       description: Create ID token for the signup service with valid data and this testcase is prerequisite
       role: resident
       restMethod: post
@@ -73,7 +73,7 @@ PrepareSignupRedirect:
 }'
    Signup_ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_Smoke_sid:
       endPoint: /v1/esignet/authorization/prepare-signup-redirect
-      uniqueIdentifier: TC_Signup_ESignet_PrepareSignupRedirect_Prerequisite
+      uniqueIdentifier: TC_Signup_ESignet_PrepareSignupRedirect_Prerequisite_05
       description: Create ID token for the signup service with valid data and this testcase is prerequisite
       role: resident
       restMethod: post
@@ -86,6 +86,24 @@ PrepareSignupRedirect:
       	"requestTime": "$TIMESTAMP$",
       	"transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_Smoke_sid_transactionId$",
       	"pathFragment": "path-fragment"
+    }'
+      output: '{
+}'
+   Signup_ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdVerStatusWithoutWebsocket_Smoke_sid:
+      endPoint: /v1/esignet/authorization/prepare-signup-redirect
+      uniqueIdentifier: TC_Signup_ESignet_PrepareSignupRedirect_Prerequisite_06
+      description: Create ID token for the signup service with valid data and this testcase is prerequisite
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      validityCheckRequired: true
+      inputTemplate: signup/PrepareSignupRedirect/PrepareSignupRedirect
+      outputTemplate: signup/PrepareSignupRedirect/PrepareSignupRedirectResult
+      input: '{
+        "encodedHash": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdVerStatusWithoutWebsocket_Smoke_sid_encodedResp$",
+        "requestTime": "$TIMESTAMP$",
+        "transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdVerStatusWithoutWebsocket_Smoke_sid_transactionId$",
+        "pathFragment": "path-fragment"
     }'
       output: '{
 }'
