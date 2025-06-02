@@ -134,3 +134,22 @@ AddIdentity:
       output: '{
   "status":"mock identity data created successfully"
 }'
+   Signup_AddIdentity_L2_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdVerStatusWithoutWebsocket_Parameters_smoke_Pos:
+      endPoint: /v1/mock-identity-system/identity
+      uniqueIdentifier: TC_IdRepo_Dependent_AddIdentityMock_08
+      description: Add identity with password authentication for disabilityType NEUROLOGICAL forIdVerStatusWithoutWebsocket
+      role: idrepo
+      restMethod: post
+      inputTemplate: signup/AddIdentityMock/AddIdentity
+      outputTemplate: signup/AddIdentityMock/addIdentityResult
+      input: '{
+	  "requesttime": "$TIMESTAMP$",
+	  "individualId": "$RANDOMINDIVIDUALIDFORMOCKIDENTITY$",
+	  "pin": "545411",
+	  "email": "$EMAILIDFORMOCKIDENTITY$",
+	  "password": "$PASSWORDFORMOCKIDENTITY$",
+	  "phone": "$PHONEFORMOCKIDENTITY$"
+}'
+      output: '{
+  "status":"mock identity data created successfully"
+}'
