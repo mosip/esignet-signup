@@ -107,3 +107,39 @@ PrepareSignupRedirect:
     }'
       output: '{
 }'
+   Signup_ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdtAuth_Smoke_sid:
+      endPoint: /v1/esignet/authorization/prepare-signup-redirect
+      uniqueIdentifier: TC_Signup_ESignet_PrepareSignupRedirect_Prerequisite_07
+      description: Create ID token for the signup service with valid data and this testcase is prerequisite
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      validityCheckRequired: true
+      inputTemplate: signup/PrepareSignupRedirect/PrepareSignupRedirect
+      outputTemplate: signup/PrepareSignupRedirect/PrepareSignupRedirectResult
+      input: '{
+        "encodedHash": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdtAuth_Smoke_sid_encodedResp$",
+        "requestTime": "$TIMESTAMP$",
+        "transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdtAuth_Smoke_sid_transactionId$",
+        "pathFragment": "path-fragment"
+    }'
+      output: '{
+}'
+   Signup_ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forDeletingCookies_Smoke_sid:
+      endPoint: /v1/esignet/authorization/prepare-signup-redirect
+      uniqueIdentifier: TC_Signup_ESignet_PrepareSignupRedirect_Prerequisite_08
+      description: Create ID token for the signup service with valid data and this testcase is prerequisite
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      validityCheckRequired: true
+      inputTemplate: signup/PrepareSignupRedirect/PrepareSignupRedirect
+      outputTemplate: signup/PrepareSignupRedirect/PrepareSignupRedirectResult
+      input: '{
+        "encodedHash": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forDeletingCookies_Smoke_sid_encodedResp$",
+        "requestTime": "$TIMESTAMP$",
+        "transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forDeletingCookies_Smoke_sid_transactionId$",
+        "pathFragment": "path-fragment"
+    }'
+      output: '{
+}'
