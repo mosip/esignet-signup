@@ -32,20 +32,20 @@ const AxiosInstance = axios.create({
   withCredentials: true,
 });
 
-let cachedCsrfToken: string | null = null;
-
 ApiService.interceptors.request.use(
   async (config) => {
     try {
       if (config.method?.toLowerCase() === "post") {
-        if (!cachedCsrfToken) {
+        let csrfToken = sessionStorage.getItem("csrfToken");
+        if (!csrfToken) {
           const { data } = await AxiosInstance.get("/csrf/token");
-          cachedCsrfToken = data.token; 
+          csrfToken = data.token;
+          if (csrfToken) sessionStorage.setItem("csrfToken", csrfToken);
         }
-        config.headers["X-XSRF-TOKEN"] = cachedCsrfToken;
+        config.headers["X-XSRF-TOKEN"] = csrfToken;
       }
     } catch (error) {
-      throw error; 
+      throw error;
     }
     return config;
   },
