@@ -1,5 +1,6 @@
 import { ApiService } from "~services/api.service";
 import {
+  CsrfTokenResponseDto,
   GenerateChallengeRequestDto,
   IdentityVerificationStatus,
   IdentityVerificationStatusResponseDto,
@@ -30,6 +31,12 @@ export const getCookie = (key: string): string | any => {
 
 export const getSettings = async (): Promise<SettingsDto> => {
   return ApiService.get<SettingsDto>("/settings").then(({ data }) => data);
+};
+
+export const getCsrfToken = async (): Promise<CsrfTokenResponseDto> => {
+  return ApiService.get("/csrf/token").then(({ data }) => {
+    return data;
+  });
 };
 
 export const generateChallenge = async (

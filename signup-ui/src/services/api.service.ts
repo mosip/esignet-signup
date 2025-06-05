@@ -27,6 +27,33 @@ export const ApiService = axios.create({
   baseURL: API_BASE_URL,
 });
 
+const AxiosInstance = axios.create({
+  baseURL: API_BASE_URL,
+  withCredentials: true,
+});
+
+let cachedCsrfToken: string | null = null;
+
+ApiService.interceptors.request.use(
+  async (config) => {
+    try {
+      if (config.method?.toLowerCase() === "post") {
+        if (!cachedCsrfToken) {
+          const { data } = await AxiosInstance.get("/csrf/token");
+          cachedCsrfToken = data.token; 
+        }
+        config.headers["X-XSRF-TOKEN"] = cachedCsrfToken;
+      }
+    } catch (error) {
+      throw error; 
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
 export const setupResponseInterceptor = (navigate: NavigateFunction) => {
   ApiService.interceptors.response.use(
     (response) => response,

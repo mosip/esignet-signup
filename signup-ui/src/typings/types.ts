@@ -168,6 +168,12 @@ export type SettingsDto = BaseResponseDto & {
   errors: Error[] | null;
 };
 
+export type CsrfTokenResponseDto = {
+  token: string;
+  parameterName: string;
+  headerName: string;
+};
+
 const ChallengeGenerationPurposes = ["REGISTRATION", "RESET_PASSWORD"] as const;
 
 export type ChallengeGenerationPurpose =
