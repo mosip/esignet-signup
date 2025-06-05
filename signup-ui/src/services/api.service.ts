@@ -2,6 +2,7 @@ import axios, { AxiosError } from "axios";
 import { NavigateFunction } from "react-router-dom";
 
 import { SOMETHING_WENT_WRONG } from "~constants/routes";
+import { getCsrfToken } from "~pages/shared/service";
 
 const API_BASE_URL =
   process.env.NODE_ENV === "development"
@@ -27,7 +28,7 @@ export const ApiService = axios.create({
   baseURL: API_BASE_URL,
 });
 
-const AxiosInstance = axios.create({
+export const AxiosInstance = axios.create({
   baseURL: API_BASE_URL,
   withCredentials: true,
 });
@@ -38,8 +39,7 @@ ApiService.interceptors.request.use(
       if (config.method?.toLowerCase() === "post") {
         let csrfToken = sessionStorage.getItem("csrfToken");
         if (!csrfToken) {
-          const { data } = await AxiosInstance.get("/csrf/token");
-          csrfToken = data.token;
+          csrfToken = await getCsrfToken();
           if (csrfToken) sessionStorage.setItem("csrfToken", csrfToken);
         }
         config.headers["X-XSRF-TOKEN"] = csrfToken;
