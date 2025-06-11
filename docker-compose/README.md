@@ -30,7 +30,7 @@ This is the docker-compose setup to run eSignet Signup service with mock identit
    // change directory to target
    cd target
    // running the signup-service jar file, with external plugin
-   java -Dloader.path=<plugin-path> -jar signup-service-1.1.1-SNAPSHOT.jar
+   java -Dloader.path=<plugin-path> -jar <signup-service jar file name>
    ```
 
 7. Access the service swagger with this URL - http://localhost:8089/v1/signup/swagger-ui.html

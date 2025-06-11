@@ -84,3 +84,19 @@ InitiateIdVerification:
       output: '{
        
 }'
+   Signup_ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdVerStatusWithoutWebsocket_Smoke_Sid:
+      endPoint: /v1/signup/identity-verification/initiate
+      description: Intiating Identity verification process with valid details and this testcase is prerequisite
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/InitiateIdVerification/InitiateIdVerification
+      outputTemplate: signup/InitiateIdVerification/InitiateIdVerificationResult
+      input: '{
+      	"requestTime": "$TIMESTAMP$",
+      	"authorizationCode": "$ID:ESignet_SignupAuthorizeCode_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdVerStatusWithoutWebsocket_Smoke_sid_code$",
+      	"state": "urlInfo1724138417665"
+}'
+      output: '{
+       
+}'

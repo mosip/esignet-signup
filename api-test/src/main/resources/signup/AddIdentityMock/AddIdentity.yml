@@ -134,3 +134,79 @@ AddIdentity:
       output: '{
   "status":"mock identity data created successfully"
 }'
+   Signup_AddIdentity_L2_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdVerStatusWithoutWebsocket_Parameters_smoke_Pos:
+      endPoint: /v1/mock-identity-system/identity
+      uniqueIdentifier: TC_IdRepo_Dependent_AddIdentityMock_08
+      description: Add identity for disabilityType NEUROLOGICAL forIdVerStatusWithoutWebsocket
+      role: idrepo
+      restMethod: post
+      inputTemplate: signup/AddIdentityMock/AddIdentity
+      outputTemplate: signup/AddIdentityMock/addIdentityResult
+      input: '{
+	  "requesttime": "$TIMESTAMP$",
+	  "individualId": "$RANDOMINDIVIDUALIDFORMOCKIDENTITY$",
+	  "pin": "545411",
+	  "email": "$EMAILIDFORMOCKIDENTITY$",
+	  "password": "$PASSWORDFORMOCKIDENTITY$",
+	  "phone": "$PHONEFORMOCKIDENTITY$"
+}'
+      output: '{
+  "status":"mock identity data created successfully"
+}'
+   Signup_AddIdentity_L2_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdTAuth_Parameters_smoke_Pos:
+      endPoint: /v1/mock-identity-system/identity
+      uniqueIdentifier: TC_IdRepo_Dependent_AddIdentityMock_09
+      description: Add identity for disabilityType NEUROLOGICAL for IDT Auth
+      role: idrepo
+      restMethod: post
+      inputTemplate: signup/AddIdentityMock/AddIdentity
+      outputTemplate: signup/AddIdentityMock/addIdentityResult
+      input: '{
+	  "requesttime": "$TIMESTAMP$",
+	  "individualId": "$RANDOMINDIVIDUALIDFORMOCKIDENTITY$",
+	  "pin": "545411",
+	  "email": "$EMAILIDFORMOCKIDENTITY$",
+	  "password": "$PASSWORDFORMOCKIDENTITY$",
+	  "phone": "$PHONEFORMOCKIDENTITY$"
+}'
+      output: '{
+  "status":"mock identity data created successfully"
+}'
+   Signup_AddIdentity_L2_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_for_DeletingCookies_smoke_Pos:
+      endPoint: /v1/mock-identity-system/identity
+      uniqueIdentifier: TC_IdRepo_Dependent_AddIdentityMock_10
+      description: Add identity for disabilityType NEUROLOGICAL for deleting cookies
+      role: idrepo
+      restMethod: post
+      inputTemplate: signup/AddIdentityMock/AddIdentity
+      outputTemplate: signup/AddIdentityMock/addIdentityResult
+      input: '{
+	  "requesttime": "$TIMESTAMP$",
+	  "individualId": "$RANDOMINDIVIDUALIDFORMOCKIDENTITY$",
+	  "pin": "545411",
+	  "email": "$EMAILIDFORMOCKIDENTITY$",
+	  "password": "$PASSWORDFORMOCKIDENTITY$",
+	  "phone": "$PHONEFORMOCKIDENTITY$"
+}'
+      output: '{
+  "status":"mock identity data created successfully"
+}'
+   Signup_AddIdentity_L2_Valid_forPrepareSignUpRedirect_unauthenticated_smoke_Pos:
+      endPoint: /v1/mock-identity-system/identity
+      uniqueIdentifier: TC_IdRepo_Dependent_AddIdentityMock_11
+      description: Add identity for PrepareSignUpRedirect
+      role: idrepo
+      restMethod: post
+      inputTemplate: signup/AddIdentityMock/AddIdentity
+      outputTemplate: signup/AddIdentityMock/addIdentityResult
+      input: '{
+	  "requesttime": "$TIMESTAMP$",
+	  "individualId": "$RANDOMINDIVIDUALIDFORMOCKIDENTITY$",
+	  "pin": "545411",
+	  "email": "$EMAILIDFORMOCKIDENTITY$",
+	  "password": "$PASSWORDFORMOCKIDENTITY$",
+	  "phone": "$PHONEFORMOCKIDENTITY$"
+}'
+      output: '{
+  "status":"mock identity data created successfully"
+}'

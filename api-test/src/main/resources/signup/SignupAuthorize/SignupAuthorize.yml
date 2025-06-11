@@ -124,3 +124,75 @@ SignupAuthorize:
       output: '{
        
 }'
+   Signup_ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdVerStatusWithoutWebsocket_Smoke_sid:
+      endPoint: /v1/esignet/authorization/v3/oauth-details
+      description: Create consent details and unique transactionID with valid details and this testcase is prerequisite
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/SignupAuthorize/SignupAuthorize
+      outputTemplate: signup/SignupAuthorize/SignupAuthorizeResult
+      input: '{
+      	"pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdVerStatusWithoutWebsocket_Smoke_sid_pathFragmentCookie$",
+      	"pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdVerStatusWithoutWebsocket_Smoke_sid_transactionId$",
+      	"requestTime": "$TIMESTAMP$",
+      	"clientId": "mosip-signup-oauth-client",
+      	"scope": "openid",
+      	"responseType": "code",
+      	"redirectUri": "$SIGNUPREDIRECTURI$",
+      	"acrValues": "mosip:idp:acr:id-token",
+      	"state": "urlInfo1724138417665",
+      	"uiLocales": "en",
+      	"idTokenHint": "$ID:ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdVerStatusWithoutWebsocket_Smoke_sid_idToken$"
+}'
+      output: '{
+       
+}'
+   Signup_ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdtAuth_Smoke_sid:
+      endPoint: /v1/esignet/authorization/v3/oauth-details
+      description: Create consent details and unique transactionID with valid details and this testcase is prerequisite
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/SignupAuthorize/SignupAuthorize
+      outputTemplate: signup/SignupAuthorize/SignupAuthorizeResult
+      input: '{
+      	"pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdtAuth_Smoke_sid_pathFragmentCookie$",
+      	"pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdtAuth_Smoke_sid_transactionId$",
+      	"requestTime": "$TIMESTAMP$",
+      	"clientId": "mosip-signup-oauth-client",
+      	"scope": "openid",
+      	"responseType": "code",
+      	"redirectUri": "$SIGNUPREDIRECTURI$",
+      	"acrValues": "mosip:idp:acr:id-token",
+      	"state": "urlInfo1724138417665",
+      	"uiLocales": "en",
+      	"idTokenHint": "$ID:ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdtAuth_Smoke_sid_idToken$"
+}'
+      output: '{
+       
+}'
+   Signup_ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forDeletingCookies_Smoke_sid:
+      endPoint: /v1/esignet/authorization/v3/oauth-details
+      description: Create consent details and unique transactionID with valid details and this testcase is prerequisite
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/SignupAuthorize/SignupAuthorize
+      outputTemplate: signup/SignupAuthorize/SignupAuthorizeResult
+      input: '{
+      	"pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forDeletingCookies_Smoke_sid_pathFragmentCookie$",
+      	"pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forDeletingCookies_Smoke_sid_transactionId$",
+      	"requestTime": "$TIMESTAMP$",
+      	"clientId": "mosip-signup-oauth-client",
+      	"scope": "openid",
+      	"responseType": "code",
+      	"redirectUri": "$SIGNUPREDIRECTURI$",
+      	"acrValues": "mosip:idp:acr:id-token",
+      	"state": "urlInfo1724138417665",
+      	"uiLocales": "en",
+      	"idTokenHint": "$ID:ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forDeletingCookies_Smoke_sid_idToken$"
+}'
+      output: '{
+       
+}'

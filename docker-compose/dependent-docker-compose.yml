@@ -24,6 +24,7 @@ services:
       - MOSIP_MOCK_IDA_KYC_TRANSACTION_TIMEOUT_SECS=1200
       - MOSIP_MOCK_IDA_UPDATE_IDENTITY_NON_MANDATORY_FIELDS={"fullName","givenName","familyName","middleName","nickName","preferredUsername","gender","streetAddress","locality","region","country","pin","preferredLang","dateOfBirth","postalCode","encodedPhoto","email","phone","zoneInfo","locale","password"}
       - MOSIP_MOCK_IDA_IDENTITY_SCHEMA_URL=classpath:/mock-identity-signup-schema.json
+      - MOSIP_ESIGNET_HOST=localhost:8088
     depends_on:
       - database
 
