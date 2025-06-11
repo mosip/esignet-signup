@@ -1315,14 +1315,14 @@ paths:
                             type: object
                       mandatoryLanguages:
                         type: array
-                        description: Mandatory languages
+                        description: These languages must be supported and present in the localized content or labels to ensure core accessibility and compliance.
                         x-stoplight:
                           id: kifhqwkskzf6e
                         items:
                           type: string
                       optionalLanguages:
                         type: array
-                        description: Optional languages
+                        description: Optional languages are additional languages that the system can support to enhance user experience but are not required for the system to function.
                         x-stoplight:
                           id: kifhqwkskzf6e
                         items:
