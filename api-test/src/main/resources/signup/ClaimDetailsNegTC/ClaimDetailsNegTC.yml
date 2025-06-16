@@ -230,6 +230,7 @@ ClaimDetailsNegTC:
 }'
      Signup_ESignet_ClaimDetailsNegTC_AuthToken_Xsrf_uin_Valid_Smoke:
       endPoint: /v1/esignet/authorization/claim-details
+      uniqueIdentifier: TC_ESignet_ClaimDetailsNegTC_V3_11
       description: To get ClaimDetails with  and all valid data
       role: resident
       restMethod: get

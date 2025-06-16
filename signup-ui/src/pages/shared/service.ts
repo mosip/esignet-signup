@@ -1,4 +1,4 @@
-import { ApiService } from "~services/api.service";
+import { ApiService, AxiosInstance } from "~services/api.service";
 import {
   GenerateChallengeRequestDto,
   IdentityVerificationStatus,
@@ -30,6 +30,12 @@ export const getCookie = (key: string): string | any => {
 
 export const getSettings = async (): Promise<SettingsDto> => {
   return ApiService.get<SettingsDto>("/settings").then(({ data }) => data);
+};
+
+export const getCsrfToken = async (): Promise<string> => {
+  return AxiosInstance.get("/csrf/token").then(({ data }) => {
+    return data.token;
+  });
 };
 
 export const generateChallenge = async (
