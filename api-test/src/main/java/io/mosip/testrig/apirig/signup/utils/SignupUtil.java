@@ -90,6 +90,15 @@ public class SignupUtil extends AdminTestUtil {
 		return pluginName;
 	}
 	
+	public static String getPluginName() {
+	    String pluginServiceName = SignupUtil.getIdentityPluginNameFromEsignetActuator().toLowerCase();
+	    if (pluginServiceName.contains("idaauthenticatorimpl")) {
+	    	return "mosip-id";
+	    }else {
+	    	return "mock";
+	    }
+	}
+	
 	public static JSONArray getActiveProfilesFromActuator(String url, String key) {
 		JSONArray activeProfiles = null;
 
