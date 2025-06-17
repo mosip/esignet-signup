@@ -249,7 +249,7 @@ OAuthDetailsRequestV3:
       output: '{
        
 }'
-   Signup_ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_for_claimDetails_Unauthenticated_Smoke_sid:
+   Signup_ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_for_claimDetails_Unauthenticated_sid:
       endPoint: /v1/esignet/authorization/v3/oauth-details
       uniqueIdentifier: TC_Signup_ESignet_OAuthDetailsRequestV3_Prerequisite
       description: Get OAuth details with claims as prerequisite
