@@ -91,12 +91,17 @@ public class SignupUtil extends AdminTestUtil {
 	}
 	
 	public static String getPluginName() {
-	    String pluginServiceName = SignupUtil.getIdentityPluginNameFromEsignetActuator().toLowerCase();
-	    if (pluginServiceName.contains("idaauthenticatorimpl")) {
-	    	return "mosip-id";
-	    }else {
-	    	return "mock";
+	    try {
+	    	String pluginServiceName = SignupUtil.getIdentityPluginNameFromEsignetActuator().toLowerCase();
+		    if (pluginServiceName.contains("idaauthenticatorimpl")) {
+		    	return "mosip-id";
+		    }else {
+		    	return "mock";
+		    }
+	    } catch (Exception e) {
+	    	logger.error("Failed to get plugin name from actuator", e);	    	
 	    }
+	    return "null";
 	}
 	
 	public static JSONArray getActiveProfilesFromActuator(String url, String key) {

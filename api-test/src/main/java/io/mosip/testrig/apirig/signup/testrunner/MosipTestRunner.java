@@ -194,7 +194,11 @@ public class MosipTestRunner {
 				List<String> suitefiles = new ArrayList<>();
 
 				if (file.getName().toLowerCase().contains("mastertestsuite")) {
-					BaseTestCase.setReportName(GlobalConstants.SIGNUP + "-" + MosipTestRunner.PLUGIN_NAME);
+					if(MosipTestRunner.PLUGIN_NAME != null) {
+						BaseTestCase.setReportName(GlobalConstants.SIGNUP + "-" + MosipTestRunner.PLUGIN_NAME);
+					}else {
+						BaseTestCase.setReportName(GlobalConstants.SIGNUP);
+					}
 					suitefiles.add(file.getAbsolutePath());
 					runner.setTestSuites(suitefiles);
 					System.getProperties().setProperty("testng.outpur.dir", "testng-report");
