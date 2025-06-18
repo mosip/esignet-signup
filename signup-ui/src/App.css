@@ -430,76 +430,84 @@ input[type="password"]::-ms-clear {
 }
 
 /* Registration dynamic form css  Start*/
-.registration-form .form-group {
-  margin-bottom: 0px;
-}
+.registration-form {
+  .form-group {
+    margin-bottom: 0px;
+  }
 
-.registration-form .form-field {
-  margin-bottom: 24px;
-}
+  .form-field {
+    margin-bottom: 24px;
+  }
 
-.registration-form .input_box {
-  border-radius: 6px;
-  border: 1px solid hsl(var(--input));
-  height: 3rem;
-  color: inherit;
-  padding: 10px 12px;
-  margin-top: 6px;
-  font-family: var(--font-inter),
-    sans-serif;
-  font-weight: inherit;
-  font-size: 100%;
-  line-height: inherit;
-}
+  .input_box {
+    border-radius: 6px;
+    border: 1px solid hsl(var(--input));
+    height: 3rem;
+    color: inherit;
+    padding: 10px 12px;
+    margin-top: 6px;
+    font-family: var(--font-inter), sans-serif;
+    font-weight: inherit;
+    font-size: 100%;
+    line-height: inherit;
+  }
 
-.registration-form .error-message .error-text:before {
-  content: "⮾";
-  font-size: 12px;
-  margin-right: 4px;
-}
+  .error-message .error-text {
+    font:
+      500 10px/16px var(--font-inter),
+      sans-serif;
+    color: #fe6b6b;
+    margin-top: 4px;
 
-.registration-form .error-message .error-text {
-  font:
-    500 10px/16px var(--font-inter),
-    sans-serif;
-  color: #fe6b6b;
-  margin-top: 4px;
-}
+    &:before {
+      content: "⮾";
+      font-size: 12px;
+      margin-right: 4px;
+    }
+  }
 
-.registration-form .required {
-  color: #fe6b6b;
-  letter-spacing: 0%;
-  font:
-    500 14px/16px var(--font-inter),
-    sans-serif;
-}
+  .required {
+    color: #fe6b6b;
+    letter-spacing: 0%;
+    font:
+      500 14px/16px var(--font-inter),
+      sans-serif;
+  }
 
-.registration-form .checkbox-container input[type="checkbox"] {
-  background: var(--checkbox-background);
-  border-radius: 0px 5px 0px 8px;
-  accent-color: var(--checkbox-background);
-}
+  .checkbox-container input[type="checkbox"] {
+    background: var(--checkbox-background);
+    border-radius: 0px 5px 0px 8px;
+    accent-color: var(--checkbox-background);
+  }
 
-.registration-form .form-button {
-  display: inline-flex;
-  height: 62px;
-  width: 100%;
-  align-items: center;
-  justify-content: center;
-  white-space: nowrap;
-  border-radius: 8px;
-  padding: 8px 16px;
-  font-size: 18px;
-  font-weight: 700;
-  line-height: 28px;
-  color: hsl(var(--primary-foreground));
-  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, -webkit-text-decoration-color;
-  transition-timing-function: cubic-bezier(.4,0,.2,1);
-  background-color: hsl(var(--primary));
-}
+  .form-button {
+    display: inline-flex;
+    height: 62px;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 28px;
+    color: hsl(var(--primary-foreground));
+    transition-property:
+      color,
+      background-color,
+      border-color,
+      text-decoration-color,
+      fill,
+      stroke,
+      -webkit-text-decoration-color;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    background-color: hsl(var(--primary));
 
-.registration-form .form-button:hover {
-  background-color: hsl(var(--primary) / .9);
+    &:hover {
+      background-color: hsl(var(--primary) / 0.9);
+    }
+  }
 }
 /* Registration dynamic form css  End*/
 

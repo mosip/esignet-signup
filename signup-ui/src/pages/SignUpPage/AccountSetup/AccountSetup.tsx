@@ -144,7 +144,7 @@ export const AccountSetup = ({ settings, methods }: AccountSetupProps) => {
             },
             language: {
               currentLanguage: i18n.language,
-              defaultLanguage: "eng",
+              defaultLanguage: (window as any)._env_.DEFAULT_LANG,
             },
             additionalSchema: {
               password_confirm: {
