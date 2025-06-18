@@ -1,3 +1,5 @@
+import { FormConfig } from "@anushase/json-form-builder/dist/types";
+
 export interface ResetPasswordForm {
   username: string;
   fullname: string;
@@ -59,7 +61,7 @@ export const ResetPasswordPossibleInvalid = [
   "identifier_not_found",
   "invalid_kbi_challenge",
   "challenge_format_and_type_mismatch",
-  "kbi_challenge_not_found"
+  "kbi_challenge_not_found",
 ];
 
 const ResetPasswordPossibleErrors = [
@@ -155,7 +157,7 @@ export interface SettingsConfig {
   "offline.polling.timeout": number;
   "offline.polling.enabled": boolean;
   "offline.polling.url": string;
-  "broswer.minimum-version": { [key: string]: string; };
+  "broswer.minimum-version": { [key: string]: string };
   "esignet-consent.redirect-url": string;
 }
 
@@ -231,7 +233,12 @@ export type KeyValueStringObject = {
   [key: string]: string | KeyValueStringObject;
 };
 
-export type KycProviderDetailProp = "terms&Conditions" | "previewInfo" | "stepCodes" | "errors" | "messages";
+export type KycProviderDetailProp =
+  | "terms&Conditions"
+  | "previewInfo"
+  | "stepCodes"
+  | "errors"
+  | "messages";
 
 export type KycProviderDetail = {
   "terms&Conditions": KeyValueStringObject;
@@ -445,4 +452,9 @@ export type IdentityVerificationStatusResponseDto = BaseResponseDto & {
     status: IdentityVerificationStatus;
   } | null;
   errors: IdentityVerificationStatusErrors;
+};
+
+export type UiSchemaResponseDto = BaseResponseDto & {
+  response: FormConfig | null;
+  errors: any[] | null;
 };
