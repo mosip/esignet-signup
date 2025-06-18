@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@anushase/json-form-builder": "^1.0.0",
     "@cospired/i18n-iso-languages": "^4.2.0",
     "@craco/craco": "^7.1.0",
     "@fontsource-variable/inter": "^5.0.15",
