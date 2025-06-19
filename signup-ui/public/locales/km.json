@@ -192,7 +192,12 @@
     "successful_header": "ការផ្ទៀងផ្ទាត់បានជោគជ័យ!",
     "successful_subheader": "សូមរង់ចាំខណៈពេលដែលយើងបញ្ចប់ដំណើរការ",
     "unsuccessful_header": "ការផ្ទៀងផ្ទាត់មិនបានជោគជ័យ!",
-    "unsuccessful_subheader": "ឱ! យើងមិនអាចបញ្ចប់ការផ្ទៀងផ្ទាត់ eKYC បានទេ។"
+    "unsuccessful_subheader": "ឱ! យើងមិនអាចបញ្ចប់ការផ្ទៀងផ្ទាត់ eKYC បានទេ។",
+    "web_socket_error": {
+      "header": "កំហុស!",
+      "sub_header": "មិនអាចបន្តជាមួយការផ្ទៀងផ្ទាត់ eKYC បានទេ។ សូមព្យាយាមម្តងទៀត។",
+      "button": "មិនអីទេ។"
+    }
   },
   "identity_verification_status": {
     "successful": {
