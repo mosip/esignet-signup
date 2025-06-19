@@ -5,6 +5,7 @@ const useStompClient = (url: string, options = {}) => {
   const [client, setClient] = useState<any>(null);
   const [connected, setConnected] = useState<boolean>(false);
   const [subscription, setSubscription] = useState<any>(null);
+  const [webSocketError, setWebSocketError] = useState<boolean>(false);
 
   useEffect(() => {
     const stompClient = new Client({
@@ -17,6 +18,10 @@ const useStompClient = (url: string, options = {}) => {
     stompClient.onDisconnect = () => {
       console.log("Disconnected! from stompjs");
       setConnected(false);
+    };
+    stompClient.onWebSocketError = (event) => {
+      setWebSocketError(event.type);
+      console.log("WebSocket connection error:", event);
     };
 
     setClient(stompClient);
@@ -64,7 +69,7 @@ const useStompClient = (url: string, options = {}) => {
   //   }
   // };
 
-  return { client, connected, subscribe, publish, unsubscribe };
+  return { client, connected, subscribe, publish, unsubscribe, webSocketError };
 };
 
 export default useStompClient;
