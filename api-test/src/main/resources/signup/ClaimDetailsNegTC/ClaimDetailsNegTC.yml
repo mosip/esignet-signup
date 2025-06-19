@@ -244,3 +244,25 @@ ClaimDetailsNegTC:
     }'
       output: '{
 }'
+     Signup_ESignet_ClaimDetails_AuthToken_Xsrf_uin_unauthenticated_Neg:
+      endPoint: /v1/esignet/authorization/claim-details
+      uniqueIdentifier: TC_Signup_ESignet_ClaimDetails_12
+      description: Fetching the claim details without authentication
+      role: resident
+      restMethod: get
+      checkErrorsOnlyInResponse: true
+      validityCheckRequired: true
+      inputTemplate: signup/ClaimDetails/ClaimDetails
+      outputTemplate: signup/error
+      input: '{
+        "encodedHash": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_for_claimDetails_Unauthenticated_sid_encodedResp$",
+      	"transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_for_claimDetails_Unauthenticated_sid_transactionId$"
+    }'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "invalid_transaction",
+      "errorMessage": "invalid_transaction"
+    }
+  ]
+}'
