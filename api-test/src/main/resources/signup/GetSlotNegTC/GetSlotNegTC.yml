@@ -16,8 +16,7 @@ GetSlotNegTC:
       output: '{
       "errors": [
     {
-      "errorCode": "invalid_request",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_request"
     }
   ]
 }'
@@ -39,8 +38,7 @@ GetSlotNegTC:
       output: '{
       "errors": [
     {
-      "errorCode": "invalid_request",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_request"
     }
   ]
 }'
@@ -62,8 +60,7 @@ GetSlotNegTC:
       output: '{
       "errors": [
     {
-      "errorCode": "invalid_request",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_request"
     }
   ]
 }'
@@ -85,8 +82,7 @@ GetSlotNegTC:
       output: '{
       "errors": [
     {
-      "errorCode": "invalid_request",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_request"
     }
   ]
 }'
@@ -108,8 +104,7 @@ GetSlotNegTC:
       output: '{
       "errors": [
     {
-      "errorCode": "invalid_request",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_request"
     }
   ]
 }'
@@ -131,8 +126,7 @@ GetSlotNegTC:
       output: '{
       "errors": [
     {
-      "errorCode": "invalid_request",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_request"
     }
   ]
 }'
@@ -154,8 +148,7 @@ GetSlotNegTC:
       output: '{
       "errors": [
     {
-      "errorCode": "invalid_request",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_request"
     }
   ]
 }'
@@ -177,8 +170,7 @@ GetSlotNegTC:
       output: '{
       "errors": [
     {
-      "errorCode": "invalid_identity_verifier_id",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_identity_verifier_id"
     }
   ]
 }'
@@ -200,8 +192,7 @@ GetSlotNegTC:
       output: '{
       "errors": [
     {
-      "errorCode": "invalid_identity_verifier_id",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_identity_verifier_id"
     }
   ]
 }'
@@ -223,8 +214,7 @@ GetSlotNegTC:
       output: '{
       "errors": [
     {
-      "errorCode": "invalid_identity_verifier_id",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_identity_verifier_id"
     }
   ]
 }'
@@ -246,8 +236,7 @@ GetSlotNegTC:
       output: '{
       "errors": [
     {
-      "errorCode": "invalid_identity_verifier_id",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_identity_verifier_id"
     }
   ]
 }'
@@ -269,8 +258,7 @@ GetSlotNegTC:
       output: '{
       "errors": [
     {
-      "errorCode": "invalid_identity_verifier_id",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_identity_verifier_id"
     }
   ]
 }'
@@ -292,8 +280,7 @@ GetSlotNegTC:
       output: '{
       "errors": [
     {
-      "errorCode": "invalid_identity_verifier_id",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_identity_verifier_id"
     }
   ]
 }'
@@ -315,8 +302,7 @@ GetSlotNegTC:
       output: '{
       "errors": [
     {
-      "errorCode": "consent_required",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "consent_required"
     }
   ]
 }'
@@ -338,8 +324,7 @@ GetSlotNegTC:
       output: '{
       "errors": [
     {
-      "errorCode": "consent_required",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "consent_required"
     }
   ]
 }'
@@ -361,8 +346,7 @@ GetSlotNegTC:
       output: '{
       "errors": [
     {
-      "errorCode": "consent_required",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "consent_required"
     }
   ]
 }'
@@ -384,8 +368,7 @@ GetSlotNegTC:
       output: '{
       "errors": [
     {
-      "errorCode": "consent_required",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "consent_required"
     }
   ]
 }'
@@ -407,8 +390,7 @@ GetSlotNegTC:
       output: '{
       "errors": [
     {
-      "errorCode": "consent_required",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "consent_required"
     }
   ]
 }'
@@ -430,8 +412,7 @@ GetSlotNegTC:
       output: '{
       "errors": [
     {
-      "errorCode": "consent_required",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "consent_required"
     }
   ]
 }'
@@ -453,8 +434,7 @@ GetSlotNegTC:
       output: '{
       "errors": [
     {
-      "errorCode": "consent_required",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "consent_required"
     }
   ]
 }'
@@ -476,8 +456,7 @@ GetSlotNegTC:
       output: '{
       "errors": [
     {
-      "errorCode": "consent_required",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "consent_required"
     }
   ]
 }'
@@ -516,8 +495,7 @@ GetSlotNegTC:
       output: '{
       "errors": [
     {
-      "errorCode": "consent_required",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "consent_required"
     }
   ]
 }'
@@ -539,8 +517,7 @@ GetSlotNegTC:
       output: '{
       "errors": [
     {
-      "errorCode": "invalid_transaction",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_transaction"
     }
   ]
 }'
@@ -562,8 +539,7 @@ GetSlotNegTC:
       output: '{
       "errors": [
     {
-      "errorCode": "invalid_disability_type",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_disability_type"
     }
   ]
 }'
@@ -585,8 +561,7 @@ GetSlotNegTC:
       output: '{
       "errors": [
     {
-      "errorCode": "invalid_disability_type",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_disability_type"
     }
   ]
 }'
@@ -608,8 +583,7 @@ GetSlotNegTC:
       output: '{
       "errors": [
     {
-      "errorCode": "invalid_disability_type",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_disability_type"
     }
   ]
 }'
@@ -631,8 +605,7 @@ GetSlotNegTC:
       output: '{
       "errors": [
     {
-      "errorCode": "invalid_disability_type",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_disability_type"
     }
   ]
 }'
@@ -654,8 +627,7 @@ GetSlotNegTC:
       output: '{
       "errors": [
     {
-      "errorCode": "invalid_disability_type",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_disability_type"
     }
   ]
 }'
@@ -677,8 +649,7 @@ GetSlotNegTC:
       output: '{
       "errors": [
     {
-      "errorCode": "invalid_disability_type",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_disability_type"
     }
   ]
 }'
@@ -700,8 +671,7 @@ GetSlotNegTC:
       output: '{
       "errors": [
     {
-      "errorCode": "invalid_disability_type",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_disability_type"
     }
   ]
 }'
@@ -723,8 +693,7 @@ GetSlotNegTC:
       output: '{
       "errors": [
     {
-      "errorCode": "invalid_disability_type",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_disability_type"
     }
   ]
 }'
@@ -746,8 +715,7 @@ GetSlotNegTC:
       output: '{
       "errors": [
     {
-      "errorCode": "invalid_disability_type",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_disability_type"
     }
   ]
 }'

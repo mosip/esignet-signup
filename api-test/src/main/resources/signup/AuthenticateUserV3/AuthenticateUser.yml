@@ -27,9 +27,7 @@ AuthenticateUserV3:
     }'
       output: '{
   "sendOtpResp":{
-        "maskedMobile": "$IGNORE$",
-        "sendOtpResTemplate":"signup/SendOtp/SendOtpResult",
-        "maskedEmail": "$IGNORE$"
+        "sendOtpResTemplate":"signup/SendOtp/SendOtpResult"
     }
 }'
    Signup_ESignet_AuthenticateUser_V3_AuthToken_Xsrf__uin_Otp_Valid_forGetSlot_disabilityTypeVISION_Smoke:
@@ -59,9 +57,7 @@ AuthenticateUserV3:
     }'
       output: '{
   "sendOtpResp":{
-        "maskedMobile": "$IGNORE$",
-        "sendOtpResTemplate":"signup/SendOtp/SendOtpResult",
-        "maskedEmail": "$IGNORE$"
+        "sendOtpResTemplate":"signup/SendOtp/SendOtpResult"
     }
 }'
    Signup_ESignet_AuthenticateUser_V3_AuthToken_Xsrf__uin_Otp_Valid_forGetSlot_disabilityTypeAUDITORY_Smoke:
@@ -91,9 +87,7 @@ AuthenticateUserV3:
     }'
       output: '{
   "sendOtpResp":{
-        "maskedMobile": "$IGNORE$",
-        "sendOtpResTemplate":"signup/SendOtp/SendOtpResult",
-        "maskedEmail": "$IGNORE$"
+        "sendOtpResTemplate":"signup/SendOtp/SendOtpResult"
     }
 }'
    Signup_ESignet_AuthenticateUser_V3_AuthToken_Xsrf__uin_Otp_Valid_forGetSlot_disabilityTypeMOBILITY_Smoke:
@@ -123,9 +117,7 @@ AuthenticateUserV3:
     }'
       output: '{
   "sendOtpResp":{
-        "maskedMobile": "$IGNORE$",
-        "sendOtpResTemplate":"signup/SendOtp/SendOtpResult",
-        "maskedEmail": "$IGNORE$"
+        "sendOtpResTemplate":"signup/SendOtp/SendOtpResult"
     }
 }'
    Signup_ESignet_AuthenticateUser_V3_AuthToken_Xsrf__uin_Otp_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_Smoke:
@@ -155,9 +147,7 @@ AuthenticateUserV3:
     }'
       output: '{
   "sendOtpResp":{
-        "maskedMobile": "$IGNORE$",
-        "sendOtpResTemplate":"signup/SendOtp/SendOtpResult",
-        "maskedEmail": "$IGNORE$"
+        "sendOtpResTemplate":"signup/SendOtp/SendOtpResult"
     }
 }'
    Signup_ESignet_AuthenticateUser_V3_AuthToken_Xsrf__uin_Otp_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdVerStatusWithoutWebsocket_Smoke:
@@ -187,9 +177,7 @@ AuthenticateUserV3:
     }'
       output: '{
   "sendOtpResp":{
-        "maskedMobile": "$IGNORE$",
-        "sendOtpResTemplate":"signup/SendOtp/SendOtpResult",
-        "maskedEmail": "$IGNORE$"
+        "sendOtpResTemplate":"signup/SendOtp/SendOtpResult"
     }
 }'
    Signup_ESignet_AuthenticateUser_V3_AuthToken_Xsrf__uin_Otp_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdTAuth_Smoke:
@@ -219,9 +207,7 @@ AuthenticateUserV3:
     }'
       output: '{
   "sendOtpResp":{
-        "maskedMobile": "$IGNORE$",
-        "sendOtpResTemplate":"signup/SendOtp/SendOtpResult",
-        "maskedEmail": "$IGNORE$"
+        "sendOtpResTemplate":"signup/SendOtp/SendOtpResult"
     }
 }'
    Signup_ESignet_AuthenticateUser_V3_AuthToken_Xsrf__uin_Otp_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forDeletingCookies_Smoke:
@@ -251,9 +237,7 @@ AuthenticateUserV3:
     }'
       output: '{
   "sendOtpResp":{
-        "maskedMobile": "$IGNORE$",
-        "sendOtpResTemplate":"signup/SendOtp/SendOtpResult",
-        "maskedEmail": "$IGNORE$"
+        "sendOtpResTemplate":"signup/SendOtp/SendOtpResult"
     }
 }'
    Signup_ESignet_AuthenticateUser_V3_AuthToken_Xsrf__uin_Otp_Valid_forprepareSignUpRedirect_Unauthenticated_Smoke:
@@ -283,8 +267,6 @@ AuthenticateUserV3:
     }'
       output: '{
   "sendOtpResp":{
-        "maskedMobile": "$IGNORE$",
-        "sendOtpResTemplate":"signup/SendOtp/SendOtpResult",
-        "maskedEmail": "$IGNORE$"
+        "sendOtpResTemplate":"signup/SendOtp/SendOtpResult"
     }
 }'
