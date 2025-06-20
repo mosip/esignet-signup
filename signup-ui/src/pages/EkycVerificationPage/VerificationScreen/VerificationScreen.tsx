@@ -104,7 +104,8 @@ export const VerificationScreen = ({
       if (window.videoLocalStream) {
         window.videoLocalStream.getTracks().forEach((track) => track.stop());
       }
-
+      console.log("state", state);
+      console.log("consent-url", settings?.configs["esignet-consent.redirect-url"]);
       setAlertConfig({
         icon: "fail",
         header: t("web_socket_error.header"),
@@ -113,9 +114,10 @@ export const VerificationScreen = ({
           <Button
             id="okay-button"
             className="my-4 h-16 w-full"
+            type="button"
             onClick={() => {
               window.onbeforeunload = null;
-              window.location.href = `${settings?.configs["esignet-consent.redirect-url"]}?key=${state}&error=web_socket_fail`;
+              window.location.replace(`${settings?.configs["esignet-consent.redirect-url"]}?key=${state}&error=web_socket_fail`);
             }}
           >
             {t("web_socket_error.button")}
