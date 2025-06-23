@@ -104,8 +104,6 @@ export const VerificationScreen = ({
       if (window.videoLocalStream) {
         window.videoLocalStream.getTracks().forEach((track) => track.stop());
       }
-      console.log("state", state);
-      console.log("consent-url", settings?.configs["esignet-consent.redirect-url"]);
       setAlertConfig({
         icon: "fail",
         header: t("web_socket_error.header"),
@@ -247,12 +245,6 @@ export const VerificationScreen = ({
     sendMessage(request);
   };
 
-  // useEffect(() => {
-  //   // checking camera permission in every 1 second
-  //   const cameraCheckInterval = setInterval(cameraDeviceCheck, 1000);
-  //   return () => clearInterval(cameraCheckInterval);
-  // }, []);
-
   const cameraDeviceCheck = () => {
     navigator.mediaDevices
       .getUserMedia({ video: true })
@@ -320,7 +312,6 @@ export const VerificationScreen = ({
 
   const redirectToConsent = () => {
     unsubscribe();
-    console.log("deactivate inside redirect to consent");
     client.deactivate();
     const consentUrl = settings?.configs["signin.redirect-url"].replace(
       "authorize",
