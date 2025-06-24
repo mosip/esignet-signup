@@ -9,11 +9,11 @@
 	<parent>
 		<groupId>io.mosip.signup</groupId>
 		<artifactId>signup-parent</artifactId>
-		<version>1.2.0-SNAPSHOT</version>
+		<version>1.2.0-RC1</version>
 	</parent>
 
 	<artifactId>signup-service</artifactId>
-	<version>1.2.0-SNAPSHOT</version>
+	<version>1.2.0-RC1</version>
 	<name>signup-service</name>
 	<description>Sign Up Service</description>
 	<url>https://github.com/mosip/esignet-signup</url>
@@ -42,7 +42,7 @@
 		<jackson.databind>2.12.0</jackson.databind>
 		<fasterxml.jackson.module.jsr310.version>2.12.0</fasterxml.jackson.module.jsr310.version>
 		<fasterxml.jackson.module.afterburner.version>2.12.0</fasterxml.jackson.module.afterburner.version>
-		<esignet.version>1.6.0-SNAPSHOT</esignet.version>
+		<esignet.version>1.6.0-RC1</esignet.version>
 	</properties>
 	
 	<dependencies>
@@ -177,7 +177,7 @@
 		<dependency>
 			<groupId>io.mosip.signup</groupId>
 			<artifactId>signup-integration-api</artifactId>
-			<version>1.2.0-SNAPSHOT</version>
+			<version>${project.version}</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/net.javacrumbs.shedlock/shedlock-spring -->
@@ -216,6 +216,9 @@
 							<goal>build-info</goal>
 							<goal>repackage</goal>
 						</goals>
+						<configuration>
+							<attach>false</attach>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
