@@ -177,7 +177,7 @@
 		<dependency>
 			<groupId>io.mosip.signup</groupId>
 			<artifactId>signup-integration-api</artifactId>
-			<version>1.2.1-SNAPSHOT</version>
+			<version>${project.version}</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/net.javacrumbs.shedlock/shedlock-spring -->
@@ -193,6 +193,11 @@
 			<version>4.47.0</version>
 		</dependency>
 
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-auth-adapter-lite</artifactId>
+			<version>1.2.0.1-B4</version>
+		</dependency>
     </dependencies>
 
 	<build>
@@ -211,6 +216,9 @@
 							<goal>build-info</goal>
 							<goal>repackage</goal>
 						</goals>
+						<configuration>
+							<attach>false</attach>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
