@@ -79,6 +79,15 @@ public class SignupUtil extends AdminTestUtil {
 				getGlobalResourcePath() + "/" + "config/pmsDataDeleteQueries.txt");
 	}
 	
+	public static boolean isCaptchaEnabled() {
+		String temp = getValueFromEsignetActuator(SignupConstants.CLASS_PATH_APPLICATION_PROPERTIES,
+				SignupConstants.MOSIP_ESIGNET_CAPTCHA_REQUIRED);
+		if(temp.isEmpty()) {
+			return false;
+		}
+		return true;	
+	}
+	
 	public static String getIdentityPluginNameFromEsignetActuator() {
 		// Possible values = IdaAuthenticatorImpl, MockAuthenticationService
 		if (pluginName != null && !pluginName.isBlank()) {
@@ -143,18 +152,18 @@ public class SignupUtil extends AdminTestUtil {
 				SignupConstants.ESIGNET_ACTUATOR_URL);
 
 		// Fallback to other sections if value is not found
-		if (value == null || value.isBlank()) {
+		if (value == null) {
 			value = getValueFromEsignetActuator(SignupConstants.CLASS_PATH_APPLICATION_PROPERTIES, key,
 					SignupConstants.ESIGNET_ACTUATOR_URL);
 		}
 
-		if (value == null || value.isBlank()) {
+		if (value == null) {
 			value = getValueFromEsignetActuator(SignupConstants.CLASS_PATH_APPLICATION_DEFAULT_PROPERTIES, key,
 					SignupConstants.ESIGNET_ACTUATOR_URL);
 		}
 
 		// Try profiles from active profiles if available
-		if (value == null || value.isBlank()) {
+		if (value == null) {
 			if (esignetActiveProfiles != null && esignetActiveProfiles.length() > 0) {
 				for (int i = 0; i < esignetActiveProfiles.length(); i++) {
 					String propertySection = esignetActiveProfiles.getString(i).equals(SignupConstants.DEFAULT_STRING)
@@ -164,7 +173,7 @@ public class SignupUtil extends AdminTestUtil {
 
 					value = getValueFromEsignetActuator(propertySection, key, SignupConstants.ESIGNET_ACTUATOR_URL);
 
-					if (value != null && !value.isBlank()) {
+					if (value != null) {
 						break;
 					}
 				}
@@ -174,18 +183,18 @@ public class SignupUtil extends AdminTestUtil {
 		}
 
 		// Fallback to a default section
-		if (value == null || value.isBlank()) {
+		if (value == null) {
 			value = getValueFromEsignetActuator(SignupConfigManager.getEsignetActuatorPropertySection(), key,
 					SignupConstants.ESIGNET_ACTUATOR_URL);
 		}
 
 		// Final fallback to the original section if no value was found
-		if (value == null || value.isBlank()) {
+		if (value == null) {
 			value = getValueFromEsignetActuator(section, key, SignupConstants.ESIGNET_ACTUATOR_URL);
 		}
 
 		// Log the final result or an error message if not found
-		if (value == null || value.isBlank()) {
+		if (value == null) {
 			logger.error("Value not found for section: " + section + ", key: " + key);
 		}
 
@@ -202,7 +211,7 @@ public class SignupUtil extends AdminTestUtil {
 
 		// Check if the value is already cached
 		String value = actuatorValueCache.get(actuatorCacheKey);
-		if (value != null && !value.isEmpty()) {
+		if (value != null) {
 			return value; // Return cached value if available
 		}
 
@@ -235,7 +244,7 @@ public class SignupUtil extends AdminTestUtil {
 			}
 
 			// Cache the retrieved value for future lookups
-			if (value != null && !value.isEmpty()) {
+			if (value != null) {
 				actuatorValueCache.put(actuatorCacheKey, value);
 			} else {
 				logger.warn("No value found for section: " + section + ", key: " + key);
@@ -256,6 +265,14 @@ public class SignupUtil extends AdminTestUtil {
 	public static TestCaseDTO isTestCaseValidForTheExecution(TestCaseDTO testCaseDTO) {
 		String testCaseName = testCaseDTO.getTestCaseName();
 		String inputJson = testCaseDTO.getInput();
+		
+		//When the captcha is enabled we cannot execute the test case as we can not generate the captcha token
+		if (isCaptchaEnabled() == true) {
+			GlobalMethods.reportCaptchaStatus(GlobalConstants.CAPTCHA_ENABLED, true);
+			throw new SkipException(GlobalConstants.CAPTCHA_ENABLED_MESSAGE);
+		}else {
+			GlobalMethods.reportCaptchaStatus(GlobalConstants.CAPTCHA_ENABLED, false);
+		}
 		
 		
 		if (MosipTestRunner.skipAll == true) {
@@ -684,18 +701,18 @@ public class SignupUtil extends AdminTestUtil {
 				SignupConstants.SIGNUP_ACTUATOR_URL);
 
 		// Fallback to other sections if value is not found
-		if (value == null || value.isBlank()) {
+		if (value == null) {
 			value = getValueFromSignupActuatorWithUrl(SignupConstants.CLASS_PATH_APPLICATION_PROPERTIES, key,
 					SignupConstants.SIGNUP_ACTUATOR_URL);
 		}
 
-		if (value == null || value.isBlank()) {
+		if (value == null) {
 			value = getValueFromSignupActuatorWithUrl(SignupConstants.CLASS_PATH_APPLICATION_DEFAULT_PROPERTIES, key,
 					SignupConstants.SIGNUP_ACTUATOR_URL);
 		}
 
 		// Try fetching from active profiles if available
-		if (value == null || value.isBlank()) {
+		if (value == null) {
 			if (signupActiveProfiles != null && signupActiveProfiles.length() > 0) {
 				for (int i = 0; i < signupActiveProfiles.length(); i++) {
 					String propertySection = signupActiveProfiles.getString(i).equals(SignupConstants.DEFAULT_STRING)
@@ -706,7 +723,7 @@ public class SignupUtil extends AdminTestUtil {
 					value = getValueFromSignupActuatorWithUrl(propertySection, key,
 							SignupConstants.SIGNUP_ACTUATOR_URL);
 
-					if (value != null && !value.isBlank()) {
+					if (value != null) {
 						break;
 					}
 				}
@@ -716,18 +733,18 @@ public class SignupUtil extends AdminTestUtil {
 		}
 
 		// Fallback to a default section if no value found
-		if (value == null || value.isBlank()) {
+		if (value == null) {
 			value = getValueFromSignupActuatorWithUrl(SignupConfigManager.getEsignetActuatorPropertySection(), key,
 					SignupConstants.SIGNUP_ACTUATOR_URL);
 		}
 
 		// Final fallback to the original section if no value was found
-		if (value == null || value.isBlank()) {
+		if (value == null) {
 			value = getValueFromSignupActuatorWithUrl(section, key, SignupConstants.SIGNUP_ACTUATOR_URL);
 		}
 
 		// Log the final result or an error message if not found
-		if (value == null || value.isBlank()) {
+		if (value == null) {
 			logger.error("Value not found for section: " + section + ", key: " + key);
 		}
 
@@ -739,7 +756,7 @@ public class SignupUtil extends AdminTestUtil {
 		String actuatorCacheKey = url + section + key;
 		String value = actuatorValueCache.get(actuatorCacheKey);
 
-		if (value != null && !value.isEmpty()) {
+		if (value != null) {
 			return value; // Return cached value if available
 		}
 
@@ -766,7 +783,7 @@ public class SignupUtil extends AdminTestUtil {
 			}
 
 			// Cache the retrieved value
-			if (value != null && !value.isEmpty()) {
+			if (value != null) {
 				actuatorValueCache.put(actuatorCacheKey, value);
 			}
 
