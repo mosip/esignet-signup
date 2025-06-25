@@ -54,8 +54,7 @@ GenerateChallengeNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_request",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_request"
     }
   ]
 }'
@@ -75,8 +74,7 @@ GenerateChallengeNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_request",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_request"
     }
   ]
 }'
@@ -96,8 +94,7 @@ GenerateChallengeNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_request",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_request"
     }
   ]
 }'
@@ -117,8 +114,7 @@ GenerateChallengeNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_request",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_request"
     }
   ]
 }'
@@ -138,8 +134,7 @@ GenerateChallengeNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_request",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_request"
     }
   ]
 }'
@@ -159,8 +154,7 @@ GenerateChallengeNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_request",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_request"
     }
   ]
 }'
@@ -181,8 +175,7 @@ GenerateChallengeNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_identifier",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_identifier"
     }
   ]
 }'
@@ -203,8 +196,7 @@ GenerateChallengeNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_request",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_request"
     }
   ]
 }'
@@ -225,8 +217,7 @@ GenerateChallengeNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_request",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_request"
     }
   ]
 }'
@@ -246,8 +237,7 @@ GenerateChallengeNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_identifier",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_identifier"
     }
   ]
 }'
@@ -267,8 +257,7 @@ GenerateChallengeNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_identifier",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_identifier"
     }
   ]
 }'
@@ -288,8 +277,7 @@ GenerateChallengeNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_identifier",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_identifier"
     }
   ]
 }'
@@ -309,8 +297,7 @@ GenerateChallengeNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_identifier",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_identifier"
     }
   ]
 }'
@@ -330,8 +317,7 @@ GenerateChallengeNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_identifier",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_identifier"
     }
   ]
 }'
@@ -351,8 +337,7 @@ GenerateChallengeNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_identifier",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_identifier"
     }
   ]
 }'
@@ -372,8 +357,7 @@ GenerateChallengeNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_identifier",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_identifier"
     }
   ]
 }'
@@ -393,8 +377,7 @@ GenerateChallengeNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_identifier",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_identifier"
     }
   ]
 }'
@@ -414,8 +397,7 @@ GenerateChallengeNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_identifier",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_identifier"
     }
   ]
 }'
@@ -452,8 +434,7 @@ GenerateChallengeNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_request",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_request"
     }
   ]
 }'
@@ -474,8 +455,7 @@ GenerateChallengeNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_request",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_request"
     }
   ]
 }'
@@ -496,8 +476,7 @@ GenerateChallengeNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_request",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_request"
     }
   ]
 }'
@@ -518,8 +497,7 @@ GenerateChallengeNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_request",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_request"
     }
   ]
 }'
