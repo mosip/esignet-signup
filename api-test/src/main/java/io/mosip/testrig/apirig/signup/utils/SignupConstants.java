@@ -21,8 +21,6 @@ public class SignupConstants {
 	
 	public static final String CLASS_PATH_APPLICATION_PROPERTIES = "classpath:/application.properties";
 	
-	public static final String MOSIP_ESIGNET_CAPTCHA_REQUIRED = "mosip.esignet.captcha.required";
-	
 	public static final String CLASS_PATH_APPLICATION_DEFAULT_PROPERTIES = "classpath:/application-default.properties";
 
 	public static final String DEFAULT_STRING = "default";
