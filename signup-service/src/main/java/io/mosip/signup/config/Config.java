@@ -14,15 +14,19 @@ import net.javacrumbs.shedlock.core.LockProvider;
 import net.javacrumbs.shedlock.provider.redis.spring.RedisLockProvider;
 import net.javacrumbs.shedlock.spring.annotation.EnableSchedulerLock;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.List;
 import java.util.concurrent.Executor;
 
 @EnableSchedulerLock(defaultLockAtLeastFor = "PT120S", defaultLockAtMostFor = "PT120S")
@@ -81,6 +85,29 @@ public class Config {
             return execution.execute(request, body);
         });
         return restTemplate;
+    }
+
+    @Bean
+    public BeanPostProcessor restTemplateMessageConverterCustomizer() {
+        return new BeanPostProcessor() {
+            @Override
+            public Object postProcessAfterInitialization(Object bean, String beanName) {
+                if (bean instanceof RestTemplate) {
+                    RestTemplate restTemplate = (RestTemplate) bean;
+                    List<HttpMessageConverter<?>> converters = restTemplate.getMessageConverters();
+                    // Making JSON converter the default by moving it to the front of the list
+                    converters.stream()
+                            .filter(converter -> converter instanceof MappingJackson2HttpMessageConverter)
+                            .findFirst()
+                            .ifPresent(converter -> {
+                                converters.remove(converter);
+                                converters.add(0, converter);
+                            });
+                    return restTemplate;
+                }
+                return bean;
+            }
+        };
     }
 
 }
