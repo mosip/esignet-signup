@@ -192,12 +192,6 @@
 			<artifactId>shedlock-provider-redis-spring</artifactId>
 			<version>4.47.0</version>
 		</dependency>
-
-		<dependency>
-			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-auth-adapter-lite</artifactId>
-			<version>1.2.0.1-B4</version>
-		</dependency>
     </dependencies>
 
 	<build>
