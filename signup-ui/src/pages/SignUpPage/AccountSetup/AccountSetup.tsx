@@ -79,11 +79,7 @@ export const AccountSetup = ({ settings, methods }: AccountSetupProps) => {
         password: data.password,
         consent: data.consent ? "AGREE" : "DISAGREE",
         userInfo: {
-          fullName: [{ language: "khm", value: data.fullNameInKhmer }],
-          phone: `${settings.response.configs["identifier.prefix"]}${getValues(
-            "phone"
-          )}`,
-          preferredLang: "eng",
+          ...data,
         },
         locale: null,
       },
@@ -130,7 +126,7 @@ export const AccountSetup = ({ settings, methods }: AccountSetupProps) => {
               ...uiSchema.allowedValues,
               username: `${
                 settings.response.configs["identifier.prefix"]
-              } ${getValues("phone")}`,
+              }${getValues("phone")}`,
             },
             errors: {
               ...uiSchema.errors,
