@@ -565,18 +565,18 @@ public class SignupUtil extends AdminTestUtil {
 				SignupConstants.SIGNUP_ACTUATOR_URL);
 
 		// Fallback to other sections if value is not found
-		if (value == null) {
+		if (value == null || value.isBlank()) {
 			value = getValueFromSignupActuatorWithUrl(SignupConstants.CLASS_PATH_APPLICATION_PROPERTIES, key,
 					SignupConstants.SIGNUP_ACTUATOR_URL);
 		}
 
-		if (value == null) {
+		if (value == null || value.isBlank()) {
 			value = getValueFromSignupActuatorWithUrl(SignupConstants.CLASS_PATH_APPLICATION_DEFAULT_PROPERTIES, key,
 					SignupConstants.SIGNUP_ACTUATOR_URL);
 		}
 
 		// Try fetching from active profiles if available
-		if (value == null) {
+		if (value == null || value.isBlank()) {
 			if (signupActiveProfiles != null && signupActiveProfiles.length() > 0) {
 				for (int i = 0; i < signupActiveProfiles.length(); i++) {
 					String propertySection = signupActiveProfiles.getString(i).equals(SignupConstants.DEFAULT_STRING)
@@ -587,7 +587,7 @@ public class SignupUtil extends AdminTestUtil {
 					value = getValueFromSignupActuatorWithUrl(propertySection, key,
 							SignupConstants.SIGNUP_ACTUATOR_URL);
 
-					if (value != null) {
+					if (value != null && !value.isBlank()) {
 						break;
 					}
 				}
@@ -597,18 +597,18 @@ public class SignupUtil extends AdminTestUtil {
 		}
 
 		// Fallback to a default section if no value found
-		if (value == null) {
+		if (value == null || value.isBlank()) {
 			value = getValueFromSignupActuatorWithUrl(SignupConfigManager.getEsignetActuatorPropertySection(), key,
 					SignupConstants.SIGNUP_ACTUATOR_URL);
 		}
 
 		// Final fallback to the original section if no value was found
-		if (value == null) {
+		if (value == null || value.isBlank()) {
 			value = getValueFromSignupActuatorWithUrl(section, key, SignupConstants.SIGNUP_ACTUATOR_URL);
 		}
 
 		// Log the final result or an error message if not found
-		if (value == null) {
+		if (value == null || value.isBlank()) {
 			logger.error("Value not found for section: " + section + ", key: " + key);
 		}
 
@@ -620,7 +620,7 @@ public class SignupUtil extends AdminTestUtil {
 		String actuatorCacheKey = url + section + key;
 		String value = actuatorValueCache.get(actuatorCacheKey);
 
-		if (value != null) {
+		if (value != null && !value.isEmpty()) {
 			return value; // Return cached value if available
 		}
 
@@ -647,7 +647,7 @@ public class SignupUtil extends AdminTestUtil {
 			}
 
 			// Cache the retrieved value
-			if (value != null) {
+			if (value != null && !value.isEmpty()) {
 				actuatorValueCache.put(actuatorCacheKey, value);
 			}
 
