@@ -24,8 +24,7 @@ SignupAuthorizeNegTC:
       output: '{
        	"errors": [
     {
-      "errorCode": "invalid_client_id",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_client_id"
     }
   ]
 }'
@@ -54,8 +53,7 @@ SignupAuthorizeNegTC:
       output: '{
        	"errors": [
     {
-      "errorCode": "invalid_client_id",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_client_id"
     }
   ]
 }'
@@ -84,8 +82,7 @@ SignupAuthorizeNegTC:
       output: '{
        	"errors": [
     {
-      "errorCode": "invalid_client_id",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_client_id"
     }
   ]
 }'
@@ -114,8 +111,7 @@ SignupAuthorizeNegTC:
       output: '{
        	"errors": [
     {
-      "errorCode": "invalid_client_id",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_client_id"
     }
   ]
 }'
@@ -144,8 +140,7 @@ SignupAuthorizeNegTC:
       output: '{
        	"errors": [
     {
-      "errorCode": "invalid_redirect_uri",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_redirect_uri"
     }
   ]
 }'
@@ -174,8 +169,7 @@ SignupAuthorizeNegTC:
       output: '{
        	"errors": [
     {
-      "errorCode": "invalid_redirect_uri",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_redirect_uri"
     }
   ]
 }'
@@ -204,8 +198,7 @@ SignupAuthorizeNegTC:
       output: '{
        	"errors": [
     {
-      "errorCode": "invalid_redirect_uri",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_redirect_uri"
     }
   ]
 }'
@@ -234,8 +227,7 @@ SignupAuthorizeNegTC:
       output: '{
        	"errors": [
     {
-      "errorCode": "invalid_response_type",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_response_type"
     }
   ]
 }'
@@ -264,8 +256,7 @@ SignupAuthorizeNegTC:
       output: '{
        	"errors": [
     {
-      "errorCode": "invalid_response_type",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_response_type"
     }
   ]
 }'
@@ -294,8 +285,7 @@ SignupAuthorizeNegTC:
       output: '{
        	"errors": [
     {
-      "errorCode": "invalid_response_type",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_response_type"
     }
   ]
 }'
@@ -324,8 +314,7 @@ SignupAuthorizeNegTC:
       output: '{
        	"errors": [
     {
-      "errorCode": "invalid_response_type",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_response_type"
     }
   ]
 }'
@@ -354,8 +343,7 @@ SignupAuthorizeNegTC:
       output: '{
        	"errors": [
     {
-      "errorCode": "invalid_scope",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_scope"
     }
   ]
 }'
@@ -384,8 +372,7 @@ SignupAuthorizeNegTC:
       output: '{
        	"errors": [
     {
-      "errorCode": "invalid_scope",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_scope"
     }
   ]
 }'
@@ -438,8 +425,7 @@ SignupAuthorizeNegTC:
       output: '{
        	"errors": [
     {
-      "errorCode": "invalid_scope",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_scope"
     }
   ]
 }'
@@ -468,8 +454,7 @@ SignupAuthorizeNegTC:
       output: '{
        	"errors": [
     {
-      "errorCode": "invalid_scope",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_scope"
     }
   ]
 }'
@@ -762,8 +747,7 @@ SignupAuthorizeNegTC:
       output: '{
        	"errors": [
     {
-      "errorCode": "invalid_request",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_request"
     }
   ]
 }'
@@ -792,8 +776,7 @@ SignupAuthorizeNegTC:
       output: '{
        	"errors": [
     {
-      "errorCode": "invalid_request",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_request"
     }
   ]
 }'
@@ -822,8 +805,7 @@ SignupAuthorizeNegTC:
       output: '{
        	"errors": [
     {
-      "errorCode": "invalid_request",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_request"
     }
   ]
 }'
@@ -852,8 +834,7 @@ SignupAuthorizeNegTC:
       output: '{
        	"errors": [
     {
-      "errorCode": "invalid_request",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_request"
     }
   ]
 }'
@@ -882,8 +863,7 @@ SignupAuthorizeNegTC:
       output: '{
        	"errors": [
     {
-      "errorCode": "invalid_request",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_request"
     }
   ]
 }'
