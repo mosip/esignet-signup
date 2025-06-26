@@ -15,8 +15,7 @@ GetIdVerifierNegTC:
       output: '{
       "errors": [
     {
-      "errorCode": "invalid_identity_verifier_id",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_identity_verifier_id"
     }
   ]
 }'
@@ -37,8 +36,7 @@ GetIdVerifierNegTC:
       output: '{
       "errors": [
     {
-      "errorCode": "invalid_identity_verifier_id",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_identity_verifier_id"
     }
   ]
 }'
@@ -59,8 +57,7 @@ GetIdVerifierNegTC:
       output: '{
       "errors": [
     {
-      "errorCode": "invalid_transaction",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_transaction"
     }
   ]
 }'
@@ -81,8 +78,7 @@ GetIdVerifierNegTC:
       output: '{
       "errors": [
     {
-      "errorCode": "invalid_transaction",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_transaction"
     }
   ]
 }'
@@ -103,8 +99,7 @@ GetIdVerifierNegTC:
       output: '{
       "errors": [
     {
-      "errorCode": "invalid_transaction",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_transaction"
     }
   ]
 }'
@@ -125,8 +120,7 @@ GetIdVerifierNegTC:
       output: '{
       "errors": [
     {
-      "errorCode": "invalid_transaction",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_transaction"
     }
   ]
 }'
