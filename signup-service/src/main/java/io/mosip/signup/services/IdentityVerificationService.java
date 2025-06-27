@@ -60,6 +60,7 @@ import java.util.stream.Collectors;
 
 import static io.mosip.signup.api.util.VerificationStatus.*;
 import static io.mosip.signup.util.SignUpConstants.VALUE_SEPARATOR;
+import java.security.Key;
 
 @Slf4j
 @Service
@@ -366,12 +367,17 @@ public class IdentityVerificationService {
                 KeyStore keyStore = KeyStore.getInstance("PKCS12");
                 keyStore.load(inputStream, password.toCharArray());
                 // Retrieve the private key
-                return (PrivateKey) keyStore.getKey(alias, password.toCharArray());
+                Key key = keyStore.getKey(alias, password.toCharArray());
+                if(key!=null) {
+                    return (PrivateKey)key;
+                }
             }
         } catch (Exception e) {
             log.error("Failed to load private key from keystore", e);
             throw new SignUpException(ErrorConstants.PRIVATE_KEY_LOAD_FAILED);
         }
+        log.error("No private key found in keystore for alias '{}'", alias);
+        return null;
     }
 
     private <T> T getResource(String url, Class<T> clazz) {
