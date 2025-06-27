@@ -3,16 +3,9 @@ package io.mosip.testrig.apirig.signup.utils;
 public class SignupConstants {
 	public static final String ACTIVE_PROFILES = "activeProfiles";
 
-	public static final String ESIGNET_ACTUATOR_ENDPOINT_KEYWORD = "actuatorEsignetEndpoint";
-
 	public static final String SIGNUP_ACTUATOR_ENDPOINT_KEYWORD = "actuatorSignupEndpoint";
 
 	public static final String SIGNUP_BASE_URL = SignupConfigManager.getSignupBaseUrl();
-
-	public static final String ESIGNET_BASE_URL = SignupConfigManager.getEsignetBaseUrl();
-
-	public static final String ESIGNET_ACTUATOR_URL = ESIGNET_BASE_URL
-			+ SignupConfigManager.getproperty(ESIGNET_ACTUATOR_ENDPOINT_KEYWORD);
 
 	public static final String SIGNUP_ACTUATOR_URL = SIGNUP_BASE_URL
 			+ SignupConfigManager.getproperty(SIGNUP_ACTUATOR_ENDPOINT_KEYWORD);
