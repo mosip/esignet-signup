@@ -8,6 +8,7 @@ import {
   RegistrationStatusResponseDto,
   ResetPasswordResponseDto,
   SettingsDto,
+  UiSchemaResponseDto,
 } from "~typings/types";
 
 import {
@@ -15,6 +16,7 @@ import {
   getRegistrationStatus,
   getSettings,
   getTermsAndConditions,
+  getUiSpec,
 } from "./service";
 
 export const keys = {
@@ -23,6 +25,7 @@ export const keys = {
   registrationStatus: ["registrationStatus"] as const,
   kycProvidersList: ["kycProvidersList"] as const,
   identityVerificationStatus: ["identityVerificationStatus"] as const,
+  uiSchema: ["uiSchema"] as const,
 };
 
 export const useSettings = (): UseQueryResult<SettingsDto, unknown> => {
@@ -76,5 +79,13 @@ export const useIdentityVerificationStatus = ({
     gcTime: Infinity,
     retry: statusRequestAttempt - 1, // minus 1 for we called it once already
     retryDelay: statusRequestDelay * 1000,
+  });
+};
+
+export const useUiSpec = (): UseQueryResult<UiSchemaResponseDto, unknown> => {
+  return useQuery<UiSchemaResponseDto>({
+    queryKey: keys.uiSchema,
+    queryFn: () => getUiSpec(),
+    staleTime: Infinity,
   });
 };
