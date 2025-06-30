@@ -297,32 +297,45 @@ public class SignupUtil extends AdminTestUtil {
 			BaseTestCase.setSupportedIdTypes(Arrays.asList("UIN", "VID"));
 
 			String endpoint = testCaseDTO.getEndPoint();
-			if (endpoint.contains("/mock-identity-system/") == true
-					|| (endpoint.contains("v1/esignet/authorization/v3/oauth-details") == true)
-					|| (testCaseName.startsWith("Signup_ESignet_AuthenticateUser_V3_") == true)
-					|| (testCaseName.startsWith("Signup_ESignet_AuthenticateUserNegTC_V3_") == true)
-					|| (testCaseName.startsWith("Signup_ESignet_IDTAuthenticationNegTC_") == true)
-					|| (testCaseName.startsWith("Signup_ESignet_IDTAuthentication_") == true)
-					|| (endpoint.contains("v1/esignet/authorization/claim-details") == true)
-					|| (endpoint.contains("v1/esignet/authorization/prepare-signup-redirect") == true)
-					|| (endpoint.contains("v1/signup/identity-verification/initiate") == true)
-					|| (endpoint.contains("v1/signup/identity-verification/identity-verifier/") == true)
-					|| (endpoint.contains("v1/signup/identity-verification/slot") == true)
-					|| (endpoint.contains("v1/signup/ws") == true)
-					|| (endpoint.contains("v1/signup/identity-verification/status") == true)
-					|| (endpoint.contains("v1/esignet/authorization/complete-signup-redirect") == true)
-					|| (testCaseName.contains("_SignupAuthorizeCode") == true)
-					|| (testCaseName.equals(
-							"Signup_ESignet_GetOidcUserInfo_uin_IdpAccessToken_StatusCode_L2_Valid_Smoke_sid") == true)
-					|| (testCaseName.equals("Signup_ESignet_GenerateToken_uin_L2_Valid_Smoke_sid") == true)
-					|| (testCaseName.equals("Signup_ESignet_AuthorizationCode_uin_L2_All_Valid_Smoke_sid") == true)
-					|| ((testCaseName.equals("ESignet_CreateOIDCClient_all_Valid_Smoke_sid")
-							|| testCaseName.equals("Signup_ESignet_CreateOIDCClient_all_Valid_Smoke_sid")
-							|| testCaseName.equals("ESignet_CreateOIDCClient_Misp_Valid_Smoke_sid")
-							|| testCaseName.equals("ESignet_CreateOIDCClient_NonAuth_all_Valid_Smoke_sid"))
-							&& endpoint.contains("/v1/esignet/client-mgmt/oauth-client"))) {
+			
+			if ((endpoint.contains("/mock-identity-system/") == true)
+					|| testCaseName.equals("Signup_ESignet_CreateOIDCClient_all_Valid_Smoke_sid")) {
 				throw new SkipException(GlobalConstants.FEATURE_NOT_SUPPORTED_MESSAGE);
 			}
+				
+				/*
+				 * if (endpoint.contains("/mock-identity-system/") == true ||
+				 * (endpoint.contains("v1/esignet/authorization/v3/oauth-details") == true) ||
+				 * (testCaseName.startsWith("Signup_ESignet_AuthenticateUser_V3_") == true) ||
+				 * (testCaseName.startsWith("Signup_ESignet_AuthenticateUserNegTC_V3_") == true)
+				 * || (testCaseName.startsWith("Signup_ESignet_IDTAuthenticationNegTC_") ==
+				 * true) || (testCaseName.startsWith("Signup_ESignet_IDTAuthentication_") ==
+				 * true) || (endpoint.contains("v1/esignet/authorization/claim-details") ==
+				 * true) ||
+				 * (endpoint.contains("v1/esignet/authorization/prepare-signup-redirect") ==
+				 * true) || (endpoint.contains("v1/signup/identity-verification/initiate") ==
+				 * true) ||
+				 * (endpoint.contains("v1/signup/identity-verification/identity-verifier/") ==
+				 * true) || (endpoint.contains("v1/signup/identity-verification/slot") == true)
+				 * || (endpoint.contains("v1/signup/ws") == true) ||
+				 * (endpoint.contains("v1/signup/identity-verification/status") == true) ||
+				 * (endpoint.contains("v1/esignet/authorization/complete-signup-redirect") ==
+				 * true) || (testCaseName.contains("_SignupAuthorizeCode") == true) ||
+				 * (testCaseName.equals(
+				 * "Signup_ESignet_GetOidcUserInfo_uin_IdpAccessToken_StatusCode_L2_Valid_Smoke_sid")
+				 * == true) ||
+				 * (testCaseName.equals("Signup_ESignet_GenerateToken_uin_L2_Valid_Smoke_sid")
+				 * == true) || (testCaseName.equals(
+				 * "Signup_ESignet_AuthorizationCode_uin_L2_All_Valid_Smoke_sid") == true) ||
+				 * ((testCaseName.equals("ESignet_CreateOIDCClient_all_Valid_Smoke_sid") ||
+				 * testCaseName.equals("Signup_ESignet_CreateOIDCClient_all_Valid_Smoke_sid") ||
+				 * testCaseName.equals("ESignet_CreateOIDCClient_Misp_Valid_Smoke_sid") ||
+				 * testCaseName.equals("ESignet_CreateOIDCClient_NonAuth_all_Valid_Smoke_sid"))
+				 * && endpoint.contains("/v1/esignet/client-mgmt/oauth-client"))) { throw new
+				 * SkipException(GlobalConstants.FEATURE_NOT_SUPPORTED_MESSAGE); }
+				 */
+				 
+			 
 
 			JSONArray individualBiometricsArray = new JSONArray(
 					getValueFromAuthActuator(SignupConstants.JSON_PROPERTY_STRING, "individualBiometrics"));
