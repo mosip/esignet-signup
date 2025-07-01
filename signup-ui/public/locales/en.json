@@ -192,7 +192,12 @@
     "successful_header": "Verification Successful!",
     "successful_subheader": "Please wait while we finalize the process",
     "unsuccessful_header": "Verification Unsuccessful!",
-    "unsuccessful_subheader": "Oops! We were unable to complete the eKYC verification."
+    "unsuccessful_subheader": "Oops! We were unable to complete the eKYC verification.",
+    "web_socket_error": {
+      "header": "Error!",
+      "sub_header": "Unable to proceed with eKYC verification. Please try again.",
+      "button": "Okay"
+    }
   },
   "identity_verification_status": {
     "successful": {

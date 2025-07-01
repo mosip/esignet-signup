@@ -11,7 +11,7 @@ services:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 
   mock-identity-system:
-    image: 'mosipid/mock-identity-system:0.11.0'
+    image: 'mosipqa/mock-identity-system:0.11.x'
     user: root
     ports:
       - 8082:8082
@@ -55,7 +55,7 @@ services:
 
 
   esignet:
-    image: 'mosipid/esignet-with-plugins:1.6.0'
+    image: 'mosipqa/esignet-with-plugins:release-1.6.x-temp'
     user: root
     ports:
       - 8088:8088
@@ -77,7 +77,7 @@ services:
       - mock-identity-system
 
   esignet-ui:
-    image: 'mosipid/oidc-ui:1.6.0'
+    image: 'mosipqa/oidc-ui:release-1.6.x-temp'
     user: root
     ports:
       - 3000:3000
