@@ -134,12 +134,10 @@ public class RegistrationController {
     }
 
     @GetMapping("/ui-spec")
-    public ResponseWrapper<JsonNode> getUiSpec(
-            @Valid @NotBlank(message = ErrorConstants.INVALID_TRANSACTION)
-            @CookieValue(value = SignUpConstants.VERIFIED_TRANSACTION_ID, defaultValue = EMTPY) String transactionId) {
+    public ResponseWrapper<JsonNode> getUiSpec() {
         ResponseWrapper<JsonNode> responseWrapper = new ResponseWrapper<>();
         responseWrapper.setResponseTime(IdentityProviderUtil.getUTCDateTime());
-        responseWrapper.setResponse(registrationService.getSchema(transactionId));
+        responseWrapper.setResponse(registrationService.getSchema());
         return responseWrapper;
     }
 
