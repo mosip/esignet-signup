@@ -85,6 +85,7 @@ public class MosipTestRunner {
 			suiteSetup(getRunType());
 			SkipTestCaseHandler.loadTestcaseToBeSkippedList("testCaseSkippedList.txt");
 			GlobalMethods.setModuleNameAndReCompilePattern(SignupConfigManager.getproperty("moduleNamePattern"));
+			GlobalMethods.reportCaptchaStatus(GlobalConstants.CAPTCHA_ENABLED, false);
 			setLogLevels();
 
 			if (SignupUtil.getIdentityPluginNameFromEsignetActuator().toLowerCase()
@@ -119,6 +120,7 @@ public class MosipTestRunner {
 				SignupConfigManager.add(additionalPropertiesMap);
 				SignupUtil.getSupportedLanguage();
 				startTestRunner();
+				SignupUtil.dBCleanUp();
 			}
 
 		} catch (Exception e) {
