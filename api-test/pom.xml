@@ -113,19 +113,6 @@
 				</configuration>
 			</plugin>
 			<plugin>
-      <groupId>org.apache.maven.plugins</groupId>
-      <artifactId>maven-dependency-plugin</artifactId>
-      <version>3.6.1</version> <!-- or latest -->
-      <executions>
-        <execution>
-          <id>analyze</id>
-          <goals>
-            <goal>analyze</goal>
-          </goals>
-        </execution>
-      </executions>
-    </plugin>
-			<plugin>
 				<groupId>pl.project13.maven</groupId>
 				<artifactId>git-commit-id-plugin</artifactId>
 				<version>${git.commit.id.plugin.version}</version>
