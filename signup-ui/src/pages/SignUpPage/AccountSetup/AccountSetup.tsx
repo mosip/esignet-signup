@@ -34,6 +34,9 @@ export const AccountSetup = ({ settings, methods }: AccountSetupProps) => {
   const formBuilderRef: any = useRef(null); // Reference to form instance
   const { t, i18n } = useTranslation();
 
+  const identifierName =
+    settings?.response.configs["identifier.name"] || "username";
+
   const { data: uiSchemaResponse } = useUiSpec();
 
   const [uiSchema, setUiSchema] = useState<FormConfig | null>(null);
@@ -73,25 +76,21 @@ export const AccountSetup = ({ settings, methods }: AccountSetupProps) => {
     const RegistrationRequestDto: RegistrationRequestDto = {
       requestTime: new Date().toISOString(),
       request: {
-        username: `${settings.response.configs["identifier.prefix"]}${getValues(
-          "phone"
-        )}`,
+        username: data[identifierName] || data.username,
         password: data.password,
         consent: data.consent ? "AGREE" : "DISAGREE",
         userInfo: {
           ...data,
+          username: data[identifierName] || data.username,
         },
-        locale: null,
+        locale: i18n.language,
       },
     };
 
     registerMutation.mutate(RegistrationRequestDto, {
       onSuccess: ({ errors }) => {
         if (errors && errors.length > 0) {
-          if (
-            errors.length > 0 &&
-            errors[0].errorCode === "invalid_transaction"
-          ) {
+          if (errors.length > 0) {
             setCriticalError(errors[0]);
           }
           updateAfterLangChange();
@@ -124,7 +123,7 @@ export const AccountSetup = ({ settings, methods }: AccountSetupProps) => {
             },
             allowedValues: {
               ...uiSchema.allowedValues,
-              username: `${
+              [identifierName]: `${
                 settings.response.configs["identifier.prefix"]
               }${getValues("phone")}`,
             },
