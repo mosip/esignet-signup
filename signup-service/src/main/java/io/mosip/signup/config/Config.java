@@ -13,6 +13,8 @@ import io.mosip.signup.services.CacheUtilService;
 import net.javacrumbs.shedlock.core.LockProvider;
 import net.javacrumbs.shedlock.provider.redis.spring.RedisLockProvider;
 import net.javacrumbs.shedlock.spring.annotation.EnableSchedulerLock;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.context.annotation.Bean;
@@ -21,6 +23,7 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
@@ -38,6 +41,12 @@ public class Config {
 
     @Value("${mosip.signup.task.max.pool.size:20}")
     private int taskMaxPoolSize;
+
+    @Value("${mosip.signup.http.selftoken.restTemplate.max-connection-per-route:20}")
+    private int selfTokenRestTemplateMaxConnectionPerRoute;
+
+    @Value("${mosip.signup.http.selftoken.restTemplate.total-max-connections:100}")
+    private int selfTokenRestTemplateTotalMaxConnections;
 
     @Bean
     public ObjectMapper objectMapper() {
@@ -79,6 +88,12 @@ public class Config {
     @Bean
     public RestTemplate selfTokenRestTemplate(CacheUtilService cacheUtilService) {
         RestTemplate restTemplate = new RestTemplate();
+        CloseableHttpClient httpClient = HttpClients.custom()
+                .setMaxConnPerRoute(selfTokenRestTemplateMaxConnectionPerRoute)
+                .setMaxConnTotal(selfTokenRestTemplateTotalMaxConnections)
+                .build();
+        HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory(httpClient);
+        restTemplate.setRequestFactory(requestFactory);
         restTemplate.getInterceptors().add((request, body, execution) -> {
             String token = cacheUtilService.fetchAccessTokenFromIAMServer();
             request.getHeaders().set("Cookie", "Authorization="+token);

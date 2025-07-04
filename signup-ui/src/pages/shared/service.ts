@@ -12,6 +12,7 @@ import {
   SettingsDto,
   SlotAvailabilityRequestDto,
   SlotAvailabilityResponseDto,
+  UiSchemaResponseDto,
   UpdateProcessRequestDto,
   VerifyChallengeRequestDto,
 } from "~typings/types";
@@ -158,4 +159,10 @@ export const getIdentityVerificationStatus = async (
 
     return data;
   });
+};
+
+export const getUiSpec = async (): Promise<UiSchemaResponseDto> => {
+  return ApiService.get<UiSchemaResponseDto>("/registration/ui-spec").then(
+    ({ data }) => data
+  );
 };

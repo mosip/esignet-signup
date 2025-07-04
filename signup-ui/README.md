@@ -80,3 +80,4 @@ New translations can be added in the `locales` folder of the `public` folder. Al
 * `react-webcam`: It allows to easily capture video and still images directly from the user's webcam, offering a range of options for customization and control.
 * `socket.io-client`: It allows bi-directional communication between client and server.
 * `zustand`: A small, fast and scalable bear bones state-management solution using simplified flux principles. Has a comfy API based on hooks, isn't  boilerplate or opinionated.
+* `@anushase/json-form-builder`: A custom form builder library build by mosip, to generate a form with validation by passing ui-schema.
