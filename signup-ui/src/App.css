@@ -437,11 +437,6 @@ input[type="password"]::-ms-clear {
 
   .form-field {
     margin-bottom: 24px;
-
-    &:not(.checkbox-container) {
-      display: flex;
-      flex-direction: column;
-    }
   }
 
   .input_box {
