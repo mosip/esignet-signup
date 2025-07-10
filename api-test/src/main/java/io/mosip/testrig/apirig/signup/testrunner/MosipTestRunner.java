@@ -120,7 +120,6 @@ public class MosipTestRunner {
 				SignupConfigManager.add(additionalPropertiesMap);
 				SignupUtil.getSupportedLanguage();
 				startTestRunner();
-				SignupUtil.dBCleanUp();
 			}
 
 		} catch (Exception e) {
