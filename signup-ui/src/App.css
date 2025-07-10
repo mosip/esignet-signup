@@ -450,6 +450,10 @@ input[type="password"]::-ms-clear {
     font-weight: inherit;
     font-size: 100%;
     line-height: inherit;
+
+    &:focus-within {
+      outline: none;
+    }
   }
 
   .error-message .error-text {

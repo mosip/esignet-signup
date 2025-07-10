@@ -262,6 +262,12 @@ public class SignupUtil extends AdminTestUtil {
 					String.valueOf(Calendar.getInstance().getTimeInMillis()));
 		}
 		
+		if (jsonString.contains("$MOSIP_SIGNUP_OAUTH_CLIENT_ID_VALUE$")) {
+			jsonString = replaceKeywordValue(jsonString, "$MOSIP_SIGNUP_OAUTH_CLIENT_ID_VALUE$",
+					getValueFromSignupActuator("classpath:/application-default.properties",
+							"mosip.signup.oauth.client-id"));
+		}
+		
 		if (jsonString.contains("_$REGISTEREDUSERFULLNAME$")) {
 			JSONObject inputReqJson = new JSONObject(jsonString);
 			JSONObject fullNameJson = new JSONObject();
