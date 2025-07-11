@@ -524,6 +524,20 @@
 									"var token = pm.cookies.get(\"XSRF-TOKEN\")",
 									"pm.environment.set(\"csrf_token\", token);",
 									"",
+									"const sortKeysDeep = obj => {",
+									"    if (Array.isArray(obj)) {",
+									"      return obj.map(sortKeysDeep);",
+									"    } else if (obj !== null && typeof obj === \"object\") {",
+									"      return Object.keys(obj)",
+									"        .sort()",
+									"        .reduce((result, key) => {",
+									"          result[key] = sortKeysDeep(obj[key]);",
+									"          return result;",
+									"        }, {});",
+									"    }",
+									"    return obj;",
+									"};",
+									"",
 									"pm.test(\"Validate transactionId\", function () {",
 									"    var jsonData = pm.response.json();",
 									"    pm.expect(jsonData.response.transactionId).not.equals(null);",
@@ -537,7 +551,7 @@
 									"",
 									"pm.test(\"set oauth-details-hash\", function () {",
 									"    var jsonData = pm.response.json();",
-									"    var sha256Hash = CryptoJS.SHA256(JSON.stringify(jsonData.response));",
+									"    var sha256Hash = CryptoJS.SHA256(JSON.stringify(sortKeysDeep(jsonData.response)));",
 									"    var base64Encoded = sha256Hash.toString(CryptoJS.enc.Base64);",
 									"    // Remove padding characters",
 									"    base64Encoded = base64Encoded.replace(/=+$/, '');",
@@ -994,7 +1008,7 @@
 					}
 				],
 				"url": {
-					"raw": "{{url}}/v1/registration/ui-spec",
+					"raw": "{{url}}/v1/signup/registration/ui-spec",
 					"host": [
 						"{{url}}"
 					],
