@@ -5,7 +5,6 @@ import Webcam from "react-webcam";
 
 import { PUBLISH_TOPIC, SUBSCRIBE_TOPIC, WS_URL } from "~constants/routes";
 import { Button } from "~components/ui/button";
-import { useL2Hash } from "~hooks/useL2Hash";
 import { convertToI18nData } from "~utils/conversion";
 import useStompClient from "~pages/shared/stompWs";
 import { WS_BASE_URL } from "~services/api.service";
@@ -25,6 +24,7 @@ import {
   EkycVerificationStep,
   EkycVerificationStore,
   errorBannerMessageSelector,
+  hashCodeSelector,
   kycProviderDetailSelector,
   setErrorBannerMessageSelector,
   setIsNoBackgroundSelector,
@@ -49,7 +49,6 @@ export const VerificationScreen = ({
   const [colorVerification, setColorVerification] = useState<boolean>(false);
   const [bgColor, setBgColor] = useState<string | null>(null);
   const [imageFrames, setImageFrames] = useState<IdvFrames[]>([]);
-  const { state } = useL2Hash();
 
   // let imageFrames: IdvFrames[] = [];
   let identityVerification: IdentityVerificationState | null = {
@@ -77,6 +76,7 @@ export const VerificationScreen = ({
     setStep,
     setSlotId,
     kycProviderDetail,
+    hashCode,
   } = useEkycVerificationStore(
     useCallback(
       (state: EkycVerificationStore) => ({
@@ -87,6 +87,7 @@ export const VerificationScreen = ({
         setStep: setStepSelector(state),
         setSlotId: setSlotIdSelector(state),
         kycProviderDetail: kycProviderDetailSelector(state),
+        hashCode: hashCodeSelector(state),
       }),
       []
     )
@@ -115,7 +116,11 @@ export const VerificationScreen = ({
             type="button"
             onClick={() => {
               window.onbeforeunload = null;
-              window.location.replace(`${settings?.configs["esignet-consent.redirect-url"]}?key=${state}&error=web_socket_fail`);
+              window.location.replace(
+                `${settings?.configs["esignet-consent.redirect-url"]}?key=${
+                  hashCode?.state || ""
+                }&error=web_socket_fail`
+              );
             }}
           >
             {t("web_socket_error.button")}
@@ -308,18 +313,6 @@ export const VerificationScreen = ({
     }
     identityVerification = temp;
     return temp;
-  };
-
-  const redirectToConsent = () => {
-    unsubscribe();
-    client.deactivate();
-    const consentUrl = settings?.configs["signin.redirect-url"].replace(
-      "authorize",
-      "consent"
-    );
-    const encodedIdToken = window.location.hash;
-    window.onbeforeunload = null;
-    window.location.replace(`${consentUrl}${encodedIdToken}`);
   };
 
   const endWithSuccess = () => {

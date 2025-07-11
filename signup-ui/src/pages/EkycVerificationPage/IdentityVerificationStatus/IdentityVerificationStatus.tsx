@@ -1,13 +1,16 @@
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
-import { useL2Hash } from "~hooks/useL2Hash";
 import { useIdentityVerificationStatus } from "~pages/shared/queries";
 import {
   DefaultEkyVerificationProp,
   IdentityVerificationStatus as IdentityVerificationStatusType,
 } from "~typings/types";
 
+import {
+  hashCodeSelector,
+  useEkycVerificationStore,
+} from "../useEkycVerificationStore";
 import { IdentityVerificationStatusLayout } from "./components/IdentityVerificationStatusLayout";
 import { IdentityVerificationStatusLoader } from "./components/IdentityVerificationStatusLoader";
 import { IdentityVerificationStatusFailed } from "./IdentityVerificationStatusFailed";
@@ -18,16 +21,23 @@ export const IdentityVerificationStatus = ({
 }: DefaultEkyVerificationProp) => {
   const { t } = useTranslation();
 
-  const { state } = useL2Hash();
+  const { hashCode } = useEkycVerificationStore(
+    useCallback(
+      (state) => ({
+        hashCode: hashCodeSelector(state),
+      }),
+      []
+    )
+  );
 
   const retriableErrorCodes =
     settings.configs["status.request.retry.error.codes"].split(",");
 
   useEffect(() => {
     if (window.videoLocalStream) {
-      window.videoLocalStream.getTracks().forEach(track => track.stop());
+      window.videoLocalStream.getTracks().forEach((track) => track.stop());
     }
-  }, [])
+  }, []);
 
   // isError occurs when the query encounters a network error or the request limit attempts is reached
   const {
@@ -59,7 +69,9 @@ export const IdentityVerificationStatus = ({
   //    - error codes specified in `status.request.retry.error.codes`
   if (isIdentityVerificationStatusError) {
     window.onbeforeunload = null;
-    window.location.href = `${settings.configs["esignet-consent.redirect-url"]}?key=${state}&error=true`;
+    window.location.href = `${
+      settings.configs["esignet-consent.redirect-url"]
+    }?key=${hashCode?.state || ""}&error=true`;
   }
 
   // scenario:
@@ -72,7 +84,11 @@ export const IdentityVerificationStatus = ({
     )
   ) {
     window.onbeforeunload = null;
-    window.location.href = `${settings.configs["esignet-consent.redirect-url"]}?key=${state}&error=${identityVerificationStatus.errors[0].errorCode}`;
+    window.location.href = `${
+      settings.configs["esignet-consent.redirect-url"]
+    }?key=${hashCode?.state || ""}&error=${
+      identityVerificationStatus.errors[0].errorCode
+    }`;
   }
 
   // scenario:
@@ -82,7 +98,9 @@ export const IdentityVerificationStatus = ({
     IdentityVerificationStatusType.COMPLETED
   ) {
     window.onbeforeunload = null;
-    window.location.href = `${settings.configs["esignet-consent.redirect-url"]}?key=${state}`;
+    window.location.href = `${
+      settings.configs["esignet-consent.redirect-url"]
+    }?key=${hashCode?.state || ""}`;
 
     return (
       <IdentityVerificationStatusLayout

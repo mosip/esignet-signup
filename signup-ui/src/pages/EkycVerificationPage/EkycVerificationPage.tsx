@@ -1,10 +1,9 @@
 import { useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 import { Form } from "~components/ui/form";
-import { useL2Hash } from "~hooks/useL2Hash";
 import { useKycProvidersList } from "~pages/shared/mutations";
 import {
   CancelPopup,
@@ -44,6 +43,7 @@ export const EkycVerificationPage = ({
 }: EkycVerificationPageProps) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const {
     step,
@@ -70,10 +70,6 @@ export const EkycVerificationPage = ({
 
   const methods = useForm();
 
-  const { state } = useL2Hash();
-
-  const hashCode = window.location.hash.substring(1);
-
   const { kycProvidersList } = useKycProvidersList();
 
   const navigateToLandingPage = () => {
@@ -81,75 +77,62 @@ export const EkycVerificationPage = ({
   };
 
   useEffect(() => {
-    if (hashCode) {
-      const base64Regex =
-        /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/;
-      const isValidHash = base64Regex.test(hashCode);
+    const hasRequiredParams =
+      searchParams.has("state") &&
+      searchParams.has("code") &&
+      searchParams.has("ui_locales");
 
-      if (isValidHash) {
-        const decodedBase64 = atob(hashCode);
-        const params = new URLSearchParams(decodedBase64);
-        const hasRequiredParams =
-          params.has("state") && params.has("code") && params.has("ui_locales");
+    if (hasRequiredParams) {
+      setHashCode({
+        state: searchParams.get("state") ?? "",
+        code: searchParams.get("code") ?? "",
+        uiLocales: searchParams.get("ui_locales") ?? ""
+      });
 
-        if (hasRequiredParams) {
-          setHashCode({
-            state: params.get("state") ?? "",
-            code: params.get("code") ?? "",
-          });
+      if (kycProvidersList.isPending) return;
+      const UpdateProcessRequestDto: UpdateProcessRequestDto = {
+        requestTime: new Date().toISOString(),
+        request: {
+          authorizationCode: searchParams?.get("code") ?? "",
+          state: searchParams?.get("state") ?? "",
+        },
+      };
+      return kycProvidersList.mutate(UpdateProcessRequestDto, {
+        onSuccess: ({ response, errors }) => {
+          if (errors?.length) {
+            setCriticalError(errors[0]);
+          } else {
+            setKycProviderList(response?.identityVerifiers);
+            setProviderListStatus(true);
+            if (response?.identityVerifiers.length === 1) {
+              setKycProvider(response?.identityVerifiers[0]);
+            }
+          }
+        },
+      });
+    } else if (searchParams.has("id_token_hint")) {
+      const authorizeURI = settings?.response?.configs["signin.redirect-url"];
+      const clientIdURI = settings?.response?.configs["signup.oauth-client-id"];
+      const identityVerificationRedirectURI =
+        settings?.response?.configs["identity-verification.redirect-url"];
+      const urlObj = new URL(window.location.href);
+      const state = urlObj.searchParams.get("state");
 
-          if (kycProvidersList.isPending) return;
-          const UpdateProcessRequestDto: UpdateProcessRequestDto = {
-            requestTime: new Date().toISOString(),
-            request: {
-              authorizationCode: params?.get("code") ?? "",
-              state: params?.get("state") ?? "",
-            },
-          };
-          return kycProvidersList.mutate(UpdateProcessRequestDto, {
-            onSuccess: ({ response, errors }) => {
-              if (errors?.length) {
-                setCriticalError(errors[0]);
-              } else {
-                setKycProviderList(response?.identityVerifiers);
-                setProviderListStatus(true);
-                if (response?.identityVerifiers.length === 1) {
-                  setKycProvider(response?.identityVerifiers[0]);
-                }
-              }
-            },
-          });
-        } else if (params.has("id_token_hint")) {
-          const authorizeURI =
-            settings?.response?.configs["signin.redirect-url"];
-          const clientIdURI =
-            settings?.response?.configs["signup.oauth-client-id"];
-          const identityVerificationRedirectURI =
-            settings?.response?.configs["identity-verification.redirect-url"];
-          const urlObj = new URL(window.location.href);
-          const state = urlObj.searchParams.get("state");
+      const paramObj = {
+        state: state ?? "",
+        client_id: clientIdURI ?? "",
+        redirect_uri: identityVerificationRedirectURI ?? "",
+        scope: "openid",
+        response_type: "code",
+        id_token_hint: searchParams.get("id_token_hint") ?? "",
+        ui_locales: (window as any)._env_.DEFAULT_LANG,
+      };
 
-          const paramObj = {
-            state: state ?? "",
-            client_id: clientIdURI ?? "",
-            redirect_uri: identityVerificationRedirectURI ?? "",
-            scope: "openid",
-            response_type: "code",
-            id_token_hint: params.get("id_token_hint") ?? "",
-            ui_locales: (window as any)._env_.DEFAULT_LANG,
-          };
+      const redirectParams = new URLSearchParams(paramObj).toString();
 
-          const redirectParams = new URLSearchParams(paramObj).toString();
+      const redirectURI = `${authorizeURI}?${redirectParams}`;
 
-          const redirectURI = `${authorizeURI}?${redirectParams}`;
-
-          window.location.replace(redirectURI);
-        } else {
-          navigateToLandingPage();
-        }
-      } else {
-        navigateToLandingPage();
-      }
+      window.location.replace(redirectURI);
     } else {
       navigateToLandingPage();
     }
@@ -168,7 +151,9 @@ export const EkycVerificationPage = ({
   const cancelAlertPopoverComp = (cancelProp: CancelPopup) => {
     const handleDismiss = () => {
       window.onbeforeunload = null;
-      window.location.href = `${settings?.response?.configs["esignet-consent.redirect-url"]}?key=${state}&error=dismiss`;
+      window.location.href = `${settings?.response?.configs[
+        "esignet-consent.redirect-url"
+      ]}?key=${searchParams.get("state") || ""}&error=dismiss`;
     };
     return (
       cancelProp.cancelButton && (
