@@ -12,8 +12,8 @@ export const getSignInRedirectURL = (
 };
 
 export const generateRandomString = (strLength = 16) => {
-  let result = '';
-  const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+  let result = "";
+  const characters = "abcdefghijklmnopqrstuvwxyz0123456789";
 
   for (let i = 0; i < strLength; i++) {
     const randomInd = Math.floor(Math.random() * characters.length);
@@ -26,8 +26,8 @@ export const replaceUILocales = (
   hash: string,
   locale: string | null
 ): URLSearchParams | undefined => {
-
-  const base64Regex = /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/;
+  const base64Regex =
+    /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/;
   if (base64Regex.test(hash.substring(1))) {
     // Convert the decoded string to JSON
     const decodedBase64 = atob(hash.substring(1));
@@ -52,8 +52,35 @@ export const replaceUILocales = (
 
       return urlSearchParams;
     }
-  }
-  else {
+  } else {
     return undefined;
   }
+};
+
+export const replaceUILocalesParam = (
+  searchParams: string,
+  locale: string | null
+): URLSearchParams | undefined => {
+  const urlSearchParams = new URLSearchParams(searchParams);
+
+  if (!urlSearchParams) {
+    return undefined;
+  }
+
+  const jsonObject: Record<string, string> = {};
+  urlSearchParams.forEach((value, key) => {
+    jsonObject[key] = value;
+    // Assign the current i18n language to the ui_locales
+    if (key === "ui_locales") {
+      jsonObject[key] = locale || value;
+    }
+  });
+
+  Object.entries(jsonObject).forEach(([key, value]) => {
+    urlSearchParams.set(key, value);
+  });
+
+  urlSearchParams.set("nonce", generateRandomString());
+
+  return urlSearchParams;
 };
