@@ -85,7 +85,7 @@ public class RegistrationService {
     @Value("${mosip.signup.send-challenge.captcha-required:true}")
     private boolean captchaRequired;
 
-    @Value("${mosip.signup.idrepo.idvid-postfix:}")
+    @Value("${mosip.signup.individualid.postfix:}")
     private String individualIdPostfix;
 
 
