@@ -197,3 +197,115 @@ AddIdentity:
       output: '{
   "status":"ACTIVATED"
 }'
+   Signup_AddIdentity_L2_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdVerStatusWithoutWebsocket_Parameters_smoke_Pos:
+      endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_IdRepo_Dependent_AddIdentity_08
+      description: Add identity with password authentication for disabilityType NEUROLOGICAL
+      role: idrepo
+      restMethod: post
+      inputTemplate: signup/AddIdentity/addIdentity_$LANGNUMBER$
+      outputTemplate: signup/AddIdentity/addIdentityResult
+      input: '{
+  "value": "$BIOVALUE$",
+  "id": "mosip.id.create",
+  "registrationId": "$RID$",
+  "biometricReferenceId": "23452353",
+   "UIN": "$UIN$",
+  "dateOfBirth": "1992/04/15",
+  "postalCode": "14022",
+  "email": "Signup_AddIdentity_L2_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdVerStatusWithoutWebsocket_Parameters_smoke_Pos@mosip.net",
+  "phone": "9876543210",
+  "referenceIdentityNumber": "6789545678878",
+  "version": "v1",
+   "introducerRID": "212124324784879",
+   "introducerUIN": "212124324784879",
+   "category": "individualBiometrics",
+   "requesttime": "$TIMESTAMP$"
+}'
+      output: '{
+  "status":"ACTIVATED"
+}'
+   Signup_AddIdentity_L2_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdTAuth_Parameters_smoke_Pos:
+      endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_IdRepo_Dependent_AddIdentity_09
+      description: Add identity with password authentication for disabilityType NEUROLOGICAL
+      role: idrepo
+      restMethod: post
+      inputTemplate: signup/AddIdentity/addIdentity_$LANGNUMBER$
+      outputTemplate: signup/AddIdentity/addIdentityResult
+      input: '{
+  "value": "$BIOVALUE$",
+  "id": "mosip.id.create",
+  "registrationId": "$RID$",
+  "biometricReferenceId": "23452353",
+   "UIN": "$UIN$",
+  "dateOfBirth": "1992/04/15",
+  "postalCode": "14022",
+  "email": "Signup_AddIdentity_L2_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdTAuth_Parameters_smoke_Pos@mosip.net",
+  "phone": "9876543210",
+  "referenceIdentityNumber": "6789545678878",
+  "version": "v1",
+   "introducerRID": "212124324784879",
+   "introducerUIN": "212124324784879",
+   "category": "individualBiometrics",
+   "requesttime": "$TIMESTAMP$"
+}'
+      output: '{
+  "status":"ACTIVATED"
+}'
+   Signup_AddIdentity_L2_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_for_DeletingCookies_smoke_Pos:
+      endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_IdRepo_Dependent_AddIdentity_10
+      description: Add identity with password authentication for disabilityType NEUROLOGICAL
+      role: idrepo
+      restMethod: post
+      inputTemplate: signup/AddIdentity/addIdentity_$LANGNUMBER$
+      outputTemplate: signup/AddIdentity/addIdentityResult
+      input: '{
+  "value": "$BIOVALUE$",
+  "id": "mosip.id.create",
+  "registrationId": "$RID$",
+  "biometricReferenceId": "23452353",
+   "UIN": "$UIN$",
+  "dateOfBirth": "1992/04/15",
+  "postalCode": "14022",
+  "email": "Signup_AddIdentity_L2_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_for_DeletingCookies_smoke_Pos@mosip.net",
+  "phone": "9876543210",
+  "referenceIdentityNumber": "6789545678878",
+  "version": "v1",
+   "introducerRID": "212124324784879",
+   "introducerUIN": "212124324784879",
+   "category": "individualBiometrics",
+   "requesttime": "$TIMESTAMP$"
+}'
+      output: '{
+  "status":"ACTIVATED"
+}'
+   Signup_AddIdentity_L2_Valid_forPrepareSignUpRedirect_unauthenticated_smoke_Pos:
+      endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_IdRepo_Dependent_AddIdentity_11
+      description: Add identity with password authentication for disabilityType NEUROLOGICAL
+      role: idrepo
+      restMethod: post
+      inputTemplate: signup/AddIdentity/addIdentity_$LANGNUMBER$
+      outputTemplate: signup/AddIdentity/addIdentityResult
+      input: '{
+  "value": "$BIOVALUE$",
+  "id": "mosip.id.create",
+  "registrationId": "$RID$",
+  "biometricReferenceId": "23452353",
+   "UIN": "$UIN$",
+  "dateOfBirth": "1992/04/15",
+  "postalCode": "14022",
+  "email": "Signup_AddIdentity_L2_Valid_forPrepareSignUpRedirect_unauthenticated_smoke_Pos@mosip.net",
+  "phone": "9876543210",
+  "referenceIdentityNumber": "6789545678878",
+  "version": "v1",
+   "introducerRID": "212124324784879",
+   "introducerUIN": "212124324784879",
+   "category": "individualBiometrics",
+   "requesttime": "$TIMESTAMP$"
+}'
+      output: '{
+  "status":"ACTIVATED"
+}'
