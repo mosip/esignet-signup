@@ -5,13 +5,12 @@ InitiateIdVerificationNegTC:
       description: To start with Identity verification process with out authorization code, Expecting error code in the response
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/InitiateIdVerificationNegTC/InitiateIdVerificationNegTC
       outputTemplate: signup/error
       input: '{
-      	"requestTime": "$TIMESTAMP$",
-      	"authorizationCode": "$REMOVE$",
-      	"state": "urlInfo1724138417665"
+        "requestTime": "$TIMESTAMP$",
+        "authorizationCode": "$REMOVE$",
+        "state": "urlInfo1724138417665"
 }'
       output: '{
       "errors": [
@@ -27,13 +26,12 @@ InitiateIdVerificationNegTC:
       description: To start with Identity verification process with only space in authorization code, Expecting error code in the response
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/InitiateIdVerificationNegTC/InitiateIdVerificationNegTC
       outputTemplate: signup/error
       input: '{
-      	"requestTime": "$TIMESTAMP$",
-      	"authorizationCode": "   ",
-      	"state": "urlInfo1724138417665"
+        "requestTime": "$TIMESTAMP$",
+        "authorizationCode": "   ",
+        "state": "urlInfo1724138417665"
 }'
       output: '{
       "errors": [
@@ -49,13 +47,12 @@ InitiateIdVerificationNegTC:
       description: To start with Identity verification process with null in authorization code, Expecting error code in the response
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/InitiateIdVerificationNegTC/InitiateIdVerificationNegTC
       outputTemplate: signup/error
       input: '{
-      	"requestTime": "$TIMESTAMP$",
-      	"authorizationCode": null,
-      	"state": "urlInfo1724138417665"
+        "requestTime": "$TIMESTAMP$",
+        "authorizationCode": null,
+        "state": "urlInfo1724138417665"
 }'
       output: '{
       "errors": [
@@ -71,13 +68,12 @@ InitiateIdVerificationNegTC:
       description: To start with Identity verification process with invalid value in authorization code, Expecting error code in the response
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/InitiateIdVerificationNegTC/InitiateIdVerificationNegTC
       outputTemplate: signup/error
       input: '{
-      	"requestTime": "$TIMESTAMP$",
-      	"authorizationCode": "jkhuewrfkeuw8frhe876754@#",
-      	"state": "urlInfo1724138417665"
+        "requestTime": "$TIMESTAMP$",
+        "authorizationCode": "jkhuewrfkeuw8frhe876754@#",
+        "state": "urlInfo1724138417665"
 }'
       output: '{
       "errors": [
@@ -93,13 +89,12 @@ InitiateIdVerificationNegTC:
       description: To start with Identity verification process with numeric value in authorization code, Expecting error code in the response
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/InitiateIdVerificationNegTC/InitiateIdVerificationNegTC
       outputTemplate: signup/error
       input: '{
-      	"requestTime": "$TIMESTAMP$",
-      	"authorizationCode": "5645767564534565677",
-      	"state": "urlInfo1724138417665"
+        "requestTime": "$TIMESTAMP$",
+        "authorizationCode": "5645767564534565677",
+        "state": "urlInfo1724138417665"
 }'
       output: '{
       "errors": [
@@ -115,13 +110,12 @@ InitiateIdVerificationNegTC:
       description: To start with Identity verification process with empty value in authorization code, Expecting error code in the response
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/InitiateIdVerificationNegTC/InitiateIdVerificationNegTC
       outputTemplate: signup/error
       input: '{
-      	"requestTime": "$TIMESTAMP$",
-      	"authorizationCode": "",
-      	"state": "urlInfo1724138417665"
+        "requestTime": "$TIMESTAMP$",
+        "authorizationCode": "",
+        "state": "urlInfo1724138417665"
 }'
       output: '{
       "errors": [
@@ -137,13 +131,12 @@ InitiateIdVerificationNegTC:
       description: To start with Identity verification process with only space in requestTime, Expecting error code in the response
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/InitiateIdVerificationNegTC/InitiateIdVerificationNegTC
       outputTemplate: signup/error
       input: '{
-      	"requestTime": "  ",
-      	"authorizationCode": "$ID:ESignet_SignupAuthorizeCodeNegTC_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_code$",
-      	"state": "urlInfo1724138417665"
+        "requestTime": "  ",
+        "authorizationCode": "$ID:ESignet_SignupAuthorizeCodeNegTC_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_code$",
+        "state": "urlInfo1724138417665"
 }'
       output: '{
       "errors": [
@@ -159,13 +152,12 @@ InitiateIdVerificationNegTC:
       description: To start with Identity verification process with NULL in requestTime, Expecting error code in the response
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/InitiateIdVerificationNegTC/InitiateIdVerificationNegTC
       outputTemplate: signup/error
       input: '{
-      	"requestTime": NULL,
-      	"authorizationCode": "$ID:ESignet_SignupAuthorizeCodeNegTC_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_code$",
-      	"state": "urlInfo1724138417665"
+        "requestTime": NULL,
+        "authorizationCode": "$ID:ESignet_SignupAuthorizeCodeNegTC_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_code$",
+        "state": "urlInfo1724138417665"
 }'
       output: '{
       "errors": [
@@ -181,13 +173,12 @@ InitiateIdVerificationNegTC:
       description: To start with Identity verification process with empty value in requestTime, Expecting error code in the response
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/InitiateIdVerificationNegTC/InitiateIdVerificationNegTC
       outputTemplate: signup/error
       input: '{
-      	"requestTime": "",
-      	"authorizationCode": "$ID:ESignet_SignupAuthorizeCodeNegTC_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_code$",
-      	"state": "urlInfo1724138417665"
+        "requestTime": "",
+        "authorizationCode": "$ID:ESignet_SignupAuthorizeCodeNegTC_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_code$",
+        "state": "urlInfo1724138417665"
 }'
       output: '{
       "errors": [
@@ -203,13 +194,12 @@ InitiateIdVerificationNegTC:
       description: To start with Identity verification process with null in requestTime, Expecting error code in the response
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/InitiateIdVerificationNegTC/InitiateIdVerificationNegTC
       outputTemplate: signup/error
       input: '{
-      	"requestTime": null,
-      	"authorizationCode": "$ID:ESignet_SignupAuthorizeCodeNegTC_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_code$",
-      	"state": "urlInfo1724138417665"
+        "requestTime": null,
+        "authorizationCode": "$ID:ESignet_SignupAuthorizeCodeNegTC_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_code$",
+        "state": "urlInfo1724138417665"
 }'
       output: '{
       "errors": [
@@ -225,13 +215,12 @@ InitiateIdVerificationNegTC:
       description: To start with Identity verification process with invalidFormat in requestTime, Expecting error code in the response
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/InitiateIdVerificationNegTC/InitiateIdVerificationNegTC
       outputTemplate: signup/error
       input: '{
-      	"requestTime": "2023/11/03 11:03:29.296Z",
-      	"authorizationCode": "$ID:ESignet_SignupAuthorizeCodeNegTC_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_code$",
-      	"state": "urlInfo1724138417665"
+        "requestTime": "2023/11/03 11:03:29.296Z",
+        "authorizationCode": "$ID:ESignet_SignupAuthorizeCodeNegTC_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_code$",
+        "state": "urlInfo1724138417665"
 }'
       output: '{
       "errors": [
@@ -247,13 +236,12 @@ InitiateIdVerificationNegTC:
       description: To start with Identity verification process with out state parameter, Expecting error code in the response
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/InitiateIdVerificationNegTC/InitiateIdVerificationNegTC
       outputTemplate: signup/error
       input: '{
-      	"requestTime": "$TIMESTAMP$",
-      	"authorizationCode": "$ID:ESignet_SignupAuthorizeCodeNegTC_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_code$",
-      	"state": "$REMOVE$"
+        "requestTime": "$TIMESTAMP$",
+        "authorizationCode": "$ID:ESignet_SignupAuthorizeCodeNegTC_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_code$",
+        "state": "$REMOVE$"
 }'
       output: '{
       "errors": [
@@ -269,13 +257,12 @@ InitiateIdVerificationNegTC:
       description: To start with Identity verification process with only space in state parameter, Expecting error code in the response
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/InitiateIdVerificationNegTC/InitiateIdVerificationNegTC
       outputTemplate: signup/error
       input: '{
-      	"requestTime": "$TIMESTAMP$",
-      	"authorizationCode": "$ID:ESignet_SignupAuthorizeCodeNegTC_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_code$",
-      	"state": "    "
+        "requestTime": "$TIMESTAMP$",
+        "authorizationCode": "$ID:ESignet_SignupAuthorizeCodeNegTC_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_code$",
+        "state": "    "
 }'
       output: '{
       "errors": [
@@ -291,13 +278,12 @@ InitiateIdVerificationNegTC:
       description: To start with Identity verification process with empty value in state parameter, Expecting error code in the response
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/InitiateIdVerificationNegTC/InitiateIdVerificationNegTC
       outputTemplate: signup/error
       input: '{
-      	"requestTime": "$TIMESTAMP$",
-      	"authorizationCode": "$ID:ESignet_SignupAuthorizeCodeNegTC_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_code$",
-      	"state": ""
+        "requestTime": "$TIMESTAMP$",
+        "authorizationCode": "$ID:ESignet_SignupAuthorizeCodeNegTC_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_code$",
+        "state": ""
 }'
       output: '{
       "errors": [
@@ -313,13 +299,12 @@ InitiateIdVerificationNegTC:
       description: To start with Identity verification process with null value in state parameter, Expecting error code in the response
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/InitiateIdVerificationNegTC/InitiateIdVerificationNegTC
       outputTemplate: signup/error
       input: '{
-      	"requestTime": "$TIMESTAMP$",
-      	"authorizationCode": "$ID:ESignet_SignupAuthorizeCodeNegTC_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_code$",
-      	"state": null
+        "requestTime": "$TIMESTAMP$",
+        "authorizationCode": "$ID:ESignet_SignupAuthorizeCodeNegTC_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_code$",
+        "state": null
 }'
       output: '{
       "errors": [
@@ -335,13 +320,12 @@ InitiateIdVerificationNegTC:
       description: To start with Identity verification process with out requestTime, Expecting error code in the response
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/InitiateIdVerificationNegTC/InitiateIdVerificationNegTC
       outputTemplate: signup/error
       input: '{
-      	"requestTime": "$REMOVE$",
-      	"authorizationCode": "$ID:ESignet_SignupAuthorizeCodeNegTC_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_code$",
-      	"state": "urlInfo1724138417665"
+        "requestTime": "$REMOVE$",
+        "authorizationCode": "$ID:ESignet_SignupAuthorizeCodeNegTC_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_code$",
+        "state": "urlInfo1724138417665"
 }'
       output: '{
       "errors": [
@@ -360,9 +344,9 @@ InitiateIdVerificationNegTC:
       inputTemplate: signup/InitiateIdVerificationNegTC/InitiateIdVerificationNegTC
       outputTemplate: signup/errorWithStatusCode
       input: '{
-      	"requestTime": "$TIMESTAMP$",
-      	"authorizationCode": "$ID:ESignet_SignupAuthorizeCodeNegTC_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_code$",
-       	"state": "urlInfo1724138417665"
+        "requestTime": "$TIMESTAMP$",
+        "authorizationCode": "$ID:ESignet_SignupAuthorizeCodeNegTC_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_code$",
+        "state": "urlInfo1724138417665"
  }'
       output: '{
 		"status": "403"
@@ -394,7 +378,7 @@ InitiateIdVerificationNegTC:
       inputTemplate: signup/InitiateIdVerificationNegTC/InitiateIdVerificationNegTCWithNullrequestObject
       outputTemplate: signup/error
       input: '{
-      	"requestTime": "$TIMESTAMP$"
+        "requestTime": "$TIMESTAMP$"
  }'
       output: '{
 		"errors": [
@@ -413,7 +397,7 @@ InitiateIdVerificationNegTC:
       inputTemplate: signup/InitiateIdVerificationNegTC/InitiateIdVerificationNegTCWithoutrequestObject
       outputTemplate: signup/error
       input: '{
-      	"requestTime": "$TIMESTAMP$"
+        "requestTime": "$TIMESTAMP$"
  }'
       output: '{
  	"errors": [
@@ -433,10 +417,52 @@ InitiateIdVerificationNegTC:
       inputTemplate: signup/InitiateIdVerificationNegTC/InitiateIdVerificationNegTC
       outputTemplate: signup/InitiateIdVerificationNegTC/InitiateIdVerificationResultNegTC
       input: '{
-      	"requestTime": "$TIMESTAMP$",
-      	"authorizationCode": "$ID:ESignet_SignupAuthorizeCodeNegTC_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_code$",
-      	"state": "urlInfo1724138417665"
+        "requestTime": "$TIMESTAMP$",
+        "authorizationCode": "$ID:ESignet_SignupAuthorizeCodeNegTC_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_code$",
+        "state": "urlInfo1724138417665"
 }'
       output: '{
        
 }'
+
+   Signup_ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_invalidAdditionalField_Neg:
+      endPoint: /v1/signup/identity-verification/initiate
+      uniqueIdentifier: TC_ESignet_InitiateIdVerificationNegTC_22
+      description: Identity verification process with invalid additional field
+      role: resident
+      restMethod: post
+      inputTemplate: signup/InitiateIdVerificationNegTC/InitiateIdVerificationNegTCWithAdditionalInvalidField
+      outputTemplate: signup/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "authorizationCode": "$ID:ESignet_SignupAuthorizeCodeNegTC_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_code$",
+        "state": "urlInfo1724138417665",
+        "additionalInvalidField": "eueuwyruwe"
+}'
+      output: '{
+      "errors": [
+    {
+      "errorCode": "invalid_request"
+    }
+  ]
+ }'
+   Signup_ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_with_AlreadyUsed_authorizationCode_Neg:
+      endPoint: /v1/signup/identity-verification/initiate
+      uniqueIdentifier: TC_ESignet_InitiateIdVerificationNegTC_23
+      description: To start with Identity verification process with numeric value in authorization code, Expecting error code in the response
+      role: resident
+      restMethod: post
+      inputTemplate: signup/InitiateIdVerificationNegTC/InitiateIdVerificationNegTC
+      outputTemplate: signup/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "authorizationCode": "KHILVkRm1grJE9HkhYFuc9i7capmyYGOyE7jigKNBek",
+        "state": "urlInfo1724138417665"
+}'
+      output: '{
+      "errors": [
+    {
+      "errorCode": "grant_exchange_failed"
+    }
+  ]
+ }'
