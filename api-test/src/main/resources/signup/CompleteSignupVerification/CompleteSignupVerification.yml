@@ -1,6 +1,7 @@
 CompleteSignupVerification:
    Signup_ESignet_CompleteSignupVerification_AuthToken_Xsrf_uin_Valid_Smoke:
       endPoint: /v1/esignet/authorization/complete-signup-redirect
+      uniqueIdentifier: TC_ESignet_CompleteSignupVerification_01
       description: Completing the Signup verifcation
       role: resident
       restMethod: post
@@ -17,6 +18,7 @@ CompleteSignupVerification:
 }'
    Signup_ESignet_CompleteSignupVerification_AuthToken_Xsrf_uin_IncompleteKYC_Neg:
       endPoint: /v1/esignet/authorization/complete-signup-redirect
+      uniqueIdentifier: TC_ESignet_CompleteSignupVerification_02
       description: Completing the Signup verifcation with incomplete KYC
       role: resident
       restMethod: post
@@ -37,6 +39,7 @@ CompleteSignupVerification:
 }'
    Signup_ESignet_CompleteSignupVerification_AuthToken_Xsrf_uin_IncompleteKYC_BeforeStatusEndPoint_Neg:
       endPoint: /v1/esignet/authorization/complete-signup-redirect
+      uniqueIdentifier: TC_ESignet_CompleteSignupVerification_03
       description: Completing the Signup verifcation with incomplete KYC
       role: resident
       restMethod: post
