@@ -51,8 +51,8 @@ service:
 
 image:
   registry: docker.io
-  repository: mosipdev/signup-ui
-  tag: release-1.1.x
+  repository: mosipid/signup-ui
+  tag: 1.2.0
 
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
