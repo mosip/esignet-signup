@@ -31,7 +31,7 @@ function installing_signup-ui() {
   done
 
   NS=signup
-  CHART_VERSION=1.2.0
+  CHART_VERSION=1.2.0-develop
 
   echo Create $NS namespace
   kubectl create ns $NS || true
