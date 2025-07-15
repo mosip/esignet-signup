@@ -1,6 +1,7 @@
 IDTAuthentication:
    Signup_ESignet_IDTAuthentication_AuthToken_Xsrf_uin_all_Valid_Smoke:
       endPoint: /v1/esignet/authorization/v3/authenticate
+      uniqueIdentifier: TC_ESignet_IDTAuthentication_01
       description: Create transaction Id and consentAction with valid details
       role: resident
       restMethod: post
@@ -23,6 +24,7 @@ IDTAuthentication:
 }'
    Signup_ESignet_IDTAuthentication_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeVISION_Smoke:
       endPoint: /v1/esignet/authorization/v3/authenticate
+      uniqueIdentifier: TC_ESignet_IDTAuthentication_02
       description: Create transaction Id and consentAction with valid details and this testcase is prerequisite
       role: resident
       restMethod: post
@@ -45,6 +47,7 @@ IDTAuthentication:
 }'
    Signup_ESignet_IDTAuthentication_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeAUDITORY_Smoke:
       endPoint: /v1/esignet/authorization/v3/authenticate
+      uniqueIdentifier: TC_ESignet_IDTAuthentication_03
       description: Create transaction Id and consentAction with valid details and this testcase is prerequisite
       role: resident
       restMethod: post
@@ -67,6 +70,7 @@ IDTAuthentication:
 }'
    Signup_ESignet_IDTAuthentication_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeMOBILITY_Smoke:
       endPoint: /v1/esignet/authorization/v3/authenticate
+      uniqueIdentifier: TC_ESignet_IDTAuthentication_04
       description: Create transaction Id and consentAction with valid details and this testcase is prerequisite
       role: resident
       restMethod: post
@@ -89,6 +93,7 @@ IDTAuthentication:
 }'
    Signup_ESignet_IDTAuthentication_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_Smoke:
       endPoint: /v1/esignet/authorization/v3/authenticate
+      uniqueIdentifier: TC_ESignet_IDTAuthentication_05
       description: Create transaction Id and consentAction with valid details and this testcase is prerequisite
       role: resident
       restMethod: post
@@ -102,6 +107,28 @@ IDTAuthentication:
       	"pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_Smoke_sid_transactionId$",
       	"idtToken": "$ID:ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_Smoke_sid_idToken$",
       	"transactionId": "$ID:ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_Smoke_sid_transactionId$",
+      	"individualId": "$IDTINDIVIUALID$",
+      	"authFactorType" : "IDT",
+      	"challenge" : "$IDTCHALLENGE$"
+}'
+      output: '{
+       
+}'
+   Signup_ESignet_IDTAuthentication_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdVerStatusWithoutWebsocket_Smoke:
+      endPoint: /v1/esignet/authorization/v3/authenticate
+      description: Create transaction Id and consentAction with valid details and this testcase is prerequisite for id verification status
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/IDTAuthentication/IDTAuthentication
+      outputTemplate: signup/IDTAuthentication/IDTAuthenticationResult
+      input: '{
+        "encodedHash": "$ID:ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdVerStatusWithoutWebsocket_Smoke_sid_encodedResp$",
+      	"requestTime": "$TIMESTAMP$",
+      	"pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdVerStatusWithoutWebsocket_Smoke_sid_pathFragmentCookie$",
+      	"pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdVerStatusWithoutWebsocket_Smoke_sid_transactionId$",
+      	"idtToken": "$ID:ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdVerStatusWithoutWebsocket_Smoke_sid_idToken$",
+      	"transactionId": "$ID:ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdVerStatusWithoutWebsocket_Smoke_sid_transactionId$",
       	"individualId": "$IDTINDIVIUALID$",
       	"authFactorType" : "IDT",
       	"challenge" : "$IDTCHALLENGE$"
