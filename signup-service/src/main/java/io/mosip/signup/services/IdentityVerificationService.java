@@ -240,6 +240,7 @@ public class IdentityVerificationService {
      * @return
      */
     public IdentityVerificationStatusResponse getStatus(String transactionId) {
+        try {
         if(transactionId.split(VALUE_SEPARATOR).length <= 1)
             throw new InvalidTransactionException();
 
@@ -248,13 +249,17 @@ public class IdentityVerificationService {
         if(transaction == null)
             throw new InvalidTransactionException();
 
+        log.info("Transaction retrieved: {}", transaction);
+
         ProfileCreateUpdateStatus registrationStatus;
         if(transaction.getStatus() == null) {
             registrationStatus = profileRegistryPlugin.getProfileCreateUpdateStatus(transaction.getApplicationId());
             transaction.setStatus(ProfileCreateUpdateStatus.getVerificationStatus(registrationStatus));
+            log.debug("Updated transaction status from registry: {}", transaction.getStatus());
         }
 
         IdentityVerificationStatusResponse identityVerificationStatusResponse = new IdentityVerificationStatusResponse();
+        log.info("Processing transaction with status: {}", transaction.getStatus());
         switch (transaction.getStatus()) {
             case COMPLETED:
             case FAILED:
@@ -269,8 +274,13 @@ public class IdentityVerificationService {
 
         cacheUtilService.updateVerificationStatus(transaction.getAccessTokenSubject(), transaction.getStatus().toString(),
                 transaction.getErrorCode());
+        log.info("Setting final response status to: {}", transaction.getStatus());
         identityVerificationStatusResponse.setStatus(transaction.getStatus());
         return identityVerificationStatusResponse;
+        } catch (Exception e) {
+            log.error("Error while processing transactionId {}: {}", transactionId, e.getMessage(), e);
+            throw new SignUpException(ErrorConstants.INVALID_TRANSACTION);
+        }
     }
 
     private void addSlotAllottedCookie(String value, IdentityVerifierDetail identityVerifierDetail,
