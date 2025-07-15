@@ -240,37 +240,47 @@ public class IdentityVerificationService {
      * @return
      */
     public IdentityVerificationStatusResponse getStatus(String transactionId) {
-        if(transactionId.split(VALUE_SEPARATOR).length <= 1)
-            throw new InvalidTransactionException();
+        try {
+            if(transactionId.split(VALUE_SEPARATOR).length <= 1)
+                throw new InvalidTransactionException();
 
-        final String slotId = transactionId.split(VALUE_SEPARATOR)[1];
-        IdentityVerificationTransaction transaction = cacheUtilService.getVerifiedSlotTransaction(slotId);
-        if(transaction == null)
-            throw new InvalidTransactionException();
+            final String slotId = transactionId.split(VALUE_SEPARATOR)[1];
+            IdentityVerificationTransaction transaction = cacheUtilService.getVerifiedSlotTransaction(slotId);
+            if(transaction == null)
+                throw new InvalidTransactionException();
 
-        ProfileCreateUpdateStatus registrationStatus;
-        if(transaction.getStatus() == null) {
-            registrationStatus = profileRegistryPlugin.getProfileCreateUpdateStatus(transaction.getApplicationId());
-            transaction.setStatus(ProfileCreateUpdateStatus.getVerificationStatus(registrationStatus));
-        }
+            log.info("Transaction retrieved: {}", transaction);
 
-        IdentityVerificationStatusResponse identityVerificationStatusResponse = new IdentityVerificationStatusResponse();
-        switch (transaction.getStatus()) {
-            case COMPLETED:
-            case FAILED:
-                identityVerificationStatusResponse.setStatus(transaction.getStatus());
-                break;
-            case UPDATE_PENDING:
+            ProfileCreateUpdateStatus registrationStatus;
+            if(transaction.getStatus() == null) {
                 registrationStatus = profileRegistryPlugin.getProfileCreateUpdateStatus(transaction.getApplicationId());
                 transaction.setStatus(ProfileCreateUpdateStatus.getVerificationStatus(registrationStatus));
-                cacheUtilService.updateVerifiedSlotTransaction(slotId, transaction);
-                break;
-        }
+                log.debug("Updated transaction status from registry: {}", transaction.getStatus());
+            }
 
-        cacheUtilService.updateVerificationStatus(transaction.getAccessTokenSubject(), transaction.getStatus().toString(),
-                transaction.getErrorCode());
-        identityVerificationStatusResponse.setStatus(transaction.getStatus());
-        return identityVerificationStatusResponse;
+            IdentityVerificationStatusResponse identityVerificationStatusResponse = new IdentityVerificationStatusResponse();
+            log.info("Processing transaction with status: {}", transaction.getStatus());
+            switch (transaction.getStatus()) {
+                case COMPLETED:
+                case FAILED:
+                    identityVerificationStatusResponse.setStatus(transaction.getStatus());
+                    break;
+                case UPDATE_PENDING:
+                    registrationStatus = profileRegistryPlugin.getProfileCreateUpdateStatus(transaction.getApplicationId());
+                    transaction.setStatus(ProfileCreateUpdateStatus.getVerificationStatus(registrationStatus));
+                    cacheUtilService.updateVerifiedSlotTransaction(slotId, transaction);
+                    break;
+            }
+
+            cacheUtilService.updateVerificationStatus(transaction.getAccessTokenSubject(), transaction.getStatus().toString(),
+                    transaction.getErrorCode());
+            log.info("Setting final response status to: {}", transaction.getStatus());
+            identityVerificationStatusResponse.setStatus(transaction.getStatus());
+            return identityVerificationStatusResponse;
+        } catch (Exception e) {
+            log.error("Error while processing transactionId {}: {}", transactionId, e.getMessage(), e);
+            throw new SignUpException(ErrorConstants.INVALID_TRANSACTION);
+        }
     }
 
     private void addSlotAllottedCookie(String value, IdentityVerifierDetail identityVerifierDetail,
