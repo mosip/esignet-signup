@@ -16,8 +16,7 @@ CompleteSignupVerificationNegTC:
       output: '{
       "errors": [
     {
-      "errorCode": "invalid_transaction",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_transaction"
     }
   ]
 }'
@@ -38,8 +37,7 @@ CompleteSignupVerificationNegTC:
       output: '{
       "errors": [
     {
-      "errorCode": "invalid_transaction",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_transaction"
     }
   ]
 }'
@@ -60,8 +58,7 @@ CompleteSignupVerificationNegTC:
       output: '{
       "errors": [
     {
-      "errorCode": "invalid_request",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_request"
     }
   ]
 }'
@@ -82,8 +79,7 @@ CompleteSignupVerificationNegTC:
       output: '{
       "errors": [
     {
-      "errorCode": "invalid_request",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_request"
     }
   ]
 }'
@@ -104,8 +100,7 @@ CompleteSignupVerificationNegTC:
       output: '{
       "errors": [
     {
-      "errorCode": "invalid_request",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_request"
     }
   ]
 }'
@@ -126,8 +121,7 @@ CompleteSignupVerificationNegTC:
       output: '{
       "errors": [
     {
-      "errorCode": "invalid_request",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_request"
     }
   ]
 }'
@@ -148,8 +142,7 @@ CompleteSignupVerificationNegTC:
       output: '{
       "errors": [
     {
-      "errorCode": "invalid_request",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_request"
     }
   ]
 }'
@@ -170,8 +163,7 @@ CompleteSignupVerificationNegTC:
       output: '{
       "errors": [
     {
-      "errorCode": "invalid_request",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_request"
     }
   ]
 }'
@@ -192,8 +184,7 @@ CompleteSignupVerificationNegTC:
       output: '{
       "errors": [
     {
-      "errorCode": "invalid_request",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_request"
     }
   ]
 }'
@@ -214,8 +205,7 @@ CompleteSignupVerificationNegTC:
       output: '{
       "errors": [
     {
-      "errorCode": "invalid_transaction",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_transaction"
     }
   ]
 }'
@@ -236,8 +226,7 @@ CompleteSignupVerificationNegTC:
       output: '{
       "errors": [
     {
-      "errorCode": "invalid_transaction",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_transaction"
     }
   ]
 }'
@@ -258,8 +247,7 @@ CompleteSignupVerificationNegTC:
       output: '{
       "errors": [
     {
-      "errorCode": "invalid_request",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_request"
     }
   ]
 }'
@@ -280,8 +268,7 @@ CompleteSignupVerificationNegTC:
       output: '{
       "errors": [
     {
-      "errorCode": "invalid_request",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_request"
     }
   ]
 }'
@@ -302,8 +289,7 @@ CompleteSignupVerificationNegTC:
       output: '{
       "errors": [
     {
-      "errorCode": "invalid_request",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_request"
     }
   ]
 }'
@@ -324,8 +310,7 @@ CompleteSignupVerificationNegTC:
       output: '{
       "errors": [
     {
-      "errorCode": "invalid_transaction",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_transaction"
     }
   ]
 }'
@@ -346,8 +331,28 @@ CompleteSignupVerificationNegTC:
       output: '{
       "errors": [
     {
-      "errorCode": "invalid_transaction",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_transaction"
+    }
+  ]
+}'
+   Signup_ESignet_CompleteSignupVerificationNegTC_AuthToken_Xsrf_uin_with_empty_transactionId_Neg:
+      endPoint: /v1/esignet/authorization/complete-signup-redirect
+      uniqueIdentifier: TC_ESignet_CompleteSignupVerificationNegTC_17
+      description: Completing the Signup verifcation without transactionId - Failure
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/CompleteSignupVerificationNegTC/CompleteSignupVerificationNegTC
+      outputTemplate: signup/error
+      input: '{
+        "encodedHash": "$ID:ESignet_OAuthDetailsRequest_V3_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_encodedResp$",
+      	"requestTime": "$TIMESTAMP$",
+      	"transactionId": ""
+    }'
+      output: '{
+      "errors": [
+    {
+      "errorCode": "invalid_transaction"
     }
   ]
 }'

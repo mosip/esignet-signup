@@ -1,6 +1,7 @@
 GetIdVerifier:
    Signup_ESignet_GetIdVerifier_STransId_uin_all_Valid_Smoke:
       endPoint: /v1/signup/identity-verification/identity-verifier/{verifierId}
+      uniqueIdentifier: TC_ESignet_GetIdVerifier_01
       description: To get the details of specific identity verifier with valid details
       role: resident
       restMethod: get

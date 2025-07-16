@@ -10,7 +10,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -25,8 +25,8 @@ import com.nimbusds.jose.jwk.RSAKey;
 
 import io.mosip.testrig.apirig.dataprovider.BiometricDataProvider;
 import io.mosip.testrig.apirig.dbaccess.DBManager;
-import io.mosip.testrig.apirig.report.EmailableReport;
 import io.mosip.testrig.apirig.signup.utils.SignupConfigManager;
+import io.mosip.testrig.apirig.signup.utils.SignupConstants;
 import io.mosip.testrig.apirig.signup.utils.SignupUtil;
 import io.mosip.testrig.apirig.testrunner.BaseTestCase;
 import io.mosip.testrig.apirig.testrunner.ExtractResource;
@@ -34,7 +34,6 @@ import io.mosip.testrig.apirig.testrunner.HealthChecker;
 import io.mosip.testrig.apirig.testrunner.OTPListener;
 import io.mosip.testrig.apirig.utils.AdminTestUtil;
 import io.mosip.testrig.apirig.utils.AuthTestsUtil;
-import io.mosip.testrig.apirig.utils.CertificateGenerationUtil;
 import io.mosip.testrig.apirig.utils.CertsUtil;
 import io.mosip.testrig.apirig.utils.GlobalConstants;
 import io.mosip.testrig.apirig.utils.GlobalMethods;
@@ -60,6 +59,8 @@ public class MosipTestRunner {
 	public static String jarUrl = MosipTestRunner.class.getProtectionDomain().getCodeSource().getLocation().getPath();
 	public static List<String> languageList = new ArrayList<>();
 	public static boolean skipAll = false;
+	
+	public static String PLUGIN_NAME = null;
 
 	/**
 	 * C Main method to start mosip test execution
@@ -84,6 +85,7 @@ public class MosipTestRunner {
 			suiteSetup(getRunType());
 			SkipTestCaseHandler.loadTestcaseToBeSkippedList("testCaseSkippedList.txt");
 			GlobalMethods.setModuleNameAndReCompilePattern(SignupConfigManager.getproperty("moduleNamePattern"));
+			GlobalMethods.reportCaptchaStatus(GlobalConstants.CAPTCHA_ENABLED, false);
 			setLogLevels();
 
 			if (SignupUtil.getIdentityPluginNameFromEsignetActuator().toLowerCase()
@@ -109,6 +111,13 @@ public class MosipTestRunner {
 				KeycloakUserManager.removeUser();
 				KeycloakUserManager.closeKeycloakInstance();
 			} else {
+				// Mock ID System
+
+				// In mock ID system also the OTP value is hard coded and not configurable.
+				Map<String, Object> additionalPropertiesMap = new HashMap<String, Object>();
+				additionalPropertiesMap.put(SignupConstants.USE_PRE_CONFIGURED_OTP_STRING, SignupConstants.TRUE_STRING);
+				additionalPropertiesMap.put(SignupConstants.PRE_CONFIGURED_OTP_STRING, SignupConstants.ALL_ONE_OTP_STRING);
+				SignupConfigManager.add(additionalPropertiesMap);
 				SignupUtil.getSupportedLanguage();
 				startTestRunner();
 			}
@@ -164,6 +173,9 @@ public class MosipTestRunner {
 	 * @throws IOException
 	 */
 	public static void startTestRunner() {
+		
+		MosipTestRunner.PLUGIN_NAME = SignupUtil.getPluginName();
+		
 		File homeDir = null;
 		String os = System.getProperty("os.name");
 		LOGGER.info(os);
@@ -183,7 +195,11 @@ public class MosipTestRunner {
 				List<String> suitefiles = new ArrayList<>();
 
 				if (file.getName().toLowerCase().contains("mastertestsuite")) {
-					BaseTestCase.setReportName(GlobalConstants.SIGNUP);
+					if(MosipTestRunner.PLUGIN_NAME != null) {
+						BaseTestCase.setReportName(GlobalConstants.SIGNUP + "-" + MosipTestRunner.PLUGIN_NAME);
+					}else {
+						BaseTestCase.setReportName(GlobalConstants.SIGNUP);
+					}
 					suitefiles.add(file.getAbsolutePath());
 					runner.setTestSuites(suitefiles);
 					System.getProperties().setProperty("testng.outpur.dir", "testng-report");

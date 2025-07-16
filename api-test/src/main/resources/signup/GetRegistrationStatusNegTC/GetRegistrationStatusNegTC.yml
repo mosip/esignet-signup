@@ -12,8 +12,7 @@ GetRegistrationStatusNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_transaction",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_transaction"
     }
   ]
 }'
@@ -30,8 +29,7 @@ GetRegistrationStatusNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_request",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_request"
     }
   ]
 }'
@@ -48,8 +46,7 @@ GetRegistrationStatusNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_transaction",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_transaction"
     }
   ]
 }'
@@ -66,8 +63,7 @@ GetRegistrationStatusNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_transaction",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_transaction"
     }
   ]
 }'

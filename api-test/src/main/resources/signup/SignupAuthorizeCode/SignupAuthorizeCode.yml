@@ -1,6 +1,7 @@
 SignupAuthorizeCode:
    Signup_ESignet_SignupAuthorizeCode_AuthToken_Xsrf_uin_all_Valid_Smoke_sid:
       endPoint: /v1/esignet/authorization/auth-code
+      uniqueIdentifier: TC_ESignet_SignupAuthorizeCode_01
       description: Create authorization code with valid details
       role: resident
       restMethod: post
@@ -20,6 +21,7 @@ SignupAuthorizeCode:
 }'
    Signup_ESignet_SignupAuthorizeCode_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeVISION_Smoke_sid:
       endPoint: /v1/esignet/authorization/auth-code
+      uniqueIdentifier: TC_ESignet_SignupAuthorizeCode_02
       description: Create authorization code with valid details and this testcase is prerequisite
       role: resident
       restMethod: post
@@ -39,6 +41,7 @@ SignupAuthorizeCode:
 }'
    Signup_ESignet_SignupAuthorizeCode_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeAUDITORY_Smoke_sid:
       endPoint: /v1/esignet/authorization/auth-code
+      uniqueIdentifier: TC_ESignet_SignupAuthorizeCode_03
       description: Create authorization code with valid details and this testcase is prerequisite
       role: resident
       restMethod: post
@@ -58,6 +61,7 @@ SignupAuthorizeCode:
 }'
    Signup_ESignet_SignupAuthorizeCode_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeMOBILITY_Smoke_sid:
       endPoint: /v1/esignet/authorization/auth-code
+      uniqueIdentifier: TC_ESignet_SignupAuthorizeCode_04
       description: Create authorization code with valid details and this testcase is prerequisite
       role: resident
       restMethod: post
@@ -77,6 +81,7 @@ SignupAuthorizeCode:
 }'
    Signup_ESignet_SignupAuthorizeCode_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_Smoke_sid:
       endPoint: /v1/esignet/authorization/auth-code
+      uniqueIdentifier: TC_ESignet_SignupAuthorizeCode_05
       description: Create authorization code with valid details and this testcase is prerequisite
       role: resident
       restMethod: post
@@ -89,6 +94,25 @@ SignupAuthorizeCode:
       	"pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_Smoke_sid_pathFragmentCookie$",
       	"pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_Smoke_sid_transactionId$",
       	"transactionId": "$ID:ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_Smoke_sid_transactionId$",
+      	"acceptedClaims": [{channel: "email"},{channel: "phone_number"}]
+}'
+      output: '{
+       
+}'
+   Signup_ESignet_SignupAuthorizeCode_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdVerStatusWithoutWebsocket_Smoke_sid:
+      endPoint: /v1/esignet/authorization/auth-code
+      description: Create authorization code with valid details and this testcase is prerequisite
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/SignupAuthorizeCode/SignupAuthorizeCode
+      outputTemplate: signup/SignupAuthorizeCode/SignupAuthorizeCodeResult
+      input: '{
+        "encodedHash": "$ID:ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdVerStatusWithoutWebsocket_Smoke_sid_encodedResp$",
+      	"requestTime": "$TIMESTAMP$",
+      	"pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdVerStatusWithoutWebsocket_Smoke_sid_pathFragmentCookie$",
+      	"pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdVerStatusWithoutWebsocket_Smoke_sid_transactionId$",
+      	"transactionId": "$ID:ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdVerStatusWithoutWebsocket_Smoke_sid_transactionId$",
       	"acceptedClaims": [{channel: "email"},{channel: "phone_number"}]
 }'
       output: '{

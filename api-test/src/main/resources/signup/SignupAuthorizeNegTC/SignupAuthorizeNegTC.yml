@@ -24,8 +24,7 @@ SignupAuthorizeNegTC:
       output: '{
        	"errors": [
     {
-      "errorCode": "invalid_client_id",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_client_id"
     }
   ]
 }'
@@ -54,8 +53,7 @@ SignupAuthorizeNegTC:
       output: '{
        	"errors": [
     {
-      "errorCode": "invalid_client_id",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_client_id"
     }
   ]
 }'
@@ -84,8 +82,7 @@ SignupAuthorizeNegTC:
       output: '{
        	"errors": [
     {
-      "errorCode": "invalid_client_id",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_client_id"
     }
   ]
 }'
@@ -114,8 +111,7 @@ SignupAuthorizeNegTC:
       output: '{
        	"errors": [
     {
-      "errorCode": "invalid_client_id",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_client_id"
     }
   ]
 }'
@@ -132,7 +128,7 @@ SignupAuthorizeNegTC:
       	"pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirectNegTC_AuthToken_Xsrf_STransId_uin_Otp_Valid_posNeg_Smoke_sid_pathFragmentCookie$",
       	"pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_transactionId$",
       	"requestTime": "$TIMESTAMP$",
-      	"clientId": "mosip-signup-oauth-client",
+      	"clientId": "$MOSIP_SIGNUP_OAUTH_CLIENT_ID_VALUE$",
       	"scope": "openid",
       	"responseType": "code",
       	"redirectUri": "",
@@ -144,8 +140,7 @@ SignupAuthorizeNegTC:
       output: '{
        	"errors": [
     {
-      "errorCode": "invalid_redirect_uri",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_redirect_uri"
     }
   ]
 }'
@@ -162,7 +157,7 @@ SignupAuthorizeNegTC:
       	"pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirectNegTC_AuthToken_Xsrf_STransId_uin_Otp_Valid_posNeg_Smoke_sid_pathFragmentCookie$",
       	"pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_transactionId$",
       	"requestTime": "$TIMESTAMP$",
-      	"clientId": "mosip-signup-oauth-client",
+      	"clientId": "$MOSIP_SIGNUP_OAUTH_CLIENT_ID_VALUE$",
       	"scope": "openid",
       	"responseType": "code",
       	"redirectUri": "https://health-services.com",
@@ -174,8 +169,7 @@ SignupAuthorizeNegTC:
       output: '{
        	"errors": [
     {
-      "errorCode": "invalid_redirect_uri",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_redirect_uri"
     }
   ]
 }'
@@ -192,7 +186,7 @@ SignupAuthorizeNegTC:
       	"pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirectNegTC_AuthToken_Xsrf_STransId_uin_Otp_Valid_posNeg_Smoke_sid_pathFragmentCookie$",
       	"pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_transactionId$",
       	"requestTime": "$TIMESTAMP$",
-      	"clientId": "mosip-signup-oauth-client",
+      	"clientId": "$MOSIP_SIGNUP_OAUTH_CLIENT_ID_VALUE$",
       	"scope": "openid",
       	"responseType": "code",
       	"redirectUri": "$REMOVE$",
@@ -204,8 +198,7 @@ SignupAuthorizeNegTC:
       output: '{
        	"errors": [
     {
-      "errorCode": "invalid_redirect_uri",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_redirect_uri"
     }
   ]
 }'
@@ -222,7 +215,7 @@ SignupAuthorizeNegTC:
       	"pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirectNegTC_AuthToken_Xsrf_STransId_uin_Otp_Valid_posNeg_Smoke_sid_pathFragmentCookie$",
       	"pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_transactionId$",
       	"requestTime": "$TIMESTAMP$",
-      	"clientId": "mosip-signup-oauth-client",
+      	"clientId": "$MOSIP_SIGNUP_OAUTH_CLIENT_ID_VALUE$",
       	"scope": "openid",
       	"responseType": "",
       	"redirectUri": "$SIGNUPREDIRECTURI$",
@@ -234,8 +227,7 @@ SignupAuthorizeNegTC:
       output: '{
        	"errors": [
     {
-      "errorCode": "invalid_response_type",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_response_type"
     }
   ]
 }'
@@ -252,7 +244,7 @@ SignupAuthorizeNegTC:
       	"pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirectNegTC_AuthToken_Xsrf_STransId_uin_Otp_Valid_posNeg_Smoke_sid_pathFragmentCookie$",
       	"pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_transactionId$",
       	"requestTime": "$TIMESTAMP$",
-      	"clientId": "mosip-signup-oauth-client",
+      	"clientId": "$MOSIP_SIGNUP_OAUTH_CLIENT_ID_VALUE$",
       	"scope": "openid",
       	"responseType": "decode",
       	"redirectUri": "$SIGNUPREDIRECTURI$",
@@ -264,8 +256,7 @@ SignupAuthorizeNegTC:
       output: '{
        	"errors": [
     {
-      "errorCode": "invalid_response_type",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_response_type"
     }
   ]
 }'
@@ -282,7 +273,7 @@ SignupAuthorizeNegTC:
       	"pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirectNegTC_AuthToken_Xsrf_STransId_uin_Otp_Valid_posNeg_Smoke_sid_pathFragmentCookie$",
       	"pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_transactionId$",
       	"requestTime": "$TIMESTAMP$",
-      	"clientId": "mosip-signup-oauth-client",
+      	"clientId": "$MOSIP_SIGNUP_OAUTH_CLIENT_ID_VALUE$",
       	"scope": "openid",
       	"responseType": "$REMOVE$",
       	"redirectUri": "$SIGNUPREDIRECTURI$",
@@ -294,8 +285,7 @@ SignupAuthorizeNegTC:
       output: '{
        	"errors": [
     {
-      "errorCode": "invalid_response_type",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_response_type"
     }
   ]
 }'
@@ -312,7 +302,7 @@ SignupAuthorizeNegTC:
       	"pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirectNegTC_AuthToken_Xsrf_STransId_uin_Otp_Valid_posNeg_Smoke_sid_pathFragmentCookie$",
       	"pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_transactionId$",
       	"requestTime": "$TIMESTAMP$",
-      	"clientId": "mosip-signup-oauth-client",
+      	"clientId": "$MOSIP_SIGNUP_OAUTH_CLIENT_ID_VALUE$",
       	"scope": "openid",
       	"responseType": "null",
       	"redirectUri": "$SIGNUPREDIRECTURI$",
@@ -324,8 +314,7 @@ SignupAuthorizeNegTC:
       output: '{
        	"errors": [
     {
-      "errorCode": "invalid_response_type",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_response_type"
     }
   ]
 }'
@@ -342,7 +331,7 @@ SignupAuthorizeNegTC:
       	"pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirectNegTC_AuthToken_Xsrf_STransId_uin_Otp_Valid_posNeg_Smoke_sid_pathFragmentCookie$",
       	"pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_transactionId$",
       	"requestTime": "$TIMESTAMP$",
-      	"clientId": "mosip-signup-oauth-client",
+      	"clientId": "$MOSIP_SIGNUP_OAUTH_CLIENT_ID_VALUE$",
       	"scope": "email",
       	"responseType": "code",
       	"redirectUri": "$SIGNUPREDIRECTURI$",
@@ -354,8 +343,7 @@ SignupAuthorizeNegTC:
       output: '{
        	"errors": [
     {
-      "errorCode": "invalid_scope",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_scope"
     }
   ]
 }'
@@ -372,7 +360,7 @@ SignupAuthorizeNegTC:
       	"pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirectNegTC_AuthToken_Xsrf_STransId_uin_Otp_Valid_posNeg_Smoke_sid_pathFragmentCookie$",
       	"pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_transactionId$",
       	"requestTime": "$TIMESTAMP$",
-      	"clientId": "mosip-signup-oauth-client",
+      	"clientId": "$MOSIP_SIGNUP_OAUTH_CLIENT_ID_VALUE$",
       	"scope": "openidemailaddressphone",
       	"responseType": "code",
       	"redirectUri": "$SIGNUPREDIRECTURI$",
@@ -384,8 +372,7 @@ SignupAuthorizeNegTC:
       output: '{
        	"errors": [
     {
-      "errorCode": "invalid_scope",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_scope"
     }
   ]
 }'
@@ -402,7 +389,7 @@ SignupAuthorizeNegTC:
       	"pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirectNegTC_AuthToken_Xsrf_STransId_uin_Otp_Valid_posNeg_Smoke_sid_pathFragmentCookie$",
       	"pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_transactionId$",
       	"requestTime": "$TIMESTAMP$",
-      	"clientId": "mosip-signup-oauth-client",
+      	"clientId": "$MOSIP_SIGNUP_OAUTH_CLIENT_ID_VALUE$",
       	"scope": " openid email address phone ",
       	"responseType": "code",
       	"redirectUri": "$SIGNUPREDIRECTURI$",
@@ -426,7 +413,7 @@ SignupAuthorizeNegTC:
       	"pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirectNegTC_AuthToken_Xsrf_STransId_uin_Otp_Valid_posNeg_Smoke_sid_pathFragmentCookie$",
       	"pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_transactionId$",
       	"requestTime": "$TIMESTAMP$",
-      	"clientId": "mosip-signup-oauth-client",
+      	"clientId": "$MOSIP_SIGNUP_OAUTH_CLIENT_ID_VALUE$",
       	"scope": "$REMOVE$",
       	"responseType": "code",
       	"redirectUri": "$SIGNUPREDIRECTURI$",
@@ -438,8 +425,7 @@ SignupAuthorizeNegTC:
       output: '{
        	"errors": [
     {
-      "errorCode": "invalid_scope",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_scope"
     }
   ]
 }'
@@ -456,7 +442,7 @@ SignupAuthorizeNegTC:
       	"pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirectNegTC_AuthToken_Xsrf_STransId_uin_Otp_Valid_posNeg_Smoke_sid_pathFragmentCookie$",
       	"pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_transactionId$",
       	"requestTime": "$TIMESTAMP$",
-      	"clientId": "mosip-signup-oauth-client",
+      	"clientId": "$MOSIP_SIGNUP_OAUTH_CLIENT_ID_VALUE$",
       	"scope": "",
       	"responseType": "code",
       	"redirectUri": "$SIGNUPREDIRECTURI$",
@@ -468,8 +454,7 @@ SignupAuthorizeNegTC:
       output: '{
        	"errors": [
     {
-      "errorCode": "invalid_scope",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_scope"
     }
   ]
 }'
@@ -486,7 +471,7 @@ SignupAuthorizeNegTC:
       	"pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirectNegTC_AuthToken_Xsrf_STransId_uin_Otp_Valid_posNeg_Smoke_sid_pathFragmentCookie$",
       	"pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_transactionId$",
       	"requestTime": "$TIMESTAMP$",
-      	"clientId": "mosip-signup-oauth-client",
+      	"clientId": "$MOSIP_SIGNUP_OAUTH_CLIENT_ID_VALUE$",
       	"scope": "openid",
       	"responseType": "code",
       	"redirectUri": "$SIGNUPREDIRECTURI$",
@@ -510,7 +495,7 @@ SignupAuthorizeNegTC:
       	"pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirectNegTC_AuthToken_Xsrf_STransId_uin_Otp_Valid_posNeg_Smoke_sid_pathFragmentCookie$",
       	"pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_transactionId$",
       	"requestTime": "$TIMESTAMP$",
-      	"clientId": "mosip-signup-oauth-client",
+      	"clientId": "$MOSIP_SIGNUP_OAUTH_CLIENT_ID_VALUE$",
       	"scope": "openid",
       	"responseType": "code",
       	"redirectUri": "$SIGNUPREDIRECTURI$",
@@ -534,7 +519,7 @@ SignupAuthorizeNegTC:
       	"pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirectNegTC_AuthToken_Xsrf_STransId_uin_Otp_Valid_posNeg_Smoke_sid_pathFragmentCookie$",
       	"pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_transactionId$",
       	"requestTime": "$TIMESTAMP$",
-      	"clientId": "mosip-signup-oauth-client",
+      	"clientId": "$MOSIP_SIGNUP_OAUTH_CLIENT_ID_VALUE$",
       	"scope": "openid",
       	"responseType": "code",
       	"redirectUri": "$SIGNUPREDIRECTURI$",
@@ -558,7 +543,7 @@ SignupAuthorizeNegTC:
       	"pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirectNegTC_AuthToken_Xsrf_STransId_uin_Otp_Valid_posNeg_Smoke_sid_pathFragmentCookie$",
       	"pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_transactionId$",
       	"requestTime": "$TIMESTAMP$",
-      	"clientId": "mosip-signup-oauth-client",
+      	"clientId": "$MOSIP_SIGNUP_OAUTH_CLIENT_ID_VALUE$",
       	"scope": "openid",
       	"responseType": "code",
       	"redirectUri": "$SIGNUPREDIRECTURI$",
@@ -582,7 +567,7 @@ SignupAuthorizeNegTC:
       	"pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirectNegTC_AuthToken_Xsrf_STransId_uin_Otp_Valid_posNeg_Smoke_sid_pathFragmentCookie$",
       	"pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_transactionId$",
       	"requestTime": "$TIMESTAMP$",
-      	"clientId": "mosip-signup-oauth-client",
+      	"clientId": "$MOSIP_SIGNUP_OAUTH_CLIENT_ID_VALUE$",
       	"scope": "openid",
       	"responseType": "code",
       	"redirectUri": "$SIGNUPREDIRECTURI$",
@@ -606,7 +591,7 @@ SignupAuthorizeNegTC:
       	"pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirectNegTC_AuthToken_Xsrf_STransId_uin_Otp_Valid_posNeg_Smoke_sid_pathFragmentCookie$",
       	"pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_transactionId$",
       	"requestTime": "$TIMESTAMP$",
-      	"clientId": "mosip-signup-oauth-client",
+      	"clientId": "$MOSIP_SIGNUP_OAUTH_CLIENT_ID_VALUE$",
       	"scope": "openid",
       	"responseType": "code",
       	"redirectUri": "$SIGNUPREDIRECTURI$",
@@ -630,7 +615,7 @@ SignupAuthorizeNegTC:
       	"pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirectNegTC_AuthToken_Xsrf_STransId_uin_Otp_Valid_posNeg_Smoke_sid_pathFragmentCookie$",
       	"pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_transactionId$",
       	"requestTime": "$TIMESTAMP$",
-      	"clientId": "mosip-signup-oauth-client",
+      	"clientId": "$MOSIP_SIGNUP_OAUTH_CLIENT_ID_VALUE$",
       	"scope": "openid",
       	"responseType": "code",
       	"redirectUri": "$SIGNUPREDIRECTURI$",
@@ -654,7 +639,7 @@ SignupAuthorizeNegTC:
       	"pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirectNegTC_AuthToken_Xsrf_STransId_uin_Otp_Valid_posNeg_Smoke_sid_pathFragmentCookie$",
       	"pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_transactionId$",
       	"requestTime": "$TIMESTAMP$",
-      	"clientId": "mosip-signup-oauth-client",
+      	"clientId": "$MOSIP_SIGNUP_OAUTH_CLIENT_ID_VALUE$",
       	"scope": "openid",
       	"responseType": "code",
       	"redirectUri": "$SIGNUPREDIRECTURI$",
@@ -678,7 +663,7 @@ SignupAuthorizeNegTC:
       	"pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirectNegTC_AuthToken_Xsrf_STransId_uin_Otp_Valid_posNeg_Smoke_sid_pathFragmentCookie$",
       	"pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_transactionId$",
       	"requestTime": "$TIMESTAMP$",
-      	"clientId": "mosip-signup-oauth-client",
+      	"clientId": "$MOSIP_SIGNUP_OAUTH_CLIENT_ID_VALUE$",
       	"scope": "openid",
       	"responseType": "code",
       	"redirectUri": "$SIGNUPREDIRECTURI$",
@@ -702,7 +687,7 @@ SignupAuthorizeNegTC:
       	"pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirectNegTC_AuthToken_Xsrf_STransId_uin_Otp_Valid_posNeg_Smoke_sid_pathFragmentCookie$",
       	"pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_transactionId$",
       	"requestTime": "$TIMESTAMP$",
-      	"clientId": "mosip-signup-oauth-client",
+      	"clientId": "$MOSIP_SIGNUP_OAUTH_CLIENT_ID_VALUE$",
       	"scope": "openid",
       	"responseType": "code",
       	"redirectUri": "$SIGNUPREDIRECTURI$",
@@ -726,7 +711,7 @@ SignupAuthorizeNegTC:
       	"pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirectNegTC_AuthToken_Xsrf_STransId_uin_Otp_Valid_posNeg_Smoke_sid_pathFragmentCookie$",
       	"pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_transactionId$",
       	"requestTime": "$TIMESTAMP$",
-      	"clientId": "mosip-signup-oauth-client",
+      	"clientId": "$MOSIP_SIGNUP_OAUTH_CLIENT_ID_VALUE$",
       	"scope": "openid",
       	"responseType": "code",
       	"redirectUri": "$SIGNUPREDIRECTURI$",
@@ -750,7 +735,7 @@ SignupAuthorizeNegTC:
       	"pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirectNegTC_AuthToken_Xsrf_STransId_uin_Otp_Valid_posNeg_Smoke_sid_pathFragmentCookie$",
       	"pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_transactionId$",
       	"requestTime": "",
-      	"clientId": "mosip-signup-oauth-client",
+      	"clientId": "$MOSIP_SIGNUP_OAUTH_CLIENT_ID_VALUE$",
       	"scope": "openid",
       	"responseType": "code",
       	"redirectUri": "$SIGNUPREDIRECTURI$",
@@ -762,8 +747,7 @@ SignupAuthorizeNegTC:
       output: '{
        	"errors": [
     {
-      "errorCode": "invalid_request",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_request"
     }
   ]
 }'
@@ -780,7 +764,7 @@ SignupAuthorizeNegTC:
       	"pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirectNegTC_AuthToken_Xsrf_STransId_uin_Otp_Valid_posNeg_Smoke_sid_pathFragmentCookie$",
       	"pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_transactionId$",
       	"requestTime": "2022-11-07T06:51:30.195Z",
-      	"clientId": "mosip-signup-oauth-client",
+      	"clientId": "$MOSIP_SIGNUP_OAUTH_CLIENT_ID_VALUE$",
       	"scope": "openid",
       	"responseType": "code",
       	"redirectUri": "$SIGNUPREDIRECTURI$",
@@ -792,8 +776,7 @@ SignupAuthorizeNegTC:
       output: '{
        	"errors": [
     {
-      "errorCode": "invalid_request",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_request"
     }
   ]
 }'
@@ -810,7 +793,7 @@ SignupAuthorizeNegTC:
       	"pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirectNegTC_AuthToken_Xsrf_STransId_uin_Otp_Valid_posNeg_Smoke_sid_pathFragmentCookie$",
       	"pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_transactionId$",
       	"requestTime": "2022-11-08T06:35:53",
-      	"clientId": "mosip-signup-oauth-client",
+      	"clientId": "$MOSIP_SIGNUP_OAUTH_CLIENT_ID_VALUE$",
       	"scope": "openid",
       	"responseType": "code",
       	"redirectUri": "$SIGNUPREDIRECTURI$",
@@ -822,8 +805,7 @@ SignupAuthorizeNegTC:
       output: '{
        	"errors": [
     {
-      "errorCode": "invalid_request",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_request"
     }
   ]
 }'
@@ -840,7 +822,7 @@ SignupAuthorizeNegTC:
       	"pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirectNegTC_AuthToken_Xsrf_STransId_uin_Otp_Valid_posNeg_Smoke_sid_pathFragmentCookie$",
       	"pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_transactionId$",
       	"requestTime": "$REMOVE$",
-      	"clientId": "mosip-signup-oauth-client",
+      	"clientId": "$MOSIP_SIGNUP_OAUTH_CLIENT_ID_VALUE$",
       	"scope": "openid",
       	"responseType": "code",
       	"redirectUri": "$SIGNUPREDIRECTURI$",
@@ -852,8 +834,7 @@ SignupAuthorizeNegTC:
       output: '{
        	"errors": [
     {
-      "errorCode": "invalid_request",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_request"
     }
   ]
 }'
@@ -870,7 +851,7 @@ SignupAuthorizeNegTC:
       	"pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirectNegTC_AuthToken_Xsrf_STransId_uin_Otp_Valid_posNeg_Smoke_sid_pathFragmentCookie$",
       	"pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_transactionId$",
       	"requestTime": "  ",
-      	"clientId": "mosip-signup-oauth-client",
+      	"clientId": "$MOSIP_SIGNUP_OAUTH_CLIENT_ID_VALUE$",
       	"scope": "openid",
       	"responseType": "code",
       	"redirectUri": "$SIGNUPREDIRECTURI$",
@@ -882,8 +863,7 @@ SignupAuthorizeNegTC:
       output: '{
        	"errors": [
     {
-      "errorCode": "invalid_request",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_request"
     }
   ]
 }'
@@ -900,7 +880,7 @@ SignupAuthorizeNegTC:
       	"pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirectNegTC_AuthToken_Xsrf_STransId_uin_Otp_Valid_posNeg_Smoke_sid_pathFragmentCookie$",
       	"pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_Neg_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_transactionId$",
       	"requestTime": "$TIMESTAMP$",
-      	"clientId": "mosip-signup-oauth-client",
+      	"clientId": "$MOSIP_SIGNUP_OAUTH_CLIENT_ID_VALUE$",
       	"scope": "openid",
       	"responseType": "code",
       	"redirectUri": "$SIGNUPREDIRECTURI$",

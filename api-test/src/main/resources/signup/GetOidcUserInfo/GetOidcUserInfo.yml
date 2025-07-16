@@ -1,6 +1,7 @@
 GetOidcUserInfo:
    Signup_ESignet_GetOidcUserInfo_uin_IdpAccessToken_StatusCode_L2_Valid_Smoke_sid:
       endPoint: /v1/esignet/oidc/userinfo
+      uniqueIdentifier: TC_ESignet_GetOidcUserInfo_01
       description: Getting OIDC user info with all valid details using UIN
       role: resident
       restMethod: get

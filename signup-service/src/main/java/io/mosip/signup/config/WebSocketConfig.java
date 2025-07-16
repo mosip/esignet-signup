@@ -8,6 +8,7 @@ package io.mosip.signup.config;
 import io.mosip.signup.services.WebSocketHandshakeHandler;
 import io.mosip.signup.util.WebSocketChannelInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
@@ -25,6 +26,12 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Autowired
     private WebSocketChannelInterceptor webSocketChannelInterceptor;
 
+    @Value("${mosip.signup.ws.inbound.message.size.mb:3}")
+    private int inboundMessageSizeInMB;
+
+    @Value("${mosip.signup.ws.outbound.message.size.mb:1}")
+    private int outboundMessageSizeInMB;
+
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
         registration.interceptors(webSocketChannelInterceptor);
@@ -41,5 +48,15 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         registry.addEndpoint("/ws")
                 .setAllowedOrigins("*")
                 .setHandshakeHandler(webSocketHandshakeHandler);
+    }
+
+    @Override
+    public void configureWebSocketTransport(org.springframework.web.socket.config.annotation.WebSocketTransportRegistration registration) {
+        // Set the maximum size for incoming text messages (decoded)
+        // Default is often 64KB. You'll need to increase this significantly.
+        // 1 MB = 1024 * 1024 bytes
+        registration.setMessageSizeLimit(inboundMessageSizeInMB * 1024 * 1024);
+        registration.setSendBufferSizeLimit(outboundMessageSizeInMB * 1024 * 1024);
+        //registration.setSendTimeLimit(20 * 1000);
     }
 }

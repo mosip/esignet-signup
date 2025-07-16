@@ -40,8 +40,7 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_transaction",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_transaction"
     }
   ]
 }'
@@ -65,8 +64,7 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_transaction",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_transaction"
     }
   ]
 }'
@@ -90,8 +88,7 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_request",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_request"
     }
   ]
 }'
@@ -115,8 +112,7 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_request",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_request"
     }
   ]
 }'
@@ -140,8 +136,7 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_request",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_request"
     }
   ]
 }'
@@ -165,8 +160,7 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_request",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_request"
     }
   ]
 }'
@@ -190,8 +184,7 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_request",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_request"
     }
   ]
 }'
@@ -216,8 +209,7 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_username",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_username"
     }
   ]
 }'
@@ -241,8 +233,7 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_username",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_username"
     }
   ]
 }'
@@ -266,8 +257,7 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_password",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_password"
     }
   ]
 }'
@@ -291,8 +281,7 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_consent",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_consent"
     }
   ]
 }'
@@ -317,8 +306,7 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_fullname",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_fullname"
     }
   ]
 }'
@@ -342,8 +330,7 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_username",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_username"
     }
   ]
 }'
@@ -367,8 +354,7 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_username",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_username"
     }
   ]
 }'
@@ -392,8 +378,7 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_username",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_username"
     }
   ]
 }'
@@ -417,8 +402,7 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_username",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_username"
     }
   ]
 }'
@@ -442,8 +426,7 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_username",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_username"
     }
   ]
 }'
@@ -467,8 +450,7 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_username",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_username"
     }
   ]
 }'
@@ -492,8 +474,7 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_username",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_username"
     }
   ]
 }'
@@ -518,8 +499,7 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_phone_number",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_phone_number"
     }
   ]
 }'
@@ -544,8 +524,7 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_phone_number",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_phone_number"
     }
   ]
 }'
@@ -569,8 +548,7 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_username",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_username"
     }
   ]
 }'
@@ -594,8 +572,7 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_username",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_username"
     }
   ]
 }'
@@ -619,8 +596,7 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_username",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_username"
     }
   ]
 }'
@@ -644,8 +620,7 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_username",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_username"
     }
   ]
 }'
@@ -669,8 +644,7 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_request",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_request"
     }
   ]
 }'
@@ -694,8 +668,7 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_password",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_password"
     }
   ]
 }'
@@ -719,8 +692,7 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_password",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_password"
     }
   ]
 }'
@@ -744,8 +716,7 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_password",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_password"
     }
   ]
 }'
@@ -769,8 +740,7 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_password",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_password"
     }
   ]
 }'
@@ -795,8 +765,7 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_consent",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_consent"
     }
   ]
 }'
@@ -821,8 +790,7 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_request",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_request"
     }
   ]
 }'
@@ -846,8 +814,7 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "consent_required",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "consent_required"
     }
   ]
 }'
@@ -871,8 +838,7 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_consent",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_consent"
     }
   ]
 }'
@@ -896,8 +862,7 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_consent",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_consent"
     }
   ]
 }'
@@ -921,8 +886,7 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_consent",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_consent"
     }
   ]
 }'
@@ -946,8 +910,7 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_consent",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_consent"
     }
   ]
 }'
@@ -971,8 +934,7 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_consent",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_consent"
     }
   ]
 }'
@@ -997,8 +959,7 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_request",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_request"
     }
   ]
 }'
@@ -1022,8 +983,7 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_fullname",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_fullname"
     }
   ]
 }'
@@ -1048,8 +1008,7 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_phone_number",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_phone_number"
     }
   ]
 }'
@@ -1074,8 +1033,7 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_preferredlang",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_preferredlang"
     }
   ]
 }'
@@ -1099,8 +1057,7 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_fullname",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_fullname"
     }
   ]
 }'
@@ -1125,8 +1082,7 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "identifier_mismatch",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "identifier_mismatch"
     }
   ]
 }'
@@ -1151,8 +1107,7 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "identifier_mismatch",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "identifier_mismatch"
     }
   ]
 }'
@@ -1177,8 +1132,7 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "identifier_mismatch",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "identifier_mismatch"
     }
   ]
 }'
@@ -1203,8 +1157,7 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_phone_number",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_phone_number"
     }
   ]
 }'
@@ -1229,8 +1182,7 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_phone_number",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_phone_number"
     }
   ]
 }'
@@ -1255,8 +1207,7 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_phone_number",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_phone_number"
     }
   ]
 }'
@@ -1281,8 +1232,7 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_phone_number",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_phone_number"
     }
   ]
 }'
@@ -1307,8 +1257,7 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_phone_number",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_phone_number"
     }
   ]
 }'
@@ -1333,8 +1282,7 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_phone_number",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_phone_number"
     }
   ]
 }'
@@ -1359,8 +1307,7 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_phone_number",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_phone_number"
     }
   ]
 }'
@@ -1385,8 +1332,7 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_phone_number",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_phone_number"
     }
   ]
 }'
@@ -1410,8 +1356,7 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_preferredlang",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_preferredlang"
     }
   ]
 }'
@@ -1435,8 +1380,7 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_preferredlang",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_preferredlang"
     }
   ]
 }'
@@ -1460,8 +1404,7 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_preferredlang",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_preferredlang"
     }
   ]
 }'
@@ -1485,8 +1428,7 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_preferredlang",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_preferredlang"
     }
   ]
 }'
@@ -1688,8 +1630,7 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_transaction",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "invalid_transaction"
     }
   ]
 }'

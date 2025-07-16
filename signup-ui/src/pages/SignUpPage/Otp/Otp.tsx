@@ -273,6 +273,7 @@ export const Otp = ({ methods, settings }: OtpProps) => {
               if (
                 [
                   "already-registered",
+                  "identifier_already_registered"
                 ].includes(errors[0].errorCode)
               ) {
                 setVerificationChallengeError(errors[0]);

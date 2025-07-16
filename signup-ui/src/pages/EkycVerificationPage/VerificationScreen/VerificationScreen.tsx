@@ -4,6 +4,8 @@ import { useTranslation } from "react-i18next";
 import Webcam from "react-webcam";
 
 import { PUBLISH_TOPIC, SUBSCRIBE_TOPIC, WS_URL } from "~constants/routes";
+import { Button } from "~components/ui/button";
+import { useL2Hash } from "~hooks/useL2Hash";
 import { convertToI18nData } from "~utils/conversion";
 import useStompClient from "~pages/shared/stompWs";
 import { WS_BASE_URL } from "~services/api.service";
@@ -47,6 +49,7 @@ export const VerificationScreen = ({
   const [colorVerification, setColorVerification] = useState<boolean>(false);
   const [bgColor, setBgColor] = useState<string | null>(null);
   const [imageFrames, setImageFrames] = useState<IdvFrames[]>([]);
+  const { state } = useL2Hash();
 
   // let imageFrames: IdvFrames[] = [];
   let identityVerification: IdentityVerificationState | null = {
@@ -91,10 +94,37 @@ export const VerificationScreen = ({
 
   const webSocketUrl = `${WS_BASE_URL}${WS_URL}?slotId=${slotId}`;
 
-  const { client, connected, publish, subscribe, unsubscribe } =
+  const { client, connected, publish, subscribe, unsubscribe, webSocketError } =
     useStompClient(webSocketUrl);
   // const slotId = "123456";
   // temporary button ref variable
+
+  useEffect(() => {
+    if (webSocketError) {
+      if (window.videoLocalStream) {
+        window.videoLocalStream.getTracks().forEach((track) => track.stop());
+      }
+      setAlertConfig({
+        icon: "fail",
+        header: t("web_socket_error.header"),
+        subHeader: t("web_socket_error.sub_header"),
+        footer: (
+          <Button
+            id="okay-button"
+            className="my-4 h-16 w-full"
+            type="button"
+            onClick={() => {
+              window.onbeforeunload = null;
+              window.location.replace(`${settings?.configs["esignet-consent.redirect-url"]}?key=${state}&error=web_socket_fail`);
+            }}
+          >
+            {t("web_socket_error.button")}
+          </Button>
+        ),
+      });
+    }
+  }, [webSocketError]);
+
   const buttonRef = useRef(null);
 
   const isError = false;
@@ -215,12 +245,6 @@ export const VerificationScreen = ({
     sendMessage(request);
   };
 
-  useEffect(() => {
-    // checking camera permission in every 1 second
-    const cameraCheckInterval = setInterval(cameraDeviceCheck, 1000);
-    return () => clearInterval(cameraCheckInterval);
-  }, []);
-
   const cameraDeviceCheck = () => {
     navigator.mediaDevices
       .getUserMedia({ video: true })
@@ -288,7 +312,6 @@ export const VerificationScreen = ({
 
   const redirectToConsent = () => {
     unsubscribe();
-    console.log("deactivate inside redirect to consent");
     client.deactivate();
     const consentUrl = settings?.configs["signin.redirect-url"].replace(
       "authorize",

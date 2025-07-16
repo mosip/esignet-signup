@@ -1,6 +1,7 @@
 WebSocketConnection:
    Signup_ESignet_WebSocketConnection_uin_all_Valid_Smoke:
       endPoint: /v1/signup/ws
+      uniqueIdentifier: TC_Signup_ESignet_WebSocketConnection_01
       description: Creating websocket connection and sending message to it
       role: resident
       checkErrorsOnlyInResponse: true
@@ -27,6 +28,7 @@ WebSocketConnection:
 }'
    Signup_ESignet_WebSocketConnection_uin_Incomplete:
       endPoint: /v1/signup/ws
+      uniqueIdentifier: TC_Signup_ESignet_WebSocketConnection_02
       description: Creating websocket connection and sending message to it
       role: resident
       checkErrorsOnlyInResponse: true

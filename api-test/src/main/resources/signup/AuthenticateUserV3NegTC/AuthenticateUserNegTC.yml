@@ -27,8 +27,6 @@ AuthenticateUserV3NegTC:
     }'
       output: '{
   "sendOtpResp":{
-        "maskedMobile": "$IGNORE$",
-        "sendOtpResTemplate":"signup/SendOtp/SendOtpResult",
-        "maskedEmail": "$IGNORE$"
+        "sendOtpResTemplate":"signup/SendOtp/SendOtpResult"
     }
 }'

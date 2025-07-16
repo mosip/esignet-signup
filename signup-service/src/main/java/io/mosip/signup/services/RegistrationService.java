@@ -85,6 +85,9 @@ public class RegistrationService {
     @Value("${mosip.signup.send-challenge.captcha-required:true}")
     private boolean captchaRequired;
 
+    @Value("${mosip.signup.individualid.postfix:}")
+    private String individualIdPostfix;
+
 
     /**
      * Generate and regenerate challenge based on the "regenerate" flag in the request.
@@ -302,7 +305,7 @@ public class RegistrationService {
 
     private void fetchAndCheckIdentity(RegistrationTransaction registrationTransaction,
                                        VerifyChallengeRequest verifyChallengeRequest) {
-        ProfileDto profileDto = profileRegistryPlugin.getProfile(verifyChallengeRequest.getIdentifier());
+        ProfileDto profileDto = profileRegistryPlugin.getProfile(verifyChallengeRequest.getIdentifier()+individualIdPostfix);
 
         switch (registrationTransaction.getPurpose()) {
             case REGISTRATION:

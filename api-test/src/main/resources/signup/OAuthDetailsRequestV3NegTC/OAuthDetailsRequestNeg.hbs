@@ -1,0 +1,70 @@
+{
+  "requestTime": "{{requestTime}}",
+  "request": {
+    "clientId": "{{clientId}}",
+    "scope": "{{scope}}",
+    "responseType": "{{responseType}}",
+    "redirectUri": "{{redirectUri}}",
+    "display": "{{display}}",
+    "prompt": "{{prompt}}",
+    "acrValues": "{{acrValues}}",
+    "claims": {
+      "userinfo": {
+        "name": {
+          "essential": {{#if userinfo_name_essential}}{{userinfo_name_essential}}{{else}}false{{/if}}
+        },
+        "phone_number": {
+          "essential": {{#if userinfo_phone_number_essential}}{{userinfo_phone_number_essential}}{{else}}false{{/if}}
+        },
+        "verified_claims": [
+          {
+            "verification": {
+              "trust_framework": {
+                "values": {{#if trust_framework}}"{{trust_framework}}"{{else}}null{{/if}}
+              },
+              "assurance-level": {
+                "value": {{#if assurance_level}}"{{assurance_level}}"{{else}}null{{/if}}
+              },
+              "time": {
+                "max_age": {{#if max_age}}"{{max_age}}"{{else}}null{{/if}}
+              },
+              "evidence": [
+                {
+                  "type": {
+                    "value": {{#if evidence_type}}"{{evidence_type}}"{{else}}null{{/if}}
+                  }
+                },
+                {
+                  "method": {
+                    "value": {{#if evidence_method}}"{{evidence_method}}"{{else}}null{{/if}}
+                  }
+                }
+              ]
+            },
+            "claims": {
+              "given_name": {
+                "values": {{#if given_name_values}}"{{given_name_values}}"{{else}}null{{/if}},
+                "purpose": {{#if purpose}}"{{purpose}}"{{else}}null{{/if}},
+                "essential": {{#if given_name_essential}}{{given_name_essential}}{{else}}false{{/if}}
+              },
+              "name": {
+                "value": {{#if name_value}}"{{name_value}}"{{else}}null{{/if}}
+              },
+              "phone_number": {
+                "value": {{#if phone_number}}"{{phone_number}}"{{else}}null{{/if}}
+              },
+              "email": {
+                "essential": {{#if email_essential}}{{email_essential}}{{else}}false{{/if}}
+              }
+            }
+          }
+        ]
+      },
+      "id_token": {}
+    },
+    "nonce": "{{nonce}}",
+    "state": "{{state}}",
+    "claimsLocales": "{{claimsLocales}}",
+    "uiLocales": "{{uiLocales}}"
+  }
+}
