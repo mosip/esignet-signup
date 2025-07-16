@@ -51,7 +51,7 @@
 			<organizationUrl>https://github.com/mosip/esignet-signup</organizationUrl>
 		</developer>
 	</developers>
-
+  
 	<repositories>
 		<repository>
 			<id>ossrh-central</id>
