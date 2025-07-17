@@ -6,13 +6,8 @@
 package io.mosip.signup.services;
 
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.signup.api.dto.*;
-import io.mosip.signup.api.exception.IdentityVerifierException;
-import io.mosip.signup.api.exception.ProfileException;
 import io.mosip.signup.api.spi.IdentityVerifierPlugin;
-import io.mosip.signup.api.spi.ProfileRegistryPlugin;
 import io.mosip.signup.api.util.ProcessFeedbackType;
 import io.mosip.signup.api.util.VerificationStatus;
 import io.mosip.signup.dto.IdentityVerificationRequest;
@@ -20,23 +15,17 @@ import io.mosip.signup.dto.IdentityVerificationTransaction;
 import io.mosip.signup.dto.IdentityVerifierDetail;
 import io.mosip.signup.exception.InvalidTransactionException;
 import io.mosip.signup.exception.SignUpException;
-import io.mosip.signup.helper.AuditHelper;
-import io.mosip.signup.util.AuditEvent;
-import io.mosip.signup.util.AuditEventType;
 import io.mosip.signup.util.ErrorConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.*;
 
-import static io.mosip.signup.api.util.ErrorConstants.IDENTITY_VERIFICATION_FAILED;
 import static io.mosip.signup.api.util.ErrorConstants.PLUGIN_NOT_FOUND;
-import static io.mosip.signup.util.ErrorConstants.VERIFIED_CLAIMS_FIELD_ID;
 import static io.mosip.signup.util.SignUpConstants.VALUE_SEPARATOR;
 
 @Slf4j
@@ -53,16 +42,7 @@ public class WebSocketHandler {
     private IdentityVerifierFactory identityVerifierFactory;
 
     @Autowired
-    private ProfileRegistryPlugin profileRegistryPlugin;
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    @Autowired
     private SimpMessagingTemplate simpMessagingTemplate;
-
-    @Autowired
-    AuditHelper auditHelper;
 
 
     public void processFrames(IdentityVerificationRequest identityVerificationRequest) {
@@ -121,7 +101,8 @@ public class WebSocketHandler {
         //END step marks verification process completion
         if(identityVerificationResult.getStep() != null && plugin.isEndStep(identityVerificationResult.getStep().getCode())) {
             log.info("Reached the end step for {}", identityVerificationResult.getId());
-            handleVerificationResult(plugin, identityVerificationResult, transaction);
+            transaction.setStatus(VerificationStatus.RESULTS_READY);
+            cacheUtilService.updateVerifiedSlotTransaction(identityVerificationResult.getId(), transaction);
         }
     }
 
@@ -145,48 +126,6 @@ public class WebSocketHandler {
                 .findFirst();
 
         result.ifPresent(identityVerifierDetail -> cacheUtilService.updateSlotExpireTime(username, getVerificationProcessExpireTimeInMillis(identityVerifierDetail)));
-    }
-
-    private void handleVerificationResult(IdentityVerifierPlugin plugin, IdentityVerificationResult identityVerificationResult,
-                                      IdentityVerificationTransaction transaction) {
-        try {
-            VerificationResult verificationResult = plugin.getVerificationResult(identityVerificationResult.getId());
-            log.debug("Verification result >> {}", verificationResult);
-
-            switch (verificationResult.getStatus()) {
-                case COMPLETED: //Proceed to update the profile
-                    if(CollectionUtils.isEmpty(verificationResult.getVerifiedClaims())) {
-                        log.warn("**** Empty verified_claims was returned on successful verification process ****");
-                        transaction.setStatus(VerificationStatus.COMPLETED);
-                        break;
-                    }
-
-                    ProfileDto profileDto = new ProfileDto();
-                    profileDto.setIndividualId(transaction.getIndividualId());
-                    profileDto.setActive(true);
-                    Map<String, Map<String, JsonNode>> verifiedData = new HashMap<>();
-                    verifiedData.put(VERIFIED_CLAIMS_FIELD_ID, verificationResult.getVerifiedClaims());
-                    profileDto.setIdentity(objectMapper.valueToTree(verifiedData));
-                    profileRegistryPlugin.updateProfile(transaction.getApplicationId(), profileDto);
-                    transaction.setStatus(VerificationStatus.UPDATE_PENDING);
-                    break;
-                default:
-                    transaction.setStatus(VerificationStatus.FAILED);
-                    transaction.setErrorCode(verificationResult.getErrorCode() == null ? IDENTITY_VERIFICATION_FAILED : verificationResult.getErrorCode());
-                    break;
-            }
-
-        } catch (IdentityVerifierException | ProfileException e) {
-            log.error("Failed to update profile", e);
-            transaction.setStatus(VerificationStatus.FAILED);
-            transaction.setErrorCode(e instanceof IdentityVerifierException ?
-                    ((IdentityVerifierException) e).getErrorCode() :
-                    ((ProfileException) e).getErrorCode());
-            auditHelper.sendAuditTransaction(AuditEvent.PROCESS_FRAMES, AuditEventType.ERROR,transaction.getSlotId(), null);
-        }
-        cacheUtilService.updateVerifiedSlotTransaction(identityVerificationResult.getId(), transaction);
-        cacheUtilService.updateVerificationStatus(transaction.getAccessTokenSubject(), transaction.getStatus().toString(),
-                transaction.getErrorCode());
     }
 
     private long getVerificationProcessExpireTimeInMillis(IdentityVerifierDetail identityVerifierDetail) {
