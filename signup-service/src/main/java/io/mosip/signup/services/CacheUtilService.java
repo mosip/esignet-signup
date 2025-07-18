@@ -242,6 +242,7 @@ public class CacheUtilService {
 
     public void updateVerifiedSlotTransaction(String slotId, IdentityVerificationTransaction transaction) {
         if(cacheManager.getCache(SignUpConstants.VERIFIED_SLOT) != null) {
+            log.debug("updateVerifiedSlotTransaction {} invoked with status: {}", slotId, transaction.getStatus());
             cacheManager.getCache(SignUpConstants.VERIFIED_SLOT).put(slotId, transaction);
         }
     }

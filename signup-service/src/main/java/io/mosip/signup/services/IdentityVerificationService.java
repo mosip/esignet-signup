@@ -280,6 +280,7 @@ public class IdentityVerificationService {
                 break;
             case RESULTS_READY:
                 processVerificationResult(slotId, transaction);
+                log.debug("Current status of the transaction {} is {}", slotId, transaction.getStatus());
                 cacheUtilService.updateVerifiedSlotTransaction(slotId, transaction);
                 break;
             case UPDATE_PENDING:
