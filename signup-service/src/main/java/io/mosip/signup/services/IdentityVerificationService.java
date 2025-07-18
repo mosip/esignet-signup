@@ -22,12 +22,21 @@ import com.nimbusds.openid.connect.sdk.OIDCTokenResponseParser;
 import com.nimbusds.openid.connect.sdk.UserInfoRequest;
 import com.nimbusds.openid.connect.sdk.UserInfoResponse;
 import io.mosip.esignet.core.util.IdentityProviderUtil;
+import io.mosip.signup.api.dto.IdentityVerificationResult;
+import io.mosip.signup.api.dto.ProfileDto;
+import io.mosip.signup.api.dto.VerificationResult;
 import io.mosip.signup.api.exception.IdentityVerifierException;
+import io.mosip.signup.api.exception.ProfileException;
+import io.mosip.signup.api.spi.IdentityVerifierPlugin;
 import io.mosip.signup.api.spi.ProfileRegistryPlugin;
 import io.mosip.signup.api.util.ProfileCreateUpdateStatus;
+import io.mosip.signup.api.util.VerificationStatus;
 import io.mosip.signup.dto.*;
 import io.mosip.signup.exception.InvalidTransactionException;
 import io.mosip.signup.exception.SignUpException;
+import io.mosip.signup.helper.AuditHelper;
+import io.mosip.signup.util.AuditEvent;
+import io.mosip.signup.util.AuditEventType;
 import io.mosip.signup.util.ErrorConstants;
 import io.mosip.signup.util.SignUpConstants;
 import lombok.extern.slf4j.Slf4j;
@@ -36,6 +45,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
@@ -52,13 +62,13 @@ import java.security.KeyStore;
 import java.security.PrivateKey;
 import java.security.interfaces.RSAPrivateKey;
 import java.text.ParseException;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
+import static io.mosip.signup.api.util.ErrorConstants.IDENTITY_VERIFICATION_FAILED;
+import static io.mosip.signup.api.util.ErrorConstants.PLUGIN_NOT_FOUND;
 import static io.mosip.signup.api.util.VerificationStatus.*;
+import static io.mosip.signup.util.ErrorConstants.VERIFIED_CLAIMS_FIELD_ID;
 import static io.mosip.signup.util.SignUpConstants.VALUE_SEPARATOR;
 import java.security.Key;
 
@@ -125,6 +135,12 @@ public class IdentityVerificationService {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Autowired
+    private IdentityVerifierFactory identityVerifierFactory;
+
+    @Autowired
+    AuditHelper auditHelper;
 
     /**
      * Fetches the access token using the authorization grant and gets userinfo from eSignet.
@@ -240,46 +256,85 @@ public class IdentityVerificationService {
      * @return
      */
     public IdentityVerificationStatusResponse getStatus(String transactionId) {
+        if(transactionId.split(VALUE_SEPARATOR).length <= 1)
+            throw new InvalidTransactionException();
+
+        final String slotId = transactionId.split(VALUE_SEPARATOR)[1];
+        IdentityVerificationTransaction transaction = cacheUtilService.getVerifiedSlotTransaction(slotId);
+        if(transaction == null)
+            throw new InvalidTransactionException();
+
+        log.info("Transaction retrieved: {}", transaction);
+
+        if(transaction.getStatus() == null) {
+            log.error("Transaction {} status is null, which is invalid!", transactionId);
+            throw new SignUpException(IDENTITY_VERIFICATION_FAILED);
+        }
+
+        IdentityVerificationStatusResponse identityVerificationStatusResponse = new IdentityVerificationStatusResponse();
+        log.info("Processing transaction with status: {}", transaction.getStatus());
+        switch (transaction.getStatus()) {
+            case COMPLETED:
+            case FAILED:
+                identityVerificationStatusResponse.setStatus(transaction.getStatus());
+                break;
+            case RESULTS_READY:
+                processVerificationResult(slotId, transaction);
+                cacheUtilService.updateVerifiedSlotTransaction(slotId, transaction);
+                break;
+            case UPDATE_PENDING:
+                ProfileCreateUpdateStatus updateStatus = profileRegistryPlugin.getProfileCreateUpdateStatus(transaction.getApplicationId());
+                transaction.setStatus(ProfileCreateUpdateStatus.getVerificationStatus(updateStatus));
+                cacheUtilService.updateVerifiedSlotTransaction(slotId, transaction);
+                break;
+        }
+
+        cacheUtilService.updateVerificationStatus(transaction.getAccessTokenSubject(), transaction.getStatus().toString(),
+                transaction.getErrorCode());
+        log.info("Setting final response status to: {}", transaction.getStatus());
+        identityVerificationStatusResponse.setStatus(transaction.getStatus());
+        return identityVerificationStatusResponse;
+    }
+
+    private void processVerificationResult(String slotId, IdentityVerificationTransaction transaction) {
         try {
-            if(transactionId.split(VALUE_SEPARATOR).length <= 1)
-                throw new InvalidTransactionException();
-
-            final String slotId = transactionId.split(VALUE_SEPARATOR)[1];
-            IdentityVerificationTransaction transaction = cacheUtilService.getVerifiedSlotTransaction(slotId);
-            if(transaction == null)
-                throw new InvalidTransactionException();
-
-            log.info("Transaction retrieved: {}", transaction);
-
-            ProfileCreateUpdateStatus registrationStatus;
-            if(transaction.getStatus() == null) {
-                registrationStatus = profileRegistryPlugin.getProfileCreateUpdateStatus(transaction.getApplicationId());
-                transaction.setStatus(ProfileCreateUpdateStatus.getVerificationStatus(registrationStatus));
-                log.debug("Updated transaction status from registry: {}", transaction.getStatus());
+            IdentityVerifierPlugin plugin = identityVerifierFactory.getIdentityVerifier(transaction.getVerifierId());
+            if(plugin == null) {
+                log.error("Unable to fetch verification result as verifiedId unknown {} IDV plugin!", transaction.getVerifierId());
+                throw new SignUpException(IDENTITY_VERIFICATION_FAILED);
             }
 
-            IdentityVerificationStatusResponse identityVerificationStatusResponse = new IdentityVerificationStatusResponse();
-            log.info("Processing transaction with status: {}", transaction.getStatus());
-            switch (transaction.getStatus()) {
-                case COMPLETED:
-                case FAILED:
-                    identityVerificationStatusResponse.setStatus(transaction.getStatus());
+            VerificationResult verificationResult = plugin.getVerificationResult(slotId);
+            log.debug("Verification result >> {}", verificationResult);
+
+            switch (verificationResult.getStatus()) {
+                case COMPLETED: //Proceed to update the profile
+                    if(CollectionUtils.isEmpty(verificationResult.getVerifiedClaims())) {
+                        log.warn("**** Empty verified_claims was returned on successful verification process ****");
+                        transaction.setStatus(VerificationStatus.COMPLETED);
+                        break;
+                    }
+
+                    ProfileDto profileDto = new ProfileDto();
+                    profileDto.setIndividualId(transaction.getIndividualId());
+                    profileDto.setActive(true);
+                    Map<String, Map<String, JsonNode>> verifiedData = new HashMap<>();
+                    verifiedData.put(VERIFIED_CLAIMS_FIELD_ID, verificationResult.getVerifiedClaims());
+                    profileDto.setIdentity(objectMapper.valueToTree(verifiedData));
+                    profileRegistryPlugin.updateProfile(transaction.getApplicationId(), profileDto);
+                    transaction.setStatus(VerificationStatus.UPDATE_PENDING);
                     break;
-                case UPDATE_PENDING:
-                    registrationStatus = profileRegistryPlugin.getProfileCreateUpdateStatus(transaction.getApplicationId());
-                    transaction.setStatus(ProfileCreateUpdateStatus.getVerificationStatus(registrationStatus));
-                    cacheUtilService.updateVerifiedSlotTransaction(slotId, transaction);
+                default:
+                    transaction.setStatus(VerificationStatus.FAILED);
+                    transaction.setErrorCode(verificationResult.getErrorCode() == null ? IDENTITY_VERIFICATION_FAILED : verificationResult.getErrorCode());
                     break;
             }
 
-            cacheUtilService.updateVerificationStatus(transaction.getAccessTokenSubject(), transaction.getStatus().toString(),
-                    transaction.getErrorCode());
-            log.info("Setting final response status to: {}", transaction.getStatus());
-            identityVerificationStatusResponse.setStatus(transaction.getStatus());
-            return identityVerificationStatusResponse;
         } catch (Exception e) {
-            log.error("Error while processing transactionId {}: {}", transactionId, e.getMessage(), e);
-            throw new SignUpException(ErrorConstants.INVALID_TRANSACTION);
+            log.error("Failed to fetch verification result", e);
+            transaction.setStatus(VerificationStatus.FAILED);
+            transaction.setErrorCode(IDENTITY_VERIFICATION_FAILED);
+            auditHelper.sendAuditTransaction(AuditEvent.PROCESS_FRAMES, AuditEventType.ERROR,transaction.getSlotId(), null);
         }
     }
 
