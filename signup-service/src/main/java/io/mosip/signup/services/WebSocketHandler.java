@@ -135,6 +135,7 @@ public class WebSocketHandler {
     }
 
     private void sendErrorFeedback(String slotId, String errorCode) {
+        log.error("Publishing error feedback : {}, with error : {}", slotId, errorCode);
         IDVProcessFeedback idvProcessFeedback = new IDVProcessFeedback();
         idvProcessFeedback.setType(ProcessFeedbackType.ERROR);
         idvProcessFeedback.setCode(errorCode);
