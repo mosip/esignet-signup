@@ -79,6 +79,20 @@ envVariables:
         name: keycloak-client-secrets
     enabled: true
 
+  - name: SPRING_CLOUD_CONFIG_SERVER_OVERRIDES_MOSIP_IDA_CLIENT_SECRET
+    valueFrom:
+      secretKeyRef:
+        key: mosip_ida_client_secret
+        name: keycloak-client-secrets
+    enabled: true
+
+  - name: SPRING_CLOUD_CONFIG_SERVER_OVERRIDES_MOSIP_AUTH_CLIENT_SECRET
+    valueFrom:
+      secretKeyRef:
+        key: mosip_auth_client_secret
+        name: keycloak-client-secrets
+    enabled: true
+
   - name: SPRING_CLOUD_CONFIG_SERVER_OVERRIDES_MOSIP_ADMIN_CLIENT_SECRET
     valueFrom:
       secretKeyRef:
