@@ -77,15 +77,18 @@ public class WebSocketController {
         String transactionId = username.split(VALUE_SEPARATOR)[0];
         String slotId = username.split(VALUE_SEPARATOR)[1];
 
+        IdentityVerificationTransaction transaction = cacheUtilService.getVerifiedSlotTransaction(slotId);
         log.error("WebSocket Disconnected for >> {} CloseStatus: {}", username, disconnectEvent.getCloseStatus());
-        if(!CloseStatus.NORMAL.equals(disconnectEvent.getCloseStatus())){
-            IdentityVerificationTransaction transaction = cacheUtilService.getVerifiedSlotTransaction(slotId);
+        log.debug("WebSocket Disconnected with status >> {} CloseStatus: {}", username, transaction.getStatus());
+        if(!CloseStatus.NORMAL.equals(disconnectEvent.getCloseStatus())) {
             log.debug("Transaction {} marked as failed", slotId);
             transaction.setStatus(VerificationStatus.FAILED);
             cacheUtilService.updateVerifiedSlotTransaction(slotId, transaction);
         }
         cacheUtilService.removeFromSlotConnected(username);
         cacheUtilService.evictSlotAllottedTransaction(transactionId,slotId);
+        transaction = cacheUtilService.getVerifiedSlotTransaction(slotId);
+        log.debug("WebSocket Disconnected with status >> {} CloseStatus: {}", username, transaction.getStatus());
         auditHelper.sendAuditTransaction(AuditEvent.ON_DISCONNECTED,AuditEventType.SUCCESS,transactionId,null);
     }
 }
