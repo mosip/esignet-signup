@@ -10,5 +10,6 @@ public enum VerificationStatus {
     COMPLETED,
     FAILED,
     STARTED,
+    RESULTS_READY,
     UPDATE_PENDING;
 }
