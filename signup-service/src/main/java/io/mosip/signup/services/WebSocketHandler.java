@@ -100,7 +100,8 @@ public class WebSocketHandler {
 
         //END step marks verification process completion
         if(identityVerificationResult.getStep() != null && plugin.isEndStep(identityVerificationResult.getStep().getCode())) {
-            log.info("Reached the end step for {}", identityVerificationResult.getId());
+            log.info("Reached the end step for slot {} with current status: {}", identityVerificationResult.getId(),
+                    transaction.getStatus());
             transaction.setStatus(VerificationStatus.RESULTS_READY);
             cacheUtilService.updateVerifiedSlotTransaction(identityVerificationResult.getId(), transaction);
         }

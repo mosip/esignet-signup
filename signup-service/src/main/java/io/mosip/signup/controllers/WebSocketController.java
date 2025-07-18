@@ -50,7 +50,7 @@ public class WebSocketController {
 
     @MessageMapping("/process-frame")
     public void processFrames(final @Payload IdentityVerificationRequest identityVerificationRequest) {
-        log.debug("Process frame invoked with payload : {}", identityVerificationRequest);
+        log.debug("Process frame invoked for slotId : {}", identityVerificationRequest.getSlotId());
         webSocketHandler.processFrames(identityVerificationRequest);
         auditHelper.sendAuditTransaction(AuditEvent.PROCESS_FRAMES, AuditEventType.SUCCESS, identityVerificationRequest.getSlotId(),null);
     }
@@ -77,11 +77,10 @@ public class WebSocketController {
         String transactionId = username.split(VALUE_SEPARATOR)[0];
         String slotId = username.split(VALUE_SEPARATOR)[1];
 
-        log.info("WebSocket Disconnected >>>>>> {}", username);
-        log.info("WebSocket Disconnected Status>>>>>> {}", disconnectEvent.getCloseStatus());
+        log.error("WebSocket Disconnected for >> {} CloseStatus: {}", username, disconnectEvent.getCloseStatus());
         if(!CloseStatus.NORMAL.equals(disconnectEvent.getCloseStatus())){
-            IdentityVerificationTransaction transaction =
-                    cacheUtilService.getVerifiedSlotTransaction(slotId);
+            IdentityVerificationTransaction transaction = cacheUtilService.getVerifiedSlotTransaction(slotId);
+            log.debug("Transaction {} marked as failed", slotId);
             transaction.setStatus(VerificationStatus.FAILED);
             cacheUtilService.updateVerifiedSlotTransaction(slotId, transaction);
         }
