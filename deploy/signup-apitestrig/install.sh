@@ -76,14 +76,14 @@ function installing_apitestrig() {
   fi
 
  valid_inputs=("yes" "no")
- esignetDeployed=""
+ eSignetDeployed=""
 
- while [[ ! " ${valid_inputs[@]} " =~ " ${esignetDeployed} " ]]; do
-     read -p "Is the esignet service deployed? (yes/no): " esignetDeployed
-     esignetDeployed=${esignetDeployed,,}  # Convert input to lowercase
+ while [[ ! " ${valid_inputs[@]} " =~ " ${eSignetDeployed} " ]]; do
+     read -p "Is the esignet service deployed? (yes/no): " eSignetDeployed
+     eSignetDeployed=${eSignetDeployed,,}  # Convert input to lowercase
  done
 
- if [[ $esignetDeployed == "yes" ]]; then
+ if [[ $eSignetDeployed == "yes" ]]; then
      echo "esignet service is deployed. Proceeding with installation..."
  else
      echo "esignet service is not deployed. hence will be skipping esignet related test-cases..."
@@ -170,7 +170,7 @@ function installing_apitestrig() {
     --set apitestrig.configmaps.apitestrig.ENV_TESTLEVEL="smokeAndRegression" \
     --set apitestrig.configmaps.apitestrig.reportExpirationInDays="$reportExpirationInDays" \
     --set apitestrig.configmaps.apitestrig.slack-webhook-url="$slackWebhookUrl" \
-    --set apitestrig.configmaps.apitestrig.esignetDeployed="$esignetDeployed" \
+    --set apitestrig.configmaps.apitestrig.eSignetDeployed="$eSignetDeployed" \
     --set apitestrig.configmaps.apitestrig.NS="$NS" \
     $ENABLE_INSECURE
 
