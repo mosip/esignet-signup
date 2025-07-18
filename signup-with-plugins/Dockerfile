@@ -1,4 +1,4 @@
-FROM mosipdev/signup-service:release-1.2.x-temp
+FROM mosipdev/signup-service:ES-2409
 
 ARG SOURCE
 ARG COMMIT_HASH
