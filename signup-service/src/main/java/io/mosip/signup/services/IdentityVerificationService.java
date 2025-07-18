@@ -22,11 +22,9 @@ import com.nimbusds.openid.connect.sdk.OIDCTokenResponseParser;
 import com.nimbusds.openid.connect.sdk.UserInfoRequest;
 import com.nimbusds.openid.connect.sdk.UserInfoResponse;
 import io.mosip.esignet.core.util.IdentityProviderUtil;
-import io.mosip.signup.api.dto.IdentityVerificationResult;
 import io.mosip.signup.api.dto.ProfileDto;
 import io.mosip.signup.api.dto.VerificationResult;
 import io.mosip.signup.api.exception.IdentityVerifierException;
-import io.mosip.signup.api.exception.ProfileException;
 import io.mosip.signup.api.spi.IdentityVerifierPlugin;
 import io.mosip.signup.api.spi.ProfileRegistryPlugin;
 import io.mosip.signup.api.util.ProfileCreateUpdateStatus;
@@ -66,7 +64,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static io.mosip.signup.api.util.ErrorConstants.IDENTITY_VERIFICATION_FAILED;
-import static io.mosip.signup.api.util.ErrorConstants.PLUGIN_NOT_FOUND;
 import static io.mosip.signup.api.util.VerificationStatus.*;
 import static io.mosip.signup.util.ErrorConstants.VERIFIED_CLAIMS_FIELD_ID;
 import static io.mosip.signup.util.SignUpConstants.VALUE_SEPARATOR;
@@ -264,15 +261,13 @@ public class IdentityVerificationService {
         if(transaction == null)
             throw new InvalidTransactionException();
 
-        log.info("Transaction retrieved: {}", transaction);
-
         if(transaction.getStatus() == null) {
             log.error("Transaction {} status is null, which is invalid!", transactionId);
             throw new SignUpException(IDENTITY_VERIFICATION_FAILED);
         }
 
         IdentityVerificationStatusResponse identityVerificationStatusResponse = new IdentityVerificationStatusResponse();
-        log.info("Processing transaction with status: {}", transaction.getStatus());
+        log.info("Processing transaction with status: {} with error : {}", transaction.getStatus(), transaction.getErrorCode());
         switch (transaction.getStatus()) {
             case COMPLETED:
             case FAILED:
@@ -280,7 +275,6 @@ public class IdentityVerificationService {
                 break;
             case RESULTS_READY:
                 processVerificationResult(slotId, transaction);
-                log.debug("Current status of the transaction {} is {}", slotId, transaction.getStatus());
                 cacheUtilService.updateVerifiedSlotTransaction(slotId, transaction);
                 break;
             case UPDATE_PENDING:
@@ -290,9 +284,9 @@ public class IdentityVerificationService {
                 break;
         }
 
+        log.debug("Current status of the transaction {} is {}", slotId, transaction.getStatus());
         cacheUtilService.updateVerificationStatus(transaction.getAccessTokenSubject(), transaction.getStatus().toString(),
                 transaction.getErrorCode());
-        log.info("Setting final response status to: {}", transaction.getStatus());
         identityVerificationStatusResponse.setStatus(transaction.getStatus());
         return identityVerificationStatusResponse;
     }
@@ -326,11 +320,12 @@ public class IdentityVerificationService {
                     transaction.setStatus(VerificationStatus.UPDATE_PENDING);
                     break;
                 default:
+                    log.error("Verification Result received with Failed status : {} and error : {}", verificationResult.getStatus(),
+                            verificationResult.getErrorCode());
                     transaction.setStatus(VerificationStatus.FAILED);
                     transaction.setErrorCode(verificationResult.getErrorCode() == null ? IDENTITY_VERIFICATION_FAILED : verificationResult.getErrorCode());
                     break;
             }
-
         } catch (Exception e) {
             log.error("Failed to fetch verification result", e);
             transaction.setStatus(VerificationStatus.FAILED);
