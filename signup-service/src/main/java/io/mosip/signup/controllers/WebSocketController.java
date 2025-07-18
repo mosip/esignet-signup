@@ -56,7 +56,7 @@ public class WebSocketController {
     }
 
     @KafkaListener(id = "${kafka.consumer.group-id}", autoStartup = "true",
-            topics = IdentityVerifierPlugin.RESULT_TOPIC)
+            topics = "${mosip.signup.identity.verification.result.kafka.topic:ANALYZE_FRAMES_RESULT}" )
     public void consumeStepResult(final IdentityVerificationResult identityVerificationResult) {
         webSocketHandler.processVerificationResult(identityVerificationResult);
         auditHelper.sendAuditTransaction(AuditEvent.CONSUME_STEP_RESULT,AuditEventType.SUCCESS,identityVerificationResult.getId(),null);
@@ -78,8 +78,8 @@ public class WebSocketController {
         String slotId = username.split(VALUE_SEPARATOR)[1];
 
         IdentityVerificationTransaction transaction = cacheUtilService.getVerifiedSlotTransaction(slotId);
-        log.error("WebSocket Disconnected for >> {} CloseStatus: {}", username, disconnectEvent.getCloseStatus());
-        log.debug("WebSocket Disconnected with status >> {} CloseStatus: {}", username, transaction.getStatus());
+        log.error("WebSocket Disconnected >> {} CloseStatus: {} transaction status:{}", username,
+                disconnectEvent.getCloseStatus(), transaction.getStatus());
         if(!CloseStatus.NORMAL.equals(disconnectEvent.getCloseStatus())) {
             log.debug("Transaction {} marked as failed", slotId);
             transaction.setStatus(VerificationStatus.FAILED);
@@ -87,8 +87,6 @@ public class WebSocketController {
         }
         cacheUtilService.removeFromSlotConnected(username);
         cacheUtilService.evictSlotAllottedTransaction(transactionId,slotId);
-        transaction = cacheUtilService.getVerifiedSlotTransaction(slotId);
-        log.debug("WebSocket Disconnected with status >> {} CloseStatus: {}", username, transaction.getStatus());
         auditHelper.sendAuditTransaction(AuditEvent.ON_DISCONNECTED,AuditEventType.SUCCESS,transactionId,null);
     }
 }
