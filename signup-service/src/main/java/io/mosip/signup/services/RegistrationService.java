@@ -288,15 +288,7 @@ public class RegistrationService {
         return registrationStatusResponse;
     }
 
-    public JsonNode getSchema(String transactionId) {
-        if (transactionId == null || transactionId.isEmpty())
-            throw new InvalidTransactionException();
-
-        RegistrationTransaction transaction = cacheUtilService.getChallengeVerifiedTransaction(transactionId);
-        if(transaction == null) {
-            log.error("Transaction {} : not found in ChallengeVerifiedTransaction cache", transactionId);
-            throw new InvalidTransactionException();
-        }
+    public JsonNode getSchema() {
         return profileRegistryPlugin.getUISpecification();
     }
 
