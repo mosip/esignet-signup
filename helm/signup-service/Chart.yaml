@@ -2,7 +2,7 @@ apiVersion: v2
 name: signup
 description: A Helm chart for DGTDept signup-service module
 type: application
-version: 1.2.0-develop
+version: 1.2.0
 appVersion: ""
 dependencies:
   - name: common

@@ -18,13 +18,7 @@ function installing_apitestrig() {
   kubectl label ns $NS istio-injection=disabled --overwrite
   helm repo update
 
-  echo Copy Configmaps
-  $COPY_UTIL configmap keycloak-host keycloak $NS
-  $COPY_UTIL configmap artifactory-share artifactory $NS
-  $COPY_UTIL configmap config-server-share config-server $NS
-
   echo echo Copy Secrtes
-  $COPY_UTIL secret keycloak-client-secrets keycloak $NS
   $COPY_UTIL secret postgres-postgresql postgres $NS
 
   echo "Delete s3, db, & apitestrig configmap if exists"
@@ -32,9 +26,9 @@ function installing_apitestrig() {
   kubectl -n $NS delete --ignore-not-found=true configmap db
   kubectl -n $NS delete --ignore-not-found=true configmap apitestrig
 
-  DB_HOST=$( kubectl -n signup get cm esignet-global -o json  |jq -r '.data."mosip-api-internal-host"' )
-  API_INTERNAL_HOST=$( kubectl -n signup get cm esignet-global -o json  |jq -r '.data."mosip-api-internal-host"' )
-  ENV_USER=$( kubectl -n signup get cm esignet-global -o json |jq -r '.data."mosip-api-internal-host"' | awk -F '.' '/api-internal/{print $1"."$2}')
+  DB_HOST=$( kubectl -n esignet get cm esignet-global -o json  |jq -r '.data."mosip-api-internal-host"' )
+  API_INTERNAL_HOST=$( kubectl -n esignet get cm esignet-global -o json  |jq -r '.data."mosip-api-internal-host"' )
+  ENV_USER=$( kubectl -n esignet get cm esignet-global -o json |jq -r '.data."mosip-api-internal-host"' | awk -F '.' '/api-internal/{print $1"."$2}')
 
   read -p "Please enter the time(hr) to run the cronjob every day (time: 0-23) : " time
   if [ -z "$time" ]; then
@@ -85,14 +79,14 @@ function installing_apitestrig() {
  eSignetDeployed=""
 
  while [[ ! " ${valid_inputs[@]} " =~ " ${eSignetDeployed} " ]]; do
-     read -p "Is the eSignet service deployed? (yes/no): " eSignetDeployed
+     read -p "Is the esignet service deployed? (yes/no): " eSignetDeployed
      eSignetDeployed=${eSignetDeployed,,}  # Convert input to lowercase
  done
 
  if [[ $eSignetDeployed == "yes" ]]; then
-     echo "eSignet service is deployed. Proceeding with installation..."
+     echo "esignet service is deployed. Proceeding with installation..."
  else
-     echo "eSignet service is not deployed. hence will be skipping esignet related test-cases..."
+     echo "esignet service is not deployed. hence will be skipping esignet related test-cases..."
  fi
   read -p "Is values.yaml for apitestrig chart set correctly as part of pre-requisites? (Y/n) : " yn;
   if [[ $yn = "Y" ]] || [[ $yn = "y" ]] ; then
@@ -125,6 +119,21 @@ function installing_apitestrig() {
         push_reports_to_s3="no"
         read -p "Since S3 details are not available, do you want to use NFS directory mount for storing reports? (y/n) : " answer
         if [[ $answer == "Y" ]] || [[ $answer == "y" ]]; then
+            # Storage class selection first
+          echo "Please select the storage class for NFS:"
+          echo "1. nfs-client"
+          echo "2. nfs-csi"
+
+          read -p "Enter your choice (1 or 2): " storage_choice
+
+          if [[ "$storage_choice" == "1" ]]; then
+            storage_class="nfs-client"
+          elif [[ "$storage_choice" == "2" ]]; then
+            storage_class="nfs-csi"
+          else
+            echo "Invalid choice. Exiting"
+            exit 1;
+          fi
           read -p "Please provide NFS Server IP: " nfs_server
           if [[ -z $nfs_server ]]; then
             echo "NFS server not provided; EXITING."
@@ -135,7 +144,7 @@ function installing_apitestrig() {
             echo "NFS Path not provided; EXITING."
             exit 1;
           fi
-          NFS_OPTION="--set apitestrig.volumes.reports.nfs.server=$nfs_server --set apitestrig.volumes.reports.nfs.path=$nfs_path"
+          NFS_OPTION="--set apitestrig.volumes.reports.storageClass=$storage_class --set apitestrig.volumes.reports.nfs.server=$nfs_server --set apitestrig.volumes.reports.nfs.path=$nfs_path"
           config_complete=true
         else
           echo "Please rerun the script with either S3 or NFS server details."
@@ -167,7 +176,7 @@ function installing_apitestrig() {
 
     echo Installed signup apitestrig.
     return 0
-  fi
+  fi  
 }
 
 # set commands for error handling.

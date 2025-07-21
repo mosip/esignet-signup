@@ -20,7 +20,7 @@ done
 function installing_signup-ui() {
 
   while true; do
-      read -p "Do you want to continue installing esignet services? (y/n): "
+      read -p "Do you want to continue installing signup-ui service? (y/n): "
       if [ "$ans" = "Y" ] || [ "$ans" = "y" ]; then
           break
       elif [ "$ans" = "N" ] || [ "$ans" = "n" ]; then
@@ -31,7 +31,7 @@ function installing_signup-ui() {
   done
 
   NS=signup
-  CHART_VERSION=1.2.0-develop
+  CHART_VERSION=1.2.0
 
   echo Create $NS namespace
   kubectl create ns $NS || true
