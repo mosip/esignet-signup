@@ -5,8 +5,8 @@
  */
 package io.mosip.signup.config;
 
-import io.mosip.signup.services.WebSocketHandshakeHandler;
-import io.mosip.signup.util.WebSocketChannelInterceptor;
+import io.mosip.signup.ws.WebSocketHandshakeHandler;
+import io.mosip.signup.ws.WebSocketChannelInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -32,6 +32,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Value("${mosip.signup.ws.outbound.message.size.mb:1}")
     private int outboundMessageSizeInMB;
 
+    @Value("${mosip.signup.ws.allowed.origin:*}")
+    private String allowedOrigin;
+
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
         registration.interceptors(webSocketChannelInterceptor);
@@ -46,7 +49,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         //By default, only same origin requests are allowed, should take the origin from properties
         registry.addEndpoint("/ws")
-                .setAllowedOrigins("*")
+                .setAllowedOrigins(allowedOrigin)
                 .setHandshakeHandler(webSocketHandshakeHandler);
     }
 
