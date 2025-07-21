@@ -3,7 +3,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-package io.mosip.signup.services;
+package io.mosip.signup.ws;
 
 
 import io.mosip.signup.api.dto.*;
@@ -15,6 +15,8 @@ import io.mosip.signup.dto.IdentityVerificationTransaction;
 import io.mosip.signup.dto.IdentityVerifierDetail;
 import io.mosip.signup.exception.InvalidTransactionException;
 import io.mosip.signup.exception.SignUpException;
+import io.mosip.signup.services.CacheUtilService;
+import io.mosip.signup.services.IdentityVerifierFactory;
 import io.mosip.signup.util.ErrorConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

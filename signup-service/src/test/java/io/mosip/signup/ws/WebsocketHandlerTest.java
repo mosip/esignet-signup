@@ -1,10 +1,8 @@
-package io.mosip.signup.services;
+package io.mosip.signup.ws;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.signup.api.dto.*;
-import io.mosip.signup.api.exception.IdentityVerifierException;
-import io.mosip.signup.api.exception.ProfileException;
 import io.mosip.signup.api.spi.IdentityVerifierPlugin;
 import io.mosip.signup.api.spi.ProfileRegistryPlugin;
 import io.mosip.signup.api.util.VerificationStatus;
@@ -12,8 +10,8 @@ import io.mosip.signup.dto.IdentityVerificationRequest;
 import io.mosip.signup.dto.IdentityVerificationTransaction;
 import io.mosip.signup.exception.SignUpException;
 import io.mosip.signup.helper.AuditHelper;
-import io.mosip.signup.util.AuditEvent;
-import io.mosip.signup.util.AuditEventType;
+import io.mosip.signup.services.CacheUtilService;
+import io.mosip.signup.services.IdentityVerifierFactory;
 import io.mosip.signup.util.ErrorConstants;
 import org.junit.Assert;
 import org.junit.Before;
@@ -24,15 +22,11 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
-import static io.mosip.signup.api.util.ErrorConstants.IDENTITY_VERIFICATION_FAILED;
-import static io.mosip.signup.api.util.ErrorConstants.PLUGIN_NOT_FOUND;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 @RunWith(SpringRunner.class)
