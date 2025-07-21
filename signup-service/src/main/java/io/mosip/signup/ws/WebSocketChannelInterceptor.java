@@ -3,9 +3,10 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-package io.mosip.signup.util;
+package io.mosip.signup.ws;
 
 import io.mosip.signup.services.CacheUtilService;
+import io.mosip.signup.util.ErrorConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
