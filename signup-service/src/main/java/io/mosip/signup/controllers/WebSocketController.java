@@ -6,17 +6,16 @@
 package io.mosip.signup.controllers;
 
 import io.mosip.signup.api.dto.*;
-import io.mosip.signup.api.exception.IdentityVerifierException;
-import io.mosip.signup.api.spi.IdentityVerifierPlugin;
 import io.mosip.signup.api.util.VerificationStatus;
 import io.mosip.signup.dto.IdentityVerificationRequest;
 import io.mosip.signup.helper.AuditHelper;
 import io.mosip.signup.dto.IdentityVerificationTransaction;
 import io.mosip.signup.services.CacheUtilService;
-import io.mosip.signup.services.WebSocketHandler;
+import io.mosip.signup.ws.WebSocketHandler;
 import io.mosip.signup.util.AuditEvent;
 import io.mosip.signup.util.AuditEventType;
-import io.mosip.signup.util.ErrorConstants;
+import io.mosip.signup.ws.WebSocketChannelInterceptor;
+import io.mosip.signup.ws.WebSocketHandshakeHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
@@ -24,16 +23,69 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.StringUtils;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
-import javax.validation.Valid;
 import java.util.Objects;
 
 import static io.mosip.signup.util.SignUpConstants.VALUE_SEPARATOR;
 
+
+/**
+ * This class describes the architecture and behavior when integrating Apache Kafka
+ * as the backend message bus for a Spring STOMP over WebSocket application.
+ *
+ * <p>Since Kafka does not natively understand the STOMP protocol, the {@code MessageBrokerRegistry}
+ * cannot be configured with {@code enableBrokerChannel().setRelayHost()} to point directly to Kafka.
+ * Instead, this {@code WebSocketController} acts as a bridge,
+ * performing a dual role:</p>
+ *
+ * <ul>
+ * <li><b>A STOMP endpoint for clients:</b> It handles the WebSocket and STOMP handshake
+ * directly with the browser/client.</li>
+ * <li><b>A Kafka producer/consumer:</b> It interacts with Kafka topics to send and receive messages.</li>
+ * </ul>
+ *
+ * <h3>Architectural Flow:</h3>
+ *
+ * <h4>Client &rarr; Spring App (WebSocket/STOMP) &rarr; Kafka:</h4>
+ * <ol>
+ * <li>A client sends a STOMP message (e.g., via {@code client.send("v1/signup/ws/process-frame", {...})}).</li>
+ * <li>A Spring {@code @MessageMapping} controller method receives and processes this message.</li>
+ * <li>Inside the {@code @MessageMapping} method, the message is validated, the frame is processed,
+ * and then the analysis result is published to a Kafka topic {@code ANALYZE_FRAMES_RESULT}.</li>
+ * </ol>
+ *
+ * <h4>Kafka &rarr; Spring App &rarr; Client (WebSocket/STOMP):</h4>
+ * <ol>
+ * <li>A Kafka Consumer listener (configured with {@code @KafkaListener}) subscribes to the
+ * {@code ANALYZE_FRAMES_RESULT} Kafka topic.</li>
+ * <li>When the Kafka Consumer receives a message from Kafka, the application uses
+ * {@code SimpMessagingTemplate.convertAndSend()} to push that message to the relevant STOMP destination
+ * for the WebSocket clients.</li>
+ * </ol>
+ *
+ * <p>As Kafka isn't the direct STOMP broker, the actual message routing for {@code SimpMessagingTemplate}
+ * is handled by this controller that bridges Kafka and STOMP.</p>
+ *
+ * <p>For instance, the statement
+ * {@code simpMessagingTemplate.convertAndSend("/topic/slotId", identityVerificationResult);}
+ * converts a Kafka message payload and sends it to a STOMP destination for specific subscribers,
+ * identified by the {@code slotId}.</p>
+ *
+ * <p>Additionally, this component listens to:</p>
+ * <ul>
+ * <li><b>OnConnected event:</b> To manage and track the verification process timeline for new connections.</li>
+ * <li><b>OnDisconnected event:</b> To handle cleanup, such as removing allotted slots and updating
+ * transaction statuses in cases of abnormal client disconnections.</li>
+ * </ul>
+ *
+ * {@link WebSocketHandler}
+ * {@link io.mosip.signup.config.WebSocketConfig}
+ * {@link WebSocketChannelInterceptor}
+ * {@link WebSocketHandshakeHandler}
+ */
 @Slf4j
 @Controller
 public class WebSocketController {
@@ -56,7 +108,7 @@ public class WebSocketController {
     }
 
     @KafkaListener(id = "${kafka.consumer.group-id}", autoStartup = "true",
-            topics = IdentityVerifierPlugin.RESULT_TOPIC)
+            topics = "${mosip.signup.identity.verification.result.kafka.topic:ANALYZE_FRAMES_RESULT}" )
     public void consumeStepResult(final IdentityVerificationResult identityVerificationResult) {
         webSocketHandler.processVerificationResult(identityVerificationResult);
         auditHelper.sendAuditTransaction(AuditEvent.CONSUME_STEP_RESULT,AuditEventType.SUCCESS,identityVerificationResult.getId(),null);
@@ -77,9 +129,10 @@ public class WebSocketController {
         String transactionId = username.split(VALUE_SEPARATOR)[0];
         String slotId = username.split(VALUE_SEPARATOR)[1];
 
-        log.error("WebSocket Disconnected for >> {} CloseStatus: {}", username, disconnectEvent.getCloseStatus());
-        if(!CloseStatus.NORMAL.equals(disconnectEvent.getCloseStatus())){
-            IdentityVerificationTransaction transaction = cacheUtilService.getVerifiedSlotTransaction(slotId);
+        IdentityVerificationTransaction transaction = cacheUtilService.getVerifiedSlotTransaction(slotId);
+        log.error("WebSocket Disconnected >> {} CloseStatus: {} transaction status:{}", username,
+                disconnectEvent.getCloseStatus(), transaction.getStatus());
+        if(!CloseStatus.NORMAL.equals(disconnectEvent.getCloseStatus())) {
             log.debug("Transaction {} marked as failed", slotId);
             transaction.setStatus(VerificationStatus.FAILED);
             cacheUtilService.updateVerifiedSlotTransaction(slotId, transaction);

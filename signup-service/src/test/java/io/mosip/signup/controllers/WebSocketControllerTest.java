@@ -9,7 +9,7 @@ import io.mosip.signup.dto.IdentityVerificationTransaction;
 import io.mosip.signup.exception.SignUpException;
 import io.mosip.signup.helper.AuditHelper;
 import io.mosip.signup.services.CacheUtilService;
-import io.mosip.signup.services.WebSocketHandler;
+import io.mosip.signup.ws.WebSocketHandler;
 import io.mosip.signup.util.AuditEvent;
 import io.mosip.signup.util.AuditEventType;
 import org.junit.Assert;
