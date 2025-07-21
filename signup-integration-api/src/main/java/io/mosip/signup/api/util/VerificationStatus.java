@@ -5,10 +5,16 @@
  */
 package io.mosip.signup.api.util;
 
+
+/**
+ * Status transition in the IdentityVerification Transaction
+ * STARTED -> RESULTS_READY -> UPDATE_PENDING -> COMPLETED/FAILED
+ */
 public enum VerificationStatus {
 
     COMPLETED,
     FAILED,
     STARTED,
+    RESULTS_READY,
     UPDATE_PENDING;
 }

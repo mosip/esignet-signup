@@ -3,10 +3,11 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-package io.mosip.signup.services;
+package io.mosip.signup.ws;
 
 import io.mosip.signup.dto.IdentityVerificationTransaction;
 import io.mosip.signup.helper.AuditHelper;
+import io.mosip.signup.services.CacheUtilService;
 import io.mosip.signup.util.AuditEvent;
 import io.mosip.signup.util.AuditEventType;
 import io.mosip.signup.util.ErrorConstants;
@@ -44,7 +45,6 @@ public class WebSocketHandshakeHandler extends DefaultHandshakeHandler {
     @Override
     protected Principal determineUser(ServerHttpRequest request, WebSocketHandler wsHandler,
                                       Map<String, Object> attributes) {
-
         log.debug("Started to determine user aka slotId with headers : {}", request.getHeaders());
         HttpHeaders headers = request.getHeaders();
 
@@ -65,12 +65,12 @@ public class WebSocketHandshakeHandler extends DefaultHandshakeHandler {
             throw new HandshakeFailureException(ErrorConstants.INVALID_TRANSACTION);
         }
         String cookieValue = cookieParts[1].trim();
-        log.info("cookie  transactionId; {}", cookieValue);
+        log.debug("HandshakeHandler cookie: {}", cookieValue);
         String transactionId = cookieValue.split(VALUE_SEPARATOR)[0].trim();
         IdentityVerificationTransaction transaction = cacheUtilService.getSlotAllottedTransaction(transactionId);
 
         String queryParam = request.getURI().getQuery();
-        log.info("*** queryParam >>> {} with transaction: {}", queryParam, transaction);
+        log.debug("HandshakeHandler queryParam >>> {} with transaction: {}", queryParam, transactionId);
         if(queryParam == null || queryParam.split(SLOTID_QUERY_PARAM).length <= 1 || transaction == null ||
                 cookieValue.split(VALUE_SEPARATOR).length <= 1 ||
                 !transaction.getSlotId().equals(queryParam.split(SLOTID_QUERY_PARAM)[1]) ||
