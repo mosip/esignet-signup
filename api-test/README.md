@@ -71,7 +71,7 @@ These configurations need to be added as part of the eSignet service deployment 
 - **MOSIP_ESIGNET_SEND_OTP_ATTEMPTS**: 300
 - **MOSIP_ESIGNET_AUTH_CHALLENGE_BIO_MAX_LENGTH**: 200000
 - **MOSIP_ESIGNET_PREAUTHENTICATION_EXPIRE_IN_SECS**: 600
-- **MOSIP_ESIGNET_CAPTCHA_REQUIRED**: (empty)
+- **MOSIP_ESIGNET_CAPTCHA_REQUIRED**: false
 
 These configurations need to be added as part of the Signup service deployment to support the API Test Rig:
 
@@ -134,7 +134,7 @@ To execute the tests using Jar, use the following steps:
 
 2. Run the automation test suite JAR file:
    ```
-   java -jar -Dmodules=signup -Denv.user=api-internal.<env_name> -Denv.endpoint=<base_env> -Denv.testLevel=smokeAndRegression -jar apitest-signup-1.2.0-SNAPSHOT-jar-with-dependencies.jar
+   java -jar -Dmodules=signup -Denv.user=api-internal.<env_name> -Denv.endpoint=<base_env> -Denv.testLevel=smokeAndRegression -jar apitest-signup-1.2.1-SNAPSHOT-jar-with-dependencies.jar
    ```
    
 # Using Eclipse IDE
