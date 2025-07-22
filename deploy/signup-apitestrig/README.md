@@ -41,6 +41,7 @@ chmod 777 /srv/nfs/mosip/<sandbox>/apitestrig
 * By default, apitestrig will execute with `smokeAndRegression`. <br>
   If you want to run apitestrig with only `smoke`. <br>
   You have to update the `apitestrig` configmap and rerun the specific apitestrig job.
+* For config properties [eSignet signup Apitestrig Readme](https://github.com/mosip/esignet-signup/blob/release-1.2.x/api-test/README.md) to be followed during deployment.
 
 #### CLI
 * Download Kubernetes cluster `kubeconfig` file from `rancher dashboard` to your local.
