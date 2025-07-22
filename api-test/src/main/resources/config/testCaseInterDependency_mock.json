@@ -1,0 +1,1160 @@
+{
+    "TC_ESignet_OAuthDetailsRequestV3Neg_14": ["TC_ESignet_OIDCClientV2_01"],
+    "TC_ESignet_InitiateIdVerificationNegTC_19": ["TC_ESignet_SignupAuthorizeCodeNegTC_11"],
+    "TC_ESignet_OAuthDetailsRequestV3Neg_13": ["TC_ESignet_OIDCClientV2_01"],
+    "TC_ESignet_InitiateIdVerificationNegTC_18": ["TC_ESignet_SignupAuthorizeCodeNegTC_11"],
+    "TC_ESignet_OAuthDetailsRequestV3Neg_16": ["TC_ESignet_OIDCClientV2_01"],
+    "TC_ESignet_OAuthDetailsRequestV3Neg_15": ["TC_ESignet_OIDCClientV2_01"],
+    "TC_ESignet_InitiateIdVerificationNegTC_15": ["TC_ESignet_SignupAuthorizeCodeNegTC_11"],
+    "TC_ESignet_InitiateIdVerificationNegTC_14": ["TC_ESignet_SignupAuthorizeCodeNegTC_11"],
+    "TC_ESignet_OAuthDetailsRequestV3Neg_12": ["TC_ESignet_OIDCClientV2_01"],
+    "TC_ESignet_InitiateIdVerificationNegTC_17": ["TC_ESignet_SignupAuthorizeCodeNegTC_11"],
+    "TC_ESignet_OAuthDetailsRequestV3Neg_11": ["TC_ESignet_OIDCClientV2_01"],
+    "TC_ESignet_InitiateIdVerificationNegTC_16": ["TC_ESignet_SignupAuthorizeCodeNegTC_11"],
+    "TC_ESignet_OAuthDetailsRequestV3Neg_18": ["TC_ESignet_OIDCClientV2_01"],
+    "TC_ESignet_SignupAuthorizeNegTC_33": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_OAuthDetailsRequestV3Neg_17": ["TC_ESignet_OIDCClientV2_01"],
+    "TC_ESignet_SignupAuthorizeNegTC_32": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_SignupAuthorizeNegTC_31": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_OAuthDetailsRequestV3Neg_19": ["TC_ESignet_OIDCClientV2_01"],
+    "TC_ESignet_SignupAuthorizeNegTC_30": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_GetIdVerifier_01": ["TC_ESignet_InitiateIdVerification_01"],
+    "TC_ESignet_InitiateIdVerificationNegTC_11": ["TC_ESignet_SignupAuthorizeCodeNegTC_11"],
+    "TC_ESignet_InitiateIdVerificationNegTC_10": ["TC_ESignet_SignupAuthorizeCodeNegTC_11"],
+    "TC_ESignet_InitiateIdVerificationNegTC_13": ["TC_ESignet_SignupAuthorizeCodeNegTC_11"],
+    "TC_ESignet_InitiateIdVerificationNegTC_12": ["TC_ESignet_SignupAuthorizeCodeNegTC_11"],
+    "TC_ESignet_OAuthDetailsRequestV3Neg_25": ["TC_ESignet_OIDCClientV2_01"],
+    "TC_ESignet_InitiateIdVerificationNegTC_08": ["TC_ESignet_SignupAuthorizeCodeNegTC_11"],
+    "TC_ESignet_OAuthDetailsRequestV3Neg_24": ["TC_ESignet_OIDCClientV2_01"],
+    "TC_ESignet_InitiateIdVerificationNegTC_07": ["TC_ESignet_SignupAuthorizeCodeNegTC_11"],
+    "TC_ESignet_OAuthDetailsRequestV3Neg_27": ["TC_ESignet_OIDCClientV2_01"],
+    "TC_ESignet_OAuthDetailsRequestV3Neg_26": ["TC_ESignet_OIDCClientV2_01"],
+    "TC_ESignet_InitiateIdVerificationNegTC_09": ["TC_ESignet_SignupAuthorizeCodeNegTC_11"],
+    "TC_ESignet_OAuthDetailsRequestV3Neg_21": ["TC_ESignet_OIDCClientV2_01"],
+    "TC_ESignet_OAuthDetailsRequestV3Neg_20": ["TC_ESignet_OIDCClientV2_01"],
+    "TC_ESignet_OAuthDetailsRequestV3Neg_23": ["TC_ESignet_OIDCClientV2_01"],
+    "TC_ESignet_OAuthDetailsRequestV3Neg_22": ["TC_ESignet_OIDCClientV2_01"],
+    "TC_ESignet_OAuthDetailsRequestV3Neg_28": ["TC_ESignet_OIDCClientV2_01"],
+    "TC_Signup_ESignet_OAuthDetailsRequestV3_Prerequisite": ["TC_ESignet_OIDCClientV2_01"],
+    "TC_ESignet_GetIdVerifierNegTC_01": ["TC_ESignet_InitiateIdVerificationNegTC_17"],
+    "TC_ESignet_GetIdVerifierNegTC_02": ["TC_ESignet_InitiateIdVerificationNegTC_17"],
+    "TC_ESignet_GetIdVerifierNegTC_03": ["TC_ESignet_InitiateIdVerificationNegTC_17"],
+    "TC_ESignet_GetIdVerifierNegTC_04": ["TC_ESignet_InitiateIdVerificationNegTC_17"],
+    "TC_ESignet_GetIdVerifierNegTC_05": ["TC_ESignet_InitiateIdVerificationNegTC_17"],
+    "TC_ESignet_GetIdVerifierNegTC_06": ["TC_ESignet_InitiateIdVerificationNegTC_17"],
+    "TC_ESignet_AuthenticateUserPassword_02": [
+        "TC_ESignet_OAuthDetailsRequestPassword_02",
+        "TC_ESignet_GenerateChallenge_01"
+    ],
+    "TC_Signup_ESignet_OAuthDetailsRequestV3_09": ["TC_ESignet_OIDCClientV2_01"],
+    "TC_ESignet_AuthenticateUserPassword_03": [
+        "TC_ESignet_OAuthDetailsRequestPassword_03",
+        "TC_IdRepo_Dependent_AddIdentityMock_01"
+    ],
+    "TC_Signup_ESignet_OAuthDetailsRequestV3_07": ["TC_ESignet_OIDCClientV2_01"],
+    "TC_Signup_ESignet_OAuthDetailsRequestV3_08": ["TC_ESignet_OIDCClientV2_01"],
+    "TC_Signup_ESignet_OAuthDetailsRequestV3_05": ["TC_ESignet_OIDCClientV2_01"],
+    "TC_Signup_ESignet_OAuthDetailsRequestV3_06": ["TC_ESignet_OIDCClientV2_01"],
+    "TC_Signup_ESignet_OAuthDetailsRequestV3_03": ["TC_ESignet_OIDCClientV2_01"],
+    "TC_ESignet_GetIdVerifierNegTC_07": ["TC_ESignet_InitiateIdVerificationNegTC_17"],
+    "TC_Signup_ESignet_OAuthDetailsRequestV3_04": ["TC_ESignet_OIDCClientV2_01"],
+    "TC_ESignet_GetIdVerifierNegTC_08": ["TC_ESignet_InitiateIdVerificationNegTC_17"],
+    "TC_Signup_ESignet_OAuthDetailsRequestV3_01": ["TC_ESignet_OIDCClientV2_01"],
+    "TC_Signup_ESignet_OAuthDetailsRequestV3_02": ["TC_ESignet_OIDCClientV2_01"],
+    "TC_ESignet_AuthenticateUserPassword_01": [
+        "TC_ESignet_GenerateChallenge_01",
+        "TC_ESignet_OAuthDetailsRequestPassword_01"
+    ],
+    "TC_ESignet_OAuthDetailsRequestV3Neg_03": ["TC_ESignet_OIDCClientV2_01"],
+    "TC_ESignet_OAuthDetailsRequestV3Neg_02": ["TC_ESignet_OIDCClientV2_01"],
+    "TC_ESignet_OAuthDetailsRequestV3Neg_05": ["TC_ESignet_OIDCClientV2_01"],
+    "TC_ESignet_OAuthDetailsRequestV3Neg_04": ["TC_ESignet_OIDCClientV2_01"],
+    "TC_ESignet_OAuthDetailsRequestV3Neg_01": ["TC_ESignet_OIDCClientV2_01"],
+    "TC_ESignet_RegisterUser_01": [
+        "TC_ESignet_GenerateChallenge_01",
+        "TC_ESignet_VerifyChallenge_01"
+    ],
+    "TC_ESignet_VerifyChallenge_01": ["TC_ESignet_GenerateChallenge_01"],
+    "TC_Signup_ESignet_OAuthDetailsRequestV3_16": ["TC_ESignet_OIDCClientV2_01"],
+    "TC_Signup_ESignet_OAuthDetailsRequestV3_14": ["TC_ESignet_OIDCClientV2_01"],
+    "TC_Signup_ESignet_OAuthDetailsRequestV3_15": ["TC_ESignet_OIDCClientV2_01"],
+    "TC_Signup_ESignet_OAuthDetailsRequestV3_12": ["TC_ESignet_OIDCClientV2_01"],
+    "TC_Signup_ESignet_OAuthDetailsRequestV3_13": ["TC_ESignet_OIDCClientV2_01"],
+    "TC_Signup_ESignet_OAuthDetailsRequestV3_10": ["TC_ESignet_OIDCClientV2_01"],
+    "TC_Signup_ESignet_OAuthDetailsRequestV3_11": ["TC_ESignet_OIDCClientV2_01"],
+    "TC_ESignet_VerifyChallengeNegTC_29": ["TC_ESignet_VerifyChallengeNegTC_29"],
+    "TC_ESignet_VerifyChallengeNegTC_28": ["TC_ESignet_VerifyChallengeNegTC_28"],
+    "TC_ESignet_VerifyChallengeNegTC_27": ["TC_ESignet_VerifyChallengeNegTC_27"],
+    "TC_ESignet_VerifyChallengeNegTC_26": ["TC_ESignet_VerifyChallengeNegTC_26"],
+    "TC_ESignet_VerifyChallengeNegTC_21": [
+        "TC_ESignet_VerifyChallengeNegTC_21",
+        "TC_ESignet_GenerateChallenge_01"
+    ],
+    "TC_ESignet_VerifyChallengeNegTC_20": [
+        "TC_ESignet_VerifyChallengeNegTC_20",
+        "TC_ESignet_VerifyChallengeNegTC_01"
+    ],
+    "TC_ESignet_VerifyChallengeNegTC_25": ["TC_ESignet_VerifyChallengeNegTC_25"],
+    "TC_ESignet_VerifyChallengeNegTC_24": ["TC_ESignet_VerifyChallengeNegTC_24"],
+    "TC_ESignet_VerifyChallengeNegTC_23": ["TC_ESignet_VerifyChallengeNegTC_23"],
+    "TC_ESignet_VerifyChallengeNegTC_22": ["TC_ESignet_VerifyChallengeNegTC_22"],
+    "TC_Signup_ESignet_WebSocketConnection_02": ["TC_ESignet_GetSlot_02"],
+    "TC_Signup_ESignet_WebSocketConnection_01": ["TC_ESignet_GetSlot_01"],
+    "TC_ESignet_VerifyChallengeNegTC_18": ["TC_ESignet_VerifyChallengeNegTC_18"],
+    "TC_ESignet_VerifyChallengeNegTC_17": ["TC_ESignet_VerifyChallengeNegTC_17"],
+    "TC_ESignet_VerifyChallengeNegTC_16": ["TC_ESignet_VerifyChallengeNegTC_16"],
+    "TC_ESignet_VerifyChallengeNegTC_15": ["TC_ESignet_VerifyChallengeNegTC_15"],
+    "TC_ESignet_VerifyChallengeNegTC_19": ["TC_ESignet_VerifyChallengeNegTC_19"],
+    "TC_ESignet_VerifyChallengeNegTC_10": ["TC_ESignet_VerifyChallengeNegTC_10"],
+    "TC_ESignet_VerifyChallengeNegTC_14": ["TC_ESignet_VerifyChallengeNegTC_14"],
+    "TC_ESignet_VerifyChallengeNegTC_13": ["TC_ESignet_VerifyChallengeNegTC_13"],
+    "TC_ESignet_VerifyChallengeNegTC_12": ["TC_ESignet_VerifyChallengeNegTC_12"],
+    "TC_ESignet_VerifyChallengeNegTC_11": ["TC_ESignet_VerifyChallengeNegTC_11"],
+    "TC_ESignet_IDTAuthenticationNegTC_8": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_SignupAuthorizeNegTC_33",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_IDTAuthenticationNegTC_9": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_SignupAuthorizeNegTC_33",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_Signup_ESignet_GetSlotNegTC_25": ["TC_ESignet_InitiateIdVerificationNegTC_17"],
+    "TC_Signup_ESignet_GetSlotNegTC_26": ["TC_ESignet_InitiateIdVerificationNegTC_17"],
+    "TC_Signup_ESignet_GetSlotNegTC_23": ["TC_ESignet_InitiateIdVerificationNegTC_17"],
+    "TC_Signup_ESignet_GetSlotNegTC_24": ["TC_ESignet_InitiateIdVerificationNegTC_17"],
+    "TC_Signup_ESignet_GetSlotNegTC_29": ["TC_ESignet_InitiateIdVerificationNegTC_17"],
+    "TC_Signup_ESignet_GetSlotNegTC_27": ["TC_ESignet_InitiateIdVerificationNegTC_17"],
+    "TC_Signup_ESignet_GetSlotNegTC_28": ["TC_ESignet_InitiateIdVerificationNegTC_17"],
+    "TC_ESignet_GenerateChallengeForResetPassword_01": ["TC_ESignet_GenerateChallenge_01"],
+    "TC_ESignet_VerifyChallengeNegTC_43": ["TC_ESignet_VerifyChallengeNegTC_43"],
+    "TC_ESignet_GenerateChallengeForResetPassword_02": ["TC_ESignet_GenerateChallenge_01"],
+    "TC_ESignet_VerifyChallengeNegTC_42": ["TC_ESignet_VerifyChallengeNegTC_42"],
+    "TC_ESignet_VerifyChallengeNegTC_41": ["TC_ESignet_VerifyChallengeNegTC_41"],
+    "TC_ESignet_GenerateChallengeForResetPasswordNegTC_01": ["TC_ESignet_VerifyChallengeNegTC_40"],
+    "TC_ESignet_VerifyChallengeNegTC_40": ["TC_ESignet_VerifyChallengeNegTC_40"],
+    "TC_ESignet_GenerateChallengeForResetPasswordNegTC_02": ["TC_ESignet_VerifyChallengeNegTC_40"],
+    "TC_ESignet_VerifyChallengeNegTC_47": ["TC_ESignet_VerifyChallengeNegTC_47"],
+    "TC_ESignet_GenerateChallengeForResetPasswordNegTC_03": ["TC_ESignet_VerifyChallengeNegTC_40"],
+    "TC_ESignet_VerifyChallengeNegTC_46": ["TC_ESignet_VerifyChallengeNegTC_46"],
+    "TC_ESignet_GenerateChallengeForResetPasswordNegTC_04": ["TC_ESignet_VerifyChallengeNegTC_40"],
+    "TC_ESignet_VerifyChallengeNegTC_45": ["TC_ESignet_VerifyChallengeNegTC_45"],
+    "TC_ESignet_GenerateChallengeForResetPasswordNegTC_05": ["TC_ESignet_VerifyChallengeNegTC_40"],
+    "TC_ESignet_VerifyChallengeNegTC_44": ["TC_ESignet_VerifyChallengeNegTC_44"],
+    "TC_ESignet_GenerateChallengeForResetPasswordNegTC_06": ["TC_ESignet_VerifyChallengeNegTC_40"],
+    "TC_ESignet_GenerateChallengeForResetPasswordNegTC_07": ["TC_ESignet_VerifyChallengeNegTC_40"],
+    "TC_ESignet_GenerateChallengeForResetPasswordNegTC_08": ["TC_ESignet_VerifyChallengeNegTC_40"],
+    "TC_ESignet_GenerateChallengeForResetPasswordNegTC_09": ["TC_ESignet_VerifyChallengeNegTC_40"],
+    "TC_Signup_ESignet_GetSlotNegTC_22": ["TC_ESignet_InitiateIdVerificationNegTC_17"],
+    "TC_ESignet_VerifyChallengeNegTC_39": ["TC_ESignet_VerifyChallengeNegTC_39"],
+    "TC_ESignet_VerifyChallengeNegTC_38": ["TC_ESignet_VerifyChallengeNegTC_38"],
+    "TC_ESignet_VerifyChallengeNegTC_37": ["TC_ESignet_VerifyChallengeNegTC_37"],
+    "TC_ESignet_VerifyChallengeNegTC_32": ["TC_ESignet_VerifyChallengeNegTC_32"],
+    "TC_ESignet_GenerateChallengeForResetPasswordNegTC_10": ["TC_ESignet_VerifyChallengeNegTC_40"],
+    "TC_ESignet_AuthorizationCodePassword_02": ["TC_ESignet_OAuthDetailsRequestPassword_02"],
+    "TC_ESignet_VerifyChallengeNegTC_31": ["TC_ESignet_VerifyChallengeNegTC_31"],
+    "TC_ESignet_AuthorizationCodePassword_03": ["TC_ESignet_OAuthDetailsRequestPassword_03"],
+    "TC_ESignet_VerifyChallengeNegTC_30": ["TC_ESignet_VerifyChallengeNegTC_30"],
+    "TC_ESignet_AuthorizationCodePassword_01": ["TC_ESignet_OAuthDetailsRequestPassword_01"],
+    "TC_ESignet_VerifyChallengeNegTC_36": ["TC_ESignet_VerifyChallengeNegTC_36"],
+    "TC_ESignet_VerifyChallengeNegTC_35": ["TC_ESignet_VerifyChallengeNegTC_35"],
+    "TC_ESignet_VerifyChallengeNegTC_34": ["TC_ESignet_VerifyChallengeNegTC_34"],
+    "TC_ESignet_VerifyChallengeNegTC_33": ["TC_ESignet_VerifyChallengeNegTC_33"],
+    "TC_ESignet_InitiateIdVerificationNegTC_22": ["TC_ESignet_SignupAuthorizeCodeNegTC_11"],
+    "TC_Signup_ESignet_GetSlotNegTC_32": ["TC_ESignet_InitiateIdVerificationNegTC_17"],
+    "TC_Signup_ESignet_GetSlotNegTC_33": ["TC_ESignet_InitiateIdVerificationNegTC_17"],
+    "TC_Signup_ESignet_GetSlotNegTC_30": ["TC_ESignet_InitiateIdVerificationNegTC_17"],
+    "TC_Signup_ESignet_GetSlotNegTC_31": ["TC_ESignet_InitiateIdVerificationNegTC_17"],
+    "TC_ESignet_RegisterUserNegTC_29": ["TC_ESignet_VerifyChallengeNegTC_40"],
+    "TC_ESignet_RegisterUserNegTC_28": ["TC_ESignet_VerifyChallengeNegTC_40"],
+    "Signup_ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdVerStatusWithoutWebsocket_Smoke_sid": [
+        "TC_Signup_ESignet_PrepareSignupRedirect_Prerequisite_06",
+        "TC_Signup_ESignet_OAuthDetailsRequestV3_Prerequisite"
+    ],
+    "TC_ESignet_RegisterUserNegTC_26": ["TC_ESignet_VerifyChallengeNegTC_40"],
+    "Signup_ESignet_AuthenticateUser_V3_AuthToken_Xsrf__uin_Otp_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdTAuth_Smoke": [
+        "TC_Signup_ESignet_OAuthDetailsRequestV3_Prerequisite",
+        "TC_IdRepo_Dependent_AddIdentityMock_09"
+    ],
+    "TC_ESignet_OAuthDetailsRequestPassword_03": ["TC_ESignet_OIDCClientV2_01"],
+    "TC_ESignet_RegisterUserNegTC_20": ["TC_ESignet_VerifyChallengeNegTC_40"],
+    "TC_ESignet_OAuthDetailsRequestPassword_02": ["TC_ESignet_OIDCClientV2_01"],
+    "TC_ESignet_RegisterUserNegTC_25": ["TC_ESignet_VerifyChallengeNegTC_40"],
+    "TC_ESignet_RegisterUserNegTC_24": ["TC_ESignet_VerifyChallengeNegTC_40"],
+    "TC_ESignet_RegisterUserNegTC_23": ["TC_ESignet_VerifyChallengeNegTC_40"],
+    "Signup_ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdVerStatusWithoutWebsocket_Smoke_Sid": ["Signup_ESignet_SignupAuthorizeCode_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdVerStatusWithoutWebsocket_Smoke_sid"],
+    "TC_Signup_ESignet_ClaimDetails_12": ["TC_Signup_ESignet_OAuthDetailsRequestV3_Prerequisite"],
+    "TC_ESignet_RegisterUserNegTC_39": ["TC_ESignet_VerifyChallengeNegTC_40"],
+    "TC_ESignet_RegisterUserNegTC_38": ["TC_ESignet_VerifyChallengeNegTC_40"],
+    "TC_ESignet_RegisterUserNegTC_37": ["TC_ESignet_VerifyChallengeNegTC_40"],
+    "TC_ESignet_OAuthDetailsRequestPassword_01": ["TC_ESignet_OIDCClientV2_01"],
+    "TC_ESignet_RegisterUserNegTC_32": ["TC_ESignet_VerifyChallengeNegTC_40"],
+    "TC_ESignet_RegisterUserNegTC_31": ["TC_ESignet_VerifyChallengeNegTC_40"],
+    "TC_ESignet_RegisterUserNegTC_30": ["TC_ESignet_VerifyChallengeNegTC_40"],
+    "TC_ESignet_AuthorizationCode_01": ["TC_Signup_ESignet_OAuthDetailsRequestV3_01"],
+    "TC_ESignet_RegisterUserNegTC_36": ["TC_ESignet_VerifyChallengeNegTC_40"],
+    "TC_ESignet_RegisterUserNegTC_35": ["TC_ESignet_VerifyChallengeNegTC_40"],
+    "TC_ESignet_RegisterUserNegTC_34": ["TC_ESignet_VerifyChallengeNegTC_40"],
+    "TC_Signup_ESignet_GetSlot_06": ["Signup_ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdVerStatusWithoutWebsocket_Smoke_Sid"],
+    "TC_ESignet_RegisterUserNegTC_33": ["TC_ESignet_VerifyChallengeNegTC_40"],
+    "TC_Signup_ESignet_ClaimDetails_01": ["TC_Signup_ESignet_OAuthDetailsRequestV3_01"],
+    "Signup_ESignet_AuthenticateUserNegTC_V3_AuthToken_Xsrf__uin_Otp_Valid_Smoke": [
+        "TC_IdRepo_Dependent_AddIdentityMock_03",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_RegisterUserNegTC_07": ["TC_ESignet_VerifyChallengeNegTC_40"],
+    "TC_ESignet_RegisterUserNegTC_06": ["TC_ESignet_VerifyChallengeNegTC_40"],
+    "TC_ESignet_RegisterUserNegTC_05": ["TC_ESignet_VerifyChallengeNegTC_40"],
+    "TC_ESignet_RegisterUserNegTC_04": ["TC_ESignet_VerifyChallengeNegTC_40"],
+    "TC_ESignet_RegisterUserNegTC_08": ["TC_ESignet_VerifyChallengeNegTC_40"],
+    "TC_ESignet_RegisterUserNegTC_03": ["TC_ESignet_VerifyChallengeNegTC_40"],
+    "TC_ESignet_RegisterUserNegTC_02": ["TC_ESignet_VerifyChallengeNegTC_40"],
+    "TC_ESignet_RegisterUserNegTC_01": ["TC_ESignet_VerifyChallengeNegTC_40"],
+    "TC_ESignet_RegisterUserNegTC_18": ["TC_ESignet_VerifyChallengeNegTC_40"],
+    "Signup_ESignet_AuthenticateUser_V3_AuthToken_Xsrf__uin_Otp_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forDeletingCookies_Smoke": [
+        "TC_Signup_ESignet_OAuthDetailsRequestV3_Prerequisite",
+        "TC_IdRepo_Dependent_AddIdentityMock_10"
+    ],
+    "TC_ESignet_RegisterUserNegTC_17": ["TC_ESignet_VerifyChallengeNegTC_40"],
+    "TC_ESignet_RegisterUserNegTC_16": ["TC_ESignet_VerifyChallengeNegTC_40"],
+    "TC_ESignet_RegisterUserNegTC_15": ["TC_ESignet_VerifyChallengeNegTC_40"],
+    "TC_ESignet_CompleteSignupVerificationNegTC_12": ["TC_ESignet_OAuthDetailsRequestV3Neg_28"],
+    "TC_ESignet_CompleteSignupVerificationNegTC_13": ["TC_ESignet_OAuthDetailsRequestV3Neg_28"],
+    "TC_ESignet_CompleteSignupVerificationNegTC_14": ["TC_ESignet_OAuthDetailsRequestV3Neg_28"],
+    "TC_ESignet_CompleteSignupVerificationNegTC_15": ["TC_ESignet_OAuthDetailsRequestV3Neg_28"],
+    "TC_ESignet_RegisterUserNegTC_19": ["TC_ESignet_VerifyChallengeNegTC_40"],
+    "TC_ESignet_CompleteSignupVerificationNegTC_16": [
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28",
+        "TC_Signup_ESignet_GetSlotNegTC_22"
+    ],
+    "TC_ESignet_RegisterUserNegTC_10": ["TC_ESignet_VerifyChallengeNegTC_40"],
+    "TC_ESignet_CompleteSignupVerificationNegTC_17": ["TC_ESignet_OAuthDetailsRequestV3Neg_28"],
+    "TC_ESignet_RegisterUserNegTC_14": ["TC_ESignet_VerifyChallengeNegTC_40"],
+    "TC_ESignet_RegisterUserNegTC_13": ["TC_ESignet_VerifyChallengeNegTC_40"],
+    "TC_ESignet_RegisterUserNegTC_12": ["TC_ESignet_VerifyChallengeNegTC_40"],
+    "TC_ESignet_RegisterUserNegTC_11": ["TC_ESignet_VerifyChallengeNegTC_40"],
+    "TC_ESignet_GetRegistrationStatus_01": [
+        "TC_ESignet_VerifyChallengeForResetPassword_01",
+        "TC_ESignet_VerifyChallenge_01"
+    ],
+    "TC_ESignet_GetSlot_02": ["TC_ESignet_InitiateIdVerification_02"],
+    "TC_ESignet_GetSlot_01": ["TC_ESignet_InitiateIdVerification_01"],
+    "TC_ESignet_GetSlot_05": ["TC_ESignet_InitiateIdVerification_05"],
+    "TC_ESignet_GetSlot_04": ["TC_ESignet_InitiateIdVerification_04"],
+    "TC_ESignet_GetSlot_03": ["TC_ESignet_InitiateIdVerification_03"],
+    "TC_Signup_ESignet_GetIdentityVerificationStatusNegTC_05": ["TC_Signup_ESignet_GetSlot_06"],
+    "TC_ESignet_RegisterUserNegTC_65": ["TC_ESignet_VerifyChallengeNegTC_40"],
+    "TC_ESignet_RegisterUserNegTC_64": ["TC_ESignet_VerifyChallengeNegTC_40"],
+    "TC_ESignet_RegisterUserNegTC_63": ["TC_ESignet_VerifyChallengeNegTC_40"],
+    "TC_ESignet_RegisterUserNegTC_62": ["TC_ESignet_VerifyChallengeNegTC_40"],
+    "TC_ESignet_RegisterUserNegTC_69": ["TC_ESignet_VerifyChallengeNegTC_42"],
+    "TC_ESignet_RegisterUserNegTC_68": ["TC_ESignet_VerifyChallengeNegTC_41"],
+    "TC_ESignet_RegisterUserNegTC_67": ["TC_ESignet_VerifyChallengeNegTC_47"],
+    "TC_ESignet_ResetPassword_01": [
+        "TC_ESignet_VerifyChallengeForResetPassword_01",
+        "TC_ESignet_GenerateChallenge_01"
+    ],
+    "TC_ESignet_RegisterUserNegTC_66": ["TC_ESignet_VerifyChallengeNegTC_47"],
+    "TC_ESignet_RegisterUserNegTC_61": ["TC_ESignet_VerifyChallengeNegTC_40"],
+    "TC_ESignet_RegisterUserNegTC_60": ["TC_ESignet_VerifyChallengeNegTC_40"],
+    "TC_ESignet_SignupAuthorizeCode_05": [
+        "TC_Signup_ESignet_PrepareSignupRedirect_Prerequisite_05",
+        "TC_ESignet_SignupAuthorize_05",
+        "TC_Signup_ESignet_OAuthDetailsRequestV3_Prerequisite"
+    ],
+    "Signup_ESignet_IDTAuthenticationNegTC_AuthToken_Xsrf_emptyString_individualId_Neg": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_SignupAuthorizeNegTC_33",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_SignupAuthorizeNegTC_09": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_SignupAuthorizeCode_02": [
+        "TC_Signup_ESignet_PrepareSignupRedirect_Prerequisite_02",
+        "TC_Signup_ESignet_OAuthDetailsRequestV3_Prerequisite",
+        "TC_ESignet_SignupAuthorize_02"
+    ],
+    "TC_ESignet_SignupAuthorizeNegTC_08": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_SignupAuthorizeCode_01": [
+        "TC_Signup_ESignet_PrepareSignupRedirect_01",
+        "TC_ESignet_SignupAuthorize_01",
+        "TC_Signup_ESignet_OAuthDetailsRequestV3_01"
+    ],
+    "TC_ESignet_SignupAuthorizeNegTC_07": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_SignupAuthorizeCode_04": [
+        "TC_Signup_ESignet_PrepareSignupRedirect_Prerequisite_04",
+        "TC_ESignet_SignupAuthorize_04",
+        "TC_Signup_ESignet_OAuthDetailsRequestV3_Prerequisite"
+    ],
+    "TC_ESignet_SignupAuthorizeNegTC_06": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_SignupAuthorizeCode_03": [
+        "TC_Signup_ESignet_PrepareSignupRedirect_Prerequisite_03",
+        "TC_Signup_ESignet_OAuthDetailsRequestV3_Prerequisite",
+        "TC_ESignet_SignupAuthorize_03"
+    ],
+    "TC_ESignet_SignupAuthorizeNegTC_05": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_SignupAuthorizeNegTC_04": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_SignupAuthorizeNegTC_03": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_SignupAuthorizeNegTC_02": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_SignupAuthorizeNegTC_01": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_Signup_ESignet_GetIdentityVerificationStatusNegTC_01": ["TC_Signup_ESignet_GetSlotNegTC_22"],
+    "TC_ESignet_RegisterUserNegTC_73": ["TC_ESignet_VerifyChallengeNegTC_46"],
+    "TC_ESignet_RegisterUserNegTC_72": ["TC_ESignet_VerifyChallengeNegTC_45"],
+    "TC_ESignet_RegisterUserNegTC_71": ["TC_ESignet_VerifyChallengeNegTC_44"],
+    "TC_ESignet_RegisterUserNegTC_70": ["TC_ESignet_VerifyChallengeNegTC_43"],
+    "TC_ESignet_SignupAuthorizeNegTC_19": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_SignupAuthorizeNegTC_18": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_SignupAuthorizeNegTC_17": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_SignupAuthorizeNegTC_16": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_SignupAuthorizeNegTC_15": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_SignupAuthorizeNegTC_14": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_SignupAuthorizeNegTC_13": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_SignupAuthorizeNegTC_12": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_SignupAuthorizeNegTC_11": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_SignupAuthorizeNegTC_10": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_RegisterUserNegTC_43": ["TC_ESignet_VerifyChallengeNegTC_40"],
+    "TC_ESignet_RegisterUserNegTC_42": ["TC_ESignet_VerifyChallengeNegTC_40"],
+    "TC_ESignet_RegisterUserNegTC_41": ["TC_ESignet_VerifyChallengeNegTC_40"],
+    "TC_ESignet_GetOidcUserInfoPassword_02": ["TC_ESignet_GenerateTokenPassword_02"],
+    "TC_ESignet_RegisterUserNegTC_40": ["TC_ESignet_VerifyChallengeNegTC_40"],
+    "TC_ESignet_GetOidcUserInfoPassword_03": ["TC_ESignet_GenerateTokenPassword_03"],
+    "TC_ESignet_RegisterUserNegTC_47": ["TC_ESignet_VerifyChallengeNegTC_40"],
+    "TC_ESignet_RegisterUserNegTC_46": ["TC_ESignet_VerifyChallengeNegTC_40"],
+    "TC_ESignet_GetOidcUserInfoPassword_01": ["TC_ESignet_GenerateTokenPassword_01"],
+    "TC_ESignet_RegisterUserNegTC_45": ["TC_ESignet_VerifyChallengeNegTC_40"],
+    "TC_ESignet_RegisterUserNegTC_44": ["TC_ESignet_VerifyChallengeNegTC_40"],
+    "TC_ESignet_SignupAuthorizeNegTC_29": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_SignupAuthorizeNegTC_28": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_SignupAuthorizeNegTC_27": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_SignupAuthorizeNegTC_26": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_SignupAuthorizeNegTC_25": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_SignupAuthorizeNegTC_24": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_RegisterUserNegTC_59": ["TC_ESignet_VerifyChallengeNegTC_40"],
+    "TC_ESignet_SignupAuthorizeNegTC_23": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_SignupAuthorizeNegTC_22": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_SignupAuthorizeNegTC_21": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_SignupAuthorizeNegTC_20": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_RegisterUserNegTC_58": ["TC_ESignet_VerifyChallengeNegTC_40"],
+    "TC_ESignet_RegisterUserNegTC_57": ["TC_ESignet_VerifyChallengeNegTC_40"],
+    "TC_ESignet_RegisterUserNegTC_56": ["TC_ESignet_VerifyChallengeNegTC_40"],
+    "TC_ESignet_ClaimDetailsNegTC_V3_01": ["TC_ESignet_OAuthDetailsRequestV3Neg_28"],
+    "TC_ESignet_ClaimDetailsNegTC_V3_07": ["TC_ESignet_OAuthDetailsRequestV3Neg_28"],
+    "TC_ESignet_SignupAuthorizeCodeNegTC_08": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_SignupAuthorizeNegTC_33",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_GetSlotNegTC_10": ["TC_ESignet_InitiateIdVerificationNegTC_17"],
+    "TC_ESignet_ClaimDetailsNegTC_V3_06": ["TC_ESignet_OAuthDetailsRequestV3Neg_28"],
+    "TC_ESignet_SignupAuthorizeCodeNegTC_09": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_SignupAuthorizeNegTC_33",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_ClaimDetailsNegTC_V3_09": ["TC_ESignet_OAuthDetailsRequestV3Neg_28"],
+    "TC_ESignet_GetSlotNegTC_12": ["TC_ESignet_InitiateIdVerificationNegTC_17"],
+    "TC_ESignet_ClaimDetailsNegTC_V3_08": ["TC_ESignet_OAuthDetailsRequestV3Neg_28"],
+    "TC_ESignet_GetSlotNegTC_11": ["TC_ESignet_InitiateIdVerificationNegTC_17"],
+    "TC_ESignet_ClaimDetailsNegTC_V3_03": ["TC_ESignet_OAuthDetailsRequestV3Neg_28"],
+    "TC_ESignet_ClaimDetailsNegTC_V3_02": ["TC_ESignet_OAuthDetailsRequestV3Neg_28"],
+    "TC_ESignet_ClaimDetailsNegTC_V3_05": ["TC_ESignet_OAuthDetailsRequestV3Neg_28"],
+    "TC_ESignet_ClaimDetailsNegTC_V3_04": ["TC_ESignet_OAuthDetailsRequestV3Neg_28"],
+    "TC_ESignet_GetSlotNegTC_18": ["TC_ESignet_InitiateIdVerificationNegTC_17"],
+    "TC_ESignet_SignupAuthorizeCodeNegTC_01": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_SignupAuthorizeNegTC_33",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_GetSlotNegTC_17": ["TC_ESignet_InitiateIdVerificationNegTC_17"],
+    "TC_ESignet_SignupAuthorizeCodeNegTC_02": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_SignupAuthorizeNegTC_33",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_SignupAuthorizeCodeNegTC_03": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_SignupAuthorizeNegTC_33",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_GetSlotNegTC_19": ["TC_ESignet_InitiateIdVerificationNegTC_17"],
+    "TC_ESignet_SignupAuthorizeCodeNegTC_04": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_SignupAuthorizeNegTC_33",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_GetSlotNegTC_14": ["TC_ESignet_InitiateIdVerificationNegTC_17"],
+    "Signup_ESignet_AuthenticateUser_V3_AuthToken_Xsrf__uin_Otp_Valid_forGetSlot_disabilityTypeAUDITORY_Smoke": [
+        "TC_IdRepo_Dependent_AddIdentityMock_05",
+        "TC_Signup_ESignet_OAuthDetailsRequestV3_Prerequisite"
+    ],
+    "TC_ESignet_SignupAuthorizeCodeNegTC_05": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_SignupAuthorizeNegTC_33",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_GetSlotNegTC_13": ["TC_ESignet_InitiateIdVerificationNegTC_17"],
+    "TC_ESignet_SignupAuthorizeCodeNegTC_06": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_SignupAuthorizeNegTC_33",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_GetSlotNegTC_16": ["TC_ESignet_InitiateIdVerificationNegTC_17"],
+    "TC_ESignet_SignupAuthorizeCodeNegTC_07": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_SignupAuthorizeNegTC_33",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_GetSlotNegTC_15": ["TC_ESignet_InitiateIdVerificationNegTC_17"],
+    "TC_ESignet_VerifyChallengeForResetPassword_01": [
+        "TC_ESignet_GenerateChallenge_01",
+        "TC_ESignet_GenerateChallengeForResetPassword_01"
+    ],
+    "TC_ESignet_SignupAuthorizeCodeNegTC_10": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_SignupAuthorizeNegTC_33",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_ClaimDetailsNegTC_V3_10": ["TC_ESignet_OAuthDetailsRequestV3Neg_28"],
+    "TC_ESignet_ClaimDetailsNegTC_V3_11": ["TC_ESignet_OAuthDetailsRequestV3Neg_28"],
+    "TC_ESignet_GenerateTokenPassword_01": [
+        "TC_ESignet_AuthorizationCodePassword_01",
+        "TC_ESignet_OIDCClientV2_01"
+    ],
+    "TC_ESignet_GenerateTokenPassword_02": [
+        "TC_ESignet_AuthorizationCodePassword_02",
+        "TC_ESignet_OIDCClientV2_01"
+    ],
+    "TC_ESignet_GetSlotNegTC_21": ["TC_ESignet_InitiateIdVerificationNegTC_17"],
+    "TC_ESignet_GenerateTokenPassword_03": [
+        "TC_ESignet_AuthorizationCodePassword_03",
+        "TC_ESignet_OIDCClientV2_01"
+    ],
+    "TC_ESignet_GetSlotNegTC_20": ["TC_ESignet_InitiateIdVerificationNegTC_17"],
+    "TC_ESignet_SignupAuthorizeCodeNegTC_11": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_SignupAuthorizeNegTC_33",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_PrepareSignupRedirectNegTC_17": ["TC_ESignet_OAuthDetailsRequestV3Neg_28"],
+    "TC_ESignet_PrepareSignupRedirectNegTC_16": ["TC_ESignet_OAuthDetailsRequestV3Neg_28"],
+    "TC_ESignet_PrepareSignupRedirectNegTC_15": ["TC_ESignet_OAuthDetailsRequestV3Neg_28"],
+    "TC_ESignet_PrepareSignupRedirectNegTC_14": ["TC_ESignet_OAuthDetailsRequestV3Neg_28"],
+    "TC_ESignet_PrepareSignupRedirectNegTC_19": ["TC_ESignet_OAuthDetailsRequestV3Neg_28"],
+    "TC_ESignet_PrepareSignupRedirectNegTC_18": ["TC_ESignet_OAuthDetailsRequestV3Neg_28"],
+    "TC_ESignet_VerifyChallengeForResetPasswordNegTC_12": [
+        "TC_ESignet_VerifyChallengeNegTC_40",
+        "TC_ESignet_VerifyChallengeForResetPasswordNegTC_12"
+    ],
+    "TC_ESignet_VerifyChallengeForResetPasswordNegTC_13": [
+        "TC_ESignet_VerifyChallengeNegTC_40",
+        "TC_ESignet_VerifyChallengeForResetPasswordNegTC_13"
+    ],
+    "TC_ESignet_VerifyChallengeForResetPasswordNegTC_10": [
+        "TC_ESignet_VerifyChallengeNegTC_40",
+        "TC_ESignet_VerifyChallengeForResetPasswordNegTC_10"
+    ],
+    "TC_ESignet_VerifyChallengeForResetPasswordNegTC_11": [
+        "TC_ESignet_VerifyChallengeNegTC_40",
+        "TC_ESignet_VerifyChallengeForResetPasswordNegTC_11"
+    ],
+    "TC_Signup_ESignet_PrepareSignupRedirect_01": ["TC_Signup_ESignet_OAuthDetailsRequestV3_01"],
+    "TC_ESignet_VerifyChallengeForResetPasswordNegTC_16": [
+        "TC_ESignet_VerifyChallengeNegTC_40",
+        "TC_ESignet_VerifyChallengeForResetPasswordNegTC_16"
+    ],
+    "TC_ESignet_VerifyChallengeForResetPasswordNegTC_17": [
+        "TC_ESignet_VerifyChallengeNegTC_47",
+        "TC_ESignet_VerifyChallengeForResetPasswordNegTC_17"
+    ],
+    "TC_ESignet_VerifyChallengeForResetPasswordNegTC_14": [
+        "TC_ESignet_VerifyChallengeNegTC_40",
+        "TC_ESignet_VerifyChallengeForResetPasswordNegTC_14"
+    ],
+    "TC_ESignet_VerifyChallengeForResetPasswordNegTC_15": [
+        "TC_ESignet_VerifyChallengeNegTC_40",
+        "TC_ESignet_VerifyChallengeForResetPasswordNegTC_15"
+    ],
+    "TC_ESignet_PrepareSignupRedirectNegTC_20": ["TC_Signup_ESignet_OAuthDetailsRequestV3_Prerequisite"],
+    "TC_ESignet_PrepareSignupRedirectNegTC_06": ["TC_ESignet_OAuthDetailsRequestV3Neg_28"],
+    "TC_ESignet_PrepareSignupRedirectNegTC_05": ["TC_ESignet_OAuthDetailsRequestV3Neg_28"],
+    "TC_ESignet_PrepareSignupRedirectNegTC_04": ["TC_ESignet_OAuthDetailsRequestV3Neg_28"],
+    "TC_ESignet_PrepareSignupRedirectNegTC_03": ["TC_ESignet_OAuthDetailsRequestV3Neg_28"],
+    "TC_ESignet_PrepareSignupRedirectNegTC_09": ["TC_ESignet_OAuthDetailsRequestV3Neg_28"],
+    "TC_ESignet_PrepareSignupRedirectNegTC_08": ["TC_ESignet_OAuthDetailsRequestV3Neg_28"],
+    "TC_ESignet_PrepareSignupRedirectNegTC_07": ["TC_ESignet_OAuthDetailsRequestV3Neg_28"],
+    "TC_ESignet_VerifyChallengeForResetPasswordNegTC_01": [
+        "TC_ESignet_VerifyChallengeNegTC_40",
+        "TC_ESignet_VerifyChallengeForResetPasswordNegTC_01"
+    ],
+    "TC_ESignet_VerifyChallengeForResetPasswordNegTC_02": [
+        "TC_ESignet_VerifyChallengeNegTC_40",
+        "TC_ESignet_VerifyChallengeForResetPasswordNegTC_02"
+    ],
+    "TC_ESignet_VerifyChallengeForResetPasswordNegTC_09": [
+        "TC_ESignet_VerifyChallengeForResetPasswordNegTC_09",
+        "TC_ESignet_VerifyChallengeNegTC_40"
+    ],
+    "TC_ESignet_VerifyChallengeForResetPasswordNegTC_07": [
+        "TC_ESignet_VerifyChallengeForResetPasswordNegTC_07",
+        "TC_ESignet_VerifyChallengeNegTC_40"
+    ],
+    "TC_ESignet_VerifyChallengeForResetPasswordNegTC_08": [
+        "TC_ESignet_VerifyChallengeNegTC_40",
+        "TC_ESignet_VerifyChallengeForResetPasswordNegTC_08"
+    ],
+    "TC_ESignet_VerifyChallengeForResetPasswordNegTC_05": [
+        "TC_ESignet_VerifyChallengeNegTC_40",
+        "TC_ESignet_VerifyChallengeForResetPasswordNegTC_05"
+    ],
+    "TC_ESignet_VerifyChallengeForResetPasswordNegTC_06": [
+        "TC_ESignet_VerifyChallengeNegTC_40",
+        "TC_ESignet_VerifyChallengeForResetPasswordNegTC_06"
+    ],
+    "TC_ESignet_VerifyChallengeForResetPasswordNegTC_03": [
+        "TC_ESignet_VerifyChallengeNegTC_40",
+        "TC_ESignet_VerifyChallengeForResetPasswordNegTC_03"
+    ],
+    "TC_ESignet_VerifyChallengeForResetPasswordNegTC_04": [
+        "TC_ESignet_VerifyChallengeNegTC_40",
+        "TC_ESignet_VerifyChallengeForResetPasswordNegTC_04"
+    ],
+    "TC_ESignet_PrepareSignupRedirectNegTC_13": ["TC_ESignet_OAuthDetailsRequestV3Neg_28"],
+    "TC_ESignet_PrepareSignupRedirectNegTC_12": ["TC_ESignet_OAuthDetailsRequestV3Neg_28"],
+    "TC_ESignet_PrepareSignupRedirectNegTC_11": ["TC_ESignet_OAuthDetailsRequestV3Neg_28"],
+    "TC_ESignet_PrepareSignupRedirectNegTC_10": ["TC_ESignet_OAuthDetailsRequestV3Neg_28"],
+    "TC_ESignet_CompleteSignupVerificationNegTC_01": ["TC_ESignet_OAuthDetailsRequestV3Neg_28"],
+    "TC_ESignet_CompleteSignupVerificationNegTC_02": ["TC_ESignet_OAuthDetailsRequestV3Neg_28"],
+    "TC_ESignet_CompleteSignupVerificationNegTC_04": ["TC_ESignet_OAuthDetailsRequestV3Neg_28"],
+    "Signup_ESignet_AuthenticateUser_V3_AuthToken_Xsrf__uin_Otp_Valid_forGetSlot_disabilityTypeVISION_Smoke": [
+        "TC_IdRepo_Dependent_AddIdentityMock_04",
+        "TC_Signup_ESignet_OAuthDetailsRequestV3_Prerequisite"
+    ],
+    "TC_ESignet_CompleteSignupVerificationNegTC_05": ["TC_ESignet_OAuthDetailsRequestV3Neg_28"],
+    "TC_ESignet_CompleteSignupVerificationNegTC_06": ["TC_ESignet_OAuthDetailsRequestV3Neg_28"],
+    "TC_ESignet_CompleteSignupVerificationNegTC_07": ["TC_ESignet_OAuthDetailsRequestV3Neg_28"],
+    "TC_ESignet_CompleteSignupVerificationNegTC_08": ["TC_ESignet_OAuthDetailsRequestV3Neg_28"],
+    "TC_ESignet_CompleteSignupVerificationNegTC_09": ["TC_ESignet_OAuthDetailsRequestV3Neg_28"],
+    "TC_ESignet_AuthenticateUserPasswordNegTC_03": [
+        "TC_ESignet_OAuthDetailsRequestPasswordNegTC_01",
+        "TC_ESignet_VerifyChallengeNegTC_40"
+    ],
+    "TC_ESignet_AuthenticateUserPasswordNegTC_04": [
+        "TC_ESignet_OAuthDetailsRequestPasswordNegTC_01",
+        "TC_ESignet_VerifyChallengeNegTC_40"
+    ],
+    "TC_ESignet_AuthenticateUserPasswordNegTC_05": [
+        "TC_ESignet_OAuthDetailsRequestPasswordNegTC_01",
+        "TC_ESignet_VerifyChallengeNegTC_40"
+    ],
+    "TC_ESignet_AuthenticateUserPasswordNegTC_06": [
+        "TC_ESignet_OAuthDetailsRequestPasswordNegTC_01",
+        "TC_ESignet_VerifyChallengeNegTC_40"
+    ],
+    "TC_ESignet_PrepareSignupRedirectNegTC_02": ["TC_ESignet_OAuthDetailsRequestV3Neg_28"],
+    "TC_ESignet_PrepareSignupRedirectNegTC_01": ["TC_ESignet_OAuthDetailsRequestV3Neg_28"],
+    "TC_ESignet_AuthenticateUserPasswordNegTC_02": [
+        "TC_ESignet_OAuthDetailsRequestPasswordNegTC_01",
+        "TC_ESignet_VerifyChallengeNegTC_40"
+    ],
+    "Signup_ESignet_AuthenticateUser_V3_AuthToken_Xsrf__uin_Otp_Valid_forGetSlot_disabilityTypeMOBILITY_Smoke": [
+        "TC_Signup_ESignet_OAuthDetailsRequestV3_Prerequisite",
+        "TC_IdRepo_Dependent_AddIdentityMock_06"
+    ],
+    "TC_ESignet_SignupAuthorize_01": [
+        "TC_Signup_ESignet_PrepareSignupRedirect_01",
+        "TC_Signup_ESignet_OAuthDetailsRequestV3_01"
+    ],
+    "TC_ESignet_SignupAuthorize_03": [
+        "TC_Signup_ESignet_PrepareSignupRedirect_Prerequisite_03",
+        "TC_Signup_ESignet_OAuthDetailsRequestV3_Prerequisite"
+    ],
+    "TC_ESignet_SignupAuthorize_02": [
+        "TC_Signup_ESignet_PrepareSignupRedirect_Prerequisite_02",
+        "TC_Signup_ESignet_OAuthDetailsRequestV3_Prerequisite"
+    ],
+    "TC_ESignet_SignupAuthorize_05": [
+        "TC_Signup_ESignet_PrepareSignupRedirect_Prerequisite_05",
+        "TC_Signup_ESignet_OAuthDetailsRequestV3_Prerequisite"
+    ],
+    "TC_ESignet_SignupAuthorize_04": [
+        "TC_Signup_ESignet_PrepareSignupRedirect_Prerequisite_04",
+        "TC_Signup_ESignet_OAuthDetailsRequestV3_Prerequisite"
+    ],
+    "Signup_ESignet_IDTAuthentication_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdVerStatusWithoutWebsocket_Smoke": [
+        "TC_Signup_ESignet_PrepareSignupRedirect_Prerequisite_06",
+        "TC_Signup_ESignet_OAuthDetailsRequestV3_Prerequisite",
+        "Signup_ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdVerStatusWithoutWebsocket_Smoke_sid"
+    ],
+    "TC_ESignet_GetSlotNegTC_01": ["TC_ESignet_InitiateIdVerificationNegTC_17"],
+    "TC_ESignet_IDTAuthentication_05": [
+        "TC_Signup_ESignet_PrepareSignupRedirect_Prerequisite_05",
+        "TC_ESignet_SignupAuthorize_05",
+        "TC_Signup_ESignet_OAuthDetailsRequestV3_Prerequisite"
+    ],
+    "TC_ESignet_GetSlotNegTC_07": ["TC_ESignet_InitiateIdVerificationNegTC_17"],
+    "TC_ESignet_IDTAuthentication_04": [
+        "TC_Signup_ESignet_PrepareSignupRedirect_Prerequisite_04",
+        "TC_ESignet_SignupAuthorize_04",
+        "TC_Signup_ESignet_OAuthDetailsRequestV3_Prerequisite"
+    ],
+    "TC_ESignet_GetSlotNegTC_06": ["TC_ESignet_InitiateIdVerificationNegTC_17"],
+    "TC_ESignet_GetSlotNegTC_09": ["TC_ESignet_InitiateIdVerificationNegTC_17"],
+    "TC_ESignet_GetSlotNegTC_08": ["TC_ESignet_InitiateIdVerificationNegTC_17"],
+    "TC_ESignet_GetSlotNegTC_03": ["TC_ESignet_InitiateIdVerificationNegTC_17"],
+    "TC_ESignet_GetSlotNegTC_02": ["TC_ESignet_InitiateIdVerificationNegTC_17"],
+    "TC_ESignet_GetSlotNegTC_05": ["TC_ESignet_InitiateIdVerificationNegTC_17"],
+    "TC_ESignet_GetSlotNegTC_04": ["TC_ESignet_InitiateIdVerificationNegTC_17"],
+    "TC_ESignet_IDTAuthentication_01": [
+        "TC_Signup_ESignet_PrepareSignupRedirect_01",
+        "TC_ESignet_SignupAuthorize_01",
+        "TC_Signup_ESignet_OAuthDetailsRequestV3_01"
+    ],
+    "TC_ESignet_IDTAuthentication_03": [
+        "TC_Signup_ESignet_PrepareSignupRedirect_Prerequisite_03",
+        "TC_Signup_ESignet_OAuthDetailsRequestV3_Prerequisite",
+        "TC_ESignet_SignupAuthorize_03"
+    ],
+    "TC_ESignet_IDTAuthentication_02": [
+        "TC_Signup_ESignet_PrepareSignupRedirect_Prerequisite_02",
+        "TC_Signup_ESignet_OAuthDetailsRequestV3_Prerequisite",
+        "TC_ESignet_SignupAuthorize_02"
+    ],
+    "Signup_ESignet_AuthenticateUser_V3_AuthToken_Xsrf__uin_Otp_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdVerStatusWithoutWebsocket_Smoke": [
+        "TC_Signup_ESignet_OAuthDetailsRequestV3_Prerequisite",
+        "TC_IdRepo_Dependent_AddIdentityMock_08"
+    ],
+    "TC_ESignet_ResetPasswordNegTC_03": ["TC_ESignet_VerifyChallengeNegTC_40"],
+    "TC_ESignet_ResetPasswordNegTC_02": ["TC_ESignet_VerifyChallengeNegTC_40"],
+    "TC_ESignet_ResetPasswordNegTC_01": ["TC_ESignet_VerifyChallengeNegTC_40"],
+    "TC_ESignet_IDTAuthenticationNegTC_41": [
+        "TC_Signup_ESignet_PrepareSignupRedirect_Prerequisite_07",
+        "Signup_ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdtAuth_Smoke_sid",
+        "TC_Signup_ESignet_OAuthDetailsRequestV3_Prerequisite"
+    ],
+    "TC_ESignet_IDTAuthenticationNegTC_42": [
+        "Signup_ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forDeletingCookies_Smoke_sid",
+        "TC_Signup_ESignet_OAuthDetailsRequestV3_Prerequisite",
+        "TC_Signup_ESignet_PrepareSignupRedirect_Prerequisite_08"
+    ],
+    "TC_ESignet_AuthenticateUserPasswordNegTC_40": [
+        "TC_ESignet_OAuthDetailsRequestPasswordNegTC_01",
+        "TC_ESignet_VerifyChallengeNegTC_40"
+    ],
+    "TC_ESignet_AuthenticateUserPasswordNegTC_41": [
+        "TC_ESignet_OAuthDetailsRequestPasswordNegTC_01",
+        "TC_ESignet_VerifyChallengeNegTC_40"
+    ],
+    "TC_ESignet_AuthenticateUserPasswordNegTC_42": [
+        "TC_ESignet_OAuthDetailsRequestPasswordNegTC_01",
+        "TC_ESignet_VerifyChallengeNegTC_40"
+    ],
+    "TC_ESignet_IDTAuthenticationNegTC_40": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_SignupAuthorizeNegTC_33",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_ResetPasswordNegTC_07": [
+        "TC_ESignet_VerifyChallengeNegTC_40",
+        "TC_ESignet_VerifyChallengeForResetPasswordNegTC_17"
+    ],
+    "TC_ESignet_ResetPasswordNegTC_06": [
+        "TC_ESignet_VerifyChallengeNegTC_40",
+        "TC_ESignet_VerifyChallengeForResetPasswordNegTC_17"
+    ],
+    "TC_ESignet_ResetPasswordNegTC_05": ["TC_ESignet_VerifyChallengeNegTC_40"],
+    "TC_ESignet_ResetPasswordNegTC_04": ["TC_ESignet_VerifyChallengeNegTC_40"],
+    "TC_ESignet_AuthenticateUserPasswordNegTC_43": [
+        "TC_ESignet_OAuthDetailsRequestPasswordNegTC_01",
+        "TC_ESignet_VerifyChallengeNegTC_40"
+    ],
+    "TC_ESignet_AuthenticateUserPasswordNegTC_44": [
+        "TC_ESignet_OAuthDetailsRequestPasswordNegTC_02",
+        "TC_ESignet_VerifyChallengeNegTC_40"
+    ],
+    "TC_ESignet_ResetPasswordNegTC_09": [
+        "TC_ESignet_VerifyChallengeNegTC_40",
+        "TC_ESignet_VerifyChallengeForResetPasswordNegTC_17"
+    ],
+    "TC_ESignet_AuthenticateUserPasswordNegTC_45": [
+        "TC_ESignet_VerifyChallengeNegTC_40",
+        "TC_ESignet_OAuthDetailsRequestPasswordNegTC_03"
+    ],
+    "TC_ESignet_ResetPasswordNegTC_08": [
+        "TC_ESignet_VerifyChallengeNegTC_40",
+        "TC_ESignet_VerifyChallengeForResetPasswordNegTC_17"
+    ],
+    "TC_ESignet_AuthenticateUserPasswordNegTC_46": [
+        "TC_ESignet_OAuthDetailsRequestPasswordNegTC_01",
+        "TC_ESignet_GenerateChallenge_01"
+    ],
+    "TC_Signup_ESignet_ClaimDetails_Prerequisite": ["TC_Signup_ESignet_OAuthDetailsRequestV3_Prerequisite"],
+    "TC_ESignet_ResetPasswordNegTC_10": [
+        "TC_ESignet_VerifyChallengeNegTC_40",
+        "TC_ESignet_VerifyChallengeForResetPasswordNegTC_17"
+    ],
+    "TC_ESignet_ResetPasswordNegTC_14": ["TC_ESignet_VerifyChallengeForResetPasswordNegTC_17"],
+    "TC_ESignet_AuthenticateUserPasswordNegTC_29": [
+        "TC_ESignet_OAuthDetailsRequestPasswordNegTC_01",
+        "TC_ESignet_VerifyChallengeNegTC_40"
+    ],
+    "TC_ESignet_ResetPasswordNegTC_13": ["TC_ESignet_VerifyChallengeForResetPasswordNegTC_17"],
+    "TC_ESignet_ResetPasswordNegTC_12": ["TC_ESignet_VerifyChallengeForResetPasswordNegTC_17"],
+    "TC_ESignet_ResetPasswordNegTC_11": [
+        "TC_ESignet_VerifyChallengeNegTC_40",
+        "TC_ESignet_VerifyChallengeForResetPasswordNegTC_17"
+    ],
+    "TC_ESignet_GenerateChallengeNegTC_20": ["TC_ESignet_GenerateChallenge_01"],
+    "TC_ESignet_AuthenticateUserPasswordNegTC_30": [
+        "TC_ESignet_OAuthDetailsRequestPasswordNegTC_01",
+        "TC_ESignet_VerifyChallengeNegTC_40"
+    ],
+    "TC_ESignet_AuthenticateUserPasswordNegTC_31": [
+        "TC_ESignet_OAuthDetailsRequestPasswordNegTC_01",
+        "TC_ESignet_VerifyChallengeNegTC_40"
+    ],
+    "TC_ESignet_ResetPasswordNegTC_18": ["TC_ESignet_VerifyChallengeForResetPasswordNegTC_17"],
+    "TC_ESignet_AuthenticateUserPasswordNegTC_36": [
+        "TC_ESignet_OAuthDetailsRequestPasswordNegTC_01",
+        "TC_ESignet_VerifyChallengeNegTC_40"
+    ],
+    "TC_ESignet_ResetPasswordNegTC_17": ["TC_ESignet_VerifyChallengeForResetPasswordNegTC_17"],
+    "TC_ESignet_AuthenticateUserPasswordNegTC_37": [
+        "TC_ESignet_OAuthDetailsRequestPasswordNegTC_01",
+        "TC_ESignet_VerifyChallengeNegTC_40"
+    ],
+    "TC_ESignet_ResetPasswordNegTC_16": ["TC_ESignet_VerifyChallengeForResetPasswordNegTC_17"],
+    "TC_ESignet_AuthenticateUserPasswordNegTC_38": [
+        "TC_ESignet_OAuthDetailsRequestPasswordNegTC_01",
+        "TC_ESignet_GenerateChallenge_01"
+    ],
+    "TC_ESignet_ResetPasswordNegTC_15": ["TC_ESignet_VerifyChallengeForResetPasswordNegTC_17"],
+    "TC_ESignet_AuthenticateUserPasswordNegTC_39": [
+        "TC_ESignet_OAuthDetailsRequestPasswordNegTC_01",
+        "TC_ESignet_GenerateChallenge_01"
+    ],
+    "TC_ESignet_AuthenticateUserPasswordNegTC_32": [
+        "TC_ESignet_OAuthDetailsRequestPasswordNegTC_01",
+        "TC_ESignet_VerifyChallengeNegTC_40"
+    ],
+    "TC_ESignet_AuthenticateUserPasswordNegTC_33": [
+        "TC_ESignet_OAuthDetailsRequestPasswordNegTC_01",
+        "TC_ESignet_VerifyChallengeNegTC_40"
+    ],
+    "TC_ESignet_AuthenticateUserPasswordNegTC_34": [
+        "TC_ESignet_OAuthDetailsRequestPasswordNegTC_01",
+        "TC_ESignet_VerifyChallengeNegTC_40"
+    ],
+    "TC_ESignet_ResetPasswordNegTC_19": ["TC_ESignet_VerifyChallengeForResetPasswordNegTC_17"],
+    "TC_ESignet_AuthenticateUserPasswordNegTC_35": [
+        "TC_ESignet_OAuthDetailsRequestPasswordNegTC_01",
+        "TC_ESignet_VerifyChallengeNegTC_40"
+    ],
+    "TC_ESignet_ResetPasswordNegTC_21": ["TC_ESignet_VerifyChallengeForResetPasswordNegTC_17"],
+    "TC_ESignet_ResetPasswordNegTC_20": ["TC_ESignet_VerifyChallengeForResetPasswordNegTC_17"],
+    "TC_ESignet_ResetPasswordNegTC_25": [
+        "TC_ESignet_VerifyChallengeNegTC_40",
+        "TC_ESignet_VerifyChallengeForResetPasswordNegTC_17"
+    ],
+    "TC_ESignet_AuthenticateUserPasswordNegTC_18": ["TC_ESignet_OAuthDetailsRequestPasswordNegTC_01"],
+    "TC_ESignet_ResetPasswordNegTC_24": [
+        "TC_ESignet_VerifyChallengeNegTC_40",
+        "TC_ESignet_VerifyChallengeForResetPasswordNegTC_17"
+    ],
+    "TC_ESignet_AuthenticateUserPasswordNegTC_19": ["TC_ESignet_OAuthDetailsRequestPasswordNegTC_01"],
+    "TC_ESignet_ResetPasswordNegTC_23": [
+        "TC_ESignet_VerifyChallengeNegTC_40",
+        "TC_ESignet_VerifyChallengeForResetPasswordNegTC_17"
+    ],
+    "TC_ESignet_ResetPasswordNegTC_22": ["TC_ESignet_VerifyChallengeForResetPasswordNegTC_17"],
+    "TC_ESignet_VerifyChallengeNegTC_07": ["TC_ESignet_VerifyChallengeNegTC_07"],
+    "TC_ESignet_VerifyChallengeNegTC_06": ["TC_ESignet_VerifyChallengeNegTC_06"],
+    "TC_ESignet_VerifyChallengeNegTC_05": [
+        "TC_ESignet_VerifyChallengeNegTC_01",
+        "TC_ESignet_VerifyChallengeNegTC_05"
+    ],
+    "TC_ESignet_VerifyChallengeNegTC_04": ["TC_ESignet_VerifyChallengeNegTC_04"],
+    "TC_ESignet_GenerateChallengeNegTC_32": ["TC_ESignet_GenerateChallengeNegTC_31"],
+    "TC_ESignet_VerifyChallengeNegTC_09": ["TC_ESignet_VerifyChallengeNegTC_09"],
+    "TC_ESignet_VerifyChallengeNegTC_08": ["TC_ESignet_VerifyChallengeNegTC_08"],
+    "TC_ESignet_GenerateChallengeNegTC_33": ["TC_ESignet_GenerateChallengeNegTC_31"],
+    "TC_ESignet_GenerateChallengeNegTC_34": ["TC_ESignet_GenerateChallengeNegTC_31"],
+    "TC_ESignet_AuthenticateUserPasswordNegTC_20": ["TC_ESignet_OAuthDetailsRequestPasswordNegTC_01"],
+    "TC_ESignet_VerifyChallengeNegTC_03": ["TC_ESignet_VerifyChallengeNegTC_03"],
+    "TC_ESignet_VerifyChallengeNegTC_02": ["TC_ESignet_VerifyChallengeNegTC_02"],
+    "TC_ESignet_VerifyChallengeNegTC_01": ["TC_ESignet_VerifyChallengeNegTC_01"],
+    "TC_ESignet_ResetPasswordNegTC_29": [
+        "TC_ESignet_VerifyChallengeNegTC_40",
+        "TC_ESignet_VerifyChallengeForResetPasswordNegTC_17"
+    ],
+    "TC_ESignet_AuthenticateUserPasswordNegTC_25": [
+        "TC_ESignet_OAuthDetailsRequestPasswordNegTC_01",
+        "TC_ESignet_VerifyChallengeNegTC_40"
+    ],
+    "TC_ESignet_ResetPasswordNegTC_28": [
+        "TC_ESignet_VerifyChallengeNegTC_40",
+        "TC_ESignet_VerifyChallengeForResetPasswordNegTC_17"
+    ],
+    "TC_ESignet_AuthenticateUserPasswordNegTC_26": [
+        "TC_ESignet_OAuthDetailsRequestPasswordNegTC_01",
+        "TC_ESignet_VerifyChallengeNegTC_40"
+    ],
+    "TC_ESignet_ResetPasswordNegTC_27": [
+        "TC_ESignet_VerifyChallengeNegTC_40",
+        "TC_ESignet_VerifyChallengeForResetPasswordNegTC_17"
+    ],
+    "TC_ESignet_AuthenticateUserPasswordNegTC_27": [
+        "TC_ESignet_OAuthDetailsRequestPasswordNegTC_01",
+        "TC_ESignet_VerifyChallengeNegTC_40"
+    ],
+    "TC_ESignet_ResetPasswordNegTC_26": [
+        "TC_ESignet_VerifyChallengeNegTC_40",
+        "TC_ESignet_VerifyChallengeForResetPasswordNegTC_17"
+    ],
+    "TC_ESignet_AuthenticateUserPasswordNegTC_28": [
+        "TC_ESignet_OAuthDetailsRequestPasswordNegTC_01",
+        "TC_ESignet_VerifyChallengeNegTC_40"
+    ],
+    "TC_ESignet_AuthenticateUserPasswordNegTC_21": ["TC_ESignet_OAuthDetailsRequestPasswordNegTC_01"],
+    "TC_ESignet_AuthenticateUserPasswordNegTC_22": ["TC_ESignet_OAuthDetailsRequestPasswordNegTC_01"],
+    "TC_ESignet_AuthenticateUserPasswordNegTC_24": ["TC_ESignet_OAuthDetailsRequestPasswordNegTC_01"],
+    "TC_Signup_ESignet_PrepareSignupRedirect_Prerequisite_06": ["TC_Signup_ESignet_OAuthDetailsRequestV3_Prerequisite"],
+    "TC_ESignet_CompleteSignupVerification_03": ["TC_Signup_ESignet_OAuthDetailsRequestV3_Prerequisite"],
+    "TC_Signup_ESignet_PrepareSignupRedirect_Prerequisite_07": ["TC_Signup_ESignet_OAuthDetailsRequestV3_Prerequisite"],
+    "TC_ESignet_ResetPasswordNegTC_30": [
+        "TC_ESignet_VerifyChallengeNegTC_47",
+        "TC_ESignet_VerifyChallengeForResetPasswordNegTC_17"
+    ],
+    "TC_Signup_ESignet_PrepareSignupRedirect_Prerequisite_04": ["TC_Signup_ESignet_OAuthDetailsRequestV3_Prerequisite"],
+    "TC_Signup_ESignet_PrepareSignupRedirect_Prerequisite_05": ["TC_Signup_ESignet_OAuthDetailsRequestV3_Prerequisite"],
+    "TC_ESignet_AuthenticateUserPasswordNegTC_07": ["TC_ESignet_OAuthDetailsRequestPasswordNegTC_01"],
+    "TC_Signup_ESignet_PrepareSignupRedirect_Prerequisite_02": ["TC_Signup_ESignet_OAuthDetailsRequestV3_Prerequisite"],
+    "TC_ESignet_AuthenticateUserPasswordNegTC_08": [
+        "TC_ESignet_OAuthDetailsRequestPasswordNegTC_01",
+        "TC_ESignet_VerifyChallengeNegTC_40"
+    ],
+    "TC_Signup_ESignet_PrepareSignupRedirect_Prerequisite_03": ["TC_Signup_ESignet_OAuthDetailsRequestV3_Prerequisite"],
+    "TC_ESignet_AuthenticateUserPasswordNegTC_09": [
+        "TC_ESignet_OAuthDetailsRequestPasswordNegTC_01",
+        "TC_ESignet_VerifyChallengeNegTC_40"
+    ],
+    "TC_Signup_ESignet_PrepareSignupRedirect_Prerequisite_08": ["TC_Signup_ESignet_OAuthDetailsRequestV3_Prerequisite"],
+    "TC_ESignet_CompleteSignupVerification_01": ["TC_Signup_ESignet_OAuthDetailsRequestV3_01"],
+    "TC_ESignet_CompleteSignupVerification_02": ["TC_Signup_ESignet_OAuthDetailsRequestV3_Prerequisite"],
+    "TC_ESignet_GenerateToken_01": [
+        "TC_ESignet_AuthorizationCode_01",
+        "TC_ESignet_OIDCClientV2_01"
+    ],
+    "TC_ESignet_AuthenticateUserPasswordNegTC_14": ["TC_ESignet_OAuthDetailsRequestPasswordNegTC_01"],
+    "TC_ESignet_AuthenticateUserPasswordNegTC_15": ["TC_ESignet_OAuthDetailsRequestPasswordNegTC_01"],
+    "TC_ESignet_AuthenticateUserPasswordNegTC_16": ["TC_ESignet_OAuthDetailsRequestPasswordNegTC_01"],
+    "TC_ESignet_AuthenticateUserPasswordNegTC_17": ["TC_ESignet_OAuthDetailsRequestPasswordNegTC_01"],
+    "TC_ESignet_AuthenticateUserPasswordNegTC_10": [
+        "TC_ESignet_OAuthDetailsRequestPasswordNegTC_01",
+        "TC_ESignet_VerifyChallengeNegTC_40"
+    ],
+    "TC_ESignet_GetIdentityVerificationStatus_01": ["TC_ESignet_GetSlot_01"],
+    "TC_ESignet_AuthenticateUserPasswordNegTC_11": [
+        "TC_ESignet_OAuthDetailsRequestPasswordNegTC_01",
+        "TC_ESignet_VerifyChallengeNegTC_40"
+    ],
+    "TC_ESignet_AuthenticateUserPasswordNegTC_12": [
+        "TC_ESignet_OAuthDetailsRequestPasswordNegTC_01",
+        "TC_ESignet_VerifyChallengeNegTC_40"
+    ],
+    "TC_ESignet_AuthenticateUserPasswordNegTC_13": [
+        "TC_ESignet_OAuthDetailsRequestPasswordNegTC_01",
+        "TC_ESignet_VerifyChallengeNegTC_40"
+    ],
+    "TC_ESignet_GetIdentityVerificationStatus_02": ["TC_ESignet_GetSlot_02"],
+    "Signup_ESignet_AuthenticateUser_V3_AuthToken_Xsrf__uin_Otp_Valid_forprepareSignUpRedirect_Unauthenticated_Smoke": [
+        "TC_IdRepo_Dependent_AddIdentityMock_11",
+        "TC_Signup_ESignet_OAuthDetailsRequestV3_Prerequisite"
+    ],
+    "TC_ESignet_GetOidcUserInfo_01": ["TC_ESignet_GenerateToken_01"],
+    "TC_ESignet_IDTAuthenticationNegTC_07": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_SignupAuthorizeNegTC_33",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_IDTAuthenticationNegTC_05": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_SignupAuthorizeNegTC_33",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_IDTAuthenticationNegTC_06": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_SignupAuthorizeNegTC_33",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_AuthenticateUserV3_01": [
+        "TC_IdRepo_Dependent_AddIdentityMock_02",
+        "TC_Signup_ESignet_OAuthDetailsRequestV3_01"
+    ],
+    "TC_ESignet_IDTAuthenticationNegTC_03": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_SignupAuthorizeNegTC_33",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_IDTAuthenticationNegTC_04": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_SignupAuthorizeNegTC_33",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_IDTAuthenticationNegTC_01": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_SignupAuthorizeNegTC_33",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "Signup_ESignet_RegisterUserNegTC_Valid_smoke_For_Neg_Scenario": ["TC_ESignet_VerifyChallengeNegTC_40"],
+    "TC_ESignet_IDTAuthenticationNegTC_02": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_SignupAuthorizeNegTC_33",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_InitiateIdVerification_04": ["TC_ESignet_SignupAuthorizeCode_04"],
+    "TC_ESignet_InitiateIdVerification_05": ["TC_ESignet_SignupAuthorizeCode_05"],
+    "TC_ESignet_InitiateIdVerification_02": ["TC_ESignet_SignupAuthorizeCode_02"],
+    "TC_ESignet_InitiateIdVerification_03": ["TC_ESignet_SignupAuthorizeCode_03"],
+    "TC_ESignet_InitiateIdVerification_01": ["TC_ESignet_SignupAuthorizeCode_01"],
+    "TC_ESignet_IDTAuthenticationNegTC_19": ["TC_ESignet_PrepareSignupRedirectNegTC_19"],
+    "TC_ESignet_IDTAuthenticationNegTC_16": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_SignupAuthorizeNegTC_33",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_IDTAuthenticationNegTC_17": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_SignupAuthorizeNegTC_33",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "Signup_ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdtAuth_Smoke_sid": [
+        "TC_Signup_ESignet_PrepareSignupRedirect_Prerequisite_07",
+        "TC_Signup_ESignet_OAuthDetailsRequestV3_Prerequisite"
+    ],
+    "TC_ESignet_IDTAuthenticationNegTC_10": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_SignupAuthorizeNegTC_33",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "Signup_ESignet_AuthenticateUser_V3_AuthToken_Xsrf__uin_Otp_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_Smoke": [
+        "TC_IdRepo_Dependent_AddIdentityMock_07",
+        "TC_Signup_ESignet_OAuthDetailsRequestV3_Prerequisite"
+    ],
+    "TC_ESignet_IDTAuthenticationNegTC_11": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_SignupAuthorizeNegTC_33",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_IDTAuthenticationNegTC_14": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_SignupAuthorizeNegTC_33",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_IDTAuthenticationNegTC_15": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_SignupAuthorizeNegTC_33",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_IDTAuthenticationNegTC_12": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_SignupAuthorizeNegTC_33",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_IDTAuthenticationNegTC_13": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_SignupAuthorizeNegTC_33",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_OAuthDetailsRequestPasswordNegTC_01": ["TC_ESignet_OIDCClientV2_01"],
+    "TC_ESignet_OAuthDetailsRequestPasswordNegTC_02": ["TC_ESignet_OIDCClientV2_01"],
+    "TC_ESignet_OAuthDetailsRequestPasswordNegTC_03": ["TC_ESignet_OIDCClientV2_01"],
+    "TC_ESignet_IDTAuthenticationNegTC_29": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_SignupAuthorizeNegTC_33",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_IDTAuthenticationNegTC_27": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_SignupAuthorizeNegTC_33",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_IDTAuthenticationNegTC_21": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_SignupAuthorizeNegTC_33",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_IDTAuthenticationNegTC_22": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_SignupAuthorizeNegTC_33",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_IDTAuthenticationNegTC_20": ["TC_ESignet_SignupAuthorizeNegTC_33"],
+    "TC_ESignet_IDTAuthenticationNegTC_25": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_SignupAuthorizeNegTC_33",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_IDTAuthenticationNegTC_24": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_SignupAuthorizeNegTC_33",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "Signup_ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forDeletingCookies_Smoke_sid": [
+        "TC_Signup_ESignet_OAuthDetailsRequestV3_Prerequisite",
+        "TC_Signup_ESignet_PrepareSignupRedirect_Prerequisite_08"
+    ],
+    "Signup_ESignet_SignupAuthorizeCode_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdVerStatusWithoutWebsocket_Smoke_sid": [
+        "TC_Signup_ESignet_PrepareSignupRedirect_Prerequisite_06",
+        "TC_Signup_ESignet_OAuthDetailsRequestV3_Prerequisite",
+        "Signup_ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdVerStatusWithoutWebsocket_Smoke_sid"
+    ],
+    "TC_ESignet_IDTAuthenticationNegTC_38": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_SignupAuthorizeNegTC_33",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_IDTAuthenticationNegTC_39": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_SignupAuthorizeNegTC_33",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_IDTAuthenticationNegTC_32": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_SignupAuthorizeNegTC_33",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_IDTAuthenticationNegTC_33": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_SignupAuthorizeNegTC_33",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_IDTAuthenticationNegTC_30": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_SignupAuthorizeNegTC_33",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_IDTAuthenticationNegTC_31": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_SignupAuthorizeNegTC_33",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_IDTAuthenticationNegTC_36": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_SignupAuthorizeNegTC_33",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_IDTAuthenticationNegTC_37": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_SignupAuthorizeNegTC_33",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_IDTAuthenticationNegTC_34": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_SignupAuthorizeNegTC_33",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ],
+    "TC_ESignet_IDTAuthenticationNegTC_35": [
+        "TC_ESignet_PrepareSignupRedirectNegTC_19",
+        "TC_ESignet_SignupAuthorizeNegTC_33",
+        "TC_ESignet_OAuthDetailsRequestV3Neg_28"
+    ]
+}
