@@ -76,6 +76,8 @@ These configurations need to be added as part of the eSignet service deployment 
 These configurations need to be added as part of the Signup service deployment to support the API Test Rig:
 
 - **MOSIP_SIGNUP_SEND_CHALLENGE_CAPTCHA_REQUIRED**: false
+- **MOSIP_MOCK_IDA_IDENTITY_SCHEMA_URL**:
+    value: classpath:/mock-identity-signup-schema.json
 
 
 These parameters must be included in the eSignet and signup deployment YAML for the API Test Rig to function correctly, independent of which plugin is being used.
