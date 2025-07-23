@@ -71,7 +71,7 @@ These configurations need to be added as part of the eSignet service deployment 
 - **MOSIP_ESIGNET_SEND_OTP_ATTEMPTS**: 300
 - **MOSIP_ESIGNET_AUTH_CHALLENGE_BIO_MAX_LENGTH**: 200000
 - **MOSIP_ESIGNET_PREAUTHENTICATION_EXPIRE_IN_SECS**: 600
-- **MOSIP_ESIGNET_CAPTCHA_REQUIRED**: false
+- **MOSIP_ESIGNET_CAPTCHA_REQUIRED**: (empty)
 
 These configurations need to be added as part of the Signup service deployment to support the API Test Rig:
 
