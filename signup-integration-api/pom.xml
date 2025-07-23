@@ -7,11 +7,11 @@
     <parent>
         <groupId>io.mosip.signup</groupId>
         <artifactId>signup-parent</artifactId>
-        <version>1.2.1-SNAPSHOT</version>
+        <version>1.2.2-SNAPSHOT</version>
     </parent>
 
     <artifactId>signup-integration-api</artifactId>
-    <version>1.2.1-SNAPSHOT</version>
+    <version>1.2.2-SNAPSHOT</version>
     <name>signup-integration-api</name>
     <description>Sign Up Integration Library</description>
 
