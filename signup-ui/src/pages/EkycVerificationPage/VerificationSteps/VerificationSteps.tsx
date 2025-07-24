@@ -19,7 +19,7 @@ import LoadingIndicator from "~/common/LoadingIndicator";
 import {
   EkycVerificationStep,
   EkycVerificationStore,
-  kycProvidersListSelector,
+  hashCodeSelector,
   setStepSelector,
   providerListStatusSelector,
   useEkycVerificationStore,
@@ -40,43 +40,28 @@ export const VerificationSteps = ({
   });
   const [cancelButton, setCancelButton] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const { setStep, providerListStore, providerListStatus } =
-    useEkycVerificationStore(
-      useCallback(
-        (state: EkycVerificationStore) => ({
-          setStep: setStepSelector(state),
-          providerListStore: kycProvidersListSelector(state),
-          providerListStatus: providerListStatusSelector(state),
-        }),
-        []
-      )
-    );
-  const navigate = useNavigate();
-  const base64Regex =
-    /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/;
+  const { setStep, providerListStatus, hashCode } = useEkycVerificationStore(
+    useCallback(
+      (state: EkycVerificationStore) => ({
+        setStep: setStepSelector(state),
+        providerListStatus: providerListStatusSelector(state),
+        hashCode: hashCodeSelector(state),
+      }),
+      []
+    )
+  );
 
   const pollingUrl = POLLING_BASE_URL + "/actuator/health";
   const pollingConfig: PollingConfig = {
-      timeout: settings?.configs?.["offline.polling.timeout"] ?? 5000,
-      interval: settings?.configs?.["offline.polling.interval"] ?? 10000,
-      enabled: settings?.configs?.["offline.polling.enabled"] ?? true,
-      url: settings?.configs?.["offline.polling.url"] ?? pollingUrl
-    };
+    timeout: settings?.configs?.["offline.polling.timeout"] ?? 5000,
+    interval: settings?.configs?.["offline.polling.interval"] ?? 10000,
+    enabled: settings?.configs?.["offline.polling.enabled"] ?? true,
+    url: settings?.configs?.["offline.polling.url"] ?? pollingUrl,
+  };
 
-  const hashCode = window.location.hash.substring(1);
-  var decodedBase64;
-  var isValidHash = base64Regex.test(hashCode);
-
-  if (isValidHash) {
-    decodedBase64 = atob(hashCode);
-  } else {
-    navigate("/");
-  }
-
-  const params = new URLSearchParams(decodedBase64);
-  const hasState = params.has("state");
-  const hasCode = params.has("code");
-  const uiLocales = params.has("ui_locales");
+  const hasState = hashCode?.state && hashCode.state !== "";
+  const hasCode = hashCode?.code && hashCode.code !== "";
+  const uiLocales = hashCode?.uiLocales && hashCode.uiLocales !== "";
 
   const eKYCSteps = [
     {
