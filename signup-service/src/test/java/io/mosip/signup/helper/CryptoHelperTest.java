@@ -11,13 +11,8 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.IvParameterSpec;
-import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -64,13 +59,13 @@ public class CryptoHelperTest {
         String encryptedData = cryptoHelper.symmetricEncrypt(data);
 
         assertNotNull(encryptedData);
-        verify(cacheUtilService, times(1)).getActiveKeyAlias();
+        verify(cacheUtilService, times(1)).getActiveKeyAlias(anyString());
         verify(cacheUtilService, times(1)).getSecretKey(keyAlias);
 
         String decryptedData = cryptoHelper.symmetricDecrypt(encryptedData);
         assertNotNull(decryptedData);
         assertEquals(data, decryptedData);
-        verify(cacheUtilService, times(1)).getActiveKeyAlias();
+        verify(cacheUtilService, times(1)).getActiveKeyAlias(anyString());
         verify(cacheUtilService, times(2)).getSecretKey(keyAlias);
     }
 }
