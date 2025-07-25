@@ -3,7 +3,7 @@ modules:
     enabled: true
     image:
       repository: mosipid/apitest-esignet-signup
-      tag: 1.2.0
+      tag: 1.2.1
       pullPolicy: Always
 
 extraEnvVarsCM:
