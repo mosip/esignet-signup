@@ -7,7 +7,7 @@ if [ $# -ge 1 ] ; then
 fi
 
 NS=signup
-CHART_VERSION=1.2.1
+CHART_VERSION=1.2.1-develop
 
 while true; do
     read -p "Do you want to continue installing signup services? (y/n): " ans
@@ -34,7 +34,7 @@ function installing_signup() {
   done
 
   NS=signup
-  CHART_VERSION=1.2.1
+  CHART_VERSION=1.2.1-develop
 
   helm repo add mosip https://mosip.github.io/mosip-helm
   helm repo update
