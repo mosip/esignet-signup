@@ -20,7 +20,7 @@ done
 function installing_signup-ui() {
 
   while true; do
-      read -p "Do you want to continue installing esignet services? (y/n): "
+      read -p "Do you want to continue installing signup-ui service? (y/n): "
       if [ "$ans" = "Y" ] || [ "$ans" = "y" ]; then
           break
       elif [ "$ans" = "N" ] || [ "$ans" = "n" ]; then
