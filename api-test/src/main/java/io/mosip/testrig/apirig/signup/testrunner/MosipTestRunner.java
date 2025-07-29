@@ -118,6 +118,7 @@ public class MosipTestRunner {
 				
 				startTestRunner();
 				
+				// Used for generating the test case interdependency JSON file
 				//AdminTestUtil.generateTestCaseInterDependencies(getGlobalResourcePath() + "/config/testCaseInterDependency_" + SignupUtil.getPluginName() + ".json");
 				SignupUtil.dBCleanUp();
 				KeycloakUserManager.removeUser();
@@ -140,6 +141,7 @@ public class MosipTestRunner {
 				
 				startTestRunner();
 				
+				// Used for generating the test case interdependency JSON file
 				//AdminTestUtil.generateTestCaseInterDependencies(getGlobalResourcePath() + "/config/testCaseInterDependency_" + SignupUtil.getPluginName() + ".json");
 			}
 
