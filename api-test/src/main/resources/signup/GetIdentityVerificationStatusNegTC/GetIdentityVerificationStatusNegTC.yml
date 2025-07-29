@@ -1,5 +1,5 @@
 GetIdentityVerificationStatusNegTC:
-   Signup_ESignet_GetIdentityVerificationStatus_AuthToken_Xsrf_STransId_uin_all_before_initiating_websocket_connection_Neg:
+   Signup_ESignet_GetIdentityVerificationStatusNegTC_AuthToken_Xsrf_STransId_uin_all_before_initiating_websocket_connection_Neg:
       endPoint: /v1/signup/identity-verification/status
       uniqueIdentifier: TC_Signup_ESignet_GetIdentityVerificationStatusNegTC_01
       description: Get Identity Verification Status with invalid an IDV slot assigned in the cookie
@@ -18,7 +18,7 @@ GetIdentityVerificationStatusNegTC:
     }
   ]
 }'
-   Signup_ESignet_GetIdentityVerificationStatus_AuthToken_Xsrf_STransId_uin_Empty_GetSlot_Id_Neg:
+   Signup_ESignet_GetIdentityVerificationStatusNegTC_AuthToken_Xsrf_STransId_uin_Empty_GetSlot_Id_Neg:
       endPoint: /v1/signup/identity-verification/status
       uniqueIdentifier: TC_Signup_ESignet_GetIdentityVerificationStatusNegTC_02
       description: Get Identity Verification Status with an empty getSlotId
@@ -37,7 +37,7 @@ GetIdentityVerificationStatusNegTC:
     }
   ]
 }'
-   Signup_ESignet_GetIdentityVerificationStatus_AuthToken_Xsrf_STransId_uin_all_without_IDV_SLOT_ALLOTTED_in_the_cookie_Neg:
+   Signup_ESignet_GetIdentityVerificationStatusNegTC_AuthToken_Xsrf_STransId_uin_all_without_IDV_SLOT_ALLOTTED_in_the_cookie_Neg:
       endPoint: /v1/signup/identity-verification/status
       uniqueIdentifier: TC_Signup_ESignet_GetIdentityVerificationStatusNegTC_03
       description: Get Identity Verification Status without an IDV slot assigned in the cookie
@@ -56,7 +56,7 @@ GetIdentityVerificationStatusNegTC:
     }
   ]
 }'
-   Signup_ESignet_GetIdentityVerificationStatus_AuthToken_Xsrf_STransId_uin_all_with_invalid_IDV_SLOT_ALLOTTED_in_the_cookie_Neg:
+   Signup_ESignet_GetIdentityVerificationStatusNegTC_AuthToken_Xsrf_STransId_uin_all_with_invalid_IDV_SLOT_ALLOTTED_in_the_cookie_Neg:
       endPoint: /v1/signup/identity-verification/status
       uniqueIdentifier: TC_Signup_ESignet_GetIdentityVerificationStatusNegTC_04
       description: Get Identity Verification Status with invalid an IDV slot assigned in the cookie
@@ -75,7 +75,7 @@ GetIdentityVerificationStatusNegTC:
     }
   ]
 }'
-   Signup_ESignet_GetIdentityVerificationStatus_AuthToken_Xsrf_STransId_uin_all_without_websocket_connection_Neg:
+   Signup_ESignet_GetIdentityVerificationStatusNegTC_AuthToken_Xsrf_STransId_uin_all_without_websocket_connection_Neg:
       endPoint: /v1/signup/identity-verification/status
       uniqueIdentifier: TC_Signup_ESignet_GetIdentityVerificationStatusNegTC_05
       description: Get Identity Verification Status without initiating websocket connection

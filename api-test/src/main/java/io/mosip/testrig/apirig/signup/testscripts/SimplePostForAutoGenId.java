@@ -133,7 +133,7 @@ public class SimplePostForAutoGenId extends SignupUtil implements ITest {
 					throw new AdminTestException("Failed at output validation");
 			}
 		} else {
-			inputJson = SignupUtil.inputstringKeyWordHandeler(inputJson, testCaseName);
+			inputJson = inputstringKeyWordHandeler(inputJson, testCaseName);
 			if (testCaseName.contains("ESignet_")) {
 				if (SignupConfigManager.isInServiceNotDeployedList(GlobalConstants.ESIGNET)) {
 					throw new SkipException("esignet is not deployed hence skipping the testcase");

@@ -118,7 +118,7 @@ public class PostWithOnlyPathParam extends SignupUtil implements ITest {
 
 		else {
 			String inputJson = getJsonFromTemplate(testCaseDTO.getInput(), testCaseDTO.getInputTemplate());
-			inputJson = SignupUtil.inputstringKeyWordHandeler(inputJson, testCaseName);
+			inputJson = inputstringKeyWordHandeler(inputJson, testCaseName);
 			response = postWithOnlyPathParamAndCookie(ApplnURI + testCaseDTO.getEndPoint(), inputJson, COOKIENAME,
 					testCaseDTO.getRole(), testCaseDTO.getTestCaseName(), sendEsignetToken);
 

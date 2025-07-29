@@ -103,7 +103,7 @@ public class AddIdentity extends SignupUtil implements ITest {
 
 			String inputJson = getJsonFromTemplate(testCaseDTO.getInput(), testCaseDTO.getInputTemplate());
 
-			inputJson = SignupUtil.inputstringKeyWordHandeler(inputJson, testCaseName);
+			inputJson = inputstringKeyWordHandeler(inputJson, testCaseName);
 
 			if (inputJson.contains("$RANDOMINDIVIDUALIDFORMOCKIDENTITY$")) {
 				inputJson = replaceKeywordWithValue(inputJson, "$RANDOMINDIVIDUALIDFORMOCKIDENTITY$", individualIDStr);
@@ -145,6 +145,7 @@ public class AddIdentity extends SignupUtil implements ITest {
 		} else {
 			isWaitRequired = true;
 			testCaseDTO.setInputTemplate(AdminTestUtil.modifySchemaGenerateHbs(testCaseDTO.isRegenerateHbs()));
+			addBirthDateIfMissingInIdentityBlock(testCaseDTO);
 			String uin = JsonPrecondtion.getValueFromJson(
 					RestClient.getRequestWithCookie(ApplnURI + "/v1/idgenerator/uin", MediaType.APPLICATION_JSON,
 							MediaType.APPLICATION_JSON, COOKIENAME,
@@ -175,7 +176,7 @@ public class AddIdentity extends SignupUtil implements ITest {
 				inputJson = replaceKeywordWithValue(inputJson, "$EMAILVALUE$", email);
 			}
 			
-			inputJson = SignupUtil.inputstringKeyWordHandeler(inputJson, testCaseName);
+			inputJson = inputstringKeyWordHandeler(inputJson, testCaseName);
 
 			response = postWithBodyAndCookie(ApplnURI + testCaseDTO.getEndPoint(), inputJson, COOKIENAME,
 					testCaseDTO.getRole(), testCaseDTO.getTestCaseName());
