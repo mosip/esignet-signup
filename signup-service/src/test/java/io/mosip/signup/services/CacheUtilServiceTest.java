@@ -29,14 +29,10 @@ import org.springframework.data.redis.connection.RedisScriptingCommands;
 import org.springframework.data.redis.connection.ReturnType;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
-import org.springframework.web.client.RestTemplate;
-
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeUnit;
-
-import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+
 
 @RunWith(MockitoJUnitRunner.class)
 public class CacheUtilServiceTest {
@@ -63,50 +59,50 @@ public class CacheUtilServiceTest {
         RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85512123123", Purpose.REGISTRATION);
         registrationTransaction.setChallengeHash("123456-HASH");
 
-        when(cache.get("mock", RegistrationTransaction.class)).thenReturn(registrationTransaction);
-        when(cacheManager.getCache(anyString())).thenReturn(cache);
+        Mockito.when(cache.get("mock", RegistrationTransaction.class)).thenReturn(registrationTransaction);
+        Mockito.when(cacheManager.getCache(anyString())).thenReturn(cache);
 
-        assertEquals(cacheUtilService.createUpdateChallengeGeneratedTransaction("mock",
+        Assert.assertEquals(cacheUtilService.createUpdateChallengeGeneratedTransaction("mock",
                 registrationTransaction), registrationTransaction);
-        assertEquals(cacheUtilService.setChallengeVerifiedTransaction("mock", "vmock",
+        Assert.assertEquals(cacheUtilService.setChallengeVerifiedTransaction("mock", "vmock",
                 registrationTransaction), registrationTransaction);
-        assertEquals(cacheUtilService.setStatusCheckTransaction("mock",
+        Assert.assertEquals(cacheUtilService.setStatusCheckTransaction("mock",
                 registrationTransaction), registrationTransaction);
 
         Assert.assertNotNull(cacheUtilService.getChallengeGeneratedTransaction("mock"));
         Assert.assertNotNull(cacheUtilService.getChallengeVerifiedTransaction("mock"));
         Assert.assertNotNull(cacheUtilService.getStatusCheckTransaction("mock"));
-        assertEquals(cacheUtilService.blockIdentifier("mock-transaction", "key","value"), "value");
-        assertEquals(cacheUtilService.setSecretKey("key","value"), "value");
-        assertEquals(cacheUtilService.setActiveKeyAlias("key","value"), "value");
+        Assert.assertEquals(cacheUtilService.blockIdentifier("mock-transaction", "key","value"), "value");
+        Assert.assertEquals(cacheUtilService.setSecretKey("key","value"), "value");
+        Assert.assertEquals(cacheUtilService.setActiveKeyAlias("key","value"), "value");
         IdentityVerifierDetail[] identityVerifierDetails = new IdentityVerifierDetail[]{};
         IdentityVerificationTransaction identityVerificationTransaction=new IdentityVerificationTransaction();
         Assert.assertArrayEquals(cacheUtilService.setIdentityVerifierDetails("key",identityVerifierDetails), identityVerifierDetails);
-        assertEquals(cacheUtilService.setIdentityVerificationTransaction("transactionId",identityVerificationTransaction),identityVerificationTransaction);
+        Assert.assertEquals(cacheUtilService.setIdentityVerificationTransaction("transactionId",identityVerificationTransaction),identityVerificationTransaction);
     }
 
     @Test
     public void setChallengeTransaction_thenPass() {
-        when(cacheManager.getCache(anyString())).thenReturn(cache);
+        Mockito.when(cacheManager.getCache(anyString())).thenReturn(cache);
         RegistrationTransaction registrationTransaction = new RegistrationTransaction("+85512123123", Purpose.REGISTRATION);
-        assertEquals(cacheUtilService.createUpdateChallengeGeneratedTransaction("mock-transaction", registrationTransaction), registrationTransaction);
+        Assert.assertEquals(cacheUtilService.createUpdateChallengeGeneratedTransaction("mock-transaction", registrationTransaction), registrationTransaction);
         Assert.assertNotNull(cacheUtilService.createUpdateChallengeGeneratedTransaction("mock-transaction", registrationTransaction));
     }
 
     @Test
     public void getActiveKeyAlias_withValidCacheKey_thenPass() {
         String expectedAlias = "activeKeyAlias";
-        when(cacheManager.getCache(SignUpConstants.KEY_ALIAS)).thenReturn(cache);
-        when(cache.get(eq(CryptoHelper.ALIAS_CACHE_KEY), eq(String.class))).thenReturn(expectedAlias);
+        Mockito.when(cacheManager.getCache(SignUpConstants.KEY_ALIAS)).thenReturn(cache);
+        Mockito.when(cache.get(eq(CryptoHelper.ALIAS_CACHE_KEY), eq(String.class))).thenReturn(expectedAlias);
         String actualAlias = cacheUtilService.getActiveKeyAlias();
-        assertEquals(expectedAlias, actualAlias);
+        Assert.assertEquals(expectedAlias, actualAlias);
     }
 
     @Test
     public void getSetSlotCount_withNullRedisConnection_thenFail() {
-        when(redisConnectionFactory.getConnection()).thenReturn(null);
+        Mockito.when(redisConnectionFactory.getConnection()).thenReturn(null);
         Long result = cacheUtilService.getSetSlotCount("testField", 1000L, 10);
-        assertEquals(Long.valueOf(-1L), result);
+        Assert.assertEquals(Long.valueOf(-1L), result);
     }
 
     @Test
@@ -115,10 +111,10 @@ public class CacheUtilServiceTest {
         RedisScriptingCommands scriptingCommands = Mockito.mock(RedisScriptingCommands.class);
         String scriptHash = "mockScriptHash";
         Long expectedResult = 1L;
-        when(redisConnectionFactory.getConnection()).thenReturn(redisConnection);
-        when(redisConnection.scriptingCommands()).thenReturn(scriptingCommands);
-        when(scriptingCommands.scriptLoad(any(byte[].class))).thenReturn(scriptHash);
-        when(scriptingCommands.evalSha(
+        Mockito.when(redisConnectionFactory.getConnection()).thenReturn(redisConnection);
+        Mockito.when(redisConnection.scriptingCommands()).thenReturn(scriptingCommands);
+        Mockito.when(scriptingCommands.scriptLoad(any(byte[].class))).thenReturn(scriptHash);
+        Mockito.when(scriptingCommands.evalSha(
                 eq(scriptHash),
                 eq(ReturnType.INTEGER),
                 eq(1),
@@ -128,9 +124,9 @@ public class CacheUtilServiceTest {
                 any(byte[].class)
         )).thenReturn(expectedResult);
         Long result = cacheUtilService.getSetSlotCount("testField", 1000L, 10);
-        assertEquals(expectedResult, result);
-        verify(scriptingCommands).scriptLoad(any(byte[].class));
-        verify(scriptingCommands).evalSha(
+        Assert.assertEquals(expectedResult, result);
+        Mockito.verify(scriptingCommands).scriptLoad(any(byte[].class));
+        Mockito.verify(scriptingCommands).evalSha(
                 eq(scriptHash),
                 eq(ReturnType.INTEGER),
                 eq(1),
@@ -148,10 +144,10 @@ public class CacheUtilServiceTest {
         RedisConnection redisConnection = Mockito.mock(RedisConnection.class);
         RedisScriptingCommands scriptingCommands = Mockito.mock(RedisScriptingCommands.class);
         String scriptHash = "mockScriptHash";
-        when(redisConnectionFactory.getConnection()).thenReturn(redisConnection);
-        when(redisConnection.scriptingCommands()).thenReturn(scriptingCommands);
-        when(scriptingCommands.scriptLoad(any(byte[].class))).thenReturn(scriptHash);
-        when(redisConnection.scriptingCommands().evalSha(
+        Mockito.when(redisConnectionFactory.getConnection()).thenReturn(redisConnection);
+        Mockito.when(redisConnection.scriptingCommands()).thenReturn(scriptingCommands);
+        Mockito.when(scriptingCommands.scriptLoad(any(byte[].class))).thenReturn(scriptHash);
+        Mockito.when(redisConnection.scriptingCommands().evalSha(
                 eq(scriptHash),
                 eq(ReturnType.INTEGER),
                 eq(1),
@@ -160,8 +156,8 @@ public class CacheUtilServiceTest {
                 any(byte[].class)
         )).thenReturn(1L);
         cacheUtilService.updateSlotExpireTime(field, expireTimeInMillis);
-        verify(scriptingCommands).scriptLoad(any(byte[].class));
-        verify(scriptingCommands).evalSha(
+        Mockito.verify(scriptingCommands).scriptLoad(any(byte[].class));
+        Mockito.verify(scriptingCommands).evalSha(
                 eq(scriptHash),
                 eq(ReturnType.INTEGER),
                 eq(1),
@@ -175,9 +171,9 @@ public class CacheUtilServiceTest {
     public void updateVerifiedSlotTransaction_whenCacheIsNull_thenFail() {
         String slotId = "slot123";
         IdentityVerificationTransaction transaction = new IdentityVerificationTransaction();
-        when(cacheManager.getCache(SignUpConstants.VERIFIED_SLOT)).thenReturn(null);
+        Mockito.when(cacheManager.getCache(SignUpConstants.VERIFIED_SLOT)).thenReturn(null);
         cacheUtilService.updateVerifiedSlotTransaction(slotId, transaction);
-        verifyNoInteractions(cache);
+        Mockito.verifyNoInteractions(cache);
     }
 
     @Test
@@ -186,9 +182,9 @@ public class CacheUtilServiceTest {
         IdentityVerificationTransaction transaction = new IdentityVerificationTransaction();
         transaction.setStatus(VerificationStatus.COMPLETED);
         transaction.setErrorCode("NO_ERROR");
-        when(cacheManager.getCache(SignUpConstants.VERIFIED_SLOT)).thenReturn(cache);
+        Mockito.when(cacheManager.getCache(SignUpConstants.VERIFIED_SLOT)).thenReturn(cache);
         cacheUtilService.updateVerifiedSlotTransaction(slotId, transaction);
-        verify(cache).put(slotId, transaction);
+        Mockito.verify(cache).put(slotId, transaction);
     }
 
     @Test
@@ -196,10 +192,10 @@ public class CacheUtilServiceTest {
         String haltedTransactionId = "txn123";
         String cacheKey = Constants.HALTED_CACHE + "::" + haltedTransactionId;
 
-        when(redisTemplate.opsForValue()).thenReturn(valueOperations);
-        when(valueOperations.get(cacheKey)).thenReturn(null);
+        Mockito.when(redisTemplate.opsForValue()).thenReturn(valueOperations);
+        Mockito.when(valueOperations.get(cacheKey)).thenReturn(null);
         cacheUtilService.updateVerificationStatus(haltedTransactionId, "FAILED", "ERROR");
-        verify(valueOperations, never()).set(anyString(), any(), anyLong(), any());
+        Mockito.verify(valueOperations, Mockito.never()).set(anyString(), any(), anyLong(), any());
     }
 
     @Test
@@ -213,13 +209,13 @@ public class CacheUtilServiceTest {
         transaction.setVerificationStatus(status);
         transaction.setVerificationErrorCode(errorCode);
 
-        when(redisTemplate.opsForValue()).thenReturn(valueOperations);
-        when(valueOperations.get(cacheKey)).thenReturn(transaction);
-        when(redisTemplate.getExpire(cacheKey)).thenReturn(300L);
+        Mockito.when(redisTemplate.opsForValue()).thenReturn(valueOperations);
+        Mockito.when(valueOperations.get(cacheKey)).thenReturn(transaction);
+        Mockito.when(redisTemplate.getExpire(cacheKey)).thenReturn(300L);
         cacheUtilService.updateVerificationStatus(haltedTransactionId, status, errorCode);
-        assertEquals(status, transaction.getVerificationStatus());
-        assertEquals(errorCode, transaction.getVerificationErrorCode());
-        verify(valueOperations).set(cacheKey, transaction, 300L, TimeUnit.SECONDS);
+        Assert.assertEquals(status, transaction.getVerificationStatus());
+        Assert.assertEquals(errorCode, transaction.getVerificationErrorCode());
+        Mockito.verify(valueOperations).set(cacheKey, transaction, 300L, TimeUnit.SECONDS);
     }
 
 }

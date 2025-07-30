@@ -81,9 +81,6 @@ public class IdentityVerificationServiceTest {
     @Mock
     private IdentityVerifierFactory identityVerifierFactory;
 
-    @Captor
-    private ArgumentCaptor<ProfileDto> profileDtoCaptor;
-
     @Mock
     private AuditHelper auditHelper;
 
