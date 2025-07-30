@@ -35,6 +35,7 @@ import io.mosip.testrig.apirig.testrunner.OTPListener;
 import io.mosip.testrig.apirig.utils.AdminTestUtil;
 import io.mosip.testrig.apirig.utils.AuthTestsUtil;
 import io.mosip.testrig.apirig.utils.CertsUtil;
+import io.mosip.testrig.apirig.utils.DependencyResolver;
 import io.mosip.testrig.apirig.utils.GlobalConstants;
 import io.mosip.testrig.apirig.utils.GlobalMethods;
 import io.mosip.testrig.apirig.utils.JWKKeyUtil;
@@ -61,7 +62,7 @@ public class MosipTestRunner {
 	public static boolean skipAll = false;
 	
 	public static String PLUGIN_NAME = null;
-
+	
 	/**
 	 * C Main method to start mosip test execution
 	 * 
@@ -87,6 +88,8 @@ public class MosipTestRunner {
 			GlobalMethods.setModuleNameAndReCompilePattern(SignupConfigManager.getproperty("moduleNamePattern"));
 			GlobalMethods.reportCaptchaStatus(GlobalConstants.CAPTCHA_ENABLED, false);
 			setLogLevels();
+			
+			String testCasesToExecuteString = SignupConfigManager.getproperty("testCasesToExecute");
 
 			if (SignupUtil.getIdentityPluginNameFromEsignetActuator().toLowerCase()
 					.contains("idaauthenticatorimpl") == true) {
@@ -106,7 +109,17 @@ public class MosipTestRunner {
 
 				// Generating biometric details with mock MDS
 				BiometricDataProvider.generateBiometricTestData("Registration");
+				
+				DependencyResolver.loadDependencies(getGlobalResourcePath() + "/config/testCaseInterDependency_"
+						+ SignupUtil.getPluginName() + ".json");
+				if (!testCasesToExecuteString.isBlank()) {
+					SignupUtil.testCasesInRunScope = DependencyResolver.getDependencies(testCasesToExecuteString);
+				}
+				
 				startTestRunner();
+				
+				// Used for generating the test case interdependency JSON file
+				//AdminTestUtil.generateTestCaseInterDependencies(getGlobalResourcePath() + "/config/testCaseInterDependency_" + SignupUtil.getPluginName() + ".json");
 				SignupUtil.dBCleanUp();
 				KeycloakUserManager.removeUser();
 				KeycloakUserManager.closeKeycloakInstance();
@@ -119,7 +132,17 @@ public class MosipTestRunner {
 				additionalPropertiesMap.put(SignupConstants.PRE_CONFIGURED_OTP_STRING, SignupConstants.ALL_ONE_OTP_STRING);
 				SignupConfigManager.add(additionalPropertiesMap);
 				SignupUtil.getSupportedLanguage();
+				
+				DependencyResolver.loadDependencies(getGlobalResourcePath() + "/config/testCaseInterDependency_"
+						+ SignupUtil.getPluginName() + ".json");
+				if (!testCasesToExecuteString.isBlank()) {
+					SignupUtil.testCasesInRunScope = DependencyResolver.getDependencies(testCasesToExecuteString);
+				}
+				
 				startTestRunner();
+				
+				// Used for generating the test case interdependency JSON file
+				//AdminTestUtil.generateTestCaseInterDependencies(getGlobalResourcePath() + "/config/testCaseInterDependency_" + SignupUtil.getPluginName() + ".json");
 			}
 
 		} catch (Exception e) {
