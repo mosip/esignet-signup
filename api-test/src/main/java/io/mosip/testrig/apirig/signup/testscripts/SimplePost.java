@@ -151,7 +151,7 @@ public class SimplePost extends SignupUtil implements ITest {
 		}
 
 		else {
-			inputJson = SignupUtil.inputstringKeyWordHandeler(inputJson, testCaseName);
+			inputJson = inputstringKeyWordHandeler(inputJson, testCaseName);
 			String tempUrl = SignupConfigManager.getEsignetBaseUrl();
 			if (testCaseDTO.getEndPoint().contains("/signup/"))
 				tempUrl = SignupConfigManager.getSignupBaseUrl();
