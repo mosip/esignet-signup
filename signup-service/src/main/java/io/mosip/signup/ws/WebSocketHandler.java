@@ -48,6 +48,10 @@ public class WebSocketHandler {
 
 
     public void processFrames(IdentityVerificationRequest identityVerificationRequest) {
+        if(identityVerificationRequest == null){
+            log.error("Ignoring identity verification request if it is null!");
+            return;
+        }
         String errorCode = null;
         try {
             validate(identityVerificationRequest);
