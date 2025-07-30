@@ -13,6 +13,7 @@ import io.mosip.signup.api.exception.IdentityVerifierException;
 import io.mosip.signup.api.util.ProcessType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 
 import java.util.List;
@@ -22,14 +23,16 @@ public abstract class IdentityVerifierPlugin {
 
     private static final String START_STEP = "START";
     private static final String END_STEP = "END";
-    public static final String RESULT_TOPIC = "ANALYZE_FRAMES_RESULT";
+
+    @Value("${mosip.signup.identity.verification.result.kafka.topic:ANALYZE_FRAMES_RESULT}")
+    private String resultTopic;
 
     @Autowired
     public KafkaTemplate<String, IdentityVerificationResult> kafkaTemplate;
 
     protected void publishAnalysisResult(IdentityVerificationResult identityVerificationResult) {
         log.info("publishAnalysisResult by {} invoked with result : {}", identityVerificationResult.getVerifierId(), identityVerificationResult);
-        kafkaTemplate.send(RESULT_TOPIC, identityVerificationResult);
+        kafkaTemplate.send(resultTopic, identityVerificationResult);
     }
 
     public final boolean isStartStep(String stepCode) {

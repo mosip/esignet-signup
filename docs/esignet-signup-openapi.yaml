@@ -1256,21 +1256,7 @@ paths:
       description: |-
         Endpoint to get the details on how and what to render in the registration screen.
 
-        1. Validates the cookie with valid VERIFIED_TRANSACTION_ID.
       operationId: get-ui-spec
-      parameters:
-        - name: X-XSRF-TOKEN
-          in: header
-          description: CSRF token as set in cookie key 'XSRF-TOKEN'
-          required: false
-          schema:
-            type: string
-        - name: VERIFIED_TRANSACTION_ID
-          in: cookie
-          description: Transaction ID set after successful OTP verification
-          required: true
-          schema:
-            type: string
       responses:
         '200':
           description: OK

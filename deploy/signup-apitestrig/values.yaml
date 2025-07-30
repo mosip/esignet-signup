@@ -6,6 +6,19 @@ modules:
       tag: develop
       pullPolicy: Always
 
+extraEnvVarsCM:
+  - esignet-global
+  - s3
+  - keycloak-host
+  - db
+  - apitestrig
+
+extraEnvVarsSecret:
+  - apitestrig-esignet-signup-apitestrig
+  - s3-esignet-signup-apitestrig
+  - keycloak-client-secrets
+  - postgres-postgresql
+
 resources:
   limits:
     cpu: 300m

@@ -90,7 +90,7 @@ To complete the signup portal deployment below MOSIP kernel services are require
         * Retrieve the Keycloak URL from the config-map under keycloak-host → keycloak-external-url.
 2. Navigate to **"Register"** → **"Get CSRF token"** →  **generate CSRF token** → to fetch the CSRF token.
 
-3. Execute `create-signup-oidc-keystore.sh` [here](postman-collection/create-signup-oidc-keystore.sh) to generate a keypair. This script after successful execution creates 2 files in the project root directory:
+3. Execute `create-signup-oidc-keystore.sh` [here](postman-collection/create-signup-oidc-keystore.sh) to generate a keypair. If required consider changing the keystore password in the `create-signup-oidc-keystore.sh` script before execution. This script after successful execution creates 2 files in the project root directory:
     oidckeystore.p12
     public_key.jwk
 
@@ -109,7 +109,7 @@ To complete the signup portal deployment below MOSIP kernel services are require
             * redirect-uri
 
         * Execute the request.
-    *  Make sure to update the `signup-keystore-password` in the secrets as passed while creating the p12 file.
+    *  Make sure to update the `signup-keystore-password` in the keycloak secrets as updated while generating the p12 file.
 5. Mount oidckeystore.p12 as a `signup-keystore` secret to the **signup deployment**.
 
 ## APIs

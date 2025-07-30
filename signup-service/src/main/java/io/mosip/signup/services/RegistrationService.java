@@ -85,6 +85,9 @@ public class RegistrationService {
     @Value("${mosip.signup.send-challenge.captcha-required:true}")
     private boolean captchaRequired;
 
+    @Value("${mosip.signup.individualid.postfix:}")
+    private String individualIdPostfix;
+
 
     /**
      * Generate and regenerate challenge based on the "regenerate" flag in the request.
@@ -288,21 +291,13 @@ public class RegistrationService {
         return registrationStatusResponse;
     }
 
-    public JsonNode getSchema(String transactionId) {
-        if (transactionId == null || transactionId.isEmpty())
-            throw new InvalidTransactionException();
-
-        RegistrationTransaction transaction = cacheUtilService.getChallengeVerifiedTransaction(transactionId);
-        if(transaction == null) {
-            log.error("Transaction {} : not found in ChallengeVerifiedTransaction cache", transactionId);
-            throw new InvalidTransactionException();
-        }
+    public JsonNode getSchema() {
         return profileRegistryPlugin.getUISpecification();
     }
 
     private void fetchAndCheckIdentity(RegistrationTransaction registrationTransaction,
                                        VerifyChallengeRequest verifyChallengeRequest) {
-        ProfileDto profileDto = profileRegistryPlugin.getProfile(verifyChallengeRequest.getIdentifier());
+        ProfileDto profileDto = profileRegistryPlugin.getProfile(verifyChallengeRequest.getIdentifier()+individualIdPostfix);
 
         switch (registrationTransaction.getPurpose()) {
             case REGISTRATION:

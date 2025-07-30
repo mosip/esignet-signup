@@ -123,6 +123,7 @@ export interface BaseRequestDto {
 }
 
 export interface SettingsConfig {
+  "identifier.name": string;
   "identifier.pattern": string;
   "identifier.prefix": string;
   "captcha.site.key": string;
