@@ -134,54 +134,28 @@ public class GetWithParam extends SignupUtil implements ITest {
 
 		else {
 			String inputJson = getJsonFromTemplate(testCaseDTO.getInput(), testCaseDTO.getInputTemplate());
-			inputJson = SignupUtil.inputstringKeyWordHandeler(inputJson, testCaseName);
-			
+			inputJson = inputstringKeyWordHandeler(inputJson, testCaseName);
+
 			if (testCaseName.contains("ESignet_")) {
 				String tempUrl = SignupConfigManager.getEsignetBaseUrl();
 				if (testCaseDTO.getEndPoint().contains("/signup/"))
 					tempUrl = SignupConfigManager.getSignupBaseUrl();
 
-				if (testCaseName.contains("_AuthToken_Xsrf_")) {
-					response = getRequestWithCookieAuthHeaderAndXsrfToken(tempUrl + testCaseDTO.getEndPoint(),
-							inputJson, COOKIENAME, testCaseDTO.getRole(), testCaseDTO.getTestCaseName());
+				boolean isPollingRequired = (testCaseName.startsWith("Signup_ESignet_GetIdentityVerificationStatus_")
+						|| testCaseName.startsWith("Signup_ESignet_GetRegistrationStatus_"))
+						&& getPluginName().equals("mosip-id");
+
+				if (isPollingRequired) {
+					boolean useXsrfRequest = testCaseName.contains("_AuthToken_Xsrf_");
+					response = pollUntilStatusCompletedOrFailed(testCaseDTO, tempUrl, inputJson, useXsrfRequest,
+							COOKIENAME);
 				} else {
-					if (testCaseName.startsWith("Signup_ESignet_GetRegistrationStatus_")
-							&& SignupUtil.getIdentityPluginNameFromEsignetActuator().toLowerCase()
-									.contains("idaauthenticatorimpl") == true) {
-						// Retrieve and convert values from getValueFromEsignetActuator method, using
-						// default value 1 if null or empty
-						int signupStatusReqLimit = SignupUtil.parseToInt(SignupUtil.getValueFromSignupActuator(
-								SignupConfigManager.getEsignetActuatorPropertySection(),
-								SignupConstants.MOSIP_SIGNUP_STATUS_REQUEST_LIMIT_STRING), 1);
-						int signupStatusReqDelayTimeInSecs = SignupUtil.parseToInt(SignupUtil
-								.getValueFromSignupActuator(SignupConfigManager.getEsignetActuatorPropertySection(),
-										SignupConstants.MOSIP_SIGNUP_STATUS_REQUEST_DELAY_STRING),
-								20);
-						int currLoopCount = 0;
-
-						while (currLoopCount < signupStatusReqLimit) {
-							response = getWithPathParamAndCookie(tempUrl + testCaseDTO.getEndPoint(), inputJson,
-									COOKIENAME, testCaseDTO.getRole(), testCaseDTO.getTestCaseName());
-							if (response != null
-									&& response.asString().toLowerCase().contains(SignupConstants.STATUS_STRING)) {
-								break; // Exit the loop if the condition is met
-							} else if (response != null && response.asString().toLowerCase().contains("errorcode")
-									&& response.asString().toLowerCase()
-											.contains(SignupConstants.UNKNOWN_EROOR_STRING) == false) {
-								break; // Exit the loop if the condition is met
-							}
-
-							try {
-								Thread.sleep(signupStatusReqDelayTimeInSecs * 1000); // sleep in milliseconds
-							} catch (InterruptedException e) {
-								Thread.currentThread().interrupt(); // Handle the exception if needed
-							}
-
-							currLoopCount++;
-						}
+					if (testCaseName.contains("_AuthToken_Xsrf_")) {
+						response = getRequestWithCookieAuthHeaderAndXsrfToken(tempUrl + testCaseDTO.getEndPoint(),
+								inputJson, COOKIENAME, testCaseDTO.getRole(), testCaseDTO.getTestCaseName());
 					} else {
-						response = getWithPathParamAndCookies(tempUrl + testCaseDTO.getEndPoint(), inputJson, COOKIENAME,
-								testCaseDTO.getRole(), testCaseDTO.getTestCaseName());
+						response = getWithPathParamAndCookies(tempUrl + testCaseDTO.getEndPoint(), inputJson,
+								COOKIENAME, testCaseDTO.getRole(), testCaseDTO.getTestCaseName());
 					}
 				}
 			} else {
