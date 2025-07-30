@@ -171,7 +171,6 @@ public class CacheUtilServiceTest {
         );
     }
 
-
     @Test
     public void updateVerifiedSlotTransaction_whenCacheIsNull_thenFail() {
         String slotId = "slot123";
@@ -180,7 +179,6 @@ public class CacheUtilServiceTest {
         cacheUtilService.updateVerifiedSlotTransaction(slotId, transaction);
         verifyNoInteractions(cache);
     }
-
 
     @Test
     public void updateVerifiedSlotTransaction_whenCacheExists_thenPass() {
@@ -193,7 +191,6 @@ public class CacheUtilServiceTest {
         verify(cache).put(slotId, transaction);
     }
 
-
     @Test
     public void updateVerificationStatus_whenTransactionIsNull_thenFail() {
         String haltedTransactionId = "txn123";
@@ -204,7 +201,6 @@ public class CacheUtilServiceTest {
         cacheUtilService.updateVerificationStatus(haltedTransactionId, "FAILED", "ERROR");
         verify(valueOperations, never()).set(anyString(), any(), anyLong(), any());
     }
-
 
     @Test
     public void updateVerificationStatus_whenTransactionExists_thenPass() {
@@ -219,7 +215,7 @@ public class CacheUtilServiceTest {
 
         when(redisTemplate.opsForValue()).thenReturn(valueOperations);
         when(valueOperations.get(cacheKey)).thenReturn(transaction);
-        when(redisTemplate.getExpire(cacheKey)).thenReturn(300L); // TTL in seconds
+        when(redisTemplate.getExpire(cacheKey)).thenReturn(300L);
         cacheUtilService.updateVerificationStatus(haltedTransactionId, status, errorCode);
         assertEquals(status, transaction.getVerificationStatus());
         assertEquals(errorCode, transaction.getVerificationErrorCode());

@@ -291,7 +291,7 @@ public class IdentityVerificationService {
         return identityVerificationStatusResponse;
     }
 
-    void processVerificationResult(String slotId, IdentityVerificationTransaction transaction) {
+    private void processVerificationResult(String slotId, IdentityVerificationTransaction transaction) {
         try {
             IdentityVerifierPlugin plugin = identityVerifierFactory.getIdentityVerifier(transaction.getVerifierId());
             if(plugin == null) {
@@ -331,7 +331,6 @@ public class IdentityVerificationService {
             transaction.setStatus(VerificationStatus.FAILED);
             transaction.setErrorCode(IDENTITY_VERIFICATION_FAILED);
             auditHelper.sendAuditTransaction(AuditEvent.PROCESS_FRAMES, AuditEventType.ERROR,transaction.getSlotId(), null);
-            throw new SignUpException(IDENTITY_VERIFICATION_FAILED);
         }
     }
 
