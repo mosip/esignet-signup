@@ -92,6 +92,7 @@
 
 		<spring-cloud.version>Hoxton.SR8</spring-cloud.version>
 		<spring.boot.version>2.3.6.RELEASE</spring.boot.version>
+		<central.publishing.maven.plugin.version>0.7.0</central.publishing.maven.plugin.version>
 
 		<sonar.exclusions>**/dto/**,**/entity/**,**/exception/**,**/spi/**,**/advice/**,**/config/**,**/constants/**</sonar.exclusions>
 		<sonar.cpd.exclusions>**/dto/**,**/entity/**,**/config/**</sonar.cpd.exclusions>
