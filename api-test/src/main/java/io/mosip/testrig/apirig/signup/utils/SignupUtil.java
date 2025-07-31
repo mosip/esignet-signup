@@ -253,24 +253,28 @@ public class SignupUtil extends AdminTestUtil {
 		}
 		
 		if (jsonString.contains("$DATE_OF_BIRTH_KEY$") && jsonString.contains("$DATE_OF_BIRTH_VALUE$")) {
-			String dobFieldKey = getDynamicFieldKeyFromActuator("dob");
-			boolean isRequired = isElementPresent(globalRequiredFields, dobFieldKey);
-			boolean isInSchema = isFieldDefinedInIdentitySchema(dobFieldKey);
-
-			if (!isRequired && !isInSchema) {
-				// DOB is not needed — remove value
+			if (getPluginName().equalsIgnoreCase("mock")) {
 				jsonString = replaceKeywordValue(jsonString, "$DATE_OF_BIRTH_VALUE$", "$REMOVE$");
-			} else if (!isRequired && isInSchema) {
-				// Optional schema field — replace with generated static value
-				jsonString = replaceKeywordValue(jsonString, "$DATE_OF_BIRTH_KEY$", dobFieldKey);
+			} else {
+				String dobFieldKey = getDynamicFieldKeyFromActuator("dob");
+				boolean isRequired = isElementPresent(globalRequiredFields, dobFieldKey);
+				boolean isInSchema = isFieldDefinedInIdentitySchema(dobFieldKey);
 
-				try {
-					String regex = extractValidatorValue(dobFieldKey);
-					String validValue = genStringAsperRegex(regex);
-					jsonString = replaceKeywordValue(jsonString, "$DATE_OF_BIRTH_VALUE$", validValue);
-				} catch (Exception e) {
-					logger.error("DOB value generation failed for key: " + dobFieldKey, e);
-					jsonString = replaceKeywordValue(jsonString, "$DATE_OF_BIRTH_VALUE$", "1990/01/01"); // fallback
+				if (!isRequired && !isInSchema) {
+					// DOB is not needed — remove value
+					jsonString = replaceKeywordValue(jsonString, "$DATE_OF_BIRTH_VALUE$", "$REMOVE$");
+				} else if (!isRequired && isInSchema) {
+					// Optional schema field — replace with generated static value
+					jsonString = replaceKeywordValue(jsonString, "$DATE_OF_BIRTH_KEY$", dobFieldKey);
+
+					try {
+						String regex = extractValidatorValue(dobFieldKey);
+						String validValue = genStringAsperRegex(regex);
+						jsonString = replaceKeywordValue(jsonString, "$DATE_OF_BIRTH_VALUE$", validValue);
+					} catch (Exception e) {
+						logger.error("DOB value generation failed for key: " + dobFieldKey, e);
+						jsonString = replaceKeywordValue(jsonString, "$DATE_OF_BIRTH_VALUE$", "1990/01/01"); // fallback
+					}
 				}
 			}
 

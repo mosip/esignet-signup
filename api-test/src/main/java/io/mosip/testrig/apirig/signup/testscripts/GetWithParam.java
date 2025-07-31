@@ -142,8 +142,7 @@ public class GetWithParam extends SignupUtil implements ITest {
 					tempUrl = SignupConfigManager.getSignupBaseUrl();
 
 				boolean isPollingRequired = (testCaseName.startsWith("Signup_ESignet_GetIdentityVerificationStatus_")
-						|| testCaseName.startsWith("Signup_ESignet_GetRegistrationStatus_"))
-						&& getPluginName().equals("mosip-id");
+						|| testCaseName.startsWith("Signup_ESignet_GetRegistrationStatus_"));
 
 				if (isPollingRequired) {
 					boolean useXsrfRequest = testCaseName.contains("_AuthToken_Xsrf_");
