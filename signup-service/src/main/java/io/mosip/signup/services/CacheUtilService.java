@@ -175,6 +175,8 @@ public class CacheUtilService {
     @Cacheable(value = SignUpConstants.IDENTITY_VERIFICATION, key = "#transactionId")
     public IdentityVerificationTransaction setIdentityVerificationTransaction(String transactionId,
                                                                        IdentityVerificationTransaction identityVerificationTransaction) {
+        log.debug("IdentityVerificationTransaction initiated with status : {} and errorCode: {}",
+                identityVerificationTransaction.getStatus(), identityVerificationTransaction.getErrorCode());
         return identityVerificationTransaction;
     }
 
@@ -182,6 +184,8 @@ public class CacheUtilService {
     @Cacheable(value = SignUpConstants.SLOT_ALLOTTED, key = "#transactionId")
     public IdentityVerificationTransaction setSlotAllottedTransaction(String transactionId,
                                                                       IdentityVerificationTransaction identityVerificationTransaction) {
+        log.debug("IdentityVerificationTransaction slot allotted with status : {} and errorCode: {}",
+                identityVerificationTransaction.getStatus(), identityVerificationTransaction.getErrorCode());
         return identityVerificationTransaction;
     }
 
@@ -189,6 +193,8 @@ public class CacheUtilService {
     @Cacheable(value = SignUpConstants.VERIFIED_SLOT, key = "#slotId")
     public IdentityVerificationTransaction setVerifiedSlotTransaction(String transactionId, String slotId,
                                                                       IdentityVerificationTransaction identityVerificationTransaction) {
+        log.debug("IdentityVerificationTransaction inserted with status : {} and errorCode: {}",
+                identityVerificationTransaction.getStatus(), identityVerificationTransaction.getErrorCode());
         return identityVerificationTransaction;
     }
 
@@ -215,8 +221,8 @@ public class CacheUtilService {
         return cacheManager.getCache(SignUpConstants.KEYSTORE).get(keyAlias, String.class);	//NOSONAR getCache() will not be returning null here.
     }
 
-    public String getActiveKeyAlias() {
-        return cacheManager.getCache(SignUpConstants.KEY_ALIAS).get(CryptoHelper.ALIAS_CACHE_KEY, String.class);	//NOSONAR getCache() will not be returning null here.
+    public String getActiveKeyAlias(String currentActiveAliasKey) {
+        return cacheManager.getCache(SignUpConstants.KEY_ALIAS).get(currentActiveAliasKey, String.class);	//NOSONAR getCache() will not be returning null here.
     }
 
     public IdentityVerifierDetail[] getIdentityVerifierDetails() {
@@ -242,6 +248,8 @@ public class CacheUtilService {
 
     public void updateVerifiedSlotTransaction(String slotId, IdentityVerificationTransaction transaction) {
         if(cacheManager.getCache(SignUpConstants.VERIFIED_SLOT) != null) {
+            log.debug("IdentityVerificationTransaction updated with status : {} and errorCode: {}",
+                    transaction.getStatus(), transaction.getErrorCode());
             cacheManager.getCache(SignUpConstants.VERIFIED_SLOT).put(slotId, transaction);
         }
     }

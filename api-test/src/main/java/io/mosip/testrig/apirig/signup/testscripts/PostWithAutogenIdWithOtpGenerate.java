@@ -27,11 +27,11 @@ import io.mosip.testrig.apirig.signup.utils.SignupUtil;
 import io.mosip.testrig.apirig.testrunner.BaseTestCase;
 import io.mosip.testrig.apirig.testrunner.HealthChecker;
 import io.mosip.testrig.apirig.utils.AdminTestException;
-import io.mosip.testrig.apirig.utils.AdminTestUtil;
 import io.mosip.testrig.apirig.utils.AuthenticationTestException;
 import io.mosip.testrig.apirig.utils.GlobalConstants;
 import io.mosip.testrig.apirig.utils.OutputValidationUtil;
 import io.mosip.testrig.apirig.utils.ReportUtil;
+import io.mosip.testrig.apirig.utils.SecurityXSSException;
 import io.restassured.response.Response;
 
 public class PostWithAutogenIdWithOtpGenerate extends SignupUtil implements ITest {
@@ -83,7 +83,7 @@ public class PostWithAutogenIdWithOtpGenerate extends SignupUtil implements ITes
 	 */
 	@Test(dataProvider = "testcaselist")
 	public void test(TestCaseDTO testCaseDTO)
-			throws AuthenticationTestException, AdminTestException, NumberFormatException, InterruptedException {
+			throws AuthenticationTestException, AdminTestException, NumberFormatException, InterruptedException, SecurityXSSException {
 		testCaseName = testCaseDTO.getTestCaseName();
 		testCaseDTO = SignupUtil.isTestCaseValidForTheExecution(testCaseDTO);
 		if (HealthChecker.signalTerminateExecution) {
@@ -124,13 +124,13 @@ public class PostWithAutogenIdWithOtpGenerate extends SignupUtil implements ITes
 		sendOtpEndPoint = otpReqJson.getString("sendOtpEndPoint");
 		otpReqJson.remove("sendOtpEndPoint");
 
-		String input = getJsonFromTemplate(otpReqJson.toString(), sendOtpReqTemplate);
+		String inputStrJson = getJsonFromTemplate(otpReqJson.toString(), sendOtpReqTemplate);
 		
 		Response otpResponse = null;
 		int maxLoopCount = Integer.parseInt(properties.getProperty("uinGenMaxLoopCount"));
 		int currLoopCount = 0;
 		while (currLoopCount < maxLoopCount) {
-			input = SignupUtil.inputstringKeyWordHandeler(input, testCaseName);
+			String input = inputstringKeyWordHandeler(inputStrJson, testCaseName);
 			if (testCaseName.contains(GlobalConstants.ESIGNET_)) {
 				if (SignupConfigManager.isInServiceNotDeployedList(GlobalConstants.ESIGNET)) {
 					throw new SkipException("esignet is not deployed hence skipping the testcase");
@@ -193,7 +193,7 @@ public class PostWithAutogenIdWithOtpGenerate extends SignupUtil implements ITes
 		}
 		
 		String jsonInput = getJsonFromTemplate(req.toString(), testCaseDTO.getInputTemplate());
-		jsonInput = SignupUtil.inputstringKeyWordHandeler(jsonInput, testCaseName);
+		jsonInput = inputstringKeyWordHandeler(jsonInput, testCaseName);
 
 		if (testCaseName.contains(GlobalConstants.ESIGNET_)) {
 			if (SignupConfigManager.isInServiceNotDeployedList(GlobalConstants.ESIGNET)) {

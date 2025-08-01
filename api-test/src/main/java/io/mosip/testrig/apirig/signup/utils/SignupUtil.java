@@ -1,5 +1,6 @@
 package io.mosip.testrig.apirig.signup.utils;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
@@ -43,6 +44,7 @@ import io.mosip.testrig.apirig.utils.JWKKeyUtil;
 import io.mosip.testrig.apirig.utils.KernelAuthentication;
 import io.mosip.testrig.apirig.utils.KeycloakUserManager;
 import io.mosip.testrig.apirig.utils.RestClient;
+import io.mosip.testrig.apirig.utils.SecurityXSSException;
 import io.mosip.testrig.apirig.utils.SkipTestCaseHandler;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
@@ -53,6 +55,7 @@ public class SignupUtil extends AdminTestUtil {
 	public static JSONArray esignetActiveProfiles = null;
 	public static JSONArray signupActiveProfiles = null;
 	public static String pluginName = null;
+	public static String schemaJsonData = null;
 	
 	public static void setLogLevel() {
 		if (SignupConfigManager.IsDebugEnabled())
@@ -90,6 +93,20 @@ public class SignupUtil extends AdminTestUtil {
 		return pluginName;
 	}
 	
+	public static String getPluginName() {
+	    try {
+	    	String pluginServiceName = SignupUtil.getIdentityPluginNameFromEsignetActuator().toLowerCase();
+		    if (pluginServiceName.contains("idaauthenticatorimpl")) {
+		    	return "mosip-id";
+		    }else {
+		    	return "mock";
+		    }
+	    } catch (Exception e) {
+	    	logger.error("Failed to get plugin name from actuator", e);	    	
+	    }
+	    return "null";
+	}
+	
 	public static JSONArray getActiveProfilesFromActuator(String url, String key) {
 		JSONArray activeProfiles = null;
 
@@ -112,137 +129,16 @@ public class SignupUtil extends AdminTestUtil {
 		return activeProfiles;
 	}
 	
-	public static String getValueFromEsignetActuator(String section, String key) {
-		String value = null;
-
-		// Try to fetch profiles if not already fetched
-		if (esignetActiveProfiles == null || esignetActiveProfiles.length() == 0) {
-			esignetActiveProfiles = getActiveProfilesFromActuator(SignupConstants.ESIGNET_ACTUATOR_URL,
-					SignupConstants.ACTIVE_PROFILES);
-		}
-
-		// Normalize the key
-		String keyForEnvVariableSection = key.toUpperCase().replace("-", "_").replace(".", "_");
-
-		// Try fetching the value from different sections
-		value = getValueFromEsignetActuator(SignupConstants.SYSTEM_ENV_SECTION, keyForEnvVariableSection,
-				SignupConstants.ESIGNET_ACTUATOR_URL);
-
-		// Fallback to other sections if value is not found
-		if (value == null || value.isBlank()) {
-			value = getValueFromEsignetActuator(SignupConstants.CLASS_PATH_APPLICATION_PROPERTIES, key,
-					SignupConstants.ESIGNET_ACTUATOR_URL);
-		}
-
-		if (value == null || value.isBlank()) {
-			value = getValueFromEsignetActuator(SignupConstants.CLASS_PATH_APPLICATION_DEFAULT_PROPERTIES, key,
-					SignupConstants.ESIGNET_ACTUATOR_URL);
-		}
-
-		// Try profiles from active profiles if available
-		if (value == null || value.isBlank()) {
-			if (esignetActiveProfiles != null && esignetActiveProfiles.length() > 0) {
-				for (int i = 0; i < esignetActiveProfiles.length(); i++) {
-					String propertySection = esignetActiveProfiles.getString(i).equals(SignupConstants.DEFAULT_STRING)
-							? SignupConstants.MOSIP_CONFIG_APPLICATION_HYPHEN_STRING
-									+ esignetActiveProfiles.getString(i) + SignupConstants.DOT_PROPERTIES_STRING
-							: esignetActiveProfiles.getString(i) + SignupConstants.DOT_PROPERTIES_STRING;
-
-					value = getValueFromEsignetActuator(propertySection, key, SignupConstants.ESIGNET_ACTUATOR_URL);
-
-					if (value != null && !value.isBlank()) {
-						break;
-					}
-				}
-			} else {
-				logger.warn("No active profiles were retrieved.");
-			}
-		}
-
-		// Fallback to a default section
-		if (value == null || value.isBlank()) {
-			value = getValueFromEsignetActuator(SignupConfigManager.getEsignetActuatorPropertySection(), key,
-					SignupConstants.ESIGNET_ACTUATOR_URL);
-		}
-
-		// Final fallback to the original section if no value was found
-		if (value == null || value.isBlank()) {
-			value = getValueFromEsignetActuator(section, key, SignupConstants.ESIGNET_ACTUATOR_URL);
-		}
-
-		// Log the final result or an error message if not found
-		if (value == null || value.isBlank()) {
-			logger.error("Value not found for section: " + section + ", key: " + key);
-		}
-
-		return value;
-	}
-
-	
-	private static final Map<String, String> actuatorValueCache = new HashMap<>();
-	public static JSONArray esignetActuatorResponseArray = null;
-
-	public static String getValueFromEsignetActuator(String section, String key, String url) {
-		// Combine the cache key to uniquely identify each request
-		String actuatorCacheKey = url + section + key;
-
-		// Check if the value is already cached
-		String value = actuatorValueCache.get(actuatorCacheKey);
-		if (value != null && !value.isEmpty()) {
-			return value; // Return cached value if available
-		}
-
-		try {
-			// Fetch the actuator response array if it's not already populated
-			if (esignetActuatorResponseArray == null) {
-				Response response = RestClient.getRequest(url, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
-				JSONObject responseJson = new JSONObject(response.getBody().asString());
-				esignetActuatorResponseArray = responseJson.getJSONArray("propertySources");
-			}
-
-			// Loop through the "propertySources" to find the matching section and key
-			for (int i = 0, size = esignetActuatorResponseArray.length(); i < size; i++) {
-				JSONObject eachJson = esignetActuatorResponseArray.getJSONObject(i);
-				// Check if the section matches
-				if (eachJson.get("name").toString().contains(section)) {
-					// Get the value from the properties object
-					JSONObject properties = eachJson.getJSONObject(GlobalConstants.PROPERTIES);
-					if (properties.has(key)) {
-						value = properties.getJSONObject(key).get(GlobalConstants.VALUE).toString();
-						// Log the value if debug is enabled
-						if (SignupConfigManager.IsDebugEnabled()) {
-							logger.info("Actuator: " + url + " key: " + key + " value: " + value);
-						}
-						break; // Exit the loop once the value is found
-					} else {
-						logger.warn("Key '" + key + "' not found in section '" + section + "'.");
-					}
-				}
-			}
-
-			// Cache the retrieved value for future lookups
-			if (value != null && !value.isEmpty()) {
-				actuatorValueCache.put(actuatorCacheKey, value);
-			} else {
-				logger.warn("No value found for section: " + section + ", key: " + key);
-			}
-
-			return value;
-		} catch (JSONException e) {
-			// Handle JSON parsing exceptions separately
-			logger.error("JSON parsing error for section: " + section + ", key: " + key + " - " + e.getMessage());
-			return null; // Return null if JSON parsing fails
-		} catch (Exception e) {
-			// Catch any other exceptions (e.g., network issues)
-			logger.error("Error fetching value for section: " + section + ", key: " + key + " - " + e.getMessage());
-			return null; // Return null if any other exception occurs
-		}
-	}
-	
 	public static TestCaseDTO isTestCaseValidForTheExecution(TestCaseDTO testCaseDTO) {
 		String testCaseName = testCaseDTO.getTestCaseName();
 		String inputJson = testCaseDTO.getInput();
 		
+		//When the captcha is enabled we cannot execute the test case as we can not generate the captcha token
+		if (isCaptchaEnabled() == true) {
+			GlobalMethods.reportCaptchaStatus(GlobalConstants.CAPTCHA_ENABLED, true);
+			throw new SkipException(GlobalConstants.CAPTCHA_ENABLED_MESSAGE);
+
+		}
 		
 		if (MosipTestRunner.skipAll == true) {
 			throw new SkipException(GlobalConstants.PRE_REQUISITE_FAILED_MESSAGE);
@@ -283,33 +179,12 @@ public class SignupUtil extends AdminTestUtil {
 			BaseTestCase.setSupportedIdTypes(Arrays.asList("UIN", "VID"));
 
 			String endpoint = testCaseDTO.getEndPoint();
-			if (endpoint.contains("/mock-identity-system/") == true
-					|| (endpoint.contains("v1/esignet/authorization/v3/oauth-details") == true)
-					|| (testCaseName.startsWith("Signup_ESignet_AuthenticateUser_V3_") == true)
-					|| (testCaseName.startsWith("Signup_ESignet_AuthenticateUserNegTC_V3_") == true)
-					|| (testCaseName.startsWith("Signup_ESignet_IDTAuthenticationNegTC_") == true)
-					|| (testCaseName.startsWith("Signup_ESignet_IDTAuthentication_") == true)
-					|| (endpoint.contains("v1/esignet/authorization/claim-details") == true)
-					|| (endpoint.contains("v1/esignet/authorization/prepare-signup-redirect") == true)
-					|| (endpoint.contains("v1/signup/identity-verification/initiate") == true)
-					|| (endpoint.contains("v1/signup/identity-verification/identity-verifier/") == true)
-					|| (endpoint.contains("v1/signup/identity-verification/slot") == true)
-					|| (endpoint.contains("v1/signup/ws") == true)
-					|| (endpoint.contains("v1/signup/identity-verification/status") == true)
-					|| (endpoint.contains("v1/esignet/authorization/complete-signup-redirect") == true)
-					|| (testCaseName.contains("_SignupAuthorizeCode") == true)
-					|| (testCaseName.equals(
-							"Signup_ESignet_GetOidcUserInfo_uin_IdpAccessToken_StatusCode_L2_Valid_Smoke_sid") == true)
-					|| (testCaseName.equals("Signup_ESignet_GenerateToken_uin_L2_Valid_Smoke_sid") == true)
-					|| (testCaseName.equals("Signup_ESignet_AuthorizationCode_uin_L2_All_Valid_Smoke_sid") == true)
-					|| ((testCaseName.equals("ESignet_CreateOIDCClient_all_Valid_Smoke_sid")
-							|| testCaseName.equals("Signup_ESignet_CreateOIDCClient_all_Valid_Smoke_sid")
-							|| testCaseName.equals("ESignet_CreateOIDCClient_Misp_Valid_Smoke_sid")
-							|| testCaseName.equals("ESignet_CreateOIDCClient_NonAuth_all_Valid_Smoke_sid"))
-							&& endpoint.contains("/v1/esignet/client-mgmt/oauth-client"))) {
+			
+			if ((endpoint.contains("/mock-identity-system/") == true)
+					|| testCaseName.equals("Signup_ESignet_CreateOIDCClient_all_Valid_Smoke_sid")) {
 				throw new SkipException(GlobalConstants.FEATURE_NOT_SUPPORTED_MESSAGE);
 			}
-
+				
 			JSONArray individualBiometricsArray = new JSONArray(
 					getValueFromAuthActuator(SignupConstants.JSON_PROPERTY_STRING, "individualBiometrics"));
 			String individualBiometrics = individualBiometricsArray.getString(0);
@@ -368,13 +243,41 @@ public class SignupUtil extends AdminTestUtil {
 		return testCaseDTO;
 	}
 	
-	public static String inputstringKeyWordHandeler(String jsonString, String testCaseName) {
+	public String inputstringKeyWordHandeler(String jsonString, String testCaseName) {
 		if (jsonString.contains("$ID:")) {
 			jsonString = replaceIdWithAutogeneratedId(jsonString, "$ID:");
 		}
 		
 		if (jsonString.contains(GlobalConstants.TIMESTAMP)) {
 			jsonString = replaceKeywordValue(jsonString, GlobalConstants.TIMESTAMP, generateCurrentUTCTimeStamp());
+		}
+		
+		if (jsonString.contains("$DATE_OF_BIRTH_KEY$") && jsonString.contains("$DATE_OF_BIRTH_VALUE$")) {
+			if (getPluginName().equalsIgnoreCase("mock")) {
+				jsonString = replaceKeywordValue(jsonString, "$DATE_OF_BIRTH_VALUE$", "$REMOVE$");
+			} else {
+				String dobFieldKey = getDynamicFieldKeyFromActuator("dob");
+				boolean isRequired = isElementPresent(globalRequiredFields, dobFieldKey);
+				boolean isInSchema = isFieldDefinedInIdentitySchema(dobFieldKey);
+
+				if (!isRequired && !isInSchema) {
+					// DOB is not needed — remove value
+					jsonString = replaceKeywordValue(jsonString, "$DATE_OF_BIRTH_VALUE$", "$REMOVE$");
+				} else if (!isRequired && isInSchema) {
+					// Optional schema field — replace with generated static value
+					jsonString = replaceKeywordValue(jsonString, "$DATE_OF_BIRTH_KEY$", dobFieldKey);
+
+					try {
+						String regex = extractValidatorValue(dobFieldKey);
+						String validValue = genStringAsperRegex(regex);
+						jsonString = replaceKeywordValue(jsonString, "$DATE_OF_BIRTH_VALUE$", validValue);
+					} catch (Exception e) {
+						logger.error("DOB value generation failed for key: " + dobFieldKey, e);
+						jsonString = replaceKeywordValue(jsonString, "$DATE_OF_BIRTH_VALUE$", "1990/01/01"); // fallback
+					}
+				}
+			}
+
 		}
 		
 		if (testCaseName.contains("ESignet_GenerateApiKey_")) {
@@ -388,6 +291,12 @@ public class SignupUtil extends AdminTestUtil {
 		if (jsonString.contains("$UNIQUENONCEVALUEFORSIGNUP$")) {
 			jsonString = replaceKeywordValue(jsonString, "$UNIQUENONCEVALUEFORSIGNUP$",
 					String.valueOf(Calendar.getInstance().getTimeInMillis()));
+		}
+		
+		if (jsonString.contains("$MOSIP_SIGNUP_OAUTH_CLIENT_ID_VALUE$")) {
+			jsonString = replaceKeywordValue(jsonString, "$MOSIP_SIGNUP_OAUTH_CLIENT_ID_VALUE$",
+					getValueFromSignupActuator("classpath:/application-default.properties",
+							"mosip.signup.oauth.client-id"));
 		}
 		
 		if (jsonString.contains("_$REGISTEREDUSERFULLNAME$")) {
@@ -1010,7 +919,7 @@ public class SignupUtil extends AdminTestUtil {
         }
     }
 
-    private static String extractValidatorValue(String key) {
+    public static String extractValidatorValue(String key) {
         try {
             return signUpSchemaIdentityJson.getJSONObject(SignupConstants.PROPERTIES_STRING).getJSONObject(key)
                     .getJSONArray(SignupConstants.VALIDATORS_STRING).getJSONObject(0)
@@ -1395,5 +1304,140 @@ public class SignupUtil extends AdminTestUtil {
 		}
 		return response;
 	}
+	
+	public Response pollUntilStatusCompletedOrFailed(TestCaseDTO testCaseDTO, String tempUrl, String inputJson,
+			boolean useXsrfRequest, String cookieName) throws SecurityXSSException {
+
+		int signupStatusReqLimit = parseToInt(
+				getValueFromSignupActuator(SignupConfigManager.getEsignetActuatorPropertySection(),
+						SignupConstants.MOSIP_SIGNUP_STATUS_REQUEST_LIMIT_STRING),
+				1);
+
+		int signupStatusReqDelayTimeInSecs = parseToInt(
+				getValueFromSignupActuator(SignupConfigManager.getEsignetActuatorPropertySection(),
+						SignupConstants.MOSIP_SIGNUP_STATUS_REQUEST_DELAY_STRING),
+				20);
+
+		Response response = null;
+		int currLoopCount = 0;
+
+		while (currLoopCount < signupStatusReqLimit) {
+			if (useXsrfRequest) {
+				response = getRequestWithCookieAuthHeaderAndXsrfToken(tempUrl + testCaseDTO.getEndPoint(), inputJson,
+						cookieName, testCaseDTO.getRole(), testCaseDTO.getTestCaseName());
+			} else {
+				response = getWithPathParamAndCookie(tempUrl + testCaseDTO.getEndPoint(), inputJson, cookieName,
+						testCaseDTO.getRole(), testCaseDTO.getTestCaseName());
+			}
+
+			if (response != null) {
+				String responseStr = response.asString().toLowerCase();
+				if (responseStr.contains(SignupConstants.STATUS_STRING) && (responseStr.contains("completed")
+						|| responseStr.contains("failed") || responseStr.contains("started"))) {
+					break;
+				}
+			}
+
+			try {
+				Thread.sleep(signupStatusReqDelayTimeInSecs * 1000);
+			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+			}
+
+			currLoopCount++;
+		}
+		return response;
+	}
+	
+	public static String getSchemaJson() {
+		kernelAuthLib = new KernelAuthentication();
+		String token = kernelAuthLib.getTokenByRole(GlobalConstants.ADMIN);
+		String url = getSchemaURL();
+
+		Response response = RestClient.getRequestWithCookie(url, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON,
+				GlobalConstants.AUTHORIZATION, token);
+
+		org.json.JSONObject responseJson = new org.json.JSONObject(response.asString());
+		org.json.JSONObject schemaData = (org.json.JSONObject) responseJson.get(GlobalConstants.RESPONSE);
+
+		idSchemaVersion = ((BigDecimal) schemaData.get(GlobalConstants.ID_VERSION)).doubleValue();
+		schemaJsonData = schemaData.getString(GlobalConstants.SCHEMA_JSON);
+
+		return schemaJsonData;
+	}
+
+	public boolean isFieldDefinedInIdentitySchema(String fieldName) {
+		if (schemaJsonData == null || schemaJsonData.isEmpty()) {
+			throw new IllegalStateException("Schema JSON data is not loaded.");
+		}
+
+		try {
+			JSONObject schemaFileJson = new JSONObject(schemaJsonData);
+			JSONObject schemaPropsJson = schemaFileJson.getJSONObject("properties");
+
+			if (!schemaPropsJson.has("identity")) {
+				return false;
+			}
+
+			JSONObject schemaIdentityJson = schemaPropsJson.getJSONObject("identity");
+
+			if (!schemaIdentityJson.has("properties")) {
+				return false;
+			}
+
+			JSONObject identityPropsJson = schemaIdentityJson.getJSONObject("properties");
+
+			return identityPropsJson.has(fieldName);
+
+		} catch (Exception e) {
+			throw new IllegalStateException("Failed to parse schema JSON for field: " + fieldName, e);
+		}
+	}
+	
+	public String getDynamicFieldKeyFromActuator(String jsonPropertyKey) {
+		try {
+			JSONArray fieldArray = new JSONArray(getValueFromAuthActuator("json-property", jsonPropertyKey));
+
+			if (fieldArray.length() == 0) {
+				throw new IllegalArgumentException("Field key for '" + jsonPropertyKey + "' is missing in actuator response.");
+			}
+
+			return fieldArray.getString(0);
+
+		} catch (Exception e) {
+			throw new IllegalStateException("Error while fetching key for property: " + jsonPropertyKey, e);
+		}
+	}
+
+	public TestCaseDTO addBirthDateIfMissingInIdentityBlock(TestCaseDTO testCaseDTO) {
+		String inputJson = testCaseDTO.getInputTemplate();
+		JSONObject root = new JSONObject(inputJson);
+
+		String dobFieldKey = getDynamicFieldKeyFromActuator("dob");
+
+		if (!isElementPresent(globalRequiredFields, dobFieldKey)) {
+			if (isFieldDefinedInIdentitySchema(dobFieldKey)) {
+				if (!root.has("request")) {
+					throw new IllegalArgumentException("Missing 'request' object in JSON.");
+				}
+
+				JSONObject request = root.getJSONObject("request");
+
+				if (!request.has("identity")) {
+					throw new IllegalArgumentException("Missing 'identity' object in request.");
+				}
+
+				JSONObject identity = request.getJSONObject("identity");
+				identity.put(dobFieldKey, "{{" + dobFieldKey + "}}"); // Replace with dynamic value if needed
+
+				// Update the input template
+				testCaseDTO.setInputTemplate(root.toString());
+			}
+
+		}
+
+		return testCaseDTO;
+	}
+
 	
 }

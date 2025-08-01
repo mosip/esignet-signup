@@ -1,6 +1,22 @@
 GetIdentityVerificationStatus:
+   Signup_ESignet_GetIdentityVerificationStatus_AuthToken_Xsrf_STransId_uin_Incomplete_KYC:
+      endPoint: /v1/signup/identity-verification/status
+      uniqueIdentifier: TC_ESignet_GetIdentityVerificationStatus_02
+      description: Get Identity Verification Status with invalid an IDV slot assigned in the cookie
+      role: resident
+      restMethod: get
+      inputTemplate: signup/GetIdentityVerificationStatus/GetIdentityVerificationStatus
+      outputTemplate: signup/GetIdentityVerificationStatus/GetIdentityVerificationStatusResult
+      input: '{
+        "idvSlotAllotted": "$ID:ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_disabilityTypeVISION_Smoke_Sid_idvSlotAllotted$"
+}'
+      output: '{
+      "status": "STARTED"
+}'
+
    Signup_ESignet_GetIdentityVerificationStatus_AuthToken_Xsrf_STransId_uin_all_Valid_Smoke:
       endPoint: /v1/signup/identity-verification/status
+      uniqueIdentifier: TC_ESignet_GetIdentityVerificationStatus_01
       description: Getting the status of Identity verification
       role: resident
       restMethod: get
@@ -12,18 +28,4 @@ GetIdentityVerificationStatus:
 }'
       output: '{
       "status": "COMPLETED"
-}'
-   Signup_ESignet_GetIdentityVerificationStatus_AuthToken_Xsrf_STransId_uin_Incomplete_KYC:
-      endPoint: /v1/signup/identity-verification/status
-      uniqueIdentifier: TC_Signup_ESignet_GetIdentityVerificationStatusNegTC_04
-      description: Get Identity Verification Status with invalid an IDV slot assigned in the cookie
-      role: resident
-      restMethod: get
-      inputTemplate: signup/GetIdentityVerificationStatus/GetIdentityVerificationStatus
-      outputTemplate: signup/GetIdentityVerificationStatus/GetIdentityVerificationStatusResult
-      input: '{
-        "idvSlotAllotted": "$ID:ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_disabilityTypeVISION_Smoke_Sid_idvSlotAllotted$"
-}'
-      output: '{
-      "status": "STARTED"
 }'

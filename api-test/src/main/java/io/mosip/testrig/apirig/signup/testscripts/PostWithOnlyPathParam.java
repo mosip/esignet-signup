@@ -33,6 +33,7 @@ import io.mosip.testrig.apirig.utils.AuthenticationTestException;
 import io.mosip.testrig.apirig.utils.GlobalConstants;
 import io.mosip.testrig.apirig.utils.OutputValidationUtil;
 import io.mosip.testrig.apirig.utils.ReportUtil;
+import io.mosip.testrig.apirig.utils.SecurityXSSException;
 import io.restassured.response.Response;
 
 public class PostWithOnlyPathParam extends SignupUtil implements ITest {
@@ -80,7 +81,7 @@ public class PostWithOnlyPathParam extends SignupUtil implements ITest {
 	 * @throws AdminTestException
 	 */
 	@Test(dataProvider = "testcaselist")
-	public void test(TestCaseDTO testCaseDTO) throws AuthenticationTestException, AdminTestException {
+	public void test(TestCaseDTO testCaseDTO) throws AuthenticationTestException, AdminTestException, SecurityXSSException {
 		testCaseName = testCaseDTO.getTestCaseName();
 		testCaseDTO = SignupUtil.isTestCaseValidForTheExecution(testCaseDTO);
 		String[] templateFields = testCaseDTO.getTemplateFields();
@@ -117,7 +118,7 @@ public class PostWithOnlyPathParam extends SignupUtil implements ITest {
 
 		else {
 			String inputJson = getJsonFromTemplate(testCaseDTO.getInput(), testCaseDTO.getInputTemplate());
-			inputJson = SignupUtil.inputstringKeyWordHandeler(inputJson, testCaseName);
+			inputJson = inputstringKeyWordHandeler(inputJson, testCaseName);
 			response = postWithOnlyPathParamAndCookie(ApplnURI + testCaseDTO.getEndPoint(), inputJson, COOKIENAME,
 					testCaseDTO.getRole(), testCaseDTO.getTestCaseName(), sendEsignetToken);
 

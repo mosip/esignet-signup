@@ -38,6 +38,7 @@ import io.mosip.testrig.apirig.utils.KernelAuthentication;
 import io.mosip.testrig.apirig.utils.OutputValidationUtil;
 import io.mosip.testrig.apirig.utils.ReportUtil;
 import io.mosip.testrig.apirig.utils.RestClient;
+import io.mosip.testrig.apirig.utils.SecurityXSSException;
 import io.restassured.response.Response;
 
 public class AddIdentity extends SignupUtil implements ITest {
@@ -85,7 +86,7 @@ public class AddIdentity extends SignupUtil implements ITest {
 	 * @throws Exception 
 	 */
 	@Test(dataProvider = "testcaselist")
-	public void test(TestCaseDTO testCaseDTO) throws Exception {
+	public void test(TestCaseDTO testCaseDTO) throws Exception, SecurityXSSException {
 		testCaseName = testCaseDTO.getTestCaseName();
 		testCaseDTO = SignupUtil.isTestCaseValidForTheExecution(testCaseDTO);
 		if (HealthChecker.signalTerminateExecution) {
@@ -102,7 +103,7 @@ public class AddIdentity extends SignupUtil implements ITest {
 
 			String inputJson = getJsonFromTemplate(testCaseDTO.getInput(), testCaseDTO.getInputTemplate());
 
-			inputJson = SignupUtil.inputstringKeyWordHandeler(inputJson, testCaseName);
+			inputJson = inputstringKeyWordHandeler(inputJson, testCaseName);
 
 			if (inputJson.contains("$RANDOMINDIVIDUALIDFORMOCKIDENTITY$")) {
 				inputJson = replaceKeywordWithValue(inputJson, "$RANDOMINDIVIDUALIDFORMOCKIDENTITY$", individualIDStr);
@@ -144,6 +145,7 @@ public class AddIdentity extends SignupUtil implements ITest {
 		} else {
 			isWaitRequired = true;
 			testCaseDTO.setInputTemplate(AdminTestUtil.modifySchemaGenerateHbs(testCaseDTO.isRegenerateHbs()));
+			addBirthDateIfMissingInIdentityBlock(testCaseDTO);
 			String uin = JsonPrecondtion.getValueFromJson(
 					RestClient.getRequestWithCookie(ApplnURI + "/v1/idgenerator/uin", MediaType.APPLICATION_JSON,
 							MediaType.APPLICATION_JSON, COOKIENAME,
@@ -174,7 +176,7 @@ public class AddIdentity extends SignupUtil implements ITest {
 				inputJson = replaceKeywordWithValue(inputJson, "$EMAILVALUE$", email);
 			}
 			
-			inputJson = SignupUtil.inputstringKeyWordHandeler(inputJson, testCaseName);
+			inputJson = inputstringKeyWordHandeler(inputJson, testCaseName);
 
 			response = postWithBodyAndCookie(ApplnURI + testCaseDTO.getEndPoint(), inputJson, COOKIENAME,
 					testCaseDTO.getRole(), testCaseDTO.getTestCaseName());

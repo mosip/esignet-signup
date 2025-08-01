@@ -38,8 +38,12 @@ public class CryptoHelper {
     @Value("${mosip.signup.cache.symmetric-key.size:256}")
     private int symmetricKeySize;
 
+    @Value("${mosip.signup.cache.namespace:}")
+    private String cacheNamespace;
+
     @Autowired
     private CacheUtilService cacheUtilService;
+
 
     public String symmetricEncrypt(String data) {
         try {
@@ -93,7 +97,7 @@ public class CryptoHelper {
     }
 
     private String getActiveKeyAlias() {
-        String alias = cacheUtilService.getActiveKeyAlias();
+        String alias = cacheUtilService.getActiveKeyAlias(ALIAS_CACHE_KEY+cacheNamespace);
         if(alias != null)
             return alias;
 
@@ -108,7 +112,7 @@ public class CryptoHelper {
             KeyGenerator keyGenerator = KeyGenerator.getInstance(symmetricKeyAlgorithm);
             keyGenerator.init(symmetricKeySize);
             cacheUtilService.setSecretKey(alias, IdentityProviderUtil.b64Encode(keyGenerator.generateKey().getEncoded()));
-            cacheUtilService.setActiveKeyAlias(ALIAS_CACHE_KEY, alias);
+            cacheUtilService.setActiveKeyAlias(ALIAS_CACHE_KEY+cacheNamespace, alias);
         } catch (NoSuchAlgorithmException e) {
             log.error("Error generating secret key", e);
             throw new SignUpException("crypto_error");

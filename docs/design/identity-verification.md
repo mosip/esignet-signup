@@ -9,19 +9,19 @@ Verification process can be online or offline involving manual steps or consist 
 
 Considering online verification in-scope for 1.1.0, video based online verification process is designed and supported in signup portal.
 Below steps can be covered with online video based process:
-1. Liveliness check
+1. Liveness check
 2. Face match
 3. Document verification
 4. Disability check
 
-So with this it is understood that every verification process can consist of any combination of steps. Signup service should be able to **start**
-the process and **end** the process when signalled by the chosen verifier. End step should expect verification details which should be updated in 
-ID registry against the authenticated end user individual ID.
+Each verification process can be a combination of the above steps. Signup service should be able to **start**
+the process and **end** the verification proces. Once the **end** step is reached, verifier plugin should be ready with 
+the verification result. Verification result is updated in the integrated ID repository against the authenticated user record.
 
 ### How is the user authenticated context shared with the signup portal?
-Authentication of user before verification process can be carried out in eSignet(OP). Authenticated user's transaction is shared as an id_token_hint 
-to the signup portal. Signup portal now takes the role of an RP and starts OIDC flow in eSignet with "mosip:idp:acr:id-token" ACR. As the authroize request
-already contains id_token_hint, user will not be prompted to enter credentials, but still may prompt to user to provide consent only if required. Most of 
+Any OpenID provider carries out authentication of user before the verification process. With eSignet as OP, authenticated 
+user's transaction is shared as an id_token_hint to the signup portal. Signup portal now takes the role of an RP and starts OIDC flow in eSignet with "mosip:idp:acr:id-token" ACR. As the authroize request
+already contains id_token_hint, user will not be prompted to enter credentials, but still may prompt user to provide consent only if required. Most of 
 the time, "sub" claim in the userinfo response should suffice the requirement.
 
 ## Provision to integrate with any Identity verification workflow
@@ -29,9 +29,28 @@ Signup service has a provision to add any steps between **start** and **end** st
 abstract class. Verifier should only take care of 
 
 1. Initializing every workflow run with required configuration based on the provided input. 
-2. Verify the input frame based on the current step and publish the feedback or details about the next step to start in this run to kafka (publishAnalysisResult concrete method is already defined in the plugin abstract class).
+2. Verify the input frame based on the current step and publish the feedback or details about the next step to a kafka topic (publishAnalysisResult concrete method is already defined in the plugin abstract class).
 3. Once the verifier decides to **end** the workflow run, it should hint the signup service by publishing **end** step details using the same publishAnalysisResult concrete method.
-4. Signup service will invoke the getVerificationResult method implemented by the verifier to fetch the verification details. VerificationResult can either be failure or successful. The same will be conveyed to the end user.
+4. After the completion of the verification process transaction is marked as **RESULTS_READY** status.
+5. Signup UI initiates status call (polling). status endpoint invokes getVerificationResult method implemented in the IdentityVerifierPlugin. VerificationResult can either be failure or successful. The same will be conveyed to the end user.
+
+#### Below depicts the transition of IdentityVerification transaction status:
+
+STARTED --> RESULTS_READY --> UPDATE_PENDING --> COMPLETED/FAILED
+
+#### Usage of cache in storing the details of the verification process:
+
+identity_verification --> slot_allotted --> verified_slot
+
+Slot added to slots_connected once slot is allotted. Additionally we also have:
+
+* script to clear expired slots from slots_connected, verified_slot
+* script to get current number of allotted slots
+* script to update TTL for a specific slot in slots_connected cache
+
+#### Below screenshot shows the WS command flow after acquiring a verified slot:
+![ws-interaction.png](ws-interaction.png)
+
 
 ### How to add Verifier and its workflow details?
 

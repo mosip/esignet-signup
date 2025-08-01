@@ -14,7 +14,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.mosip.signup</groupId>
 	<artifactId>signup-parent</artifactId>
-	<version>1.2.1</version>
+	<version>1.2.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>esignet-signup</name>
 	<description>Parent project of MOSIP e-Signet</description>
@@ -89,9 +89,10 @@
 		<maven.sonar.plugin.version>3.7.0.1746</maven.sonar.plugin.version>
 		<maven.javadoc.version>3.2.0</maven.javadoc.version>
 		<maven-shade-plugin.version>2.3</maven-shade-plugin.version>
-		<central.publishing.maven.plugin.version>0.7.0</central.publishing.maven.plugin.version>
+
 		<spring-cloud.version>Hoxton.SR8</spring-cloud.version>
 		<spring.boot.version>2.3.6.RELEASE</spring.boot.version>
+		<central.publishing.maven.plugin.version>0.7.0</central.publishing.maven.plugin.version>
 
 		<sonar.exclusions>**/dto/**,**/entity/**,**/exception/**,**/spi/**,**/advice/**,**/config/**,**/constants/**</sonar.exclusions>
 		<sonar.cpd.exclusions>**/dto/**,**/entity/**,**/config/**</sonar.cpd.exclusions>
