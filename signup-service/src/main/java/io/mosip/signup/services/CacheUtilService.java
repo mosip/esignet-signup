@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import io.mosip.esignet.core.constants.Constants;
 import io.mosip.esignet.core.dto.OIDCTransaction;
 import io.mosip.esignet.core.util.IdentityProviderUtil;
+import io.mosip.signup.api.spi.ProfileRegistryPlugin;
 import io.mosip.signup.dto.IdentityVerificationTransaction;
 import io.mosip.signup.dto.IdentityVerifierDetail;
 import io.mosip.signup.dto.RegistrationTransaction;
@@ -73,6 +74,9 @@ public class CacheUtilService {
 
     @Value("${mosip.signup.iam.client-secret}")
     private String clientSecret;
+
+    @Autowired
+    private ProfileRegistryPlugin profileRegistryPlugin;
 
     private static final String CLEANUP_SCRIPT = "local function binary_to_long(binary_str)\n" +
             "    local result = 0\n" +
@@ -390,4 +394,8 @@ public class CacheUtilService {
         return scriptExists == null || !scriptExists.get(0);
     }
 
+    @Cacheable(value = UI_SPEC, key = "'ui_spec'")
+    public JsonNode getSchema() {
+        return profileRegistryPlugin.getUISpecification();
+    }
 }
