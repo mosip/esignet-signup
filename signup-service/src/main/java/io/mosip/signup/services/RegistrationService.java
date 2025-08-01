@@ -292,7 +292,7 @@ public class RegistrationService {
     }
 
     public JsonNode getSchema() {
-        return profileRegistryPlugin.getUISpecification();
+        return cacheUtilService.getSchema();
     }
 
     private void fetchAndCheckIdentity(RegistrationTransaction registrationTransaction,

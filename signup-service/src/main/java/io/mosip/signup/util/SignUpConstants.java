@@ -32,4 +32,6 @@ public class SignUpConstants {
     public static final String SLOT_ALLOTTED = "slot_allotted";
     public static final String VERIFIED_SLOT = "verified_slot";
     public static final String VALUE_SEPARATOR = "###";
+    public static final String UI_SPEC = "ui_spec";
+
 }
