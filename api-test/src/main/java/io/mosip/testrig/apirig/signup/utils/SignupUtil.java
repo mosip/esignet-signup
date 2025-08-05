@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.ws.rs.core.MediaType;
 
@@ -227,15 +229,19 @@ public class SignupUtil extends AdminTestUtil {
 			throw new SkipException(GlobalConstants.KNOWN_ISSUES);
 		}
 		
-		if ((testCaseName.contains("ESignet_AuthenticateUserPassword") && inputJson.contains("_PHONE$")) || testCaseName.contains("AuthenticateUserPasswordNegTC_UnRegistered_IndividualId_Neg")) {
+		if (((testCaseName.contains("ESignet_AuthenticateUserPassword") || testCaseName
+				.contains("Signup_ESignet_AuthenticateUser_V3_AuthToken_Xsrf_Registration_L2_With_Handle_Otp_"))
+				&& inputJson.contains("_PHONE$"))
+				|| testCaseName.contains("AuthenticateUserPasswordNegTC_UnRegistered_IndividualId_Neg")) {
 			String suffix = getValueFromEsignetActuator("classpath:/application.properties",
 					"mosip.esignet.ui.config.username.postfix");
-			
+
 			if (suffix != null && suffix.isBlank() == false) {
 				testCaseDTO.setInput(testCaseDTO.getInput().replace("_PHONE$", "_PHONE$" + suffix));
-				
+
 				if (testCaseName.contains("_UnRegistered_IndividualId_Neg")) {
-					testCaseDTO.setInput(testCaseDTO.getInput().replace("$PHONENUMBERFROMREGEXFORSIGNUP$", "$PHONENUMBERFROMREGEXFORSIGNUP$" + suffix));
+					testCaseDTO.setInput(testCaseDTO.getInput().replace("$PHONENUMBERFROMREGEXFORSIGNUP$",
+							"$PHONENUMBERFROMREGEXFORSIGNUP$" + suffix));
 				}
 			}
 		}
@@ -727,6 +733,41 @@ public class SignupUtil extends AdminTestUtil {
 
 		logger.info("Type is not available in the response.");
 		return null;
+	}
+	
+	public static String extractCodeById(String message, String targetId) {
+	    // Match all top-level JSON objects
+	    Pattern jsonPattern = Pattern.compile("\\{(?:[^{}]|\\{[^{}]*\\})*\\}");
+	    Matcher matcher = jsonPattern.matcher(message);
+
+	    while (matcher.find()) {
+	        String jsonPart = matcher.group();
+
+	        try {
+	            JSONObject obj = new JSONObject(jsonPart);
+
+	            if (obj.has("id") && obj.getString("id").equals(targetId)) {
+	                if (obj.has("step") && !obj.isNull("step")) {
+	                    JSONObject step = obj.getJSONObject("step");
+	                    if (step.has("code")) {
+	                        return step.getString("code");
+	                    }
+	                }
+
+	                if (obj.has("feedback") && !obj.isNull("feedback")) {
+	                    JSONObject feedback = obj.getJSONObject("feedback");
+	                    if (feedback.has("code")) {
+	                        return feedback.getString("code");
+	                    }
+	                }
+	            }
+
+	        } catch (Exception e) {
+	            System.err.println("Invalid JSON skipped: " + jsonPart);
+	        }
+	    }
+
+	    return null;
 	}
 	
 	public static List<String> signupSupportedLanguage = new ArrayList<>();

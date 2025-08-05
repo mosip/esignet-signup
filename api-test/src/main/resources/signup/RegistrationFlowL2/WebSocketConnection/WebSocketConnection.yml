@@ -1,0 +1,28 @@
+WebSocketConnection:
+   Signup_ESignet_WebSocketConnection_Registration_L2_With_Handle_all_Valid_Smoke:
+      endPoint: /v1/signup/ws
+      uniqueIdentifier: TC_Signup_ESignet_WebSocketConnection_01
+      description: Creating websocket connection and sending message to it
+      role: resident
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/RegistrationFlowL2/WebSocketConnection/WebSocketConnection
+      outputTemplate: signup/RegistrationFlowL2/WebSocketConnection/WebSocketConnectionResult
+      input: '{
+        "slotId": "$ID:ESignet_GetSlot_STransId_AuthToken_Xsrf_Registration_L2_With_Handle_all_Valid_Smoke_Sid_slotId$",
+        "idvSlotAllotted": "$ID:ESignet_GetSlot_STransId_AuthToken_Xsrf_Registration_L2_With_Handle_all_Valid_Smoke_Sid_idvSlotAllotted$",
+        "sendDestination": "/v1/signup/ws/process-frame",
+        "message1": {
+          "stepCode": "START",
+          "frames": [
+            { "frame": "frame1", "order": "0" }
+          ]
+        },
+        "message2": {
+          "stepCode": "liveness_check",
+          "frames": [
+            { "frame": "frame1", "order": "1" }
+          ]
+        }
+}'
+      output: '{
+}'

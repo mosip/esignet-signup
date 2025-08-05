@@ -1,0 +1,24 @@
+IDTAuthentication:
+   Signup_ESignet_IDTAuthentication_AuthToken_Xsrf_Registration_L2_With_Handle_all_Valid_Smoke:
+      endPoint: /v1/esignet/authorization/v3/authenticate
+      uniqueIdentifier: TC_ESignet_IDTAuthentication_01
+      description: Create transaction Id and consentAction with valid details
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/RegistrationFlowL2/IDTAuthentication/IDTAuthentication
+      outputTemplate: signup/RegistrationFlowL2/IDTAuthentication/IDTAuthenticationResult
+      input: '{
+        "encodedHash": "$ID:ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_Registration_L2_With_Handle_all_Valid_Smoke_sid_encodedResp$",
+      	"requestTime": "$TIMESTAMP$",
+      	"pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_Registration_L2_With_Handle_Otp_Valid_Smoke_sid_pathFragmentCookie$",
+      	"pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_Registration_L2_With_Handle_all_Valid_Smoke_sid_transactionId$",
+      	"idtToken": "$ID:ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_Registration_L2_With_Handle_Otp_Valid_Smoke_sid_idToken$",
+      	"transactionId": "$ID:ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_Registration_L2_With_Handle_all_Valid_Smoke_sid_transactionId$",
+      	"individualId": "$IDTINDIVIUALID$",
+      	"authFactorType" : "IDT",
+      	"challenge" : "$IDTCHALLENGE$"
+}'
+      output: '{
+       
+}'

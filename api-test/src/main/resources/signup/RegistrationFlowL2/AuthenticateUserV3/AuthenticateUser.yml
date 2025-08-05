@@ -1,0 +1,32 @@
+AuthenticateUserV3:
+   Signup_ESignet_AuthenticateUser_V3_AuthToken_Xsrf_Registration_L2_With_Handle_Otp_Valid_Smoke:
+      endPoint: /v1/esignet/authorization/v3/authenticate
+      uniqueIdentifier: TC_ESignet_AuthenticateUserV3_01
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      validityCheckRequired: true
+      inputTemplate: signup/RegistrationFlowL2/AuthenticateUserV3/AuthenticateUser
+      outputTemplate: signup/RegistrationFlowL2/AuthenticateUserV3/AuthenticateUserResult
+      input: '{
+        "encodedHash": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_Registration_L2_With_Handle_all_Valid_Smoke_sid_encodedResp$",
+      	"requestTime": "$TIMESTAMP$",
+      	"transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_Registration_L2_With_Handle_all_Valid_Smoke_sid_transactionId$",
+      	"individualId": "$ID:ESignet_GenerateChallenge_STransId_Valid_smoke_Pos_PHONE$",
+      	"authFactorType" : "OTP",
+      	"challenge" : "$ID:ESignet_GenerateChallenge_STransId_Valid_smoke_Pos_SMS$@phone",
+        "sendOtp":{
+    "encodedHash": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_Registration_L2_With_Handle_all_Valid_Smoke_sid_encodedResp$",
+    "requestTime": "$TIMESTAMP$",
+    "transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_Registration_L2_With_Handle_all_Valid_Smoke_sid_transactionId$",
+    "individualId": "$ID:ESignet_GenerateChallenge_STransId_Valid_smoke_Pos_PHONE$",
+    "otpChannels": [{channel: "email"},{channel: "phone"}],
+    "sendOtpReqTemplate": "signup/SendOtp/SendOtp",
+    "sendOtpEndPoint": "/v1/esignet/authorization/send-otp"
+    }
+    }'
+      output: '{
+  "sendOtpResp":{
+        "sendOtpResTemplate":"signup/SendOtp/SendOtpResult"
+    }
+}'

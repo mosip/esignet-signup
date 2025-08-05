@@ -1,0 +1,16 @@
+GetIdentityVerificationStatus:
+   Signup_ESignet_GetIdentityVerificationStatus_AuthToken_Xsrf_STransId_Registration_L2_With_Handle_all_Valid_Smoke:
+      endPoint: /v1/signup/identity-verification/status
+      uniqueIdentifier: TC_ESignet_GetIdentityVerificationStatus_01
+      description: Getting the status of Identity verification
+      role: resident
+      restMethod: get
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/RegistrationFlowL2/GetIdentityVerificationStatus/GetIdentityVerificationStatus
+      outputTemplate: signup/RegistrationFlowL2/GetIdentityVerificationStatus/GetIdentityVerificationStatusResult
+      input: '{
+      	"idvSlotAllotted": "$ID:ESignet_GetSlot_STransId_AuthToken_Xsrf_Registration_L2_With_Handle_all_Valid_Smoke_Sid_idvSlotAllotted$"
+}'
+      output: '{
+      "status": "COMPLETED"
+}'
