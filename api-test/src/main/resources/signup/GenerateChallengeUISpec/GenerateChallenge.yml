@@ -2,6 +2,7 @@ GenerateChallenge:
    Signup_ESignet_GenerateChallenge_STransId_forUISPEC_Valid_smoke_Pos:
       endPoint: /v1/signup/registration/generate-challenge
       uniqueIdentifier: TC_ESignet_GenerateChallengeUISpec_01
+      description: Generate challenge for UI Spec
       role: resident
       restMethod: post
       inputTemplate: signup/GenerateChallengeUISpec/GenerateChallenge
