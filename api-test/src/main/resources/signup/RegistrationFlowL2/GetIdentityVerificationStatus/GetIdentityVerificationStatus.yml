@@ -1,7 +1,7 @@
 GetIdentityVerificationStatus:
    Signup_ESignet_GetIdentityVerificationStatus_AuthToken_Xsrf_STransId_Registration_L2_With_Handle_all_Valid_Smoke:
       endPoint: /v1/signup/identity-verification/status
-      uniqueIdentifier: TC_ESignet_GetIdentityVerificationStatus_01
+      uniqueIdentifier: TC_ESignet_GetIdentityVerificationStatus_Registered_Phone_01
       description: Getting the status of Identity verification
       role: resident
       restMethod: get

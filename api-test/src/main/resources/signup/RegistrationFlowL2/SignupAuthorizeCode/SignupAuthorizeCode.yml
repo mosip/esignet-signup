@@ -1,7 +1,7 @@
 SignupAuthorizeCode:
    Signup_ESignet_SignupAuthorizeCode_AuthToken_Xsrf_Registration_L2_With_Handle_all_Valid_Smoke_sid:
       endPoint: /v1/esignet/authorization/auth-code
-      uniqueIdentifier: TC_ESignet_SignupAuthorizeCode_01
+      uniqueIdentifier: TC_ESignet_SignupAuthorizeCode_Registered_Phone_01
       description: Create authorization code with valid details
       role: resident
       restMethod: post

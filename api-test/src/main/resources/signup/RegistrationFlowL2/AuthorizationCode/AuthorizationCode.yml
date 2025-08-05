@@ -1,7 +1,7 @@
 AuthorizationCode:
    Signup_ESignet_AuthorizationCode_Registration_L2_With_Handle_All_Valid_Smoke_sid:
       endPoint: /v1/esignet/authorization/auth-code
-      uniqueIdentifier: TC_ESignet_AuthorizationCode_01
+      uniqueIdentifier: TC_ESignet_AuthorizationCode_Registered_Phone_01
       description: Generating Authorization Code with all valid details using UIN
       role: resident
       checkErrorsOnlyInResponse: true

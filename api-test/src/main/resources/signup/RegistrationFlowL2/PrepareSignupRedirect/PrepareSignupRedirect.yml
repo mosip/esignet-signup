@@ -1,7 +1,7 @@
 PrepareSignupRedirect:
    Signup_ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_Registration_L2_With_Handle_Otp_Valid_Smoke_sid:
       endPoint: /v1/esignet/authorization/prepare-signup-redirect
-      uniqueIdentifier: TC_Signup_ESignet_PrepareSignupRedirect_01
+      uniqueIdentifier: TC_Signup_ESignet_PrepareSignupRedirect_Registered_Phone_01
       description: Create ID token for the signup service with valid data
       role: resident
       restMethod: post

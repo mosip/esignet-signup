@@ -1,7 +1,7 @@
 WebSocketConnection:
    Signup_ESignet_WebSocketConnection_Registration_L2_With_Handle_all_Valid_Smoke:
       endPoint: /v1/signup/ws
-      uniqueIdentifier: TC_Signup_ESignet_WebSocketConnection_01
+      uniqueIdentifier: TC_Signup_ESignet_WebSocketConnection_Registered_Phone_01
       description: Creating websocket connection and sending message to it
       role: resident
       checkErrorsOnlyInResponse: true

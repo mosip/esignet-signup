@@ -1,7 +1,7 @@
 OAuthDetailsRequestV3:
    Signup_ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_Registration_L2_With_Handle_all_Valid_Smoke_sid:
       endPoint: /v1/esignet/authorization/v3/oauth-details
-      uniqueIdentifier: TC_Signup_ESignet_OAuthDetailsRequestV3_01
+      uniqueIdentifier: TC_Signup_ESignet_OAuthDetailsRequestV3_Registered_Phone_01
       description: Get OAuth details with valid data
       role: resident
       restMethod: post

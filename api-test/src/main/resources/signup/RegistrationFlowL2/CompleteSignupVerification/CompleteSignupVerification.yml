@@ -1,7 +1,7 @@
 CompleteSignupVerification:
    Signup_ESignet_CompleteSignupVerification_AuthToken_Xsrf_Registration_L2_With_Handle_Valid_Smoke:
       endPoint: /v1/esignet/authorization/complete-signup-redirect
-      uniqueIdentifier: TC_ESignet_CompleteSignupVerification_01
+      uniqueIdentifier: TC_ESignet_CompleteSignupVerification_Registered_Phone_01
       description: Completing the Signup verifcation
       role: resident
       restMethod: post

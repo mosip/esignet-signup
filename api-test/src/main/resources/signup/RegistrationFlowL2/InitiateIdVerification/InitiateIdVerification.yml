@@ -1,7 +1,7 @@
 InitiateIdVerification:
    Signup_ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_Registration_L2_With_Handle_all_Valid_Smoke_Sid:
       endPoint: /v1/signup/identity-verification/initiate
-      uniqueIdentifier: TC_ESignet_InitiateIdVerification_01
+      uniqueIdentifier: TC_ESignet_InitiateIdVerification_Registered_Phone_01
       description: Intiating Identity verification process with valid details
       role: resident
       restMethod: post

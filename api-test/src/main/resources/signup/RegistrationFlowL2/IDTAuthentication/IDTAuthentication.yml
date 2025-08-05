@@ -1,7 +1,7 @@
 IDTAuthentication:
    Signup_ESignet_IDTAuthentication_AuthToken_Xsrf_Registration_L2_With_Handle_all_Valid_Smoke:
       endPoint: /v1/esignet/authorization/v3/authenticate
-      uniqueIdentifier: TC_ESignet_IDTAuthentication_01
+      uniqueIdentifier: TC_ESignet_IDTAuthentication_Registered_Phone_01
       description: Create transaction Id and consentAction with valid details
       role: resident
       restMethod: post
