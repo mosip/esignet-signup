@@ -2,6 +2,7 @@ GetUISpec:
    Signup_ESignet_GetUISpec_Valid_smoke_Pos:
       endPoint: /v1/signup/registration/ui-spec
       uniqueIdentifier: TC_ESignet_GetUISpec_01
+      description: Fetch UI spec with all valid request parameter
       role: resident
       restMethod: get
       checkErrorsOnlyInResponse: true
@@ -13,9 +14,10 @@ GetUISpec:
       output: '{
   
 }'
-   Signup_ESignet_GetUISpec_invalid_transaction:
+   Signup_ESignet_GetUISpec_invalid_transaction_Neg:
       endPoint: /v1/signup/registration/ui-spec
       uniqueIdentifier: TC_ESignet_GetUISpec_02
+      description: Try to Fetch UI spec with invalid verified TransactionID
       role: resident
       restMethod: get
       inputTemplate: signup/GetUISpec/GetUISpec
@@ -30,9 +32,10 @@ GetUISpec:
     }
   ]
 }'
-   Signup_ESignet_GetUISpec_emptyValue_transaction:
+   Signup_ESignet_GetUISpec_emptyValue_transaction_Neg:
       endPoint: /v1/signup/registration/ui-spec
       uniqueIdentifier: TC_ESignet_GetUISpec_03
+      description: Try to Fetch UI spec with empty verified TransactionID
       role: resident
       restMethod: get
       inputTemplate: signup/GetUISpec/GetUISpec
@@ -47,9 +50,10 @@ GetUISpec:
     }
   ]
 }'
-   Signup_ESignet_GetUISpec_emptyString_transaction:
+   Signup_ESignet_GetUISpec_emptyString_transaction_Neg:
       endPoint: /v1/signup/registration/ui-spec
       uniqueIdentifier: TC_ESignet_GetUISpec_04
+      description: Try to Fetch UI spec with empty string in verified TransactionID
       role: resident
       restMethod: get
       inputTemplate: signup/GetUISpec/GetUISpec
@@ -67,6 +71,7 @@ GetUISpec:
    Signup_ESignet_GetUISpec_responseValidation_smoke_Pos:
       endPoint: /v1/signup/registration/ui-spec
       uniqueIdentifier: TC_ESignet_GetUISpec_05
+      description: Fetch UI spec and perform response validation
       role: resident
       restMethod: get
       checkErrorsOnlyInResponse: true
