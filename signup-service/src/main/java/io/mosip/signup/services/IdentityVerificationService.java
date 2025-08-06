@@ -195,7 +195,7 @@ public class IdentityVerificationService {
                 .findFirst();
 
         if(result.isPresent()) {
-           return getIdentityVerifierMetadata(identityVerifierId.replace("[^a-zA-Z0-9_#\-]",""));
+           return getIdentityVerifierMetadata(identityVerifierId.replaceAll("[^a-zA-Z0-9_#\-]", ""));
         }
         log.error("Invalid identity verifier ID provided!");
         throw new SignUpException(ErrorConstants.INVALID_IDENTITY_VERIFIER_ID);
