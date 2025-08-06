@@ -138,9 +138,9 @@ public class WebScocketConnection extends SignupUtil implements ITest {
 			while (sendWebsocketMessage && order < 15) {
 
 				Session session = webSocketClient.getSession();
-				GlobalMethods.reportRequest(webSocketReqJson.toString(), messageObject.toString(), tempUrl);
 
 				if (!(session == null) && !typeValue.equals("END")) {
+					GlobalMethods.reportRequest(webSocketReqJson.toString(), messageObject.toString(), tempUrl);
 					messageObject.getJSONArray("frames").getJSONObject(0).put("order", String.valueOf(order));
 					webSocketClient.sendMessage(messageObject.toString());
 
@@ -156,7 +156,7 @@ public class WebScocketConnection extends SignupUtil implements ITest {
 							.orElse("");
 
 					String jsonPayload = completeMessage.substring(completeMessage.indexOf("{"));
-					typeValue = SignupUtil.getTypeValueFromWebSocketMessage(jsonPayload);
+					typeValue = SignupUtil.extractCodeById(jsonPayload, slotId);
 
 					GlobalMethods.reportResponse(session.toString(), tempUrl, jsonPayload, true);
 
@@ -179,7 +179,7 @@ public class WebScocketConnection extends SignupUtil implements ITest {
 		// Close the connection
 		if (!(session == null)) {
 			webSocketClient.closeConnection();
-			System.out.println("Connection closed.");
+			logger.info("Connection closed.");
 		}
 
 	}

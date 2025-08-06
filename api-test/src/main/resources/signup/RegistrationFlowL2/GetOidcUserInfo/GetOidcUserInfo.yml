@@ -1,0 +1,14 @@
+GetOidcUserInfo:
+   Signup_ESignet_GetOidcUserInfo_IdpAccessToken_StatusCode_Registration_L2_With_Handle_Valid_Smoke_sid:
+      endPoint: /v1/esignet/oidc/userinfo
+      uniqueIdentifier: TC_ESignet_GetOidcUserInfo_Registered_Phone_01
+      description: Getting OIDC user info with all valid details using UIN
+      role: resident
+      restMethod: get
+      validityCheckRequired: true
+      inputTemplate: signup/RegistrationFlowL2/GetOidcUserInfo/GetOidcUserInfo
+      outputTemplate: signup/RegistrationFlowL2/GetOidcUserInfo/GetOidcUserInfoResult
+      input: '{
+      	"idpAccessToken": "$ID:ESignet_GenerateToken_Registration_L2_With_Handle_Valid_Smoke_sid_access_token$"
+}'
+      output: "200"

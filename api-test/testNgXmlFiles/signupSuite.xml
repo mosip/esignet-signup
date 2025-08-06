@@ -438,4 +438,143 @@
 		</classes>
 	</test>
 	<!-- End of Sign up L2 phase Negative test cases -->
+
+	<!-- Start of Sign up L2 Registered User test cases -->
+	<test name="OAuthDetailsRequestV3ForRegistrationFlow">
+		<parameter name="ymlFile"
+			value="signup/RegistrationFlowL2/OAuthDetailsRequestV3/OAuthDetailsRequest.yml" />
+		<parameter name="idKeyName" value="transactionId,encodedResp" />
+		<classes>
+			<class
+				name="io.mosip.testrig.apirig.signup.testscripts.SimplePostForAutoGenId" />
+		</classes>
+	</test>
+	<test name="AuthenticateUserV3ForRegistrationFlow">
+		<parameter name="ymlFile"
+			value="signup/RegistrationFlowL2/AuthenticateUserV3/AuthenticateUser.yml" />
+		<classes>
+			<class
+				name="io.mosip.testrig.apirig.signup.testscripts.PostWithAutogenIdWithOtpGenerate" />
+		</classes>
+	</test>
+	<test name="ClaimDetailsForRegistrationFlow">
+		<parameter name="ymlFile"
+			value="signup/RegistrationFlowL2/ClaimDetails/ClaimDetails.yml" />
+		<classes>
+			<class
+				name="io.mosip.testrig.apirig.signup.testscripts.GetWithParam" />
+		</classes>
+	</test>
+	<test name="PrepareSignupRedirectForRegistrationFlow">
+		<parameter name="ymlFile"
+			value="signup/RegistrationFlowL2/PrepareSignupRedirect/PrepareSignupRedirect.yml" />
+		<parameter name="idKeyName" value="idToken" />
+		<classes>
+			<class
+				name="io.mosip.testrig.apirig.signup.testscripts.SimplePostForAutoGenId" />
+		</classes>
+	</test>
+	<test name="SignupAuthorizeForRegistrationFlow">
+		<parameter name="ymlFile"
+			value="signup/RegistrationFlowL2/SignupAuthorize/SignupAuthorize.yml" />
+		<parameter name="idKeyName" value="transactionId,encodedResp" />
+		<classes>
+			<class
+				name="io.mosip.testrig.apirig.signup.testscripts.SimplePostForAutoGenId" />
+		</classes>
+	</test>
+	<test name="IDTAuthenticationForRegistrationFlow">
+		<parameter name="ymlFile"
+			value="signup/RegistrationFlowL2/IDTAuthentication/IDTAuthentication.yml" />
+		<classes>
+			<class
+				name="io.mosip.testrig.apirig.signup.testscripts.SimplePostForAutoGenId" />
+		</classes>
+	</test>
+	<test name="SignupAuthorizeCodeForRegistrationFlow">
+		<parameter name="ymlFile"
+			value="signup/RegistrationFlowL2/SignupAuthorizeCode/SignupAuthorizeCode.yml" />
+		<parameter name="idKeyName" value="code" />
+		<classes>
+			<class
+				name="io.mosip.testrig.apirig.signup.testscripts.SimplePostForAutoGenId" />
+		</classes>
+	</test>
+	<test name="InitiateIdVerificationForRegistrationFlow">
+		<parameter name="ymlFile"
+			value="signup/RegistrationFlowL2/InitiateIdVerification/InitiateIdVerification.yml" />
+		<parameter name="idKeyName" value="id" />
+		<classes>
+			<class
+				name="io.mosip.testrig.apirig.signup.testscripts.SimplePostForAutoGenId" />
+		</classes>
+	</test>
+	<test name="GetIdVerifierForRegistrationFlow">
+		<parameter name="ymlFile"
+			value="signup/RegistrationFlowL2/GetIdVerifier/GetIdVerifier.yml" />
+		<classes>
+			<class
+				name="io.mosip.testrig.apirig.signup.testscripts.GetWithParam" />
+		</classes>
+	</test>
+	<test name="GetSlotForRegistrationFlow">
+		<parameter name="ymlFile"
+			value="signup/RegistrationFlowL2/GetSlot/GetSlot.yml" />
+		<parameter name="idKeyName" value="slotId" />
+		<classes>
+			<class
+				name="io.mosip.testrig.apirig.signup.testscripts.SimplePostForAutoGenId" />
+		</classes>
+	</test>
+	<test name="WebSocketConnectionForRegistrationFlow">
+		<parameter name="ymlFile"
+			value="signup/RegistrationFlowL2/WebSocketConnection/WebSocketConnection.yml" />
+		<classes>
+			<class
+				name="io.mosip.testrig.apirig.signup.testscripts.WebScocketConnection" />
+		</classes>
+	</test>
+	<test name="GetIdentityVerificationStatusForRegistrationFlow">
+		<parameter name="ymlFile"
+			value="signup/RegistrationFlowL2/GetIdentityVerificationStatus/GetIdentityVerificationStatus.yml" />
+		<classes>
+			<class
+				name="io.mosip.testrig.apirig.signup.testscripts.GetWithParam" />
+		</classes>
+	</test>
+	<test name="CompleteSignupVerificationForRegistrationFlow">
+		<parameter name="ymlFile"
+			value="signup/RegistrationFlowL2/CompleteSignupVerification/CompleteSignupVerification.yml" />
+		<classes>
+			<class
+				name="io.mosip.testrig.apirig.signup.testscripts.SimplePostForAutoGenId" />
+		</classes>
+	</test>
+	<test name="AuthorizationCodeForRegistrationFlow">
+		<parameter name="ymlFile"
+			value="signup/RegistrationFlowL2/AuthorizationCode/AuthorizationCode.yml" />
+		<parameter name="idKeyName" value="code" />
+		<classes>
+			<class
+				name="io.mosip.testrig.apirig.signup.testscripts.SimplePostForAutoGenId" />
+		</classes>
+	</test>
+	<test name="GenerateTokenForRegistrationFlow">
+		<parameter name="ymlFile"
+			value="signup/RegistrationFlowL2/GenerateToken/GenerateToken.yml" />
+		<parameter name="idKeyName" value="access_token" />
+		<classes>
+			<class
+				name="io.mosip.testrig.apirig.signup.testscripts.SimplePostForAutoGenIdForUrlEncoded" />
+		</classes>
+	</test>
+	<test name="GetOidcUserInfoForRegistrationFlow">
+		<parameter name="ymlFile"
+			value="signup/RegistrationFlowL2/GetOidcUserInfo/GetOidcUserInfo.yml" />
+		<classes>
+			<class
+				name="io.mosip.testrig.apirig.signup.testscripts.GetWithParam" />
+		</classes>
+	</test>
+	<!-- End of Sign up L2 Registered User test cases -->
 </suite>

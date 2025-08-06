@@ -1,0 +1,19 @@
+AuthorizationCode:
+   Signup_ESignet_AuthorizationCode_Registration_L2_With_Handle_All_Valid_Smoke_sid:
+      endPoint: /v1/esignet/authorization/auth-code
+      uniqueIdentifier: TC_ESignet_AuthorizationCode_Registered_Phone_01
+      description: Generating Authorization Code with all valid details using UIN
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: post
+      validityCheckRequired: true
+      inputTemplate: signup/RegistrationFlowL2/AuthorizationCode/AuthorizationCode
+      outputTemplate: signup/RegistrationFlowL2/AuthorizationCode/AuthorizationCodeResult
+      input: '{
+        "encodedHash": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_Registration_L2_With_Handle_all_Valid_Smoke_sid_encodedResp$",
+      	"requestTime": "$TIMESTAMP$",
+      	"transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_Registration_L2_With_Handle_all_Valid_Smoke_sid_transactionId$",
+      	"acceptedClaims": [{claim: "name"},{claim: "phone_number"},{claim: "email"}]
+}'
+      output: '{
+}'

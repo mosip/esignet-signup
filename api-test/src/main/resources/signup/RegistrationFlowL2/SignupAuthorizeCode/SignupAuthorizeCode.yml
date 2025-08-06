@@ -1,0 +1,21 @@
+SignupAuthorizeCode:
+   Signup_ESignet_SignupAuthorizeCode_AuthToken_Xsrf_Registration_L2_With_Handle_all_Valid_Smoke_sid:
+      endPoint: /v1/esignet/authorization/auth-code
+      uniqueIdentifier: TC_ESignet_SignupAuthorizeCode_Registered_Phone_01
+      description: Create authorization code with valid details
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/RegistrationFlowL2/SignupAuthorizeCode/SignupAuthorizeCode
+      outputTemplate: signup/RegistrationFlowL2/SignupAuthorizeCode/SignupAuthorizeCodeResult
+      input: '{
+        "encodedHash": "$ID:ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_Registration_L2_With_Handle_all_Valid_Smoke_sid_encodedResp$",
+      	"requestTime": "$TIMESTAMP$",
+      	"pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_Registration_L2_With_Handle_Otp_Valid_Smoke_sid_pathFragmentCookie$",
+      	"pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_Registration_L2_With_Handle_all_Valid_Smoke_sid_transactionId$",
+      	"transactionId": "$ID:ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_Registration_L2_With_Handle_all_Valid_Smoke_sid_transactionId$",
+      	"acceptedClaims": [{channel: "email"},{channel: "phone_number"}]
+}'
+      output: '{
+       
+}'

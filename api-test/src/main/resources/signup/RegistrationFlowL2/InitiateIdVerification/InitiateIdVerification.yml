@@ -1,0 +1,18 @@
+InitiateIdVerification:
+   Signup_ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_Registration_L2_With_Handle_all_Valid_Smoke_Sid:
+      endPoint: /v1/signup/identity-verification/initiate
+      uniqueIdentifier: TC_ESignet_InitiateIdVerification_Registered_Phone_01
+      description: Intiating Identity verification process with valid details
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/RegistrationFlowL2/InitiateIdVerification/InitiateIdVerification
+      outputTemplate: signup/RegistrationFlowL2/InitiateIdVerification/InitiateIdVerificationResult
+      input: '{
+      	"requestTime": "$TIMESTAMP$",
+      	"authorizationCode": "$ID:ESignet_SignupAuthorizeCode_AuthToken_Xsrf_Registration_L2_With_Handle_all_Valid_Smoke_sid_code$",
+      	"state": "urlInfo1724138417665"
+}'
+      output: '{
+       
+}'

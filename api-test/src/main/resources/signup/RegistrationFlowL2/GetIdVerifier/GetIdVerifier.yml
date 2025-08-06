@@ -1,0 +1,17 @@
+GetIdVerifier:
+   Signup_ESignet_GetIdVerifier_STransId_Registration_L2_With_Handle_all_Valid_Smoke:
+      endPoint: /v1/signup/identity-verification/identity-verifier/{verifierId}
+      uniqueIdentifier: TC_ESignet_GetIdVerifier_Registered_Phone_01
+      description: To get the details of specific identity verifier with valid details
+      role: resident
+      restMethod: get
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/RegistrationFlowL2/GetIdVerifier/GetIdVerifier
+      outputTemplate: signup/RegistrationFlowL2/GetIdVerifier/GetIdVerifierResult
+      input: '{
+      	"idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_Registration_L2_With_Handle_all_Valid_Smoke_Sid_idvTransactionID$",
+      	"verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_Registration_L2_With_Handle_all_Valid_Smoke_Sid_id$"
+}'
+      output: '{
+       
+}'
