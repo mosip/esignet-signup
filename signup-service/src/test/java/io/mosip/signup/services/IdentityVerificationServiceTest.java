@@ -7,11 +7,15 @@ package io.mosip.signup.services;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.mosip.signup.api.dto.ProfileDto;
+import io.mosip.signup.api.dto.VerificationResult;
+import io.mosip.signup.api.spi.IdentityVerifierPlugin;
 import io.mosip.signup.api.spi.ProfileRegistryPlugin;
 import io.mosip.signup.api.util.ProfileCreateUpdateStatus;
 import io.mosip.signup.api.util.VerificationStatus;
 import io.mosip.signup.dto.*;
 import io.mosip.signup.exception.SignUpException;
+import io.mosip.signup.helper.AuditHelper;
 import io.mosip.signup.util.ErrorConstants;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -27,11 +31,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-
+import org.mockito.*;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.DefaultResourceLoader;
@@ -44,12 +44,20 @@ import java.io.*;
 import java.math.BigInteger;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.security.*;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.KeyStore;
+import java.security.NoSuchAlgorithmException;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
+import static io.mosip.signup.api.util.ErrorConstants.IDENTITY_VERIFICATION_FAILED;
 import static io.mosip.signup.util.SignUpConstants.VALUE_SEPARATOR;
+
 
 
 @RunWith(MockitoJUnitRunner.class)
@@ -66,6 +74,15 @@ public class IdentityVerificationServiceTest {
 
     @Mock
     ProfileRegistryPlugin profileRegistryPlugin;
+
+    @Mock
+    IdentityVerifierPlugin identityVerifierPlugin;
+
+    @Mock
+    private IdentityVerifierFactory identityVerifierFactory;
+
+    @Mock
+    private AuditHelper auditHelper;
 
     private MockWebServer mockWebServer;
 
@@ -154,8 +171,6 @@ public class IdentityVerificationServiceTest {
         identityVerificationService.getStatus("testTransactionId###123");
         Mockito.verify(cacheUtilService, Mockito.times(1)).updateVerificationStatus(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
     }
-
-
 
     @Test
     public void initiateIdentityVerification_withValidDetails_thenPass() throws IOException {
@@ -453,5 +468,112 @@ public class IdentityVerificationServiceTest {
         try (FileOutputStream fos = new FileOutputStream(file)) {
             keyStore.store(fos, "mosip".toCharArray());
         }
+    }
+
+    @Test
+    public void getStatus_withUpdateStatusAsResultsReadyWithEmptyVerifiedClaims_thenPass() {
+        String transactionId = "testTransactionId###slot123";
+        String slotId = "slot123";
+        IdentityVerificationTransaction transaction = new IdentityVerificationTransaction();
+        transaction.setStatus(VerificationStatus.RESULTS_READY);
+        transaction.setVerifierId("verifierId");
+        transaction.setApplicationId("appId");
+        transaction.setIndividualId("individualId");
+        transaction.setSlotId(slotId);
+        transaction.setAccessTokenSubject("subject");
+        Mockito.when(cacheUtilService.getVerifiedSlotTransaction(slotId)).thenReturn(transaction);
+        Mockito.when(identityVerifierFactory.getIdentityVerifier("verifierId")).thenReturn(identityVerifierPlugin);
+        VerificationResult verificationResult = new VerificationResult();
+        verificationResult.setStatus(VerificationStatus.COMPLETED);
+        verificationResult.setVerifiedClaims(Collections.emptyMap());
+        Mockito.when(identityVerifierPlugin.getVerificationResult(slotId)).thenReturn(verificationResult);
+        IdentityVerificationStatusResponse response = identityVerificationService.getStatus(transactionId);
+        Assert.assertNotNull(response);
+        Assert.assertEquals(VerificationStatus.COMPLETED, response.getStatus());
+        Mockito.verify(identityVerifierFactory).getIdentityVerifier("verifierId");
+        Mockito.verify(identityVerifierPlugin).getVerificationResult(slotId);
+        Mockito.verify(cacheUtilService, Mockito.atLeastOnce()).updateVerifiedSlotTransaction(Mockito.eq(slotId), Mockito.any());
+        Mockito.verify(cacheUtilService).updateVerificationStatus(Mockito.eq("subject"), Mockito.eq(VerificationStatus.COMPLETED.toString()), Mockito.any());
+    }
+
+    @Test
+    public void getStatus_withUpdateStatusAsResultsReadyWithVerifiedClaims_thenPass() {
+        String transactionId = "testTransactionId###slot123";
+        String slotId = "slot123";
+        IdentityVerificationTransaction transaction = new IdentityVerificationTransaction();
+        transaction.setStatus(VerificationStatus.RESULTS_READY);
+        transaction.setVerifierId("verifierId");
+        transaction.setApplicationId("appId");
+        transaction.setIndividualId("individualId");
+        transaction.setSlotId(slotId);
+        transaction.setAccessTokenSubject("subject");
+        Mockito.when(cacheUtilService.getVerifiedSlotTransaction(slotId)).thenReturn(transaction);
+        Mockito.when(identityVerifierFactory.getIdentityVerifier("verifierId")).thenReturn(identityVerifierPlugin);
+        VerificationResult vr = Mockito.mock(VerificationResult.class);
+        Mockito.when(vr.getStatus()).thenReturn(VerificationStatus.COMPLETED);
+        Map<String, JsonNode> verifiedClaims = new HashMap<>();
+        verifiedClaims.put("verified_claims", Mockito.mock(JsonNode.class));
+        Mockito.when(vr.getVerifiedClaims()).thenReturn(verifiedClaims);
+        Mockito.when(identityVerifierPlugin.getVerificationResult(slotId)).thenReturn(vr);
+        IdentityVerificationStatusResponse response = identityVerificationService.getStatus(transactionId);
+        Assert.assertNotNull(response);
+        Assert.assertEquals(VerificationStatus.UPDATE_PENDING, response.getStatus());
+        Mockito.verify(identityVerifierPlugin).getVerificationResult(slotId);
+        Mockito.verify(profileRegistryPlugin).updateProfile(Mockito.eq("appId"), Mockito.any(ProfileDto.class));
+        Mockito.verify(cacheUtilService, Mockito.atLeastOnce()).updateVerifiedSlotTransaction(Mockito.eq(slotId), Mockito.any());
+        Mockito.verify(cacheUtilService).updateVerificationStatus(Mockito.eq("subject"), Mockito.eq(VerificationStatus.UPDATE_PENDING.toString()), Mockito.any());
+    }
+
+    @Test
+    public void getStatus_whenPluginIsNull_thenFail() {
+        String transactionId = "testTransactionId###slot234";
+        String slotId = "slot234";
+
+        IdentityVerificationTransaction transaction = new IdentityVerificationTransaction();
+        transaction.setStatus(VerificationStatus.RESULTS_READY);
+        transaction.setVerifierId("verifierId");
+        transaction.setApplicationId("appId");
+        transaction.setIndividualId("individualId");
+        transaction.setSlotId(slotId);
+        transaction.setAccessTokenSubject("subject");
+        Mockito.when(cacheUtilService.getVerifiedSlotTransaction(slotId)).thenReturn(transaction);
+        Mockito.when(identityVerifierFactory.getIdentityVerifier("verifierId")).thenReturn(null);
+        IdentityVerificationStatusResponse response = identityVerificationService.getStatus(transactionId);
+
+        Assert.assertNotNull(response);
+        Assert.assertEquals(VerificationStatus.FAILED, response.getStatus());
+        Assert.assertEquals(VerificationStatus.FAILED, transaction.getStatus());
+        Assert.assertEquals(IDENTITY_VERIFICATION_FAILED, transaction.getErrorCode());
+        Mockito.verify(auditHelper).sendAuditTransaction(Mockito.any(), Mockito.any(), Mockito.eq(slotId), Mockito.isNull());
+        Mockito.verify(cacheUtilService, Mockito.atLeastOnce()).updateVerifiedSlotTransaction(Mockito.eq(slotId), Mockito.any());
+        Mockito.verify(cacheUtilService).updateVerificationStatus(Mockito.eq("subject"), Mockito.eq(VerificationStatus.FAILED.toString()),
+                Mockito.eq(IDENTITY_VERIFICATION_FAILED));
+    }
+
+    @Test
+    public void getStatus_whenVerificationResultFailed_thenFail() {
+        String transactionId = "testTransactionId###slot234";
+        String slotId = "slot234";
+        IdentityVerificationTransaction transaction = new IdentityVerificationTransaction();
+        transaction.setStatus(VerificationStatus.RESULTS_READY);
+        transaction.setVerifierId("verifierId");
+        transaction.setApplicationId("appId");
+        transaction.setIndividualId("individualId");
+        transaction.setSlotId(slotId);
+        transaction.setAccessTokenSubject("subject");
+        Mockito.when(cacheUtilService.getVerifiedSlotTransaction(slotId)).thenReturn(transaction);
+        Mockito.when(identityVerifierFactory.getIdentityVerifier("verifierId")).thenReturn(identityVerifierPlugin);
+        VerificationResult verificationResult = new VerificationResult();
+        verificationResult.setStatus(VerificationStatus.FAILED);
+        Mockito.when(identityVerifierPlugin.getVerificationResult(slotId)).thenReturn(verificationResult);
+        IdentityVerificationStatusResponse response = identityVerificationService.getStatus(transactionId);
+        Assert.assertNotNull(response);
+        Assert.assertEquals(VerificationStatus.FAILED, response.getStatus());
+        Assert.assertEquals(VerificationStatus.FAILED, transaction.getStatus());
+        Assert.assertEquals(IDENTITY_VERIFICATION_FAILED, transaction.getErrorCode());
+        Mockito.verify(identityVerifierPlugin).getVerificationResult(slotId);
+        Mockito.verify(cacheUtilService, Mockito.atLeastOnce()).updateVerifiedSlotTransaction(Mockito.eq(slotId), Mockito.any());
+        Mockito.verify(cacheUtilService).updateVerificationStatus(Mockito.eq("subject"), Mockito.eq(VerificationStatus.FAILED.toString()),
+                Mockito.eq(IDENTITY_VERIFICATION_FAILED));
     }
 }
