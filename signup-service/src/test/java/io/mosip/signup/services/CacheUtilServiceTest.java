@@ -5,12 +5,15 @@
  */
 package io.mosip.signup.services;
 
+import io.mosip.esignet.core.constants.Constants;
+import io.mosip.esignet.core.dto.OIDCTransaction;
+import io.mosip.signup.api.util.VerificationStatus;
 import io.mosip.signup.dto.IdentityVerificationTransaction;
 import io.mosip.signup.dto.IdentityVerifierDetail;
 import io.mosip.signup.dto.RegistrationTransaction;
+import io.mosip.signup.helper.CryptoHelper;
 import io.mosip.signup.util.Purpose;
 import io.mosip.signup.util.SignUpConstants;
-import io.mosip.signup.helper.CryptoHelper;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,8 +27,12 @@ import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisScriptingCommands;
 import org.springframework.data.redis.connection.ReturnType;
-
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import java.nio.charset.StandardCharsets;
+import java.util.concurrent.TimeUnit;
+import static org.mockito.ArgumentMatchers.*;
+
 
 @RunWith(MockitoJUnitRunner.class)
 public class CacheUtilServiceTest {
@@ -40,6 +47,12 @@ public class CacheUtilServiceTest {
 
     @Mock
     private RedisConnectionFactory redisConnectionFactory;
+
+    @Mock
+    private RedisTemplate<String, Object> redisTemplate;
+
+    @Mock
+    private ValueOperations<String, Object> valueOperations;
 
     @Test
     public void test_RegistrationTransaction_cache() {
@@ -153,4 +166,56 @@ public class CacheUtilServiceTest {
                 Mockito.eq(String.valueOf(expireTimeInMillis).getBytes(StandardCharsets.UTF_8))
         );
     }
+
+    @Test
+    public void updateVerifiedSlotTransaction_whenCacheIsNull_thenFail() {
+        String slotId = "slot123";
+        IdentityVerificationTransaction transaction = new IdentityVerificationTransaction();
+        Mockito.when(cacheManager.getCache(SignUpConstants.VERIFIED_SLOT)).thenReturn(null);
+        cacheUtilService.updateVerifiedSlotTransaction(slotId, transaction);
+        Mockito.verifyNoInteractions(cache);
+    }
+
+    @Test
+    public void updateVerifiedSlotTransaction_whenCacheExists_thenPass() {
+        String slotId = "slot123";
+        IdentityVerificationTransaction transaction = new IdentityVerificationTransaction();
+        transaction.setStatus(VerificationStatus.COMPLETED);
+        transaction.setErrorCode("NO_ERROR");
+        Mockito.when(cacheManager.getCache(SignUpConstants.VERIFIED_SLOT)).thenReturn(cache);
+        cacheUtilService.updateVerifiedSlotTransaction(slotId, transaction);
+        Mockito.verify(cache).put(slotId, transaction);
+    }
+
+    @Test
+    public void updateVerificationStatus_whenTransactionIsNull_thenFail() {
+        String haltedTransactionId = "txn123";
+        String cacheKey = Constants.HALTED_CACHE + "::" + haltedTransactionId;
+
+        Mockito.when(redisTemplate.opsForValue()).thenReturn(valueOperations);
+        Mockito.when(valueOperations.get(cacheKey)).thenReturn(null);
+        cacheUtilService.updateVerificationStatus(haltedTransactionId, "FAILED", "ERROR");
+        Mockito.verify(valueOperations, Mockito.never()).set(anyString(), any(), anyLong(), any());
+    }
+
+    @Test
+    public void updateVerificationStatus_whenTransactionExists_thenPass() {
+        String haltedTransactionId = "txn123";
+        String status = "COMPLETED";
+        String errorCode = "ERROR";
+        String cacheKey = Constants.HALTED_CACHE + "::" + haltedTransactionId;
+
+        OIDCTransaction transaction = new OIDCTransaction();
+        transaction.setVerificationStatus(status);
+        transaction.setVerificationErrorCode(errorCode);
+
+        Mockito.when(redisTemplate.opsForValue()).thenReturn(valueOperations);
+        Mockito.when(valueOperations.get(cacheKey)).thenReturn(transaction);
+        Mockito.when(redisTemplate.getExpire(cacheKey)).thenReturn(300L);
+        cacheUtilService.updateVerificationStatus(haltedTransactionId, status, errorCode);
+        Assert.assertEquals(status, transaction.getVerificationStatus());
+        Assert.assertEquals(errorCode, transaction.getVerificationErrorCode());
+        Mockito.verify(valueOperations).set(cacheKey, transaction, 300L, TimeUnit.SECONDS);
+    }
+
 }
