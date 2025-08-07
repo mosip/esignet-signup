@@ -418,7 +418,8 @@
 			value="signup/GetSlotNegTC/GetSlotNegTC.yml" />
 		<parameter name="idKeyName" value="slotId" />
 		<classes>
-			<class name="io.mosip.testrig.apirig.signup.testscripts.SimplePostForAutoGenId" />
+			<class
+				name="io.mosip.testrig.apirig.signup.testscripts.SimplePostForAutoGenId" />
 		</classes>
 	</test>
 	<test name="GetIdentityVerificationStatusNegTC">
@@ -438,4 +439,27 @@
 		</classes>
 	</test>
 	<!-- End of Sign up L2 phase Negative test cases -->
+
+	<test name="GenerateChallengeUISpec">
+		<parameter name="ymlFile"
+			value="signup/GenerateChallengeUISpec/GenerateChallenge.yml" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.signup.testscripts.SimplePost" />
+		</classes>
+	</test>
+	<test name="VerifyChallengeUISpec">
+		<parameter name="ymlFile"
+			value="signup/VerifyChallengeUISpec/VerifyChallenge.yml" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.signup.testscripts.SimplePost" />
+		</classes>
+	</test>
+	<test name="GetUISpec">
+		<parameter name="ymlFile"
+			value="signup/GetUISpec/GetUISpec.yml" />
+		<classes>
+			<class
+				name="io.mosip.testrig.apirig.signup.testscripts.GetWithParam" />
+		</classes>
+	</test>
 </suite>
