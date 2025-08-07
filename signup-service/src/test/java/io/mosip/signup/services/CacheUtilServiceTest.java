@@ -94,7 +94,7 @@ public class CacheUtilServiceTest {
         String expectedAlias = "activeKeyAlias";
         Mockito.when(cacheManager.getCache(SignUpConstants.KEY_ALIAS)).thenReturn(cache);
         Mockito.when(cache.get(eq(CryptoHelper.ALIAS_CACHE_KEY), eq(String.class))).thenReturn(expectedAlias);
-        String actualAlias = cacheUtilService.getActiveKeyAlias();
+        String actualAlias = cacheUtilService.getActiveKeyAlias(CryptoHelper.ALIAS_CACHE_KEY);
         Assert.assertEquals(expectedAlias, actualAlias);
     }
 
