@@ -195,7 +195,7 @@ public class IdentityVerificationService {
                 .findFirst();
 
         if(result.isPresent()) {
-           return getIdentityVerifierMetadata(identityVerifierId);
+           return getIdentityVerifierMetadata(identityVerifierId.replaceAll("[^a-zA-Z0-9+_#-]", ""));
         }
         log.error("Invalid identity verifier ID provided!");
         throw new SignUpException(ErrorConstants.INVALID_IDENTITY_VERIFIER_ID);
@@ -343,7 +343,7 @@ public class IdentityVerificationService {
         unsetCookie.setPath("/");
         response.addCookie(unsetCookie);
 
-        Cookie cookie = new Cookie(SignUpConstants.IDV_SLOT_ALLOTTED, value);
+        Cookie cookie = new Cookie(SignUpConstants.IDV_SLOT_ALLOTTED, value.replaceAll("[^a-zA-Z0-9+_#-]", ""));
         int maxAge = identityVerifierDetail.getProcessDuration() > 0 ? identityVerifierDetail.getProcessDuration() : verifiedSlotTimeout;
         cookie.setMaxAge(slotAllottedTimeout+maxAge);
         cookie.setHttpOnly(true);
