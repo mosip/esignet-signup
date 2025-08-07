@@ -1,9 +1,12 @@
 import { MouseEventHandler, useCallback } from "react";
 import { useTranslation } from "react-i18next";
-import { useL2Hash } from "~hooks/useL2Hash";
 
 import { DefaultEkyVerificationProp } from "~typings/types";
 
+import {
+  hashCodeSelector,
+  useEkycVerificationStore,
+} from "../useEkycVerificationStore";
 import { IdentityVerificationStatusLayout } from "./components/IdentityVerificationStatusLayout";
 
 export const IdentityVerificationStatusFailed = ({
@@ -12,12 +15,23 @@ export const IdentityVerificationStatusFailed = ({
 }: DefaultEkyVerificationProp) => {
   const { t } = useTranslation();
 
-  const { state } = useL2Hash();
+  const { hashCode } = useEkycVerificationStore(
+    useCallback(
+      (state) => ({
+        hashCode: hashCodeSelector(state),
+      }),
+      []
+    )
+  );
 
-  const handleFailedIdentityVerification: MouseEventHandler<HTMLButtonElement> = (e) => {
+  const handleFailedIdentityVerification: MouseEventHandler<
+    HTMLButtonElement
+  > = (e) => {
     e.preventDefault();
     window.onbeforeunload = null;
-    window.location.href = `${settings.configs["esignet-consent.redirect-url"]}?key=${state}&error=true`;
+    window.location.href = `${
+      settings.configs["esignet-consent.redirect-url"]
+    }?key=${hashCode?.state || ""}&error=true`;
   };
 
   return (
