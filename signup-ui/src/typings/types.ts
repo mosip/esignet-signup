@@ -329,6 +329,7 @@ export interface CancelPopup {
 export interface SignupHashCode {
   state: string;
   code: string;
+  uiLocales?: string;
 }
 
 export interface LanguageTaggedValue {
