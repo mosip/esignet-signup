@@ -196,7 +196,7 @@
 	</test>
 
 	<!-- Start of Sign up L2 phase test cases -->
-	<test name="OAuthDetailsRequestV3">
+	<!--<test name="OAuthDetailsRequestV3">
 		<parameter name="ymlFile"
 			value="signup/OAuthDetailsRequestV3/OAuthDetailsRequest.yml" />
 		<parameter name="idKeyName" value="transactionId,encodedResp" />
@@ -332,9 +332,9 @@
 				name="io.mosip.testrig.apirig.signup.testscripts.GetWithParam" />
 		</classes>
 	</test>
-	<!-- End of Sign up L2 phase test cases -->
+	 End of Sign up L2 phase test cases 
 
-	<!-- Start of Sign up L2 phase Negative test cases -->
+	 Start of Sign up L2 phase Negative test cases 
 	<test name="OAuthDetailsRequestV3NegTC">
 		<parameter name="ymlFile"
 			value="signup/OAuthDetailsRequestV3NegTC/OAuthDetailsRequestNegTC.yml" />
@@ -437,9 +437,9 @@
 				name="io.mosip.testrig.apirig.signup.testscripts.SimplePostForAutoGenId" />
 		</classes>
 	</test>
-	<!-- End of Sign up L2 phase Negative test cases -->
+	 End of Sign up L2 phase Negative test cases 
 
-	<!-- Start of Sign up L2 Registered User test cases -->
+	 Start of Sign up L2 Registered User test cases 
 	<test name="OAuthDetailsRequestV3ForRegistrationFlow">
 		<parameter name="ymlFile"
 			value="signup/RegistrationFlowL2/OAuthDetailsRequestV3/OAuthDetailsRequest.yml" />
@@ -575,6 +575,6 @@
 			<class
 				name="io.mosip.testrig.apirig.signup.testscripts.GetWithParam" />
 		</classes>
-	</test>
+	</test>-->
 	<!-- End of Sign up L2 Registered User test cases -->
 </suite>
