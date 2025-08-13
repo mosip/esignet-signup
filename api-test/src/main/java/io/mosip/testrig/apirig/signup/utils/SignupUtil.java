@@ -681,6 +681,80 @@ public class SignupUtil extends AdminTestUtil {
 		}
 	}
 	
+	public static JSONArray idRepoActuatorResponseArray = null;
+
+	public static String getValueFromIdRepoActuator(String section, String key) {
+
+		String value = null;
+
+		value = getValueFromIdRepoActuatorWithUrl(SignupConstants.IDREPO_DEFAULT_PROPERTIES, key,
+				SignupConstants.IDREPO_ACTUATOR_URL);
+
+		if (value == null || value.isBlank()) {
+			value = getValueFromIdRepoActuatorWithUrl(SignupConstants.APPLICATION_DEFAULT_PROPERTIES, key,
+					SignupConstants.IDREPO_ACTUATOR_URL);
+		}
+
+		// Fallback to a default section if no value found
+		if (value == null || value.isBlank()) {
+			value = getValueFromSignupActuatorWithUrl(section, key,
+					SignupConstants.IDREPO_ACTUATOR_URL);
+		}
+
+		// Log the final result or an error message if not found
+		if (value == null || value.isBlank()) {
+			logger.error("Value not found for section: " + section + ", key: " + key);
+		}
+
+		return value;
+	}
+
+	public static String getValueFromIdRepoActuatorWithUrl(String section, String key, String url) {
+		// Generate cache key based on the url, section, and key
+		String actuatorCacheKey = url + section + key;
+		String value = actuatorValueCache.get(actuatorCacheKey);
+
+		if (value != null && !value.isEmpty()) {
+			return value; // Return cached value if available
+		}
+
+		try {
+			// Fetch the actuator response array if not already populated
+			if (idRepoActuatorResponseArray == null) {
+				Response response = RestClient.getRequest(url, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
+				JSONObject responseJson = new JSONObject(response.getBody().asString());
+				idRepoActuatorResponseArray = responseJson.getJSONArray("propertySources");
+			}
+
+			// Search through the property sources for the section
+			for (int i = 0, size = idRepoActuatorResponseArray.length(); i < size; i++) {
+				JSONObject eachJson = idRepoActuatorResponseArray.getJSONObject(i);
+				if (eachJson.get("name").toString().contains(section)) {
+					logger.info("Found properties: " + eachJson.getJSONObject(GlobalConstants.PROPERTIES));
+					value = eachJson.getJSONObject(GlobalConstants.PROPERTIES).getJSONObject(key)
+							.get(GlobalConstants.VALUE).toString();
+					if (SignupConfigManager.IsDebugEnabled()) {
+						logger.info("Actuator: " + url + " key: " + key + " value: " + value);
+					}
+					break;
+				}
+			}
+
+			// Cache the retrieved value
+			if (value != null && !value.isEmpty()) {
+				actuatorValueCache.put(actuatorCacheKey, value);
+			}
+
+			return value;
+		} catch (JSONException e) {
+			logger.error("Error parsing JSON for section: " + section + ", key: " + key + " - " + e.getMessage());
+			return null;
+		} catch (Exception e) {
+			logger.error("Error fetching value for section: " + section + ", key: " + key + " - " + e.getMessage());
+			return null;
+		}
+	}
+	
 	public static void getSupportedLanguage() {
 		String supportedLanguages = getValueFromSignupActuator("classpath:/application-default.properties",
 				"mosip.signup.supported-languages");
@@ -707,6 +781,69 @@ public class SignupUtil extends AdminTestUtil {
 		} else {
 			logger.error("Language not found");
 		}
+	}
+	
+	public static void getSupportedLanguages() {
+	    String pluginName = getPluginName(); // Fetch plugin name: "mock" or "mosipid"
+
+	    if ("mock".equalsIgnoreCase(pluginName)) {
+	        // Existing logic for mock plugin
+	        String supportedLanguages = getValueFromSignupActuator(
+	                "classpath:/application-default.properties",
+	                "mosip.signup.supported-languages");
+
+	        if (supportedLanguages != null && !supportedLanguages.isBlank()) {
+	            supportedLanguages = supportedLanguages.replace("{", "").replace("}", "").replace("'", "");
+
+	            // Split and sort
+	            String[] languages = supportedLanguages.split(",");
+	            Set<String> sortedLanguages = new TreeSet<>();
+	            for (String language : languages) {
+	                sortedLanguages.add(language.trim());
+	            }
+
+	            // Add to lists
+	            BaseTestCase.languageList.addAll(sortedLanguages);
+	            signupSupportedLanguage.addAll(sortedLanguages);
+
+	            logger.info("signupSupportedLanguage " + signupSupportedLanguage);
+	            logger.info("languageList " + BaseTestCase.languageList);
+	        } else {
+	            logger.error("Language not found");
+	        }
+
+	    } else if ("mosip-id".equalsIgnoreCase(pluginName)) {
+	        // New logic for mosipid plugin
+
+	        String mandatoryLangs = getValueFromIdRepoActuator(
+	                SignupConstants.IDREPO_ACTUATOR_PROPERTY_SECTION,
+	                "mosip.mandatory-languages"); // e.g. "eng"
+
+	        String optionalLangs = getValueFromIdRepoActuator(
+	                SignupConstants.IDREPO_ACTUATOR_PROPERTY_SECTION,
+	                "mosip.optional-languages"); // e.g. "ara,fra,kan,hin,tam"
+
+	        Set<String> allLanguages = new TreeSet<>();
+
+	        if (mandatoryLangs != null && !mandatoryLangs.isBlank()) {
+	            for (String lang : mandatoryLangs.split(",")) {
+	                allLanguages.add(lang.trim());
+	            }
+	        }
+
+	        if (optionalLangs != null && !optionalLangs.isBlank()) {
+	            for (String lang : optionalLangs.split(",")) {
+	                allLanguages.add(lang.trim());
+	            }
+	        }
+
+	        signupSupportedLanguage.addAll(allLanguages);
+
+	        logger.info("signupSupportedLanguage " + signupSupportedLanguage);
+	        logger.info("languageList " + BaseTestCase.languageList);
+	    } else {
+	        logger.warn("Unsupported plugin: " + pluginName);
+	    }
 	}
 	
 	public static String extractCodeById(String message, String targetId) {

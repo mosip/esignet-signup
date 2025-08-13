@@ -98,7 +98,7 @@ public class MosipTestRunner {
 				AdminTestUtil.getRequiredField();
 				SignupUtil.getSchemaJson();
 
-				SignupUtil.signupSupportedLanguage = new ArrayList<>(BaseTestCase.getLanguageList());
+				SignupUtil.getSupportedLanguages();
 
 				PartnerRegistration.deleteCertificates();
 				AdminTestUtil.createAndPublishPolicy();
@@ -119,7 +119,7 @@ public class MosipTestRunner {
 				additionalPropertiesMap.put(SignupConstants.USE_PRE_CONFIGURED_OTP_STRING, SignupConstants.TRUE_STRING);
 				additionalPropertiesMap.put(SignupConstants.PRE_CONFIGURED_OTP_STRING, SignupConstants.ALL_ONE_OTP_STRING);
 				SignupConfigManager.add(additionalPropertiesMap);
-				SignupUtil.getSupportedLanguage();
+				SignupUtil.getSupportedLanguages();
 				startTestRunner();
 			}
 
