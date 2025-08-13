@@ -755,34 +755,6 @@ public class SignupUtil extends AdminTestUtil {
 		}
 	}
 	
-	public static void getSupportedLanguage() {
-		String supportedLanguages = getValueFromSignupActuator("classpath:/application-default.properties",
-				"mosip.signup.supported-languages");
-
-		if (supportedLanguages != null && supportedLanguages.isBlank() == false) {
-			supportedLanguages = supportedLanguages.replace("{", "").replace("}", "").replace("'", "");
-
-			// Split the string by commas
-			String[] languages = supportedLanguages.split(",");
-
-			// Use a TreeSet to sort the languages
-			Set<String> sortedLanguages = new TreeSet<>();
-			for (String language : languages) {
-				sortedLanguages.add(language.trim()); // Trim to remove any extra spaces
-			}
-
-			// Add sorted languages to the languageList
-			BaseTestCase.languageList.addAll(sortedLanguages);
-			signupSupportedLanguage.addAll(sortedLanguages);
-
-			logger.info("signupSupportedLanguage " + signupSupportedLanguage);
-
-			logger.info("languageList " + BaseTestCase.languageList);
-		} else {
-			logger.error("Language not found");
-		}
-	}
-	
 	public static void getSupportedLanguages() {
 	    String pluginName = getPluginName(); // Fetch plugin name: "mock" or "mosipid"
 
