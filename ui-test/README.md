@@ -1,14 +1,14 @@
-# 🧪 eSignet UI Automation Framework
+# 🧪 eSignet singup UI Automation Framework
 
 ## 🚀 Overview
 
-This project is a UI automation testing framework for **eSignet**, built using **Cucumber**, **TestNG**, and **Selenium WebDriver**, with support for **BrowserStack** and **parallel execution**.
+This project is a UI automation testing framework for **eSignet Signup**, built using **Cucumber**, **TestNG**, and **Selenium WebDriver**, with support for **BrowserStack** and **parallel execution**.
 
 ## 🔍 What is eSignet?
 
 eSignet is a reference identity and authentication platform developed under the [MOSIP](https://www.mosip.io) project. It demonstrates how authentication and consent mechanisms can be implemented for foundational ID systems.
 
-This framework enables automated testing of eSignet's UI features and flows across multiple browsers and devices to ensure consistent and reliable behavior.
+This framework enables automated testing of eSignet's signup UI features and flows across multiple browsers and devices to ensure consistent and reliable behavior.
 
 ---
 
@@ -66,7 +66,9 @@ project-root/
 ## 🔧 Configuration (`config.properties`)
 
 ```properties
-baseurl=https://esignet.mosip.io/
+baseurl = https://healthservices.es-qa.mosip.net/
+signup.portal.url=https://signup.es-qa.mosip.net/
+smtp.url=https://smtp.es-qa.mosip.net/
 runOnBrowserStack=true/false
 runMultipleBrowsers=true/false
 threadCount=3
@@ -101,13 +103,13 @@ browserstack_access_key=<your_browserstack_key>
 ### 1. Access the Test Automation Code
 
 #### 📥 Via Browser
-1. Clone or download from [GitHub](https://github.com/mosip/esignet)
+1. Clone or download from [GitHub](https://github.com/mosip/esignet-signup)
 2. Unzip contents locally
 3. Open terminal (Linux) or command prompt (Windows)
 
 #### 🐙 Via Git Bash
 ```bash
-git clone https://github.com/mosip/esignet
+git clone https://github.com/mosip/esignet-signup
 ```
 
 ---
