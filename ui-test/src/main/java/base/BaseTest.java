@@ -34,6 +34,7 @@ import io.mosip.testrig.apirig.testrunner.BaseTestCase;
 import io.mosip.testrig.apirig.utils.S3Adapter;
 import utils.BaseTestUtil;
 import utils.EsignetConfigManager;
+import utils.EsignetUtil;
 import utils.ExtentReportManager;
 
 public class BaseTest {
@@ -143,6 +144,7 @@ public class BaseTest {
 
 	@AfterAll
 	public static void afterAllReportUpdation() {
+		EsignetUtil.dBCleanup();
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
 			LOGGER.info("Shutdown hook triggered. Uploading report...");
 			if (extent != null) {
