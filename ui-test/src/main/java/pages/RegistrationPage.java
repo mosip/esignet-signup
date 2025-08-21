@@ -740,8 +740,11 @@ public class RegistrationPage extends BasePage {
 		return isElementVisible(screenInEnglishLanguage);
 	}
 
-	public String getOtpResendAttemptsText() {
-		return getText(remainingAttemptsMeassage);
+	public String getOtpResendAttemptsText(int expectedRemainingAttempts) {
+	    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+	    String expectedText = expectedRemainingAttempts + " of 3 attempts left";
+	    wait.until(ExpectedConditions.textToBePresentInElement(remainingAttemptsMeassage, expectedText));
+	    return getText(remainingAttemptsMeassage);
 	}
 
 	public boolean isAccountCreatedSuccessfullyMessageDisplayed() {

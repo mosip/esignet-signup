@@ -48,25 +48,6 @@ public class EsignetConfigManager extends io.mosip.testrig.apirig.utils.ConfigMa
 		init(moduleSpecificPropertiesMap);
 	}
 
-	private static void loadPropertiesFile(String fileName, Map<String, Object> propMap) {
-		try (InputStream inputStream = EsignetConfigManager.class.getClassLoader().getResourceAsStream(fileName)) {
-			if (inputStream == null) {
-				LOGGER.error(fileName + " resource not found in classpath");
-				throw new FileNotFoundException(fileName + " not found");
-			}
-			Properties props = new Properties();
-			props.load(inputStream);
-			LOGGER.info(fileName + " loaded successfully.");
-
-			for (String key : props.stringPropertyNames()) {
-				propMap.put(key, props.getProperty(key));
-			}
-		} catch (IOException e) {
-			LOGGER.error("Failed to load " + fileName, e);
-			throw new RuntimeException("Failed to load " + fileName, e);
-		}
-	}
-
 	public static String getDbUrl() {
 		return getProperty("db-server-es", "");
 	}

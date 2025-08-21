@@ -235,8 +235,7 @@ public class SignUpStepDef {
 	@Then("user validates {int} out of 3 attempts message displayed")
 	public void userValidatesOutOfThreeAttemptsMessageDisplayed(int remainingAttempts) throws InterruptedException {
 		registrationPage.clickOnResendOtpButton();
-		Thread.sleep(1500);
-		String attemptText = registrationPage.getOtpResendAttemptsText();
+		String attemptText = registrationPage.getOtpResendAttemptsText(remainingAttempts);
 		Assert.assertTrue(attemptText.contains(remainingAttempts + " of 3 attempts left"),
 				"Expected attempt count: " + remainingAttempts + " out of 3 not found. Actual: " + attemptText);
 	}

@@ -37,8 +37,8 @@ public class EsignetUtil extends AdminTestUtil {
 	}
 
 	public static void dBCleanup() {
-		System.out.print("initiated db cleanup operation");
-		System.out.println(EsignetConfigManager.getDbUrl());
+		logger.info("Initiated DB cleanup operation");
+		logger.debug("DB URL: " + EsignetConfigManager.getDbUrl());
 		try {
 			URL resource = EsignetUtil.class.getClassLoader().getResource("config/MockIdentityDataDeleteQueries.txt");
 			if (resource == null) {
