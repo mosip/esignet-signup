@@ -1,2 +1,7 @@
 ##### JIRA number;testcase 
-#MOSIP-12456------Mimoto_AddIdentity_Binding_smoke_Pos
+#MOSIP-12456------test_case_name
+ES-2466------Signup_ESignet_AuthenticateUserPasswordNegTC_with_unregistered_challenge_Neg
+ES-2466------Signup_ESignet_GenerateToken_uin_L2_Valid_Smoke_sid
+ES-2466------Signup_ESignet_GetOidcUserInfo_uin_IdpAccessToken_StatusCode_L2_Valid_Smoke_sid
+ES-2466------Signup_ESignet_GenerateToken_Registration_L2_With_Handle_Valid_Smoke_sid
+ES-2466------Signup_ESignet_GetOidcUserInfo_IdpAccessToken_StatusCode_Registration_L2_With_Handle_Valid_Smoke_sid
