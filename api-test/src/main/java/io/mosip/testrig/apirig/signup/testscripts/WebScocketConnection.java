@@ -1,5 +1,6 @@
 package io.mosip.testrig.apirig.signup.testscripts;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.Map;
 
@@ -171,17 +172,13 @@ public class WebScocketConnection extends SignupUtil implements ITest {
 						GlobalMethods.reportResponse(null, tempUrl, webSocketConnectionError, true);
 						throw new AdminTestException("Failed due to " + webSocketConnectionError);
 					}
+					session.close(new CloseReason(CloseReason.CloseCodes.NORMAL_CLOSURE, ""));
+					session = null;
 				}
 			}
 
 		} catch (Exception e) {
 			throw new AdminTestException("Failed at sending message to websocket");
-		}
-
-		// Close the connection
-		if (!(session == null)) {
-			webSocketClient.closeWithNormalClosure();
-			logger.info("Connection closed.");
 		}
 
 	}
