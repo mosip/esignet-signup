@@ -2,6 +2,7 @@ package pages;
 
 import base.BasePage;
 import utils.EsignetConfigManager;
+import utils.EsignetUtil;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -378,16 +379,8 @@ public class RegistrationPage extends BasePage {
 		return isElementVisible(backButton);
 	}
 
-	public void waitUntilOtpTimerExpires() {
-		int otpExpiry = Integer.parseInt(EsignetConfigManager.getProperty("otp.expiry.seconds", ""));
-		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(otpExpiry));
-		wait.until(ExpectedConditions.textToBePresentInElement(otpCountDownTimer, "00:00"));
-		wait.until(ExpectedConditions.elementToBeClickable(resendOtpButton));
-		resendOtpButton.click();
-	}
-
 	public void waitUntilOtpExpires() {
-		int otpExpiry = Integer.parseInt(EsignetConfigManager.getProperty("otp.expiry.seconds", ""));
+		int otpExpiry = EsignetUtil.getOtpResendDelayFromSignupActuator();
 		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(otpExpiry));
 		wait.until(ExpectedConditions.textToBePresentInElement(otpCountDownTimer, "00:00"));
 	}
@@ -398,18 +391,6 @@ public class RegistrationPage extends BasePage {
 
 	public void clickOnResendOtpButton() {
 		clickOnElement(resendOtpButton);
-	}
-
-	public boolean isOtpTimerRestarted() {
-		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-		return wait.until(driver -> {
-			String value = otpCountDownTimer.getText();
-			return value.startsWith("01");
-		});
-	}
-
-	public String getRemainingAttemptsText() {
-		return remainingAttemptsMeassage.getText().trim();
 	}
 
 	public void clickOnVerifyOtpButton() {

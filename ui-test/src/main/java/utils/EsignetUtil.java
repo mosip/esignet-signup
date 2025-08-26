@@ -4,6 +4,8 @@ import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
@@ -199,6 +201,71 @@ public class EsignetUtil extends AdminTestUtil {
 			logger.error("OTP resend delay value not found in actuator, using default 60s");
 			return 60;
 		}
+	}
+
+	public static String generateMobileFromActuator() {
+		String regex = getValueFromSignupActuator("applicationConfig: [classpath:/application-default.properties]",
+				"mosip.signup.identifier.regex");
+		String digitRange = regex.substring(regex.indexOf('{') + 1, regex.indexOf('}'));
+		String[] parts = digitRange.split(",");
+
+		int min = Integer.parseInt(parts[0]);
+		int max = (parts.length > 1) ? Integer.parseInt(parts[1]) : min;
+		int length = (min + new Random().nextInt(max - min + 1)) + 1;
+		StringBuilder number = new StringBuilder();
+		number.append(new Random().nextInt(9) + 1);
+		for (int i = 1; i < length; i++) {
+			number.append(new Random().nextInt(10));
+		}
+
+		return number.toString();
+	}
+
+	public static String getCountryCodeFromActuator() {
+		return getValueFromSignupActuator("applicationConfig: [classpath:/application-default.properties]",
+				"mosip.signup.identifier.prefix");
+	}
+
+	public static String getPasswordPattern() {
+		return getValueFromSignupActuator("applicationConfig: [classpath:/application-default.properties]",
+				"mosip.signup.password.pattern");
+	}
+
+	public static int getPasswordMinLength() {
+		String value = getValueFromSignupActuator("applicationConfig: [classpath:/application-default.properties]",
+				"mosip.signup.password.min-length");
+		return Integer.parseInt(value);
+	}
+
+	public static int getPasswordMaxLength() {
+		String value = getValueFromSignupActuator("applicationConfig: [classpath:/application-default.properties]",
+				"mosip.signup.password.max-length");
+		return Integer.parseInt(value);
+	}
+
+	public static String generateValidPasswordFromActuator() {
+		int min = getPasswordMinLength();
+		int max = getPasswordMaxLength();
+		int length = min + new Random().nextInt(max - min + 1);
+
+		String upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+		String lower = "abcdefghijklmnopqrstuvwxyz";
+		String digits = "0123456789";
+		String special = "_!@#$%^&*";
+		String all = upper + lower + digits + special;
+
+		StringBuilder password = new StringBuilder();
+
+		password.append(upper.charAt(new Random().nextInt(upper.length())));
+		password.append(lower.charAt(new Random().nextInt(lower.length())));
+		password.append(digits.charAt(new Random().nextInt(digits.length())));
+		password.append(special.charAt(new Random().nextInt(special.length())));
+
+		for (int i = 4; i < length; i++) {
+			password.append(all.charAt(new Random().nextInt(all.length())));
+		}
+
+		return password.toString();
 	}
 
 }

@@ -23,6 +23,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import utils.ClaimsUtil;
 import utils.EsignetConfigManager;
 import utils.WaitUtil;
 
@@ -228,5 +229,36 @@ public class BasePage {
 		String text = element.getTagName();
 		LOGGER.info("Retrieved text: {}", text);
 		return text;
+	}
+
+	public String authorizeUrl;
+
+	public String getAuthorizeUrl() {
+		return authorizeUrl;
+	}
+
+	public void setAuthorizeUrl(String url) {
+		this.authorizeUrl = url;
+	}
+
+	public String getExpectedDefaultLanguage() {
+		String url = getAuthorizeUrl();
+
+		if (url == null || url.isEmpty()) {
+			url = driver.getCurrentUrl();
+			setAuthorizeUrl(url);
+		}
+		return ClaimsUtil.mapLangToName(ClaimsUtil.getDefaultLanguageFromUrl(url));
+	}
+
+	public String getExpectedFullNameInKhmerPlaceholder(String lang) {
+		switch (lang.toLowerCase()) {
+		case "english":
+			return "Enter Full Name in Khmer";
+		case "khmer":
+			return "បញ្ចូលគោត្តនាម-នាមជាភាសាខ្មែរ";
+		default:
+			return "";
+		}
 	}
 }

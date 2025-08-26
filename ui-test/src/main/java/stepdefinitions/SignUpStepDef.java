@@ -804,6 +804,33 @@ public class SignUpStepDef {
 	public void verifySuccessfullRegistrationNotification() {
 		smtpPage.isSuccessfullNotificationReceivedInKhmer();
 	}
+	
+	@When("user enters valid_mobile_number in the mobile number text box")
+	public void userEntersValidMobileNumber() {
+		String mobileNumber = EsignetUtil.generateMobileFromActuator();
+		registrationPage.enterMobileNumber(mobileNumber);
+	}
+
+	private String lastGeneratedPassword;
+
+	@When("user enters valid password in the Password field")
+	public void userEntersValidPassword() {
+		lastGeneratedPassword = EsignetUtil.generateValidPasswordFromActuator();
+		registrationPage.enterPassword(lastGeneratedPassword);
+	}
+
+	@When("user enters valid confirm password in the Confirm Password field")
+	public void userEntersValidConfirmPassword() {
+		registrationPage.enterConfirmPassword(lastGeneratedPassword);
+	}
+
+	@Then("verify Full Name in Khmer field value should be displayed in default language")
+	public void verifyFieldValueDefaultLanguage() {
+	    String expectedLang = registrationPage.getExpectedDefaultLanguage();
+	    String expectedPlaceholder = registrationPage.getExpectedFullNameInKhmerPlaceholder(expectedLang);
+	    String actualPlaceholder = registrationPage.getFullNameInKhmerPlaceholder();
+	    assertEquals(expectedPlaceholder, actualPlaceholder);
+	}
 
 	/*
 	 * @Then("verify browser warning popup is displayed with header Leave site?")
