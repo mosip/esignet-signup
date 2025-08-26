@@ -20,20 +20,4 @@ public class SignupCustomWebSocketClientUtil extends WebSocketClientUtil {
     	logger.info("Custom close reason: " + closeReason);
 
     }
-    
- // Explicit close method for your testcases
-//    public void closeWithNormalClosure() {
-//        try {
-//            if (getSession() != null && getSession().isOpen()) {
-//                CloseReason reason = new CloseReason(
-//                        CloseReason.CloseCodes.NORMAL_CLOSURE,
-//                        "Shutting down cleanly"
-//                );
-//                getSession().close(reason);
-//                logger.info("Closed WebSocket with Normal Closure");
-//            }
-//        } catch (Exception e) {
-//            logger.error("Error closing WebSocket", e);
-//        }
-//    }
 }
