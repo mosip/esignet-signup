@@ -1,0 +1,19 @@
+PrepareSignupRedirect:
+   Signup_ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_Registration_L2_With_Handle_Otp_Valid_Smoke_sid:
+      endPoint: /v1/esignet/authorization/prepare-signup-redirect
+      uniqueIdentifier: TC_Signup_ESignet_PrepareSignupRedirect_Registered_Phone_01
+      description: Create ID token for the signup service with valid data
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      validityCheckRequired: true
+      inputTemplate: signup/RegistrationFlowL2/PrepareSignupRedirect/PrepareSignupRedirect
+      outputTemplate: signup/RegistrationFlowL2/PrepareSignupRedirect/PrepareSignupRedirectResult
+      input: '{
+        "encodedHash": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_Registration_L2_With_Handle_all_Valid_Smoke_sid_encodedResp$",
+      	"requestTime": "$TIMESTAMP$",
+      	"transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_Registration_L2_With_Handle_all_Valid_Smoke_sid_transactionId$",
+      	"pathFragment": "path-fragment"
+    }'
+      output: '{
+}'

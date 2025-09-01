@@ -1,0 +1,23 @@
+{
+  "slotId": "{{slotId}}",
+  "idvSlotAllotted": "{{idvSlotAllotted}}",
+  "sendDestination": "{{sendDestination}}",
+  "message1": {
+    "slotId": "{{slotId}}",
+    "stepCode": "START",
+    "frames": [
+      {{#each message1.frames}}
+      { "frame": "{{this.frame}}", "order": "{{this.order}}" }{{#unless @last}},{{/unless}}
+      {{/each}}
+    ]
+  },
+  "message2": {
+    "slotId": "{{slotId}}",
+    "stepCode": "liveness_check",
+    "frames": [
+      {{#each message2.frames}}
+      { "frame": "{{this.frame}}", "order": "{{this.order}}" }{{#unless @last}},{{/unless}}
+      {{/each}}
+    ]
+  }
+}

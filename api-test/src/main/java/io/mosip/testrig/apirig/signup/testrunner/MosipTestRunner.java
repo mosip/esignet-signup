@@ -62,7 +62,7 @@ public class MosipTestRunner {
 	public static boolean skipAll = false;
 	
 	public static String PLUGIN_NAME = null;
-	
+
 	/**
 	 * C Main method to start mosip test execution
 	 * 
@@ -99,8 +99,9 @@ public class MosipTestRunner {
 				KeycloakUserManager.createUsers();
 				KeycloakUserManager.closeKeycloakInstance();
 				AdminTestUtil.getRequiredField();
+				SignupUtil.getSchemaJson();
 
-				SignupUtil.signupSupportedLanguage = new ArrayList<>(BaseTestCase.getLanguageList());
+				SignupUtil.getSupportedLanguages();
 
 				PartnerRegistration.deleteCertificates();
 				AdminTestUtil.createAndPublishPolicy();
@@ -131,7 +132,7 @@ public class MosipTestRunner {
 				additionalPropertiesMap.put(SignupConstants.USE_PRE_CONFIGURED_OTP_STRING, SignupConstants.TRUE_STRING);
 				additionalPropertiesMap.put(SignupConstants.PRE_CONFIGURED_OTP_STRING, SignupConstants.ALL_ONE_OTP_STRING);
 				SignupConfigManager.add(additionalPropertiesMap);
-				SignupUtil.getSupportedLanguage();
+				SignupUtil.getSupportedLanguages();
 				
 				DependencyResolver.loadDependencies(getGlobalResourcePath() + "/config/testCaseInterDependency_"
 						+ SignupUtil.getPluginName() + ".json");

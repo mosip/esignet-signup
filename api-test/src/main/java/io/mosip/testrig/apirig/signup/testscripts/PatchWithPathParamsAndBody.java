@@ -96,7 +96,7 @@ public class PatchWithPathParamsAndBody extends SignupUtil implements ITest {
 		testCaseDTO = AdminTestUtil.filterHbs(testCaseDTO);
 		String inputJson = filterInputHbs(testCaseDTO);
 		
-		inputJson = SignupUtil.inputstringKeyWordHandeler(inputJson, testCaseName);
+		inputJson = inputstringKeyWordHandeler(inputJson, testCaseName);
 
 		response = patchWithPathParamsBodyAndCookie(ApplnURI + testCaseDTO.getEndPoint(), inputJson, COOKIENAME,
 				testCaseDTO.getRole(), testCaseDTO.getTestCaseName(), pathParams);

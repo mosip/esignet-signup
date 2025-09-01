@@ -1,8 +1,10 @@
 package io.mosip.testrig.apirig.signup.testscripts;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.Map;
 
+import javax.websocket.CloseReason;
 import javax.websocket.Session;
 
 import org.apache.log4j.Level;
@@ -23,6 +25,7 @@ import org.testng.internal.TestResult;
 
 import io.mosip.testrig.apirig.dto.TestCaseDTO;
 import io.mosip.testrig.apirig.signup.utils.SignupConfigManager;
+import io.mosip.testrig.apirig.signup.utils.SignupCustomWebSocketClientUtil;
 import io.mosip.testrig.apirig.signup.utils.SignupUtil;
 import io.mosip.testrig.apirig.testrunner.HealthChecker;
 import io.mosip.testrig.apirig.utils.AdminTestException;
@@ -30,7 +33,6 @@ import io.mosip.testrig.apirig.utils.AuthenticationTestException;
 import io.mosip.testrig.apirig.utils.GlobalConstants;
 import io.mosip.testrig.apirig.utils.GlobalMethods;
 import io.mosip.testrig.apirig.utils.SecurityXSSException;
-import io.mosip.testrig.apirig.utils.WebSocketClientUtil;
 import io.restassured.response.Response;
 
 public class WebScocketConnection extends SignupUtil implements ITest {
@@ -117,7 +119,8 @@ public class WebScocketConnection extends SignupUtil implements ITest {
 
 		tempUrl = tempUrl.replace("https", "wss") + testCaseDTO.getEndPoint() + "?slotId=" + slotId;
 
-		WebSocketClientUtil webSocketClient = new WebSocketClientUtil(cookie, subscribeDestination, sendDestination);
+		SignupCustomWebSocketClientUtil webSocketClient = new SignupCustomWebSocketClientUtil(cookie, subscribeDestination, sendDestination);
+		
 
 		// Connect to WebSocket server
 		webSocketClient.connect(tempUrl);
@@ -138,9 +141,9 @@ public class WebScocketConnection extends SignupUtil implements ITest {
 			while (sendWebsocketMessage && order < 15) {
 
 				Session session = webSocketClient.getSession();
-				GlobalMethods.reportRequest(webSocketReqJson.toString(), messageObject.toString(), tempUrl);
 
 				if (!(session == null) && !typeValue.equals("END")) {
+					GlobalMethods.reportRequest(webSocketReqJson.toString(), messageObject.toString(), tempUrl);
 					messageObject.getJSONArray("frames").getJSONObject(0).put("order", String.valueOf(order));
 					webSocketClient.sendMessage(messageObject.toString());
 
@@ -150,13 +153,13 @@ public class WebScocketConnection extends SignupUtil implements ITest {
 						Thread.currentThread().interrupt();
 					}
 
-					Map<String, String> receivedMessage = WebSocketClientUtil.getMessageStore();
+					Map<String, String> receivedMessage = SignupCustomWebSocketClientUtil.getMessageStore();
 
 					String completeMessage = receivedMessage.values().stream().reduce((a, b) -> a + "\n" + b)
 							.orElse("");
 
 					String jsonPayload = completeMessage.substring(completeMessage.indexOf("{"));
-					typeValue = SignupUtil.getTypeValueFromWebSocketMessage(jsonPayload);
+					typeValue = SignupUtil.extractCodeById(jsonPayload, slotId);
 
 					GlobalMethods.reportResponse(session.toString(), tempUrl, jsonPayload, true);
 
@@ -169,17 +172,13 @@ public class WebScocketConnection extends SignupUtil implements ITest {
 						GlobalMethods.reportResponse(null, tempUrl, webSocketConnectionError, true);
 						throw new AdminTestException("Failed due to " + webSocketConnectionError);
 					}
+					session.close(new CloseReason(CloseReason.CloseCodes.NORMAL_CLOSURE, ""));
+					session = null;
 				}
 			}
 
 		} catch (Exception e) {
 			throw new AdminTestException("Failed at sending message to websocket");
-		}
-
-		// Close the connection
-		if (!(session == null)) {
-			webSocketClient.closeConnection();
-			System.out.println("Connection closed.");
 		}
 
 	}

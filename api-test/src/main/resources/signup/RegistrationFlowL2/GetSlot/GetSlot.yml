@@ -1,0 +1,19 @@
+GetSlot:
+   Signup_ESignet_GetSlot_STransId_AuthToken_Xsrf_Registration_L2_With_Handle_all_Valid_Smoke_Sid:
+      endPoint: /v1/signup/identity-verification/slot
+      uniqueIdentifier: TC_ESignet_GetSlot_Registered_Phone_01
+      description: To get the slot ID to begin the video identity verification process with vaild details
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/RegistrationFlowL2/GetSlot/GetSlot
+      outputTemplate: signup/RegistrationFlowL2/GetSlot/GetSlotResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_Registration_L2_With_Handle_all_Valid_Smoke_Sid_idvTransactionID$",
+        "verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_Registration_L2_With_Handle_all_Valid_Smoke_Sid_id$",
+        "consent": "AGREE"
+}'
+      output: '{
+       
+}'
