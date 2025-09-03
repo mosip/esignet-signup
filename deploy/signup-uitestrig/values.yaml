@@ -1,0 +1,64 @@
+modules:
+  - name: signupui
+    enabled: true
+    image:
+      registry: docker.io
+      repository: mosipqa/uitest-signup
+      tag: develop
+
+extraEnvVarsCM:
+  - esignet-global
+  - s3
+  - keycloak-host
+  - db
+  - uitestrig
+  - config-server-share
+  - artifactory-share
+
+extraEnvVarsSecret:
+  - s3
+  - keycloak-client-secrets
+  - postgres-postgresql
+
+uitestrig:
+  configmaps:
+    s3:
+      s3-host: 'http://minio.minio:9000'
+      s3-user-key: 'admin'
+      s3-region: ''
+    db:
+      db-port: '5432'
+      db-su-user: 'postgres'
+      db-server: 'api-internal.sandbox.xyz.net'
+    uitestrig:
+      apiInternalEndPoint: 'https://api-internal.sandbox.xyz.net'
+      apiEnvUser: 'api-internal.sandbox.xyz.net'
+      CHROME_DRIVER_CPU_LIMIT: "2"
+      CHROME_DRIVER_MEMORY: 3g
+      loginlang: sin
+      push-reports-to-s3: 'yes'
+      s3-account: uitestrig
+    scripts:
+      fetch_docker_image_hash_ids.sh: |
+        #!/bin/bash
+        sleep 5
+        export DOCKER_HASH_ID=$( kubectl get pod "$HOSTNAME" -n "$NS" -o jsonpath='{.status.containerStatuses[*].imageID}' | sed 's/ /\n/g' | grep -v 'istio' | sed 's/docker\-pullable\:\/\///g' )
+        export DOCKER_IMAGE=$( kubectl get pod "$HOSTNAME" -n "$NS" -o jsonpath='{.status.containerStatuses[*].image}' | sed 's/ /\n/g' | grep -v 'istio' | sed 's/docker\-pullable\:\/\///g' )
+        if [[ -z $DOCKER_HASH_ID ]]; then
+        echo "DOCKER_HASH_ID IS EMPTY;EXITING";
+        exit 1;
+        fi
+        echo "DOCKER_HASH_ID ; $DOCKER_HASH_ID"
+        echo "DOCKER_IMAGE : $DOCKER_IMAGE"
+        kubectl get pods -A -o=jsonpath='{range .items[*]}{.metadata.namespace}{","}{.metadata.labels.app\.kubernetes\.io\/name}{","}{.status.containerStatuses[?(@.name!="istio-proxy")].image}{","}{.status.containerStatuses[?(@.name!="istio-proxy")].imageID}{","}{.metadata.creationTimestamp}{"\n"}' | sed 's/ /\n/g' | grep -vE 'istio*|longhorn*|cattle*|rancher|kube' | sed 's/docker\-pullable\:\/\///g' | sort -u | sed '/,,,/d' | awk -F ',' 'BEGIN {print "{ \"POD_NAME\": \"'$(echo $HOSTNAME)'\", \"DOCKER_IMAGE\": \"'$(echo $DOCKER_IMAGE)'\", \"DOCKER_HASH_ID\": \"'$(echo $DOCKER_HASH_ID)'\", \"k8s-cluster-image-list\": ["} {print "{"} {print "\"namespace\": \"" $1 "\","} {print "\"app_name\": \"" $2 "\","} {print "\"docker_image_name\": \"" $3 "\","} {print "\"docker_image_id\": \"" $4 "\","} {print "\"creation_timestamp\": \"" $5 "\"" } {print "},"} END {print "]}"}' | sed -z 's/},\n]/}\n]/g' | jq -r . | tee -a images-list.json
+        ## run entrypoint script
+        sleep 5
+        cd /home/${container_user}/
+        bash ./entrypoint.sh
+  secrets:
+  volumes:
+    configmaps:
+      scripts:
+        defaultMode: 0777
+        volumeMounts:
+          mountPath: '/home/mosip/scripts/'

@@ -11,11 +11,11 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "~components/ui/alert-dialog";
-import { useL2Hash } from "~hooks/useL2Hash";
 import { useSettings } from "~pages/shared/queries";
 
 import {
   criticalErrorSelector,
+  hashCodeSelector,
   useEkycVerificationStore,
 } from "./useEkycVerificationStore";
 
@@ -23,25 +23,27 @@ export const EkycVerificationPopover = () => {
   const { t } = useTranslation();
 
   const { data: settings } = useSettings();
-  const { criticalError } = useEkycVerificationStore(
+  const { criticalError, hashCode } = useEkycVerificationStore(
     useCallback(
       (state) => ({
         criticalError: criticalErrorSelector(state),
+        hashCode: hashCodeSelector(state),
       }),
       []
     )
   );
-  const { state } = useL2Hash();
 
   const handleAction = (e: any) => {
     e.preventDefault();
     window.onbeforeunload = null;
-    window.location.href = `${settings?.response?.configs["esignet-consent.redirect-url"]}?key=${state}&error=${criticalError?.errorCode}`;
+    window.location.href = `${settings?.response?.configs[
+      "esignet-consent.redirect-url"
+    ]}?key=${hashCode?.state || ""}&error=${criticalError?.errorCode}`;
   };
 
   return (
     <AlertDialog open={!!criticalError}>
-       <AlertDialogContent className="rounded-[20px] bg-white !w-[90vw] pt-[2.5rem] pb-[2rem]">
+      <AlertDialogContent className="!w-[90vw] rounded-[20px] bg-white pb-[2rem] pt-[2.5rem]">
         <AlertDialogHeader className="m-2">
           <AlertDialogTitle className="flex flex-col items-center justify-center gap-y-4">
             <>

@@ -151,6 +151,7 @@ public class SignupUtil extends AdminTestUtil {
 
 		// When the captcha is enabled we cannot execute the test case as we can not
 		// generate the captcha token
+		
 		if (isCaptchaEnabled() == true) {
 			GlobalMethods.reportCaptchaStatus(GlobalConstants.CAPTCHA_ENABLED, true);
 			throw new SkipException(GlobalConstants.CAPTCHA_ENABLED_MESSAGE);
@@ -243,7 +244,7 @@ public class SignupUtil extends AdminTestUtil {
 		if (SkipTestCaseHandler.isTestCaseInSkippedList(testCaseName)) {
 			throw new SkipException(GlobalConstants.KNOWN_ISSUES);
 		}
-
+		
 		if (((testCaseName.contains("ESignet_AuthenticateUserPassword") || testCaseName
 				.contains("Signup_ESignet_AuthenticateUser_V3_AuthToken_Xsrf_Registration_L2_With_Handle_Otp_"))
 				&& inputJson.contains("_PHONE$"))

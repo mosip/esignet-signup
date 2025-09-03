@@ -93,8 +93,8 @@ public class CacheUtilServiceTest {
     public void getActiveKeyAlias_withValidCacheKey_thenPass() {
         String expectedAlias = "activeKeyAlias";
         Mockito.when(cacheManager.getCache(SignUpConstants.KEY_ALIAS)).thenReturn(cache);
-        Mockito.when(cache.get(eq(CryptoHelper.ALIAS_CACHE_KEY), eq(String.class))).thenReturn(expectedAlias);
-        String actualAlias = cacheUtilService.getActiveKeyAlias();
+        Mockito.when(cache.get(Mockito.eq(CryptoHelper.ALIAS_CACHE_KEY), Mockito.eq(String.class))).thenReturn(expectedAlias);
+        String actualAlias = cacheUtilService.getActiveKeyAlias(CryptoHelper.ALIAS_CACHE_KEY);
         Assert.assertEquals(expectedAlias, actualAlias);
     }
 
@@ -113,27 +113,27 @@ public class CacheUtilServiceTest {
         Long expectedResult = 1L;
         Mockito.when(redisConnectionFactory.getConnection()).thenReturn(redisConnection);
         Mockito.when(redisConnection.scriptingCommands()).thenReturn(scriptingCommands);
-        Mockito.when(scriptingCommands.scriptLoad(any(byte[].class))).thenReturn(scriptHash);
+        Mockito.when(scriptingCommands.scriptLoad(Mockito.any(byte[].class))).thenReturn(scriptHash);
         Mockito.when(scriptingCommands.evalSha(
-                eq(scriptHash),
-                eq(ReturnType.INTEGER),
-                eq(1),
-                any(byte[].class),
-                any(byte[].class),
-                any(byte[].class),
-                any(byte[].class)
+                Mockito.eq(scriptHash),
+                Mockito.eq(ReturnType.INTEGER),
+                Mockito.eq(1),
+                Mockito.any(byte[].class),
+                Mockito.any(byte[].class),
+                Mockito.any(byte[].class),
+                Mockito.any(byte[].class)
         )).thenReturn(expectedResult);
         Long result = cacheUtilService.getSetSlotCount("testField", 1000L, 10);
         Assert.assertEquals(expectedResult, result);
-        Mockito.verify(scriptingCommands).scriptLoad(any(byte[].class));
+        Mockito.verify(scriptingCommands).scriptLoad(Mockito.any(byte[].class));
         Mockito.verify(scriptingCommands).evalSha(
-                eq(scriptHash),
-                eq(ReturnType.INTEGER),
-                eq(1),
-                any(byte[].class),
-                any(byte[].class),
-                any(byte[].class),
-                any(byte[].class)
+                Mockito.eq(scriptHash),
+                Mockito.eq(ReturnType.INTEGER),
+                Mockito.eq(1),
+                Mockito.any(byte[].class),
+                Mockito.any(byte[].class),
+                Mockito.any(byte[].class),
+                Mockito.any(byte[].class)
         );
     }
 
@@ -146,24 +146,24 @@ public class CacheUtilServiceTest {
         String scriptHash = "mockScriptHash";
         Mockito.when(redisConnectionFactory.getConnection()).thenReturn(redisConnection);
         Mockito.when(redisConnection.scriptingCommands()).thenReturn(scriptingCommands);
-        Mockito.when(scriptingCommands.scriptLoad(any(byte[].class))).thenReturn(scriptHash);
+        Mockito.when(scriptingCommands.scriptLoad(Mockito.any(byte[].class))).thenReturn(scriptHash);
         Mockito.when(redisConnection.scriptingCommands().evalSha(
-                eq(scriptHash),
-                eq(ReturnType.INTEGER),
-                eq(1),
-                any(byte[].class),
-                any(byte[].class),
-                any(byte[].class)
+                Mockito.eq(scriptHash),
+                Mockito.eq(ReturnType.INTEGER),
+                Mockito.eq(1),
+                Mockito.any(byte[].class),
+                Mockito.any(byte[].class),
+                Mockito.any(byte[].class)
         )).thenReturn(1L);
         cacheUtilService.updateSlotExpireTime(field, expireTimeInMillis);
-        Mockito.verify(scriptingCommands).scriptLoad(any(byte[].class));
+        Mockito.verify(scriptingCommands).scriptLoad(Mockito.any(byte[].class));
         Mockito.verify(scriptingCommands).evalSha(
-                eq(scriptHash),
-                eq(ReturnType.INTEGER),
-                eq(1),
-                any(byte[].class),
-                eq(field.getBytes(StandardCharsets.UTF_8)),
-                eq(String.valueOf(expireTimeInMillis).getBytes(StandardCharsets.UTF_8))
+                Mockito.eq(scriptHash),
+                Mockito.eq(ReturnType.INTEGER),
+                Mockito.eq(1),
+                Mockito.any(byte[].class),
+                Mockito.eq(field.getBytes(StandardCharsets.UTF_8)),
+                Mockito.eq(String.valueOf(expireTimeInMillis).getBytes(StandardCharsets.UTF_8))
         );
     }
 
