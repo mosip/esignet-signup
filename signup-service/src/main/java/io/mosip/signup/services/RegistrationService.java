@@ -293,7 +293,7 @@ public class RegistrationService {
     }
 
 
-    @Cacheable(value = UI_SPEC, key = "'ui_spec'")
+    @Cacheable(value = UI_SPEC, key = "'latest'")
     public JsonNode getUiSpec() {
         return profileRegistryPlugin.getUISpecification();
     }
