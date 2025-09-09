@@ -15,13 +15,14 @@ For more details on how to use the library, please refer to the [official docume
 
 For Identity schema reference, see this [MOSIP UI JSON specification](https://docs.mosip.io/1.2.0/id-lifecycle-management/identity-issuance/registration-client/develop/registration-client-ui-specifications#field-spec-json-template).
 
-### Condiguring Dynamic Regustration Form
+> **Note:** Only the **Field spec JSON template** section from the above link is applicable here.
+
+### Configuring Dynamic Registration Form
 
 **Mock**: Update the `mock-identity-system` service by adding the schema as a raw JSON file URL. The property for this should be named `MOSIP_MOCK_UI_SPEC_SCHEMA_URL`.
 
 **Mosipid**: Update the JSON file content to the `ui-spec` table in the master database of production environment, setting the domain to `esignet-signup`. Next, verify that every property defined in your JSON schema also exists in the `identity_schema` table of the same database. Failure to do so will result in an unknown_field error.
 
-> **Note:** Only the **Field spec JSON template** section from the above link is applicable here.
 
 ## Local Development
 
