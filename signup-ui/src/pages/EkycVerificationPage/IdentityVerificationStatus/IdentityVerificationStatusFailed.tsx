@@ -31,7 +31,7 @@ export const IdentityVerificationStatusFailed = ({
     window.onbeforeunload = null;
     window.location.href = `${
       settings.configs["esignet-consent.redirect-url"]
-    }?key=${hashCode?.state || ""}&error=true`;
+    }?key=${hashCode?.state || ""}&error=identity_verification_failed`;
   };
 
   return (

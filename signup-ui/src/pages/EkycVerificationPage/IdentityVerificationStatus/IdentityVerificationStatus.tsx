@@ -71,7 +71,7 @@ export const IdentityVerificationStatus = ({
     window.onbeforeunload = null;
     window.location.href = `${
       settings.configs["esignet-consent.redirect-url"]
-    }?key=${hashCode?.state || ""}&error=true`;
+    }?key=${hashCode?.state || ""}&error=ekyc_failed`;
   }
 
   // scenario:
