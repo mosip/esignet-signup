@@ -86,7 +86,7 @@ export const EkycVerificationPage = ({
       setHashCode({
         state: searchParams.get("state") ?? "",
         code: searchParams.get("code") ?? "",
-        uiLocales: searchParams.get("ui_locales") ?? ""
+        uiLocales: searchParams.get("ui_locales") ?? "",
       });
 
       if (kycProvidersList.isPending) return;
@@ -125,7 +125,8 @@ export const EkycVerificationPage = ({
         scope: "openid",
         response_type: "code",
         id_token_hint: searchParams.get("id_token_hint") ?? "",
-        ui_locales: (window as any)._env_.DEFAULT_LANG,
+        ui_locales:
+          searchParams.get("ui_locales") ?? (window as any)._env_.DEFAULT_LANG,
       };
 
       const redirectParams = new URLSearchParams(paramObj).toString();
