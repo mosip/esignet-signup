@@ -25,16 +25,13 @@ import io.mosip.testrig.apirig.testrunner.OTPListener;
 import utils.BaseTestUtil;
 import utils.EsignetConfigManager;
 import utils.ExtentReportManager;
+import utils.MultiLanguageUtil;
 
 @RunWith(Cucumber.class)
-@CucumberOptions(
-        features = {"classpath:featurefiles"},
-        glue = {"stepdefinitions", "base"},
-        monochrome = true,
-        plugin = {"pretty",
-        			"html:reports",
-        			"html:target/cucumber.html", "json:target/cucumber.json",
-        			"summary","com.aventstack.extentreports.cucumber.adapter.ExtentCucumberAdapter:"}
+@CucumberOptions(features = { "classpath:featurefiles" }, glue = { "stepdefinitions",
+		"base" }, monochrome = true, plugin = { "pretty", "html:reports", "html:target/cucumber.html",
+				"json:target/cucumber.json", "summary",
+				"com.aventstack.extentreports.cucumber.adapter.ExtentCucumberAdapter:" }
 //      tags = "@smoke"
 )
 public class Runner extends AbstractTestNGCucumberTests {
@@ -45,7 +42,6 @@ public class Runner extends AbstractTestNGCucumberTests {
 	public Object[][] scenarios() {
 		int threadCount = Integer.parseInt(EsignetConfigManager.getproperty("threadCount"));
 
-		System.out.println("Executing with thread count: " + threadCount);
 		LOGGER.info("Executing DataProvider with thread count: " + threadCount);
 
 		System.setProperty("dataproviderthreadcount", String.valueOf(threadCount));
@@ -54,11 +50,30 @@ public class Runner extends AbstractTestNGCucumberTests {
 		boolean runMultipleBrowsers = Boolean.parseBoolean(EsignetConfigManager.getproperty("runMultipleBrowsers"));
 		List<String> browsers = BaseTestUtil.getSupportedLocalBrowsers();
 
-		if (runMultipleBrowsers && base.length > 0 && browsers != null && !browsers.isEmpty()) {
+		List<String> languages = new ArrayList<>();
+		String runLang = EsignetConfigManager.getproperty("runLanguage");
+
+		if (runLang != null && !runLang.trim().isEmpty()) {
+			LOGGER.info("Using runLanguage from config: " + runLang);
+			// split by comma and trim spaces
+			String[] langs = runLang.split(",");
+			for (String lang : langs) {
+				if (!lang.trim().isEmpty()) {
+					languages.add(lang.trim());
+				}
+			}
+		} else {
+			LOGGER.info("No runLanguage in config, loading from LanguageUtil");
+			languages = MultiLanguageUtil.supportedLanguages;
+		}
+
+		if (runMultipleBrowsers && base.length > 0 && !browsers.isEmpty()) {
 			List<Object[]> expanded = new ArrayList<>();
-			for (Object[] scenario : base) {
-				for (String browser : browsers) {
-					expanded.add(new Object[] { scenario[0], scenario[1], browser });
+			for (String lang : languages) {
+				for (Object[] scenario : base) {
+					for (String browser : browsers) {
+						expanded.add(new Object[] { scenario[0], scenario[1], browser, lang });
+					}
 				}
 			}
 			return expanded.toArray(new Object[0][]);
@@ -66,8 +81,10 @@ public class Runner extends AbstractTestNGCucumberTests {
 
 		// Single browser fallback
 		List<Object[]> fallback = new ArrayList<>();
-		for (Object[] scenario : base) {
-			fallback.add(new Object[] { scenario[0], scenario[1], browsers.get(0) });
+		for (String lang : languages) {
+			for (Object[] scenario : base) {
+				fallback.add(new Object[] { scenario[0], scenario[1], browsers.getFirst(), lang });
+			}
 		}
 
 		System.setProperty("testng.threadcount", String.valueOf(EsignetConfigManager.getproperty("threadCount")));
@@ -76,8 +93,10 @@ public class Runner extends AbstractTestNGCucumberTests {
 	}
 
 	@Test(dataProvider = "scenarios")
-	public void runCustomScenario(PickleWrapper pickle, FeatureWrapper feature, String browser) throws Throwable {
+	public void runCustomScenario(PickleWrapper pickle, FeatureWrapper feature, String browser, String lang)
+			throws Throwable {
 		BaseTestUtil.setThreadLocalBrowser(browser);
+		BaseTestUtil.setThreadLocalLanguage(lang);
 		super.runScenario(pickle, feature);
 	}
 
@@ -98,7 +117,6 @@ public class Runner extends AbstractTestNGCucumberTests {
 		} catch (Exception e) {
 			LOGGER.severe("Exception " + e.getMessage());
 		}
-		
 		otpListener.bTerminate = true;
 		System.exit(0);
 	}

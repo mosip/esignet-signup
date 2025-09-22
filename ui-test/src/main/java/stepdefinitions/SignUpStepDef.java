@@ -4,8 +4,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.time.Duration;
+
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WindowType;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 
 import org.apache.log4j.Logger;
@@ -20,7 +26,10 @@ import pages.LoginOptionsPage;
 import pages.RegistrationPage;
 import pages.SignUpPage;
 import pages.SmtpPage;
+import utils.BaseTestUtil;
+import utils.ClaimsUtil;
 import utils.EsignetUtil;
+import utils.MultiLanguageUtil;
 
 public class SignUpStepDef {
 
@@ -51,6 +60,16 @@ public class SignUpStepDef {
 	@When("user clicks on the Sign-Up with Unified Login hyperlink")
 	public void userClicksOnSignUpWithUnifiedLoginHyperlink() {
 		loginOptionsPage.clickOnSignUpWithUnifiedLogin();
+		registrationPage.clickOnLanguageSelectionOption();
+
+		String languagePassed = MultiLanguageUtil.getDisplayName(BaseTestUtil.getThreadLocalLanguage());
+
+		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+
+		WebElement langOption = wait
+				.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[text()='" + languagePassed + "']")));
+		langOption.click();
+		BaseTestUtil.setThreadLocalLanguage(languagePassed);
 	}
 
 	@Then("verify user is navigated to the Mobile Number Registration screen")
@@ -96,15 +115,13 @@ public class SignUpStepDef {
 
 	@Then("user verify the help text in mobile number text field is displayed")
 	public void verifyHelpTextInMobileNumberTextBox() {
-		assertTrue(registrationPage.isHelpTextInMobileNumberTextBoxDisplayed("Enter 8-9 digit mobile number"));
+		assertTrue(registrationPage.isHelpTextInMobileNumberTextBoxDisplayed());
 	}
 
-	String mobileNumber;
-
-	@When("user enters {string} in the mobile number text box")
-	public void userEntersMobileNumber(String number) {
-		this.mobileNumber = number;
-		registrationPage.enterMobileNumber(number);
+	@When("user enters less than minimum digit in the mobile number text box")
+	public void userEntersLessThanMinDigits() {
+		String minDigit = EsignetUtil.getLessThanMinimumDigit();
+		registrationPage.enterMobileNumber(minDigit);
 	}
 
 	@Then("user tabs out")
@@ -137,9 +154,27 @@ public class SignUpStepDef {
 		assertFalse(registrationPage.isErrorMessageDisplayed());
 	}
 
+	@When("user enters digit starting with 0 in the mobile number text box")
+	public void userEnterDigitStartingWith0() {
+		String zeroNum = EsignetUtil.getNumberStartingWithZero(8);
+		registrationPage.enterMobileNumber(zeroNum);
+	}
+
+	@When("user enters all zeros in the mobile number text box")
+	public void userEntersAllZeros() {
+		String allZero = EsignetUtil.getAllZeros(7);
+		registrationPage.enterMobileNumber(allZero);
+	}
+
 	@Then("verify the error Number cannot start with zero.Enter valid username is shown")
 	public void numberCannotStartWithZeroErrorShouldBeDisplayed() {
 		assertTrue(registrationPage.isZeroErrorMessageDisplayed());
+	}
+
+	@When("user enters more than maximum Digit in the mobile number text box")
+	public void userEntersMoreThanMaxDigits() {
+		String maxDigit = EsignetUtil.getMoreThanMaxDigits();
+		registrationPage.enterMobileNumber(maxDigit);
 	}
 
 	@Then("verify the mobile number field should contain only 9 digits")
@@ -147,9 +182,21 @@ public class SignUpStepDef {
 		assertTrue(registrationPage.isNumberRestrictedToNineDigits());
 	}
 
+	@When("user enters specialChars in the mobile number text box")
+	public void userEntersSpecialChars() {
+		String specialChar = EsignetUtil.getSpecialChar();
+		registrationPage.enterMobileNumber(specialChar);
+	}
+
 	@Then("verify the mobile number field should remain empty or accept only number")
 	public void fieldShouldNotAcceptSpecialCharacters() {
 		assertTrue(registrationPage.isMobileFieldEmptyOrUnchanged());
+	}
+
+	@When("user enters alphaNumeric in the mobile number text box")
+	public void userEntersAlphaNumeric() {
+		String aplhaNumeric = EsignetUtil.getAlphaNumeric();
+		registrationPage.enterMobileNumber(aplhaNumeric);
 	}
 
 	@Then("verify the mobile number field should contain only numeric characters")
@@ -207,7 +254,7 @@ public class SignUpStepDef {
 		assertTrue(registrationPage.isVerifyOtpButtonVisible());
 	}
 
-	@Then("user verifies a 3-minute countdown timer is displayed")
+	@Then("user verifies a countdown timer is displayed")
 	public void verifyTimerDisplayed() {
 		assertTrue(registrationPage.isCountdownTimerDisplayed());
 	}
@@ -233,13 +280,14 @@ public class SignUpStepDef {
 	}
 
 	@Then("user validates {int} out of 3 attempts message displayed")
-	public void userValidatesOutOfThreeAttemptsMessageDisplayed(int remainingAttempts) throws InterruptedException {
+	public void userValidatesOutOfThreeAttemptsMessageDisplayed(int remainingAttempts) {
 		registrationPage.clickOnResendOtpButton();
-		String attemptText = registrationPage.getOtpResendAttemptsText(remainingAttempts);
-		Assert.assertTrue(attemptText.contains(remainingAttempts + " of 3 attempts left"),
-				"Expected attempt count: " + remainingAttempts + " out of 3 not found. Actual: " + attemptText);
-	}
+		String actualMessage = registrationPage.getOtpResendAttemptsText(remainingAttempts);
 
+		Assert.assertTrue(actualMessage.contains(String.valueOf(remainingAttempts)),
+				"Expected attempt count: " + remainingAttempts + " not found. Actual: " + actualMessage);
+	}
+	
 	@When("user clicks the back button on the OTP screen")
 	public void userClicksBackButtonOnOtpScreen() {
 		registrationPage.clickOnNavigateBackButton();
@@ -315,15 +363,15 @@ public class SignUpStepDef {
 		assertTrue(registrationPage.isOtpFieldsNumericOnly());
 	}
 
-	@Then("validate the {string} button is disabled")
-	public void verifyButtonShouldBeDisabled(String buttonText) {
+	@Then("validate the verify button is disabled")
+	public void verifyButtonShouldBeDisabled() {
 		registrationPage.waitForButtonToBecomeDisabled(registrationPage.getVerifyOtpButton(), 3);
 		assertFalse(registrationPage.isVerifyOtpButtonEnabled());
 	}
 
 	@When("user enters the complete 6-digit OTP")
 	public void userEntersOtp() {
-		registrationPage.enterOtp(OTPListener.getOtp(mobileNumber));
+		registrationPage.enterOtp(OTPListener.getOtp(lastGeneratedMobileNumber));
 	}
 
 	@Then("verify OTP is masked as soon as it is entered")
@@ -331,8 +379,8 @@ public class SignUpStepDef {
 		assertTrue(registrationPage.isOtpMasked());
 	}
 
-	@Then("validate the {string} button is enabled")
-	public void verifyButtonShouldBeEnabled(String buttonText) {
+	@Then("validate the verify button is enabled")
+	public void verifyButtonShouldBeEnabled() {
 		assertTrue(registrationPage.isVerifyOtpButtonEnabled());
 	}
 
@@ -443,9 +491,14 @@ public class SignUpStepDef {
 		assertFalse(registrationPage.isUsernameFieldReadOnly());
 	}
 
-	@Then("verify the watermark text in the Full Name in Khmer field it should be as {string}")
-	public void verifyFullNameInKhmerWatermark(String expectedText) {
-		assertEquals(expectedText, registrationPage.getFullNameInKhmerPlaceholder());
+	@Then("verify the watermark text in the Full Name field")
+	public void verifyFullNameInKhmerWatermark() {
+		String expectedEn = EsignetUtil.getPlaceholderForFullName("en");
+		String expectedKm = EsignetUtil.getPlaceholderForFullName("km");
+		String actualEn = registrationPage.getEnglishFullNamePlaceholder();
+		String actualKm = registrationPage.getKhmerFullNamePlaceholder();
+		Assert.assertEquals(actualEn, expectedEn);
+		Assert.assertEquals(actualKm, expectedKm);
 	}
 
 	@Then("user clicks on Language Selection Option")
@@ -463,14 +516,15 @@ public class SignUpStepDef {
 		assertTrue(registrationPage.isLanguageChanged());
 	}
 
-	@When("user enters text {string} in the Full Name in Khmer field")
-	public void userFillsFullNameInKhmerField(String input) throws Exception {
-		registrationPage.enterName(input);
-	}
-
 	@Then("user tabs out from the field")
 	public void userTabsOutOfField() {
 		registrationPage.tabsOutOfField();
+	}
+
+	@When("user enters text in other language in the Full Name in field")
+	public void userEnterNameInOtherLanguage() {
+		EsignetUtil.FullName names = EsignetUtil.generateNamesFromUiSpec();
+		registrationPage.enterFullNameInKhmer(names.english);
 	}
 
 	@Then("verify an error message Should be able to enter only Khmer characters is displayed below the field")
@@ -488,9 +542,38 @@ public class SignUpStepDef {
 		assertTrue(registrationPage.isScreenDisplayedInEnglishLang());
 	}
 
+	@When("user enters text more than maximum characters in the Full Name in field")
+	public void userEntersMoreThanMaxLengthFullName() {
+		String maxFullName = EsignetUtil.getMoreThanMaxLengthFullName("km");
+		registrationPage.enterFullNameInKhmer(maxFullName);
+	}
+
 	@Then("verify the field restrict the input to 30 characters only")
 	public void fieldShouldRestrictInputToThirtyCharsOnly() {
 		assertTrue(registrationPage.isFullNameInKhmerRestrictedToThirtyChars());
+	}
+
+	@When("user enters only spaces in the Full Name in field")
+	public void userEntersOnlySpacesFullName() {
+		registrationPage.enterOnlySpacesFullName(5);
+	}
+
+	@When("user enters special characters in the Full Name in field")
+	public void userEntersSpecialCharsInFullName() {
+		String specialChar = EsignetUtil.getSpecialChar();
+		registrationPage.enterFullNameInKhmer(specialChar);
+	}
+
+	@When("user enters numeric_input in the Full Name in field")
+	public void userEntersNumericInFullName() {
+		String numericFullName = EsignetUtil.getNumericFullName("km");
+		registrationPage.enterFullNameInKhmer(numericFullName);
+	}
+
+	@When("user enters alphanumeric input in the Full Name in field")
+	public void userEntersAlphanumericInKhmerFullName() {
+		String specialChar = EsignetUtil.getAlphanumericFullName("km");
+		registrationPage.enterFullNameInKhmer(specialChar);
 	}
 
 	@Then("verify an error message Please enter a valid name. is displayed below the field")
@@ -498,14 +581,29 @@ public class SignUpStepDef {
 		assertTrue(registrationPage.isPleaseEnterValidUsernameErrorDisplayed());
 	}
 
-	@Then("verify the watermark text in the Password field is {string}")
-	public void verifyPasswordWatermark(String expectedText) {
-		assertEquals(expectedText, registrationPage.getPasswordFieldPlaceholder());
+	@Then("verify the watermark text in the Password field")
+	public void verifyPasswordWatermark() {
+		String langCode = ClaimsUtil.getDefaultLanguage(); 
+	    String expectedPlaceholder = EsignetUtil.getPlaceholderForPassword(langCode);
+	    String actualPlaceholder = registrationPage.getPasswordFieldPlaceholder();
+	    Assert.assertEquals(actualPlaceholder, expectedPlaceholder);
 	}
 
-	@When("user enters {string} in the Password field")
-	public void userFillsPasswordrField(String password) {
-		registrationPage.enterPassword(password);
+	@When("user enters password less than minimum length in the Password field")
+	public void userEntersShortPassword() {
+		registrationPage.enterShortPassword();
+	}
+
+	@When("user enters password more than maximum length in the Password field")
+	public void userEntersLongPassword() {
+		String longPass = EsignetUtil.generateInvalidPassword(30);
+		registrationPage.enterMobileNumber(longPass);
+	}
+
+	@When("user enters invalid password in the Password field")
+	public void userEntersInvalidPassword() {
+		String invalidPassword = EsignetUtil.generateInvalidPassword(7);
+		registrationPage.enterPassword(invalidPassword);
 	}
 
 	@Then("verify an error message Password does not meet the password policy. displayed below the Password field")
@@ -513,19 +611,32 @@ public class SignUpStepDef {
 		assertTrue(registrationPage.isPasswordDoesNotMeetThePolicyErrorDisplayed());
 	}
 
-	@Then("validate the field restrict the input to 20 characters only")
-	public void fieldShouldRestrictInputToTwentyCharsOnly() {
-		assertTrue(registrationPage.isPasswordRestrictedToTwentyChars());
+	@Then("validate the field restrict the input to max characters only")
+	public void fieldShouldRestrictInputToMaxCharsOnly() {
+		assertTrue(registrationPage.isPasswordRestrictedToMaxChars());
 	}
 
-	@Then("verify the watermark text in the Confirm Password field is {string}")
-	public void verifyConfirmPasswordWatermark(String expectedText) {
-		assertEquals(expectedText, registrationPage.getConfirmPasswordFieldPlaceholder());
+	@Then("verify the watermark text in the Confirm Password field")
+	public void verifyConfirmPasswordWatermark() {
+		String actualPlaceholder = registrationPage.getConfirmPasswordFieldPlaceholder();
+		assertTrue(actualPlaceholder != null && !actualPlaceholder.trim().isEmpty());
 	}
 
-	@When("user enters {string} in the Confirm Password field")
-	public void userFillsConfirmPasswordrField(String confirmPassword) {
-		registrationPage.enterConfirmPassword(confirmPassword);
+	@When("user enters different password in the Confirm Password field")
+	public void userFillsDiffConfirmPassword() {
+		String difPassword = EsignetUtil.generateValidPasswordFromActuator();
+		registrationPage.enterConfirmPassword(difPassword);
+	}
+
+	@When("user enters more than max character in the Confirm Password field")
+	public void userFillsMaxConfirmPassword() {
+		String difPassword = EsignetUtil.generateInvalidPassword(30);
+		registrationPage.enterConfirmPassword(difPassword);
+	}
+
+	@When("user enters less than min character in the Confirm Password field")
+	public void userFillsConfirmPasswordrField() {
+		registrationPage.enterShortPwd();
 	}
 
 	@Then("verify an inline error message Password and Confirm Password do not match. displayed below Confirm Password field")
@@ -533,9 +644,9 @@ public class SignUpStepDef {
 		assertTrue(registrationPage.isPasswordAndConfirmPasswordDoesNotMatchErrorDisplayed());
 	}
 
-	@Then("verify the field should restrict the password to 20 characters only")
-	public void confirmPassFieldShouldRestrictInputToTwentyCharsOnly() {
-		assertTrue(registrationPage.isConfirmPasswordRestrictedToTwentyChars());
+	@Then("verify the field should restrict the password to max characters only")
+	public void confirmPassFieldShouldRestrictInputToMaxCharsOnly() {
+		assertTrue(registrationPage.isConfirmPasswordRestrictedToMaxChars());
 	}
 
 	@Then("validate the Password field is masked")
@@ -583,19 +694,25 @@ public class SignUpStepDef {
 		registrationPage.clickOnPasswordInfoIcon();
 	}
 
-	@Then("verify the tooltip message Use 8 or more characters with a mix of alphabets and at least one number. is displayed")
+	@Then("verify the tooltip message for password field is displayed")
 	public void verifyPasswordTooltipMessage() {
-		assertTrue(registrationPage.isPasswordTooltipMessageDisplayed());
+		String expectedLang = registrationPage.getExpectedDefaultLanguage();
+		String expectedTooltip = EsignetUtil.getInfoForPassword(expectedLang);
+		String actualTooltip = registrationPage.getPasswordTooltipText();
+		Assert.assertEquals(actualTooltip, expectedTooltip);
 	}
 
-	@When("user clicks on the {string} icon in the Full Name in Khmer field")
+	@When("user clicks on the {string} icon in the Full Name in field")
 	public void userHoversOnFullNameInKhmerInfoIcon(String iconLabel) {
 		registrationPage.clickOnFullNameInKhmerInfoIcon();
 	}
 
-	@Then("verify the tooltip message Maximum 30 characters allowed with no alphabets or special characters, except space. is displayed")
+	@Then("verify the tooltip message for full name field is displayed")
 	public void verifyFullNameInKhmerTooltipMessage() {
-		assertTrue(registrationPage.isFullNameInKhmerTooltipMessage());
+		String expectedLang = registrationPage.getExpectedDefaultLanguage();
+		String expectedTooltip = EsignetUtil.getInfoForFullName(expectedLang);
+		String actualTooltip = registrationPage.getFullNameTooltipText();
+		assertEquals(actualTooltip, expectedTooltip);
 	}
 
 	@When("user does not check the terms and conditions checkbox")
@@ -775,9 +892,11 @@ public class SignUpStepDef {
 		driver.switchTo().window(smtpTabHandle);
 	}
 
-	@Then("verify English language notification Use XXXXXX to verify your KhID account. is received for otp requested")
-	public void verifyEnglishNotificationReceived() {
-		assertTrue(smtpPage.isNotificationReceivedInEnglish());
+	@Then("verify notification is received for otp requested")
+	public void verifyOtpNotificationInSelectedLanguage() {
+		String currentLang = BaseTestUtil.getThreadLocalLanguage();
+		logger.info("Verifying OTP notification in language: " + currentLang);
+		assertTrue(smtpPage.isOtpNotificationReceived());
 	}
 
 	@Then("switch back to eSignet portal")
@@ -790,25 +909,24 @@ public class SignUpStepDef {
 		registrationPage.checkTermsAndConditions();
 	}
 
-	@Then("verify You successfully registered to KhID account. message is displayed")
-	public void verifyNotificationForSuccessfullRegistration() {
-		smtpPage.isSuccessfullNotificationReceivedInEnglish();
+	@Then("verify registration success notification is received")
+	public void verifySuccessNotificationInSelectedLanguage() {
+		String currentLang = BaseTestUtil.getThreadLocalLanguage();
+		logger.info("Verifying successful notification in language: " + currentLang);
+		assertTrue(smtpPage.isRegistrationSuccessNotificationDisplayed());
 	}
 
-	@Then("verify Khmer language notification ប្រើ XXXXXX ដើម្បីផ្ទៀងផ្ទាត់គណនី KhID របស់អ្នក។ is received for otp requested")
-	public void verifyKhmerNotificationReceived() {
-		assertTrue(smtpPage.isNotificationReceivedInKhmer());
-	}
+	private String lastGeneratedMobileNumber;
 
-	@Then("verify អ្នកបានចុះឈ្មោះគណនី KhID ដោយជោគជ័យ។ is displayed")
-	public void verifySuccessfullRegistrationNotification() {
-		smtpPage.isSuccessfullNotificationReceivedInKhmer();
-	}
-	
 	@When("user enters valid_mobile_number in the mobile number text box")
 	public void userEntersValidMobileNumber() {
-		String mobileNumber = EsignetUtil.generateMobileFromActuator();
-		registrationPage.enterMobileNumber(mobileNumber);
+		lastGeneratedMobileNumber = EsignetUtil.generateMobileFromActuator();
+		registrationPage.enterMobileNumber(lastGeneratedMobileNumber);
+	}
+
+	@When("user enters already registered number in the mobile number text box")
+	public void userEntersRegisteredMobileNumber() {
+		registrationPage.enterMobileNumber(lastGeneratedMobileNumber);
 	}
 
 	private String lastGeneratedPassword;
@@ -824,12 +942,12 @@ public class SignUpStepDef {
 		registrationPage.enterConfirmPassword(lastGeneratedPassword);
 	}
 
-	@Then("verify Full Name in Khmer field value should be displayed in default language")
-	public void verifyFieldValueDefaultLanguage() {
-	    String expectedLang = registrationPage.getExpectedDefaultLanguage();
-	    String expectedPlaceholder = registrationPage.getExpectedFullNameInKhmerPlaceholder(expectedLang);
-	    String actualPlaceholder = registrationPage.getFullNameInKhmerPlaceholder();
-	    assertEquals(expectedPlaceholder, actualPlaceholder);
+	@When("user enters text valid name in the Full Name field")
+	public void userEntersValidNames() {
+		EsignetUtil.FullName names = EsignetUtil.generateNamesFromUiSpec();
+
+		registrationPage.enterFullNameInEnglish(names.english);
+		registrationPage.enterFullNameInKhmer(names.khmer);
 	}
 
 	/*

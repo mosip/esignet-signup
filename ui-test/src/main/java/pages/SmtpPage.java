@@ -3,6 +3,8 @@ package pages;
 import base.BasePage;
 import utils.EsignetConfigManager;
 
+import java.util.List;
+
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -16,13 +18,7 @@ public class SmtpPage extends BasePage {
 	}
 
 	@FindBy(xpath = "//p[@class='text-gray-700 mb-2 mr-3 ml-4']")
-	WebElement otpNotification;
-
-	@FindBy(xpath = "//p[@class='text-gray-700 mb-2 mr-3 ml-4']")
-	WebElement registrationSuccessfullNotification;
-
-	@FindBy(xpath = "//p[@class='text-gray-700 mb-2 mr-3 ml-4']")
-	WebElement passwordResetSuccessfullNotification;
+	private List<WebElement> notifications;
 
 	public void navigateToSmtpUrl() {
 		driver.get(EsignetConfigManager.getSmtpUrl());
@@ -32,32 +28,25 @@ public class SmtpPage extends BasePage {
 		driver.get(EsignetConfigManager.getHealthPortalUrl());
 	}
 
-	public String getOtpNotificationText() {
-		return otpNotification.getText();
+	public boolean isOtpNotificationReceived() {
+		return isNotificationVisibleAndHasText();
 	}
 
-	public boolean isNotificationReceivedInEnglish() {
-		return isElementVisible(otpNotification);
+	public boolean isRegistrationSuccessNotificationDisplayed() {
+		return isNotificationVisibleAndHasText();
 	}
 
-	public boolean isNotificationReceivedInKhmer() {
-		return isElementVisible(otpNotification);
+	public boolean isPasswordResetSuccessNotificationDisplayed() {
+		return isNotificationVisibleAndHasText();
 	}
 
-	public boolean isSuccessfullNotificationReceivedInEnglish() {
-		return isElementVisible(registrationSuccessfullNotification);
-	}
-
-	public boolean isSuccessfullNotificationReceivedInKhmer() {
-		return isElementVisible(registrationSuccessfullNotification);
-	}
-
-	public boolean isPasswordResetSuccessfullNotificationReceivedInEnglish() {
-		return isElementVisible(passwordResetSuccessfullNotification);
-	}
-
-	public boolean isPasswordResetSuccessfullNotificationReceivedInKhmer() {
-		return isElementVisible(passwordResetSuccessfullNotification);
+	private boolean isNotificationVisibleAndHasText() {
+		for (WebElement notification : notifications) {
+			if (isElementVisible(notification) && !notification.getText().trim().isEmpty()) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

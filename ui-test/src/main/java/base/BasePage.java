@@ -6,6 +6,7 @@ import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.Duration;
+import java.util.Collections;
 import java.util.List;
 
 import org.openqa.selenium.Alert;
@@ -239,26 +240,24 @@ public class BasePage {
 
 	public void setAuthorizeUrl(String url) {
 		this.authorizeUrl = url;
+		ClaimsUtil.parseFromUrl(url);
+	}
+
+	public List<String> getClaims(String type) {
+		if (authorizeUrl == null) {
+			System.out.println("Authorize URL not set.");
+			return Collections.emptyList();
+		}
+
+		if ("mandatory".equalsIgnoreCase(type)) {
+			return ClaimsUtil.getMandatoryClaims();
+		} else {
+			return ClaimsUtil.getVoluntaryClaims();
+		}
 	}
 
 	public String getExpectedDefaultLanguage() {
-		String url = getAuthorizeUrl();
-
-		if (url == null || url.isEmpty()) {
-			url = driver.getCurrentUrl();
-			setAuthorizeUrl(url);
-		}
-		return ClaimsUtil.mapLangToName(ClaimsUtil.getDefaultLanguageFromUrl(url));
+		return ClaimsUtil.mapLangToName(ClaimsUtil.getDefaultLanguage());
 	}
 
-	public String getExpectedFullNameInKhmerPlaceholder(String lang) {
-		switch (lang.toLowerCase()) {
-		case "english":
-			return "Enter Full Name in Khmer";
-		case "khmer":
-			return "បញ្ចូលគោត្តនាម-នាមជាភាសាខ្មែរ";
-		default:
-			return "";
-		}
-	}
 }

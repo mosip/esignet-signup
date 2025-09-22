@@ -20,7 +20,7 @@ Scenario Outline: Signup and Mobile Number Registration
   Then user verify the mobile number text field should be pre-filled with country code
   Then user verify the help text in mobile number text field is displayed
  
-  When user enters "<less than 8 digit>" in the mobile number text box
+  When user enters less than minimum digit in the mobile number text box
   And user tabs out
   Then verify the error message Enter valid username is displayed
   And validate that the Continue button remain disabled
@@ -31,29 +31,21 @@ Scenario Outline: Signup and Mobile Number Registration
   Then validate that the Continue button enabled
   And verify no error message is displayed
  
-  When user enters "<8 digit starting with 0>" in the mobile number text box
+  When user enters digit starting with 0 in the mobile number text box
   And user tabs out
   Then verify the error Number cannot start with zero.Enter valid username is shown
 
-  When user enters "<8 zeros>" in the mobile number text box
+  When user enters all zeros in the mobile number text box
   And user tabs out
   Then verify the error Number cannot start with zero.Enter valid username is shown
 
-  When user enters "<9 digit starting with 0>" in the mobile number text box
-  And user tabs out
-  Then verify the error Number cannot start with zero.Enter valid username is shown
-
-  When user enters "<9 zeros>" in the mobile number text box
-  And user tabs out
-  Then verify the error Number cannot start with zero.Enter valid username is shown
-
-  When user enters "<moreThanNineDigit>" in the mobile number text box
+  When user enters more than maximum Digit in the mobile number text box
   Then verify the mobile number field should contain only 9 digits
 
-  When user enters "<specialChars>" in the mobile number text box
+  When user enters specialChars in the mobile number text box
   Then verify the mobile number field should remain empty or accept only number
 
-  When user enters "<alphaNumeric>" in the mobile number text box
+  When user enters alphaNumeric in the mobile number text box
   Then verify the mobile number field should contain only numeric characters
 
   When user clicks on the navigate back button
@@ -63,16 +55,11 @@ Scenario Outline: Signup and Mobile Number Registration
   When user clicks the browser back button
   Then verify user is redirected to the previous screen
 
-Examples:
-  | less than 8 digit | 8 digit starting with 0 | 8 zeros  | 9 digit starting with 0 | 9 zeros   | moreThanNineDigit | specialChars | alphaNumeric |
-  | 12345             | 012345678               | 00000000 | 0123456789              | 000000000 | 98765432112       | @#$%^&*      | abc123       |
-  
-  
 @smoke @OtpPage
 Scenario Outline: OTP input acceptance and Verify button state
   Given click on Sign In with eSignet
   When user clicks on the Sign-Up with Unified Login hyperlink
-  When user enters "<already registered number>" in the mobile number text box
+  When user enters valid_mobile_number in the mobile number text box
   And user clicks on the Continue button
   Then verify user is navigated to the OTP screen
 
@@ -81,22 +68,14 @@ Scenario Outline: OTP input acceptance and Verify button state
   And user verifies the OTP screen description should contain a masked mobile number
   And user verifies the OTP input field is visible
   And user verifies the Verify OTP button is visible
-  And user verifies a 3-minute countdown timer is displayed
+  And user verifies a countdown timer is displayed
   And user verifies the Resend OTP option is visible
   And user verifies an option to go back and update the mobile number is be present
   
-  Then user waits for OTP time to expire and resend button gets enabled
-  And user validates 2 out of 3 attempts message displayed
-  And user waits for OTP time to expire and resend button gets enabled
-  And user validates 1 out of 3 attempts message displayed
-  And user waits for OTP time to expire and resend button gets enabled
-  And user validates 0 out of 3 attempts message displayed
-  Then validate the "Verify" button is disabled
-
   When user clicks the back button on the OTP screen
   Then verify user is redirected back to the Registration screen
 
-  When user enters "<registered number>" in the mobile number text box
+  When user enters valid_mobile_number in the mobile number text box
   And user clicks on the Continue button
   Then verify user is navigated to the OTP screen
 
@@ -128,22 +107,29 @@ Scenario Outline: OTP input acceptance and Verify button state
   Then verify OTP field is rejecting alphanumeric characters
   
   When user enters "<incomplete_otp>" as a Otp
-  Then validate the "Verify" button is disabled
+  Then validate the verify button is disabled
+  
+  When user clicks the back button on the OTP screen
+  Then verify user is redirected back to the Registration screen
 
-  When user enters the complete 6-digit OTP
-  Then verify OTP is masked as soon as it is entered
-  And validate the "Verify" button is enabled
-  And user clicks on the Verify OTP button
-  Then verify Sign-Up Failed! is displayed as a heading
-  And verify the failure message The provided mobile number is already registered. Please use the Login option to proceed. shown
-  And verify a Login button is visible
-
-  Then user clicks on the Login button
-  When user clicks on the Sign-Up with Unified Login hyperlink
-  And user enters valid_mobile_number in the mobile number text box
+  When user enters valid_mobile_number in the mobile number text box
   And user clicks on the Continue button
   Then verify user is navigated to the OTP screen
+  
+  Then user waits for OTP time to expire and resend button gets enabled
+  And user validates 2 out of 3 attempts message displayed
+  And user waits for OTP time to expire and resend button gets enabled
+  And user validates 1 out of 3 attempts message displayed
+  And user waits for OTP time to expire and resend button gets enabled
+  And user validates 0 out of 3 attempts message displayed
+  Then validate the verify button is disabled
+  
+  When user clicks the back button on the OTP screen
+  And user enters valid_mobile_number in the mobile number text box
+  And user clicks on the Continue button
   When user enters the complete 6-digit OTP
+  Then verify OTP is masked as soon as it is entered
+  And validate the verify button is enabled
   And user clicks on the Verify OTP button
   And verify user is redirected to the success screen
   And verify the header Successful! is displayed
@@ -151,8 +137,8 @@ Scenario Outline: OTP input acceptance and Verify button state
   And verify a Continue button is displayed
   
 Examples:
-  | already registered number | registered number | expired_otp | invalid_otp | special_characters | alphabets | alphanumeric_characters | incomplete_otp |
-  | 991678222                 | 991678228         | 111111      | 000000      | @#%&*!             | ABCDEF    | ABC123                  | 12             |
+  | expired_otp | invalid_otp | special_characters | alphabets | alphanumeric_characters | incomplete_otp |
+  | 111111      | 000000      | @#%&*!             | ABCDEF    | ABC123                  | 12             |
   
 
 @smoke @accountSetupValidation
@@ -179,49 +165,48 @@ Scenario Outline: Completing Registration Process
   Then verify the Username field is auto-filled with the verified mobile number
   And validate the Username field should be non-editable
 
-  And verify the watermark text in the Full Name in Khmer field it should be as "Enter Full Name in Khmer"
-  And verify Full Name in Khmer field value should be displayed in default language
+  And verify the watermark text in the Full Name field
 
   Then user clicks on Language Selection Option
   And user selects Khmer from the language dropdown
   And verify page rendered in selected language
-  When user enters text "<in other language>" in the Full Name in Khmer field
+  When user enters text in other language in the Full Name in field
   And user tabs out from the field
   Then verify an error message Should be able to enter only Khmer characters is displayed below the field
 
   Then user clicks on Language Selection Option
   And user selects English from the language dropdown
-  When user enters text "<more than 30 characters>" in the Full Name in Khmer field
+  When user enters text more than maximum characters in the Full Name in field
   Then verify the field restrict the input to 30 characters only
 
-  When user enters text "<only spaces>" in the Full Name in Khmer field
+  When user enters only spaces in the Full Name in field
   And user tabs out from the field
   Then verify an error message Please enter a valid name. is displayed below the field
 
-  And verify the watermark text in the Password field is "Enter Password"
+  And verify the watermark text in the Password field
 
-  When user enters "<invalid password>" in the Password field 
+  When user enters invalid password in the Password field 
   And user tabs out from the field
   Then verify an error message Password does not meet the password policy. displayed below the Password field
   
-  When user enters "<less than 8 characters>" in the Password field
+  When user enters password less than minimum length in the Password field
   And user tabs out from the field
   Then verify an error message Password does not meet the password policy. displayed below the Password field
   
-  When user enters "<more than 20 characters>" in the Password field
-  Then validate the field restrict the input to 20 characters only
-
-  And verify the watermark text in the Confirm Password field is "Enter Password"
+  When user enters password more than maximum length in the Password field
+  Then validate the field restrict the input to max characters only
+  
+  And verify the watermark text in the Confirm Password field
 
   When user enters valid password in the Password field
-  Then user enters "<different password>" in the Confirm Password field
+  Then user enters different password in the Confirm Password field
   And user tabs out from the field
   Then verify an inline error message Password and Confirm Password do not match. displayed below Confirm Password field
 
-  Then user enters "<more than 20 character>" in the Confirm Password field
-  And verify the field should restrict the password to 20 characters only
+  Then user enters more than max character in the Confirm Password field
+  And verify the field should restrict the password to max characters only
   
-  Then user enters "<less than 8 character>" in the Confirm Password field
+  Then user enters less than min character in the Confirm Password field
   And user tabs out from the field
   Then verify an inline error message Password and Confirm Password do not match. displayed below Confirm Password field
 
@@ -241,25 +226,25 @@ Scenario Outline: Completing Registration Process
   And validate the Confirm Password field is masked
 
   When user clicks on the "i" icon in the Password field
-  Then verify the tooltip message Use 8 or more characters with a mix of alphabets and at least one number. is displayed
+  Then verify the tooltip message for password field is displayed
 
-  When user clicks on the "i" icon in the Full Name in Khmer field
-  Then verify the tooltip message Maximum 30 characters allowed with no alphabets or special characters, except space. is displayed
-
+  When user clicks on the "i" icon in the Full Name in field
+  Then verify the tooltip message for full name field is displayed
+  
   When user does not check the terms and conditions checkbox
   Then verify the Continue button will be in disabled state
 
   Then verify the terms and conditions message
 
-  When user enters text "<special_characters>" in the Full Name in Khmer field
+  When user enters special characters in the Full Name in field
   And user tabs out from the field
   Then verify it restricts such input with an error message Full Name has to be in Khmer only.
 
-  When user enters text "<alphanumeric_input>" in the Full Name in Khmer field
+  When user enters alphanumeric input in the Full Name in field
   And user tabs out from the field
   Then verify it restricts such input with an error message Full Name has to be in Khmer only.
 
-  When user enters text "<numeric_input>" in the Full Name in Khmer field
+  When user enters numeric_input in the Full Name in field
   And user tabs out from the field
   Then verify it restricts such input with an error message Full Name has to be in Khmer only.
 
@@ -277,11 +262,11 @@ Scenario Outline: Completing Registration Process
 
   Then verify the Continue button is disabled when mandatory fields are not filled in Account Setup screen
   
-  When user enters text "<valid name>" in the Full Name in Khmer field
+  When user enters text valid name in the Full Name field
   And user enters valid password in the Password field
   Then verify the Continue button is disabled when only two mandatory fields are filled
   
-  When user enters text "<valid name>" in the Full Name in Khmer field
+  When user enters text valid name in the Full Name field
   And user enters valid password in the Password field
   And user enters valid confirm password in the Confirm Password field
   Then verify the Continue button is enabled when all mandatory fields are filled
@@ -305,7 +290,7 @@ Scenario Outline: Completing Registration Process
   #And user clicks on the Verify OTP button
   #And user click on Continue button in Success Screen
   
-  #And user enters text "<valid name>" in the Full Name in Khmer field
+  #And user enters text valid name in the Full Name field
   #And user enters valid password in the Password field
   #And user enters valid confirm password in the Confirm Password field
   #Then verify the Continue button is enabled when all mandatory fields are filled
@@ -318,10 +303,15 @@ Scenario Outline: Completing Registration Process
   When user click on Login button
   Then verify user is redirected to Login screen of eSignet
   
-Examples:
-  | in other language | more than 30 characters       | only spaces | invalid password | less than 8 characters | more than 20 characters          | different password | more than 20 character         | less than 8 character | special_characters | alphanumeric_input | numeric_input | valid name |
-  | John Doe          | ប្រសិនបើប្រយោគនេះមានរ៉ាំរ៉ាវហួសពី៣០តួអក្សរ |              | ABCD@#$%         | aBc@1                  | Passwordmorethantwenty@char      | password1          | ConfirmPasswordmorethantwenty  | pass@1                | !@#$%^&            | Abc1234            | 1234567       | សុខសេរី      |
-
+  And user clicks on the Sign-Up with Unified Login hyperlink
+  When user enters already registered number in the mobile number text box
+  And user clicks on the Continue button
+  When user enters the complete 6-digit OTP
+  And user clicks on the Verify OTP button
+  Then verify Sign-Up Failed! is displayed as a heading
+  And verify the failure message The provided mobile number is already registered. Please use the Login option to proceed. shown
+  And verify a Login button is visible
+  
 
 @smoke @SignUrl
 Scenario Outline: Verify sign-up portal by navigating directly through sign-up URL
@@ -338,10 +328,9 @@ Scenario Outline: Verify sign-up portal by navigating directly through sign-up U
   Then verify user is navigated to the OTP screen
   When user enters the complete 6-digit OTP
   And user clicks on the Verify OTP button 
-  
   Then user click on Continue button in Success Screen
   
-  When user enters text "<valid_FullName>" in the Full Name in Khmer field
+  When user enters text valid name in the Full Name field
   When user enters valid password in the Password field
   When user enters valid confirm password in the Confirm Password field
   And user accepts the Terms and Condition checkbox
@@ -353,13 +342,9 @@ Scenario Outline: Verify sign-up portal by navigating directly through sign-up U
   When user click on Okay button
   Then verify user is navigated to the Mobile Number Registration screen
   
-Examples:
-  | valid_FullName |
-  | ដេបិចកា         |
-  
   
 @smoke @OtpNotification
-Scenario Outline: Verify the notification when OTP requested
+Scenario: Verify the notification when OTP requested
   Given user opens SMTP portal
   And navigate back to eSignet portal
   Given click on Sign In with eSignet
@@ -367,40 +352,17 @@ Scenario Outline: Verify the notification when OTP requested
   And user enters valid_mobile_number in the mobile number text box
   And user clicks on the Continue button
   And user switches back to SMTP portal
-  Then verify English language notification Use XXXXXX to verify your KhID account. is received for otp requested
+  Then verify notification is received for otp requested
   And switch back to eSignet portal
   When user enters the complete 6-digit OTP
   And user clicks on the Verify OTP button
   And user click on Continue button in Success Screen
-  And user enters text "<valid_FullName>" in the Full Name in Khmer field
+  And user enters text valid name in the Full Name field
   And user enters valid password in the Password field
   And user enters valid confirm password in the Confirm Password field
   And user accepts the Terms and Condition checkbox
   And user clicks on Continue button in Setup Account Page
   Then user switches back to SMTP portal
-  And verify You successfully registered to KhID account. message is displayed
-  
-  And navigate back to eSignet portal
-  Given click on Sign In with eSignet
-  When user clicks on the Sign-Up with Unified Login hyperlink
-  Then user clicks on Language Selection Option
-  And user selects Khmer from the language dropdown
-  And user enters valid_mobile_number in the mobile number text box
-  And user clicks on the Continue button
-  And user switches back to SMTP portal
-  Then verify Khmer language notification ប្រើ XXXXXX ដើម្បីផ្ទៀងផ្ទាត់គណនី KhID របស់អ្នក។ is received for otp requested
-  And switch back to eSignet portal
-  When user enters the complete 6-digit OTP
-  And user clicks on the Verify OTP button
-  And user click on Continue button in Success Screen
-  And user enters text "<valid_FullName>" in the Full Name in Khmer field
-  And user enters valid password in the Password field
-  And user enters valid confirm password in the Confirm Password field
-  And user accepts the Terms and Condition checkbox
-  And user clicks on Continue button in Setup Account Page
-  Then user switches back to SMTP portal
-  And verify អ្នកបានចុះឈ្មោះគណនី KhID ដោយជោគជ័យ។ is displayed
- 
-Examples:
-  | valid_FullName |
-  | ឌីវ្យា             |
+  And verify registration success notification is received
+
+

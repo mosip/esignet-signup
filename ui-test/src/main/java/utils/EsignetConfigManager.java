@@ -48,22 +48,6 @@ public class EsignetConfigManager extends io.mosip.testrig.apirig.utils.ConfigMa
 		init(moduleSpecificPropertiesMap);
 	}
 
-	public static String getDbUrl() {
-		return getProperty("db-server-es", "");
-	}
-
-	public static String getDbUser() {
-		return getProperty("db-su-user", "");
-	}
-
-	public static String getDbPassword() {
-		return getProperty("postgres-password", "");
-	}
-
-	public static String getDbSchema() {
-		return getProperty("es_db_schema", "");
-	}
-
 	public static String getProperty(String key, String defaultValue) {
 		String value = propertiesMap.get(key) == null ? "" : propertiesMap.get(key).toString();
 		return (value != null && !value.trim().isEmpty()) ? value : defaultValue;
@@ -88,5 +72,9 @@ public class EsignetConfigManager extends io.mosip.testrig.apirig.utils.ConfigMa
 
 	public static String getHealthPortalUrl() {
 		return getProperty("baseurl", "");
+	}
+
+	public static String getRunLanguage() {
+		return getProperty("runLanguage", "");
 	}
 }

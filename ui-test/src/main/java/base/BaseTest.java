@@ -34,7 +34,6 @@ import io.mosip.testrig.apirig.testrunner.BaseTestCase;
 import io.mosip.testrig.apirig.utils.S3Adapter;
 import utils.BaseTestUtil;
 import utils.EsignetConfigManager;
-import utils.EsignetUtil;
 import utils.ExtentReportManager;
 
 public class BaseTest {
@@ -57,8 +56,10 @@ public class BaseTest {
 
 		totalCount++;
 		String browser = BaseTestUtil.getBrowserForScenario(scenario); // Start logging for the scenario
-		ExtentReportManager.createTest(scenario.getName() + " [" + browser + "]");
-		ExtentReportManager.logStep("Scenario Started: " + scenario.getName());
+		String lang = BaseTestUtil.getThreadLocalLanguage();
+		ExtentReportManager.createTest(scenario.getName() + " [" + browser + " | " + lang + "]");
+		ExtentReportManager
+				.logStep("Scenario Started: " + scenario.getName() + " | Browser: " + browser + " | Language: " + lang);
 
 		try {
 			String scenarioBrowser = BaseTestUtil.getBrowserForScenario(scenario);
@@ -144,7 +145,6 @@ public class BaseTest {
 
 	@AfterAll
 	public static void afterAllReportUpdation() {
-		EsignetUtil.dBCleanup();
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
 			LOGGER.info("Shutdown hook triggered. Uploading report...");
 			if (extent != null) {
@@ -285,7 +285,7 @@ public class BaseTest {
 		String domainPart = baseUrl.replace("https://", "").replace("http://", ""); // remove protocol
 		domainPart = domainPart.split("/")[0]; // remove path if any
 		String[] parts = domainPart.split("\\.");
-		
+
 		LOGGER.info("--- ApplnURI ---" + BaseTestCase.ApplnURI);
 		BaseTestCase.ApplnURI = System.getProperty("env.endpoint");
 

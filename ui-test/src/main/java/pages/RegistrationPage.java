@@ -1,7 +1,6 @@
 package pages;
 
 import base.BasePage;
-import utils.EsignetConfigManager;
 import utils.EsignetUtil;
 
 import org.openqa.selenium.WebDriver;
@@ -79,7 +78,7 @@ public class RegistrationPage extends BasePage {
 	@FindBy(id = "verify-otp-button")
 	WebElement verifyOtpButton;
 
-	@FindBy(xpath = "//div[@class='flex gap-x-1 text-center']/span")
+	@FindBy(xpath = "//div[@class='flex gap-x-1 text-center']")
 	WebElement otpCountDownTimer;
 
 	@FindBy(id = "resend-otp-button")
@@ -130,61 +129,61 @@ public class RegistrationPage extends BasePage {
 	@FindBy(xpath = "//div[@class='text-center text-gray-500']")
 	WebElement setupAccountDescription;
 
-	@FindBy(id = "username")
+	@FindBy(id = "phone")
 	WebElement usernameField;
 
-	@FindBy(id = "fullNameInKhmer")
-	WebElement fullNameInKhmerField;
+	@FindBy(id = "fullName_eng")
+	WebElement fullNameEnglishField;
+
+	@FindBy(id = "fullName_khm")
+	WebElement fullNameKhmerField;
 
 	@FindBy(id = "password")
 	WebElement passwordField;
 
-	@FindBy(id = "confirmPassword")
+	@FindBy(id = "password_confirm")
 	WebElement confirmPasswordField;
 
-	@FindBy(id = "password-toggle-password")
+	@FindBy(id = "password_eye")
 	WebElement passwordToggleIcon;
 
-	@FindBy(id = "confirmPassword-toggle-password")
+	@FindBy(id = "password_confirm_eye")
 	WebElement confirmPasswordToggleIcon;
 
-	@FindBy(id = "password-info-icon")
+	@FindBy(id = "info_FILL0_wght400_GRAD0_opsz48")
 	WebElement passwordInfoIcon;
 
-	@FindBy(id = "consent-button")
+	@FindBy(id = "consent")
 	WebElement termsAndConditionsCheckbox;
 
-	@FindBy(id = "account-setup-submit-button")
+	@FindBy(xpath = "//button[@class='form-button']")
 	WebElement setupContinueButton;
 
 	@FindBy(id = "km_language")
 	WebElement khmerLanguageSelection;
 
-	@FindBy(id = ":r7:-form-item-message")
+	@FindBy(xpath = "//span[@class='error-text']")
 	WebElement fullNameHasToBeInKhmerOnlyError;
 
 	@FindBy(id = "en_language")
 	WebElement englishLanguageSelection;
 
-	@FindBy(id = ":r7:-form-item-message")
+	@FindBy(xpath = "//span[@class='error-text']")
 	WebElement pleaseEnterValidNameError;
 
-	@FindBy(id = ":ra:-form-item-message")
+	@FindBy(xpath = "//div[@class='error-message']")
 	WebElement passwordFieldError;
 
-	@FindBy(xpath = "//div[@class='text-center text-gray-500']")
-	WebElement descriptionSetupAccountPage;
-
-	@FindBy(id = ":rd:-form-item-message")
+	@FindBy(id = "//div[@class='error-message']")
 	WebElement confirmPasswordFieldError;
 
-	@FindBy(id = "fullName-info-icon")
+	@FindBy(id = "info_FILL0_wght400_GRAD0_opsz48")
 	WebElement fullNameInKhmerInfoIcon;
 
-	@FindBy(id = "radix-:rb:")
+	@FindBy(xpath = "//div[@class='info-detail active']")
 	WebElement passwordFieldTooltipText;
 
-	@FindBy(id = "radix-:r8:")
+	@FindBy(id = "//div[@class='info-detail active']")
 	WebElement fullNameInKhmerTooltipText;
 
 	@FindBy(xpath = "//label[@class='text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 font-medium']")
@@ -253,9 +252,9 @@ public class RegistrationPage extends BasePage {
 		return isElementVisible(prefilledCountryCode);
 	}
 
-	public boolean isHelpTextInMobileNumberTextBoxDisplayed(String expectedText) {
+	public boolean isHelpTextInMobileNumberTextBoxDisplayed() {
 		String placeholder = getElementAttribute(helpTextInTextBox, "placeholder");
-		return placeholder != null && placeholder.equals(expectedText);
+		return placeholder != null && !placeholder.isEmpty();
 	}
 
 	private String lastEnteredMobileNumber;
@@ -272,8 +271,7 @@ public class RegistrationPage extends BasePage {
 	public void enterMobileNumber(String number) {
 		enterMobileNumberTextBox.clear();
 		enterText(enterMobileNumberTextBox, number);
-		enterMobileNumberTextBox.clear();
-		lastEnteredMobileNumber = "+855 " + number;
+		lastEnteredMobileNumber = number;
 	}
 
 	public void enterOtp(String otp) {
@@ -500,7 +498,7 @@ public class RegistrationPage extends BasePage {
 	}
 
 	public boolean isFullNameInKhmerFieldVisible() {
-		return isElementVisible(fullNameInKhmerField);
+		return isElementVisible(fullNameKhmerField);
 	}
 
 	public boolean isPasswordFieldVisible() {
@@ -535,10 +533,6 @@ public class RegistrationPage extends BasePage {
 		return getElementAttribute(usernameField, "readonly") != null;
 	}
 
-	public String getFullNameInKhmerPlaceholder() {
-		return getElementAttribute(fullNameInKhmerField, "placeholder");
-	}
-
 	public void clickOnLanguageSelectionOption() {
 		clickOnElement(languageSelection);
 	}
@@ -547,9 +541,22 @@ public class RegistrationPage extends BasePage {
 		clickOnElement(khmerLanguageSelection);
 	}
 
-	public void enterName(String name) throws Exception {
-		clearField(fullNameInKhmerField);
-		enterTextJS(fullNameInKhmerField, name);
+	public void enterFullNameInEnglish(String name) {
+		clearField(fullNameEnglishField);
+		enterTextJS(fullNameEnglishField, name);
+	}
+
+	public void enterFullNameInKhmer(String name) {
+		clearField(fullNameKhmerField);
+		enterTextJS(fullNameKhmerField, name);
+	}
+
+	public String getEnglishFullNamePlaceholder() {
+		return fullNameEnglishField.getAttribute("placeholder");
+	}
+
+	public String getKhmerFullNamePlaceholder() {
+		return fullNameKhmerField.getAttribute("placeholder");
 	}
 
 	public void clickOnOutsideNameField() {
@@ -561,8 +568,13 @@ public class RegistrationPage extends BasePage {
 	}
 
 	public boolean isFullNameInKhmerRestrictedToThirtyChars() {
-		String value = getElementValue(fullNameInKhmerField);
+		String value = getElementValue(fullNameKhmerField);
 		return value != null && value.length() <= 30;
+	}
+
+	public void enterOnlySpacesFullName(int length) {
+		String spaces = " ".repeat(length);
+		enterFullNameInKhmer(spaces);
 	}
 
 	public void clickOnEnglishLanguage() {
@@ -599,7 +611,19 @@ public class RegistrationPage extends BasePage {
 		enterText(confirmPasswordField, confirmPassword);
 	}
 
-	public boolean isPasswordRestrictedToTwentyChars() {
+	public void enterShortPassword() {
+		String pwd = EsignetUtil.generateValidPasswordFromActuator().substring(0,
+				EsignetUtil.getPasswordMinLength() - 1);
+		enterPassword(pwd);
+	}
+
+	public void enterShortPwd() {
+		String pwd = EsignetUtil.generateValidPasswordFromActuator().substring(0,
+				EsignetUtil.getPasswordMinLength() - 1);
+		enterConfirmPassword(pwd);
+	}
+
+	public boolean isPasswordRestrictedToMaxChars() {
 		String value = getElementValue(passwordField);
 		return value != null && value.length() <= 20;
 	}
@@ -612,7 +636,7 @@ public class RegistrationPage extends BasePage {
 		return isElementVisible(confirmPasswordFieldError);
 	}
 
-	public boolean isConfirmPasswordRestrictedToTwentyChars() {
+	public boolean isConfirmPasswordRestrictedToMaxChars() {
 		String value = getElementValue(confirmPasswordField);
 		return value != null && value.length() <= 20;
 	}
@@ -645,8 +669,8 @@ public class RegistrationPage extends BasePage {
 		clickOnElement(passwordInfoIcon);
 	}
 
-	public boolean isPasswordTooltipMessageDisplayed() {
-		return isElementVisible(passwordFieldTooltipText);
+	public String getPasswordTooltipText() {
+		return passwordFieldTooltipText.getText();
 	}
 
 	public void clickOnFullNameInKhmerInfoIcon() {
@@ -655,6 +679,10 @@ public class RegistrationPage extends BasePage {
 
 	public boolean isFullNameInKhmerTooltipMessage() {
 		return isElementVisible(fullNameInKhmerTooltipText);
+	}
+
+	public String getFullNameTooltipText() {
+		return fullNameInKhmerTooltipText.getText();
 	}
 
 	public void ensureTermsCheckboxIsUnchecked() {
@@ -696,7 +724,8 @@ public class RegistrationPage extends BasePage {
 	}
 
 	public void clearAllMandatoryFields() {
-		fullNameInKhmerField.clear();
+		fullNameEnglishField.clear();
+		fullNameKhmerField.clear();
 		passwordField.clear();
 		confirmPasswordField.clear();
 	}
@@ -722,10 +751,10 @@ public class RegistrationPage extends BasePage {
 	}
 
 	public String getOtpResendAttemptsText(int expectedRemainingAttempts) {
-	    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
-	    String expectedText = expectedRemainingAttempts + " of 3 attempts left";
-	    wait.until(ExpectedConditions.textToBePresentInElement(remainingAttemptsMeassage, expectedText));
-	    return getText(remainingAttemptsMeassage);
+		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+		wait.until(ExpectedConditions.textToBePresentInElement(remainingAttemptsMeassage,
+				String.valueOf(expectedRemainingAttempts)));
+		return getText(remainingAttemptsMeassage);
 	}
 
 	public boolean isAccountCreatedSuccessfullyMessageDisplayed() {

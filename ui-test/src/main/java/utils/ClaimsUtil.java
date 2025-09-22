@@ -1,82 +1,79 @@
 package utils;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
-import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.Base64;
 
 public class ClaimsUtil {
 
-	public static Map<String, List<String>> parseClaimsFromUrl(String url) throws Exception {
-		String encodedClaims = extractQueryParam(url, "claims");
-		String decodedClaims = URLDecoder.decode(encodedClaims, StandardCharsets.UTF_8); // ✅ decode here
+	private static JSONObject root;
 
-		String scope = extractQueryParam(url, "scope");
+	// Decode and parse the base64 part from the URL (after #)
+	public static void parseFromUrl(String url) {
+		try {
+			if (url == null || !url.contains("#")) {
+				System.out.println("No encoded part found in URL: " + url);
+				root = null;
+				return;
+			}
 
-		ObjectMapper mapper = new ObjectMapper();
-		JsonNode root = mapper.readTree(decodedClaims);
+			String base64Part = url.substring(url.indexOf('#') + 1).trim();
+			if (base64Part.isEmpty()) {
+				System.out.println("Empty encoded part in URL");
+				root = null;
+				return;
+			}
 
-		List<String> mandatory = new ArrayList<>();
-		List<String> voluntary = new ArrayList<>();
+			byte[] decoded = Base64.getDecoder().decode(base64Part);
+			String jsonString = new String(decoded, StandardCharsets.UTF_8);
+			root = new JSONObject(jsonString);
 
-		extractClaims(root, mandatory, voluntary);
+			System.out.println("Decoded URL JSON: " + root.toString());
+		} catch (Exception e) {
+			System.out.println("Failed to decode URL: " + e.getMessage());
+			root = null;
+		}
+	}
 
-		if (scope != null && scope.contains("profile")) {
-			Set<String> standardProfileClaims = Set.of("name", "address", "email", "birthdate", "gender", "picture",
-					"phone_number");
-			Set<String> allClaims = new HashSet<>();
-			allClaims.addAll(mandatory);
-			allClaims.addAll(voluntary);
+	public static List<String> getMandatoryClaims() {
+		if (root == null)
+			return Collections.emptyList();
+		return normalizeList(toStringList(root.optJSONArray("essentialClaims")));
+	}
 
-			for (String claim : standardProfileClaims) {
-				if (!allClaims.contains(claim)) {
-					voluntary.add(claim);
-				}
+	public static List<String> getVoluntaryClaims() {
+		if (root == null)
+			return Collections.emptyList();
+		return normalizeList(toStringList(root.optJSONArray("voluntaryClaims")));
+	}
+
+	public static String getDefaultLanguage() {
+		if (root == null)
+			return null;
+		JSONObject configs = root.optJSONObject("configs");
+		if (configs == null)
+			return null;
+		JSONObject kbi = configs.optJSONObject("auth.factor.kbi.field-details");
+		if (kbi == null)
+			return null;
+		JSONObject lang = kbi.optJSONObject("language");
+		if (lang == null)
+			return null;
+		JSONArray mandatory = lang.optJSONArray("mandatory");
+		return (mandatory != null && mandatory.length() > 0) ? mandatory.optString(0) : null;
+	}
+
+	private static List<String> toStringList(JSONArray arr) {
+		List<String> list = new ArrayList<>();
+		if (arr != null) {
+			for (int i = 0; i < arr.length(); i++) {
+				list.add(arr.optString(i));
 			}
 		}
-
-		return Map.of("mandatory", new ArrayList<>(mandatory), "voluntary", new ArrayList<>(voluntary));
-	}
-
-	private static void extractClaims(JsonNode node, List<String> mandatory, List<String> voluntary) {
-		if (node.isObject()) {
-			node.fields().forEachRemaining(entry -> {
-				JsonNode value = entry.getValue();
-				if (value.has("essential")) {
-					if (value.get("essential").asBoolean())
-						mandatory.add(entry.getKey());
-					else
-						voluntary.add(entry.getKey());
-				}
-				extractClaims(value, mandatory, voluntary);
-			});
-		} else if (node.isArray()) {
-			node.forEach(child -> extractClaims(child, mandatory, voluntary));
-		}
-	}
-
-	private static String extractQueryParam(String url, String param) {
-		String[] parts = url.split("[&?]");
-		for (String part : parts) {
-			if (part.startsWith(param + "=")) {
-				return part.substring((param + "=").length());
-			}
-		}
-		return null;
-	}
-
-	public static String mapLangToName(String code) {
-		return switch (code.toLowerCase()) {
-		case "en" -> "English";
-		case "hi" -> "Hindi";
-		case "ar" -> "Arabic";
-		case "kn" -> "Kannada";
-		case "ta" -> "Tamil";
-		case "km" -> "Khmer";
-		default -> code;
-		};
+		return list;
 	}
 
 	public static String normalizeClaim(String claim) {
@@ -87,8 +84,19 @@ public class ClaimsUtil {
 			return "name";
 		if (normalized.equals("emailaddress"))
 			return "email";
-
 		return normalized;
+	}
+
+	public static String mapLangToName(String code) {
+		return switch (code.toLowerCase()) {
+		case "en", "eng" -> "English";
+		case "hi" -> "Hindi";
+		case "ar" -> "Arabic";
+		case "kn" -> "Kannada";
+		case "ta" -> "Tamil";
+		case "km" -> "Khmer";
+		default -> code;
+		};
 	}
 
 	public static List<String> normalizeList(List<String> claims) {
@@ -98,14 +106,4 @@ public class ClaimsUtil {
 		}
 		return normalized;
 	}
-
-	public static String getDefaultLanguageFromUrl(String url) {
-		int start = url.indexOf("ui_locales=") + "ui_locales=".length();
-		String lang = url.substring(start);
-		if (lang.contains("&")) {
-			lang = lang.substring(0, lang.indexOf("&"));
-		}
-		return URLDecoder.decode(lang, StandardCharsets.UTF_8);
-	}
-
 }

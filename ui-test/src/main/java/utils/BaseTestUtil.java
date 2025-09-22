@@ -33,6 +33,7 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 public class BaseTestUtil {
 	private static final Logger LOGGER = Logger.getLogger(BaseTestUtil.class.getName());
 	private static final ThreadLocal<String> scenarioBrowserThreadLocal = new ThreadLocal<>();
+	private static final ThreadLocal<String> scenarioLanguageThreadLocal = new ThreadLocal<>();
 
 	public static URI getBrowserStackUrl() {
 		String accessKey = StringUtils.isBlank(EsignetConfigManager.getproperty("browserstack_access_key"))
@@ -187,8 +188,16 @@ public class BaseTestUtil {
 		scenarioBrowserThreadLocal.set(browser);
 	}
 
+	public static void setThreadLocalLanguage(String lang) {
+		scenarioLanguageThreadLocal.set(lang);
+	}
+
 	public static String getThreadLocalBrowser() {
 		return scenarioBrowserThreadLocal.get();
+	}
+
+	public static String getThreadLocalLanguage() {
+		return scenarioLanguageThreadLocal.get();
 	}
 
 }
