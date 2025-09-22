@@ -137,7 +137,7 @@ Feature: Esignet Login Options Page
     Then Verify the welcome message when user clicks on Allow without consenting for Full name
  
   
-  @smoke @loginFeature
+  @loginFeature
   Scenario Outline: Verifying the testCases that validates mobile number field
     Given click on Sign In with eSignet
     And user clicks on login with password button

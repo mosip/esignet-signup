@@ -920,7 +920,7 @@ public class SignUpStepDef {
 
 	@When("user enters valid_mobile_number in the mobile number text box")
 	public void userEntersValidMobileNumber() {
-		lastGeneratedMobileNumber = EsignetUtil.generateMobileFromActuator();
+		lastGeneratedMobileNumber = EsignetUtil.generateMobileNumberFromRegex();
 		registrationPage.enterMobileNumber(lastGeneratedMobileNumber);
 	}
 

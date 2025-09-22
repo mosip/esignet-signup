@@ -59,7 +59,7 @@ public class LoginOptionsStepDefinition {
 
 	@When("user enter valid mobile number in the mobile number field")
 	public void userEnterMobNumber() {
-		String phoneNumber = EsignetUtil.generateMobileFromActuator();
+		String phoneNumber = EsignetUtil.generateMobileNumberFromRegex();
 		RegisteredDetails.setMobileNumber(phoneNumber);
 		loginOptionsPage.enterMobileNumber(phoneNumber);
 	}
@@ -193,7 +193,7 @@ public class LoginOptionsStepDefinition {
 
 	@When("user enter Unregistered mobile number into mobile number field")
 	public void userEnterUnregisteredNumber() {
-		String unregisteredNumber = EsignetUtil.generateMobileFromActuator();
+		String unregisteredNumber = EsignetUtil.generateMobileNumberFromRegex();
 		loginOptionsPage.enterRegisteredMobileNumber(unregisteredNumber);
 	}
 

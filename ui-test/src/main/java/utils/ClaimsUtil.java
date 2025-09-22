@@ -90,11 +90,11 @@ public class ClaimsUtil {
 	public static String mapLangToName(String code) {
 		return switch (code.toLowerCase()) {
 		case "en", "eng" -> "English";
-		case "hi" -> "Hindi";
-		case "ar" -> "Arabic";
-		case "kn" -> "Kannada";
-		case "ta" -> "Tamil";
-		case "km" -> "Khmer";
+		case "hi", "hin" -> "Hindi";
+		case "ar", "ara" -> "Arabic";
+		case "kn", "kan" -> "Kannada";
+		case "ta", "tam" -> "Tamil";
+		case "km", "khm" -> "Khmer";
 		default -> code;
 		};
 	}

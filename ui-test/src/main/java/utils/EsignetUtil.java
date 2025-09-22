@@ -39,15 +39,20 @@ public class EsignetUtil extends AdminTestUtil {
 	public static String getValueFromSignupActuator(String section, String key) {
 
 		String value = null;
+		// Normalize the key for environment variables
 		String keyForEnvVariableSection = key.toUpperCase().replace("-", "_").replace(".", "_");
 
+		// Try to fetch profiles if not already fetched
 		if (signupActiveProfiles == null || signupActiveProfiles.length() == 0) {
 			signupActiveProfiles = getActiveProfilesFromActuator(UiConstants.SIGNUP_ACTUATOR_URL,
 					UiConstants.ACTIVE_PROFILES);
 		}
+		
+		// First try to fetch the value from system environment
 		value = getValueFromSignupActuatorWithUrl(UiConstants.SYSTEM_ENV_SECTION, keyForEnvVariableSection,
 				UiConstants.SIGNUP_ACTUATOR_URL);
 
+		// Fallback to other sections if value is not found
 		if (value == null || value.isBlank()) {
 			value = getValueFromSignupActuatorWithUrl(UiConstants.CLASS_PATH_APPLICATION_PROPERTIES, key,
 					UiConstants.SIGNUP_ACTUATOR_URL);
@@ -58,6 +63,7 @@ public class EsignetUtil extends AdminTestUtil {
 					UiConstants.SIGNUP_ACTUATOR_URL);
 		}
 
+		// Try fetching from active profiles if available
 		if (value == null || value.isBlank()) {
 			if (signupActiveProfiles != null && signupActiveProfiles.length() > 0) {
 				for (int i = 0; i < signupActiveProfiles.length(); i++) {
@@ -77,15 +83,18 @@ public class EsignetUtil extends AdminTestUtil {
 			}
 		}
 
+		// Fallback to a default section if no value found
 		if (value == null || value.isBlank()) {
 			value = getValueFromSignupActuatorWithUrl(EsignetConfigManager.getEsignetActuatorPropertySection(), key,
 					UiConstants.SIGNUP_ACTUATOR_URL);
 		}
-
+		
+		// Final fallback to the original section if no value was found
 		if (value == null || value.isBlank()) {
 			value = getValueFromSignupActuatorWithUrl(section, key, UiConstants.SIGNUP_ACTUATOR_URL);
 		}
 
+		// Log the final result or an error message if not found
 		if (value == null || value.isBlank()) {
 			logger.error("Value not found for section: " + section + ", key: " + key);
 		}
@@ -94,20 +103,24 @@ public class EsignetUtil extends AdminTestUtil {
 	}
 
 	public static String getValueFromSignupActuatorWithUrl(String section, String key, String url) {
+		// Generate cache key based on the url, section, and key
 		String actuatorCacheKey = url + section + key;
 		String value = actuatorValueCache.get(actuatorCacheKey);
 
 		if (value != null && !value.isEmpty()) {
-			return value;
+			return value; // Return cached value if available
 		}
 
 		try {
+			
+			// Fetch the actuator response array if not already populated
 			if (signupActuatorResponseArray == null) {
 				Response response = RestClient.getRequest(url, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
 				JSONObject responseJson = new JSONObject(response.getBody().asString());
 				signupActuatorResponseArray = responseJson.getJSONArray("propertySources");
 			}
 
+			// Search through the property sources for the section
 			for (int i = 0, size = signupActuatorResponseArray.length(); i < size; i++) {
 				JSONObject eachJson = signupActuatorResponseArray.getJSONObject(i);
 				if (eachJson.get("name").toString().contains(section)) {
@@ -121,6 +134,7 @@ public class EsignetUtil extends AdminTestUtil {
 				}
 			}
 
+			// Cache the retrieved value
 			if (value != null && !value.isEmpty()) {
 				actuatorValueCache.put(actuatorCacheKey, value);
 			}
@@ -142,6 +156,7 @@ public class EsignetUtil extends AdminTestUtil {
 			Response response = RestClient.getRequest(url, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
 			JSONObject responseJson = new JSONObject(response.getBody().asString());
 
+			// If the key exists in the response, return the associated JSONArray
 			if (responseJson.has(key)) {
 				activeProfiles = responseJson.getJSONArray(key);
 			} else {
@@ -149,6 +164,7 @@ public class EsignetUtil extends AdminTestUtil {
 			}
 
 		} catch (Exception e) {
+			// Handle other errors like network issues, etc.
 			logger.error("Error fetching active profiles from the actuator: " + e.getMessage());
 		}
 
@@ -166,7 +182,7 @@ public class EsignetUtil extends AdminTestUtil {
 		}
 	}
 
-	public static String generateMobileFromActuator() {
+	public static String generateMobileNumberFromRegex() {
 		String regex = getValueFromSignupActuator("applicationConfig: [classpath:/application-default.properties]",
 				"mosip.signup.identifier.regex");
 		String digitRange = regex.substring(regex.indexOf('{') + 1, regex.indexOf('}'));
@@ -471,12 +487,12 @@ public class EsignetUtil extends AdminTestUtil {
 	}
 
 	public static String getNumberStartingWithZero(int length) {
-		return "0" + generateMobileFromActuator().substring(0, length - 1);
+		return "0" + generateMobileNumberFromRegex().substring(0, length - 1);
 	}
 
 	public static String getLessThanMinimumDigit() {
 		int min = getMinDigits();
-		return generateMobileFromActuator().substring(0, min - 1);
+		return generateMobileNumberFromRegex().substring(0, min - 1);
 	}
 
 	public static String getAllZeros(int length) {
@@ -484,11 +500,11 @@ public class EsignetUtil extends AdminTestUtil {
 	}
 
 	public static String getMoreThanMaxDigits() {
-		return generateMobileFromActuator() + "1";
+		return generateMobileNumberFromRegex() + "1";
 	}
 
 	public static String getAlphaNumeric() {
-		return generateMobileFromActuator().substring(0, 5) + "ABCD";
+		return generateMobileNumberFromRegex().substring(0, 5) + "ABCD";
 	}
 
 	public static String getSpecialChar() {
