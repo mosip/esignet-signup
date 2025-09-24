@@ -137,7 +137,7 @@ public class RegistrationController {
     public ResponseWrapper<JsonNode> getUiSpec() {
         ResponseWrapper<JsonNode> responseWrapper = new ResponseWrapper<>();
         responseWrapper.setResponseTime(IdentityProviderUtil.getUTCDateTime());
-        responseWrapper.setResponse(registrationService.getSchema());
+        responseWrapper.setResponse(registrationService.getUiSpec());
         return responseWrapper;
     }
 

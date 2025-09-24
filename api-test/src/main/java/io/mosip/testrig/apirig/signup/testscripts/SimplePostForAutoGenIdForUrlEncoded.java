@@ -117,7 +117,7 @@ public class SimplePostForAutoGenIdForUrlEncoded extends SignupUtil implements I
 		String inputJson = getJsonFromTemplate(testCaseDTO.getInput(), testCaseDTO.getInputTemplate());
 		String outputJson = getJsonFromTemplate(testCaseDTO.getOutput(), testCaseDTO.getOutputTemplate());
 
-		String jsonInput = SignupUtil.inputstringKeyWordHandeler(inputJson, testCaseName);
+		String jsonInput = inputstringKeyWordHandeler(inputJson, testCaseName);
 		jsonInput = inputJsonKeyWordHandeler(jsonInput, testCaseName);
 
 		if (testCaseDTO.getTemplateFields() != null && templateFields.length > 0) {

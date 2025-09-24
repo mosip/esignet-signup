@@ -1,20 +1,35 @@
+import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
 
 import { Button } from "~components/ui/button";
 import { Icons } from "~components/ui/icons";
 import { Step, StepContent } from "~components/ui/step";
 import { useSettings } from "~pages/shared/queries";
-import { useL2Hash } from "~hooks/useL2Hash";
+
+import {
+  hashCodeSelector,
+  useEkycVerificationStore,
+} from "../../useEkycVerificationStore";
 
 export const SlotUnavailableAlert = () => {
   const { t } = useTranslation();
   const { data: settings } = useSettings();
-  const { state } = useL2Hash();
+
+  const { hashCode } = useEkycVerificationStore(
+    useCallback(
+      (state) => ({
+        hashCode: hashCodeSelector(state),
+      }),
+      []
+    )
+  );
 
   const handleContinue = (e: any) => {
     e.preventDefault();
     window.onbeforeunload = null;
-    window.location.href = `${settings?.response?.configs["esignet-consent.redirect-url"]}?key=${state}&error=ekyc_failed`;
+    window.location.href = `${settings?.response?.configs[
+      "esignet-consent.redirect-url"
+    ]}?key=${hashCode?.state || ""}&error=ekyc_failed`;
   };
 
   return (

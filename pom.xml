@@ -92,6 +92,7 @@
 
 		<spring-cloud.version>Hoxton.SR8</spring-cloud.version>
 		<spring.boot.version>2.3.6.RELEASE</spring.boot.version>
+		<central.publishing.maven.plugin.version>0.7.0</central.publishing.maven.plugin.version>
 
 		<sonar.exclusions>**/dto/**,**/entity/**,**/exception/**,**/spi/**,**/advice/**,**/config/**,**/constants/**</sonar.exclusions>
 		<sonar.cpd.exclusions>**/dto/**,**/entity/**,**/config/**</sonar.cpd.exclusions>
@@ -290,14 +291,13 @@
 			<plugin>
 				<groupId>org.sonatype.central</groupId>
 				<artifactId>central-publishing-maven-plugin</artifactId>
-				<version>0.7.0</version>
+				<version>${central.publishing.maven.plugin.version}</version>
 				<extensions>true</extensions>
 				<configuration>
 					<publishingServerId>ossrh</publishingServerId>
 					<autoPublish>false</autoPublish>
 				</configuration>
 			</plugin>
-
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>

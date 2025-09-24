@@ -124,13 +124,13 @@ public class PostWithAutogenIdWithOtpGenerate extends SignupUtil implements ITes
 		sendOtpEndPoint = otpReqJson.getString("sendOtpEndPoint");
 		otpReqJson.remove("sendOtpEndPoint");
 
-		String input = getJsonFromTemplate(otpReqJson.toString(), sendOtpReqTemplate);
+		String inputStrJson = getJsonFromTemplate(otpReqJson.toString(), sendOtpReqTemplate);
 		
 		Response otpResponse = null;
 		int maxLoopCount = Integer.parseInt(properties.getProperty("uinGenMaxLoopCount"));
 		int currLoopCount = 0;
 		while (currLoopCount < maxLoopCount) {
-			input = SignupUtil.inputstringKeyWordHandeler(input, testCaseName);
+			String input = inputstringKeyWordHandeler(inputStrJson, testCaseName);
 			if (testCaseName.contains(GlobalConstants.ESIGNET_)) {
 				if (SignupConfigManager.isInServiceNotDeployedList(GlobalConstants.ESIGNET)) {
 					throw new SkipException("esignet is not deployed hence skipping the testcase");
@@ -193,7 +193,7 @@ public class PostWithAutogenIdWithOtpGenerate extends SignupUtil implements ITes
 		}
 		
 		String jsonInput = getJsonFromTemplate(req.toString(), testCaseDTO.getInputTemplate());
-		jsonInput = SignupUtil.inputstringKeyWordHandeler(jsonInput, testCaseName);
+		jsonInput = inputstringKeyWordHandeler(jsonInput, testCaseName);
 
 		if (testCaseName.contains(GlobalConstants.ESIGNET_)) {
 			if (SignupConfigManager.isInServiceNotDeployedList(GlobalConstants.ESIGNET)) {

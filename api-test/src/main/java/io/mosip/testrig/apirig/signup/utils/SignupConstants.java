@@ -1,18 +1,31 @@
 package io.mosip.testrig.apirig.signup.utils;
 
+import io.mosip.testrig.apirig.testrunner.BaseTestCase;
+
 public class SignupConstants {
 	public static final String ACTIVE_PROFILES = "activeProfiles";
 
 	public static final String SIGNUP_ACTUATOR_ENDPOINT_KEYWORD = "actuatorSignupEndpoint";
+	
+	public static final String IDREPO_ACTUATOR_ENDPOINT_KEYWORD = "actuatorIdRepoEndpoint";
 
 	public static final String SIGNUP_BASE_URL = SignupConfigManager.getSignupBaseUrl();
 
 	public static final String SIGNUP_ACTUATOR_URL = SIGNUP_BASE_URL
 			+ SignupConfigManager.getproperty(SIGNUP_ACTUATOR_ENDPOINT_KEYWORD);
 
+	public static final String IDREPO_ACTUATOR_URL = BaseTestCase.ApplnURI
+			+ SignupConfigManager.getproperty(IDREPO_ACTUATOR_ENDPOINT_KEYWORD);
+	
+	public static final String IDREPO_ACTUATOR_PROPERTY_SECTION = "idRepoActuatorPropertySection";
+
 	public static final String SYSTEM_ENV_SECTION = "systemEnvironment";
 	
 	public static final String CLASS_PATH_APPLICATION_PROPERTIES = "classpath:/application.properties";
+	
+	public static final String IDREPO_DEFAULT_PROPERTIES = "id-repository-default.properties";
+	
+	public static final String APPLICATION_DEFAULT_PROPERTIES = "application-default.properties";
 	
 	public static final String CLASS_PATH_APPLICATION_DEFAULT_PROPERTIES = "classpath:/application-default.properties";
 

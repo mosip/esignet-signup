@@ -6,7 +6,7 @@ import { useLocation } from "react-router-dom";
 import { ReactComponent as TranslationIcon } from "~assets/svg/translation-icon.svg";
 import { EKYC_VERIFICATION } from "~constants/routes";
 import { cn } from "~utils/cn";
-import { replaceUILocales } from "~utils/link";
+import { replaceUILocalesParam } from "~utils/link";
 import {
   langFontMappingSelector,
   languages2LettersSelector,
@@ -31,18 +31,19 @@ export const Language = () => {
 
   const handleLanguageChange = (language: string) => {
     i18n.changeLanguage(language);
-    
-    const urlSearchParams = replaceUILocales(window.location.hash, language);
+
+    const urlSearchParams = replaceUILocalesParam(
+      window.location.search,
+      language
+    );
     if (urlSearchParams) {
       // Encode the string
-      const encodedBase64 = btoa(urlSearchParams.toString());
       const url =
         window.location.origin +
         window.location.pathname +
-        window.location.search +
-        "#" +
-        encodedBase64;
-        
+        "?" +
+        urlSearchParams.toString();
+
       // Replace the current url with the modified url due to the language change
       window.history.replaceState(null, "", url);
     }

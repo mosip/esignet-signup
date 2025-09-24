@@ -13,7 +13,7 @@ databases:
         key: postgres-password
     dml: 0
     repoUrl: https://github.com/mosip/audit-manager.git
-    branch: develop
+    branch: v1.2.0.1
   mosip_kernel:
     enabled: true
     host: "postgres-postgresql.postgres"
@@ -25,7 +25,7 @@ databases:
         key: postgres-password
     dml: 0
     repoUrl: https://github.com/mosip/commons.git
-    branch: develop
+    branch: v1.2.0.1
   mosip_otp:
     enabled: true
     host: "postgres-postgresql.postgres"
@@ -37,7 +37,7 @@ databases:
         key: postgres-password
     dml: 0
     repoUrl: https://github.com/mosip/otp-manager.git
-    branch: develop
+    branch: v1.2.0.1
   mosip_master:
     enabled: false
 

@@ -13,7 +13,6 @@ import {
   StepHeader,
   StepTitle,
 } from "~components/ui/step";
-import { useL2Hash } from "~hooks/useL2Hash";
 import langConfigService from "~services/langConfig.service";
 import { DefaultEkyVerificationProp } from "~typings/types";
 import LoadingIndicator from "~/common/LoadingIndicator";
@@ -43,17 +42,16 @@ export const KycProviderList = ({
     keyPrefix: "kyc_provider",
   });
 
-  const { state } = useL2Hash();
   const pollingUrl = POLLING_BASE_URL + "/actuator/health";
 
-   const pollingConfig: PollingConfig = {
-        timeout: settings?.configs?.["offline.polling.timeout"] ?? 5000,
-        interval: settings?.configs?.["offline.polling.interval"] ?? 10000,
-        enabled: settings?.configs?.["offline.polling.enabled"] ?? true,
-        url: settings?.configs?.["offline.polling.url"] ?? pollingUrl
-      };
+  const pollingConfig: PollingConfig = {
+    timeout: settings?.configs?.["offline.polling.timeout"] ?? 5000,
+    interval: settings?.configs?.["offline.polling.interval"] ?? 10000,
+    enabled: settings?.configs?.["offline.polling.enabled"] ?? true,
+    url: settings?.configs?.["offline.polling.url"] ?? pollingUrl,
+  };
 
-  const { setStep, setKycProvider, kycProvider, providerListStore } =
+  const { setStep, setKycProvider, kycProvider, providerListStore, hashCode } =
     useEkycVerificationStore(
       useCallback(
         (state: EkycVerificationStore) => ({
@@ -61,6 +59,7 @@ export const KycProviderList = ({
           setKycProvider: setKycProviderSelector(state),
           kycProvider: kycProviderSelector(state),
           providerListStore: kycProvidersListSelector(state),
+          hashCode: hashCodeSelector(state),
         }),
         []
       )
@@ -90,7 +89,9 @@ export const KycProviderList = ({
     e.preventDefault();
     if (kycProvidersList === null || kycProvidersList.length === 0) {
       window.onbeforeunload = null;
-      window.location.href = `${settings?.configs["esignet-consent.redirect-url"]}?key=${state}&error=no_ekyc_provider`;
+      window.location.href = `${settings?.configs[
+        "esignet-consent.redirect-url"
+      ]}?key=${hashCode?.state || ""}&error=no_ekyc_provider`;
     } else {
       setCancelButton(true);
     }
@@ -199,8 +200,11 @@ export const KycProviderList = ({
                                 className="py-6"
                                 searchRef={searchTextRef}
                                 onChange={filterKycProvidersList}
-                                onKeyDown={(event:any) => {
-                                  if (event.key === "Enter" || event.keyCode === 13) {
+                                onKeyDown={(event: any) => {
+                                  if (
+                                    event.key === "Enter" ||
+                                    event.keyCode === 13
+                                  ) {
                                     event.preventDefault(); // Prevent default action for Enter key
                                   }
                                 }}

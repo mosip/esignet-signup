@@ -7,20 +7,21 @@ package io.mosip.signup.services;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.mosip.esignet.core.exception.EsignetException;
 import io.mosip.esignet.core.util.CaptchaHelper;
 import io.mosip.esignet.core.util.IdentityProviderUtil;
 import io.mosip.signup.api.dto.ProfileDto;
 import io.mosip.signup.api.spi.ProfileRegistryPlugin;
 import io.mosip.signup.api.util.ProfileCreateUpdateStatus;
 import io.mosip.signup.dto.*;
-import io.mosip.signup.exception.*;
 import io.mosip.signup.exception.ChallengeFailedException;
+import io.mosip.signup.exception.GenerateChallengeException;
 import io.mosip.signup.exception.InvalidTransactionException;
+import io.mosip.signup.exception.SignUpException;
 import io.mosip.signup.helper.CryptoHelper;
 import io.mosip.signup.helper.NotificationHelper;
 import io.mosip.signup.util.ErrorConstants;
 import io.mosip.signup.util.Purpose;
-import io.mosip.signup.exception.SignUpException;
 import io.mosip.signup.util.SignUpConstants;
 import org.junit.Assert;
 import org.junit.Before;
@@ -39,24 +40,19 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestTemplate;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import static io.mosip.signup.util.ErrorConstants.INVALID_KBI_CHALLENGE;
 import static io.mosip.signup.util.ErrorConstants.KNOWLEDGEBASE_MISMATCH;
-import static org.mockito.Mockito.*;
-
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-import javax.servlet.http.HttpServletResponse;
-
-import io.mosip.esignet.core.exception.EsignetException;
-
-import java.time.LocalDateTime;
-import java.util.Map;
+import static org.mockito.Mockito.*;
 
 
 @RunWith(SpringRunner.class)
@@ -1854,5 +1850,31 @@ public class RegistrationServiceTest {
         registrationStatusResponse.setStatus(ProfileCreateUpdateStatus.PENDING);
         Assert.assertNotNull(registrationStatusResponse);
         Assert.assertEquals(ProfileCreateUpdateStatus.PENDING, registrationStatusResponse.getStatus());
+    }
+
+    @Test
+    public void getUiSpec_withValidDetails_thenPass() throws Exception {
+        JsonNode expectedNode = objectMapper.readTree("{\"field\":\"value\"}");
+        when(profileRegistryPlugin.getUISpecification()).thenReturn(expectedNode);
+        JsonNode result = registrationService.getUiSpec();
+        Assert.assertNotNull(result);
+        Assert.assertEquals(expectedNode, result);
+        verify(profileRegistryPlugin, times(1)).getUISpecification();
+    }
+
+    @Test
+    public void getUiSpec_withNull_thenPass() {
+        when(profileRegistryPlugin.getUISpecification()).thenReturn(null);
+        JsonNode result = registrationService.getUiSpec();
+        Assert.assertNull(result);
+        verify(profileRegistryPlugin, times(1)).getUISpecification();
+    }
+
+    @Test
+    public void getUiSpec_withException_theFail() {
+        when(profileRegistryPlugin.getUISpecification()).thenThrow(new RuntimeException("Plugin error"));
+        RuntimeException ex = Assert.assertThrows(RuntimeException.class, () -> registrationService.getUiSpec());
+        Assert.assertEquals("Plugin error", ex.getMessage());
+        verify(profileRegistryPlugin, times(1)).getUISpecification();
     }
 }

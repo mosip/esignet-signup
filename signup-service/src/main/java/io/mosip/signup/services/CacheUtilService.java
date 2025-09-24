@@ -45,7 +45,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import static io.mosip.signup.util.SignUpConstants.*;
+import static io.mosip.signup.util.SignUpConstants.SLOTS_CONNECTED;
 
 @Slf4j
 @Service
@@ -264,8 +264,8 @@ public class CacheUtilService {
         return cacheManager.getCache(SignUpConstants.KEYSTORE).get(keyAlias, String.class);	//NOSONAR getCache() will not be returning null here.
     }
 
-    public String getActiveKeyAlias() {
-        return cacheManager.getCache(SignUpConstants.KEY_ALIAS).get(CryptoHelper.ALIAS_CACHE_KEY, String.class);	//NOSONAR getCache() will not be returning null here.
+    public String getActiveKeyAlias(String currentActiveAliasKey) {
+        return cacheManager.getCache(SignUpConstants.KEY_ALIAS).get(currentActiveAliasKey, String.class);	//NOSONAR getCache() will not be returning null here.
     }
 
     public IdentityVerifierDetail[] getIdentityVerifierDetails() {
@@ -389,5 +389,4 @@ public class CacheUtilService {
         List<Boolean> scriptExists = redisConnectionFactory.getConnection().scriptingCommands().scriptExists(scriptHash);
         return scriptExists == null || !scriptExists.get(0);
     }
-
 }

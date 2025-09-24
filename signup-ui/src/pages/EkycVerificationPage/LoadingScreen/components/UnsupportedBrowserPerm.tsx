@@ -1,3 +1,4 @@
+import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
 
 import { Button } from "~components/ui/button";
@@ -8,17 +9,31 @@ import {
   StepHeader,
   StepTitle,
 } from "~components/ui/step";
-import { useL2Hash } from "~hooks/useL2Hash";
 import { useSettings } from "~pages/shared/queries";
+
+import {
+  hashCodeSelector,
+  useEkycVerificationStore,
+} from "../../useEkycVerificationStore";
 
 export const UnsupportedBrowserPerm = () => {
   const { t } = useTranslation();
-  const { state } = useL2Hash();
   const { data: settings } = useSettings();
+
+  const { hashCode } = useEkycVerificationStore(
+    useCallback(
+      (state) => ({
+        hashCode: hashCodeSelector(state),
+      }),
+      []
+    )
+  );
 
   const handleOkay = () => {
     window.onbeforeunload = null;
-    window.location.href = `${settings?.response?.configs["esignet-consent.redirect-url"]}?key=${state}&error=incompatible_browser`;
+    window.location.href = `${settings?.response?.configs[
+      "esignet-consent.redirect-url"
+    ]}?key=${hashCode?.state || ""}&error=incompatible_browser`;
   };
 
   return (
