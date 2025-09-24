@@ -4,8 +4,8 @@ Feature: Esignet Forgot Password Page
 
   @smoke @registrationProcess
   Scenario Outline: Verify user is completing registration process
-    Given click on Sign In with eSignet
-    And user clicks on the Sign-Up with Unified Login hyperlink
+    Given user directly navigates to sign-up portal URL
+    And user clicks on Register button
     Then user enters mobile_number in the mobile number text box
     And user clicks on the Continue button
     When user enters the OTP
@@ -20,18 +20,12 @@ Feature: Esignet Forgot Password Page
    
   @smoke @forgetPasswordOptionsVerification
   Scenario Outline: Verify the forget password options for phoneNumber
-    Given click on Sign In with eSignet
-    Then validate that the logo is displayed
-    And verify screen is rendered in default language
-    And user click on Login with password
-    And user verify forget password link
-    And user click on forget password link
-    And user verify browser redirected to reset-password
+    Given user directly navigates to sign-up portal URL
+    When user click on reset password button
     And user verify country code prefix
     And user verify the water mark text inside phonenumber
     And user verify country code is not editable
     And user verify forget password heading
-    And user verify back button on forget password
     And user verify subheading on forget password
     And user verify username label on forget password
     And user verify fullname label on forget password
@@ -64,9 +58,8 @@ Feature: Esignet Forgot Password Page
 
   @smoke @forgetPasswordFullNameVerification
   Scenario Outline: Verify the forget password options for fullName
-    Given click on Sign In with eSignet
-    Then user click on Login with password
-    And user click on forget password link
+    Given user directly navigates to sign-up portal URL
+    And user click on reset password button
 
     When user enters Numeric input into the fullname field
     And user clicks outside the input to trigger validation
@@ -100,9 +93,8 @@ Feature: Esignet Forgot Password Page
         
   @smoke @forgetPasswordOTPVerification
   Scenario Outline: Verify the forget password options for otp
-    Given click on Sign In with eSignet
-    Then user click on Login with password
-    And user click on forget password link
+    Given user directly navigates to sign-up portal URL
+    And user click on reset password button
 
     When user enters registered fullname into the full name field
     And user enters Registered moblie number into the mobile number field
@@ -165,9 +157,8 @@ Feature: Esignet Forgot Password Page
 
   @smoke @resetPasswordVerification
   Scenario Outline: Verify the reset password options
-    Given click on Sign In with eSignet
-    Then user click on Login with password
-    And user click on forget password link
+    Given user directly navigates to sign-up portal URL
+    And user click on reset password button
 
     When user enters registered fullname into the full name field
     And user enters Registered moblie number into the mobile number field
@@ -247,17 +238,15 @@ Feature: Esignet Forgot Password Page
   @smoke @ForgetPasswordOtpNotification
   Scenario Outline: Verify the notification when OTP requested for forgot password
   	Given user opens SMTP portal
-  	And navigate back to eSignet portal
-  	Given click on Sign In with eSignet
-  	Then user click on Login with password
-    And user click on forget password link
+  	And navigate back to signup portal
+    And user click on reset password button
     And user enters registered fullname into the full name field
     And user enters Registered moblie number into the mobile number field
     Then user click on continue button
 
   	And user switches back to SMTP portal
   	Then verify notification is received for otp requested
-  	And switch back to eSignet portal
+  	And switch back to signup portal
   	When user enters the OTP in forgot password flow
   	And user clicks on the Verify OTP button
   	When user enters new password in Forgot Password flow
@@ -268,9 +257,8 @@ Feature: Esignet Forgot Password Page
 
   @smoke @otpTimerVerification
   Scenario Outline: Verify the attempts of resend otp 
-    Given click on Sign In with eSignet
-    Then user click on Login with password
-    And user click on forget password link
+    Given user directly navigates to sign-up portal URL
+    And user click on reset password button
 
     When user enters registered fullname into the full name field
     And user enters Registered moblie number into the mobile number field

@@ -22,9 +22,6 @@ public class ForgetPasswordPage extends BasePage {
 		PageFactory.initElements(driver, this);
 	}
 
-	@FindBy(id = "login_with_pwd")
-	WebElement loginWithPassword;
-
 	@FindBy(id = "forgot-password-hyperlink")
 	WebElement forgetPasswordLink;
 
@@ -57,9 +54,6 @@ public class ForgetPasswordPage extends BasePage {
 
 	@FindBy(xpath = "//div[@class='text-center text-[26px] font-semibold tracking-normal']")
 	WebElement forgetPasswordHeading;
-
-	@FindBy(id = "keyboard_backspace_FILL0_wght400_GRAD0_opsz48")
-	WebElement backButtonOnForgePassword;
 
 	@FindBy(xpath = "//div[@class='text-center text-gray-500']")
 	WebElement forgetPasswordSubHeadning;
@@ -190,9 +184,6 @@ public class ForgetPasswordPage extends BasePage {
 	@FindBy(id = "reset-password-button")
 	WebElement resetPasswordButton;
 
-	@FindBy(id = "language_selection")
-	WebElement currentLanguage;
-
 	public void enterMobileNumber(String number) {
 		enterMobileNumberField.clear();
 		enterText(enterMobileNumberField, number);
@@ -206,10 +197,6 @@ public class ForgetPasswordPage extends BasePage {
 	public void enterConfirmPwd(String confirmPassword) {
 		clearField(confirmPasswordField);
 		enterText(confirmPasswordField, confirmPassword);
-	}
-
-	public void clickOnLoginWithPassword() {
-		clickOnElement(loginWithPassword);
 	}
 
 	public boolean isforgetPasswordLinkDisplayed() {
@@ -264,10 +251,6 @@ public class ForgetPasswordPage extends BasePage {
 
 	public boolean isForgetPasswordHeadningVisible() {
 		return isElementVisible(forgetPasswordHeading);
-	}
-
-	public boolean isBackButtonOnForgePasswordVisible() {
-		return isElementVisible(backButtonOnForgePassword);
 	}
 
 	public boolean isForgetPasswordSubHeadningVisible() {
@@ -350,14 +333,6 @@ public class ForgetPasswordPage extends BasePage {
 
 	public void clickOnContinueButton() {
 		clickOnElement(continueButton);
-	}
-
-	public void clickOnBackButtonOnForgetPassword() {
-		clickOnElement(backButtonOnForgePassword);
-	}
-
-	public boolean isRedirectedToLoginPage() {
-		return isElementVisible(loginWithPassword);
 	}
 
 	public boolean isResendOtpCountdownVisible() {
@@ -576,10 +551,6 @@ public class ForgetPasswordPage extends BasePage {
 
 	public void clickOnResetPasswordButton() {
 		clickOnElement(resetPasswordButton);
-	}
-
-	public String getCurrentLanguage() {
-		return currentLanguage.getText().trim();
 	}
 
 }

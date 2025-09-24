@@ -10,6 +10,7 @@ import org.apache.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.WindowType;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
@@ -17,9 +18,11 @@ import io.cucumber.java.en.When;
 import io.mosip.testrig.apirig.testrunner.OTPListener;
 import base.BaseTest;
 import io.cucumber.java.en.Then;
+
 import pages.ForgetPasswordPage;
 import pages.LoginOptionsPage;
 import pages.SmtpPage;
+import pages.SignUpPage;
 import utils.BaseTestUtil;
 import utils.EsignetUtil;
 import utils.MultiLanguageUtil;
@@ -33,6 +36,7 @@ public class ForgetPasswordStepDefinition {
 	LoginOptionsPage loginOptionsPage;
 	ForgetPasswordPage forgetPasswordPage;
 	SmtpPage smtpPage;
+	SignUpPage signUpPage;
 
 	public ForgetPasswordStepDefinition(BaseTest baseTest) {
 		this.baseTest = baseTest;
@@ -40,6 +44,7 @@ public class ForgetPasswordStepDefinition {
 		this.forgetPasswordPage = new ForgetPasswordPage(driver);
 		this.loginOptionsPage = new LoginOptionsPage(driver);
 		this.smtpPage = new SmtpPage(driver);
+		this.signUpPage = new SignUpPage(driver);
 	}
 
 	private String lastGeneratedPassword;
@@ -77,27 +82,9 @@ public class ForgetPasswordStepDefinition {
 		forgetPasswordPage.enterConfirmPwd(lastGeneratedPassword);
 	}
 
-	@Then("verify screen is rendered in default language")
-	public void verifyForgotPasswordScreenLanguage() {
-		String expectedLang = forgetPasswordPage.getExpectedDefaultLanguage();
-		String actualLang = forgetPasswordPage.getCurrentLanguage();
-		assertEquals(expectedLang, actualLang);
-	}
-
-	@Then("user click on Login with password")
-	public void userClickOnLoginWithPassword() {
-		forgetPasswordPage.clickOnLoginWithPassword();
-	}
-
-	@Then("user verify forget password link")
-	public void userVerifyForgetPasswordLink() {
-		Assert.assertTrue(forgetPasswordPage.isforgetPasswordLinkDisplayed(),
-				"Forget Password link should be visible on the page.");
-	}
-
-	@Then("user click on forget password link")
-	public void userClickOnForgetPasswordLink() {
-		forgetPasswordPage.clickOnForgetPasswordLink();
+	@When("user click on reset password button")
+	public void userClickOnResetPasswordButton() {
+		forgetPasswordPage.clickOnResetPasswordButton();
 		forgetPasswordPage.clickOnLanguageSelectionDropdown();
 		String languagePassed = MultiLanguageUtil.getDisplayName(BaseTestUtil.getThreadLocalLanguage());
 		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
@@ -105,11 +92,6 @@ public class ForgetPasswordStepDefinition {
 				.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[text()='" + languagePassed + "']")));
 		langOption.click();
 		BaseTestUtil.setThreadLocalLanguage(languagePassed);
-	}
-
-	@Then("user verify browser redirected to reset-password")
-	public void userVerifyBrowserRedirectedToResetPassword() {
-		Assert.assertTrue(forgetPasswordPage.isRedirectedToResetPasswordPage(), "Redirected to reset-password link");
 	}
 
 	@Then("user verify country code prefix")
@@ -159,11 +141,6 @@ public class ForgetPasswordStepDefinition {
 	@Then("user verify forget password heading")
 	public void userVerifyForgetPasswordHeading() {
 		Assert.assertTrue(forgetPasswordPage.isForgetPasswordHeadningVisible(), "Forget password heading visible");
-	}
-
-	@Then("user verify back button on forget password")
-	public void userVerifyBackButtonOnForgetPassword() {
-		assertTrue(forgetPasswordPage.isBackButtonOnForgePasswordVisible());
 	}
 
 	@Then("user verify subheading on forget password")
@@ -304,16 +281,6 @@ public class ForgetPasswordStepDefinition {
 	@Then("user click on continue button")
 	public void userClickOnContinueButtonIsEnabled() {
 		forgetPasswordPage.clickOnContinueButton();
-	}
-
-	@Then("user click on back button")
-	public void userClickOnBackBtnInForgotPasswordScreen() {
-		forgetPasswordPage.clickOnBackButtonOnForgetPassword();
-	}
-
-	@Then("user verify browser redirected to login page")
-	public void userVerifyBrowserRedirectedToLoginPage() {
-		Assert.assertTrue(forgetPasswordPage.isRedirectedToLoginPage(), "Not redirected to login page");
 	}
 
 	private int waitTime;
@@ -611,14 +578,23 @@ public class ForgetPasswordStepDefinition {
 		assertTrue(smtpPage.isPasswordResetSuccessNotificationDisplayed());
 	}
 
-	@When("user click on reset password button")
-	public void userClickOnResetPasswordButton() {
-		forgetPasswordPage.clickOnResetPasswordButton();
-	}
-
 	@Then("verify it is accessible,user is redirected to the Forget Password screen")
 	public void verifyUserRedirectedToForgotPasswordScreen() {
 		assertTrue(forgetPasswordPage.isForgetPassowrdScreenVisible());
+	}
+
+	String signupPortalTabHandle;
+
+	@Then("navigate back to signup portal")
+	public void userNavigateToSignupPortal() {
+		driver.switchTo().newWindow(WindowType.TAB);
+		signUpPage.navigateToSignupPortal();
+		signupPortalTabHandle = driver.getWindowHandle();
+	}
+
+	@Then("switch back to signup portal")
+	public void userSwitchToSignupPortal() {
+		driver.switchTo().window(signupPortalTabHandle);
 	}
 
 }
