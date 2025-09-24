@@ -92,11 +92,6 @@ public class SignUpStepDef {
 		assertTrue(registrationPage.isContinueButtonVisible());
 	}
 
-	@Then("user verify an option to navigate back to the previous screen")
-	public void validateBackNavigationOption() {
-		assertTrue(registrationPage.isBackOptionAvailable());
-	}
-
 	@Then("user verify an option to select preferred language")
 	public void validateLanguageSelectionOption() {
 		assertTrue(registrationPage.isLanguageSelectionVisible());
@@ -202,11 +197,6 @@ public class SignUpStepDef {
 	@Then("verify the mobile number field should contain only numeric characters")
 	public void fieldShouldContainOnlyDigits() {
 		assertTrue(registrationPage.isMobileFieldContainingOnlyDigits());
-	}
-
-	@When("user clicks on the navigate back button")
-	public void userClicksNavigateBackButton() {
-		registrationPage.clickOnNavigateBackButton();
 	}
 
 	@Then("verify user is redirected to the previous screen")

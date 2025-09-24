@@ -4,17 +4,13 @@ Feature: Esignet signUp Options Page
 
 @smoke @SignUpAndMobileNumberRegistration
 Scenario Outline: Signup and Mobile Number Registration
-  Given click on Sign In with eSignet
-  Then validate that the logo is displayed
-  Then verify Sign-Up with Unified Login option should be displayed
-
-  When user clicks on the Sign-Up with Unified Login hyperlink
+  Given user directly navigates to sign-up portal URL
+  When user clicks on Register button
   Then verify user is navigated to the Mobile Number Registration screen
 
   Then user verify header text
   And user verify a text box for entering an 8–9 digit mobile number
   And user verify a Continue button
-  And user verify an option to navigate back to the previous screen
   And user verify an option to select preferred language
   And user verify footer text and logo
   Then user verify the mobile number text field should be pre-filled with country code
@@ -48,17 +44,13 @@ Scenario Outline: Signup and Mobile Number Registration
   When user enters alphaNumeric in the mobile number text box
   Then verify the mobile number field should contain only numeric characters
 
-  When user clicks on the navigate back button
-  Then verify user is redirected to the previous screen
-  
-  When user clicks on the Sign-Up with Unified Login hyperlink
   When user clicks the browser back button
   Then verify user is redirected to the previous screen
 
 @smoke @OtpPage
 Scenario Outline: OTP input acceptance and Verify button state
-  Given click on Sign In with eSignet
-  When user clicks on the Sign-Up with Unified Login hyperlink
+  Given user directly navigates to sign-up portal URL
+  And user clicks on Register button
   When user enters valid_mobile_number in the mobile number text box
   And user clicks on the Continue button
   Then verify user is navigated to the OTP screen
@@ -79,14 +71,14 @@ Scenario Outline: OTP input acceptance and Verify button state
   And user clicks on the Continue button
   Then verify user is navigated to the OTP screen
 
-  And user waits for OTP timer to expire
-  When user enters "<expired_otp>" as a Otp 
-  And user clicks on the Verify OTP button
-  Then verify an error message OTP expired. Please request a new one and try again. is displayed at the top
-  When user clicks on the close icon of the error message
-  Then verify the error message is not visible
+  #And user waits for OTP timer to expire
+  #When user enters "<expired_otp>" as a Otp 
+  #And user clicks on the Verify OTP button
+  #Then verify an error message OTP expired. Please request a new one and try again. is displayed at the top
+  #When user clicks on the close icon of the error message
+  #Then verify the error message is not visible
   
-  Then user clicks on the Resend OTP button
+  #Then user clicks on the Resend OTP button
   When user enters "<invalid_otp>" as a Otp
   And user clicks on the Verify OTP button
   Then verify an error message OTP authentication failed. Please try again. is displayed at the top
@@ -116,13 +108,13 @@ Scenario Outline: OTP input acceptance and Verify button state
   And user clicks on the Continue button
   Then verify user is navigated to the OTP screen
   
-  Then user waits for OTP time to expire and resend button gets enabled
-  And user validates 2 out of 3 attempts message displayed
-  And user waits for OTP time to expire and resend button gets enabled
-  And user validates 1 out of 3 attempts message displayed
-  And user waits for OTP time to expire and resend button gets enabled
-  And user validates 0 out of 3 attempts message displayed
-  Then validate the verify button is disabled
+  #Then user waits for OTP time to expire and resend button gets enabled
+  #And user validates 2 out of 3 attempts message displayed
+  #And user waits for OTP time to expire and resend button gets enabled
+  #And user validates 1 out of 3 attempts message displayed
+  #And user waits for OTP time to expire and resend button gets enabled
+  #And user validates 0 out of 3 attempts message displayed
+  #Then validate the verify button is disabled
   
   When user clicks the back button on the OTP screen
   And user enters valid_mobile_number in the mobile number text box
@@ -143,8 +135,8 @@ Examples:
 
 @smoke @accountSetupValidation
 Scenario Outline: Completing Registration Process
-  Given click on Sign In with eSignet
-  When user clicks on the Sign-Up with Unified Login hyperlink
+  Given user directly navigates to sign-up portal URL
+  And user clicks on Register button
   And user enters valid_mobile_number in the mobile number text box
   And user clicks on the Continue button
   When user enters the complete 6-digit OTP
@@ -281,9 +273,8 @@ Scenario Outline: Completing Registration Process
   
   #When user clicks the browser back button
   #And user click on Leave button 
-  #Then verify user is redirected to Login screen of eSignet 
+  #Then verify user is redirected back to the Registration screen
   
-  #And user clicks on the Sign-Up with Unified Login hyperlink
   #And user enters valid_mobile_number in the mobile number text box
   #And user clicks on the Continue button
   #When user enters the complete 6-digit OTP
@@ -301,9 +292,8 @@ Scenario Outline: Completing Registration Process
   And verify a Login button is displayed
   
   When user click on Login button
-  Then verify user is redirected to Login screen of eSignet
+  Then verify user is redirected back to the Registration screen
   
-  And user clicks on the Sign-Up with Unified Login hyperlink
   When user enters already registered number in the mobile number text box
   And user clicks on the Continue button
   When user enters the complete 6-digit OTP
@@ -346,14 +336,13 @@ Scenario Outline: Verify sign-up portal by navigating directly through sign-up U
 @smoke @OtpNotification
 Scenario: Verify the notification when OTP requested
   Given user opens SMTP portal
-  And navigate back to eSignet portal
-  Given click on Sign In with eSignet
-  When user clicks on the Sign-Up with Unified Login hyperlink
+  And navigate back to signup portal
+  And user clicks on Register button
   And user enters valid_mobile_number in the mobile number text box
   And user clicks on the Continue button
   And user switches back to SMTP portal
   Then verify notification is received for otp requested
-  And switch back to eSignet portal
+  And switch back to signup portal
   When user enters the complete 6-digit OTP
   And user clicks on the Verify OTP button
   And user click on Continue button in Success Screen

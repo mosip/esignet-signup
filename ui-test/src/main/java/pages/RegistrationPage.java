@@ -38,6 +38,9 @@ public class RegistrationPage extends BasePage {
 
 	@FindBy(id = "back-button")
 	WebElement backButton;
+	
+	@FindBy(id = "register-button")
+	WebElement registerButton;
 
 	@FindBy(id = "language-select-button")
 	WebElement languageSelection;
@@ -232,10 +235,6 @@ public class RegistrationPage extends BasePage {
 		return isElementVisible(continueButton);
 	}
 
-	public boolean isBackOptionAvailable() {
-		return isElementVisible(backButton);
-	}
-
 	public boolean isLanguageSelectionVisible() {
 		return isElementVisible(languageSelection);
 	}
@@ -342,7 +341,7 @@ public class RegistrationPage extends BasePage {
 	}
 
 	public boolean isPreviousScreenVisible() {
-		return isElementVisible(loginPageHeader);
+		return isElementVisible(registerButton);
 	}
 
 	public boolean isEnterOtpPageDisplayed() {
