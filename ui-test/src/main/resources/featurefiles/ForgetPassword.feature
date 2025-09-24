@@ -280,11 +280,3 @@ Feature: Esignet Forgot Password Page
     And verify the reset password button is available
     When user click on reset password button
     Then verify it is accessible,user is redirected to the Forget Password screen
- 
-  
- 
-   
- 
-    
-
-    

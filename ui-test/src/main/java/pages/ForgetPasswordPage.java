@@ -22,9 +22,6 @@ public class ForgetPasswordPage extends BasePage {
 		PageFactory.initElements(driver, this);
 	}
 
-	@FindBy(id = "forgot-password-hyperlink")
-	WebElement forgetPasswordLink;
-
 	@FindBy(id = "sign-in-with-esignet")
 	WebElement signInWithEsignet;
 
@@ -197,14 +194,6 @@ public class ForgetPasswordPage extends BasePage {
 	public void enterConfirmPwd(String confirmPassword) {
 		clearField(confirmPasswordField);
 		enterText(confirmPasswordField, confirmPassword);
-	}
-
-	public boolean isforgetPasswordLinkDisplayed() {
-		return isElementVisible(forgetPasswordLink);
-	}
-
-	public void clickOnForgetPasswordLink() {
-		clickOnElement(forgetPasswordLink);
 	}
 
 	public void clickOnSignInWIthEsignet() {
