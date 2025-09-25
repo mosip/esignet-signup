@@ -92,10 +92,6 @@ public class SignUpStepDef {
 		assertTrue(registrationPage.isContinueButtonVisible());
 	}
 
-	@Then("user verify an option to navigate back to the previous screen")
-	public void validateBackNavigationOption() {
-		assertTrue(registrationPage.isBackOptionAvailable());
-	}
 
 	@Then("user verify an option to select preferred language")
 	public void validateLanguageSelectionOption() {
@@ -115,7 +111,7 @@ public class SignUpStepDef {
 
 	@Then("user verify the help text in mobile number text field is displayed")
 	public void verifyHelpTextInMobileNumberTextBox() {
-		assertTrue(registrationPage.isHelpTextInMobileNumberTextBoxDisplayed());
+		assertTrue(registrationPage.isHelpTextInMobileNumberTextBoxDisplayed(""));
 	}
 
 	@When("user enters less than minimum digit in the mobile number text box")
@@ -204,10 +200,6 @@ public class SignUpStepDef {
 		assertTrue(registrationPage.isMobileFieldContainingOnlyDigits());
 	}
 
-	@When("user clicks on the navigate back button")
-	public void userClicksNavigateBackButton() {
-		registrationPage.clickOnNavigateBackButton();
-	}
 
 	@Then("verify user is redirected to the previous screen")
 	public void verifyUserIsRedirectedToPreviousScreen() {
@@ -216,7 +208,7 @@ public class SignUpStepDef {
 
 	@When("user clicks the browser back button")
 	public void userClicksTheBrowserBackButton() {
-		basePage.browserBackButton();
+		basePage.browserBackButton("click on back button");
 	}
 
 	@Then("user clicks on the Continue button")
