@@ -39,6 +39,7 @@ public class RegistrationPage extends BasePage {
 
 	@FindBy(id = "back-button")
 	WebElement backButton;
+  
 	@FindBy(id = "register-button")
 	WebElement registerButton;
 
@@ -234,7 +235,6 @@ public class RegistrationPage extends BasePage {
 	public boolean isContinueButtonVisible() {
 		return isElementVisible(continueButton,"check continue button is displayed");
 
-	}
 
 	public boolean isLanguageSelectionVisible() {
 		return isElementVisible(languageSelection, "Chcek if Lang selection is Visible");

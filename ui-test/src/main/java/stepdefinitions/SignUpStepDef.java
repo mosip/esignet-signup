@@ -92,7 +92,6 @@ public class SignUpStepDef {
 		assertTrue(registrationPage.isContinueButtonVisible());
 	}
 
-
 	@Then("user verify an option to select preferred language")
 	public void validateLanguageSelectionOption() {
 		assertTrue(registrationPage.isLanguageSelectionVisible());
@@ -199,7 +198,6 @@ public class SignUpStepDef {
 	public void fieldShouldContainOnlyDigits() {
 		assertTrue(registrationPage.isMobileFieldContainingOnlyDigits());
 	}
-
 
 	@Then("verify user is redirected to the previous screen")
 	public void verifyUserIsRedirectedToPreviousScreen() {
