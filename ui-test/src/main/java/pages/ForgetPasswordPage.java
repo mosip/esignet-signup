@@ -103,8 +103,6 @@ public class ForgetPasswordPage extends BasePage {
 	@FindBy(xpath = "//div[@class='pincode-input-container']")
 	WebElement otpInputField;
 
-	@FindBy(id = "back-button")
-	WebElement backButton;
 
 	@FindBy(xpath = "//div[@class='w-max rounded-md bg-[#FFF7E5] p-2 px-8 text-center text-sm font-semibold text-[#8B6105]']")
 	private WebElement resendAttemptsText;
@@ -175,45 +173,43 @@ public class ForgetPasswordPage extends BasePage {
 	@FindBy(id = "success-continue-button")
 	private WebElement loginButtonInSuccessScreen;
 
-	@FindBy(id = "login-header")
-	private WebElement loginScreen;
 
 	@FindBy(id = "reset-password-button")
 	WebElement resetPasswordButton;
 
 	public void enterMobileNumber(String number) {
 		enterMobileNumberField.clear();
-		enterText(enterMobileNumberField, number);
+		enterText(enterMobileNumberField, number,"Enterd Mobile Number");
 	}
 
 	public void enterPassword(String password) {
 		clearField(passwordField);
-		enterText(passwordField, password);
+		enterText(passwordField, password,"Entered Passoword");
 	}
 
 	public void enterConfirmPwd(String confirmPassword) {
 		clearField(confirmPasswordField);
-		enterText(confirmPasswordField, confirmPassword);
+		enterText(confirmPasswordField, confirmPassword, "Entered confirm password");
 	}
 
 	public void clickOnSignInWIthEsignet() {
-		clickOnElement(signInWithEsignet);
+		clickOnElement(signInWithEsignet, "clicked on SignInWithEsignet");
 	}
 
 	public boolean isLogoDisplayed() {
-		return isElementVisible(brandLogo);
+		return isElementVisible(brandLogo, "check logo is displayed");
 	}
 
 	public void clickOnLanguageSelectionDropdown() {
-		clickOnElement(langSelectionButton);
+		clickOnElement(langSelectionButton, "click on language dropdown");
 	}
 
 	public boolean isRedirectedToResetPasswordPage() {
-		return isElementVisible(userNameLabel);
+		return isElementVisible(userNameLabel, "check if redirected to Reset password page");
 	}
 
 	public boolean isphonePrefixDisplayed() {
-		return isElementVisible(phonePrefix);
+		return isElementVisible(phonePrefix, "check prefix of phone number is displayed");
 	}
 
 	public boolean isWaterMarkDisplayed() {
@@ -222,7 +218,8 @@ public class ForgetPasswordPage extends BasePage {
 	}
 
 	public boolean isCountryCodeNonEditable() {
-		return isElementVisible(countryCodeSpan) && !getElementTagName(countryCodeSpan).equalsIgnoreCase("input");
+		return isElementVisible(countryCodeSpan, "check country code is displayed")
+				&& !getElementTagName(countryCodeSpan).equalsIgnoreCase("input");
 	}
 
 	public boolean isPhoneErrorVisible() {
@@ -231,45 +228,46 @@ public class ForgetPasswordPage extends BasePage {
 
 	public void enterPhoneNumber(String number) {
 		phoneInput.clear();
-		enterText(phoneInput, number);
+		enterText(phoneInput, number, "Entered phone number");
 	}
 
 	public void triggerPhoneValidation() {
-		clickOnElement(countryCodeSpan);
+		clickOnElement(countryCodeSpan, "click outside the phone number field");
 	}
 
-	public boolean isForgetPasswordHeadningVisible() {
-		return isElementVisible(forgetPasswordHeading);
+	public boolean isForgetPasswordHeadingVisible() {
+		return isElementVisible(forgetPasswordHeading, "check forgot password heading displayed ");
 	}
 
-	public boolean isForgetPasswordSubHeadningVisible() {
-		return isElementVisible(forgetPasswordSubHeadning);
+	public boolean isForgetPasswordSubHeadingVisible() {
+		return isElementVisible(forgetPasswordSubHeadning, "check forgot password sub heading is displayed");
 	}
 
 	public boolean isUserNameLabelVisible() {
-		return isElementVisible(userNameLabel);
+		return isElementVisible(userNameLabel, "check username label");
 	}
 
 	public boolean isFullNameLabelVisible() {
-		return isElementVisible(fullNameLabel);
+		return isElementVisible(fullNameLabel, "check fullname label");
 	}
 
 	public boolean isContinueButtonVisible() {
-		return isElementVisible(continueButton);
+		return isElementVisible(continueButton, "check continue button displayed");
 	}
 
 	public boolean isLangSelectionButtonVisible() {
-		return isElementVisible(langSelectionButton);
+		return isElementVisible(langSelectionButton, "check language button displayed");
 	}
 
 	public boolean isFooterPoweredByVisible() {
-		return isElementVisible(poweredByText) && isElementVisible(footerLogo);
+		return isElementVisible(poweredByText, "check footer text displayed")
+				&& isElementVisible(footerLogo, "check footer logo displayed");
 	}
 
 	public boolean isMobileFieldHasNumericOnly() {
 		WebElement field = phoneInput;
 		{
-			String value = getElementValue(field);
+			String value = getElementValue(field, "get the value of the field");
 			if (value != null && !value.matches("\\d*")) {
 				return false;
 			}
@@ -278,15 +276,15 @@ public class ForgetPasswordPage extends BasePage {
 	}
 
 	public String getEnteredPhoneNumber() {
-		return getElementAttribute(phoneInput, "value");
+		return getElementAttribute(phoneInput, "get the entered value");
 	}
 
 	public boolean isContinueButtonDisabled() {
-		return !isButtonEnabled(continueButton);
+		return !isButtonEnabled(continueButton, "check continue button disabled");
 	}
 
 	public void enterFullName(String name) {
-		enterText(fullNameInput, name);
+		enterText(fullNameInput, name, "Entered fullname");
 	}
 
 	public void enterFullNameInEnglish(String name) {
@@ -301,7 +299,7 @@ public class ForgetPasswordPage extends BasePage {
 
 	public boolean isFullNameErrorVisible() {
 		try {
-			return isElementVisible(fullNameError);
+			return isElementVisible(fullNameError, "check error displayed");
 		} catch (NoSuchElementException e) {
 			return false;
 		}
@@ -312,24 +310,24 @@ public class ForgetPasswordPage extends BasePage {
 	}
 
 	public boolean isFullnameRestrictedToMaxChars() {
-		String value = getElementValue(fullNameInput);
+		String value = getElementValue(fullNameInput, "get the entered value");
 		return value != null && value.length() <= 30;
 	}
 
 	public boolean isContinueButtonEnabled() {
-		return isButtonEnabled(continueButton);
+		return isButtonEnabled(continueButton, "check continue button enabled");
 	}
 
 	public void clickOnContinueButton() {
-		clickOnElement(continueButton);
+		clickOnElement(continueButton, "click on continue button");
 	}
 
 	public boolean isResendOtpCountdownVisible() {
-		return isElementVisible(resendOtpCountdownText);
+		return isElementVisible(resendOtpCountdownText, "check resend otp countdown displayed");
 	}
 
 	public boolean isResendOtpButtonVisible() {
-		return isElementVisible(resendOtpButton);
+		return isElementVisible(resendOtpButton, "check resend otp button displayed");
 	}
 
 	public void waitUntilOtpExpire() {
@@ -339,7 +337,7 @@ public class ForgetPasswordPage extends BasePage {
 	}
 
 	public boolean isInputRestrictedToNineDigits() {
-		String value = getElementValue(phoneInput);
+		String value = getElementValue(phoneInput, "get the entered value");
 		return value != null && value.length() == 9;
 	}
 
@@ -352,66 +350,63 @@ public class ForgetPasswordPage extends BasePage {
 	}
 
 	public boolean isResendOtpButtonEnabled() {
-		return isButtonEnabled(resendOtpButton);
+		return isButtonEnabled(resendOtpButton, "check resend button enabled");
 	}
 
 	public void clickOnResendOtp() {
-		clickOnElement(resendOtpButton);
+		clickOnElement(resendOtpButton, "click on resend otp button");
 	}
 
 	public String getOtpResendAttemptsText(int expectedRemainingAttempts) {
 		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
 		wait.until(ExpectedConditions.textToBePresentInElement(resendAttemptsText,
 				String.valueOf(expectedRemainingAttempts)));
-		return getText(resendAttemptsText);
+		return getText(resendAttemptsText, "get the remaining atteptes text");
 	}
 
-	public void clickOnNavigateBackButton() {
-		clickOnElement(backButton);
-	}
 
 	public boolean isForgetPassowrdScreenVisible() {
-		return isElementVisible(forgetPasswordHeading);
+		return isElementVisible(forgetPasswordHeading, "check is on forgot password page");
 	}
 
 	public boolean isResetPasswordScreenVisible() {
-		return isElementVisible(resetPasswordHeader);
+		return isElementVisible(resetPasswordHeader, "check reset password screen displyed");
 	}
 
 	public boolean isResetPasswordHeaderVisible() {
-		return isElementVisible(resetPasswordHeader);
+		return isElementVisible(resetPasswordHeader, "check reset password screen header displyed");
 	}
 
 	public boolean isPasswordInstructionMessageVisible() {
-		return isElementVisible(passwordInstructionMessage);
+		return isElementVisible(passwordInstructionMessage, "check password instruction displyed");
 	}
 
 	public boolean isNewPasswordLabelVisible() {
-		return isElementVisible(newPasswordLabel);
+		return isElementVisible(newPasswordLabel, "check new password label");
 	}
 
 	public boolean isConfirmNewPasswordLabelVisible() {
-		return isElementVisible(confirmnNewPasswordLabel);
+		return isElementVisible(confirmnNewPasswordLabel, "check confirm password label");
 	}
 
 	public boolean isNewPasswordInputTextboxVisible() {
-		return isElementVisible(newPasswordInput);
+		return isElementVisible(newPasswordInput, "check text box for password field");
 	}
 
 	public boolean isConfirmNewPasswordInputTextboxVisible() {
-		return isElementVisible(confirmNewPasswordInput);
+		return isElementVisible(confirmNewPasswordInput, "check text box for confirm password field");
 	}
 
 	public boolean isNewPasswordInfoIconVisible() {
-		return isElementVisible(newPasswordInfoIcon);
+		return isElementVisible(newPasswordInfoIcon, "check info icon for password field is displayed");
 	}
 
 	public void clickOnNewPasswordInfoIcon() {
-		clickOnElement(newPasswordInfoIcon);
+		clickOnElement(newPasswordInfoIcon, "click on new password info incon");
 	}
 
 	public boolean isPasswordPolicyTooltipVisible() {
-		return isElementVisible(passwordPolicyTooltip);
+		return isElementVisible(passwordPolicyTooltip, "check password policy tooltip message displayed");
 	}
 
 	public String getNewPasswordFieldPlaceholder() {
@@ -423,24 +418,24 @@ public class ForgetPasswordPage extends BasePage {
 	}
 
 	public boolean isErrorHeaderInvalidVisible() {
-		return isElementVisible(invalidErrorHeader);
+		return isElementVisible(invalidErrorHeader, "check error is displayed");
 	}
 
 	public boolean isErrorMessageVisible() {
-		return isElementVisible(errorMessage);
+		return isElementVisible(errorMessage, "check error message is displayed");
 	}
 
 	public boolean isRetryButtonVisible() {
-		return isElementVisible(retryButton);
+		return isElementVisible(retryButton, "check retry button is displayed");
 	}
 
 	public void clickOnRetryButton() {
-		clickOnElement(retryButton);
+		clickOnElement(retryButton, "click on retry button");
 	}
 
 	public void enterNewPassword(String newPassword) {
 		clearField(newPasswordInput);
-		enterText(newPasswordInput, newPassword);
+		enterText(newPasswordInput, newPassword, "Entered new pasword");
 	}
 
 	public void enterShortNewPassword() {
@@ -451,7 +446,7 @@ public class ForgetPasswordPage extends BasePage {
 
 	public void enterConfirmPassword(String confirmPassword) {
 		clearField(confirmNewPasswordInput);
-		enterText(confirmNewPasswordInput, confirmPassword);
+		enterText(confirmNewPasswordInput, confirmPassword, "Entered confirm password");
 	}
 
 	public void enterShortConfirmPassword() {
@@ -461,24 +456,24 @@ public class ForgetPasswordPage extends BasePage {
 	}
 
 	public void clickOutsidePasswordField() {
-		clickOnElement(newPasswordToggleIcon);
+		clickOnElement(newPasswordToggleIcon, "click outside password field");
 	}
 
 	public boolean isPasswordErrorDisplayed() {
-		return isElementVisible(passwordErrorMessage);
+		return isElementVisible(passwordErrorMessage, "check password error is displayed");
 	}
 
 	public boolean isPasswordRestrictedToMaxChar() {
-		String value = getElementValue(newPasswordInput);
+		String value = getElementValue(newPasswordInput, "get the entered password value");
 		return value != null && value.length() <= 20;
 	}
 
 	public boolean isconfirmPasswordErrorDisplayed() {
-		return isElementVisible(confirmPasswordErrorMessage);
+		return isElementVisible(confirmPasswordErrorMessage, "check confirm password error is displayed");
 	}
 
 	public boolean isConfirmPasswordRestrictedToMaxChar() {
-		String value = getElementValue(confirmNewPasswordInput);
+		String value = getElementValue(confirmNewPasswordInput, "check confirm password is restricted");
 		return value != null && value.length() <= 20;
 	}
 
@@ -491,7 +486,7 @@ public class ForgetPasswordPage extends BasePage {
 	}
 
 	public void clickOnNewPasswordUnmaskIcon() {
-		clickOnElement(newPasswordToggleIcon);
+		clickOnElement(newPasswordToggleIcon, "click on password unmask icon");
 	}
 
 	public boolean isNewPasswordFieldUnmasked() {
@@ -499,7 +494,7 @@ public class ForgetPasswordPage extends BasePage {
 	}
 
 	public void clickOnConfirmPasswordUnmaskIcon() {
-		clickOnElement(confirmPasswordToggleIcon);
+		clickOnElement(confirmPasswordToggleIcon, "click on confirm password unmask icon");
 	}
 
 	public boolean isConfirmPasswordFieldUnmasked() {
@@ -507,11 +502,11 @@ public class ForgetPasswordPage extends BasePage {
 	}
 
 	public boolean isResetButtonEnabled() {
-		return isButtonEnabled(resetButton);
+		return isButtonEnabled(resetButton, "check resend button enabled");
 	}
 
 	public void clickOnResetButton() {
-		clickOnElement(resetButton);
+		clickOnElement(resetButton, "click on reset button");
 	}
 
 	public boolean isPasswordResetInProgressDisplayed() {
@@ -519,27 +514,25 @@ public class ForgetPasswordPage extends BasePage {
 	}
 
 	public boolean isPasswordResetConfirmationHeaderDisplayed() {
-		return isButtonEnabled(passwordResetConfirmationHeader);
+		return isButtonEnabled(passwordResetConfirmationHeader, "check password reset confirmation header displayed");
 	}
 
 	public boolean isPasswordResetConfirmationMessageDisplayed() {
-		return isElementVisible(passwordResetConfirmationMessage);
+		return isElementVisible(passwordResetConfirmationMessage,
+				"check password reset confirmation message displayed");
 	}
 
 	public boolean isLoginButtonDisplayed() {
-		return isButtonEnabled(loginButtonInSuccessScreen);
+		return isButtonEnabled(loginButtonInSuccessScreen, "check login button is displayed");
 	}
 
 	public void clickOnLoginButton() {
-		clickOnElement(loginButtonInSuccessScreen);
+		clickOnElement(loginButtonInSuccessScreen, "click on login button");
 	}
 
-	public boolean isLoginScreenDisplayed() {
-		return isButtonEnabled(loginScreen);
-	}
 
 	public void clickOnResetPasswordButton() {
-		clickOnElement(resetPasswordButton);
+		clickOnElement(resetPasswordButton, "click on reset password button");
 	}
 
 }

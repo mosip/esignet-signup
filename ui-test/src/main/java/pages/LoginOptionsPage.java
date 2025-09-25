@@ -1,7 +1,6 @@
 package pages;
 
 import base.BasePage;
-
 import java.time.Duration;
 
 import org.openqa.selenium.By;
@@ -153,15 +152,15 @@ public class LoginOptionsPage extends BasePage {
 	WebElement masterToggle;
 
 	public void clickOnSignInWIthEsignet() {
-		clickOnElement(signInWithEsignet);
+		clickOnElement(signInWithEsignet, "Click on Sign with esignet option ");
 	}
 
 	public boolean isLogoDisplayed() {
-		return isElementVisible(brandLogo);
+		return isElementVisible(brandLogo, "Check if the logo is displayed");
 	}
 
 	public boolean isSignUpWithUnifiedLoginOptionDisplayed() {
-		return isElementVisible(signUpWithUnifiedLogin);
+		return isElementVisible(signUpWithUnifiedLogin, "Check if Unified Login Option is displayed");
 	}
 
 	public String getCurrentLanguage() {
@@ -169,15 +168,15 @@ public class LoginOptionsPage extends BasePage {
 	}
 
 	public void clickOnLanguageSelection() {
-		clickOnElement(languageSelection);
+		clickOnElement(languageSelection, "click on language selection option");
 	}
 
 	public void clickOnSignUpWithUnifiedLogin() {
-		clickOnElement(signUpWithUnifiedLogin);
+		clickOnElement(signUpWithUnifiedLogin, "Click on SignUp With Unified Login Option");
 	}
 
 	public void enterMobileNumber(String number) {
-		enterText(mobileNumberInput, number);
+		enterText(mobileNumberInput, number, "Entered mobile number");
 	}
 
 	public void enterFullnameInEnglish(String name) {
@@ -189,20 +188,20 @@ public class LoginOptionsPage extends BasePage {
 	}
 
 	public void enterPassword(String password) {
-		enterText(passwordBox, password);
+		enterText(passwordBox, password, "Entered password");
 	}
 
 	public void enterConfirmPwd(String confirmPassword) {
-		enterText(confirmPasswordField, confirmPassword);
+		enterText(confirmPasswordField, confirmPassword, "Entered confirm password");
 	}
 
 	public void enterRegisteredMobileNumber(String number) {
 		registeredMobileNumberField.clear();
-		enterText(registeredMobileNumberField, number);
+		enterText(registeredMobileNumberField, number, "Entered registered mobile number");
 	}
 
 	public void enterRegisteredPassword(String Password) {
-		enterText(passwordField, Password);
+		enterText(passwordField, Password, "entered registered password");
 	}
 
 	public void clickOnLoginButton() {
@@ -218,7 +217,7 @@ public class LoginOptionsPage extends BasePage {
 	}
 
 	public void userTaboutOfPasswordField() {
-		clickOnElement(passwordEyeIcon);
+		clickOnElement(passwordEyeIcon, "click outside the passwood field");
 	}
 
 	public boolean isInvalidPasswordErrorDisplayed() {
@@ -230,11 +229,11 @@ public class LoginOptionsPage extends BasePage {
 	}
 
 	public boolean isLoginButtonEnabled() {
-		return isButtonEnabled(loginButton);
+		return isButtonEnabled(loginButton, "check login button is enabled");
 	}
 
 	public void clickOnErrorCloseIcon() {
-		clickOnElement(errorCloseIcon);
+		clickOnElement(errorCloseIcon, "click on error close icon");
 	}
 
 	public void verifyErrorDisappearsAfterClose() {
@@ -252,29 +251,29 @@ public class LoginOptionsPage extends BasePage {
 	}
 
 	public void clickOnProceedButtonInAttentionPage() {
-		clickOnElement(proceedButtonInAttentionPage);
+		clickOnElement(proceedButtonInAttentionPage, "click on proceed button");
 	}
 
 	public void clickOnProceedButton() {
-		clickOnElement(proceedButton);
+		clickOnElement(proceedButton, "click on proceed button");
 	}
 
 	public void clickOnMockIdentifyVerifier() {
-		clickOnElement(eKycServiceProvider);
+		clickOnElement(eKycServiceProvider, "select ekyc provider");
 	}
 
 	public void clickOnProceedButtonInServiceProviderPage() {
-		clickOnElement(proceedBtnInServiceProviderPage);
+		clickOnElement(proceedBtnInServiceProviderPage, "click on proceed button");
 	}
 
 	public void checkTermsAndConditions() {
 		if (!termsAndConditionCheckBox.isSelected()) {
-			clickOnElement(termsAndConditionCheckBox);
+			clickOnElement(termsAndConditionCheckBox, "accept the terms and conditions");
 		}
 	}
 
 	public void clickOnProceedButtonInTermsAndConditionPage() {
-		clickOnElement(proceedBtnInTandCPage);
+		clickOnElement(proceedBtnInTandCPage, "click on proceed button");
 	}
 
 	public void clickOnProceedButtonInCameraPreviewPage() {
@@ -326,7 +325,7 @@ public class LoginOptionsPage extends BasePage {
 	}
 
 	public void clickOnEssentialTooltipIcon() {
-		clickOnElement(essentialClaimiIcon);
+		clickOnElement(essentialClaimiIcon, "click on essential claim tooltip iocn");
 	}
 
 	public String getEssentialClaimsTooltipText() {
@@ -338,7 +337,7 @@ public class LoginOptionsPage extends BasePage {
 	}
 
 	public void clickOnCancelBtnInConsentScreen() {
-		clickOnElement(cancelButtonInConsentScreen);
+		clickOnElement(cancelButtonInConsentScreen, "click on cancel button");
 	}
 
 	public boolean isCancelWarningHeaderDisplayed() {
@@ -358,11 +357,11 @@ public class LoginOptionsPage extends BasePage {
 	}
 
 	public void clickOnStayBtnInConsentScreen() {
-		clickOnElement(stayButton);
+		clickOnElement(stayButton, "click on stay button");
 	}
 
 	public void clickOnDiscontinueButton() {
-		clickOnElement(discontinueButton);
+		clickOnElement(discontinueButton, "click on discontinue button");
 	}
 
 	public boolean isHealthPortalPageDisplayed() {
@@ -376,7 +375,7 @@ public class LoginOptionsPage extends BasePage {
 	}
 
 	public void clickOnAllowBtnInConsentScreen() {
-		clickOnElement(allowButtonInConsentScreen);
+		clickOnElement(allowButtonInConsentScreen, "click on allow button");
 	}
 
 	public boolean isWelcomePageDisplayed() {
@@ -384,12 +383,12 @@ public class LoginOptionsPage extends BasePage {
 	}
 
 	public boolean isInputRestrictedToNineDigits() {
-		String value = getElementValue(registeredMobileNumberField);
+		String value = getElementValue(registeredMobileNumberField, "get the entered value");
 		return value != null && value.length() == 9;
 	}
 
 	public boolean isMobileNumberFieldContainingOnlyDigits() {
-		String value = getElementValue(registeredMobileNumberField);
+		String value = getElementValue(registeredMobileNumberField, "get the entered value");
 		return value != null && value.matches("\\d+");
 	}
 
@@ -417,7 +416,7 @@ public class LoginOptionsPage extends BasePage {
 	}
 
 	public boolean isVoluntaryMasterTogglePresent() {
-		return isElementVisible(masterToggle);
+		return isElementVisible(masterToggle, "check if master toggle is present");
 	}
 
 	public String getWelcomeMessage() {
