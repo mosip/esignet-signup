@@ -27,15 +27,11 @@ import utils.EsignetConfigManager;
 import utils.ExtentReportManager;
 import utils.MultiLanguageUtil;
 
-@RunWith(Cucumber.class)
-@CucumberOptions(
-        features = {"classpath:featurefiles"},
-        glue = {"stepdefinitions", "base"},
-        monochrome = true,
-        plugin = {"pretty",
-        			"html:reports",
-        			"html:target/cucumber.html", "json:target/cucumber.json",
-        			"summary","com.aventstack.extentreports.cucumber.adapter.ExtentCucumberAdapter:"}
+//@RunWith(Cucumber.class)
+@CucumberOptions(features = { "classpath:featurefiles" }, glue = { "stepdefinitions",
+		"base" }, monochrome = true, plugin = { "pretty", "html:reports", "html:target/cucumber.html",
+				"json:target/cucumber.json", "utils.StepListener" // 👈 register our custom step listener
+}
 //      tags = "@smoke"
 )
 public class Runner extends AbstractTestNGCucumberTests {
@@ -167,7 +163,6 @@ public class Runner extends AbstractTestNGCucumberTests {
 					} catch (IOException ex) {
 						LOGGER.log(Level.SEVERE, "Error loading extent.properties", ex);
 					}
-					ExtentService.getInstance();
 
 					runner.run();
 				}

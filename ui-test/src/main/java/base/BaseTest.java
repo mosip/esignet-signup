@@ -5,27 +5,28 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
+import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 
+import org.json.JSONObject;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.aventstack.extentreports.ExtentReports;
-import com.aventstack.extentreports.Status;
-import com.aventstack.extentreports.cucumber.adapter.ExtentCucumberAdapter;
 
 import io.cucumber.java.After;
 import io.cucumber.java.AfterAll;
-import io.cucumber.java.AfterStep;
 import io.cucumber.java.Before;
-import io.cucumber.java.BeforeStep;
 import io.cucumber.java.Scenario;
 import io.cucumber.plugin.event.PickleStepTestStep;
 import io.cucumber.plugin.event.TestCase;
@@ -35,6 +36,7 @@ import io.mosip.testrig.apirig.utils.S3Adapter;
 import utils.BaseTestUtil;
 import utils.EsignetConfigManager;
 import utils.ExtentReportManager;
+
 
 public class BaseTest {
 
@@ -55,7 +57,7 @@ public class BaseTest {
 		LOGGER.info("Initializing WebDriver...");
 
 		totalCount++;
-		String browser = BaseTestUtil.getBrowserForScenario(scenario); // Start logging for the scenario
+		String browser = BaseTestUtil.getBrowserForScenario(scenario);
 		String lang = BaseTestUtil.getThreadLocalLanguage();
 		ExtentReportManager.createTest(scenario.getName() + " [" + browser + " | " + lang + "]");
 		ExtentReportManager
@@ -95,52 +97,86 @@ public class BaseTest {
 			throw new RuntimeException(e);
 		}
 	}
-
-	@BeforeStep
-	public void beforeStep(Scenario scenario) {
-		String stepName = getStepName(scenario);
-		ExtentCucumberAdapter.getCurrentStep().log(Status.INFO, "➡️ Step Started: " + stepName);
-	}
-
-	@AfterStep
-	public void afterStep(Scenario scenario) {
-		String stepName = getStepName(scenario);
-
-		if (scenario.isFailed()) {
-			ExtentCucumberAdapter.getCurrentStep().log(Status.FAIL, "❌ Step Failed: " + stepName);
-			captureScreenshot();
-		} else {
-			ExtentCucumberAdapter.getCurrentStep().log(Status.PASS, "✅ Step Passed: " + stepName);
-		}
-	}
-
+	
 	@After
 	public void afterScenario(Scenario scenario) {
-		if (scenario.isFailed()) {
-			failedCount++;
-			ExtentReportManager.getTest().fail("❌ Scenario Failed: " + scenario.getName());
-		} else {
-			passedCount++;
-			ExtentReportManager.getTest().pass("✅ Scenario Passed: " + scenario.getName());
-		}
+	    WebDriver driver = driverThreadLocal.get();
 
-		ExtentReportManager.flushReport();
-	}
+	    String publicUrl = null;
+	    String videoUrl = null;
 
-	@After
-	public void afterAll() {
-		WebDriver driver = driverThreadLocal.get();
-		if (driver != null) {
-			try {
-				LOGGER.info("Closing WebDriver session...");
-				driver.quit();
-			} catch (Exception e) {
-				LOGGER.warn("Error while closing WebDriver: " + e.getMessage());
-			} finally {
-				driverThreadLocal.remove();
-				jseThreadLocal.remove();
-			}
-		}
+	    // Fetch BrowserStack URLs if remote driver
+	    if (driver instanceof RemoteWebDriver) {
+	        RemoteWebDriver remoteDriver = (RemoteWebDriver) driver;
+	        String sessionId = remoteDriver.getSessionId().toString();
+
+	        try {
+	            String jsonUrl = "https://api.browserstack.com/automate/sessions/" + sessionId + ".json";
+	            String username = EsignetConfigManager.getproperty("browserstack_username");
+	            String accessKey = EsignetConfigManager.getproperty("browserstack_access_key");
+	            String auth = username + ":" + accessKey;
+	            String basicAuth = "Basic " + Base64.getEncoder().encodeToString(auth.getBytes());
+
+	            HttpURLConnection conn = (HttpURLConnection) new URL(jsonUrl).openConnection();
+	            conn.setRequestMethod("GET");
+	            conn.setRequestProperty("Authorization", basicAuth);
+
+	            if (conn.getResponseCode() == 200) {
+	                StringBuilder response = new StringBuilder();
+	                try (BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
+	                    String inputLine;
+	                    while ((inputLine = in.readLine()) != null) response.append(inputLine);
+	                }
+
+	                JSONObject jsonResponse = new JSONObject(response.toString());
+	                JSONObject session = jsonResponse.getJSONObject("automation_session");
+
+	                publicUrl = session.getString("public_url");
+	                videoUrl = session.getString("video_url");
+
+	                // Attach links to Extent report (only once)
+	                if (publicUrl != null) {
+	                    ExtentReportManager.getTest().info("<a href='" + publicUrl + "' target='_blank'>View on BrowserStack</a>");
+	                }
+	                if (videoUrl != null) {
+	                    ExtentReportManager.getTest().info("<a href='" + videoUrl + "' target='_blank'>Click here to view only Video</a>");
+	                }
+
+	            } else {
+	                ExtentReportManager.getTest().warning("Failed to fetch BrowserStack session JSON, response code: " + conn.getResponseCode());
+	            }
+
+	        } catch (Exception e) {
+	            ExtentReportManager.getTest().warning("Failed to fetch BrowserStack build/session info:" + e.getMessage());
+	        }
+	    }
+
+	    try {
+	        if (scenario.isFailed()) {
+	            failedCount++;
+	            ExtentReportManager.incrementFailed();
+	            ExtentReportManager.getTest().fail("❌ Scenario Failed: " + scenario.getName());
+	        } else {
+	            passedCount++;
+	            ExtentReportManager.incrementPassed();
+	            ExtentReportManager.getTest().pass("✅ Scenario Passed: " + scenario.getName());
+	        }
+
+	        ExtentReportManager.flushReport();
+	    } finally {
+	        // Close driver and cleanup ThreadLocal
+	        if (driver != null) {
+	            try {
+	                LOGGER.info("Closing WebDriver session...");
+	                driver.quit();
+	            } catch (Exception e) {
+	                LOGGER.warn("Error while closing WebDriver: " + e.getMessage());
+	            } finally {
+	                driverThreadLocal.remove();
+	                jseThreadLocal.remove();
+	            }
+	        }
+	    }
 	}
 
 	@AfterAll
@@ -197,8 +233,8 @@ public class BaseTest {
 		WebDriver driver = driverThreadLocal.get();
 		if (driver != null) {
 			byte[] screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
-			ExtentCucumberAdapter.getCurrentStep().addScreenCaptureFromBase64String(
-					java.util.Base64.getEncoder().encodeToString(screenshot), "Failure Screenshot");
+	        ExtentReportManager.getTest().addScreenCaptureFromBase64String(
+	            Base64.getEncoder().encodeToString(screenshot), "Failure Screenshot");
 		}
 	}
 
@@ -281,8 +317,8 @@ public class BaseTest {
 	}
 
 	public static String getEnvName() {
-		String baseUrl = EsignetConfigManager.getproperty("baseurl"); // e.g., https://healthservices.es-qa.mosip.net/
-		String domainPart = baseUrl.replace("https://", "").replace("http://", ""); // remove protocol
+		String baseUrl = EsignetConfigManager.getproperty("baseurl"); 
+		String domainPart = baseUrl.replace("https://", "").replace("http://", ""); 
 		domainPart = domainPart.split("/")[0]; // remove path if any
 		String[] parts = domainPart.split("\\.");
 
@@ -295,5 +331,5 @@ public class BaseTest {
 		}
 
 		return envName;
-	}
+	}	
 }

@@ -140,12 +140,12 @@ public class ForgetPasswordStepDefinition {
 
 	@Then("user verify forget password heading")
 	public void userVerifyForgetPasswordHeading() {
-		Assert.assertTrue(forgetPasswordPage.isForgetPasswordHeadningVisible(), "Forget password heading visible");
+		Assert.assertTrue(forgetPasswordPage.isForgetPasswordHeadingVisible(), "Forget password heading visible");
 	}
 
 	@Then("user verify subheading on forget password")
 	public void userVerifySubheadingOnForgetPassword() {
-		Assert.assertTrue(forgetPasswordPage.isForgetPasswordSubHeadningVisible(),
+		Assert.assertTrue(forgetPasswordPage.isForgetPasswordSubHeadingVisible(),
 				"Subheading on foget password visible");
 	}
 
@@ -208,7 +208,7 @@ public class ForgetPasswordStepDefinition {
 
 	@Then("mobile number input should remain empty")
 	public void verifyMobileNumberInputIsEmpty() {
-		Assert.assertEquals(forgetPasswordPage.getEnteredPhoneNumber(), "", "Field should remain empty ");
+		Assert.assertEquals(forgetPasswordPage.getEnteredPhoneNumber(),"Field should remain empty ");
 	}
 
 	@Then("user verify continue button is not enabled")
@@ -566,10 +566,6 @@ public class ForgetPasswordStepDefinition {
 		forgetPasswordPage.clickOnLoginButton();
 	}
 
-	@Then("verify user is redirected to login screen of relying party")
-	public void userNavigatesToLoginScreen() {
-		assertTrue(forgetPasswordPage.isLoginScreenDisplayed());
-	}
 
 	@Then("verify password changed successful notification is displayed")
 	public void verifySuccessNotificationInSelectedLanguage() {

@@ -119,6 +119,10 @@ public class LoginOptionsStepDefinition {
 	public void userClicksOnLoginButton() {
 		registrationPage.clickOnLoginButtonInSuccessScreen();
 	}
+	@When("user clicks on the navigate back button")
+	public void userClicksNavigateBackButton() {
+		registrationPage.clickOnNavigateBackButton();
+	}
 
 	@And("user clicks on login with password button")
 	public void userClicksOnLoginWithPasswordButton() {

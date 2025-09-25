@@ -42,7 +42,7 @@ public class SmtpPage extends BasePage {
 
 	private boolean isNotificationVisibleAndHasText() {
 		for (WebElement notification : notifications) {
-			if (isElementVisible(notification) && !notification.getText().trim().isEmpty()) {
+			if (isElementVisible(notification,"check the notification") && !notification.getText().trim().isEmpty()) {
 				return true;
 			}
 		}
