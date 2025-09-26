@@ -105,8 +105,13 @@ public class BaseTest {
 	    String publicUrl = null;
 	    String videoUrl = null;
 
-	    // Fetch BrowserStack URLs if remote driver
-	    if (driver instanceof RemoteWebDriver) {
+	 // Fetch BrowserStack URLs only if running on BrowserStack
+	    boolean runOnBrowserStack = Boolean.parseBoolean(EsignetConfigManager.getproperty("runOnBrowserStack"));
+
+	    if (runOnBrowserStack && driver instanceof RemoteWebDriver) {
+
+//	    // Fetch BrowserStack URLs if remote driver
+//	    if (driver instanceof RemoteWebDriver) {
 	        RemoteWebDriver remoteDriver = (RemoteWebDriver) driver;
 	        String sessionId = remoteDriver.getSessionId().toString();
 
