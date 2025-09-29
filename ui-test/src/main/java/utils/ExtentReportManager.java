@@ -169,7 +169,7 @@ public class ExtentReportManager {
 		}
 	}
 
-	public static synchronized void flushReport() {
+	public static void flushReport() {
 		if (extent != null) {
 			extent.flush();
 		}

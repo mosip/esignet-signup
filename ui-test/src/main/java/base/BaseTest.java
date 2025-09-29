@@ -36,302 +36,301 @@ import io.mosip.testrig.apirig.utils.S3Adapter;
 import utils.BaseTestUtil;
 import utils.EsignetConfigManager;
 import utils.ExtentReportManager;
+import utils.ScreenshotUtil;
 
 
 public class BaseTest {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(BaseTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(BaseTest.class);
 
-	private static final ThreadLocal<WebDriver> driverThreadLocal = new ThreadLocal<>();
-	private static final ThreadLocal<JavascriptExecutor> jseThreadLocal = new ThreadLocal<>();
+    private static final ThreadLocal<WebDriver> driverThreadLocal = new ThreadLocal<>();
+    private static final ThreadLocal<JavascriptExecutor> jseThreadLocal = new ThreadLocal<>();
 
-	private final String url = EsignetConfigManager.getproperty("baseurl");
+    private final String url = EsignetConfigManager.getproperty("baseurl");
 
-	private static int passedCount = 0;
-	private static int failedCount = 0;
-	private static int totalCount = 0;
-	private static ExtentReports extent;
+    private static int passedCount = 0;
+    private static int failedCount = 0;
+    private static int totalCount = 0;
+    private static ExtentReports extent;
 
-	@Before
-	public void beforeAll(Scenario scenario) {
-		LOGGER.info("Initializing WebDriver...");
+    @Before
+    public void beforeAll(Scenario scenario) {
+        LOGGER.info("Initializing WebDriver...");
 
-		totalCount++;
-		String browser = BaseTestUtil.getBrowserForScenario(scenario);
-		String lang = BaseTestUtil.getThreadLocalLanguage();
-		ExtentReportManager.createTest(scenario.getName() + " [" + browser + " | " + lang + "]");
-		ExtentReportManager
-				.logStep("Scenario Started: " + scenario.getName() + " | Browser: " + browser + " | Language: " + lang);
+        totalCount++;
+        String browser = BaseTestUtil.getBrowserForScenario(scenario);
+        String lang = BaseTestUtil.getThreadLocalLanguage();
+        ExtentReportManager.createTest(scenario.getName() + " [" + browser + " | " + lang + "]");
+        ExtentReportManager
+                .logStep("Scenario Started: " + scenario.getName() + " | Browser: " + browser + " | Language: " + lang);
 
-		try {
-			String scenarioBrowser = BaseTestUtil.getBrowserForScenario(scenario);
-			boolean browserTagPresent = BaseTestUtil.isBrowserTagPresent(scenario);
-			boolean runOnBrowserStack = Boolean.parseBoolean(EsignetConfigManager.getproperty("runOnBrowserStack"));
-			boolean runMultipleBrowsers = Boolean.parseBoolean(EsignetConfigManager.getproperty("runMultipleBrowsers"));
+        try {
+            String scenarioBrowser = BaseTestUtil.getBrowserForScenario(scenario);
+            boolean browserTagPresent = BaseTestUtil.isBrowserTagPresent(scenario);
+            boolean runOnBrowserStack = Boolean.parseBoolean(EsignetConfigManager.getproperty("runOnBrowserStack"));
+            boolean runMultipleBrowsers = Boolean.parseBoolean(EsignetConfigManager.getproperty("runMultipleBrowsers"));
 
-			WebDriver driver;
+            WebDriver driver;
 
-			if (runOnBrowserStack) {
-				driver = setupBrowserStackDriver(scenario, runMultipleBrowsers, browserTagPresent, scenarioBrowser);
-			} else {
-				driver = setupLocalDriver(scenario, runMultipleBrowsers, browserTagPresent, scenarioBrowser);
-			}
+            if (runOnBrowserStack) {
+                driver = setupBrowserStackDriver(scenario, runMultipleBrowsers, browserTagPresent, scenarioBrowser);
+            } else {
+                driver = setupLocalDriver(scenario, runMultipleBrowsers, browserTagPresent, scenarioBrowser);
+            }
 
-			driverThreadLocal.set(driver);
-			jseThreadLocal.set((JavascriptExecutor) driver);
+            driverThreadLocal.set(driver);
+            jseThreadLocal.set((JavascriptExecutor) driver);
 
-			// Browser settings
-			driver.manage().window().maximize();
-			driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10)); // Configurable if needed
-			driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(30));
+            // Browser settings
+            driver.manage().window().maximize();
+            driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10)); // Configurable if needed
+            driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(30));
 
-			driver.get(url);
-			driver.manage().deleteAllCookies();
+            driver.get(url);
+            driver.manage().deleteAllCookies();
 
-			LOGGER.info("Navigated to URL: " + url);
+            LOGGER.info("Navigated to URL: " + url);
 
-		} catch (Exception e) {
-			LOGGER.error("Failed to initialize WebDriver: " + e.getMessage());
-			ExtentReportManager.getTest().fail("❌ WebDriver setup failed: " + e.getMessage());
-			ExtentReportManager.flushReport(); // Flush immediately to ensure it's written
-			throw new RuntimeException(e);
-		}
-	}
-	
-	@After
-	public void afterScenario(Scenario scenario) {
-	    WebDriver driver = driverThreadLocal.get();
+        } catch (Exception e) {
+            LOGGER.error("Failed to initialize WebDriver: " + e.getMessage());
+            ExtentReportManager.getTest().fail("❌ WebDriver setup failed: " + e.getMessage());
+            ExtentReportManager.flushReport(); // Flush immediately to ensure it's written
+            throw new RuntimeException(e);
+        }
+    }
 
-	    String publicUrl = null;
-	    String videoUrl = null;
+    @After
+    public void afterScenario(Scenario scenario) {
+        WebDriver driver = driverThreadLocal.get();
 
-	 // Fetch BrowserStack URLs only if running on BrowserStack
-	    boolean runOnBrowserStack = Boolean.parseBoolean(EsignetConfigManager.getproperty("runOnBrowserStack"));
+        String publicUrl = null;
+        String videoUrl = null;
 
-	    if (runOnBrowserStack && driver instanceof RemoteWebDriver) {
-	        RemoteWebDriver remoteDriver = (RemoteWebDriver) driver;
-	        String sessionId = remoteDriver.getSessionId().toString();
+        // Fetch BrowserStack URLs only if running on BrowserStack
+        boolean runOnBrowserStack = Boolean.parseBoolean(EsignetConfigManager.getproperty("runOnBrowserStack"));
 
-	        try {
-	            String jsonUrl = "https://api.browserstack.com/automate/sessions/" + sessionId + ".json";
-	            String username = EsignetConfigManager.getproperty("browserstack_username");
-	            String accessKey = EsignetConfigManager.getproperty("browserstack_access_key");
-	            String auth = username + ":" + accessKey;
-	            String basicAuth = "Basic " + Base64.getEncoder().encodeToString(auth.getBytes());
+        if (runOnBrowserStack && driver instanceof RemoteWebDriver) {
+            RemoteWebDriver remoteDriver = (RemoteWebDriver) driver;
+            String sessionId = remoteDriver.getSessionId().toString();
 
-	            HttpURLConnection conn = (HttpURLConnection) new URL(jsonUrl).openConnection();
-	            conn.setRequestMethod("GET");
-	            conn.setRequestProperty("Authorization", basicAuth);
+            try {
+                String jsonUrl = "https://api.browserstack.com/automate/sessions/" + sessionId + ".json";
+                String username = EsignetConfigManager.getproperty("browserstack_username");
+                String accessKey = EsignetConfigManager.getproperty("browserstack_access_key");
+                String auth = username + ":" + accessKey;
+                String basicAuth = "Basic " + Base64.getEncoder().encodeToString(auth.getBytes());
 
-	            if (conn.getResponseCode() == 200) {
-	                StringBuilder response = new StringBuilder();
-	                try (BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
-	                    String inputLine;
-	                    while ((inputLine = in.readLine()) != null) response.append(inputLine);
-	                }
+                HttpURLConnection conn = (HttpURLConnection) new URL(jsonUrl).openConnection();
+                conn.setRequestMethod("GET");
+                conn.setRequestProperty("Authorization", basicAuth);
 
-	                JSONObject jsonResponse = new JSONObject(response.toString());
-	                JSONObject session = jsonResponse.getJSONObject("automation_session");
+                if (conn.getResponseCode() == 200) {
+                    StringBuilder response = new StringBuilder();
+                    try (BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
+                        String inputLine;
+                        while ((inputLine = in.readLine()) != null) response.append(inputLine);
+                    }
 
-	                publicUrl = session.getString("public_url");
-	                videoUrl = session.getString("video_url");
+                    JSONObject jsonResponse = new JSONObject(response.toString());
+                    JSONObject session = jsonResponse.getJSONObject("automation_session");
 
-	                // Attach links to Extent report (only once)
-	                if (publicUrl != null) {
-	                    ExtentReportManager.getTest().info("<a href='" + publicUrl + "' target='_blank'>View on BrowserStack</a>");
-	                }
-	                if (videoUrl != null) {
-	                    ExtentReportManager.getTest().info("<a href='" + videoUrl + "' target='_blank'>Click here to view only Video</a>");
-	                }
+                    publicUrl = session.getString("public_url");
+                    videoUrl = session.getString("video_url");
 
-	            } else {
-	                ExtentReportManager.getTest().warning("Failed to fetch BrowserStack session JSON, response code: " + conn.getResponseCode());
-	            }
+                    // Attach links to Extent report (only once)
+                    if (publicUrl != null) {
+                        ExtentReportManager.getTest().info("<a href='" + publicUrl + "' target='_blank'>View on BrowserStack</a>");
+                    }
+                    if (videoUrl != null) {
+                        ExtentReportManager.getTest().info("<a href='" + videoUrl + "' target='_blank'>Click here to view only Video</a>");
+                    }
 
-	        } catch (Exception e) {
-	            ExtentReportManager.getTest().warning("Failed to fetch BrowserStack build/session info:" + e.getMessage());
-	        }
-	    }
+                } else {
+                    ExtentReportManager.getTest().warning("Failed to fetch BrowserStack session JSON, response code: " + conn.getResponseCode());
+                }
 
-	    try {
-	        if (scenario.isFailed()) {
-	            failedCount++;
-	            ExtentReportManager.incrementFailed();
-	            ExtentReportManager.getTest().fail("❌ Scenario Failed: " + scenario.getName());
-	        } else {
-	            passedCount++;
-	            ExtentReportManager.incrementPassed();
-	            ExtentReportManager.getTest().pass("✅ Scenario Passed: " + scenario.getName());
-	        }
+            } catch (Exception e) {
+                ExtentReportManager.getTest().warning("Failed to fetch BrowserStack build/session info:" + e.getMessage());
+            }
+        }
 
-	        ExtentReportManager.flushReport();
-	    } finally {
-	        // Close driver and cleanup ThreadLocal
-	        if (driver != null) {
-	            try {
-	                LOGGER.info("Closing WebDriver session...");
-	                driver.quit();
-	            } catch (Exception e) {
-	                LOGGER.warn("Error while closing WebDriver: " + e.getMessage());
-	            } finally {
-	                driverThreadLocal.remove();
-	                jseThreadLocal.remove();
-	            }
-	        }
-	    }
-	}
+        try {
+            if (scenario.isFailed()) {
+                failedCount++;
+                ExtentReportManager.incrementFailed();
 
-	@AfterAll
-	public static void afterAllReportUpdation() {
-		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-			LOGGER.info("Shutdown hook triggered. Uploading report...");
-			if (extent != null) {
-				extent.flush();
-			}
-			pushReportsToS3();
-		}));
+                // Use scenario name + failed step (fallback to scenario name if step unknown)
+                String failedStepName = scenario.getName().replaceAll("[^a-zA-Z0-9]", "_");
 
-	}
+                // Attach single screenshot
+                ScreenshotUtil.attachScreenshot(driver, failedStepName);
 
-	public static WebDriver getDriver() {
-		return driverThreadLocal.get();
-	}
+                ExtentReportManager.getTest().fail("❌ Scenario Failed: " + scenario.getName());
+            } else {
+                passedCount++;
+                ExtentReportManager.incrementPassed();
+                ExtentReportManager.getTest().pass("✅ Scenario Passed: " + scenario.getName());
+            }
 
-	public static JavascriptExecutor getJse() {
-		return jseThreadLocal.get();
-	}
+            ExtentReportManager.flushReport();
+        } finally {
+            // Close driver and cleanup ThreadLocal
+            if (driver != null) {
+                try {
+                    LOGGER.info("Closing WebDriver session...");
+                    driver.quit();
+                } catch (Exception e) {
+                    LOGGER.warn("Error while closing WebDriver: " + e.getMessage());
+                } finally {
+                    driverThreadLocal.remove();
+                    jseThreadLocal.remove();
+                }
+            }
+        }
+    }
 
-	private WebDriver setupBrowserStackDriver(Scenario scenario, boolean isMulti, boolean tagPresent, String browser)
-			throws Exception {
-		LOGGER.info("Running scenario on BrowserStack browser: " + browser);
-		return BaseTestUtil.getWebDriverInstance(browser);
-	}
+    @AfterAll
+    public static void afterAllReportUpdation() {
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            LOGGER.info("Shutdown hook triggered. Uploading report...");
+            if (extent != null) {
+                extent.flush();
+            }
+            pushReportsToS3();
+        }));
 
-	private WebDriver setupLocalDriver(Scenario scenario, boolean isMulti, boolean tagPresent, String browser)
-			throws IOException {
-		LOGGER.info("Running scenario on local browser" + (isMulti ? " (multi)" : "") + ": " + browser);
-		return BaseTestUtil.getLocalWebDriverInstance(browser);
-	}
+    }
 
-	private String getStepName(Scenario scenario) {
-		try {
-			Field testCaseField = scenario.getClass().getDeclaredField("testCase");
-			testCaseField.setAccessible(true);
-			TestCase testCase = (TestCase) testCaseField.get(scenario);
-			List<TestStep> testSteps = testCase.getTestSteps();
+    public static WebDriver getDriver() {
+        return driverThreadLocal.get();
+    }
 
-			for (TestStep step : testSteps) {
-				if (step instanceof PickleStepTestStep) {
-					return ((PickleStepTestStep) step).getStep().getText();
-				}
-			}
-		} catch (Exception e) {
-			return "Unknown Step";
-		}
-		return "Unknown Step";
-	}
+    public static JavascriptExecutor getJse() {
+        return jseThreadLocal.get();
+    }
 
-	private void captureScreenshot() {
-		WebDriver driver = driverThreadLocal.get();
-		if (driver != null) {
-			byte[] screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
-	        ExtentReportManager.getTest().addScreenCaptureFromBase64String(
-	            Base64.getEncoder().encodeToString(screenshot), "Failure Screenshot");
-		}
-	}
+    private WebDriver setupBrowserStackDriver(Scenario scenario, boolean isMulti, boolean tagPresent, String browser)
+            throws Exception {
+        LOGGER.info("Running scenario on BrowserStack browser: " + browser);
+        return BaseTestUtil.getWebDriverInstance(browser);
+    }
 
-	public static void pushReportsToS3() {
-		executeLsCommand(System.getProperty("user.dir") + "/test-output/ExtentReport.html");
-		executeLsCommand(System.getProperty("user.dir") + "/screenshots/");
+    private WebDriver setupLocalDriver(Scenario scenario, boolean isMulti, boolean tagPresent, String browser)
+            throws IOException {
+        LOGGER.info("Running scenario on local browser" + (isMulti ? " (multi)" : "") + ": " + browser);
+        return BaseTestUtil.getLocalWebDriverInstance(browser);
+    }
 
-		try {
-			Thread.sleep(10000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+    private String getStepName(Scenario scenario) {
+        try {
+            Field testCaseField = scenario.getClass().getDeclaredField("testCase");
+            testCaseField.setAccessible(true);
+            TestCase testCase = (TestCase) testCaseField.get(scenario);
+            List<TestStep> testSteps = testCase.getTestSteps();
 
-		executeLsCommand(System.getProperty("user.dir") + "/test-output/");
-		String timestamp = new SimpleDateFormat("yyyy-MM-dd-HH-mm").format(new Date());
-		String name = getEnvName() + "-" + timestamp + "-T-" + totalCount + "-P-" + passedCount + "-F-" + failedCount
-				+ ".html";
-		String newFileName = "EsignetUi-" + name;
-		File originalReportFile = new File(System.getProperty("user.dir") + "/test-output/ExtentReport.html");
-		File newReportFile = new File(System.getProperty("user.dir") + "/test-output/" + newFileName);
+            for (TestStep step : testSteps) {
+                if (step instanceof PickleStepTestStep) {
+                    return ((PickleStepTestStep) step).getStep().getText();
+                }
+            }
+        } catch (Exception e) {
+            return "Unknown Step";
+        }
+        return "Unknown Step";
+    }
 
-		// Rename the file
-		if (originalReportFile.renameTo(newReportFile)) {
-			LOGGER.info("Report renamed to: " + newFileName);
-		} else {
-			LOGGER.error("Failed to rename the report file.");
-		}
+    public static void pushReportsToS3() {
+        executeLsCommand(System.getProperty("user.dir") + "/test-output/ExtentReport.html");
+        executeLsCommand(System.getProperty("user.dir") + "/screenshots/");
 
-		executeLsCommand(newReportFile.getAbsolutePath());
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
-		if (EsignetConfigManager.getPushReportsToS3().equalsIgnoreCase("yes")) {
-			S3Adapter s3Adapter = new S3Adapter();
-			boolean isStoreSuccess = false;
-			try {
-				isStoreSuccess = s3Adapter.putObject(EsignetConfigManager.getS3Account(), "", null, null, newFileName,
-						newReportFile);
-				LOGGER.info("isStoreSuccess:: " + isStoreSuccess);
-			} catch (Exception e) {
-				LOGGER.error("Error occurred while pushing the object: " + e.getLocalizedMessage());
-				LOGGER.error(e.getMessage());
-			}
-		}
-	}
+        executeLsCommand(System.getProperty("user.dir") + "/test-output/");
+        String timestamp = new SimpleDateFormat("yyyy-MM-dd-HH-mm").format(new Date());
+        String name = getEnvName() + "-" + timestamp + "-T-" + totalCount + "-P-" + passedCount + "-F-" + failedCount
+                + ".html";
+        String newFileName = "EsignetUi-" + name;
+        File originalReportFile = new File(System.getProperty("user.dir") + "/test-output/ExtentReport.html");
+        File newReportFile = new File(System.getProperty("user.dir") + "/test-output/" + newFileName);
 
-	private static void executeLsCommand(String directoryPath) {
-		try {
-			String os = System.getProperty("os.name").toLowerCase();
-			Process process;
+        // Rename the file
+        if (originalReportFile.renameTo(newReportFile)) {
+            LOGGER.info("Report renamed to: " + newFileName);
+        } else {
+            LOGGER.error("Failed to rename the report file.");
+        }
 
-			if (os.contains("win")) {
-				// Windows command (show all files including hidden)
-				String windowsDirectoryPath = directoryPath.replace("/", File.separator);
-				process = Runtime.getRuntime().exec(new String[] { "cmd.exe", "/c", "dir /a " + windowsDirectoryPath });
-			} else {
-				// Unix-like command (show all files including hidden)
-				process = Runtime.getRuntime().exec(new String[] { "/bin/sh", "-c", "ls -al " + directoryPath });
-			}
+        executeLsCommand(newReportFile.getAbsolutePath());
 
-			BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-			String line;
-			LOGGER.info("--- Directory listing for " + directoryPath + " ---");
-			while ((line = reader.readLine()) != null) {
-				LOGGER.info(line);
-			}
+        if (EsignetConfigManager.getPushReportsToS3().equalsIgnoreCase("yes")) {
+            S3Adapter s3Adapter = new S3Adapter();
+            boolean isStoreSuccess = false;
+            try {
+                isStoreSuccess = s3Adapter.putObject(EsignetConfigManager.getS3Account(), "", null, null, newFileName,
+                        newReportFile);
+                LOGGER.info("isStoreSuccess:: " + isStoreSuccess);
+            } catch (Exception e) {
+                LOGGER.error("Error occurred while pushing the object: " + e.getLocalizedMessage());
+                LOGGER.error(e.getMessage());
+            }
+        }
+    }
 
-			int exitCode = process.waitFor();
-			if (exitCode != 0) {
-				BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-				String errorLine;
-				System.err.println("--- Directory listing error ---");
-				while ((errorLine = errorReader.readLine()) != null) {
-					System.err.println(errorLine);
-				}
-			}
-			LOGGER.info("--- End directory listing ---");
+    private static void executeLsCommand(String directoryPath) {
+        try {
+            String os = System.getProperty("os.name").toLowerCase();
+            Process process;
 
-		} catch (IOException | InterruptedException e) {
-			System.err.println("Error executing directory listing command: " + e.getMessage());
-		}
-	}
+            if (os.contains("win")) {
+                // Windows command (show all files including hidden)
+                String windowsDirectoryPath = directoryPath.replace("/", File.separator);
+                process = Runtime.getRuntime().exec(new String[] { "cmd.exe", "/c", "dir /a " + windowsDirectoryPath });
+            } else {
+                // Unix-like command (show all files including hidden)
+                process = Runtime.getRuntime().exec(new String[] { "/bin/sh", "-c", "ls -al " + directoryPath });
+            }
 
-	public static String getEnvName() {
-		String baseUrl = EsignetConfigManager.getproperty("baseurl"); 
-		String domainPart = baseUrl.replace("https://", "").replace("http://", ""); 
-		domainPart = domainPart.split("/")[0]; // remove path if any
-		String[] parts = domainPart.split("\\.");
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String line;
+            LOGGER.info("--- Directory listing for " + directoryPath + " ---");
+            while ((line = reader.readLine()) != null) {
+                LOGGER.info(line);
+            }
 
-		LOGGER.info("--- ApplnURI ---" + BaseTestCase.ApplnURI);
-		BaseTestCase.ApplnURI = System.getProperty("env.endpoint");
+            int exitCode = process.waitFor();
+            if (exitCode != 0) {
+                BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+                String errorLine;
+                System.err.println("--- Directory listing error ---");
+                while ((errorLine = errorReader.readLine()) != null) {
+                    System.err.println(errorLine);
+                }
+            }
+            LOGGER.info("--- End directory listing ---");
 
-		String envName = "";
-		if (parts.length >= 3) {
-			envName = parts[1];
-		}
+        } catch (IOException | InterruptedException e) {
+            System.err.println("Error executing directory listing command: " + e.getMessage());
+        }
+    }
 
-		return envName;
-	}	
+    public static String getEnvName() {
+        String baseUrl = EsignetConfigManager.getproperty("baseurl");
+        String domainPart = baseUrl.replace("https://", "").replace("http://", "");
+        domainPart = domainPart.split("/")[0]; // remove path if any
+        String[] parts = domainPart.split("\\.");
+
+        LOGGER.info("--- ApplnURI ---" + BaseTestCase.ApplnURI);
+        BaseTestCase.ApplnURI = System.getProperty("env.endpoint");
+
+        String envName = "";
+        if (parts.length >= 3) {
+            envName = parts[1];
+        }
+
+        return envName;
+    }
 }
