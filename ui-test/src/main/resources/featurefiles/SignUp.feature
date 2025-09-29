@@ -108,13 +108,13 @@ Scenario Outline: OTP input acceptance and Verify button state
   And user clicks on the Continue button
   Then verify user is navigated to the OTP screen
   
-  #Then user waits for OTP time to expire and resend button gets enabled
-  #And user validates 2 out of 3 attempts message displayed
-  #And user waits for OTP time to expire and resend button gets enabled
-  #And user validates 1 out of 3 attempts message displayed
-  #And user waits for OTP time to expire and resend button gets enabled
-  #And user validates 0 out of 3 attempts message displayed
-  #Then validate the verify button is disabled
+  Then user waits for OTP time to expire and resend button gets enabled
+  And user validates 2 out of 3 attempts message displayed
+  And user waits for OTP time to expire and resend button gets enabled
+  And user validates 1 out of 3 attempts message displayed
+  And user waits for OTP time to expire and resend button gets enabled
+  And user validates 0 out of 3 attempts message displayed
+  Then validate the verify button is disabled
   
   When user clicks the back button on the OTP screen
   And user enters valid_mobile_number in the mobile number text box

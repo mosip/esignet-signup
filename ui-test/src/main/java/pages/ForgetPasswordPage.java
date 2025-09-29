@@ -275,8 +275,9 @@ public class ForgetPasswordPage extends BasePage {
 		return true;
 	}
 
-	public String getEnteredPhoneNumber() {
-		return getElementAttribute(phoneInput, "get the entered value");
+	public boolean isPhoneNumberFieldEmpty() {
+		String value = getElementValue(phoneInput,"Get Mobile Field Empty Or Unchanged value");
+		return value == null || value.isEmpty();
 	}
 
 	public boolean isContinueButtonDisabled() {
@@ -363,7 +364,12 @@ public class ForgetPasswordPage extends BasePage {
 				String.valueOf(expectedRemainingAttempts)));
 		return getText(resendAttemptsText, "get the remaining atteptes text");
 	}
-
+	
+	public void waitForOtpExpire() {
+		int otpExpiry = EsignetUtil.getOtpResendDelayFromSignupActuator();
+		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(otpExpiry));
+		wait.until(ExpectedConditions.elementToBeClickable(resendOtpButton));
+	}
 
 	public boolean isForgetPassowrdScreenVisible() {
 		return isElementVisible(forgetPasswordHeading, "check is on forgot password page");

@@ -100,7 +100,7 @@ Feature: Esignet Forgot Password Page
     And user enters Registered moblie number into the mobile number field
     Then user click on continue button
 
-    And user waits for OTP timer to expire
+    And user waits until OTP timer to expire
     When user enters "<expired_otp>" as a Otp
     And user clicks on the Verify OTP button
     Then verify an error message OTP expired. Please request a new one and try again. is displayed at the top

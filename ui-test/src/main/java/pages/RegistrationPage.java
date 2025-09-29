@@ -52,7 +52,7 @@ public class RegistrationPage extends BasePage {
 	@FindBy(xpath = "//img[@class='footer-brand-logo']")
 	WebElement footerLogo;
 
-	@FindBy(xpath = "//div[@id=':r4:-form-item']/span")
+	@FindBy(xpath = "//div[contains(@id,'-form-item')]/span")
 	WebElement prefilledCountryCode;
 
 	@FindBy(id = "phone_input")

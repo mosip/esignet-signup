@@ -843,6 +843,16 @@ public class SignUpStepDef {
 
 	@When("user clicks on Register button")
 	public void userClicksOnRegisterButton() {
+		registrationPage.clickOnLanguageSelectionOption();
+
+		String languagePassed = MultiLanguageUtil.getDisplayName(BaseTestUtil.getThreadLocalLanguage());
+
+		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+
+		WebElement langOption = wait
+				.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[text()='" + languagePassed + "']")));
+		langOption.click();
+		BaseTestUtil.setThreadLocalLanguage(languagePassed);
 		signUpPage.clickOnRegisterButton();
 	}
 

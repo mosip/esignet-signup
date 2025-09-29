@@ -109,9 +109,6 @@ public class BaseTest {
 	    boolean runOnBrowserStack = Boolean.parseBoolean(EsignetConfigManager.getproperty("runOnBrowserStack"));
 
 	    if (runOnBrowserStack && driver instanceof RemoteWebDriver) {
-
-//	    // Fetch BrowserStack URLs if remote driver
-//	    if (driver instanceof RemoteWebDriver) {
 	        RemoteWebDriver remoteDriver = (RemoteWebDriver) driver;
 	        String sessionId = remoteDriver.getSessionId().toString();
 

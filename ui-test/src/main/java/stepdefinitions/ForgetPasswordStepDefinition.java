@@ -208,7 +208,7 @@ public class ForgetPasswordStepDefinition {
 
 	@Then("mobile number input should remain empty")
 	public void verifyMobileNumberInputIsEmpty() {
-		Assert.assertEquals(forgetPasswordPage.getEnteredPhoneNumber(),"Field should remain empty ");
+		assertTrue(forgetPasswordPage.isPhoneNumberFieldEmpty());
 	}
 
 	@Then("user verify continue button is not enabled")
@@ -281,6 +281,11 @@ public class ForgetPasswordStepDefinition {
 	@Then("user click on continue button")
 	public void userClickOnContinueButtonIsEnabled() {
 		forgetPasswordPage.clickOnContinueButton();
+	}
+	
+	@Then("user waits until OTP timer to expire")
+	public void userWaitForOtpToExpire() {
+		forgetPasswordPage.waitForOtpExpire();
 	}
 
 	private int waitTime;
