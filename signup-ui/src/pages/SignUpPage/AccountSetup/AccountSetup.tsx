@@ -67,7 +67,7 @@ export const AccountSetup = ({ settings, methods }: AccountSetupProps) => {
     };
     formBuilderRef.current?.updateLanguage(
       i18n.language,
-      t("login"),
+      t("submit"),
       confirmPasswordField
     );
   };
@@ -134,7 +134,7 @@ export const AccountSetup = ({ settings, methods }: AccountSetupProps) => {
           "form-container",
           {
             submitButton: {
-              label: t("login"),
+              label: t("submit"),
               action: handleSubmit,
             },
             language: {

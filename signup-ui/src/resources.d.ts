@@ -41,6 +41,7 @@ interface Resources {
     login_to_proceed: string;
     okay_to_proceed: string;
     login: string;
+    submit: string;
     okay: string;
     continue: string;
     forgot_password: string;
