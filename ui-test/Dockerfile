@@ -70,7 +70,7 @@ COPY --chown=${container_user}:${container_user} ./testNgXmlFiles/ /home/mosip/t
 
 
 COPY --chown=${container_user_uid}:${container_user} ./browserstack.yml /home/mosip/
-#COPY --chown=${container_user_uid}:${container_user} ./target/*.jar ${work_dir}
+COPY --chown=${container_user_uid}:${container_user} ./target/*.jar ${work_dir}
 
 # Set working directory
 WORKDIR /home/${container_user}/
