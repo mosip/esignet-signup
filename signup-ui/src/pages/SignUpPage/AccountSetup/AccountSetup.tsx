@@ -81,7 +81,6 @@ export const AccountSetup = ({ settings, methods }: AccountSetupProps) => {
         consent: data.consent ? "AGREE" : "DISAGREE",
         userInfo: {
           ...data,
-          username: data[identifierName] || data.username,
         },
         locale: i18n.language,
       },
