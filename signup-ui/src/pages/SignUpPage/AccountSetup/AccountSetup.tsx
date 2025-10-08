@@ -115,7 +115,7 @@ export const AccountSetup = ({ settings, methods }: AccountSetupProps) => {
       if (JsonFormBuilder && !(window as any).__form_rendered__) {
         const form = JsonFormBuilder(
           {
-            schema: uiSchema.schema,
+            ...uiSchema,
             language: {
               ...uiSchema.language,
               langCodeMap: langConfig.langCodeMapping,
@@ -125,9 +125,6 @@ export const AccountSetup = ({ settings, methods }: AccountSetupProps) => {
               [identifierName]: `${
                 settings.response.configs["identifier.prefix"]
               }${getValues("phone")}`,
-            },
-            errors: {
-              ...uiSchema.errors,
             },
           },
           "form-container",
@@ -139,16 +136,6 @@ export const AccountSetup = ({ settings, methods }: AccountSetupProps) => {
             language: {
               currentLanguage: i18n.language,
               defaultLanguage: (window as any)._env_.DEFAULT_LANG,
-            },
-            additionalSchema: {
-              password_confirm: {
-                label: {
-                  [i18n.language]: t("confirm_password"),
-                },
-                placeholder: {
-                  [i18n.language]: t("confirm_password_placeholder"),
-                },
-              },
             },
           }
         );
