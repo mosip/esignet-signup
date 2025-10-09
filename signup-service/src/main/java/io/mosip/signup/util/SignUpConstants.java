@@ -11,6 +11,7 @@ public class SignUpConstants {
     public static final String CHALLENGE_GENERATED = "challenge_generated";
     public static final String CHALLENGE_VERIFIED = "challenge_verified";
     public static final String STATUS_CHECK = "status_check";
+    public static final String REGISTRATION_FILES = "registration_files";
     public static final String BLOCKED_IDENTIFIER = "blocked_identifier";
     public static final String KEYSTORE = "keystore";
     public static final String KEY_ALIAS = "key_alias";

@@ -10,6 +10,7 @@ import io.mosip.esignet.core.dto.OIDCTransaction;
 import io.mosip.signup.api.util.VerificationStatus;
 import io.mosip.signup.dto.IdentityVerificationTransaction;
 import io.mosip.signup.dto.IdentityVerifierDetail;
+import io.mosip.signup.dto.RegistrationFiles;
 import io.mosip.signup.dto.RegistrationTransaction;
 import io.mosip.signup.helper.CryptoHelper;
 import io.mosip.signup.util.Purpose;
@@ -218,4 +219,14 @@ public class CacheUtilServiceTest {
         Mockito.verify(valueOperations).set(cacheKey, transaction, 300L, TimeUnit.SECONDS);
     }
 
+    @Test
+    public void registrationFiles_thenPass() {
+        RegistrationFiles registrationFiles = new RegistrationFiles();
+        String transactionId = "txn-123";
+        Mockito.when(cacheManager.getCache(SignUpConstants.REGISTRATION_FILES)).thenReturn(cache);
+        Mockito.when(cache.get(transactionId, RegistrationFiles.class)).thenReturn(registrationFiles);
+        Assert.assertNotNull(cacheUtilService.setRegistrationFiles(transactionId, registrationFiles));
+        RegistrationFiles result = cacheUtilService.getRegistrationFiles(transactionId);
+        Assert.assertEquals(registrationFiles, result);
+    }
 }

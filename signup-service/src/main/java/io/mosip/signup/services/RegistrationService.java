@@ -8,6 +8,8 @@ package io.mosip.signup.services;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.mosip.esignet.core.util.CaptchaHelper;
 import io.mosip.esignet.core.util.IdentityProviderUtil;
 import io.mosip.signup.api.dto.ProfileDto;
@@ -27,9 +29,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Base64Utils;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.*;
 
 import static io.mosip.signup.util.SignUpConstants.*;
@@ -208,11 +213,22 @@ public class RegistrationService {
         }
 
         try {
+            ObjectNode userInfoNode = (ObjectNode) registerRequest.getUserInfo();
+            RegistrationFiles registrationFiles = cacheUtilService.getRegistrationFiles(transactionId);
+            if(registrationFiles != null && registrationFiles.getUploadedFiles() != null) {
+                for (Map.Entry<String, String> entry : registrationFiles.getUploadedFiles().entrySet()) {
+                    ObjectNode fileNode = userInfoNode.has(entry.getKey())? (ObjectNode) userInfoNode.get(entry.getKey()) :
+                            JsonNodeFactory.instance.objectNode();
+                    fileNode.put("value", entry.getValue());
+                    userInfoNode.set(entry.getKey(), fileNode);
+                }
+            }
+
             ProfileDto profileDto = new ProfileDto();
             profileDto.setIndividualId(registerRequest.getUsername());
             profileDto.setActive(true);
             profileDto.setConsent(registerRequest.getConsent());
-            profileDto.setIdentity(registerRequest.getUserInfo());
+            profileDto.setIdentity(userInfoNode);
             profileRegistryPlugin.createProfile(transaction.getApplicationId(), profileDto);
         }
         catch (ProfileException exception) {
@@ -296,6 +312,33 @@ public class RegistrationService {
     @Cacheable(value = UI_SPEC, key = "'latest'")
     public JsonNode getUiSpec() {
         return profileRegistryPlugin.getUISpecification();
+    }
+
+    public RegisterResponse uploadFile(String transactionId, String fieldName, MultipartFile file) throws SignUpException {
+        RegistrationTransaction transaction = cacheUtilService.getChallengeVerifiedTransaction(transactionId);
+        if(transaction == null) {
+            log.error("Transaction {} : not found in ChallengeVerifiedTransaction cache", transactionId);
+            throw new InvalidTransactionException();
+        }
+
+        if(file == null) {
+            log.error("Invalid file with null input {}", transactionId);
+            throw new SignUpException(ErrorConstants.UPLOAD_FAILED);
+        }
+
+        try {
+            RegistrationFiles registrationFiles = new RegistrationFiles();
+            registrationFiles.getUploadedFiles().put(fieldName, Base64Utils.encodeToString(file.getBytes()));
+            cacheUtilService.setRegistrationFiles(transactionId, registrationFiles);
+
+            RegisterResponse registerResponse = new RegisterResponse();
+            registerResponse.setStatus(ActionStatus.UPLOADED);
+            return registerResponse;
+
+        }  catch (IOException e) {
+            log.error("Failed to read the uploaded file", e);
+        }
+        throw new SignUpException(ErrorConstants.UPLOAD_FAILED);
     }
 
     private void fetchAndCheckIdentity(RegistrationTransaction registrationTransaction,

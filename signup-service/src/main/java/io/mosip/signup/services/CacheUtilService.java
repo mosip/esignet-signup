@@ -11,6 +11,7 @@ import io.mosip.esignet.core.dto.OIDCTransaction;
 import io.mosip.esignet.core.util.IdentityProviderUtil;
 import io.mosip.signup.dto.IdentityVerificationTransaction;
 import io.mosip.signup.dto.IdentityVerifierDetail;
+import io.mosip.signup.dto.RegistrationFiles;
 import io.mosip.signup.dto.RegistrationTransaction;
 import io.mosip.signup.exception.SignUpException;
 import io.mosip.signup.helper.CryptoHelper;
@@ -148,11 +149,16 @@ public class CacheUtilService {
         return registrationTransaction;
     }
 
-    @CacheEvict(value = SignUpConstants.CHALLENGE_VERIFIED, key = "#transactionId")
+    @CacheEvict(value = { SignUpConstants.CHALLENGE_VERIFIED, SignUpConstants.REGISTRATION_FILES }, key = "#transactionId")
     @Cacheable(value = SignUpConstants.STATUS_CHECK, key = "#transactionId")
     public RegistrationTransaction setStatusCheckTransaction(String transactionId,
                                                              RegistrationTransaction registrationTransaction) {
         return registrationTransaction;
+    }
+
+    @Cacheable(value = SignUpConstants.REGISTRATION_FILES, key = "#transactionId")
+    public RegistrationFiles setRegistrationFiles(String transactionId, RegistrationFiles registrationFiles) {
+        return registrationFiles;
     }
 
     @CacheEvict(value = SignUpConstants.CHALLENGE_GENERATED, key = "#transactionId")
@@ -287,6 +293,10 @@ public class CacheUtilService {
 
     public JsonNode getIdentityVerifierMetadata(String identityVerifierId) {
         return cacheManager.getCache(SignUpConstants.IDENTITY_VERIFIER_METADATA).get(identityVerifierId, JsonNode.class); //NOSONAR getCache() will not be returning null here.
+    }
+
+    public RegistrationFiles getRegistrationFiles(String transactionId) {
+        return cacheManager.getCache(SignUpConstants.REGISTRATION_FILES).get(transactionId, RegistrationFiles.class); //NOSONAR getCache() will not be returning null here.
     }
 
     public void updateVerifiedSlotTransaction(String slotId, IdentityVerificationTransaction transaction) {
