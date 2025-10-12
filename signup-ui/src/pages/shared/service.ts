@@ -18,16 +18,16 @@ import {
 } from "~typings/types";
 
 /**
- * retrieves cookie from the browser 
+ * retrieves cookie from the browser
  * @param {string} key
  * @returns cookie value
  */
 export const getCookie = (key: string): string | any => {
   console.log(document.cookie);
   var b = document.cookie.match("(^|;)\\s*" + key + "\\s*=\\s*([^;]+)");
-  console.log(b)
+  console.log(b);
   return b ? b.pop() : "";
-}
+};
 
 export const getSettings = async (): Promise<SettingsDto> => {
   return ApiService.get<SettingsDto>("/settings").then(({ data }) => data);
@@ -114,9 +114,9 @@ export const getKycProvidersList = async (
     "/identity-verification/initiate",
     updateProcessRequestDto,
     {
-      headers:{
-        "X-XSRF-TOKEN": getCookie('XSRF-TOKEN'),
-      }
+      headers: {
+        "X-XSRF-TOKEN": getCookie("XSRF-TOKEN"),
+      },
     }
   ).then(({ data }) => data);
 };
@@ -165,4 +165,21 @@ export const getUiSpec = async (): Promise<UiSchemaResponseDto> => {
   return ApiService.get<UiSchemaResponseDto>("/registration/ui-spec").then(
     ({ data }) => data
   );
+};
+
+export const uploadFile = async (formData: FormData) => {
+  return ApiService.post<any>("/registration/upload-file", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  }).then(({ data }) => {
+    if (
+      data.errors.some(
+        (error: { errorCode: string }) => error.errorCode === "upload_failed"
+      )
+    ) {
+      throw new Error("upload_failed");
+    }
+    return data;
+  });
 };

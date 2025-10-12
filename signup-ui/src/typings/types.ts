@@ -100,6 +100,10 @@ const IdentityVerificationStatusPossibleErrors = [
 
 export type IdentityVerificationStatusErrors =
   (typeof IdentityVerificationStatusPossibleErrors)[number];
+
+export const UploadFilePossibleErrors = ["upload_failed"];
+
+export type UploadFileErrors = (typeof UploadFilePossibleErrors)[number];
 export interface Error {
   errorCode:
     | GenerateChallengeErrors
@@ -108,7 +112,8 @@ export interface Error {
     | RegisterStatusErrors
     | ResetPasswordErrors
     | SlotAvailabilityErrors
-    | IdentityVerificationStatusErrors;
+    | IdentityVerificationStatusErrors
+    | UploadFileErrors;
   errorMessage: string;
 }
 
@@ -139,6 +144,8 @@ export interface SettingsConfig {
   "fullname.pattern": string;
   "status.request.limit": number;
   "status.request.delay": number;
+  "upload.request.limit": number;
+  "upload.request.delay": number;
   "status.request.retry.error.codes": string;
   "slot.request.limit": number;
   "slot.request.delay": number;
@@ -459,4 +466,10 @@ export type IdentityVerificationStatusResponseDto = BaseResponseDto & {
 export type UiSchemaResponseDto = BaseResponseDto & {
   response: FormConfig | null;
   errors: any[] | null;
+};
+
+export type RegisterResponseDto = BaseResponseDto & {
+  response: {
+    status: string;
+  } | null;
 };

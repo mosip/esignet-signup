@@ -211,6 +211,10 @@
     },
     "loading_title": "Please wait while we finalize the process…"
   },
+  "upload_failed": {
+    "header": "Upload Failed!",
+    "description": "We encountered an issue while uploading your documents. Please try again."
+  },
   "error_response": {
     "invalid_transaction": "The request took too long to process. Please try again later.",
     "invalid_otp_channel": "Please provide a valid OTP notification channel and try again.",
