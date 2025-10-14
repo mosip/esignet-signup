@@ -75,7 +75,7 @@ public class CacheUtilService {
     @Value("${mosip.signup.iam.client-secret}")
     private String clientSecret;
 
-    @Value("${mosip.esignet.cache.keyprefix}")
+    @Value("${mosip.esignet.cache.keyprefix:esignet}")
     private String cacheKeyPrefix;
 
     private static final String CLEANUP_SCRIPT = "local function binary_to_long(binary_str)\n" +
