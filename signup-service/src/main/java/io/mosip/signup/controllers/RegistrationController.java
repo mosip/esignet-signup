@@ -28,6 +28,8 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
 
 import static io.mosip.signup.util.SignUpConstants.EMTPY;
 
@@ -96,7 +98,7 @@ public class RegistrationController {
     }
 
 
-    @PostMapping("/register")
+    @PostMapping(value = "/register", consumes = {"application/json"})
     public ResponseWrapper<RegisterResponse> register(@Valid @RequestBody RequestWrapper<RegisterRequest> requestWrapper,
                                                       @Valid @NotBlank(message = ErrorConstants.INVALID_TRANSACTION)
                                                       @CookieValue(value = SignUpConstants.VERIFIED_TRANSACTION_ID, defaultValue = EMTPY) String transactionId)
@@ -139,6 +141,27 @@ public class RegistrationController {
         responseWrapper.setResponseTime(IdentityProviderUtil.getUTCDateTime());
         responseWrapper.setResponse(registrationService.getUiSpec());
         return responseWrapper;
+    }
+
+    @PostMapping(value = "/upload-file", consumes = { "multipart/form-data" })
+    public ResponseWrapper<RegisterResponse> uploadFile(@RequestPart(value = "field") String fieldName,
+                                                        @RequestPart(value = "file") MultipartFile file,
+                                                      @CookieValue(value = SignUpConstants.VERIFIED_TRANSACTION_ID, defaultValue = EMTPY) String transactionId)
+            throws SignUpException {
+        if (transactionId == null || transactionId.isBlank()) {
+            throw new SignUpException(ErrorConstants.INVALID_TRANSACTION);
+        }
+
+        ResponseWrapper<RegisterResponse> responseWrapper = new ResponseWrapper<>();
+        try {
+            responseWrapper.setResponse(registrationService.uploadFile(transactionId, fieldName, file));
+        }catch (SignUpException signUpException){
+            auditHelper.sendAuditTransaction(AuditEvent.UPLOAD_FILE, AuditEventType.ERROR, transactionId, signUpException);
+            throw signUpException;
+        }
+        responseWrapper.setResponseTime(IdentityProviderUtil.getUTCDateTime());
+        auditHelper.sendAuditTransaction(AuditEvent.UPLOAD_FILE, AuditEventType.SUCCESS, transactionId, null);
+        return  responseWrapper;
     }
 
 }

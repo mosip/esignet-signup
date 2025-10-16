@@ -1,7 +1,7 @@
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useMutationState } from "@tanstack/react-query";
 import { isEqual } from "lodash";
-import { useCallback, useEffect, useMemo, useState } from "react";
 import { Resolver, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import * as yup from "yup";
@@ -89,7 +89,7 @@ export const SignUpPage = ({ settings }: SignUpPageProps) => {
       // Step 4 - Account Setup Validation
       yup.object({
         username: yup.string(),
-        fullNameInKhmer: validateFullName(settings,t),
+        fullNameInKhmer: validateFullName(settings, t),
         password: validatePassword(settings),
         confirmPassword: validateConfirmPassword("password", settings, true),
         consent: yup.bool().oneOf([true], t("terms_and_conditions_validation")),
@@ -120,10 +120,10 @@ export const SignUpPage = ({ settings }: SignUpPageProps) => {
       const invalidInput = Array.from(
         document.querySelectorAll('input[aria-invalid="true"]')
       ).find((input) => {
-        const name = input.getAttribute('name') ?? ''; // Default to an empty string if null
+        const name = input.getAttribute("name") ?? ""; // Default to an empty string if null
         return /fullname/i.test(name);
       });
-  
+
       if (invalidInput) {
         methods.trigger(); // Manually trigger validation whenever the language changes
       }
@@ -150,7 +150,10 @@ export const SignUpPage = ({ settings }: SignUpPageProps) => {
           challengeVerification.errors[0].errorCode
         )) ||
       step === SignUpStep.AccountRegistrationStatus ||
-      (criticalError && criticalError.errorCode === "invalid_transaction")
+      (criticalError &&
+        ["invalid_transaction", "upload_failed"].includes(
+          criticalError.errorCode
+        ))
     )
       return;
 

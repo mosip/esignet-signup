@@ -61,4 +61,5 @@ public class ErrorConstants {
     public static final String INVALID_ORDER = "invalid_order";
 
     public static final String TOKEN_REQUEST_FAILED = "token_request_failed";
+    public static final String UPLOAD_FAILED = "upload_failed";
 }

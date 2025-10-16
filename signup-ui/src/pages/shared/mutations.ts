@@ -26,6 +26,7 @@ import {
   register,
   resetPassword,
   updateProcess,
+  uploadFile,
   verifyChallenge,
 } from "./service";
 
@@ -37,6 +38,7 @@ export const keys = {
   slotAvailability: ["slotAvailability"] as const,
   updateProcess: ["updateProcess"] as const,
   kycProvidersList: ["kycProvidersList"] as const,
+  uploadFile: ["uploadFile"] as const,
 };
 
 export const useGenerateChallenge = () => {
@@ -159,4 +161,25 @@ export const useKycProvidersList = () => {
   });
 
   return { kycProvidersList };
+};
+
+export const useUploadFile = ({
+  retryAttempt,
+  retryDelay,
+}: {
+  retryAttempt: number;
+  retryDelay: number;
+}) => {
+  const uploadFileMutation = useMutation<
+    RegistrationResponseDto,
+    ApiError,
+    FormData
+  >({
+    mutationKey: keys.uploadFile,
+    mutationFn: (formData: FormData) => uploadFile(formData),
+    retry: retryAttempt - 1,
+    retryDelay: retryDelay * 1000,
+  });
+
+  return { uploadFileMutation };
 };

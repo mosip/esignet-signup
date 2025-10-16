@@ -32,6 +32,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -51,8 +52,7 @@ import static io.mosip.signup.util.ErrorConstants.INVALID_USERNAME;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -986,5 +986,85 @@ public class RegistrationControllerTest {
                 .andExpect(jsonPath("$.response").isEmpty())
                 .andExpect(jsonPath("$.errors").isNotEmpty())
                 .andExpect(jsonPath("$.errors[0].errorCode").value("invalid_input"));
+    }
+
+    @Test
+    public void uploadFile_withValidInput_thenPass() throws Exception {
+        String mockTransactionID = "123456789";
+        String fieldName = "profilePic";
+
+        MockMultipartFile file = new MockMultipartFile(
+                "file", "test.jpg", MediaType.IMAGE_JPEG_VALUE, "dummy content".getBytes()
+        );
+        MockMultipartFile fieldPart = new MockMultipartFile(
+                "field", "", "text/plain", fieldName.getBytes()
+        );
+
+        RegisterResponse registerResponse = new RegisterResponse();
+        registerResponse.setStatus(ActionStatus.UPLOADED);
+
+        when(registrationService.uploadFile(mockTransactionID, fieldName, file)).thenReturn(registerResponse);
+
+        mockMvc.perform(multipart("/registration/upload-file")
+                        .file(file)
+                        .file(fieldPart)
+                        .cookie(new Cookie(SignUpConstants.VERIFIED_TRANSACTION_ID, mockTransactionID)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.response.status").value(ActionStatus.UPLOADED));
+    }
+
+
+    @Test
+    public void uploadFile_missingTransactionId_returnErrorResponse() throws Exception {
+        String fieldName = "profilePic";
+        MockMultipartFile file = new MockMultipartFile("file", "test.jpg", MediaType.IMAGE_JPEG_VALUE, "dummy content".getBytes());
+        MockMultipartFile fieldPart = new MockMultipartFile("field", "", "text/plain", fieldName.getBytes());
+        mockMvc.perform(multipart("/registration/upload-file")
+                        .file(file)
+                        .file(fieldPart))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.errors").isNotEmpty())
+                .andExpect(jsonPath("$.errors[0].errorCode").value(ErrorConstants.INVALID_TRANSACTION));
+    }
+
+    @Test
+    public void uploadFile_missingField_returnErrorResponse() throws Exception {
+        String mockTransactionID = "123456789";
+        MockMultipartFile file = new MockMultipartFile("file", "test.jpg", MediaType.IMAGE_JPEG_VALUE, "dummy content".getBytes());
+
+        mockMvc.perform(multipart("/registration/upload-file")
+                        .file(file)
+                        .cookie(new Cookie(SignUpConstants.VERIFIED_TRANSACTION_ID, mockTransactionID)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void uploadFile_missingFile_returnErrorResponse() throws Exception {
+        String mockTransactionID = "123456789";
+
+        MockMultipartFile fieldPart = new MockMultipartFile("field", "", "text/plain", "fieldName".getBytes());
+
+        mockMvc.perform(multipart("/registration/upload-file")
+                        .file(fieldPart)
+                        .cookie(new Cookie(SignUpConstants.VERIFIED_TRANSACTION_ID, mockTransactionID)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void uploadFile_serviceThrowsException_returnErrorResponse() throws Exception {
+        String mockTransactionID = "123456789";
+        MockMultipartFile file = new MockMultipartFile("file", "test.jpg", MediaType.IMAGE_JPEG_VALUE, "dummy content".getBytes());
+        MockMultipartFile fieldPart = new MockMultipartFile("field", "", "text/plain", "fieldName".getBytes());
+
+        when(registrationService.uploadFile(mockTransactionID, "fieldName", file))
+                .thenThrow(new SignUpException(ErrorConstants.UPLOAD_FAILED));
+
+        mockMvc.perform(multipart("/registration/upload-file")
+                        .file(file)
+                        .file(fieldPart)
+                        .cookie(new Cookie(SignUpConstants.VERIFIED_TRANSACTION_ID, mockTransactionID)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.errors").isNotEmpty())
+                .andExpect(jsonPath("$.errors[0].errorCode").value(ErrorConstants.UPLOAD_FAILED));
     }
 }
