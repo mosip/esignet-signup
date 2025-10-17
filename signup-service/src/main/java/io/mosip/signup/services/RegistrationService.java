@@ -321,9 +321,10 @@ public class RegistrationService {
             throw new InvalidTransactionException();
         }
 
-        if(file == null) {
-            log.error("Invalid file with null input {}", transactionId);
-            throw new SignUpException(ErrorConstants.UPLOAD_FAILED);
+        if(fieldName == null || fieldName.isBlank() || !fieldName.matches("[A-Za-z0-9_-]+")
+                || file == null || file.isEmpty()) {
+            log.error("Invalid fieldName or file {} {}", fieldName, file);
+            throw new SignUpException(ErrorConstants.INVALID_REQUEST);
         }
 
         try {

@@ -1930,19 +1930,47 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    public void uploadFile_withNullFile_thenFail() {
+    public void uploadFile_withInvalidInput_thenFail() {
         String transactionId = "txn-123";
         String fieldName = "photo";
-        MultipartFile file = null;
+        MultipartFile file = new MockMultipartFile("file", "test".getBytes());
 
         RegistrationTransaction transaction = new RegistrationTransaction("user", Purpose.REGISTRATION);
         when(cacheUtilService.getChallengeVerifiedTransaction(transactionId)).thenReturn(transaction);
 
-        try {
-            registrationService.uploadFile(transactionId, fieldName, file);
+        try { //Null file check
+            registrationService.uploadFile(transactionId, fieldName, null);
             Assert.fail();
         } catch (SignUpException signUpException) {
-            Assert.assertEquals(ErrorConstants.UPLOAD_FAILED, signUpException.getErrorCode());
+            Assert.assertEquals(ErrorConstants.INVALID_REQUEST, signUpException.getErrorCode());
+        }
+
+        try { //Null field name check
+            registrationService.uploadFile(transactionId, null, file);
+            Assert.fail();
+        } catch (SignUpException signUpException) {
+            Assert.assertEquals(ErrorConstants.INVALID_REQUEST, signUpException.getErrorCode());
+        }
+
+        try { //Empty field name check
+            registrationService.uploadFile(transactionId, "  ", file);
+            Assert.fail();
+        } catch (SignUpException signUpException) {
+            Assert.assertEquals(ErrorConstants.INVALID_REQUEST, signUpException.getErrorCode());
+        }
+
+        try { //Invalid field name check
+            registrationService.uploadFile(transactionId, "!!))) A", file);
+            Assert.fail();
+        } catch (SignUpException signUpException) {
+            Assert.assertEquals(ErrorConstants.INVALID_REQUEST, signUpException.getErrorCode());
+        }
+
+        try { //Empty file check
+            registrationService.uploadFile(transactionId, "test", new MockMultipartFile("file", "".getBytes()));
+            Assert.fail();
+        } catch (SignUpException signUpException) {
+            Assert.assertEquals(ErrorConstants.INVALID_REQUEST, signUpException.getErrorCode());
         }
     }
 
