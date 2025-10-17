@@ -13,3 +13,16 @@ GetUISpec:
       output: '{
   
 }'
+   Signup_ESignet_GetUISpec_invalid_token_Neg:
+      endPoint: /v1/signup/registration/ui-spec
+      uniqueIdentifier: TC_ESignet_GetUISpec_02
+      description: Try to Fetch UI spec with invalid token
+      role: invalidtoken
+      restMethod: get
+      checkErrorsOnlyInResponse: true	  
+      inputTemplate: signup/GetUISpec/GetUISpec
+      outputTemplate: signup/GetUISpec/GetUISpecResult
+      input: '{
+}'
+      output: '{
+}'
