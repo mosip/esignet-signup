@@ -114,6 +114,7 @@ public class RegistrationServiceTest {
         ReflectionTestUtils.setField(registrationService, "objectMapper", new ObjectMapper());
         ReflectionTestUtils.setField(registrationService, "captchaRequired", false);
         ReflectionTestUtils.setField(registrationService, "captchaHelper", captchaHelper);
+        ReflectionTestUtils.setField(registrationService, "fileFieldRegex", "[A-Za-z0-9_-]+");
     }
 
     @Test
