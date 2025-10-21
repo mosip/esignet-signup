@@ -1345,13 +1345,7 @@ paths:
       summary: Get registration UI Specification
       description: Endpoint to get the details on how and what to render in the registration screen.
       operationId: get-ui-spec
-      parameters:
-        - name: X-XSRF-TOKEN
-          in: header
-          description: CSRF token as set in cookie key 'XSRF-TOKEN'
-          required: false
-          schema:
-            type: string
+      parameters: []
       responses:
         '200':
           description: OK
