@@ -1858,7 +1858,7 @@ public class RegistrationServiceTest {
         Assert.assertEquals(ProfileCreateUpdateStatus.PENDING, registrationStatusResponse.getStatus());
     }
 
-   @Test
+    @Test
     public void getUiSpec_withValidDetails_thenPass() throws Exception {
         JsonNode expectedNode = objectMapper.readTree("{\"field\":\"value\"}");
         when(profileRegistryPlugin.getUISpecification()).thenReturn(expectedNode);
@@ -1868,7 +1868,7 @@ public class RegistrationServiceTest {
         verify(profileRegistryPlugin, times(1)).getUISpecification();
     }
 
-   @Test
+    @Test
     public void getUiSpec_withNull_thenPass() {
         when(profileRegistryPlugin.getUISpecification()).thenReturn(null);
         JsonNode result = registrationService.getUiSpec();
