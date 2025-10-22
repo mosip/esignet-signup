@@ -100,8 +100,6 @@ public class RegistrationServiceTest {
 
     private String locale = "khm";
 
-    private final int ttlSeconds = 60;
-
     @Before
     public void setUp() {
         ReflectionTestUtils.setField(
