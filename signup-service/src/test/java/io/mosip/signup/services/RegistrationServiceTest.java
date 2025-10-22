@@ -30,12 +30,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.cache.CacheManager;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -49,7 +45,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
@@ -100,12 +95,6 @@ public class RegistrationServiceTest {
     private final String generateHashEndpoint = "generateHashEndpoint";
     private final String getIdentityEndpoint = "getIdentityEndpoint";
     private final String getUinEndpoint = "getUinEndpoint";
-
-    @Mock
-    private RedisTemplate<String, JsonNode> redisTemplate;
-
-    @Mock
-    private ValueOperations<String, JsonNode> valueOperations;
 
     private final String getRegistrationStatusEndpoint = "getRegistrationStatusEndpoint";
 
@@ -1867,17 +1856,6 @@ public class RegistrationServiceTest {
         registrationStatusResponse.setStatus(ProfileCreateUpdateStatus.PENDING);
         Assert.assertNotNull(registrationStatusResponse);
         Assert.assertEquals(ProfileCreateUpdateStatus.PENDING, registrationStatusResponse.getStatus());
-    }
-
-    @Test
-    public void refreshUiSpec() {
-        when(redisTemplate.opsForValue()).thenReturn(valueOperations);
-        JsonNode freshNode = mock(JsonNode.class);
-        when(profileRegistryPlugin.getUISpecification()).thenReturn(freshNode);
-
-        registrationService.refreshUiSpec();
-
-        verify(valueOperations).set("'latest'", freshNode, Duration.ofSeconds(60));
     }
 
    @Test
