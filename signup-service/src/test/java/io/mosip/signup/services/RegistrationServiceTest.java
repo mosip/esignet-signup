@@ -96,10 +96,6 @@ public class RegistrationServiceTest {
 
     ObjectMapper objectMapper = new ObjectMapper();
 
-    @Autowired
-    private CacheManager cacheManager;
-
-
     private final String identityEndpoint = "identityEndpoint";
     private final String generateHashEndpoint = "generateHashEndpoint";
     private final String getIdentityEndpoint = "getIdentityEndpoint";
