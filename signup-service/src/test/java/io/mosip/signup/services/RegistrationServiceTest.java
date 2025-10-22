@@ -99,7 +99,6 @@ public class RegistrationServiceTest {
     private final String getRegistrationStatusEndpoint = "getRegistrationStatusEndpoint";
 
     private String locale = "khm";
-
     @Before
     public void setUp() {
         ReflectionTestUtils.setField(
