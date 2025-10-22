@@ -18,16 +18,21 @@ import io.mosip.signup.api.spi.ProfileRegistryPlugin;
 import io.mosip.signup.api.util.ProfileCreateUpdateStatus;
 import io.mosip.signup.dto.*;
 import io.mosip.signup.exception.ChallengeFailedException;
+import io.mosip.signup.exception.GenerateChallengeException;
 import io.mosip.signup.exception.InvalidTransactionException;
 import io.mosip.signup.exception.SignUpException;
 import io.mosip.signup.helper.CryptoHelper;
-import io.mosip.signup.util.*;
-import io.mosip.signup.exception.GenerateChallengeException;
 import io.mosip.signup.helper.NotificationHelper;
+import io.mosip.signup.util.ActionStatus;
+import io.mosip.signup.util.ErrorConstants;
+import io.mosip.signup.util.Purpose;
+import io.mosip.signup.util.SignUpConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Base64Utils;
 import org.springframework.web.multipart.MultipartFile;
@@ -312,6 +317,14 @@ public class RegistrationService {
     @Cacheable(value = UI_SPEC, key = "'latest'")
     public JsonNode getUiSpec() {
         return profileRegistryPlugin.getUISpecification();
+    }
+
+    @Scheduled(fixedRateString = "${mosip.signup.uispec.ttl.seconds}000")
+    @CachePut(value = UI_SPEC, key = "'latest'")
+    public JsonNode refreshUiSpec() {
+        JsonNode spec = profileRegistryPlugin.getUISpecification();
+        log.debug("UISpec refreshed and updated in cache.");
+        return spec;
     }
 
     public RegisterResponse uploadFile(String transactionId, String fieldName, MultipartFile file) throws SignUpException {
