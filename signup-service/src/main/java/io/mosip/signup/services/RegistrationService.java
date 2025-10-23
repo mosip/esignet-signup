@@ -319,14 +319,6 @@ public class RegistrationService {
         return profileRegistryPlugin.getUISpecification();
     }
 
-    @Scheduled(fixedRateString = "${mosip.signup.uispec.ttl.seconds}000")
-    @CachePut(value = UI_SPEC, key = "'latest'")
-    public JsonNode refreshUiSpec() {
-        JsonNode spec = profileRegistryPlugin.getUISpecification();
-        log.debug("UISpec refreshed and updated in cache.");
-        return spec;
-    }
-
     public RegisterResponse uploadFile(String transactionId, String fieldName, MultipartFile file) throws SignUpException {
         RegistrationTransaction transaction = cacheUtilService.getChallengeVerifiedTransaction(transactionId);
         if(transaction == null) {
