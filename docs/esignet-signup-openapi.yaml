@@ -492,6 +492,95 @@ paths:
         - url: 'https://signup.collab.mosip.net/v1/signup'
       x-stoplight:
         id: 26xqeeectmolu
+  /registration/upload-file:
+    post:
+      tags:
+        - UI
+      summary: File Upload Endpoint
+      description: "Endpoint to upload files required for a registration. All the uploaded files are stored in redis cache.\nOnce the register request is invoked all the uploaded files is added to the createProfile request to the plugin.\n\nCurrently we support only single file upload per field.\n\nTo set the maximum file size for uploads, you can use below properties:\n\n`spring.servlet.multipart.max-file-size`\tMaximum size of a single uploaded file.\n`spring.servlet.multipart.max-request-size`\tMaximum size of the entire request (including all files).\n\n"
+      operationId: post-uploadfile
+      parameters:
+        - name: X-XSRF-TOKEN
+          in: header
+          description: CSRF token as set in cookie key 'XSRF-TOKEN'
+          required: true
+          schema:
+            type: string
+        - name: VERIFIED_TRANSACTION_ID
+          in: cookie
+          description: Transaction Id set after successful verify-challenge response
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: ''
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - field
+                - file
+              properties:
+                field:
+                  type: string
+                  x-stoplight:
+                    id: xwk3wjmnaq64z
+                  description: Field Id in which the uploaded file content should be set.
+                file:
+                  type: object
+                  x-stoplight:
+                    id: yn6yn6pbtwhvp
+                  description: Multipart File
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  responseTime:
+                    type: string
+                    description: Current date and time when the request is sent
+                    format: date-time
+                  response:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        enum:
+                          - UPLOADED
+                        description: Status of file upload.
+                  errors:
+                    type: array
+                    description: List of Errors in case of request validation / processing failure in the server.
+                    items:
+                      type: object
+                      properties:
+                        errorCode:
+                          type: string
+                          enum:
+                            - invalid_transaction
+                            - unknown_error
+                            - upload_failed
+                        errorMessage:
+                          type: string
+                          enum:
+                            - invalid_transaction
+                            - unknown_error
+              examples:
+                Example 1:
+                  value:
+                    responseTime: '2023-11-03T11:03:49.770Z'
+                    response:
+                      status: UPLOADED
+                    errors: []
+      servers:
+        - url: 'https://signup.collab.mosip.net/v1/signup'
+      x-stoplight:
+        id: 018tog98siozb
+    parameters: []
   /registration/status:
     get:
       tags:
@@ -1247,16 +1336,16 @@ paths:
       servers:
         - url: 'https://signup.collab.mosip.net/v1/signup'
       x-stoplight:
-        id: la7g39zt72bvl
+        id: dub1wcgovwhwl
+    parameters: []
   /registration/ui-spec:
     get:
       tags:
         - UI
       summary: Get registration UI Specification
-      description: |-
-        Endpoint to get the details on how and what to render in the registration screen.
-
+      description: Endpoint to get the details on how and what to render in the registration screen.
       operationId: get-ui-spec
+      parameters: []
       responses:
         '200':
           description: OK
@@ -1264,31 +1353,159 @@ paths:
             application/json:
               schema:
                 type: object
+                required:
+                  - responseTime
+                  - response
                 properties:
                   responseTime:
                     type: string
-                    description: Current date and time when the request is sent
                     format: date-time
+                    description: Current date and time when the request is sent
                   response:
                     type: object
+                    required:
+                      - schema
+                      - allowedValues
                     properties:
                       schema:
+                        type: array
+                        description: |
+                          List of registration field display and validation specifications.
+                        items:
+                          x-stoplight:
+                            id: 4undyvawkzv7d
+                          type: object
+                      allowedValues:
                         type: object
-                        description: Schema of UI Specification.
+                        description: |
+                          List of registration field with their allowed values in multiple language usually used to build dropdowns/radiobuttons/checkboxes.
+                        additionalProperties:
+                          x-stoplight:
+                            id: 2thyc3cylcxqm
+                          type: object
+                          additionalProperties:
+                            x-stoplight:
+                              id: 61cgmqx27jkve
+                            type: object
+                      mandatoryLanguages:
+                        type: array
+                        description: Mandatory languages
+                        x-stoplight:
+                          id: kifhqwkskzf6e
+                        items:
+                          type: string
+                      optionalLanguages:
+                        type: array
+                        description: Optional languages
+                        x-stoplight:
+                          id: kifhqwkskzf6e
+                        items:
+                          type: string
                   errors:
                     type: array
-                    description: List of Errors in case of request validation / processing failure in the server.
+                    items:
+                      type: object
+                      properties:
+                        errorCode:
+                          type: string
+                          enum:
+                            - invalid_transaction
+                            - ui_spec_not_found
+                        errorMessage:
+                          type: string
               examples:
                 Example 1:
                   value:
-                    responseTime: '2023-11-03T11:03:49.770Z'
+                    responseTime: '2011-10-05T14:48:00.000Z'
                     response:
-                      schema: {}
-                    errors: []
+                      schema:
+                        - id: fullName
+                          controlType: textbox
+                          type: simpleType
+                          label:
+                            eng: Full Name
+                            fra: Nom complet
+                          validators:
+                            - type: regex
+                              validator: '^[a-zA-Z\s]{2,30}$'
+                              langCode: eng
+                              errorCode: UI_100001
+                          alignmentGroup: groupA
+                          cssClasses:
+                            - classA
+                            - classB
+                          required: true
+                        - id: birthDate
+                          controlType: date
+                          type: date
+                          label:
+                            eng: Birth Date
+                            fra: Date de naissance
+                          alignmentGroup: groupB
+                          cssClasses:
+                            - classA
+                            - classB
+                          required: true
+                        - id: gender
+                          controlType: dropdown
+                          type: simpleType
+                          label:
+                            eng: Gender
+                            fra: Le genre
+                          alignmentGroup: groupC
+                          cssClasses:
+                            - classA
+                            - classB
+                          required: true
+                        - id: nationality
+                          controlType: dropdown
+                          type: string
+                          label:
+                            eng: Nationality
+                            fra: Nationalité
+                          alignmentGroup: groupC
+                          cssClasses:
+                            - classA
+                            - classB
+                          required: true
+                        - id: password
+                          controlType: password
+                          type: string
+                          label:
+                            eng: Password
+                          alignmentGroup: groupD
+                          required: true
+                          validators:
+                            - type: regex
+                              validator: '^[a-zA-Z]{8,30}$'
+                              errorCode: invalid_pwd
+                      allowedValues:
+                        gender:
+                          MLE:
+                            eng: Male
+                            fra: Mâle
+                          FLE:
+                            eng: Female
+                            fra: Femelle
+                        nationality:
+                          IND:
+                            eng: Indian
+                            fra: Indienne
+                          FR:
+                            eng: Foreigner
+                            fra: Étrangère
+                      mandatoryLanguages:
+                        - eng
+                      optionalLanguages:
+                        - fra
+                    errors:
+                      - errorCode: invalid_transaction
+                        errorMessage: invalid_transaction
+          headers: {}
       servers:
         - url: 'https://signup.collab.mosip.net/v1/signup'
       x-stoplight:
-        id: la7g39zt72bvl
+        id: 7ejnxosdv55w1
     parameters: []
 tags:
   - name: UI
