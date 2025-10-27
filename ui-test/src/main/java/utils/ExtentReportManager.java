@@ -162,9 +162,13 @@ public class ExtentReportManager {
 	}
 
 	public static void logStep(String message) {
+	    if (message != null && message.trim().startsWith("ℹ️ Step completed successfully:")) {
+	        return;
+	    }
 		ExtentTest test = testThread.get();
 		if (test != null) {
 			test.info(message);
+	    } else {
 			LOGGER.warn("logStep called but no test is active: {}", message);
 		}
 	}
