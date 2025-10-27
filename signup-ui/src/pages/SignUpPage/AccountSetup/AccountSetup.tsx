@@ -12,18 +12,25 @@ import {
   StepHeader,
   StepTitle,
 } from "~components/ui/step";
-import { useRegister } from "~pages/shared/mutations";
+import { useRegister, useUploadFile } from "~pages/shared/mutations";
 import { useUiSpec } from "~pages/shared/queries";
 import langConfigService from "~services/langConfig.service";
-import { RegistrationRequestDto, SettingsDto } from "~typings/types";
+import {
+  RegisterResponseDto,
+  RegistrationRequestDto,
+  SettingsDto,
+  UploadFilePossibleErrors,
+} from "~typings/types";
 
 import { SignUpForm } from "../SignUpPage";
 import {
+  criticalErrorSelector,
   setCriticalErrorSelector,
   setStepSelector,
   SignUpStep,
   useSignUpStore,
 } from "../useSignUpStore";
+import { UploadFileErrorModal } from "./components/UploadFileErrorModal";
 
 interface AccountSetupProps {
   settings: SettingsDto;
@@ -34,6 +41,8 @@ export const AccountSetup = ({ settings, methods }: AccountSetupProps) => {
   const formBuilderRef: any = useRef(null); // Reference to form instance
   const { t, i18n } = useTranslation();
 
+  const fileUploadTypeList = ["photo"];
+
   const identifierName =
     settings?.response.configs["identifier.name"] || "username";
 
@@ -41,11 +50,12 @@ export const AccountSetup = ({ settings, methods }: AccountSetupProps) => {
 
   const [uiSchema, setUiSchema] = useState<FormConfig | null>(null);
 
-  const { setStep, setCriticalError } = useSignUpStore(
+  const { setStep, criticalError, setCriticalError } = useSignUpStore(
     useCallback(
       (state) => ({
         setStep: setStepSelector(state),
         setCriticalError: setCriticalErrorSelector(state),
+        criticalError: criticalErrorSelector(state),
       }),
       []
     )
@@ -53,26 +63,56 @@ export const AccountSetup = ({ settings, methods }: AccountSetupProps) => {
   const { getValues } = methods;
 
   const { registerMutation } = useRegister();
+  const { uploadFileMutation } = useUploadFile({
+    retryAttempt: settings.response.configs["upload.request.limit"] || 3,
+    retryDelay: settings.response.configs["upload.request.delay"] || 10,
+  });
 
   const updateAfterLangChange = () => {
-    const confirmPasswordField = {
-      password_confirm: {
-        label: {
-          [i18n.language]: t("confirm_password"),
-        },
-        placeholder: {
-          [i18n.language]: t("confirm_password_placeholder"),
-        },
-      },
-    };
-    formBuilderRef.current?.updateLanguage(
-      i18n.language,
-      t("submit"),
-      confirmPasswordField
-    );
+    formBuilderRef.current?.updateLanguage(i18n.language, t("submit"));
   };
 
-  const handleSubmit = (data: any) => {
+  const uploadFile = async (data: any) => {
+    // converting ui_spec to upload mutation calls
+    // finding all file upload fields with value
+    const uploadMutationList = uiSchema?.schema
+      .filter(
+        ({ id, controlType }) =>
+          fileUploadTypeList.includes(controlType) && data[id].value
+      )
+      .map(({ id }) => {
+        const temp = new FormData();
+        temp.append("file", data[id].value);
+        temp.append("field", id);
+        delete data[id]; // remove file field from form data to avoid sending it in registration request
+        return uploadFileMutation.mutateAsync(temp);
+      });
+
+    const uploadResults = await Promise.all(uploadMutationList || []);
+    const allSuccess = uploadResults.every((res: RegisterResponseDto) => {
+      if (res.response?.status === "UPLOADED") {
+        return true;
+      }
+      return false;
+    });
+    if (!allSuccess) {
+      throw new Error("upload_failed");
+    }
+  };
+
+  const handleSubmit = async (data: any) => {
+    // try to upload the files first
+    // if upload fails, go to the last step to show error
+    try {
+      await uploadFile(data);
+    } catch (error) {
+      setCriticalError({
+        errorCode: "upload_failed",
+        errorMessage: "File upload failed",
+      });
+      return;
+    }
+
     const RegistrationRequestDto: RegistrationRequestDto = {
       requestTime: new Date().toISOString(),
       request: {
@@ -91,6 +131,7 @@ export const AccountSetup = ({ settings, methods }: AccountSetupProps) => {
         if (errors && errors.length > 0) {
           if (errors.length > 0) {
             setCriticalError(errors[0]);
+            setStep(SignUpStep.AccountRegistrationStatus);
           }
           updateAfterLangChange();
         } else {
@@ -115,7 +156,7 @@ export const AccountSetup = ({ settings, methods }: AccountSetupProps) => {
       if (JsonFormBuilder && !(window as any).__form_rendered__) {
         const form = JsonFormBuilder(
           {
-            schema: uiSchema.schema,
+            ...uiSchema,
             language: {
               ...uiSchema.language,
               langCodeMap: langConfig.langCodeMapping,
@@ -125,9 +166,6 @@ export const AccountSetup = ({ settings, methods }: AccountSetupProps) => {
               [identifierName]: `${
                 settings.response.configs["identifier.prefix"]
               }${getValues("phone")}`,
-            },
-            errors: {
-              ...uiSchema.errors,
             },
           },
           "form-container",
@@ -139,16 +177,6 @@ export const AccountSetup = ({ settings, methods }: AccountSetupProps) => {
             language: {
               currentLanguage: i18n.language,
               defaultLanguage: (window as any)._env_.DEFAULT_LANG,
-            },
-            additionalSchema: {
-              password_confirm: {
-                label: {
-                  [i18n.language]: t("confirm_password"),
-                },
-                placeholder: {
-                  [i18n.language]: t("confirm_password_placeholder"),
-                },
-              },
             },
           }
         );
@@ -168,6 +196,14 @@ export const AccountSetup = ({ settings, methods }: AccountSetupProps) => {
   useEffect(() => {
     updateAfterLangChange();
   }, [i18n.language]);
+
+  // Show upload error modal if upload fails
+  if (
+    criticalError &&
+    [...new Set(UploadFilePossibleErrors)].includes(criticalError.errorCode)
+  ) {
+    return <UploadFileErrorModal />;
+  }
 
   return (
     <div className="my-10 sm:my-0">

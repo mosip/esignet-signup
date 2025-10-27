@@ -22,6 +22,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.data.redis.connection.RedisConnection;
@@ -54,6 +55,9 @@ public class CacheUtilServiceTest {
 
     @Mock
     private ValueOperations<String, Object> valueOperations;
+
+    @Value("${mosip.esignet.cache.keyprefix:esignet}")
+    private String cacheKeyPrefix;
 
     @Test
     public void test_RegistrationTransaction_cache() {
@@ -194,7 +198,7 @@ public class CacheUtilServiceTest {
         String cacheKey = Constants.HALTED_CACHE + "::" + haltedTransactionId;
 
         Mockito.when(redisTemplate.opsForValue()).thenReturn(valueOperations);
-        Mockito.when(valueOperations.get(cacheKey)).thenReturn(null);
+       // Mockito.when(valueOperations.get(cacheKey)).thenReturn(null);
         cacheUtilService.updateVerificationStatus(haltedTransactionId, "FAILED", "ERROR");
         Mockito.verify(valueOperations, Mockito.never()).set(anyString(), any(), anyLong(), any());
     }
@@ -204,7 +208,7 @@ public class CacheUtilServiceTest {
         String haltedTransactionId = "txn123";
         String status = "COMPLETED";
         String errorCode = "ERROR";
-        String cacheKey = Constants.HALTED_CACHE + "::" + haltedTransactionId;
+        String cacheKey = cacheKeyPrefix + ":" + Constants.HALTED_CACHE + "::" + haltedTransactionId;
 
         OIDCTransaction transaction = new OIDCTransaction();
         transaction.setVerificationStatus(status);

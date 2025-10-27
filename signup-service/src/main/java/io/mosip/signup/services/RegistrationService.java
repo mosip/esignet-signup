@@ -94,6 +94,8 @@ public class RegistrationService {
     @Value("${mosip.signup.individualid.postfix:}")
     private String individualIdPostfix;
 
+    @Value("${mosip.signup.file.fieldname.regex:[A-Za-z0-9_-]+}")
+    private String fileFieldNameRegex;
 
     /**
      * Generate and regenerate challenge based on the "regenerate" flag in the request.
@@ -321,9 +323,10 @@ public class RegistrationService {
             throw new InvalidTransactionException();
         }
 
-        if(file == null) {
-            log.error("Invalid file with null input {}", transactionId);
-            throw new SignUpException(ErrorConstants.UPLOAD_FAILED);
+        if(fieldName == null || fieldName.isBlank() || !fieldName.matches(fileFieldNameRegex)
+                || file == null || file.isEmpty()) {
+            log.error("Invalid fieldName or file {} {}", fieldName, file);
+            throw new SignUpException(ErrorConstants.INVALID_REQUEST);
         }
 
         try {

@@ -75,6 +75,9 @@ public class CacheUtilService {
     @Value("${mosip.signup.iam.client-secret}")
     private String clientSecret;
 
+    @Value("${mosip.esignet.cache.keyprefix:esignet}")
+    private String cacheKeyPrefix;
+
     private static final String CLEANUP_SCRIPT = "local function binary_to_long(binary_str)\n" +
             "    local result = 0\n" +
             "    for i = 1, #binary_str do\n" +
@@ -308,7 +311,7 @@ public class CacheUtilService {
     }
 
     public void updateVerificationStatus(String haltedTransactionId, String status, String errorCode) {
-        String cacheKey = Constants.HALTED_CACHE + "::" + haltedTransactionId;
+        String cacheKey = cacheKeyPrefix + ":" + Constants.HALTED_CACHE + "::" + haltedTransactionId;
         OIDCTransaction oidcTransaction = (OIDCTransaction) redisTemplate.opsForValue().get(cacheKey);
         if(oidcTransaction != null) {
             oidcTransaction.setVerificationStatus(status);
