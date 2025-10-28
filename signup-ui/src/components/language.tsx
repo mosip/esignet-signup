@@ -34,15 +34,13 @@ export const Language = () => {
 
     const urlSearchParams = replaceUILocalesParam(
       window.location.search,
+      window.location.hash,
       language
     );
     if (urlSearchParams) {
       // Encode the string
       const url =
-        window.location.origin +
-        window.location.pathname +
-        "?" +
-        urlSearchParams.toString();
+        window.location.origin + window.location.pathname + urlSearchParams;
 
       // Replace the current url with the modified url due to the language change
       window.history.replaceState(null, "", url);

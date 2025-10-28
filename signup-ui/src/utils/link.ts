@@ -59,8 +59,9 @@ export const replaceUILocales = (
 
 export const replaceUILocalesParam = (
   searchParams: string,
+  hash: string,
   locale: string | null
-): URLSearchParams | undefined => {
+): string | undefined => {
   const urlSearchParams = new URLSearchParams(searchParams);
 
   if (!urlSearchParams) {
@@ -82,5 +83,9 @@ export const replaceUILocalesParam = (
 
   urlSearchParams.set("nonce", generateRandomString());
 
-  return urlSearchParams;
+  if (hash && hash.length > 1) {
+    return "?" + urlSearchParams.toString() + hash;
+  }
+
+  return "?" + urlSearchParams.toString();
 };
