@@ -1,33 +1,54 @@
 #!/bin/bash
-echo "Listing files in /home/mosip/:"
-ls -l /home/mosip/
+set -e
 
-ls -l /home/mosip/
-echo "Listing files in /home/mosip/:"
+echo "→ /home/mosip/"
+ls -l /home/mosip/ || true
+echo
 
-echo "Listing feature files in /home/mosip/featurefiles/:"
-ls -l /home/mosip/featurefiles/
+echo "→ /home/mosip/featurefiles/"
+ls -l /home/mosip/featurefiles/ || true
+echo
 
-echo "/home/mosip/src/test/resources/"
-ls -l /home/mosip/src/test/resources/
+echo "→ /home/mosip/src/test/resources/"
+ls -l /home/mosip/src/test/resources/ || true
+echo
 
-echo "/home/mosip/test-output/SparkReport/"
-ls -l /home/mosip/test-output/SparkReport/
+echo "→ /home/mosip/test-output/SparkReport/"
+ls -l /home/mosip/test-output/SparkReport/ || true
+echo
 
-echo "/home/mosip/src/test/resources/extent.properties"
-ls -l /home/mosip/src/test/resources/extent.properties
+echo "→ /home/mosip/src/test/resources/extent.properties"
+ls -l /home/mosip/src/test/resources/extent.properties || true
+echo
 
-echo "/home/mosip/src/"
-ls -l /home/mosip/src/
+echo "→ /home/mosip/src/"
+ls -l /home/mosip/src/ || true
+echo
 
-echo "/home/mosip/src/main/"
-ls -l /home/mosip/src/main/
+echo "→ /home/mosip/src/main/"
+ls -l /home/mosip/src/main/ || true
+echo
 
-echo "/home/mosip/src/main/java/"
-ls -l /home/mosip/src/main/java/
+echo "→ /home/mosip/src/main/java/"
+ls -l /home/mosip/src/main/java/ || true
+echo
 
-echo "/home/mosip/src/main/java/utils/"
-ls -l /home/mosip/src/main/java/utils/
+echo "→ /home/mosip/src/main/java/utils/"
+ls -l /home/mosip/src/main/java/utils/ || true
+echo
+
+# Ensure test-output directory exists
+mkdir -p /home/mosip/test-output
+
+# Ensure ExtentReport.html exists (or create an empty file)
+touch /home/mosip/test-output/ExtentReport.html
+
+# Grant full access permissions
+chmod -R 777 /home/mosip/test-output
+chmod 777 /home/mosip/test-output/ExtentReport.html
+
 
 java --version
+
+echo "Running: java -jar -Denv.endpoint=\"$ENV_ENDPOINT\" uitest-signup-*.jar"
 java -jar -Denv.endpoint="$ENV_ENDPOINT" uitest-signup-*.jar
