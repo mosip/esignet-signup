@@ -12,7 +12,7 @@ import {
   AlertDialogTitle,
 } from "~components/ui/alert-dialog";
 import { Icons } from "~components/ui/icons";
-import { getSignInRedirectURL } from "~utils/link";
+import { getSignInRedirectURLV2 } from "~utils/link";
 import { convertTime } from "~utils/timer";
 import { useSettings } from "~pages/shared/queries";
 
@@ -31,7 +31,7 @@ export const SessionAlert = ({
   const { t } = useTranslation();
 
   const { data: settings } = useSettings();
-  const { hash: fromSignInHash } = useLocation();
+  const { hash: fromSignInHash, search } = useLocation();
 
   const [sessionRemainingTimeout, setSessionRemainingTimeout] =
     useState<number>(timeout);
@@ -76,9 +76,10 @@ export const SessionAlert = ({
 
   const handleReturnToLogin = (e: any) => {
     e.preventDefault();
-    window.location.href = getSignInRedirectURL(
+    window.location.href = getSignInRedirectURLV2(
       settings?.response.configs["signin.redirect-url"],
       fromSignInHash,
+      search,
       "/signup"
     );
   };

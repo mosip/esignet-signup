@@ -11,6 +11,20 @@ export const getSignInRedirectURL = (
   return defaultPath + "?ui_locales=" + locale;
 };
 
+export const getSignInRedirectURLV2 = (
+  redirectUrl: string | undefined,
+  hash: string,
+  searchParams: string,
+  defaultPath: string
+): string => {
+  const locale = localStorage.getItem("esignet-signup-language");
+
+  if (!!hash) {
+    return redirectUrl + searchParams + hash;
+  }
+  return defaultPath + "?ui_locales=" + locale;
+};
+
 export const generateRandomString = (strLength = 16) => {
   let result = "";
   const characters = "abcdefghijklmnopqrstuvwxyz0123456789";

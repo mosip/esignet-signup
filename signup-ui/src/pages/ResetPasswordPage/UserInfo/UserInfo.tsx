@@ -42,7 +42,7 @@ import {
 import { cn } from "~utils/cn";
 import { handleInputFilter } from "~utils/input";
 import { getLocale } from "~utils/language";
-import { getSignInRedirectURL } from "~utils/link";
+import { getSignInRedirectURLV2 } from "~utils/link";
 import { useGenerateChallenge } from "~pages/shared/mutations";
 import {
   Error,
@@ -71,7 +71,7 @@ export const UserInfo = ({ settings, methods }: UserInfoProps) => {
   const { i18n, t } = useTranslation();
 
   const _reCaptchaRef = useRef<ReCAPTCHA>(null);
-  const { hash: fromSignInHash } = useLocation();
+  const { hash: fromSignInHash, search } = useLocation();
   const { control, setValue, getValues } = useFormContext();
   const [challengeGenerationError, setChallengeGenerationError] =
     useState<Error | null>(null);
@@ -156,7 +156,8 @@ export const UserInfo = ({ settings, methods }: UserInfoProps) => {
     getValues("username") === resetPasswordFormDefaultValues.username ||
     getValues("fullname") === resetPasswordFormDefaultValues.fullname ||
     (settings.response.configs["send-challenge.captcha.required"] &&
-    getValues("captchaToken") === resetPasswordFormDefaultValues.captchaToken);
+      getValues("captchaToken") ===
+        resetPasswordFormDefaultValues.captchaToken);
 
   const handleContinue = useCallback(
     async (e: MouseEvent<HTMLButtonElement>) => {
@@ -209,9 +210,10 @@ export const UserInfo = ({ settings, methods }: UserInfoProps) => {
           <StepTitle className="relative flex w-full items-center justify-center gap-x-4 font-semibold">
             {!!fromSignInHash && (
               <a
-                href={getSignInRedirectURL(
+                href={getSignInRedirectURLV2(
                   settings?.response.configs["signin.redirect-url"],
                   fromSignInHash,
+                  search,
                   RESET_PASSWORD
                 )}
                 className="absolute left-0 cursor-pointer"
@@ -341,15 +343,17 @@ export const UserInfo = ({ settings, methods }: UserInfoProps) => {
               />
               {/* ReCaptcha */}
               {settings.response.configs["send-challenge.captcha.required"] && (
-              <div id="captcha" className="flex items-center justify-center">
-                <ReCAPTCHA
-                  ref={_reCaptchaRef}
-                  onChange={handleReCaptchaChange}
-                  onExpired={handleReCaptchaExpired}
-                  className="recaptcha"
-                  sitekey={settings.response.configs["captcha.site.key"] ?? ""}
-                />
-              </div>
+                <div id="captcha" className="flex items-center justify-center">
+                  <ReCAPTCHA
+                    ref={_reCaptchaRef}
+                    onChange={handleReCaptchaChange}
+                    onExpired={handleReCaptchaExpired}
+                    className="recaptcha"
+                    sitekey={
+                      settings.response.configs["captcha.site.key"] ?? ""
+                    }
+                  />
+                </div>
               )}
             </div>
             <Button

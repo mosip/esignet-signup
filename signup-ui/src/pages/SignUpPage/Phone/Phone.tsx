@@ -1,11 +1,4 @@
-import {
-  KeyboardEvent,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { KeyboardEvent, useCallback, useEffect, useRef, useState } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
 import { useFormContext, UseFormReturn } from "react-hook-form";
 import { useTranslation } from "react-i18next";
@@ -32,7 +25,7 @@ import {
 import { cn } from "~utils/cn";
 import { handleInputFilter } from "~utils/input";
 import { getLocale } from "~utils/language";
-import { getSignInRedirectURL } from "~utils/link";
+import { getSignInRedirectURLV2 } from "~utils/link";
 import { useGenerateChallenge } from "~pages/shared/mutations";
 import {
   Error,
@@ -83,7 +76,7 @@ export const Phone = ({ settings, methods }: PhoneProps) => {
   const { generateChallengeMutation } = useGenerateChallenge();
   const _reCaptchaRef = useRef<ReCAPTCHA>(null);
   const [error, setError] = useState<Error | null>(null);
-  const { hash: fromSignInHash } = useLocation();
+  const { hash: fromSignInHash, search } = useLocation();
 
   const {
     trigger,
@@ -118,7 +111,7 @@ export const Phone = ({ settings, methods }: PhoneProps) => {
     !isValid ||
     !isDirty ||
     getValues("phone") === signUpFormDefaultValues.phone ||
-    (settings.response.configs["send-challenge.captcha.required"] && 
+    (settings.response.configs["send-challenge.captcha.required"] &&
       getValues("captchaToken") === signUpFormDefaultValues.captchaToken);
 
   const handleContinue = useCallback(
@@ -178,9 +171,10 @@ export const Phone = ({ settings, methods }: PhoneProps) => {
         <StepTitle className="flex w-full items-center justify-center text-base font-semibold leading-5">
           {!!fromSignInHash && (
             <a
-              href={getSignInRedirectURL(
+              href={getSignInRedirectURLV2(
                 settings?.response.configs["signin.redirect-url"],
                 fromSignInHash,
+                search,
                 "/signup"
               )}
               className="flex-none cursor-pointer"
@@ -260,18 +254,18 @@ export const Phone = ({ settings, methods }: PhoneProps) => {
                 </FormItem>
               )}
             />
-            
+
             {settings.response.configs["send-challenge.captcha.required"] && (
               <div id="captcha" className="flex items-center justify-center">
-              {/* I'm not a robot checkbox */}
-              <ReCAPTCHA
-                ref={_reCaptchaRef}
-                onChange={handleReCaptchaChange}
-                onExpired={handleReCaptchaExpired}
-                className="recaptcha"
-                sitekey={settings.response.configs["captcha.site.key"] ?? ""}
-              />
-            </div>
+                {/* I'm not a robot checkbox */}
+                <ReCAPTCHA
+                  ref={_reCaptchaRef}
+                  onChange={handleReCaptchaChange}
+                  onExpired={handleReCaptchaExpired}
+                  className="recaptcha"
+                  sitekey={settings.response.configs["captcha.site.key"] ?? ""}
+                />
+              </div>
             )}
           </div>
           <Button
