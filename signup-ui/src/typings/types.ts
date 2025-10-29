@@ -150,6 +150,7 @@ export interface SettingsConfig {
   "slot.request.limit": number;
   "slot.request.delay": number;
   "popup.timeout": number;
+  "signin.authorization-url": string;
   "signin.redirect-url": string;
   "identifier.allowed.characters": string;
   "identifier.length.min": number;
