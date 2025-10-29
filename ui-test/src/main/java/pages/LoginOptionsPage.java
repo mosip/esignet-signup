@@ -34,18 +34,6 @@ public class LoginOptionsPage extends BasePage {
 	@FindBy(id = "phone_input")
 	WebElement mobileNumberInput;
 
-	@FindBy(id = "fullName_eng")
-	WebElement fullNameEnglishField;
-
-	@FindBy(id = "fullName_khm")
-	WebElement fullNameKhmerField;
-
-	@FindBy(id = "password")
-	WebElement passwordBox;
-
-	@FindBy(id = "password_confirm")
-	WebElement confirmPasswordField;
-
 	@FindBy(id = "login_with_pwd")
 	WebElement loginWithPasswordButton;
 
@@ -179,22 +167,6 @@ public class LoginOptionsPage extends BasePage {
 		enterText(mobileNumberInput, number, "Entered mobile number");
 	}
 
-	public void enterFullnameInEnglish(String name) {
-		enterTextJS(fullNameEnglishField, name);
-	}
-
-	public void enterFullnameInKhmer(String name) {
-		enterTextJS(fullNameKhmerField, name);
-	}
-
-	public void enterPassword(String password) {
-		enterText(passwordBox, password, "Entered password");
-	}
-
-	public void enterConfirmPwd(String confirmPassword) {
-		enterText(confirmPasswordField, confirmPassword, "Entered confirm password");
-	}
-
 	public void enterRegisteredMobileNumber(String number) {
 		registeredMobileNumberField.clear();
 		enterText(registeredMobileNumberField, number, "Entered registered mobile number");
@@ -281,7 +253,7 @@ public class LoginOptionsPage extends BasePage {
 	}
 
 	public void waitUntilLivenessCheckCompletes() {
-		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(50));
+		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(70));
 		wait.until(ExpectedConditions.visibilityOf(allowButtonInConsentScreen));
 	}
 

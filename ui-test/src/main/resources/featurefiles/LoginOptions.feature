@@ -30,10 +30,7 @@ Feature: Esignet Login Options Page
     Then user clicks on continue button on success page
     And user redirected to registration page
 
-    Then user enter valid full name in the Full Name field
-    And user enter valid password in the Password field
-    And user enter valid confirm password in the Confirm Password field
-    And user clicks on agrees terms condition check-box
+    And user fills the signup form using UI spec
     And user clicks on continue button on registration page
     Then it will redirect to congratulations on login page
     And user clicks on login button
@@ -150,6 +147,3 @@ Feature: Esignet Login Options Page
 
     When user enter alphaNumeric into mobile number field
     Then verify input should restrict it and allow only numbers
-
-
-  

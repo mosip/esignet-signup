@@ -1,7 +1,9 @@
 package utils;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.regex.Pattern;
 
@@ -47,7 +49,7 @@ public class EsignetUtil extends AdminTestUtil {
 			signupActiveProfiles = getActiveProfilesFromActuator(UiConstants.SIGNUP_ACTUATOR_URL,
 					UiConstants.ACTIVE_PROFILES);
 		}
-		
+
 		// First try to fetch the value from system environment
 		value = getValueFromSignupActuatorWithUrl(UiConstants.SYSTEM_ENV_SECTION, keyForEnvVariableSection,
 				UiConstants.SIGNUP_ACTUATOR_URL);
@@ -88,7 +90,7 @@ public class EsignetUtil extends AdminTestUtil {
 			value = getValueFromSignupActuatorWithUrl(EsignetConfigManager.getEsignetActuatorPropertySection(), key,
 					UiConstants.SIGNUP_ACTUATOR_URL);
 		}
-		
+
 		// Final fallback to the original section if no value was found
 		if (value == null || value.isBlank()) {
 			value = getValueFromSignupActuatorWithUrl(section, key, UiConstants.SIGNUP_ACTUATOR_URL);
@@ -112,7 +114,7 @@ public class EsignetUtil extends AdminTestUtil {
 		}
 
 		try {
-			
+
 			// Fetch the actuator response array if not already populated
 			if (signupActuatorResponseArray == null) {
 				Response response = RestClient.getRequest(url, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
@@ -185,14 +187,17 @@ public class EsignetUtil extends AdminTestUtil {
 	public static String generateMobileNumberFromRegex() {
 		String regex = getValueFromSignupActuator("applicationConfig: [classpath:/application-default.properties]",
 				"mosip.signup.identifier.regex");
+
 		String digitRange = regex.substring(regex.indexOf('{') + 1, regex.indexOf('}'));
 		String[] parts = digitRange.split(",");
+		int min = Integer.parseInt(parts[0].trim());
+		int max = Integer.parseInt(parts[1].trim());
 
-		int min = Integer.parseInt(parts[0]);
-		int max = (parts.length > 1) ? Integer.parseInt(parts[1]) : min;
-		int length = (min + new Random().nextInt(max - min + 1)) + 1;
+		int length = min + new Random().nextInt(max - min + 1);
+
 		StringBuilder number = new StringBuilder();
 		number.append(new Random().nextInt(9) + 1);
+
 		for (int i = 1; i < length; i++) {
 			number.append(new Random().nextInt(10));
 		}
@@ -513,7 +518,7 @@ public class EsignetUtil extends AdminTestUtil {
 
 	public static String getMoreThanMaxLengthFullName(String lang) {
 		int maxLength = extractMaxLength(getRegexForFullName(lang));
-		return generateKhmerName(maxLength + 10);
+		return generateKhmerName(maxLength + 20);
 	}
 
 	public static String getNumericFullName(String lang) {
@@ -526,4 +531,120 @@ public class EsignetUtil extends AdminTestUtil {
 		return generateKhmerName(minLength - 1) + "1";
 	}
 
+	public static String getRegexForField(String fieldId) {
+		return getRegexForField(fieldId, "en");
+	}
+
+	public static JSONArray getSignupSchemaArray() {
+		JSONObject resp = null;
+		try {
+			resp = getSignupUISpecResponse().optJSONObject("response");
+		} catch (Exception e) {
+			return new JSONArray();
+		}
+		if (resp != null && resp.has("schema")) {
+			return resp.optJSONArray("schema");
+		}
+		return new JSONArray();
+	}
+
+	public static String generateEmailFromRegex(String regex) {
+		if (regex == null || regex.isEmpty()) {
+			return "user" + System.currentTimeMillis() + "@example.com";
+		}
+
+		String localChars;
+		if (regex.contains("A-Z") && regex.contains("a-z")) {
+			localChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789._-";
+		} else if (regex.contains("a-z")) {
+			localChars = "abcdefghijklmnopqrstuvwxyz0123456789._-";
+		} else if (regex.contains("A-Z")) {
+			localChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789._-";
+		} else {
+			localChars = "abcdefghijklmnopqrstuvwxyz0123456789";
+		}
+
+		Random random = new Random();
+		int localLength = 6 + random.nextInt(5);
+		StringBuilder localPart = new StringBuilder();
+		for (int i = 0; i < localLength; i++) {
+			localPart.append(localChars.charAt(random.nextInt(localChars.length())));
+		}
+
+		String[] domains = { "gmail.com", "yahoo.com", "outlook.com", "example.com" };
+		String domain = domains[random.nextInt(domains.length)];
+
+		String email = localPart + "@" + domain;
+
+		return email;
+	}
+
+	public static String generateValueFromRegex(String regex) {
+		if (regex == null || regex.isEmpty()) {
+			return "defaultValue";
+		}
+
+		Random random = new Random();
+
+		StringBuilder chars = new StringBuilder();
+		if (regex.contains("A-Z"))
+			chars.append("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+		if (regex.contains("a-z"))
+			chars.append("abcdefghijklmnopqrstuvwxyz");
+		if (regex.contains("0-9"))
+			chars.append("0123456789");
+
+		if (chars.length() == 0) {
+			chars.append("abcdefghijklmnopqrstuvwxyz");
+		}
+
+		int min = 8, max = 8;
+		if (regex.contains("{") && regex.contains("}")) {
+			String range = regex.substring(regex.indexOf('{') + 1, regex.indexOf('}'));
+			String[] parts = range.split(",");
+			try {
+				if (parts.length == 2) {
+					min = Integer.parseInt(parts[0].trim());
+					max = Integer.parseInt(parts[1].trim());
+				} else {
+					min = max = Integer.parseInt(parts[0].trim());
+				}
+			} catch (NumberFormatException ignored) {
+			}
+		}
+
+		int length = min + random.nextInt(Math.max(1, max - min + 1));
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < length; i++) {
+			sb.append(chars.charAt(random.nextInt(chars.length())));
+		}
+
+		return sb.toString();
+	}
+
+	public static Map<String, Map<String, Object>> getUiSpecFields() {
+		Map<String, Map<String, Object>> fieldsMap = new LinkedHashMap<>();
+
+		JSONObject response = getSignupUISpecResponse().optJSONObject("response");
+		if (response == null)
+			return fieldsMap;
+
+		JSONArray schema = response.optJSONArray("schema");
+		if (schema == null)
+			return fieldsMap;
+
+		for (int i = 0; i < schema.length(); i++) {
+			JSONObject field = schema.optJSONObject(i);
+			if (field == null)
+				continue;
+
+			String fieldId = field.optString("id", null);
+			if (fieldId != null) {
+				Map<String, Object> fieldDetails = field.toMap();
+				fieldsMap.put(fieldId, fieldDetails);
+			}
+		}
+
+		return fieldsMap;
+	}
 }

@@ -113,6 +113,18 @@ public class BaseTestUtil {
 		case "chrome":
 			WebDriverManager.chromedriver().setup();
 			ChromeOptions chromeOptions = new ChromeOptions();
+			
+			chromeOptions.addArguments("--use-fake-ui-for-media-stream");      // auto-allow camera
+		    chromeOptions.addArguments("--use-fake-device-for-media-stream");  
+		    chromeOptions.addArguments("--enable-media-stream");
+
+		    Map<String, Object> prefs = new HashMap<>();
+		    Map<String, Object> profile = new HashMap<>();
+		    Map<String, Object> contentSettings = new HashMap<>();
+		    contentSettings.put("media_stream_camera", 1); 
+		    profile.put("managed_default_content_settings", contentSettings);
+		    prefs.put("profile", profile);
+		    chromeOptions.setExperimentalOption("prefs", prefs);
 
 			// Enable mobile emulation if requested
 			if (isMobile) {
