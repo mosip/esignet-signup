@@ -89,13 +89,23 @@ export const AccountSetup = ({ settings, methods }: AccountSetupProps) => {
       });
 
     const uploadResults = await Promise.all(uploadMutationList || []);
-    const allSuccess = uploadResults.every((res: RegisterResponseDto) => {
-      if (res.response?.status === "UPLOADED") {
-        return true;
+
+    let allSuccess = true;
+    let currentError = null;
+    for (const res of uploadResults) {
+      if ((res as RegisterResponseDto).response?.status !== "UPLOADED") {
+        allSuccess = false;
+        if (res.errors && res.errors.length > 0) {
+          currentError = res.errors[0];
+        }
+        break; // Exit the loop immediately when condition fails
       }
-      return false;
-    });
+    }
+
     if (!allSuccess) {
+      if (currentError) {
+        throw new Error(currentError.errorCode);
+      }
       throw new Error("upload_failed");
     }
   };
@@ -107,9 +117,12 @@ export const AccountSetup = ({ settings, methods }: AccountSetupProps) => {
       await uploadFile(data);
     } catch (error) {
       setCriticalError({
-        errorCode: "upload_failed",
+        errorCode: (error as Error).message,
         errorMessage: "File upload failed",
       });
+      if ((error as Error).message === "invalid_transaction") {
+        setStep(SignUpStep.AccountRegistrationStatus);
+      }
       return;
     }
 

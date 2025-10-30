@@ -1,30 +1,27 @@
-import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
+import { useLocation } from "react-router-dom";
 
 import { Button } from "~components/ui/button";
 import { Icons } from "~components/ui/icons";
 import { Step, StepContent } from "~components/ui/step";
+import { getSignInRedirectURLV2 } from "~utils/link";
 import { useSettings } from "~pages/shared/queries";
-
-import { criticalErrorSelector, useSignUpStore } from "../../useSignUpStore";
 
 export const UploadFileErrorModal = () => {
   const { t } = useTranslation();
   const { data: settings } = useSettings();
 
-  const { criticalError } = useSignUpStore(
-    useCallback(
-      (state) => ({
-        criticalError: criticalErrorSelector(state),
-      }),
-      []
-    )
-  );
+  const { hash: fromSignInHash, search } = useLocation();
 
   const handleContinue = (e: any) => {
     e.preventDefault();
     window.onbeforeunload = null;
-    window.location.href = `${settings?.response?.configs["esignet-consent.redirect-url"]}?&error=${criticalError?.errorCode}`;
+    window.location.href = getSignInRedirectURLV2(
+      settings?.response.configs["signin.redirect-url"],
+      fromSignInHash,
+      search,
+      "/signup"
+    );
   };
 
   return (
