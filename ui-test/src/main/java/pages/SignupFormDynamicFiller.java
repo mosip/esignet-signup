@@ -63,9 +63,8 @@ public class SignupFormDynamicFiller {
 
 			if (fieldId.toLowerCase().contains("name")) {
 				EsignetUtil.FullName names = EsignetUtil.generateNamesFromUiSpec();
-				List<WebElement> nameFields = driver.findElements(By.xpath("//*[contains(@data-field-id,'name')]"));
 
-				for (WebElement nameField : nameFields) {
+				for (WebElement nameField : matchingElements) {
 					String lang = nameField.getAttribute("data-lang");
 
 					if ("eng".equalsIgnoreCase(lang)) {
