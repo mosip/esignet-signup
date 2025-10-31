@@ -1,5 +1,6 @@
 package pages;
 
+import org.apache.log4j.Logger;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.Select;
 
@@ -13,6 +14,7 @@ import java.util.Random;
 public class SignupFormDynamicFiller {
 
 	private WebDriver driver;
+	private static final Logger logger = Logger.getLogger(SignupFormDynamicFiller.class);
 	RegistrationPage registrationPage;
 
 	public SignupFormDynamicFiller(WebDriver driver) {
@@ -46,7 +48,7 @@ public class SignupFormDynamicFiller {
 			}
 
 			if (element == null) {
-				System.out.println("No element found for fieldId: " + fieldId);
+				logger.info("No element found for fieldId: " + fieldId);
 				continue;
 			}
 
@@ -73,11 +75,26 @@ public class SignupFormDynamicFiller {
 			}
 
 			if (fieldId.equalsIgnoreCase("fullName")) {
-				EsignetUtil.FullName names = EsignetUtil.generateNamesFromUiSpec();
-				enterTextById("fullName_eng", names.english);
-				enterTextById("fullName_khm", names.khmer);
-				RegisteredDetails.setFullName(names.khmer);
-				continue;
+			    EsignetUtil.FullName names = EsignetUtil.generateNamesFromUiSpec();
+			    List<WebElement> fullNameFields = driver.findElements(By.xpath("//*[@data-field-id='fullName']"));
+
+			    for (WebElement nameField : fullNameFields) {
+			        String lang = nameField.getAttribute("data-lang");
+
+			        if ("eng".equalsIgnoreCase(lang)) {
+			            nameField.clear();
+			            nameField.sendKeys(names.english);
+			        } 
+			        else if ("khm".equalsIgnoreCase(lang)) {
+			            nameField.clear();
+			            nameField.sendKeys(names.khmer);
+			            RegisteredDetails.setFullName(names.khmer);
+			        } 
+			        else {
+			            logger.info("Full name entry not supported for language: " + lang);
+			        }
+			    }
+			    continue;
 			}
 
 			if (fieldId.equalsIgnoreCase("password")) {
