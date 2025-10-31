@@ -30,28 +30,15 @@ public class SignupFormDynamicFiller {
 				continue;
 			}
 
-			WebElement element = null;
+			List<WebElement> matchingElements = driver
+					.findElements(By.xpath("//*[@id='" + fieldId + "' or @data-field-id='" + fieldId + "']"));
 
-			// Try finding element by id
-			List<WebElement> elementsById = driver.findElements(By.id(fieldId));
-			if (!elementsById.isEmpty()) {
-				element = elementsById.get(0);
-			}
-
-			// Try finding element by data-field-id if not found
-			if (element == null) {
-				List<WebElement> elementsByDataId = driver
-						.findElements(By.xpath("//*[@data-field-id='" + fieldId + "']"));
-				if (!elementsByDataId.isEmpty()) {
-					element = elementsByDataId.get(0);
-				}
-			}
-
-			if (element == null) {
+			if (matchingElements.isEmpty()) {
 				logger.info("No element found for fieldId: " + fieldId);
 				continue;
 			}
 
+			WebElement element = matchingElements.get(0);
 			String tag = element.getTagName();
 			String type = element.getAttribute("type");
 
@@ -74,27 +61,25 @@ public class SignupFormDynamicFiller {
 				continue;
 			}
 
-			if (fieldId.equalsIgnoreCase("fullName")) {
-			    EsignetUtil.FullName names = EsignetUtil.generateNamesFromUiSpec();
-			    List<WebElement> fullNameFields = driver.findElements(By.xpath("//*[@data-field-id='fullName']"));
+			if (fieldId.toLowerCase().contains("name")) {
+				EsignetUtil.FullName names = EsignetUtil.generateNamesFromUiSpec();
+				List<WebElement> nameFields = driver.findElements(By.xpath("//*[contains(@data-field-id,'name')]"));
 
-			    for (WebElement nameField : fullNameFields) {
-			        String lang = nameField.getAttribute("data-lang");
+				for (WebElement nameField : nameFields) {
+					String lang = nameField.getAttribute("data-lang");
 
-			        if ("eng".equalsIgnoreCase(lang)) {
-			            nameField.clear();
-			            nameField.sendKeys(names.english);
-			        } 
-			        else if ("khm".equalsIgnoreCase(lang)) {
-			            nameField.clear();
-			            nameField.sendKeys(names.khmer);
-			            RegisteredDetails.setFullName(names.khmer);
-			        } 
-			        else {
-			            logger.info("Full name entry not supported for language: " + lang);
-			        }
-			    }
-			    continue;
+					if ("eng".equalsIgnoreCase(lang)) {
+						nameField.clear();
+						nameField.sendKeys(names.english);
+					} else if ("khm".equalsIgnoreCase(lang)) {
+						nameField.clear();
+						nameField.sendKeys(names.khmer);
+						RegisteredDetails.setFullName(names.khmer);
+					} else {
+						logger.info("Full name entry not supported for language: " + lang);
+					}
+				}
+				continue;
 			}
 
 			if (fieldId.equalsIgnoreCase("password")) {
