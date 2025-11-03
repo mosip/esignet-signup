@@ -224,7 +224,7 @@ public class RegistrationPage extends BasePage {
 	@FindBy(xpath = "//div[@class='alternate-icon-div']")
 	WebElement uploadPhoto;
 	
-	@FindBy(id = "individualBiometrics-capture-button")
+	@FindBy(xpath = "//button[contains(@id,'capture-button')]")
 	WebElement captureButton;
 
 	public boolean isRegistrationScreenDisplayed() {

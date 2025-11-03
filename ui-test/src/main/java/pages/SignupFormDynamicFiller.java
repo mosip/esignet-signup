@@ -26,6 +26,9 @@ public class SignupFormDynamicFiller {
 
 		for (String fieldId : uiSpecFields.keySet()) {
 
+			Map<String, Object> fieldProps = uiSpecFields.get(fieldId);
+			String controlType = (String) fieldProps.get("controlType");
+
 			if (fieldId.equalsIgnoreCase("phone")) {
 				continue;
 			}
@@ -42,13 +45,13 @@ public class SignupFormDynamicFiller {
 			String tag = element.getTagName();
 			String type = element.getAttribute("type");
 
-			if (fieldId.equalsIgnoreCase("individualBiometrics")) {
+			if ("photo".equalsIgnoreCase(controlType)) {
 				registrationPage.clickOnUploadPhoto();
 				registrationPage.clickOnCaptureButton();
 				continue;
 			}
 
-			if ("checkbox".equalsIgnoreCase(type) || fieldId.equalsIgnoreCase("consent")) {
+			if ("checkbox".equalsIgnoreCase(controlType)) {
 				if (!element.isSelected()) {
 					((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({block: 'center'});",
 							element);
@@ -61,7 +64,7 @@ public class SignupFormDynamicFiller {
 				continue;
 			}
 
-			if (fieldId.toLowerCase().contains("name")) {
+			if ("textbox".equalsIgnoreCase(controlType) && fieldId.toLowerCase().contains("name")) {
 				EsignetUtil.FullName names = EsignetUtil.generateNamesFromUiSpec();
 
 				for (WebElement nameField : matchingElements) {
@@ -81,7 +84,7 @@ public class SignupFormDynamicFiller {
 				continue;
 			}
 
-			if (fieldId.equalsIgnoreCase("password")) {
+			if ("password".equalsIgnoreCase(controlType)) {
 				String password = EsignetUtil.generateValidPasswordFromActuator();
 				RegisteredDetails.setPassword(password);
 				element.clear();
@@ -93,14 +96,14 @@ public class SignupFormDynamicFiller {
 				continue;
 			}
 
-			if (fieldId.equalsIgnoreCase("email")) {
+			if ("textbox".equalsIgnoreCase(controlType) && fieldId.equalsIgnoreCase("email")) {
 				String email = EsignetUtil.generateEmailFromRegex(fieldId);
 				element.clear();
 				element.sendKeys(email);
 				continue;
 			}
 
-			if (tag.equalsIgnoreCase("select")) {
+			if ("dropdown".equalsIgnoreCase(controlType)) {
 				Select dropdown = new Select(element);
 				List<WebElement> options = dropdown.getOptions();
 				if (options.size() > 1) {
@@ -110,18 +113,13 @@ public class SignupFormDynamicFiller {
 				continue;
 			}
 
-			if (tag.equalsIgnoreCase("input") || tag.equalsIgnoreCase("textarea")) {
+			if ("textbox".equalsIgnoreCase(controlType)
+					&& (tag.equalsIgnoreCase("input") || tag.equalsIgnoreCase("textarea"))) {
 				String regex = EsignetUtil.getRegexForField(fieldId);
 				String value = EsignetUtil.generateValueFromRegex(regex);
 				element.clear();
 				element.sendKeys(value);
 			}
 		}
-	}
-
-	private void enterTextById(String id, String value) {
-		WebElement element = driver.findElement(By.id(id));
-		element.clear();
-		element.sendKeys(value);
 	}
 }
