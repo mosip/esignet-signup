@@ -187,22 +187,18 @@ public class EsignetUtil extends AdminTestUtil {
 	public static String generateMobileNumberFromRegex() {
 		String regex = getValueFromSignupActuator("applicationConfig: [classpath:/application-default.properties]",
 				"mosip.signup.identifier.regex");
-
-		String digitRange = regex.substring(regex.indexOf('{') + 1, regex.indexOf('}'));
-		String[] parts = digitRange.split(",");
-		int min = Integer.parseInt(parts[0].trim());
-		int max = Integer.parseInt(parts[1].trim());
-
-		int length = min + new Random().nextInt(max - min + 1);
-
-		StringBuilder number = new StringBuilder();
-		number.append(new Random().nextInt(9) + 1);
-
-		for (int i = 1; i < length; i++) {
-			number.append(new Random().nextInt(10));
+		
+		String phoneNumber = "";
+		try {
+			phoneNumber = AdminTestUtil.genStringAsperRegex(regex);
+		} catch (Exception e) {
+			logger.info("Phone Number is not generated with regex: " + e);;
 		}
+		
+		String countryCode = regex.substring(regex.indexOf('\\') + 1, regex.indexOf('['));
+		phoneNumber = phoneNumber.replace(countryCode, "");
 
-		return number.toString();
+		return phoneNumber;
 	}
 
 	public static String getCountryCodeFromActuator() {
