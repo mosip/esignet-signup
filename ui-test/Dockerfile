@@ -28,8 +28,8 @@ ENV work_dir=/home/${container_user}
 RUN apk -q update && \
     apk add -q wget curl unzip xvfb libxi6 libgconf-2-4 chromium chromium-driver && \
     \
-    groupadd -g ${container_user_gid} ${container_user_group} && \
-    useradd -m -u ${container_user_uid} -g ${container_user_group} -s /bin/bash ${container_user} && \
+    addgroup -g ${container_user_gid} ${container_user_group} && \
+    adduser -m -u ${container_user_uid} -g ${container_user_group} -s /bin/bash ${container_user} && \
     \
     curl -LO "https://storage.googleapis.com/kubernetes-release/release/v${KUBECTL_VERSION}/bin/linux/amd64/kubectl" && \
     chmod +x kubectl && mv kubectl /usr/local/bin/ && \
