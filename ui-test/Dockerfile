@@ -1,5 +1,5 @@
 # --- Base image ---
-FROM openjdk:21-slim
+FROM eclipse-temurin:21-jre-alpine
 
 # --- Build-time arguments (MUST be declared before LABEL) ---
 ARG SOURCE
@@ -25,9 +25,8 @@ ENV DISPLAY=:99
 ENV work_dir=/home/${container_user}
 
 # --- Install dependencies & setup user ---
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-        wget curl unzip xvfb libxi6 libgconf-2-4 chromium chromium-driver && \
+RUN apk -q update && \
+    apk add -q wget curl unzip xvfb libxi6 libgconf-2-4 chromium chromium-driver && \
     \
     groupadd -g ${container_user_gid} ${container_user_group} && \
     useradd -m -u ${container_user_uid} -g ${container_user_group} -s /bin/bash ${container_user} && \

@@ -45,8 +45,8 @@ ADD configure_start.sh configure_start.sh
 COPY ./target/signup-service-*.jar signup-service.jar
 
 ## install packages, create user and change permissions of file inside working dir
-RUN apt-get -y update \
-&& apt-get install -y unzip file sudo \
+RUN apk -q update \
+&& apk add -q unzip file sudo \
 && groupadd -g ${container_user_gid} ${container_user_group} \
 && useradd -u ${container_user_uid} -g ${container_user_group} -s /bin/sh -m ${container_user} \
 && adduser ${container_user} sudo \
