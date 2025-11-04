@@ -188,7 +188,7 @@ public class EsignetUtil extends AdminTestUtil {
 		String regex = getValueFromSignupActuator("applicationConfig: [classpath:/application-default.properties]",
 				"mosip.signup.identifier.regex");
 
-		String digitRange = regex.substring(regex.indexOf('{') + 1, regex.indexOf('}'));
+		String digitRange = regex.substring(regex.lastIndexOf('{') + 1, regex.lastIndexOf('}'));
 		String[] parts = digitRange.split(",");
 		int min = Integer.parseInt(parts[0].trim());
 		int max = Integer.parseInt(parts[1].trim());
@@ -198,7 +198,7 @@ public class EsignetUtil extends AdminTestUtil {
 		StringBuilder number = new StringBuilder();
 		number.append(new Random().nextInt(9) + 1);
 
-		for (int i = 1; i < length; i++) {
+		for (int i = 0; i < length; i++) {
 			number.append(new Random().nextInt(10));
 		}
 
