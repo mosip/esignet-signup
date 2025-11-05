@@ -68,24 +68,48 @@ public class BaseTestUtil {
 	}
 
 	public static List<DesiredCapabilities> getAllCapabilities() {
-		List<DesiredCapabilities> capsList = new ArrayList<>();
-		String browsers = EsignetConfigManager.getProperty("browsers", EsignetConfigManager.getproperty("browserName"));
+	    List<DesiredCapabilities> capsList = new ArrayList<>();
+	    String browsers = EsignetConfigManager.getProperty("browsers", EsignetConfigManager.getproperty("browserName"));
 
-		for (String browser : browsers.split(",")) {
-			DesiredCapabilities caps = new DesiredCapabilities();
-			caps.setCapability("browserName", browser.trim());
-			caps.setCapability("browserVersion", EsignetConfigManager.getproperty("browserVersion"));
+	    for (String browser : browsers.split(",")) {
+	        DesiredCapabilities caps = new DesiredCapabilities();
+	        caps.setCapability("browserName", browser.trim());
+	        caps.setCapability("browserVersion", EsignetConfigManager.getproperty("browserVersion"));
 
-			HashMap<String, Object> bsOptions = new HashMap<>();
-			bsOptions.put("os", EsignetConfigManager.getproperty("browserStackOs"));
-			bsOptions.put("osVersion", EsignetConfigManager.getproperty("osVersion"));
-			bsOptions.put("projectName", "MOSIP ESignet UI Test");
-			caps.setCapability("bstack:options", bsOptions);
+	        HashMap<String, Object> bsOptions = new HashMap<>();
+	        bsOptions.put("os", EsignetConfigManager.getproperty("browserStackOs"));
+	        bsOptions.put("osVersion", EsignetConfigManager.getproperty("osVersion"));
+	        bsOptions.put("projectName", "MOSIP ESignet UI Test");
+	        caps.setCapability("bstack:options", bsOptions);
 
-			capsList.add(caps);
-		}
+	        if (browser.equalsIgnoreCase("chrome")) {
+	            ChromeOptions chromeOptions = new ChromeOptions();
+	            chromeOptions.addArguments("--use-fake-ui-for-media-stream");     // auto allow camera
+	            chromeOptions.addArguments("--use-fake-device-for-media-stream");
 
-		return capsList;
+	            caps.setCapability(ChromeOptions.CAPABILITY, chromeOptions);
+	        }
+	        
+	        else if (browser.equalsIgnoreCase("firefox")) {
+	            FirefoxOptions firefoxOptions = new FirefoxOptions();
+	            firefoxOptions.addPreference("media.navigator.streams.fake", true); 
+	            firefoxOptions.addPreference("media.navigator.permission.disabled", true); 
+	            caps.setCapability(FirefoxOptions.FIREFOX_OPTIONS, firefoxOptions);
+	        }
+
+	        else if (browser.equalsIgnoreCase("edge")) {
+	            EdgeOptions edgeOptions = new EdgeOptions();
+	            edgeOptions.addArguments("--use-fake-ui-for-media-stream");
+	            edgeOptions.addArguments("--use-fake-device-for-media-stream");
+	            caps.setCapability(EdgeOptions.CAPABILITY, edgeOptions);
+	        }
+
+	        else if (browser.equalsIgnoreCase("safari")) {
+	        	LOGGER.info("Note: Safari does not support auto-allow camera via options.");
+	        }
+	        capsList.add(caps);
+	    }
+	    return capsList;
 	}
 
 	public static WebDriver getWebDriverInstance(String browserName) throws MalformedURLException {
@@ -155,23 +179,32 @@ public class BaseTestUtil {
 		case "firefox":
 			WebDriverManager.firefoxdriver().setup();
 			FirefoxOptions firefoxOptions = new FirefoxOptions();
-			if (isHeadless)
-				firefoxOptions.addArguments("--headless");
-			driver = new FirefoxDriver(firefoxOptions);
-			break;
+			firefoxOptions.addPreference("media.navigator.streams.fake", true);
+	        firefoxOptions.addPreference("media.navigator.permission.disabled", true);
 
-		case "edge":
-			WebDriverManager.edgedriver().setup();
-			EdgeOptions edgeOptions = new EdgeOptions();
-			if (isHeadless)
-				edgeOptions.addArguments("--headless=new");
-			driver = new EdgeDriver(edgeOptions);
-			break;
+	        if (isHeadless)
+	            firefoxOptions.addArguments("--headless");
+	        driver = new FirefoxDriver(firefoxOptions);
+	        break;
 
-		case "safari":
-			driver = new SafariDriver();
-			break;
+	    case "edge":
+	        WebDriverManager.edgedriver().setup();
+	        EdgeOptions edgeOptions = new EdgeOptions();
 
+	        edgeOptions.addArguments("--use-fake-ui-for-media-stream");
+	        edgeOptions.addArguments("--use-fake-device-for-media-stream");
+	        edgeOptions.addArguments("--enable-media-stream");
+
+	        if (isHeadless)
+	            edgeOptions.addArguments("--headless=new");
+	        driver = new EdgeDriver(edgeOptions);
+	        break;
+
+	    case "safari":
+	        driver = new SafariDriver();
+	        LOGGER.info("Safari doesn’t support auto camera permissions via code");
+	        break;
+	        
 		default:
 			throw new IllegalArgumentException("Unsupported browser: " + browser);
 		}
