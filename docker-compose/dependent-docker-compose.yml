@@ -79,7 +79,7 @@ services:
       - mock-identity-system
 
   esignet-ui:
-    image: 'mosipid/oidc-ui:1.6.2'
+    image: 'mosipdev/oidc-ui:develop'
     user: root
     ports:
       - 3000:3000
