@@ -3,7 +3,26 @@
 ## Overview
 
 Signup UI has provision to verify the user's phone number with OTP and on successful verification user is allowed to 
-register in the integrated ID registry.Both register and reset password requires OTP verification.
+register in the integrated ID registry. Both register and reset password requires OTP verification.
+
+The registration form is built using MOSIP's [Dynamic form library](https://github.com/mosip/mosip-sdk/tree/develop/json-form-builder).
+
+## Dynamic Registration Form
+
+This is a flexible, plug-and-play library that generates forms with automated validation. It takes an identity schema as input and dynamically builds a registration form to match it.
+
+For more details on how to use the library, please refer to the [official documentation](https://github.com/mosip/esignet/blob/develop/docs/design/dynamic-forms.md).
+
+For Identity schema reference, see this [MOSIP UI JSON specification](https://docs.mosip.io/1.2.0/id-lifecycle-management/identity-issuance/registration-client/develop/registration-client-ui-specifications#field-spec-json-template).
+
+> **Note:** Only the **Field spec JSON template** section from the above link is applicable here.
+
+### Configuring Dynamic Registration Form
+
+**Mock**: Update the `mock-identity-system` service by adding the schema as a raw JSON file URL. The property for this should be named `MOSIP_MOCK_UI_SPEC_SCHEMA_URL`.
+
+**Mosipid**: Update the JSON file content to the `ui-spec` table in the master database of production environment, setting the domain to `esignet-signup`. Next, verify that every property defined in your JSON schema also exists in the `identity_schema` table of the same database. Failure to do so will result in an unknown_field error.
+
 
 ## Local Development
 
