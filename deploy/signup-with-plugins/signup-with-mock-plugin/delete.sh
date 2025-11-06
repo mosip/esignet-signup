@@ -12,7 +12,7 @@ function Deleting_signup_with_mock_plugin() {
       read -p "Are you sure you want to delete signup-with-mock-plugin helm charts?(Y/n) " yn
       if [[ $yn = "Y" ]] || [[ $yn = "y" ]];
         then
-          helm -n $NS delete signup-mock
+          helm -n $NS delete signup
           break
         else
           break
