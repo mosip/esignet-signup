@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.time.Duration;
+import java.util.Map;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -25,6 +26,7 @@ import io.mosip.testrig.apirig.testrunner.OTPListener;
 import pages.LoginOptionsPage;
 import pages.RegistrationPage;
 import pages.SignUpPage;
+import pages.SignupFormDynamicFiller;
 import pages.SmtpPage;
 import utils.BaseTestUtil;
 import utils.ClaimsUtil;
@@ -41,6 +43,7 @@ public class SignUpStepDef {
 	LoginOptionsPage loginOptionsPage;
 	RegistrationPage registrationPage;
 	SmtpPage smtpPage;
+	SignupFormDynamicFiller formFiller;
 
 	public SignUpStepDef(BaseTest baseTest) {
 		this.baseTest = baseTest;
@@ -50,6 +53,7 @@ public class SignUpStepDef {
 		loginOptionsPage = new LoginOptionsPage(driver);
 		registrationPage = new RegistrationPage(driver);
 		smtpPage = new SmtpPage(driver);
+		formFiller = new SignupFormDynamicFiller(driver);
 	}
 
 	@Then("verify Sign-Up with Unified Login option should be displayed")
@@ -277,7 +281,7 @@ public class SignUpStepDef {
 		Assert.assertTrue(actualMessage.contains(String.valueOf(remainingAttempts)),
 				"Expected attempt count: " + remainingAttempts + " not found. Actual: " + actualMessage);
 	}
-	
+
 	@When("user clicks the back button on the OTP screen")
 	public void userClicksBackButtonOnOtpScreen() {
 		registrationPage.clickOnNavigateBackButton();
@@ -538,11 +542,6 @@ public class SignUpStepDef {
 		registrationPage.enterFullNameInKhmer(maxFullName);
 	}
 
-	@Then("verify the field restrict the input to 30 characters only")
-	public void fieldShouldRestrictInputToThirtyCharsOnly() {
-		assertTrue(registrationPage.isFullNameInKhmerRestrictedToThirtyChars());
-	}
-
 	@When("user enters only spaces in the Full Name in field")
 	public void userEntersOnlySpacesFullName() {
 		registrationPage.enterOnlySpacesFullName(5);
@@ -573,10 +572,10 @@ public class SignUpStepDef {
 
 	@Then("verify the watermark text in the Password field")
 	public void verifyPasswordWatermark() {
-		String langCode = ClaimsUtil.getDefaultLanguage(); 
-	    String expectedPlaceholder = EsignetUtil.getPlaceholderForPassword(langCode);
-	    String actualPlaceholder = registrationPage.getPasswordFieldPlaceholder();
-	    Assert.assertEquals(actualPlaceholder, expectedPlaceholder);
+		String langCode = ClaimsUtil.getDefaultLanguage();
+		String expectedPlaceholder = EsignetUtil.getPlaceholderForPassword(langCode);
+		String actualPlaceholder = registrationPage.getPasswordFieldPlaceholder();
+		Assert.assertEquals(actualPlaceholder, expectedPlaceholder);
 	}
 
 	@When("user enters password less than minimum length in the Password field")
@@ -948,6 +947,22 @@ public class SignUpStepDef {
 
 		registrationPage.enterFullNameInEnglish(names.english);
 		registrationPage.enterFullNameInKhmer(names.khmer);
+	}
+
+	@Then("user click on upload profile photo section")
+	public void userClicksOnUploadPhotoSeciton() {
+		registrationPage.clickOnUploadPhoto();
+	}
+
+	@Then("user click on capture button")
+	public void userClickOnCaptureButton() {
+		registrationPage.clickOnCaptureButton();
+	}
+
+	@When("user fills the signup form using UI spec")
+	public void user_fills_signup_form_using_ui_spec() {
+		Map<String, Map<String, Object>> uiSpecFields = EsignetUtil.getUiSpecFields();
+		formFiller.fillFormFromUiSpec(uiSpecFields);
 	}
 
 	/*

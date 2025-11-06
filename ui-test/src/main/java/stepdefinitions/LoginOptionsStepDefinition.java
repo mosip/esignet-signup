@@ -75,31 +75,6 @@ public class LoginOptionsStepDefinition {
 		assertTrue(registrationPage.isSetupAccountPageVisible());
 	}
 
-	@Then("user enter valid full name in the Full Name field")
-	public void userEnterFullName() {
-		EsignetUtil.FullName names = EsignetUtil.generateNamesFromUiSpec();
-		loginOptionsPage.enterFullnameInEnglish(names.english);
-		loginOptionsPage.enterFullnameInKhmer(names.khmer);
-	}
-
-	@And("user enter valid password in the Password field")
-	public void entersValidPassword() {
-		String password = EsignetUtil.generateValidPasswordFromActuator();
-		RegisteredDetails.setPassword(password);
-		loginOptionsPage.enterPassword(password);
-	}
-
-	@And("user enter valid confirm password in the Confirm Password field")
-	public void entersValidConfirmPassword() {
-		String confirmPassword = RegisteredDetails.getPassword();
-		loginOptionsPage.enterConfirmPwd(confirmPassword);
-	}
-
-	@And("user clicks on agrees terms condition check-box")
-	public void userClicksOnAgreesTermsCheckbox() {
-		registrationPage.checkTermsAndConditions();
-	}
-
 	@And("user clicks on continue button on registration page")
 	public void userClicksOnContinueButtonOnRegistrationPage() {
 		registrationPage.clickOnSetupAccountContinueButton();
@@ -119,6 +94,7 @@ public class LoginOptionsStepDefinition {
 	public void userClicksOnLoginButton() {
 		registrationPage.clickOnLoginButtonInSuccessScreen();
 	}
+	
 	@When("user clicks on the navigate back button")
 	public void userClicksNavigateBackButton() {
 		registrationPage.clickOnNavigateBackButton();

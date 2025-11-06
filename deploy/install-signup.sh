@@ -6,31 +6,47 @@ if [ $# -ge 1 ] ; then
   export KUBECONFIG=$1
 fi
 
-ROOT_DIR=`pwd`
+ROOT_DIR=$(pwd)
 
 function installing_signup() {
 
-  helm repo add mosip https://mosip.github.io/mosip-helm
-  # List of modules to install
-  declare -a modules=("signup-with-plugins" "signup-ui")
+  echo "Select the plugin type for signup:"
+  echo "1) MOSIP ID Plugin"
+  echo "2) Mock Plugin"
+  read -p "Enter your choice (1 or 2): " choice
 
-  echo "Installing signup services"
+  case $choice in
+    1)
+      PLUGIN_PATH="$ROOT_DIR/signup-with-plugins/signup-with-mosipid-plugin"
+      ;;
+    2)
+      PLUGIN_PATH="$ROOT_DIR/signup-with-plugins/signup-with-mock-plugin"
+      ;;
+    *)
+      echo "Invalid choice! Exiting..."
+      exit 1
+      ;;
+  esac
 
-  # Install modules
-  for module in "${modules[@]}"
-  do
-    cd $ROOT_DIR/"$module"
-    ./install.sh
-  done
+  echo "Installing signup services..."
+
+  # Install selected plugin first
+  cd "$PLUGIN_PATH"
+  ./install.sh
+
+  # Install signup-ui next
+  cd "$ROOT_DIR/signup-ui"
+  ./install.sh
 
   echo "All signup services deployed successfully."
   return 0
 }
 
-# Set commands for error handling.
+# Error handling
 set -e
-set -o errexit   ## set -e : exit the script if any statement returns a non-true return value
-set -o nounset   ## set -u : exit the script if you try to use an uninitialized variable
-set -o errtrace  # trace ERR through 'time command' and other functions
-set -o pipefail  # trace ERR through pipes
-installing_signup   # calling function
+set -o errexit
+set -o nounset
+set -o errtrace
+set -o pipefail
+
+installing_signup

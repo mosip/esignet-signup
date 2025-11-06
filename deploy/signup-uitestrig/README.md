@@ -1,7 +1,7 @@
 # UITESTRIG
 
 ## Introduction
-UITESTRIG will test end-to-end functional flows involving multiple UI modules.
+UITESTRIG will test end-to-end functional flows involving  Signup-ui module.
 
 ## Install
 * Install

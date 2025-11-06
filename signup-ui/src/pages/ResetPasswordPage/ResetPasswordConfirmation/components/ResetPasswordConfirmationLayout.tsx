@@ -4,10 +4,10 @@ import { useLocation } from "react-router-dom";
 import { ReactComponent as FailedIconSvg } from "~assets/svg/failed-icon.svg";
 import { ReactComponent as SuccessIconSvg } from "~assets/svg/success-icon.svg";
 import { ReactComponent as WarningIconSvg } from "~assets/svg/warning-icon.svg";
-import { RESET_PASSWORD, ROOT_ROUTE, SIGNUP_ROUTE } from "~constants/routes";
+import { RESET_PASSWORD } from "~constants/routes";
 import { Button } from "~components/ui/button";
 import { Step, StepContent } from "~components/ui/step";
-import { getSignInRedirectURL } from "~utils/link";
+import { getSignInRedirectURLV2 } from "~utils/link";
 import { useSettings } from "~pages/shared/queries";
 
 interface ResetPasswordConfirmationLayoutProps {
@@ -21,13 +21,14 @@ export const ResetPasswordConfirmationLayout = ({
 }: ResetPasswordConfirmationLayoutProps) => {
   const { t } = useTranslation();
   const { data: settings } = useSettings();
-  const { hash: fromSignInHash } = useLocation();
+  const { hash: fromSignInHash, search } = useLocation();
 
   const handleAction = (e: any) => {
     e.preventDefault();
-    window.location.href = getSignInRedirectURL(
+    window.location.href = getSignInRedirectURLV2(
       settings?.response.configs["signin.redirect-url"],
       fromSignInHash,
+      search,
       RESET_PASSWORD
     );
   };

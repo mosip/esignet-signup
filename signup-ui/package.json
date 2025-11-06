@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@anushase/json-form-builder": "^1.1.4",
+    "@anushase/json-form-builder": "^1.1.8",
     "@cospired/i18n-iso-languages": "^4.2.0",
     "@craco/craco": "^7.1.0",
     "@fontsource-variable/inter": "^5.0.15",
@@ -27,7 +27,7 @@
     "@types/node": "^20.8.9",
     "@types/react": "^18.2.32",
     "@types/react-dom": "^18.2.14",
-    "axios": "^1.7.8",
+    "axios": "^1.12.0",
     "bowser": "^2.11.0",
     "buffer": "^6.0.3",
     "class-variance-authority": "^0.7.0",

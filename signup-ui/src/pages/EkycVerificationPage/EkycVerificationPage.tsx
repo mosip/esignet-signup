@@ -111,7 +111,7 @@ export const EkycVerificationPage = ({
         },
       });
     } else if (searchParams.has("id_token_hint")) {
-      const authorizeURI = settings?.response?.configs["signin.redirect-url"];
+      const authorizeURI = settings?.response?.configs["signin.authorization-url"];
       const clientIdURI = settings?.response?.configs["signup.oauth-client-id"];
       const identityVerificationRedirectURI =
         settings?.response?.configs["identity-verification.redirect-url"];

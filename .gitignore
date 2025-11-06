@@ -37,3 +37,5 @@ helm/*/Chart.lock
 helm/*/charts/
 signup-service/target
 .idea/
+
+.DS_Store

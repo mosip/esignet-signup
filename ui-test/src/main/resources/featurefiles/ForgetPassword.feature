@@ -11,11 +11,9 @@ Feature: Esignet Forgot Password Page
     When user enters the OTP
     And user clicks on the Verify OTP button 
     Then user click on Continue button in Success Screen
-    And user enter text valid name in the Full Name field
-    And user enter the valid password in the Password field
-    And user enter the valid confirm password in the Confirm Password field
-    And user accepts the Terms and Condition checkbox
+    And user fills the signup form using UI spec
     And user clicks on Continue button in Setup Account Page
+    And verify that success screen should display the message Congratulations! Your account has been created successfully. Please login to proceed.
   
    
   @smoke @forgetPasswordOptionsVerification
@@ -46,7 +44,7 @@ Feature: Esignet Forgot Password Page
     When user enters special char input into the mobile number field
     Then mobile number input should remain empty
 
-    When user enters Registered moblie number into the mobile number field
+    When user enters Registered mobile number into the mobile number field
     And user clicks outside the input to trigger validation
     Then phone number should be valid
 
@@ -86,7 +84,7 @@ Feature: Esignet Forgot Password Page
 
     Then user verify continue button is not enabled
 
-    When user enters Registered moblie number into the mobile number field
+    When user enters Registered mobile number into the mobile number field
     Then user verify continue button is enabled
     Then user click on continue button
 
@@ -97,7 +95,7 @@ Feature: Esignet Forgot Password Page
     And user click on reset password button
 
     When user enters registered fullname into the full name field
-    And user enters Registered moblie number into the mobile number field
+    And user enters Registered mobile number into the mobile number field
     Then user click on continue button
 
     And user waits until OTP timer to expire
@@ -140,7 +138,7 @@ Feature: Esignet Forgot Password Page
     When user click on retry button 
     Then verify user is redirected back to the Forget Password screen
     
-    When user enters Registered moblie number into the mobile number field
+    When user enters Registered mobile number into the mobile number field
     And user enters Unregistered FullName into the fullname field
     Then user click on continue button
     When user enters the OTP in forgot password flow
@@ -161,7 +159,7 @@ Feature: Esignet Forgot Password Page
     And user click on reset password button
 
     When user enters registered fullname into the full name field
-    And user enters Registered moblie number into the mobile number field
+    And user enters Registered mobile number into the mobile number field
     Then user click on continue button
 
     When user enters the OTP in forgot password flow
@@ -241,7 +239,7 @@ Feature: Esignet Forgot Password Page
   	And navigate back to signup portal
     And user click on reset password button
     And user enters registered fullname into the full name field
-    And user enters Registered moblie number into the mobile number field
+    And user enters Registered mobile number into the mobile number field
     Then user click on continue button
 
   	And user switches back to SMTP portal
@@ -261,7 +259,7 @@ Feature: Esignet Forgot Password Page
     And user click on reset password button
 
     When user enters registered fullname into the full name field
-    And user enters Registered moblie number into the mobile number field
+    And user enters Registered mobile number into the mobile number field
     Then user click on continue button
     
     Then user waits for resend OTP button and verifies it's enabled or skipped

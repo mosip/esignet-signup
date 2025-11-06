@@ -1,0 +1,72 @@
+## Uncomment required parms added with single '#' when needed.
+#image:
+#  registry: docker.io
+#  repository: mosipdev/signup-service
+#  tag: develop
+
+extraEnvVars:
+  - name: MOSIP_ESIGNET_HOST
+    valueFrom:
+      configMapKeyRef:
+        name: esignet-global
+        key: mosip-esignet-host
+      configMapKeyRef:
+        name: esignet-global
+        key: mosip-signup-host
+  - name: KEYCLOAK_EXTERNAL_URL
+    valueFrom:
+      configMapKeyRef:
+        name: keycloak-host
+        key: keycloak-external-url
+  - name: MOSIP_SIGNUP_CAPTCHA_SITE_KEY
+    valueFrom:
+      secretKeyRef:
+        name: signup-captcha
+        key: signup-captcha-site-key
+  - name: MOSIP_SIGNUP_OIDC_KEYSTORE_PWD
+    valueFrom:
+      secretKeyRef:
+        name: signup-keystore-password
+        key: signup-keystore-password
+  - name: REDIS_HOST
+    valueFrom:
+      configMapKeyRef:
+        name: redis-config
+        key: redis-host
+  - name: REDIS_PORT
+    valueFrom:
+      configMapKeyRef:
+        name: redis-config
+        key: redis-port
+  - name: REDIS_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: redis
+        key: redis-password
+  - name: MOSIP_SIGNUP_CLIENT_SECRET
+    valueFrom:
+      secretKeyRef:
+        name: keycloak-client-secrets
+        key: mosip_signup_client_secret
+  - name: MOSIP_SIGNUP_MOCK_MANDATORY_ATTRIBUTES_CREATE
+    value: fullName,phone,password,preferredLang
+  - name: MOSIP_SIGNUP_MOCK_USERNAME_FIELD
+    value: phone
+  - name: MOSIP_SIGNUP_SUPPORTED_LANGUAGES
+    value: '{''eng'',''khm''}'
+  - name: MOSIP_SIGNUP_FULLNAME_PATTERN
+    value: ^[\u1780-\u17FF\u19E0-\u19FF\u1A00-\u1A9F\u0020]{1,30}$
+  - name: MOSIP_SIGNUP_UI_CONFIG_KEY_VALUES_FULLNAME_ALLOWED_CHARACTERS
+    value: ^[\u1780-\u17FF\u19E0-\u19FF\u1A00-\u1A9F\u0020]
+  - name: MOSIP_MOCK_IDA_IDENTITY_SCHEMA_URL
+    value: https://raw.githubusercontent.com/mosip/esignet-mock-services/refs/heads/develop/mock-identity-system/src/main/resources/mock-identity-signup-schema.json
+  - name: NAMESPACE
+    value: mock
+
+## ConfigMap with extra environment variables that used
+##
+#extraEnvVarsCM: []
+
+## Secret with extra environment variables
+##
+#extraEnvVarsSecret: []

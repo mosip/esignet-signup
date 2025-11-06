@@ -1,6 +1,5 @@
 package stepdefinitions;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -47,7 +46,6 @@ public class ForgetPasswordStepDefinition {
 		this.signUpPage = new SignUpPage(driver);
 	}
 
-	private String lastGeneratedPassword;
 	private String newGeneratedPassword;
 
 	@Then("user enters mobile_number in the mobile number text box")
@@ -61,25 +59,6 @@ public class ForgetPasswordStepDefinition {
 	public void userEnterOtp() {
 		String mobile = RegisteredDetails.getMobileNumber();
 		forgetPasswordPage.enterOtp(OTPListener.getOtp(mobile));
-	}
-
-	@Then("user enter text valid name in the Full Name field")
-	public void userEnterValidFullNames() {
-		EsignetUtil.FullName names = EsignetUtil.generateNamesFromUiSpec();
-		RegisteredDetails.setFullName(names.khmer);
-		forgetPasswordPage.enterFullNameInEnglish(names.english);
-		forgetPasswordPage.enterFullNameInKhmer(names.khmer);
-	}
-
-	@Then("user enter the valid password in the Password field")
-	public void userEnterValidPassword() {
-		lastGeneratedPassword = EsignetUtil.generateValidPasswordFromActuator();
-		forgetPasswordPage.enterPassword(lastGeneratedPassword);
-	}
-
-	@Then("user enter the valid confirm password in the Confirm Password field")
-	public void userEnterValidConfirmPassword() {
-		forgetPasswordPage.enterConfirmPwd(lastGeneratedPassword);
 	}
 
 	@When("user click on reset password button")
@@ -117,7 +96,7 @@ public class ForgetPasswordStepDefinition {
 		forgetPasswordPage.enterPhoneNumber(number);
 	}
 
-	@When("user enters Registered moblie number into the mobile number field")
+	@When("user enters Registered mobile number into the mobile number field")
 	public void userEntersRegisteredMobileNumber() {
 		String registeredNumber = RegisteredDetails.getMobileNumber();
 		forgetPasswordPage.enterPhoneNumber(registeredNumber);
@@ -282,7 +261,7 @@ public class ForgetPasswordStepDefinition {
 	public void userClickOnContinueButtonIsEnabled() {
 		forgetPasswordPage.clickOnContinueButton();
 	}
-	
+
 	@Then("user waits until OTP timer to expire")
 	public void userWaitForOtpToExpire() {
 		forgetPasswordPage.waitForOtpExpire();
@@ -570,7 +549,6 @@ public class ForgetPasswordStepDefinition {
 	public void userClicksLoginButton() {
 		forgetPasswordPage.clickOnLoginButton();
 	}
-
 
 	@Then("verify password changed successful notification is displayed")
 	public void verifySuccessNotificationInSelectedLanguage() {

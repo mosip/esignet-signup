@@ -7,7 +7,7 @@ import { ReactComponent as FailedIconSvg } from "~assets/svg/failed-icon.svg";
 import { ReactComponent as SuccessIconSvg } from "~assets/svg/success-icon.svg";
 import { Button } from "~components/ui/button";
 import { Step, StepContent } from "~components/ui/step";
-import { getSignInRedirectURL } from "~utils/link";
+import { getSignInRedirectURLV2 } from "~utils/link";
 import { useSettings } from "~pages/shared/queries";
 
 import { SignUpForm } from "../SignUpPage";
@@ -35,7 +35,7 @@ export const PhoneStatus = ({ methods }: PhoneStatusProps) => {
       []
     )
   );
-  const { hash: fromSignInHash } = useLocation();
+  const { hash: fromSignInHash, search } = useLocation();
   const { trigger } = methods;
 
   const handleContinue = useCallback(
@@ -52,9 +52,10 @@ export const PhoneStatus = ({ methods }: PhoneStatusProps) => {
 
   const handleChallengeVerificationErrorRedirect = (e: any) => {
     e.preventDefault();
-    window.location.href = getSignInRedirectURL(
+    window.location.href = getSignInRedirectURLV2(
       settings?.response.configs["signin.redirect-url"],
       fromSignInHash,
+      search,
       "/signup"
     );
   };

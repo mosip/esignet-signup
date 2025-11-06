@@ -1,3 +1,2 @@
 ##### JIRA number;testcase 
 #MOSIP-12456------test_case_name
-ES-2466------Signup_ESignet_AuthenticateUserPasswordNegTC_with_unregistered_challenge_Neg

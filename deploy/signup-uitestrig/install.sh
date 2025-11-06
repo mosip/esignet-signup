@@ -6,7 +6,13 @@ if [ $# -ge 1 ] ; then
   export KUBECONFIG=$1
 fi
 
-NS=signup
+read -p "Please confirm that 'values.yaml' has been updated with the required configuration (enter Y to continue): " confirm
+if [[ "$confirm" != "Y" && "$confirm" != "y" ]]; then
+  echo "Please update values.yaml before running this script. Exiting..."
+  exit 1
+fi
+
+NS=signup-uitestrig
 CHART_VERSION=0.0.1-develop
 COPY_UTIL=../copy_cm_func.sh
 

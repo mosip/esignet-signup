@@ -20,6 +20,7 @@ import io.mosip.signup.exception.InvalidTransactionException;
 import io.mosip.signup.exception.SignUpException;
 import io.mosip.signup.helper.CryptoHelper;
 import io.mosip.signup.helper.NotificationHelper;
+import io.mosip.signup.util.ActionStatus;
 import io.mosip.signup.util.ErrorConstants;
 import io.mosip.signup.util.Purpose;
 import io.mosip.signup.util.SignUpConstants;
@@ -35,10 +36,12 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -111,6 +114,7 @@ public class RegistrationServiceTest {
         ReflectionTestUtils.setField(registrationService, "objectMapper", new ObjectMapper());
         ReflectionTestUtils.setField(registrationService, "captchaRequired", false);
         ReflectionTestUtils.setField(registrationService, "captchaHelper", captchaHelper);
+        ReflectionTestUtils.setField(registrationService, "fileFieldNameRegex", "[A-Za-z0-9_-]+");
     }
 
     @Test
@@ -919,6 +923,8 @@ public class RegistrationServiceTest {
                 any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<>(mockRestResponseWrapperAddIdentityResponse, HttpStatus.OK));
 
         RegisterResponse registerResponse = registrationService.register(registerRequest, mockTransactionID);
+        verify(cacheUtilService, times(1)).getRegistrationFiles(eq(mockTransactionID));
+
         Assert.assertNotNull(registerResponse);
         Assert.assertEquals("PENDING", registerResponse.getStatus());
     }
@@ -1877,4 +1883,96 @@ public class RegistrationServiceTest {
         Assert.assertEquals("Plugin error", ex.getMessage());
         verify(profileRegistryPlugin, times(1)).getUISpecification();
     }
+
+    @Test
+    public void uploadFile_withValidTransaction_thenPass() {
+        String transactionId = "txn-123";
+        String fieldName = "photo";
+        byte[] fileContent = "test-image".getBytes();
+        MultipartFile file = new MockMultipartFile("file", fileContent);
+
+        RegistrationTransaction transaction = new RegistrationTransaction("user", Purpose.REGISTRATION);
+        when(cacheUtilService.getChallengeVerifiedTransaction(transactionId)).thenReturn(transaction);
+
+        RegisterResponse response = registrationService.uploadFile(transactionId, fieldName, file);
+
+        Assert.assertNotNull(response);
+        Assert.assertEquals(ActionStatus.UPLOADED, response.getStatus());
+        verify(cacheUtilService, times(1)).setRegistrationFiles(eq(transactionId), any(RegistrationFiles.class));
+    }
+
+    @Test(expected = InvalidTransactionException.class)
+    public void uploadFile_withInvalidTransaction_thenFail() {
+        String transactionId = "invalid-txn";
+        String fieldName = "photo";
+        MultipartFile file = new MockMultipartFile("file", "test".getBytes());
+
+        when(cacheUtilService.getChallengeVerifiedTransaction(transactionId)).thenReturn(null);
+
+        registrationService.uploadFile(transactionId, fieldName, file);
+    }
+
+    @Test
+    public void uploadFile_withIOException_thenFail() throws IOException {
+        String transactionId = "txn-123";
+        String fieldName = "photo";
+        MultipartFile file = mock(MultipartFile.class);
+
+        RegistrationTransaction transaction = new RegistrationTransaction("user", Purpose.REGISTRATION);
+        when(cacheUtilService.getChallengeVerifiedTransaction(transactionId)).thenReturn(transaction);
+        when(file.getBytes()).thenThrow(new IOException("Read error"));
+
+        try {
+            registrationService.uploadFile(transactionId, fieldName, file);
+            Assert.fail();
+        } catch (SignUpException signUpException) {
+            Assert.assertEquals(ErrorConstants.UPLOAD_FAILED, signUpException.getErrorCode());
+        }
+    }
+
+    @Test
+    public void uploadFile_withInvalidInput_thenFail() {
+        String transactionId = "txn-123";
+        String fieldName = "photo";
+        MultipartFile file = new MockMultipartFile("file", "test".getBytes());
+
+        RegistrationTransaction transaction = new RegistrationTransaction("user", Purpose.REGISTRATION);
+        when(cacheUtilService.getChallengeVerifiedTransaction(transactionId)).thenReturn(transaction);
+
+        try { //Null file check
+            registrationService.uploadFile(transactionId, fieldName, null);
+            Assert.fail();
+        } catch (SignUpException signUpException) {
+            Assert.assertEquals(ErrorConstants.INVALID_REQUEST, signUpException.getErrorCode());
+        }
+
+        try { //Null field name check
+            registrationService.uploadFile(transactionId, null, file);
+            Assert.fail();
+        } catch (SignUpException signUpException) {
+            Assert.assertEquals(ErrorConstants.INVALID_REQUEST, signUpException.getErrorCode());
+        }
+
+        try { //Empty field name check
+            registrationService.uploadFile(transactionId, "  ", file);
+            Assert.fail();
+        } catch (SignUpException signUpException) {
+            Assert.assertEquals(ErrorConstants.INVALID_REQUEST, signUpException.getErrorCode());
+        }
+
+        try { //Invalid field name check
+            registrationService.uploadFile(transactionId, "!!))) A", file);
+            Assert.fail();
+        } catch (SignUpException signUpException) {
+            Assert.assertEquals(ErrorConstants.INVALID_REQUEST, signUpException.getErrorCode());
+        }
+
+        try { //Empty file check
+            registrationService.uploadFile(transactionId, "test", new MockMultipartFile("file", "".getBytes()));
+            Assert.fail();
+        } catch (SignUpException signUpException) {
+            Assert.assertEquals(ErrorConstants.INVALID_REQUEST, signUpException.getErrorCode());
+        }
+    }
+
 }

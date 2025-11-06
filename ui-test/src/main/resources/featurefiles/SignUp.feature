@@ -71,14 +71,14 @@ Scenario Outline: OTP input acceptance and Verify button state
   And user clicks on the Continue button
   Then verify user is navigated to the OTP screen
 
-  #And user waits for OTP timer to expire
-  #When user enters "<expired_otp>" as a Otp 
-  #And user clicks on the Verify OTP button
-  #Then verify an error message OTP expired. Please request a new one and try again. is displayed at the top
-  #When user clicks on the close icon of the error message
-  #Then verify the error message is not visible
+  And user waits for OTP timer to expire
+  When user enters "<expired_otp>" as a Otp 
+  And user clicks on the Verify OTP button
+  Then verify an error message OTP expired. Please request a new one and try again. is displayed at the top
+  When user clicks on the close icon of the error message
+  Then verify the error message is not visible
   
-  #Then user clicks on the Resend OTP button
+  Then user clicks on the Resend OTP button
   When user enters "<invalid_otp>" as a Otp
   And user clicks on the Verify OTP button
   Then verify an error message OTP authentication failed. Please try again. is displayed at the top
@@ -169,7 +169,7 @@ Scenario Outline: Completing Registration Process
   Then user clicks on Language Selection Option
   And user selects English from the language dropdown
   When user enters text more than maximum characters in the Full Name in field
-  Then verify the field restrict the input to 30 characters only
+  Then verify it restricts such input with an error message Full Name has to be in Khmer only.
 
   When user enters only spaces in the Full Name in field
   And user tabs out from the field
@@ -281,10 +281,7 @@ Scenario Outline: Completing Registration Process
   #And user clicks on the Verify OTP button
   #And user click on Continue button in Success Screen
   
-  #And user enters text valid name in the Full Name field
-  #And user enters valid password in the Password field
-  #And user enters valid confirm password in the Confirm Password field
-  #Then verify the Continue button is enabled when all mandatory fields are filled
+  #And user fills the signup form using UI spec
   
   When user clicks on Continue button in Setup Account Page
   Then verify system display account setup in progress message
@@ -320,10 +317,7 @@ Scenario Outline: Verify sign-up portal by navigating directly through sign-up U
   And user clicks on the Verify OTP button 
   Then user click on Continue button in Success Screen
   
-  When user enters text valid name in the Full Name field
-  When user enters valid password in the Password field
-  When user enters valid confirm password in the Confirm Password field
-  And user accepts the Terms and Condition checkbox
+  And user fills the signup form using UI spec
   When user clicks on Continue button in Setup Account Page
   
   Then verify that success screen should display the message Congratulations! Your account has been created successfully.Start using your registered number & password with service providers to avail the required services.
@@ -346,12 +340,7 @@ Scenario: Verify the notification when OTP requested
   When user enters the complete 6-digit OTP
   And user clicks on the Verify OTP button
   And user click on Continue button in Success Screen
-  And user enters text valid name in the Full Name field
-  And user enters valid password in the Password field
-  And user enters valid confirm password in the Confirm Password field
-  And user accepts the Terms and Condition checkbox
+  And user fills the signup form using UI spec
   And user clicks on Continue button in Setup Account Page
   Then user switches back to SMTP portal
   And verify registration success notification is received
-
-

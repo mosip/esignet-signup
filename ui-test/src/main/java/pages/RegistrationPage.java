@@ -5,6 +5,7 @@ import utils.EsignetUtil;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -58,10 +59,10 @@ public class RegistrationPage extends BasePage {
 	@FindBy(id = "phone_input")
 	WebElement helpTextInTextBox;
 
-	@FindBy(id = ":r4:-form-item-message")
+	@FindBy(xpath = "//p[contains(@class,'rounded-b-lg bg-destructive')]")
 	WebElement numberCannotStartWithZeroErrorMessage;
 
-	@FindBy(id = ":r4:-form-item-message")
+	@FindBy(xpath = "//p[contains(@class,'rounded-b-lg bg-destructive')]")
 	List<WebElement> enterValidUserNameError;
 
 	@FindBy(id = "login-header")
@@ -219,6 +220,12 @@ public class RegistrationPage extends BasePage {
 
 	@FindBy(id = "username")
 	WebElement screenInEnglishLanguage;
+	
+	@FindBy(xpath = "//div[@class='alternate-icon-div']")
+	WebElement uploadPhoto;
+	
+	@FindBy(xpath = "//button[contains(@id,'capture-button')]")
+	WebElement captureButton;
 
 	public boolean isRegistrationScreenDisplayed() {
 		return isElementVisible(registrationScreen, "Chcek if Registration screen displayed");
@@ -380,7 +387,7 @@ public class RegistrationPage extends BasePage {
 
 	public void waitUntilOtpExpires() {
 		int otpExpiry = EsignetUtil.getOtpResendDelayFromSignupActuator();
-		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(otpExpiry));
+		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(otpExpiry + 3));
 		wait.until(ExpectedConditions.textToBePresentInElement(otpCountDownTimer, "00:00"));
 	}
 
@@ -566,11 +573,6 @@ public class RegistrationPage extends BasePage {
 
 	public boolean isFullNameHasToBeInKhmerErrorDisplayed() {
 		return isElementVisible(fullNameHasToBeInKhmerOnlyError,"Cjeck if Full name has to be Khmenr Error Displayed");
-	}
-
-	public boolean isFullNameInKhmerRestrictedToThirtyChars() {
-		String value = getElementValue(fullNameKhmerField,"Get FullName Value in Khmert");
-		return value != null && value.length() <= 30;
 	}
 
 	public void enterOnlySpacesFullName(int length) {
@@ -759,7 +761,10 @@ public class RegistrationPage extends BasePage {
 	}
 
 	public boolean isAccountCreatedSuccessfullyMessageDisplayed() {
-		return isElementVisible(accountCreatedSuccessfullyMessage,"Check if Account Created Successfully Message Displayed");
+		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(50));
+		wait.until(ExpectedConditions.visibilityOf(accountCreatedSuccessfullyMessage));
+		return isElementVisible(accountCreatedSuccessfullyMessage,
+				"Check if Account Created Successfully Message Displayed");
 	}
 
 	public boolean isLoginButtonDisplayed() {
@@ -789,6 +794,15 @@ public class RegistrationPage extends BasePage {
 		} catch (TimeoutException e) {
 			return false;
 		}
+	}
+	
+	public void clickOnUploadPhoto() {
+		clickOnElement(uploadPhoto,"click on upload photo section");
+	}
+
+	public void clickOnCaptureButton() {
+		new Actions(driver).pause(Duration.ofSeconds(1)).perform();
+		clickOnElement(captureButton,"click on capture button");
 	}
 
 }

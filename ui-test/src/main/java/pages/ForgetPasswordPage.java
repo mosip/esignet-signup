@@ -28,12 +28,6 @@ public class ForgetPasswordPage extends BasePage {
 	@FindBy(id = "phone_input")
 	WebElement enterMobileNumberField;
 
-	@FindBy(id = "password")
-	WebElement passwordField;
-
-	@FindBy(id = "password_confirm")
-	WebElement confirmPasswordField;
-
 	@FindBy(xpath = "//img[@class='brand-logo']")
 	WebElement brandLogo;
 
@@ -76,12 +70,6 @@ public class ForgetPasswordPage extends BasePage {
 	@FindBy(id = "fullname")
 	WebElement fullNameInput;
 
-	@FindBy(id = "fullName_eng")
-	WebElement fullNameEnglishField;
-
-	@FindBy(id = "fullName_khm")
-	WebElement fullNameKhmerField;
-
 	@FindBy(xpath = "//p[@id=':r5:-form-item-message']")
 	WebElement fullNameError;
 
@@ -102,7 +90,6 @@ public class ForgetPasswordPage extends BasePage {
 
 	@FindBy(xpath = "//div[@class='pincode-input-container']")
 	WebElement otpInputField;
-
 
 	@FindBy(xpath = "//div[@class='w-max rounded-md bg-[#FFF7E5] p-2 px-8 text-center text-sm font-semibold text-[#8B6105]']")
 	private WebElement resendAttemptsText;
@@ -173,23 +160,12 @@ public class ForgetPasswordPage extends BasePage {
 	@FindBy(id = "success-continue-button")
 	private WebElement loginButtonInSuccessScreen;
 
-
 	@FindBy(id = "reset-password-button")
 	WebElement resetPasswordButton;
 
 	public void enterMobileNumber(String number) {
 		enterMobileNumberField.clear();
-		enterText(enterMobileNumberField, number,"Enterd Mobile Number");
-	}
-
-	public void enterPassword(String password) {
-		clearField(passwordField);
-		enterText(passwordField, password,"Entered Passoword");
-	}
-
-	public void enterConfirmPwd(String confirmPassword) {
-		clearField(confirmPasswordField);
-		enterText(confirmPasswordField, confirmPassword, "Entered confirm password");
+		enterText(enterMobileNumberField, number, "Enterd Mobile Number");
 	}
 
 	public void clickOnSignInWIthEsignet() {
@@ -276,7 +252,7 @@ public class ForgetPasswordPage extends BasePage {
 	}
 
 	public boolean isPhoneNumberFieldEmpty() {
-		String value = getElementValue(phoneInput,"Get Mobile Field Empty Or Unchanged value");
+		String value = getElementValue(phoneInput, "Get Mobile Field Empty Or Unchanged value");
 		return value == null || value.isEmpty();
 	}
 
@@ -286,16 +262,6 @@ public class ForgetPasswordPage extends BasePage {
 
 	public void enterFullName(String name) {
 		enterText(fullNameInput, name, "Entered fullname");
-	}
-
-	public void enterFullNameInEnglish(String name) {
-		clearField(fullNameEnglishField);
-		enterTextJS(fullNameEnglishField, name);
-	}
-
-	public void enterFullNameInKhmer(String name) {
-		clearField(fullNameKhmerField);
-		enterTextJS(fullNameKhmerField, name);
 	}
 
 	public boolean isFullNameErrorVisible() {
@@ -364,11 +330,11 @@ public class ForgetPasswordPage extends BasePage {
 				String.valueOf(expectedRemainingAttempts)));
 		return getText(resendAttemptsText, "get the remaining atteptes text");
 	}
-	
+
 	public void waitForOtpExpire() {
 		int otpExpiry = EsignetUtil.getOtpResendDelayFromSignupActuator();
-		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(otpExpiry));
-		wait.until(ExpectedConditions.elementToBeClickable(resendOtpButton));
+		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(otpExpiry + 3));
+		wait.until(ExpectedConditions.textToBePresentInElement(otpCountdownTimer, "00:00"));
 	}
 
 	public boolean isForgetPassowrdScreenVisible() {
@@ -520,6 +486,8 @@ public class ForgetPasswordPage extends BasePage {
 	}
 
 	public boolean isPasswordResetConfirmationHeaderDisplayed() {
+		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(40));
+		wait.until(ExpectedConditions.visibilityOf(passwordResetConfirmationHeader));
 		return isButtonEnabled(passwordResetConfirmationHeader, "check password reset confirmation header displayed");
 	}
 
@@ -535,7 +503,6 @@ public class ForgetPasswordPage extends BasePage {
 	public void clickOnLoginButton() {
 		clickOnElement(loginButtonInSuccessScreen, "click on login button");
 	}
-
 
 	public void clickOnResetPasswordButton() {
 		clickOnElement(resetPasswordButton, "click on reset password button");

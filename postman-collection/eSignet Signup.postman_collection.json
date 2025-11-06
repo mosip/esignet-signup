@@ -1,10 +1,10 @@
 {
 	"info": {
-		"_postman_id": "2c31b759-dcf6-4d95-a607-b79823d2ffca",
+		"_postman_id": "a3c74aa0-d67b-4dba-99fb-2f66e54937e5",
 		"name": "eSignet Signup",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "20579541",
-		"_collection_link": "https://mosip-idp.postman.co/workspace/MOSIP-Team-Workspace~76ac5ada-d630-4817-8d7b-25f499b093d4/collection/20579541-2c31b759-dcf6-4d95-a607-b79823d2ffca?action=share&source=collection_link&creator=20579541"
+		"_collection_link": "https://mosip-idp.postman.co/workspace/MOSIP-Team-Workspace~76ac5ada-d630-4817-8d7b-25f499b093d4/collection/20579541-a3c74aa0-d67b-4dba-99fb-2f66e54937e5?action=share&source=collection_link&creator=20579541"
 	},
 	"item": [
 		{
@@ -240,6 +240,47 @@
 								"signup",
 								"registration",
 								"verify-challenge"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Upload File",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-XSRF-TOKEN",
+								"value": "{{csrf_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "field",
+									"value": "individualBiometrics",
+									"type": "text"
+								},
+								{
+									"key": "file",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/v1/signup/registration/upload-file",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"v1",
+								"signup",
+								"registration",
+								"upload-file"
 							]
 						}
 					},
@@ -1001,6 +1042,7 @@
 					"path": [
 						"v1",
 						"signup",
+						"registration",
 						"ui-spec"
 					]
 				}

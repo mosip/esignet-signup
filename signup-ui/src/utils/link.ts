@@ -11,6 +11,20 @@ export const getSignInRedirectURL = (
   return defaultPath + "?ui_locales=" + locale;
 };
 
+export const getSignInRedirectURLV2 = (
+  redirectUrl: string | undefined,
+  hash: string,
+  searchParams: string,
+  defaultPath: string
+): string => {
+  const locale = localStorage.getItem("esignet-signup-language");
+
+  if (!!hash) {
+    return redirectUrl + searchParams + hash;
+  }
+  return defaultPath + "?ui_locales=" + locale;
+};
+
 export const generateRandomString = (strLength = 16) => {
   let result = "";
   const characters = "abcdefghijklmnopqrstuvwxyz0123456789";
@@ -59,8 +73,9 @@ export const replaceUILocales = (
 
 export const replaceUILocalesParam = (
   searchParams: string,
+  hash: string,
   locale: string | null
-): URLSearchParams | undefined => {
+): string | undefined => {
   const urlSearchParams = new URLSearchParams(searchParams);
 
   if (!urlSearchParams) {
@@ -82,5 +97,9 @@ export const replaceUILocalesParam = (
 
   urlSearchParams.set("nonce", generateRandomString());
 
-  return urlSearchParams;
+  if (hash && hash.length > 1) {
+    return "?" + urlSearchParams.toString() + hash;
+  }
+
+  return "?" + urlSearchParams.toString();
 };

@@ -19,6 +19,12 @@ extraEnvVarsSecret:
   - keycloak-client-secrets
   - postgres-postgresql
 
+apitestrig:
+  configmaps:
+    apitestrig:
+       #mosip_components_base_urls: idrepository=api-internal.sandbox.mosip.net;idauthentication=api-internal.sandbox.mosip.net;masterdata=api-internal.sandbox.mosip.net;idgenerator=api-internal.sandbox.mosip.net;authmanager=api-internal.sandbox.mosip.net;auditmanager=api-internal.sandbox.mosip.net;resident=api-internal.sandbox.mosip.net;keymanager=api-internal.sandbox.mosip.net;
+
+
 resources:
   limits:
     cpu: 300m

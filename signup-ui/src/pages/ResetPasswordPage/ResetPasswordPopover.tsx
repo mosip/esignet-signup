@@ -15,7 +15,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "~components/ui/alert-dialog";
-import { getSignInRedirectURL } from "~utils/link";
+import { getSignInRedirectURLV2 } from "~utils/link";
 import { useSettings } from "~pages/shared/queries";
 import { ResetPasswordPossibleInvalid } from "~typings/types";
 
@@ -37,7 +37,7 @@ export const ResetPasswordPopover = () => {
       []
     )
   );
-  const { hash: fromSignInHash } = useLocation();
+  const { hash: fromSignInHash , search } = useLocation();
 
   const handleAction = (e: any) => {
     e.preventDefault();
@@ -48,9 +48,10 @@ export const ResetPasswordPopover = () => {
         navigate(0);
       }
     } else {
-      window.location.href = getSignInRedirectURL(
+      window.location.href = getSignInRedirectURLV2(
         settings?.response.configs["signin.redirect-url"],
         fromSignInHash,
+        search,
         RESET_PASSWORD
       );
     }

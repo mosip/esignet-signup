@@ -1,32 +1,59 @@
 #!/bin/bash
-# restarts signup services in correct order
+# Restarts signup services in correct order
 ## Usage: ./restart-all.sh [kubeconfig]
 
-if [ $# -ge 1 ] ; then
+if [ $# -ge 1 ]; then
   export KUBECONFIG=$1
 fi
 
+ROOT_DIR=$(pwd)
+
 function Restarting_All() {
-  ROOT_DIR=`pwd`
+  echo "Select the plugin type for signup to restart:"
+  echo "1) MOSIP ID Plugin"
+  echo "2) Mock Plugin"
+  read -p "Enter your choice (1 or 2): " choice
 
-  declare -a module=("signup-with-plugins" "signup-ui")
+  case $choice in
+    1)
+      PLUGIN_PATH="$ROOT_DIR/signup-with-plugins/signup-with-mosipid-plugin"
+      ;;
+    2)
+      PLUGIN_PATH="$ROOT_DIR/signup-with-plugins/signup-with-mock-plugin"
+      ;;
+    *)
+      echo "Invalid choice! Exiting..."
+      exit 1
+      ;;
+  esac
 
-  echo restarting signup services
+  echo "Restarting signup services..."
 
-  for i in "${module[@]}"
-  do
-    cd $ROOT_DIR/"$i"
+  # Restart plugin first
+  cd "$PLUGIN_PATH"
+  if [ -f "./restart.sh" ]; then
     ./restart.sh
-  done
+  else
+    echo "restart.sh not found in $PLUGIN_PATH"
+  fi
 
-  echo All signup services restarted sucessfully.
+  # Restart signup-ui next
+  cd "$ROOT_DIR/signup-ui"
+  if [ -f "./restart.sh" ]; then
+    ./restart.sh
+  else
+    echo "restart.sh not found in signup-ui"
+  fi
+
+  echo "All signup services restarted successfully."
   return 0
 }
 
-# set commands for error handling.
+# Error handling
 set -e
-set -o errexit   ## set -e : exit the script if any statement returns a non-true return value
-set -o nounset   ## set -u : exit the script if you try to use an uninitialised variable
-set -o errtrace  # trace ERR through 'time command' and other functions
-set -o pipefail  # trace ERR through pipes
+set -o errexit   ## exit if any statement fails
+set -o nounset   ## exit if variable is undefined
+set -o errtrace  ## trace ERR through functions
+set -o pipefail  ## trace ERR through pipes
+
 Restarting_All   # calling function
