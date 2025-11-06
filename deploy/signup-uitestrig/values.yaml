@@ -12,8 +12,6 @@ extraEnvVarsCM:
   - keycloak-host
   - db
   - uitestrig
-  - config-server-share
-  - artifactory-share
 
 extraEnvVarsSecret:
   - s3
