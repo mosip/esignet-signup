@@ -1,4 +1,4 @@
-import { FormConfig } from "@anushase/json-form-builder/dist/types";
+import { FormConfig } from "@mosip/json-form-builder/dist/types";
 
 export interface ResetPasswordForm {
   username: string;

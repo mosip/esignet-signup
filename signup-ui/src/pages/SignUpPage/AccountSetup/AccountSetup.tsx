@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { JsonFormBuilder } from "@anushase/json-form-builder";
-import { FormConfig } from "@anushase/json-form-builder/dist/types";
+import { JsonFormBuilder } from "@mosip/json-form-builder";
+import { FormConfig } from "@mosip/json-form-builder/dist/types";
 import { UseFormReturn } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
