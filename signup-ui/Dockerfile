@@ -1,4 +1,4 @@
-FROM node:12.18.4-alpine as build_signup_ui
+FROM node:18-alpine as build_signup_ui
 
 ARG uiDefaultTheme
 ENV DEFAULT_THEME=$uiDefaultTheme
