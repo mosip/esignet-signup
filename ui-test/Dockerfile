@@ -51,7 +51,8 @@ COPY --chown=${container_user_uid}:${container_user_gid} ./browserstack.yml ${wo
 
 # --- Fix permissions for entrypoint and JARs ---
 RUN chmod +x ${work_dir}/entrypoint.sh && \
-    find ${work_dir} -name "*.jar" -exec chmod 644 {} \;
+    find ${work_dir} -name "*.jar" -exec chmod 644 {} \; && \
+    chown -R ${container_user}:${container_user} ${work_dir};
 
 # --- Switch to non-root user ---
 USER ${container_user_uid}:${container_user_gid}
