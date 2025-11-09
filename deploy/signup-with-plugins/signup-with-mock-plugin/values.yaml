@@ -10,10 +10,10 @@ extraEnvVars:
       configMapKeyRef:
         name: esignet-global
         key: mosip-esignet-host
-      configMapKeyRef:
-        name: esignet-global
   - name: MOSIP_SIGNUP_HOST
     valueFrom:
+      configMapKeyRef:
+        name: esignet-global
         key: mosip-signup-host
   - name: KEYCLOAK_EXTERNAL_URL
     valueFrom:
