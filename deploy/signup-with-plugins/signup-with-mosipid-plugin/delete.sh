@@ -12,7 +12,7 @@ function Deleting_signup_with_mosipid_plugin() {
       read -p "Are you sure you want to delete signup-with-mosipid-plugin helm charts?(Y/n) " yn
       if [[ $yn = "Y" ]] || [[ $yn = "y" ]];
         then
-          helm -n $NS delete signup-mosipid
+          helm -n $NS delete signup
           break
         else
           break
