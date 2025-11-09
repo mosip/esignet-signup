@@ -12,6 +12,8 @@ extraEnvVars:
         key: mosip-esignet-host
       configMapKeyRef:
         name: esignet-global
+  - name: MOSIP_SIGNUP_HOST
+    valueFrom:
         key: mosip-signup-host
   - name: KEYCLOAK_EXTERNAL_URL
     valueFrom:

@@ -56,10 +56,11 @@ if [ "$flag" = "n" ] || [ "$flag" = "N" ]; then
 fi
 
 echo Installing signup-with-mock-plugin
-helm -n $NS install signup-mock mosip/signup \
+helm -n $NS install signup mosip/signup \
   -f values.yaml --version $CHART_VERSION \
   --set plugin_name_env=$PLUGIN_NAME \
   --set metrics.serviceMonitor.enabled=$servicemonitorflag \
+  --set image.repository=mosipqa/signup-with-plugins --set image.tag=develop \
   $ENABLE_INSECURE --wait
 
 # --- Wait for deployments to be ready ---
