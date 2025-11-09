@@ -3,7 +3,7 @@ modules:
     enabled: true
     image:
       registry: docker.io
-      repository: mosipqa/uitest-signup
+      repository: mosipdev/uitest-signup
       tag: develop
 
 extraEnvVarsCM:
@@ -12,8 +12,6 @@ extraEnvVarsCM:
   - keycloak-host
   - db
   - uitestrig
-  - config-server-share
-  - artifactory-share
 
 extraEnvVarsSecret:
   - s3
