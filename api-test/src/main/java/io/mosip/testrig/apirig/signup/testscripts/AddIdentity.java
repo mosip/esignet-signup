@@ -27,6 +27,7 @@ import org.testng.internal.TestResult;
 import io.mosip.testrig.apirig.dto.OutputValidationDto;
 import io.mosip.testrig.apirig.dto.TestCaseDTO;
 import io.mosip.testrig.apirig.signup.utils.SignupConfigManager;
+import io.mosip.testrig.apirig.signup.utils.SignupConfigManager;
 import io.mosip.testrig.apirig.signup.utils.SignupUtil;
 import io.mosip.testrig.apirig.testrunner.HealthChecker;
 import io.mosip.testrig.apirig.testrunner.JsonPrecondtion;
@@ -228,9 +229,11 @@ public class AddIdentity extends SignupUtil implements ITest {
 		try {
 			if (SignupUtil.getIdentityPluginNameFromEsignetActuator().toLowerCase()
 					.contains("idaauthenticatorimpl") == true && isWaitRequired == true) {
-				logger.info("waiting for " + properties.getProperty("Delaytime")
+				logger.info("waiting for "
+						+ SignupConfigManager.getproperty("uinGenerationProcessingDelayTimeInMilliSeconds")
 						+ " mili secs after UIN Generation In IDREPO");
-				Thread.sleep(Long.parseLong(properties.getProperty("Delaytime")));
+				Thread.sleep(Long
+						.parseLong(SignupConfigManager.getproperty("uinGenerationProcessingDelayTimeInMilliSeconds")));
 			}
 
 		} catch (Exception e) {
