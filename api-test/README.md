@@ -72,6 +72,8 @@ These configurations need to be added as part of the eSignet service deployment 
 - **MOSIP_ESIGNET_AUTH_CHALLENGE_BIO_MAX_LENGTH**: 200000
 - **MOSIP_ESIGNET_PREAUTHENTICATION_EXPIRE_IN_SECS**: 600
 - **MOSIP_ESIGNET_CAPTCHA_REQUIRED**: (empty)
+- **uinGenerationProcessingDelayTimeInMilliSeconds**: 600000
+- **uinGenMaxLoopCount**: 20
 
 These configurations need to be added as part of the Signup service deployment to support the API Test Rig:
 
@@ -136,8 +138,10 @@ To execute the tests using Jar, use the following steps:
 
 2. Run the automation test suite JAR file:
    ```
-   java -jar -Dmodules=signup -Denv.user=api-internal.<env_name> -Denv.endpoint=<base_env> -Denv.testLevel=smokeAndRegression -jar apitest-signup-1.2.2-jar-with-dependencies.jar
+   java -jar -Dmodules=signup -Denv.user=api-internal.<env_name> -Denv.endpoint=<base_env> -Denv.testLevel=smokeAndRegression -jar apitest-signup-**-jar-with-dependencies.jar
    ```
+   
+ NOTE: Replace `**` in the above command with the JAR version currently available in the **target** folder.  
    
 # Using Eclipse IDE
 
@@ -197,7 +201,7 @@ To execute the tests using Eclipse IDE, use the following steps:
 - **env.user**: Replace `<env_name>` with the appropriate environment name (e.g., `dev`, `qa`, etc.).
 - **env.endpoint**: The environment where the application under test is deployed. Replace `<base_env>` with the correct base URL for the environment (e.g., `https://api-internal.<env_name>.mosip.net`).
 - **env.testLevel**: Set this to `smoke` to run only smoke test cases, or `smokeAndRegression` to run both smoke and regression tests.
-- **jar**: Specify the name of the JAR file to execute. The version will change according to the development code version. For example, the current version may look like `apitest-signup-1.2.2-jar-with-dependencies.jar`.
+- **jar**: Specify the name of the JAR file to execute. The version will change according to the development code version. For example, the current version may look like `apitest-signup-1.3.0-jar-with-dependencies.jar`.
 
 ### Build and Run Info
 
