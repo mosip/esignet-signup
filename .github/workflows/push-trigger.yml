@@ -25,7 +25,7 @@ on:
 
 jobs:
   build_maven_esignet_signup:
-    uses: mosip/kattu/.github/workflows/maven-build.yml@master
+    uses: mosip/kattu/.github/workflows/maven-build.yml@master-java21
     with:
       SERVICE_LOCATION: ./
       BUILD_ARTIFACT: signup-service
@@ -99,7 +99,7 @@ jobs:
   publish_to_nexus:
     if: "${{ !contains(github.ref, 'master') && github.event_name != 'pull_request' }}"
     needs: build_maven_esignet_signup
-    uses: mosip/kattu/.github/workflows/maven-publish-to-nexus.yml@master
+    uses: mosip/kattu/.github/workflows/maven-publish-to-nexus.yml@master-java21
     with:
       SERVICE_LOCATION: ./
     secrets:
@@ -114,7 +114,7 @@ jobs:
   sonar_analysis:
     needs: build_maven_esignet_signup
     if: "${{  github.event_name != 'pull_request' }}"
-    uses: mosip/kattu/.github/workflows/maven-sonar-analysis.yml@master
+    uses: mosip/kattu/.github/workflows/maven-sonar-analysis.yml@master-java21
     with:
       SERVICE_LOCATION: ./
     secrets:
@@ -137,7 +137,7 @@ jobs:
             SQUASH_LAYERS: '13'
       fail-fast: false
     name: ${{ matrix.SERVICE_NAME }}
-    uses: mosip/kattu/.github/workflows/docker-build.yml@master
+    uses: mosip/kattu/.github/workflows/docker-build.yml@master-java21
     with:
       SERVICE_LOCATION: ${{ matrix.SERVICE_LOCATION }}
       SERVICE_NAME: ${{ matrix.SERVICE_NAME }}
@@ -150,7 +150,7 @@ jobs:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
       
   build_maven_signup_with_plugins:
-    uses: mosip/kattu/.github/workflows/maven-build.yml@master
+    uses: mosip/kattu/.github/workflows/maven-build.yml@master-java21
     with:
       SERVICE_LOCATION: ./signup-with-plugins
       BUILD_ARTIFACT: signup-with-plugins
@@ -173,7 +173,7 @@ jobs:
             BUILD_ARTIFACT: 'signup-with-plugins'
       fail-fast: false
     name: ${{ matrix.SERVICE_NAME }}
-    uses: mosip/kattu/.github/workflows/docker-build.yml@master
+    uses: mosip/kattu/.github/workflows/docker-build.yml@master-java21
     with:
       SERVICE_LOCATION: ${{ matrix.SERVICE_LOCATION }}
       SERVICE_NAME: ${{ matrix.SERVICE_NAME }}

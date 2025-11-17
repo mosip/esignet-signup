@@ -6,9 +6,6 @@
 package io.mosip.signup.validator;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import io.mosip.esignet.api.util.ErrorConstants;
 import io.mosip.signup.api.dto.ProfileDto;
 import io.mosip.signup.api.exception.InvalidProfileException;
 import io.mosip.signup.api.spi.ProfileRegistryPlugin;
@@ -16,8 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 
 @Slf4j
 @Component

@@ -13,6 +13,7 @@ import io.mosip.signup.services.CacheUtilService;
 import net.javacrumbs.shedlock.core.LockProvider;
 import net.javacrumbs.shedlock.provider.redis.spring.RedisLockProvider;
 import net.javacrumbs.shedlock.spring.annotation.EnableSchedulerLock;
+import org.apache.hc.client5.http.classic.HttpClient;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.springframework.beans.factory.annotation.Value;
@@ -92,7 +93,7 @@ public class Config {
                 .setMaxConnPerRoute(selfTokenRestTemplateMaxConnectionPerRoute)
                 .setMaxConnTotal(selfTokenRestTemplateTotalMaxConnections)
                 .build();
-        HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory(httpClient);
+        HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory((HttpClient) httpClient);
         restTemplate.setRequestFactory(requestFactory);
         restTemplate.getInterceptors().add((request, body, execution) -> {
             String token = cacheUtilService.fetchAccessTokenFromIAMServer();

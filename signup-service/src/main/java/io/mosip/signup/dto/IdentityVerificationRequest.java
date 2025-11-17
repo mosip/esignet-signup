@@ -9,7 +9,7 @@ import io.mosip.signup.api.dto.FrameDetail;
 import io.mosip.signup.util.ErrorConstants;
 import lombok.Data;
 
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotBlank;
 import java.util.List;
 
 @Data

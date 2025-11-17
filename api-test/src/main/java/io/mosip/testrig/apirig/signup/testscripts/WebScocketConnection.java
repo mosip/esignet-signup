@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.Map;
 
-import javax.websocket.CloseReason;
-import javax.websocket.Session;
+import jakarta.websocket.CloseReason;
+import jakarta.websocket.Session;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;

@@ -144,7 +144,7 @@ spec:
           {{- end }}
           volumeMounts:
           {{- if .Values.enable_insecure }}
-          - mountPath: /usr/local/openjdk-11/lib/security/cacerts
+          - mountPath: /usr/local/openjdk-21/lib/security/cacerts
             name: cacerts
             subPath: cacerts
           {{- end }}
