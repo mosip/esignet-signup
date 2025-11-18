@@ -138,9 +138,9 @@ To execute the tests using Jar, use the following steps:
 
 2. Run the automation test suite JAR file:
    ```
-   java -jar -Dmodules=signup -Denv.user=api-internal.<env_name> -Denv.endpoint=<base_env> -Denv.testLevel=smokeAndRegression -jar apitest-signup-**-jar-with-dependencies.jar
+   java -Dmodules=signup -Denv.user=api-internal.<env_name> -Denv.endpoint=<base_env> -Denv.testLevel=smokeAndRegression -jar apitest-signup-**-jar-with-dependencies.jar
    ```
-   
+  
 NOTE: Replace `**` in the above command with the JAR version currently available in the **target** folder.
 
 
