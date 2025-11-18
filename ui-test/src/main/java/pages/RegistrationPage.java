@@ -747,6 +747,9 @@ public class RegistrationPage extends BasePage {
 	}
 	
 	public void clickOnContinueButtonInSetupAccountScreen() {
+		// NOTE: This button requires both a JS click and a Selenium click due to
+		// layout shifting and delayed interactability. A single click fails
+		// intermittently.
 		((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({block: 'center'});",
 				setupContinueButton);
 		((JavascriptExecutor) driver).executeScript("arguments[0].click();", setupContinueButton);

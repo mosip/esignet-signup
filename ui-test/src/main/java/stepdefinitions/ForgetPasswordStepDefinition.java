@@ -555,7 +555,7 @@ public class ForgetPasswordStepDefinition {
 		String notification = AllNotificationListner.getNotification(registeredNumber);
 		boolean isNotificationReceived = notification != null && !notification.isEmpty();
 		Assert.assertTrue(isNotificationReceived,
-				"Registration success notification not received for: " + registeredNumber);
+				"Password reset notification not received for: " + registeredNumber);
 
 		logger.info("Verifying password changed notification in language: " + currentLang);
 	}

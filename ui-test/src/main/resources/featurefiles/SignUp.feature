@@ -243,6 +243,9 @@ Scenario Outline: Completing Registration Process
   Then verify the error message This field is required is displayed
 
   Then verify the terms and conditions message
+  
+  # TODO: Disabled due to known popup bug.
+  # Re-enable once T&C/Privacy popup issue is fixed.
 
   #When user clicks on the Terms & Conditions hyperlink
   #Then verify a pop-up window for Terms and Conditions is displayed
@@ -262,6 +265,12 @@ Scenario Outline: Completing Registration Process
   
   And user fills the signup form using UI spec
   Then verify the Continue button is enabled when all mandatory fields are filled
+  
+  # TODO: Browser back-button warning popup automation is pending.
+  # Reason:
+  # - The browser warning popup (Leave site?) cannot be captured/handled by Selenium.
+  # - Popup appears manually but cannot be automated reliably in current setup.
+  # - These steps will be re-enabled only after a feasible automation approach is identified.
   
   #When user clicks the browser back button
   #Then verify browser warning popup is displayed with header Leave site?

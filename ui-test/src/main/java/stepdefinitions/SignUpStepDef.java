@@ -763,7 +763,7 @@ public class SignUpStepDef {
 	}
 
 	@Then("verify when mandatory fields are not filled in Account Setup screen")
-	public void verifyContinueButtonIsDisabledWhenMandatoryFieldsAreEmpty() {
+	public void clearMandatoryFieldsInAccountSetupScreen() {
 		registrationPage.clearAllMandatoryFields();
 		registrationPage.ensureTermsCheckboxIsUnchecked();
 	}
