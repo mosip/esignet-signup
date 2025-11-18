@@ -127,7 +127,8 @@ public class PostWithAutogenIdWithOtpGenerate extends SignupUtil implements ITes
 		String inputStrJson = getJsonFromTemplate(otpReqJson.toString(), sendOtpReqTemplate);
 		
 		Response otpResponse = null;
-		int maxLoopCount = Integer.parseInt(properties.getProperty("uinGenMaxLoopCount"));
+		int maxLoopCount = SignupConfigManager.getproperty("uinGenMaxLoopCount").isEmpty() ? 20
+				: Integer.parseInt(SignupConfigManager.getproperty("uinGenMaxLoopCount"));
 		int currLoopCount = 0;
 		while (currLoopCount < maxLoopCount) {
 			String input = inputstringKeyWordHandeler(inputStrJson, testCaseName);
