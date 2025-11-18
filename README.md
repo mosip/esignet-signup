@@ -56,11 +56,45 @@ cd deploy
   ./restart-signup.sh
   ```
 ### Additional services required
+
+NOTE : Additional services can be deployed on the same cluster, or if you already have an existing one, you can point it to that. 
+
 To complete the signup portal deployment below MOSIP kernel services are required to be deployed.
 * otpmanager
 * authmanager
 * auditmanager
 * notifier
+
+## If the required additional services are exposed via external domain
+If otpmanager, authmanager, auditmanager, esignet and notifier are running in a different cluster, update the deployment.yaml of the signup-service.
+
+ * Add the below environment variables under the env: section of the signup-service deployment:
+  ```
+  env:
+  - name: MOSIP_AUTHMANAGER_CLIENT_TOKEN_ENDPOINT
+    value: "https://authmanager.example.com/v1/authmanager/authenticate/clientidsecretkey"
+  - name: MOSIP_SIGNUP_GENERATE_CHALLENGE_ENDPOINT
+    value: "https://otp.example.com/v1/otpmanager/otp/generate"
+  - name: MOSIP_SIGNUP_SEND_NOTIFICATION_ENDPOINT
+    value: "https://notifier.example.com/v1/notifier/sms/send"
+  - name: MOSIP_SIGNUP_AUDIT_ENDPOINT
+    value: "https://audit.example.com/v1/auditmanager/audits"
+  - name: MOSIP_SIGNUP_OAUTH_TOKEN_URI
+    value: "https://esignet.example.com/v1/esignet/oauth/v2/token"
+  - name: MOSIP_SIGNUP_OAUTH_USERINFO_URI
+    value: "https://esignet.example.com/v1/esignet/oidc/userinfo"
+
+  ```   
+These environment variables override the default internal service URLs and allow the signup-service to communicate with kernel services running outside its cluster.
+
+Spring Boot automatically maps these environment variables to their corresponding properties:
+
+   * MOSIP_AUTHMANAGER_CLIENT_TOKEN_ENDPOINT → mosip.authmanager.client-token-endpoint
+   * MOSIP_SIGNUP_GENERATE_CHALLENGE_ENDPOINT → mosip.signup.generate-challenge.endpoint
+   * MOSIP_SIGNUP_SEND_NOTIFICATION_ENDPOINT → mosip.signup.send-notification.endpoint
+   * MOSIP_SIGNUP_AUDIT_ENDPOINT → mosip.signup.audit-endpoint
+   * MOSIP_SIGNUP_OAUTH_TOKEN_URI → mosip.signup.oauth.token-uri
+   * MOSIP_SIGNUP_OAUTH_USERINFO_URI → mosip.signup.oauth.userinfo-uri
 
 * Initialize the db script to create mosip_kernel and mosip_audit databases make sure to update the existing db-common-secret in init_values.yaml if postgres-initialization already done
   * copy db-common-secret from existing postgres deployment secret if its already created
@@ -111,6 +145,18 @@ To complete the signup portal deployment below MOSIP kernel services are require
         * Execute the request.
     *  Make sure to update the `signup-keystore-password` in the keycloak secrets as updated while generating the p12 file.
 5. Mount oidckeystore.p12 as a `signup-keystore` secret to the **signup deployment**.
+
+## TESTRIG
+
+# Overview
+The steps here install Testrig components, which include SIGNUP-APITESTRIG and SIGNUP-UITESTRIG.
+These components are used to test the working of SIGNUP modules.
+
+1.SIGNUP-APITESTRIG Installation
+ [signup-apitestrig ](deploy/signup-apitestrig/README.md)
+
+2.SIGNUP-UITESTRIG Installation
+ [signup-uitestrig](deploy/signup-uitestrig/README.md)
 
 ## APIs
 API documentation is available [here](docs/esignet-signup-openapi.yaml).

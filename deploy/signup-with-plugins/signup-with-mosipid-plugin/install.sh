@@ -13,7 +13,7 @@ set -o errtrace
 set -o pipefail
 
 NS=signup
-CHART_VERSION=0.0.1-develop
+CHART_VERSION=1.3.0-develop
 PLUGIN_NAME="mosip-identity-plugin.jar"
 
 echo "Installing signup-with-plugins using $PLUGIN_NAME"
