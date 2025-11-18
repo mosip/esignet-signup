@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.*;
@@ -77,6 +78,48 @@ public class ExceptionHandlerAdvice extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleTypeMismatch(TypeMismatchException ex, HttpHeaders headers,
                                                         HttpStatusCode status, WebRequest request) {
         return handleExceptions(ex, request);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleHandlerMethodValidationException(
+            HandlerMethodValidationException ex,
+            HttpHeaders headers,
+            HttpStatusCode status,
+            WebRequest request) {
+
+        List<Error> errors = new ArrayList<>();
+
+        ex.getAllErrors().forEach(error -> {
+            String paramName = "request_param";
+
+            if (error.getCodes() != null && error.getCodes().length > 0) {
+                paramName = error.getCodes()[0].substring(error.getCodes()[0].lastIndexOf('.') + 1);
+            }
+            paramName = paramName.replaceAll("([a-z])([A-Z]+)", "$1_$2").toLowerCase();
+
+            switch (paramName) {
+                case "request_time":
+                    paramName = "request";
+                    break;
+                case "user_info":
+                    paramName = "input";
+                    break;
+                case "info":
+                    paramName = "challenge_info";
+                    break;
+                case "format":
+                    paramName = "challenge_format";
+                    break;
+                case "type":
+                    paramName = "challenge_type";
+                    break;
+                default:
+                    break;
+            }
+            String errorCode = "invalid_" + paramName;
+            errors.add(new Error(errorCode, error.getDefaultMessage()));
+        });
+        return new ResponseEntity<>(getResponseWrapper(errors), HttpStatus.OK);
     }
 
     @ExceptionHandler(value = { Exception.class, RuntimeException.class })

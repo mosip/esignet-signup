@@ -27,7 +27,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
@@ -181,7 +180,7 @@ public class RegistrationControllerTest {
                 .andExpect(jsonPath("$.errors").isNotEmpty())
                 .andExpect(jsonPath("$.errors[0].errorCode").value(ErrorConstants.INVALID_CHALLENGE))
                 .andExpect(jsonPath("$.errors[0].errorMessage")
-                        .value("request.challengeInfo[0].challenge: invalid_challenge"));
+                        .value("invalid_challenge"));
     }
 
     @Test
@@ -230,7 +229,7 @@ public class RegistrationControllerTest {
                 .andExpect(jsonPath("$.errors").isNotEmpty())
                 .andExpect(jsonPath("$.errors[0].errorCode").value(ErrorConstants.INVALID_CHALLENGE_FORMAT))
                 .andExpect(jsonPath("$.errors[0].errorMessage")
-                        .value("request.challengeInfo[0].format: invalid_challenge_format"));
+                        .value("invalid_challenge_format"));
     }
 
     @Test
@@ -254,7 +253,7 @@ public class RegistrationControllerTest {
                 .andExpect(jsonPath("$.errors").isNotEmpty())
                 .andExpect(jsonPath("$.errors[0].errorCode").value(ErrorConstants.INVALID_CHALLENGE_FORMAT))
                 .andExpect(jsonPath("$.errors[0].errorMessage")
-                        .value("request.challengeInfo[0].format: invalid_challenge_format"));
+                        .value("invalid_challenge_format"));
     }
 
     @Test
@@ -278,7 +277,7 @@ public class RegistrationControllerTest {
                 .andExpect(jsonPath("$.errors").isNotEmpty())
                 .andExpect(jsonPath("$.errors[0].errorCode").value(ErrorConstants.INVALID_CHALLENGE_FORMAT))
                 .andExpect(jsonPath("$.errors[0].errorMessage")
-                        .value("request.challengeInfo[0].format: invalid_challenge_format"));
+                        .value("invalid_challenge_format"));
 
     }
 
@@ -296,7 +295,7 @@ public class RegistrationControllerTest {
                 .andExpect(jsonPath("$.errors").isNotEmpty())
                 .andExpect(jsonPath("$.errors[0].errorCode").value(ErrorConstants.INVALID_REQUEST))
                 .andExpect(jsonPath("$.errors[0].errorMessage")
-                        .value("requestTime: invalid_request"));
+                        .value("invalid_request"));
 
     }
 
@@ -314,7 +313,7 @@ public class RegistrationControllerTest {
                 .andExpect(jsonPath("$.errors").isNotEmpty())
                 .andExpect(jsonPath("$.errors[0].errorCode").value(ErrorConstants.INVALID_REQUEST))
                 .andExpect(jsonPath("$.errors[0].errorMessage")
-                        .value("requestTime: invalid_request"));
+                        .value("invalid_request"));
 
     }
 
@@ -333,7 +332,7 @@ public class RegistrationControllerTest {
                 .andExpect(jsonPath("$.errors").isNotEmpty())
                 .andExpect(jsonPath("$.errors[0].errorCode").value(ErrorConstants.INVALID_CHALLENGE_INFO))
                 .andExpect(jsonPath("$.errors[0].errorMessage")
-                        .value("request.challengeInfo: invalid_challenge_info"));
+                        .value("invalid_challenge_info"));
 
     }
 
@@ -358,7 +357,7 @@ public class RegistrationControllerTest {
                 .andExpect(jsonPath("$.errors").isNotEmpty())
                 .andExpect(jsonPath("$.errors[0].errorCode").value(ErrorConstants.INVALID_IDENTIFIER))
                 .andExpect(jsonPath("$.errors[0].errorMessage")
-                        .value("request.identifier: invalid_identifier"));
+                        .value("invalid_identifier"));
     }
 
     @Test
@@ -380,7 +379,7 @@ public class RegistrationControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.errors").isNotEmpty())
                 .andExpect(jsonPath("$.errors[0].errorCode").value(ErrorConstants.INVALID_IDENTIFIER))
-                .andExpect(jsonPath("$.errors[0].errorMessage").value("request.identifier: invalid_identifier"));
+                .andExpect(jsonPath("$.errors[0].errorMessage").value("invalid_identifier"));
     }
 
     @Test
@@ -701,7 +700,7 @@ public class RegistrationControllerTest {
                 .andExpect(jsonPath("$.response").isEmpty())
                 .andExpect(jsonPath("$.errors").isNotEmpty())
                 .andExpect(jsonPath("$.errors[0].errorMessage")
-                        .value("request.consent: invalid_consent"));
+                        .value("invalid_consent"));
     }
 
     @Test
@@ -727,7 +726,7 @@ public class RegistrationControllerTest {
                 .andExpect(jsonPath("$.response").isEmpty())
                 .andExpect(jsonPath("$.errors").isNotEmpty())
                 .andExpect(jsonPath("$.errors[0].errorMessage")
-                        .value("request.consent: invalid_consent"));
+                        .value("invalid_consent"));
     }
 
 
@@ -759,7 +758,7 @@ public class RegistrationControllerTest {
                 .andExpect(jsonPath("$.response").isEmpty())
                 .andExpect(jsonPath("$.errors").isNotEmpty())
                 .andExpect(jsonPath("$.errors[0].errorMessage")
-                        .value("request.password: invalid_password"));
+                        .value("invalid_password"));
     }
 
     @Test
@@ -790,7 +789,7 @@ public class RegistrationControllerTest {
                 .andExpect(jsonPath("$.response").isEmpty())
                 .andExpect(jsonPath("$.errors").isNotEmpty())
                 .andExpect(jsonPath("$.errors[0].errorMessage")
-                        .value("request.password: invalid_password"));
+                        .value("invalid_password"));
     }
 
     @Test
@@ -820,7 +819,7 @@ public class RegistrationControllerTest {
                 .andExpect(jsonPath("$.response").isEmpty())
                 .andExpect(jsonPath("$.errors").isNotEmpty())
                 .andExpect(jsonPath("$.errors[0].errorMessage")
-                        .value("request.password: invalid_password"));
+                        .value("invalid_password"));
     }
 
     @Test
@@ -849,7 +848,7 @@ public class RegistrationControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.response").isEmpty())
                 .andExpect(jsonPath("$.errors").isNotEmpty())
-                .andExpect(jsonPath("$.errors[0].errorMessage").value("request.username: invalid_username"));
+                .andExpect(jsonPath("$.errors[0].errorMessage").value("invalid_username"));
     }
 
     @Test

@@ -23,8 +23,10 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.client.RestTemplate;
@@ -71,6 +73,7 @@ public class ResetPasswordControllerTest {
         ResetPasswordRequest resetPasswordRequest = new ResetPasswordRequest();
         resetPasswordRequest.setIdentifier("+855123456789");
         resetPasswordRequest.setPassword("Password@2023");
+        resetPasswordRequest.setLocale("eng");
 
         resetPasswordWrapper.setRequestTime(requestTime.format(DateTimeFormatter.ofPattern(UTC_DATETIME_PATTERN)));
         resetPasswordWrapper.setRequest(resetPasswordRequest);
@@ -82,7 +85,7 @@ public class ResetPasswordControllerTest {
 
         mockMvc.perform(post("/reset-password")
                         .content(objectMapper.writeValueAsString(resetPasswordWrapper))
-                        .cookie(new Cookie(SignUpConstants.TRANSACTION_ID, mockTransactionID))
+                        .cookie(new Cookie(SignUpConstants.VERIFIED_TRANSACTION_ID, mockTransactionID))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.response.status").value("PENDING"));
@@ -125,7 +128,7 @@ public class ResetPasswordControllerTest {
 
         mockMvc.perform(post("/reset-password")
                         .content(objectMapper.writeValueAsString(resetPasswordWrapper))
-                        .cookie(new Cookie(SignUpConstants.TRANSACTION_ID, mockTransactionID))
+                        .cookie(new Cookie(SignUpConstants.VERIFIED_TRANSACTION_ID, mockTransactionID))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.errors").isNotEmpty())
@@ -152,7 +155,7 @@ public class ResetPasswordControllerTest {
 
         mockMvc.perform(post("/reset-password")
                         .content(objectMapper.writeValueAsString(resetPasswordWrapper))
-                        .cookie(new Cookie(SignUpConstants.TRANSACTION_ID, mockTransactionID))
+                        .cookie(new Cookie(SignUpConstants.VERIFIED_TRANSACTION_ID, mockTransactionID))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.errors").isNotEmpty())
@@ -179,7 +182,7 @@ public class ResetPasswordControllerTest {
 
         mockMvc.perform(post("/reset-password")
                         .content(objectMapper.writeValueAsString(resetPasswordWrapper))
-                        .cookie(new Cookie(SignUpConstants.TRANSACTION_ID, mockTransactionID))
+                        .cookie(new Cookie(SignUpConstants.VERIFIED_TRANSACTION_ID, mockTransactionID))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.errors").isNotEmpty())
@@ -215,7 +218,7 @@ public class ResetPasswordControllerTest {
 
         mockMvc.perform(post("/reset-password")
                         .content(objectMapper.writeValueAsString(resetPasswordWrapper))
-                        .cookie(new Cookie(SignUpConstants.TRANSACTION_ID, mockTransactionID))
+                        .cookie(new Cookie(SignUpConstants.VERIFIED_TRANSACTION_ID, mockTransactionID))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.errors").isNotEmpty())
@@ -242,7 +245,7 @@ public class ResetPasswordControllerTest {
 
         mockMvc.perform(post("/reset-password")
                         .content(objectMapper.writeValueAsString(resetPasswordWrapper))
-                        .cookie(new Cookie(SignUpConstants.TRANSACTION_ID, mockTransactionID))
+                        .cookie(new Cookie(SignUpConstants.VERIFIED_TRANSACTION_ID, mockTransactionID))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.errors").isNotEmpty())
@@ -269,7 +272,7 @@ public class ResetPasswordControllerTest {
 
         mockMvc.perform(post("/reset-password")
                         .content(objectMapper.writeValueAsString(resetPasswordWrapper))
-                        .cookie(new Cookie(SignUpConstants.TRANSACTION_ID, mockTransactionID))
+                        .cookie(new Cookie(SignUpConstants.VERIFIED_TRANSACTION_ID, mockTransactionID))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.errors").isNotEmpty())
