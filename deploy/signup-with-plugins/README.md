@@ -9,20 +9,24 @@ Depending on your setup, you can install either of the two available plugin conf
 
 ## Option-1 Install Signup with mock plugin 
 
-      ```cd deploy/signup-with-plugins/signup-with-mock-plugin
       ```
--- Modify the values.yaml file if necessary to reflect your configuration requirements.
+      cd deploy/signup-with-plugins/signup-with-mock-plugin
+      ```
+   Modify the values.yaml file if necessary to reflect your configuration requirements.
 
-    ```./install.sh
+    ```
+    ./install.sh
     ```
 
 ## Option-2 Install Signup with mosipid plugin
 
-    ```cd deploy/signup-with-plugins/signup-with-mosipid-plugin
     ```
--- Modify the values.yaml file if necessary to reflect your configuration requirements.
+    cd deploy/signup-with-plugins/signup-with-mosipid-plugin
+    ```
+   Modify the values.yaml file if necessary to reflect your configuration requirements.
 
-    ```./install.sh
+    ```
+    ./install.sh
     ```
 
 ## When necessary, run the delete.sh and restart.sh scripts to safely delete and restart the service.
