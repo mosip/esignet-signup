@@ -143,7 +143,6 @@ To execute the tests using Jar, use the following steps:
   
 NOTE: Replace `**` in the above command with the JAR version currently available in the **target** folder.
 
-
 # Using Eclipse IDE
 
 To execute the tests using Eclipse IDE, use the following steps:
