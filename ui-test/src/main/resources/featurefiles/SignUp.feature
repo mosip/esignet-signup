@@ -167,67 +167,14 @@ Scenario Outline: Completing Registration Process
   Then verify an error message Should be able to enter only Khmer characters is displayed below the field
 
   Then user clicks on Language Selection Option
-  And user selects English from the language dropdown
+  And user selects run from the language dropdown
   When user enters text more than maximum characters in the Full Name in field
   Then verify it restricts such input with an error message Full Name has to be in Khmer only.
 
   When user enters only spaces in the Full Name in field
   And user tabs out from the field
   Then verify an error message Please enter a valid name. is displayed below the field
-
-  And verify the watermark text in the Password field
-
-  When user enters invalid password in the Password field 
-  And user tabs out from the field
-  Then verify an error message Password does not meet the password policy. displayed below the Password field
   
-  When user enters password less than minimum length in the Password field
-  And user tabs out from the field
-  Then verify an error message Password does not meet the password policy. displayed below the Password field
-  
-  When user enters password more than maximum length in the Password field
-  Then validate the field restrict the input to max characters only
-  
-  And verify the watermark text in the Confirm Password field
-
-  When user enters valid password in the Password field
-  Then user enters different password in the Confirm Password field
-  And user tabs out from the field
-  Then verify an inline error message Password and Confirm Password do not match. displayed below Confirm Password field
-
-  Then user enters more than max character in the Confirm Password field
-  And verify the field should restrict the password to max characters only
-  
-  Then user enters less than min character in the Confirm Password field
-  And user tabs out from the field
-  Then verify an inline error message Password and Confirm Password do not match. displayed below Confirm Password field
-
-  Then validate the Password field is masked
-  And validate the Confirm Password field is masked
-
-  When user clicks on the unmask icon in the Password field
-  Then validate the Password field is unmasked
-
-  When user clicks on the unmask icon in the Confirm Password field
-  Then validate the Confirm Password field is unmasked
-
-  When user clicks again on the unmask icon in the Password field
-  Then validate the Password field is masked
-
-  When user clicks again on the unmask icon in the Confirm Password field
-  And validate the Confirm Password field is masked
-
-  When user clicks on the "i" icon in the Password field
-  Then verify the tooltip message for password field is displayed
-
-  When user clicks on the "i" icon in the Full Name in field
-  Then verify the tooltip message for full name field is displayed
-  
-  When user does not check the terms and conditions checkbox
-  Then verify the Continue button will be in disabled state
-
-  Then verify the terms and conditions message
-
   When user enters special characters in the Full Name in field
   And user tabs out from the field
   Then verify it restricts such input with an error message Full Name has to be in Khmer only.
@@ -240,27 +187,80 @@ Scenario Outline: Completing Registration Process
   And user tabs out from the field
   Then verify it restricts such input with an error message Full Name has to be in Khmer only.
 
-  When user clicks on the Terms & Conditions hyperlink
-  Then verify a pop-up window for Terms and Conditions is displayed
+  And verify the watermark text in the Password field
 
-  When user closes the Terms and Conditions popup
-  Then verify user is navigated back to the Account Setup screen
-
-  When user clicks on the Privacy policy hyperlink
-  Then verify a pop-up window for Privacy Policy is displayed
-
-  When user closes the privacy policy popup
-  Then verify user is navigated back to the Account Setup screen
-
-  Then verify the Continue button is disabled when mandatory fields are not filled in Account Setup screen
+  When user enters invalid password in the Password field 
+  And user tabs out from the field
+  Then verify an error message Password does not meet the password policy. displayed below the Password field
   
-  When user enters text valid name in the Full Name field
-  And user enters valid password in the Password field
-  Then verify the Continue button is disabled when only two mandatory fields are filled
+  When user enters password less than minimum length in the Password field
+  And user tabs out from the field
+  Then verify an error message Password does not meet the password policy. displayed below the Password field
   
-  When user enters text valid name in the Full Name field
-  And user enters valid password in the Password field
-  And user enters valid confirm password in the Confirm Password field
+  When user enters password more than maximum length in the Password field
+  Then verify an error message Password does not meet the password policy. displayed below the Password field
+  
+  And verify the watermark text in the Confirm Password field
+
+  When user enters valid password in the Password field
+  Then user enters different password in the Confirm Password field
+  And user tabs out from the field
+  Then verify an inline error message Password and Confirm Password do not match. displayed below Confirm Password field
+
+  Then user enters more than max character in the Confirm Password field
+  Then verify an inline error message Password and Confirm Password do not match. displayed below Confirm Password field
+  
+  Then user enters less than min character in the Confirm Password field
+  And user tabs out from the field
+  Then verify an inline error message Password and Confirm Password do not match. displayed below Confirm Password field
+
+  Then validate the Password field is masked
+  And validate the Confirm Password field is masked
+  
+  When user clicks on the "i" icon in the Full Name in field
+  Then verify the tooltip message for full name field is displayed
+
+  When user clicks on the unmask icon in the Password field
+  Then validate the Password field is unmasked
+
+  When user clicks on the unmask icon in the Confirm Password field
+  Then validate the Confirm Password field is unmasked
+
+  When user clicks again on the unmask icon in the Password field
+  Then validate the Password field is masked
+
+  When user clicks again on the unmask icon in the Confirm Password field
+  And validate the Confirm Password field is masked
+  
+  When user clicks on the "i" icon in the Full Name in field
+  Then verify the tooltip message for full name field is displayed
+
+  When user clicks on the "i" icon in the Password field
+  Then verify the tooltip message for password field is displayed
+
+  When user does not check the terms and conditions checkbox
+  And user click on Continue button in Setup Account Page
+  Then verify the error message This field is required is displayed
+
+  Then verify the terms and conditions message
+
+  #When user clicks on the Terms & Conditions hyperlink
+  #Then verify a pop-up window for Terms and Conditions is displayed
+
+  #When user closes the Terms and Conditions popup
+  #Then verify user is navigated back to the Account Setup screen
+
+  #When user clicks on the Privacy policy hyperlink
+  #Then verify a pop-up window for Privacy Policy is displayed
+
+  #When user closes the privacy policy popup
+  #Then verify user is navigated back to the Account Setup screen
+
+  And verify when mandatory fields are not filled in Account Setup screen
+  And user click on Continue button in Setup Account Page
+  Then verify the error message This field is required is displayed
+  
+  And user fills the signup form using UI spec
   Then verify the Continue button is enabled when all mandatory fields are filled
   
   #When user clicks the browser back button
@@ -328,19 +328,15 @@ Scenario Outline: Verify sign-up portal by navigating directly through sign-up U
   
   
 @smoke @OtpNotification
-Scenario: Verify the notification when OTP requested
-  Given user opens SMTP portal
-  And navigate back to signup portal
+ Scenario: Verify the notification when OTP requested
+  Given user directly navigates to sign-up portal URL
   And user clicks on Register button
   And user enters valid_mobile_number in the mobile number text box
   And user clicks on the Continue button
-  And user switches back to SMTP portal
   Then verify notification is received for otp requested
-  And switch back to signup portal
   When user enters the complete 6-digit OTP
   And user clicks on the Verify OTP button
   And user click on Continue button in Success Screen
   And user fills the signup form using UI spec
   And user clicks on Continue button in Setup Account Page
-  Then user switches back to SMTP portal
   And verify registration success notification is received

@@ -194,7 +194,7 @@ public class LoginOptionsStepDefinition {
 
 	@And("user enters random char into password field")
 	public void userEnterRandomCharacter() {
-		String randomPassword = EsignetUtil.generateInvalidPassword(8);
+		String randomPassword = EsignetUtil.generateInvalidPassword(2);
 		loginOptionsPage.enterRegisteredPassword(randomPassword);
 	}
 

@@ -155,7 +155,7 @@ public class RegistrationPage extends BasePage {
 	@FindBy(id = "password_confirm_eye")
 	WebElement confirmPasswordToggleIcon;
 
-	@FindBy(id = "info_FILL0_wght400_GRAD0_opsz48")
+	@FindBy(xpath = "//label[@for='password']//span[@class='info-icon']")
 	WebElement passwordInfoIcon;
 
 	@FindBy(id = "consent")
@@ -173,28 +173,31 @@ public class RegistrationPage extends BasePage {
 	@FindBy(id = "en_language")
 	WebElement englishLanguageSelection;
 
-	@FindBy(xpath = "//span[@class='error-text']")
+	@FindBy(xpath = "//input[@id='fullName_khm']/following-sibling::div")
 	WebElement pleaseEnterValidNameError;
 
-	@FindBy(xpath = "//div[@class='error-message']")
+	@FindBy(xpath = "//input[@id='password']/following-sibling::div")
 	WebElement passwordFieldError;
 
-	@FindBy(id = "//div[@class='error-message']")
+	@FindBy(xpath = "//input[@id='password_confirm']/following-sibling::div")
 	WebElement confirmPasswordFieldError;
 
-	@FindBy(id = "info_FILL0_wght400_GRAD0_opsz48")
+	@FindBy(xpath = "(//div[@class='label-div-display']//span[contains(@class,'info-icon')])[1]")
 	WebElement fullNameInKhmerInfoIcon;
 
 	@FindBy(xpath = "//div[@class='info-detail active']")
 	WebElement passwordFieldTooltipText;
 
-	@FindBy(id = "//div[@class='info-detail active']")
+	@FindBy(xpath = "//div[@class='info-detail active']")
 	WebElement fullNameInKhmerTooltipText;
 
-	@FindBy(xpath = "//label[@class='text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 font-medium']")
+	@FindBy(xpath = "//label[@for='consent']")
 	WebElement messageToAcceptTermsAndCondition;
+	
+	@FindBy(xpath = "//input[@id='consent']/following::div[@class='error-message'][1]")
+	private WebElement consentFieldRequiredErrorMessgae;
 
-	@FindBy(xpath = "//span[@class='text-primary underline hover:cursor-pointer']")
+	@FindBy(xpath = "(//label[@for='consent']//a)[1]")
 	private WebElement termsAndConditionsLink;
 
 	@FindBy(xpath = "//h3[@class='text-xl font-semibold text-gray-900 dark:text-gray-900']")
@@ -203,7 +206,7 @@ public class RegistrationPage extends BasePage {
 	@FindBy(id = "cross_icon")
 	WebElement popupWindowCloseIcon;
 
-	@FindBy(xpath = "//span[@class='text-primary underline hover:cursor-pointer']")
+	@FindBy(xpath = "(//label[@for='consent']//a)[2]")
 	private WebElement privacyPolicyLink;
 
 	@FindBy(xpath = "//h3[@class='text-xl font-semibold text-gray-900 dark:text-gray-900']")
@@ -626,22 +629,12 @@ public class RegistrationPage extends BasePage {
 		enterConfirmPassword(pwd);
 	}
 
-	public boolean isPasswordRestrictedToMaxChars() {
-		String value = getElementValue(passwordField,"Get value for Password resticted message");
-		return value != null && value.length() <= 20;
-	}
-
 	public String getConfirmPasswordFieldPlaceholder() {
 		return getElementAttribute(confirmPasswordField, "placeholder");
 	}
 
 	public boolean isPasswordAndConfirmPasswordDoesNotMatchErrorDisplayed() {
 		return isElementVisible(confirmPasswordFieldError,"Check if Password And Confirm Password Does Not Match Error Displayed");
-	}
-
-	public boolean isConfirmPasswordRestrictedToMaxChars() {
-		String value = getElementValue(confirmPasswordField,"Get element value for confirm pasword");
-		return value != null && value.length() <= 20;
 	}
 
 	public boolean isPasswordFieldMasked() {
@@ -744,8 +737,19 @@ public class RegistrationPage extends BasePage {
 	public WebElement getTermsAndConditionsCheckbox() {
 		return termsAndConditionsCheckbox;
 	}
+	
+	public boolean isFieldRequiredErrorMessageDisplayed() {
+		return isElementVisible(consentFieldRequiredErrorMessgae,"Check error is Displayed");
+	}
 
 	public void clickOnSetupAccountContinueButton() {
+		clickOnElement(setupContinueButton, "Click on Setup Account continue button");
+	}
+	
+	public void clickOnContinueButtonInSetupAccountScreen() {
+		((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({block: 'center'});",
+				setupContinueButton);
+		((JavascriptExecutor) driver).executeScript("arguments[0].click();", setupContinueButton);
 		clickOnElement(setupContinueButton, "Click on Setup Account continue button");
 	}
 

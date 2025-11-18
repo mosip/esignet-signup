@@ -22,14 +22,15 @@ import base.BaseTest;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import io.mosip.testrig.apirig.testrunner.AllNotificationListner;
 import io.mosip.testrig.apirig.testrunner.OTPListener;
 import pages.LoginOptionsPage;
 import pages.RegistrationPage;
 import pages.SignUpPage;
 import pages.SignupFormDynamicFiller;
-import pages.SmtpPage;
 import utils.BaseTestUtil;
 import utils.ClaimsUtil;
+import utils.EsignetConfigManager;
 import utils.EsignetUtil;
 import utils.MultiLanguageUtil;
 
@@ -42,7 +43,6 @@ public class SignUpStepDef {
 	BasePage basePage;
 	LoginOptionsPage loginOptionsPage;
 	RegistrationPage registrationPage;
-	SmtpPage smtpPage;
 	SignupFormDynamicFiller formFiller;
 
 	public SignUpStepDef(BaseTest baseTest) {
@@ -52,7 +52,6 @@ public class SignUpStepDef {
 		basePage = new BasePage(driver);
 		loginOptionsPage = new LoginOptionsPage(driver);
 		registrationPage = new RegistrationPage(driver);
-		smtpPage = new SmtpPage(driver);
 		formFiller = new SignupFormDynamicFiller(driver);
 	}
 
@@ -526,9 +525,16 @@ public class SignUpStepDef {
 		assertTrue(registrationPage.isFullNameHasToBeInKhmerErrorDisplayed());
 	}
 
-	@Then("user selects English from the language dropdown")
-	public void userSelectsEnglishLanguage() {
-		registrationPage.clickOnEnglishLanguage();
+	@Then("user selects run from the language dropdown")
+	public void userSelectsRunLanguage() {
+		String languagePassed = MultiLanguageUtil.getDisplayName(BaseTestUtil.getThreadLocalLanguage());
+
+		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+
+		WebElement langOption = wait
+				.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[text()='" + languagePassed + "']")));
+		langOption.click();
+		BaseTestUtil.setThreadLocalLanguage(languagePassed);
 	}
 
 	@Then("verify UI rendered in English Language")
@@ -572,8 +578,9 @@ public class SignUpStepDef {
 
 	@Then("verify the watermark text in the Password field")
 	public void verifyPasswordWatermark() {
-		String langCode = ClaimsUtil.getDefaultLanguage();
-		String expectedPlaceholder = EsignetUtil.getPlaceholderForPassword(langCode);
+		String langCode = EsignetConfigManager.getproperty("runLanguage");
+		String threeLetterCode = MultiLanguageUtil.getThreeLetterLangCode(langCode);
+		String expectedPlaceholder = EsignetUtil.getPlaceholderForPassword(threeLetterCode);
 		String actualPlaceholder = registrationPage.getPasswordFieldPlaceholder();
 		Assert.assertEquals(actualPlaceholder, expectedPlaceholder);
 	}
@@ -586,7 +593,7 @@ public class SignUpStepDef {
 	@When("user enters password more than maximum length in the Password field")
 	public void userEntersLongPassword() {
 		String longPass = EsignetUtil.generateInvalidPassword(30);
-		registrationPage.enterMobileNumber(longPass);
+		registrationPage.enterPassword(longPass);
 	}
 
 	@When("user enters invalid password in the Password field")
@@ -598,11 +605,6 @@ public class SignUpStepDef {
 	@Then("verify an error message Password does not meet the password policy. displayed below the Password field")
 	public void verifyPasswordErrorMessage() {
 		assertTrue(registrationPage.isPasswordDoesNotMeetThePolicyErrorDisplayed());
-	}
-
-	@Then("validate the field restrict the input to max characters only")
-	public void fieldShouldRestrictInputToMaxCharsOnly() {
-		assertTrue(registrationPage.isPasswordRestrictedToMaxChars());
 	}
 
 	@Then("verify the watermark text in the Confirm Password field")
@@ -631,11 +633,6 @@ public class SignUpStepDef {
 	@Then("verify an inline error message Password and Confirm Password do not match. displayed below Confirm Password field")
 	public void verifyPasswordMismatchError() {
 		assertTrue(registrationPage.isPasswordAndConfirmPasswordDoesNotMatchErrorDisplayed());
-	}
-
-	@Then("verify the field should restrict the password to max characters only")
-	public void confirmPassFieldShouldRestrictInputToMaxCharsOnly() {
-		assertTrue(registrationPage.isConfirmPasswordRestrictedToMaxChars());
 	}
 
 	@Then("validate the Password field is masked")
@@ -685,8 +682,9 @@ public class SignUpStepDef {
 
 	@Then("verify the tooltip message for password field is displayed")
 	public void verifyPasswordTooltipMessage() {
-		String expectedLang = registrationPage.getExpectedDefaultLanguage();
-		String expectedTooltip = EsignetUtil.getInfoForPassword(expectedLang);
+		String expectedLang = EsignetConfigManager.getproperty("runLanguage");
+		String threeLetterCode = MultiLanguageUtil.getThreeLetterLangCode(expectedLang);
+		String expectedTooltip = EsignetUtil.getInfoForPassword(threeLetterCode);
 		String actualTooltip = registrationPage.getPasswordTooltipText();
 		Assert.assertEquals(actualTooltip, expectedTooltip);
 	}
@@ -698,7 +696,7 @@ public class SignUpStepDef {
 
 	@Then("verify the tooltip message for full name field is displayed")
 	public void verifyFullNameInKhmerTooltipMessage() {
-		String expectedLang = registrationPage.getExpectedDefaultLanguage();
+		String expectedLang = EsignetConfigManager.getproperty("runLanguage");
 		String expectedTooltip = EsignetUtil.getInfoForFullName(expectedLang);
 		String actualTooltip = registrationPage.getFullNameTooltipText();
 		assertEquals(actualTooltip, expectedTooltip);
@@ -707,6 +705,11 @@ public class SignUpStepDef {
 	@When("user does not check the terms and conditions checkbox")
 	public void userDoesNotCheckTermsAndConditionsCheckbox() {
 		registrationPage.ensureTermsCheckboxIsUnchecked();
+	}
+
+	@Then("verify the error message This field is required is displayed")
+	public void verifyErrorMessage() {
+		assertTrue(registrationPage.isFieldRequiredErrorMessageDisplayed());
 	}
 
 	@Then("verify the Continue button will be in disabled state")
@@ -759,24 +762,21 @@ public class SignUpStepDef {
 		registrationPage.clickOnClosePopupIcon();
 	}
 
-	@Then("verify the Continue button is disabled when mandatory fields are not filled in Account Setup screen")
+	@Then("verify when mandatory fields are not filled in Account Setup screen")
 	public void verifyContinueButtonIsDisabledWhenMandatoryFieldsAreEmpty() {
 		registrationPage.clearAllMandatoryFields();
 		registrationPage.ensureTermsCheckboxIsUnchecked();
-		boolean isEnabled = registrationPage.isContinueButtonInSetupAccountPageEnabled();
-		assertFalse("Continue button should be disabled when mandatory fields are empty", isEnabled);
-	}
-
-	@Then("verify the Continue button is disabled when only two mandatory fields are filled")
-	public void verifyContinueButtonDisabledWithOnlyTwoFieldsFilled() {
-		boolean isEnabled = registrationPage.isContinueButtonInSetupAccountPageEnabled();
-		assertFalse("Continue button should be disabled when only two mandatory fields are filled", isEnabled);
 	}
 
 	@Then("verify the Continue button is enabled when all mandatory fields are filled")
 	public void verifyContinueButtonEnabledWhenAllMandatoryFieldsFilled() {
 		registrationPage.checkTermsAndConditions();
 		assertTrue(registrationPage.isContinueButtonInSetupAccountPageEnabled());
+	}
+	
+	@When("user click on Continue button in Setup Account Page")
+	public void userClicksOnContinueButtonInRegistrationPage() {
+		registrationPage.clickOnContinueButtonInSetupAccountScreen();
 	}
 
 	@When("user clicks on Continue button in Setup Account Page")
@@ -870,37 +870,15 @@ public class SignUpStepDef {
 		registrationPage.clickOnOkayButtonInSuccessScreen();
 	}
 
-	String smtpTabHandle;
-	String healthPortalTabHandle;
-
-	@Given("user opens SMTP portal")
-	public void userNavigatesToSmtpPortalUrl() {
-		smtpPage.navigateToSmtpUrl();
-		smtpTabHandle = driver.getWindowHandle();
-	}
-
-	@Then("navigate back to eSignet portal")
-	public void userOpensEsignetPortal() {
-		driver.switchTo().newWindow(WindowType.TAB);
-		smtpPage.navigateToHealthPortalUrl();
-		healthPortalTabHandle = driver.getWindowHandle();
-	}
-
-	@Then("user switches back to SMTP portal")
-	public void userSwitchesBackToSmtp() {
-		driver.switchTo().window(smtpTabHandle);
-	}
-
 	@Then("verify notification is received for otp requested")
 	public void verifyOtpNotificationInSelectedLanguage() {
 		String currentLang = BaseTestUtil.getThreadLocalLanguage();
-		logger.info("Verifying OTP notification in language: " + currentLang);
-		assertTrue(smtpPage.isOtpNotificationReceived());
-	}
 
-	@Then("switch back to eSignet portal")
-	public void userSwitchesBackToHealthPortal() {
-		driver.switchTo().window(healthPortalTabHandle);
+		String notification = AllNotificationListner.getNotification(lastGeneratedMobileNumber);
+		boolean isNotificationReceived = notification != null && !notification.isEmpty();
+		Assert.assertTrue(isNotificationReceived, "OTP notification not received for: " + lastGeneratedMobileNumber);
+
+		logger.info("Verifying OTP notification in language: " + currentLang);
 	}
 
 	@Then("user accepts the Terms and Condition checkbox")
@@ -911,8 +889,13 @@ public class SignUpStepDef {
 	@Then("verify registration success notification is received")
 	public void verifySuccessNotificationInSelectedLanguage() {
 		String currentLang = BaseTestUtil.getThreadLocalLanguage();
+
+		String notification = AllNotificationListner.getNotification(lastGeneratedMobileNumber);
+		boolean isNotificationReceived = notification != null && !notification.isEmpty();
+		Assert.assertTrue(isNotificationReceived,
+				"Registration success notification not received for: " + lastGeneratedMobileNumber);
+
 		logger.info("Verifying successful notification in language: " + currentLang);
-		assertTrue(smtpPage.isRegistrationSuccessNotificationDisplayed());
 	}
 
 	private String lastGeneratedMobileNumber;
@@ -939,14 +922,6 @@ public class SignUpStepDef {
 	@When("user enters valid confirm password in the Confirm Password field")
 	public void userEntersValidConfirmPassword() {
 		registrationPage.enterConfirmPassword(lastGeneratedPassword);
-	}
-
-	@When("user enters text valid name in the Full Name field")
-	public void userEntersValidNames() {
-		EsignetUtil.FullName names = EsignetUtil.generateNamesFromUiSpec();
-
-		registrationPage.enterFullNameInEnglish(names.english);
-		registrationPage.enterFullNameInKhmer(names.khmer);
 	}
 
 	@Then("user click on upload profile photo section")

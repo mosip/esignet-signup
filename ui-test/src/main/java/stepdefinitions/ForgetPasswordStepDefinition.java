@@ -14,13 +14,13 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import io.cucumber.java.en.When;
+import io.mosip.testrig.apirig.testrunner.AllNotificationListner;
 import io.mosip.testrig.apirig.testrunner.OTPListener;
 import base.BaseTest;
 import io.cucumber.java.en.Then;
 
 import pages.ForgetPasswordPage;
 import pages.LoginOptionsPage;
-import pages.SmtpPage;
 import pages.SignUpPage;
 import utils.BaseTestUtil;
 import utils.EsignetUtil;
@@ -34,7 +34,6 @@ public class ForgetPasswordStepDefinition {
 	BaseTest baseTest;
 	LoginOptionsPage loginOptionsPage;
 	ForgetPasswordPage forgetPasswordPage;
-	SmtpPage smtpPage;
 	SignUpPage signUpPage;
 
 	public ForgetPasswordStepDefinition(BaseTest baseTest) {
@@ -42,7 +41,6 @@ public class ForgetPasswordStepDefinition {
 		this.driver = BaseTest.getDriver();
 		this.forgetPasswordPage = new ForgetPasswordPage(driver);
 		this.loginOptionsPage = new LoginOptionsPage(driver);
-		this.smtpPage = new SmtpPage(driver);
 		this.signUpPage = new SignUpPage(driver);
 	}
 
@@ -553,27 +551,18 @@ public class ForgetPasswordStepDefinition {
 	@Then("verify password changed successful notification is displayed")
 	public void verifySuccessNotificationInSelectedLanguage() {
 		String currentLang = BaseTestUtil.getThreadLocalLanguage();
+		String registeredNumber = RegisteredDetails.getMobileNumber();
+		String notification = AllNotificationListner.getNotification(registeredNumber);
+		boolean isNotificationReceived = notification != null && !notification.isEmpty();
+		Assert.assertTrue(isNotificationReceived,
+				"Registration success notification not received for: " + registeredNumber);
+
 		logger.info("Verifying password changed notification in language: " + currentLang);
-		assertTrue(smtpPage.isPasswordResetSuccessNotificationDisplayed());
 	}
 
 	@Then("verify it is accessible,user is redirected to the Forget Password screen")
 	public void verifyUserRedirectedToForgotPasswordScreen() {
 		assertTrue(forgetPasswordPage.isForgetPassowrdScreenVisible());
-	}
-
-	String signupPortalTabHandle;
-
-	@Then("navigate back to signup portal")
-	public void userNavigateToSignupPortal() {
-		driver.switchTo().newWindow(WindowType.TAB);
-		signUpPage.navigateToSignupPortal();
-		signupPortalTabHandle = driver.getWindowHandle();
-	}
-
-	@Then("switch back to signup portal")
-	public void userSwitchToSignupPortal() {
-		driver.switchTo().window(signupPortalTabHandle);
 	}
 
 }

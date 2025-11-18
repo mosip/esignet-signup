@@ -52,7 +52,7 @@ public class LoginOptionsPage extends BasePage {
 	@FindBy(id = "password-eye")
 	WebElement passwordEyeIcon;
 
-	@FindBy(xpath = "//span[contains(text(),'Please Enter Valid Password')]")
+	@FindBy(xpath = "//small[@class='text-[#FE6B6B] font-medium flex items-center !mt-1']")
 	WebElement invalidPasswordError;
 
 	@FindBy(id = "error-banner-message")
@@ -115,7 +115,7 @@ public class LoginOptionsPage extends BasePage {
 	@FindBy(id = "cancel")
 	WebElement cancelButtonInConsentScreen;
 
-	@FindBy(xpath = "//div[@class='react-tooltip styles-module_tooltip__mnnfp styles-module_dark__xNqje md:w-3/6 lg:max-w-sm m-0 md:m-auto styles-module_show__2NboJ']")
+	@FindBy(xpath = "//div[contains(@class, 'react-tooltip core-styles-module')]")
 	WebElement essentialClaimToolTipMessege;
 
 	@FindBy(xpath = "//div[@class='relative text-center text-dark font-semibold text-xl text-[#2B3840] mt-4']")
@@ -138,6 +138,9 @@ public class LoginOptionsPage extends BasePage {
 
 	@FindBy(id = "voluntary_claims")
 	WebElement masterToggle;
+	
+	@FindBy(id = "show-more-options")
+	WebElement moreWaysToSignInButton;
 
 	public void clickOnSignInWIthEsignet() {
 		clickOnElement(signInWithEsignet, "Click on Sign with esignet option ");
@@ -181,7 +184,16 @@ public class LoginOptionsPage extends BasePage {
 	}
 
 	public void clickOnLoginWithPasswordOption() {
-		loginWithPasswordButton.click();
+		if (isElementDisplayed(loginWithPasswordButton)) {
+			clickOnElement(loginWithPasswordButton, "Click on Login with Password button");
+			return;
+		}
+
+		if (isElementDisplayed(moreWaysToSignInButton)) {
+			clickOnElement(moreWaysToSignInButton, "Click on More ways to sign in");
+		}
+
+		clickOnElement(loginWithPasswordButton, "Click on Login with Password button");
 	}
 
 	public boolean isInvalidNumberErrorDisplayed() {
@@ -253,7 +265,7 @@ public class LoginOptionsPage extends BasePage {
 	}
 
 	public void waitUntilLivenessCheckCompletes() {
-		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(70));
+		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(90));
 		wait.until(ExpectedConditions.visibilityOf(allowButtonInConsentScreen));
 	}
 

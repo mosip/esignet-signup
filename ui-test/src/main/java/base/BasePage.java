@@ -347,5 +347,13 @@ public class BasePage {
 	public String getExpectedDefaultLanguage() {
 		return ClaimsUtil.mapLangToName(ClaimsUtil.getDefaultLanguage());
 	}
+	
+	public boolean isElementDisplayed(WebElement element) {
+		try {
+			return element.isDisplayed();
+		} catch (Exception e) {
+			return false;
+		}
+	}
 
 }
