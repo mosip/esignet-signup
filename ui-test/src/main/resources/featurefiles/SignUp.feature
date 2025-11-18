@@ -167,7 +167,7 @@ Scenario Outline: Completing Registration Process
   Then verify an error message Should be able to enter only Khmer characters is displayed below the field
 
   Then user clicks on Language Selection Option
-  And user selects run from the language dropdown
+  And user selects the current language from the dropdown
   When user enters text more than maximum characters in the Full Name in field
   Then verify it restricts such input with an error message Full Name has to be in Khmer only.
 

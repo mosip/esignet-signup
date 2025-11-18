@@ -25,7 +25,7 @@ import pages.SignUpPage;
 import utils.BaseTestUtil;
 import utils.EsignetUtil;
 import utils.MultiLanguageUtil;
-import utils.EsignetUtil.RegisteredDetails;;
+import utils.EsignetUtil.RegisteredDetails;
 
 public class ForgetPasswordStepDefinition {
 

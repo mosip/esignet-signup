@@ -481,7 +481,7 @@ public class SignUpStepDef {
 
 	@Then("validate the Username field should be non-editable")
 	public void verifyUsernameFieldIsNonEditable() {
-		assertFalse(registrationPage.isUsernameFieldReadOnly());
+		assertTrue(registrationPage.isUsernameFieldReadOnly());
 	}
 
 	@Then("verify the watermark text in the Full Name field")
@@ -525,8 +525,8 @@ public class SignUpStepDef {
 		assertTrue(registrationPage.isFullNameHasToBeInKhmerErrorDisplayed());
 	}
 
-	@Then("user selects run from the language dropdown")
-	public void userSelectsRunLanguage() {
+	@Then("user selects the current language from the dropdown")
+	public void userSelectsCurrentLanguage() {
 		String languagePassed = MultiLanguageUtil.getDisplayName(BaseTestUtil.getThreadLocalLanguage());
 
 		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));

@@ -195,7 +195,7 @@ public class RegistrationPage extends BasePage {
 	WebElement messageToAcceptTermsAndCondition;
 	
 	@FindBy(xpath = "//input[@id='consent']/following::div[@class='error-message'][1]")
-	private WebElement consentFieldRequiredErrorMessgae;
+	private WebElement consentFieldRequiredErrorMessage;
 
 	@FindBy(xpath = "(//label[@for='consent']//a)[1]")
 	private WebElement termsAndConditionsLink;
@@ -541,7 +541,9 @@ public class RegistrationPage extends BasePage {
 	}
 
 	public boolean isUsernameFieldReadOnly() {
-		return getElementAttribute(usernameField, "readonly") != null;
+		String readonly = getElementAttribute(usernameField, "readonly");
+		String disabled = getElementAttribute(usernameField, "disabled");
+		return readonly != null || disabled != null;
 	}
 
 	public void clickOnLanguageSelectionOption() {
@@ -739,7 +741,7 @@ public class RegistrationPage extends BasePage {
 	}
 	
 	public boolean isFieldRequiredErrorMessageDisplayed() {
-		return isElementVisible(consentFieldRequiredErrorMessgae,"Check error is Displayed");
+		return isElementVisible(consentFieldRequiredErrorMessage,"Check error is Displayed");
 	}
 
 	public void clickOnSetupAccountContinueButton() {
