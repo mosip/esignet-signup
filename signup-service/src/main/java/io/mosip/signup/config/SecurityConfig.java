@@ -13,13 +13,13 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/actuator/**", "/public/**").permitAll()
-                .anyRequest().authenticated()
-        )
+                        .anyRequest().permitAll()
+                )
                 .csrf(csrf -> csrf
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 );
 
         return http.build();
     }
+
 }
