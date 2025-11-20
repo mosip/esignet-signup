@@ -257,7 +257,7 @@ Scenario Outline: Completing Registration Process
   #When user closes the privacy policy popup
   #Then verify user is navigated back to the Account Setup screen
 
-  And verify when mandatory fields are not filled in Account Setup screen
+  And user clears all mandatory fields in Account Setup screen
   And user click on Continue button in Setup Account Page
   Then verify the error message This field is required is displayed
   

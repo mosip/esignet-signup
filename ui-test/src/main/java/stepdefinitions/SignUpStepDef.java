@@ -485,7 +485,7 @@ public class SignUpStepDef {
 	}
 
 	@Then("verify the watermark text in the Full Name field")
-	public void verifyFullNameInKhmerWatermark() {
+	public void verifyFullNameFieldWatermark() {
 		String expectedEn = EsignetUtil.getPlaceholderForFullName("en");
 		String expectedKm = EsignetUtil.getPlaceholderForFullName("km");
 		String actualEn = registrationPage.getEnglishFullNamePlaceholder();
@@ -695,7 +695,7 @@ public class SignUpStepDef {
 	}
 
 	@Then("verify the tooltip message for full name field is displayed")
-	public void verifyFullNameInKhmerTooltipMessage() {
+	public void verifyFullNameTooltipMessage() {
 		String expectedLang = EsignetConfigManager.getproperty("runLanguage");
 		String expectedTooltip = EsignetUtil.getInfoForFullName(expectedLang);
 		String actualTooltip = registrationPage.getFullNameTooltipText();
@@ -762,7 +762,7 @@ public class SignUpStepDef {
 		registrationPage.clickOnClosePopupIcon();
 	}
 
-	@Then("verify when mandatory fields are not filled in Account Setup screen")
+	@Then("user clears all mandatory fields in Account Setup screen")
 	public void clearMandatoryFieldsInAccountSetupScreen() {
 		registrationPage.clearAllMandatoryFields();
 		registrationPage.ensureTermsCheckboxIsUnchecked();
