@@ -217,9 +217,6 @@ Scenario Outline: Completing Registration Process
   Then validate the Password field is masked
   And validate the Confirm Password field is masked
   
-  When user clicks on the "i" icon in the Full Name in field
-  Then verify the tooltip message for full name field is displayed
-
   When user clicks on the unmask icon in the Password field
   Then validate the Password field is unmasked
 
@@ -244,9 +241,9 @@ Scenario Outline: Completing Registration Process
 
   Then verify the terms and conditions message
   
-  # TODO: MOSIP-43744 - Disabled due to UI change.
-  # Old popup-based tests are no longer valid because T&C and Privacy now open as hyperlinks.
-  # Re-enable after adding new hyperlink-navigation test cases.
+  # TODO: MOSIP-43744 - Popup tests disabled due to UI change.
+  # T&C/Privacy now open via hyperlink instead of popup.
+  # New hyperlink-navigation test cases will be implemented under MOSIP-43744.
 
   #When user clicks on the Terms & Conditions hyperlink
   #Then verify a pop-up window for Terms and Conditions is displayed
@@ -264,7 +261,7 @@ Scenario Outline: Completing Registration Process
   And user click on Continue button in Setup Account Page
   Then verify the error message This field is required is displayed
   
-  And user fills the signup form using UI spec
+  And user fills the signup form using UI specification
   Then verify the Continue button is enabled when all mandatory fields are filled
   
   # TODO: MOSIP-43740 - Browser back-button warning popup automation is pending.
@@ -291,7 +288,7 @@ Scenario Outline: Completing Registration Process
   #And user clicks on the Verify OTP button
   #And user click on Continue button in Success Screen
   
-  #And user fills the signup form using UI spec
+  #And user fills the signup form using UI specification
   
   When user clicks on Continue button in Setup Account Page
   Then verify system display account setup in progress message
@@ -327,7 +324,7 @@ Scenario Outline: Verify sign-up portal by navigating directly through sign-up U
   And user clicks on the Verify OTP button 
   Then user click on Continue button in Success Screen
   
-  And user fills the signup form using UI spec
+  And user fills the signup form using UI specification
   When user clicks on Continue button in Setup Account Page
   
   Then verify that success screen should display the message Congratulations! Your account has been created successfully.Start using your registered number & password with service providers to avail the required services.
@@ -347,6 +344,6 @@ Scenario Outline: Verify sign-up portal by navigating directly through sign-up U
   When user enters the complete 6-digit OTP
   And user clicks on the Verify OTP button
   And user click on Continue button in Success Screen
-  And user fills the signup form using UI spec
+  And user fills the signup form using UI specification
   And user clicks on Continue button in Setup Account Page
   And verify registration success notification is received

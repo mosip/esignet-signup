@@ -934,8 +934,8 @@ public class SignUpStepDef {
 		registrationPage.clickOnCaptureButton();
 	}
 
-	@When("user fills the signup form using UI spec")
-	public void user_fills_signup_form_using_ui_spec() {
+	@When("user fills the signup form using UI specification")
+	public void userFillsSignupFormUsingUiSpecification() {
 		Map<String, Map<String, Object>> uiSpecFields = EsignetUtil.getUiSpecFields();
 		formFiller.fillFormFromUiSpec(uiSpecFields);
 	}

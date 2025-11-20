@@ -11,7 +11,7 @@ Feature: Esignet Forgot Password Page
     When user enters the OTP
     And user clicks on the Verify OTP button 
     Then user click on Continue button in Success Screen
-    And user fills the signup form using UI spec
+    And user fills the signup form using UI specification
     And user clicks on Continue button in Setup Account Page
     And verify that success screen should display the message Congratulations! Your account has been created successfully. Please login to proceed.
   

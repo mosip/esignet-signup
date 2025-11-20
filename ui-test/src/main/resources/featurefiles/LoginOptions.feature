@@ -30,7 +30,7 @@ Feature: Esignet Login Options Page
     Then user clicks on continue button on success page
     And user redirected to registration page
 
-    And user fills the signup form using UI spec
+    And user fills the signup form using UI specification
     And user clicks on continue button on registration page
     Then it will redirect to congratulations on login page
     And user clicks on login button
