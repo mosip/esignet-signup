@@ -16,6 +16,7 @@ import org.testng.Assert;
 import io.cucumber.java.en.When;
 import io.mosip.testrig.apirig.testrunner.AllNotificationListner;
 import io.mosip.testrig.apirig.testrunner.OTPListener;
+import base.BasePage;
 import base.BaseTest;
 import io.cucumber.java.en.Then;
 
@@ -63,12 +64,7 @@ public class ForgetPasswordStepDefinition {
 	public void userClickOnResetPasswordButton() {
 		forgetPasswordPage.clickOnResetPasswordButton();
 		forgetPasswordPage.clickOnLanguageSelectionDropdown();
-		String languagePassed = MultiLanguageUtil.getDisplayName(BaseTestUtil.getThreadLocalLanguage());
-		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
-		WebElement langOption = wait
-				.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[text()='" + languagePassed + "']")));
-		langOption.click();
-		BaseTestUtil.setThreadLocalLanguage(languagePassed);
+		BasePage.selectCurrentRunLanguage(driver);
 	}
 
 	@Then("user verify country code prefix")

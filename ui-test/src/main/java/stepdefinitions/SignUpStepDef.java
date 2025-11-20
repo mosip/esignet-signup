@@ -64,15 +64,7 @@ public class SignUpStepDef {
 	public void userClicksOnSignUpWithUnifiedLoginHyperlink() {
 		loginOptionsPage.clickOnSignUpWithUnifiedLogin();
 		registrationPage.clickOnLanguageSelectionOption();
-
-		String languagePassed = MultiLanguageUtil.getDisplayName(BaseTestUtil.getThreadLocalLanguage());
-
-		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
-
-		WebElement langOption = wait
-				.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[text()='" + languagePassed + "']")));
-		langOption.click();
-		BaseTestUtil.setThreadLocalLanguage(languagePassed);
+		BasePage.selectCurrentRunLanguage(driver);
 	}
 
 	@Then("verify user is navigated to the Mobile Number Registration screen")
@@ -527,14 +519,7 @@ public class SignUpStepDef {
 
 	@Then("user selects the current language from the dropdown")
 	public void userSelectsCurrentLanguage() {
-		String languagePassed = MultiLanguageUtil.getDisplayName(BaseTestUtil.getThreadLocalLanguage());
-
-		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
-
-		WebElement langOption = wait
-				.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[text()='" + languagePassed + "']")));
-		langOption.click();
-		BaseTestUtil.setThreadLocalLanguage(languagePassed);
+		BasePage.selectCurrentRunLanguage(driver);
 	}
 
 	@Then("verify UI rendered in English Language")
@@ -578,7 +563,7 @@ public class SignUpStepDef {
 
 	@Then("verify the watermark text in the Password field")
 	public void verifyPasswordWatermark() {
-		String langCode = EsignetConfigManager.getproperty("runLanguage");
+		String langCode = EsignetConfigManager.getRunLanguage();
 		String threeLetterCode = MultiLanguageUtil.getThreeLetterLangCode(langCode);
 		String expectedPlaceholder = EsignetUtil.getPlaceholderForPassword(threeLetterCode);
 		String actualPlaceholder = registrationPage.getPasswordFieldPlaceholder();
@@ -682,7 +667,7 @@ public class SignUpStepDef {
 
 	@Then("verify the tooltip message for password field is displayed")
 	public void verifyPasswordTooltipMessage() {
-		String expectedLang = EsignetConfigManager.getproperty("runLanguage");
+		String expectedLang = EsignetConfigManager.getRunLanguage();
 		String threeLetterCode = MultiLanguageUtil.getThreeLetterLangCode(expectedLang);
 		String expectedTooltip = EsignetUtil.getInfoForPassword(threeLetterCode);
 		String actualTooltip = registrationPage.getPasswordTooltipText();
@@ -773,7 +758,7 @@ public class SignUpStepDef {
 		registrationPage.checkTermsAndConditions();
 		assertTrue(registrationPage.isContinueButtonInSetupAccountPageEnabled());
 	}
-	
+
 	@When("user click on Continue button in Setup Account Page")
 	public void userClicksOnContinueButtonInRegistrationPage() {
 		registrationPage.clickOnContinueButtonInSetupAccountScreen();
@@ -843,15 +828,7 @@ public class SignUpStepDef {
 	@When("user clicks on Register button")
 	public void userClicksOnRegisterButton() {
 		registrationPage.clickOnLanguageSelectionOption();
-
-		String languagePassed = MultiLanguageUtil.getDisplayName(BaseTestUtil.getThreadLocalLanguage());
-
-		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
-
-		WebElement langOption = wait
-				.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[text()='" + languagePassed + "']")));
-		langOption.click();
-		BaseTestUtil.setThreadLocalLanguage(languagePassed);
+		BasePage.selectCurrentRunLanguage(driver);
 		signUpPage.clickOnRegisterButton();
 	}
 

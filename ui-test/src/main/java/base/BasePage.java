@@ -28,7 +28,9 @@ import org.slf4j.LoggerFactory;
 import com.aventstack.extentreports.Status;
 import utils.EsignetConfigManager;
 import utils.ExtentReportManager;
+import utils.MultiLanguageUtil;
 import utils.WaitUtil;
+import utils.BaseTestUtil;
 import utils.ClaimsUtil;
 
 public class BasePage {
@@ -354,6 +356,17 @@ public class BasePage {
 		} catch (Exception e) {
 			return false;
 		}
+	}
+	
+	public static void selectCurrentRunLanguage(WebDriver driver) {
+	String languagePassed = MultiLanguageUtil.getDisplayName(BaseTestUtil.getThreadLocalLanguage());
+
+	WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+
+	WebElement langOption = wait
+			.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[text()='" + languagePassed + "']")));
+	langOption.click();
+	BaseTestUtil.setThreadLocalLanguage(languagePassed);
 	}
 
 }
