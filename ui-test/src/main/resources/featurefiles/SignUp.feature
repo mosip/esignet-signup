@@ -244,8 +244,9 @@ Scenario Outline: Completing Registration Process
 
   Then verify the terms and conditions message
   
-  # TODO: Disabled due to known popup bug.
-  # Re-enable once T&C/Privacy popup issue is fixed.
+  # TODO: MOSIP-43744 - Disabled due to UI change.
+  # Old popup-based tests are no longer valid because T&C and Privacy now open as hyperlinks.
+  # Re-enable after adding new hyperlink-navigation test cases.
 
   #When user clicks on the Terms & Conditions hyperlink
   #Then verify a pop-up window for Terms and Conditions is displayed
@@ -266,7 +267,7 @@ Scenario Outline: Completing Registration Process
   And user fills the signup form using UI spec
   Then verify the Continue button is enabled when all mandatory fields are filled
   
-  # TODO: Browser back-button warning popup automation is pending.
+  # TODO: MOSIP-43740 - Browser back-button warning popup automation is pending.
   # Reason:
   # - The browser warning popup (Leave site?) cannot be captured/handled by Selenium.
   # - Popup appears manually but cannot be automated reliably in current setup.
