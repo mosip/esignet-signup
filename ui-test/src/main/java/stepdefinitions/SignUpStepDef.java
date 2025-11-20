@@ -681,7 +681,7 @@ public class SignUpStepDef {
 
 	@Then("verify the tooltip message for full name field is displayed")
 	public void verifyFullNameTooltipMessage() {
-		String expectedLang = EsignetConfigManager.getproperty("runLanguage");
+		String expectedLang = EsignetConfigManager.getRunLanguage();
 		String expectedTooltip = EsignetUtil.getInfoForFullName(expectedLang);
 		String actualTooltip = registrationPage.getFullNameTooltipText();
 		assertEquals(actualTooltip, expectedTooltip);
@@ -759,6 +759,8 @@ public class SignUpStepDef {
 		assertTrue(registrationPage.isContinueButtonInSetupAccountPageEnabled());
 	}
 
+	// NOTE: Two separate steps are required.
+	// Some flows need the stable (JS + Selenium) click, others need normal click.
 	@When("user click on Continue button in Setup Account Page")
 	public void userClicksOnContinueButtonInRegistrationPage() {
 		registrationPage.clickOnContinueButtonInSetupAccountScreen();
@@ -848,14 +850,10 @@ public class SignUpStepDef {
 	}
 
 	@Then("verify notification is received for otp requested")
-	public void verifyOtpNotificationInSelectedLanguage() {
-		String currentLang = BaseTestUtil.getThreadLocalLanguage();
-
+	public void verifyOtpNotificationReceived() {
 		String notification = AllNotificationListner.getNotification(lastGeneratedMobileNumber);
 		boolean isNotificationReceived = notification != null && !notification.isEmpty();
 		Assert.assertTrue(isNotificationReceived, "OTP notification not received for: " + lastGeneratedMobileNumber);
-
-		logger.info("Verifying OTP notification in language: " + currentLang);
 	}
 
 	@Then("user accepts the Terms and Condition checkbox")
@@ -865,14 +863,10 @@ public class SignUpStepDef {
 
 	@Then("verify registration success notification is received")
 	public void verifySuccessNotificationInSelectedLanguage() {
-		String currentLang = BaseTestUtil.getThreadLocalLanguage();
-
 		String notification = AllNotificationListner.getNotification(lastGeneratedMobileNumber);
 		boolean isNotificationReceived = notification != null && !notification.isEmpty();
 		Assert.assertTrue(isNotificationReceived,
 				"Registration success notification not received for: " + lastGeneratedMobileNumber);
-
-		logger.info("Verifying successful notification in language: " + currentLang);
 	}
 
 	private String lastGeneratedMobileNumber;

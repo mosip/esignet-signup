@@ -546,14 +546,11 @@ public class ForgetPasswordStepDefinition {
 
 	@Then("verify password changed successful notification is displayed")
 	public void verifySuccessNotificationInSelectedLanguage() {
-		String currentLang = BaseTestUtil.getThreadLocalLanguage();
 		String registeredNumber = RegisteredDetails.getMobileNumber();
 		String notification = AllNotificationListner.getNotification(registeredNumber);
 		boolean isNotificationReceived = notification != null && !notification.isEmpty();
 		Assert.assertTrue(isNotificationReceived,
 				"Password reset notification not received for: " + registeredNumber);
-
-		logger.info("Verifying password changed notification in language: " + currentLang);
 	}
 
 	@Then("verify it is accessible,user is redirected to the Forget Password screen")
