@@ -1,5 +1,8 @@
 package utils;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -655,4 +658,17 @@ public class EsignetUtil extends AdminTestUtil {
 
 		return fieldsMap;
 	}
+	
+	public static String getRandomDOB() {
+		LocalDate today = LocalDate.now();
+		LocalDate earliest = today.minusYears(120);
+		long daysRange = ChronoUnit.DAYS.between(earliest, today);
+
+		long randomDays = new Random().nextLong(daysRange);
+		LocalDate dob = earliest.plusDays(randomDays);
+
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+		return dob.format(formatter);
+	}
+
 }

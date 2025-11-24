@@ -50,6 +50,16 @@ public class SignupFormDynamicFiller {
 				registrationPage.clickOnCaptureButton();
 				continue;
 			}
+			
+			if ("checkbox".equalsIgnoreCase(controlType) && matchingElements.size() > 1) {
+			    int index = new Random().nextInt(matchingElements.size());
+			    WebElement randomCheckbox = matchingElements.get(index);
+
+			    ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({block:'center'});", randomCheckbox);
+			    ((JavascriptExecutor) driver).executeScript("arguments[0].click();", randomCheckbox);
+
+			    continue;
+			}
 
 			if ("checkbox".equalsIgnoreCase(controlType)) {
 				if (!element.isSelected()) {
@@ -59,7 +69,7 @@ public class SignupFormDynamicFiller {
 				}
 				continue;
 			}
-
+			
 			if ("hidden".equalsIgnoreCase(type) || !element.isEnabled()) {
 				continue;
 			}
@@ -111,6 +121,13 @@ public class SignupFormDynamicFiller {
 					dropdown.selectByIndex(index);
 				}
 				continue;
+			}
+			
+			if ("date".equalsIgnoreCase(controlType)) {
+			    String dob = EsignetUtil.getRandomDOB();
+			    element.clear();
+			    element.sendKeys(dob);
+			    continue;
 			}
 
 			if ("textbox".equalsIgnoreCase(controlType)
