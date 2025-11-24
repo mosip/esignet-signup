@@ -762,7 +762,7 @@ public class SignUpStepDef {
 	// NOTE: Two separate steps are required.
 	// Some flows need the stable (JS + Selenium) click, others need normal click.
 	@When("user click on Continue button in Setup Account Page")
-	public void userClicksOnContinueButtonInRegistrationPage() {
+	public void userClicksOnContinueButtonInSetupAccountPage() {
 		registrationPage.clickOnContinueButtonInSetupAccountScreen();
 	}
 
@@ -862,7 +862,7 @@ public class SignUpStepDef {
 	}
 
 	@Then("verify registration success notification is received")
-	public void verifySuccessNotificationInSelectedLanguage() {
+	public void verifyRegistrationSuccessNotificationReceived() {
 		String notification = AllNotificationListner.getNotification(lastGeneratedMobileNumber);
 		boolean isNotificationReceived = notification != null && !notification.isEmpty();
 		Assert.assertTrue(isNotificationReceived,

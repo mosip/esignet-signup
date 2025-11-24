@@ -8,6 +8,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Level;
@@ -660,15 +661,15 @@ public class EsignetUtil extends AdminTestUtil {
 	}
 	
 	public static String getRandomDOB() {
-		LocalDate today = LocalDate.now();
-		LocalDate earliest = today.minusYears(120);
-		long daysRange = ChronoUnit.DAYS.between(earliest, today);
+	    LocalDate today = LocalDate.now();
+	    LocalDate earliest = today.minusYears(120);
+	    long daysRange = ChronoUnit.DAYS.between(earliest, today);
 
-		long randomDays = new Random().nextLong(daysRange);
-		LocalDate dob = earliest.plusDays(randomDays);
+	    long randomDays = ThreadLocalRandom.current().nextLong(daysRange);
+	    LocalDate dob = earliest.plusDays(randomDays);
 
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-		return dob.format(formatter);
+	    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+	    return dob.format(formatter);
 	}
 
 }

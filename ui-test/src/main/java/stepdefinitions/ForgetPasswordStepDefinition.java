@@ -545,7 +545,7 @@ public class ForgetPasswordStepDefinition {
 	}
 
 	@Then("verify password changed successful notification is displayed")
-	public void verifySuccessNotificationInSelectedLanguage() {
+	public void verifyPasswordResetNotificationReceived() {
 		String registeredNumber = RegisteredDetails.getMobileNumber();
 		String notification = AllNotificationListner.getNotification(registeredNumber);
 		boolean isNotificationReceived = notification != null && !notification.isEmpty();

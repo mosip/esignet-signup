@@ -59,8 +59,7 @@ public class MultiLanguageUtil {
 	}
 	
 	public static String getThreeLetterLangCode(String twoLetterCode) {
-		Map<String, String> map = MultiLanguageUtil.langCodeMappingMap;
-		for (Map.Entry<String, String> entry : map.entrySet()) {
+		for (Map.Entry<String, String> entry : langCodeMappingMap.entrySet()) {
 			if (entry.getValue().equals(twoLetterCode)) {
 				return entry.getKey();
 			}
