@@ -149,14 +149,11 @@ Spring Boot automatically maps these environment variables to their correspondin
 ## TESTRIG
 
 ## Overview
-The steps here install Testrig components, which include SIGNUP-APITESTRIG and SIGNUP-UITESTRIG.
+The steps here install Testrig components, which include SIGNUP-APITESTRIG .
 These components are used to test the working of SIGNUP modules.
 
 1.SIGNUP-APITESTRIG Installation
  [signup-apitestrig ](deploy/signup-apitestrig/README.md)
-
-2.SIGNUP-UITESTRIG Installation
- [signup-uitestrig](deploy/signup-uitestrig/README.md)
 
 ## APIs
 API documentation is available [here](docs/esignet-signup-openapi.yaml).
