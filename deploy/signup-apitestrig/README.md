@@ -7,7 +7,9 @@ ApiTestRig will test the working of APIs of the MOSIP modules.
 
 ## Install
 There are two ways to store reports:
+
 S3 Storage – Run the install script directly and provide the required S3 configuration values.
+
 NFS Storage – Create the necessary directory on the NFS server and then proceed with the installation.
 
 * Create a directory for apitestrig on the NFS server at `/srv/nfs/mosip/<sandbox>/apitestrig/`:
