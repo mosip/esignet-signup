@@ -26,7 +26,7 @@ Signup UI contains the following pages:
 
 ## Signup Dynamic Form
 Starting from version **1.3.0**, the registration form becomes fully dynamic and configurable.
-It is defined using a UI-spec JSON file, which is accessed through an API. To render this UI-spec JSON, an independent library called [json-form-builder](https://github.com/mosip/mosip-sdk/blob/release-0.10.x/json-form-builder/README.md) has been developed and integrated here.
+It is defined using a UI-spec JSON file, which is accessed through an API. To render this UI-spec JSON, an independent library called [json-form-builder](https://github.com/mosip/mosip-sdk/blob/master/json-form-builder/README.md) has been developed and integrated here.
 For details on how this library is used within signup-ui, refer to [dynamic-form](./../docs/design/dynamic-forms.md).
 
 ## Local Development
