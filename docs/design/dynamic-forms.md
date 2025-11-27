@@ -196,7 +196,7 @@ The signup registration form can be configured by specifying an endpoint URL. Ho
             "controlType": "checkbox",
             "labelName": {
                 "eng": "I agree to <b><a target='_blank' href='https://www.example.com/'>Terms & Conditions</a></b> and <b><a href='https://www.example.com/'>Privacy Policy</a></b>, to store & process my information as required.",
-                "khm": "ខ្ញុំយល់ព្រមតាម<b><a target='_blank' href='https://www.example.com/'>លក្ខខណ្ឌ</a></b> និង<b><a href='https://www.example.com/'>គោលការណ៍ឯកជនភាព</a></b>របស់ប្រទេសកម្ពុជា ដើម្បីរក្សាទុក និងដំណើរការព័ត៌មានរបស់ខ្ញុំតាមតម្រូវការ។"
+                "khm": "ខ្ញុំយល់ព្រមនឹង <b><a target='_blank' href='https://www.example.com/'>លក្ខខណ្ឌ និង ការកំណត់</a></b> និង <b><a href='https://www.example.com/'>គោលការណ៍ឯកជនភាព</a></b> ដើម្បីរក្សាទុក និងដំណើរការព័ត៌មានរបស់ខ្ញុំតាមដែលត្រូវការ។"
             },
             "required": true,
             "alignmentGroup": "groupD"
