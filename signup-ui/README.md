@@ -2,8 +2,32 @@
 
 ## Overview
 
-Signup UI has provision to verify the user's phone number with OTP and on successful verification user is allowed to
-register in the integrated ID registry.Both register and reset password requires OTP verification.
+This repository contains the source code for the MOSIP Signup Services UI.
+It provides functionality to verify a user’s phone number via OTP. Upon successful verification, the user can register in the integrated ID registry. Both registration and password reset processes require OTP verification. Additionally, the system supports KYC verification.
+
+Signup UI contains the following pages:
+
+1. Registration
+2. Reset Password
+3. Identity Verification
+
+- **/signup**:
+    This page prompts the user to enter a mobile number for registration. After the number is provided, it is verified by sending an OTP. Once the verification is successful, a signup form is displayed, allowing the user to complete their registration.
+
+- **/reset-password**:
+    This page displays a form where you need to enter your mobile number and full name. After submission, your identity will be verified through an OTP. Once verified, two fields—New Password and Confirm Password—will appear, allowing you to set and reset your password.
+
+- **/identity-verification**: 
+    This page cannot be accessed directly; the user must initiate their transaction through eSignet. When a relying party requests verified claims, the user is redirected to the signup identity-verification page before completing authentication in eSignet to perform KYC.
+
+    On this page, the user is guided through the steps, starting with selecting the type of KYC. Additional instructions are provided, especially for video KYC verification. The process requires camera permission, after which the video verification begins. The user must follow the on-screen instructions.
+
+    Once the verification is complete, the result will be either successful or failed. In both cases, the user is redirected back to the eSignet page.
+
+## Signup Dynamic Form
+Starting from version **1.3.0**, the registration form becomes fully dynamic and configurable.
+It is defined using a UI-spec JSON file, which is accessed through an API. To render this UI-spec JSON, an independent library called [json-form-builder](https://github.com/mosip/mosip-sdk/blob/release-0.10.x/json-form-builder/README.md) has been developed and integrated here.
+For details on how this library is used within signup-ui, refer to [dynamic-form](./../docs/design/dynamic-forms.md).
 
 ## Local Development
 
