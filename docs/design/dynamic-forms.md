@@ -1,8 +1,8 @@
 # Overview
 
-Using **dynamic forms** instead of hardcoded forms during registration in **eSignet signup**, and also enhancing the **KBI form** capability.
+Using **dynamic forms** instead of hardcoded forms during registration in **eSignet signup**.
 
-The intention is to create an **independent UI library** to provide this feature. Both forms should follow the same form schema so that the same library could be used in both **oidc-ui** and **signup-ui**.
+The intention is to create an **independent UI library** to provide this feature which can be used in **signup-ui** registration form.
 
 For more details on how to use the `json-form-builder` library, please refer to the [official documentation](https://github.com/mosip/mosip-sdk/blob/master/json-form-builder/README.md).
 
@@ -14,7 +14,7 @@ For reference, see the [MOSIP UI JSON specification](https://docs.mosip.io/1.2.0
 
 ### Supported Attributes
 
-For **eSignet KBI** and **eSignet signup** forms, only the attributes listed below need to be supported.  
+For **eSignet signup** forms, only the attributes listed below need to be supported.  
 The schema is compatible with both two-letter (e.g., `en`) and three-letter (e.g., `eng`) language codes.
 
 ### Configuring Signup Registration Form
@@ -25,17 +25,19 @@ The signup registration form can be configured by specifying an endpoint URL. Ho
     * Property Name: `mosip.signup.mock.get-schema.endpoint` or `MOSIP_SIGNUP_MOCK_GET_SCHEMA_ENDPOINT`
     * Description: URL pointing to the raw JSON schema defining the signup UI spec.
     * The schema must include the fields, their types, validation rules, and multilingual labels used for signup registration.
+    * Mock Identity system has an endpoint which will return ui spec for signup registration form 
     * Example:
      `http://mock-identity-system.mockid/v1/mock-identity-system/identity/ui-spec`
 * **Mosipid**: 
     * Property Name: `mosip.signup.mosipid.get-ui-spec.endpoint` or `MOSIP_SIGNUP_MOSIPID_GET_UI_SPEC_ENDPOINT`
     * Description: URL pointing to the raw JSON schema defining the signup UI spec.
     * The schema must include the fields, their types, validation rules, and multilingual labels used for signup registration.
+    * In mosipid environment, kernel's masterdata has a separate endpoint which will return ui spec for signup registration form
     * Example:
      `http://masterdata.kernel/v1/masterdata/uispec/esignet-signup/latest?identitySchemaVersion=0.1`
 
 
-## 📄 Schema Structure
+## 📄 Signup UI spec
 
 ```json
 {
@@ -280,52 +282,3 @@ The signup registration form can be configured by specifying an endpoint URL. Ho
     "maxUploadFileSize": 5242880
 }
 ```
-
-## 📘 Schema Properties
-
-The schema consists of the following properties:
-
-### Field Properties Section (mandatory)
-
-| Property            | Type     | Requirement   | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
-| ------------------- | -------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `alignmentGroup`    | string   | Optional      | Fields with the same alignment group are placed horizontally next to each other in the UI.                                                                                                                                                                                                                                                                                                                                                                                                  |
-| `capsLockCheck`     | boolean  | Optional      | It enable a caps lock indication in top right corner(or top left corner if in rtl direction).                                                                                                                                                                                                                                                                                                                                                                                               |
-| `controlType`       | string   | **Mandatory** | UI control type for rendering. Options: `textbox`, `date`, `dropdown`, `password`, `checkbox`, `phone`, `photo`.                                                                                                                                                                                                                                                                                                                                                              |
-| `cssClasses`        | string   | Optional      | External css class which can be added to the component.                                                                                                                                                                                                                                                                                                                                                                                                                                     |
-| `disabled`          | boolean  | Optional      | By enabling this, it will disable that field. By default it will be `false`.                                                                                                                                                                                                                                                                                                                                                                                                                |
-| `format`            | string   | Optional      | It will return date value in the prescribe format for date field. Used only in when you pass controlType as `date`. |
-| `id`                | string   | **Mandatory** | Unique identifier for the field. Used internally to map the field.                                                                                                                                                                                                                                                                                                                                                                                                                          |
-| `info`              | object   | Optional      | It will create an info icon beside the label of the component, to show some info in the tooltip. It will be a multilingual fields and keys represent with language codes.                                                                                                                                                                                                                                                                                                                   |
-| `labelName`         | object   | **Mandatory** | Multilingual field labels. Keys represent language codes (e.g., `eng`, `fra`, `ara`).                                                                                                                                                                                                                                                                                                                                                                                                       |
-| `placeholder`       | object   | Optional      | Multilingual placeholders shown inside input fields before user enters data.                                                                                                                                                                                                                                                                                                                                                                                                                |
-| `prefix`            | string[] | Optional      | Multiple or single prefix for phone component, so that it can be selected as per the needs, it will work only when controlType is `phone`                                                                                                                                                                                                                                                                                                                                                   |
-| `required`          | boolean  | Optional      | Specifies whether the field is required. If set to `true`, the user must provide a value. If set to `false`, the field can be left empty.                                                                                                                                                                                                                                                                                                                                                   |
-| `type`              | string   | Optional      | Type of data expected. Can be `string` for a single-language input, or `simpleType` for multilingual input where each input ID renders multiple input fields, one for each language.                                                                                                                                                                                                                                                                                                        |
-| `validators`        | array    | Optional      | List of validation rules. Each validator object has the following structure:<br><br> <table><tr><th>Property</th><th>Type</th><th>Requirement</th><th>Description</th></tr><tr><td>`regex`</td><td>string</td><td>**Mandatory**</td><td>Validation pattern</td></tr><tr><td>`error`</td><td>object</td><td>**Mandatory**</td><td>Multilingual error messages</td></tr><tr><td>`langCode`</td><td>string</td><td>Optional</td><td>Language code; if `null`, applies to all</td></tr></table> |
-
-### Allowed Values Section (optional)
-
-| Property        | Type   | Description                                                                                                                |
-| --------------- | ------ | -------------------------------------------------------------------------------------------------------------------------- |
-| `allowedValues` | object | Defines predefined options for dropdowns or checkboxes. Keys represent option IDs, and values provide multilingual labels. |
-
-### i18nValues Section (optional)
-#### It contains errors, additional labels & placeholders
-Errors Section
-
-| Property           | Type   | Description                                                       |
-| ------------------ | ------ | ----------------------------------------------------------------- |
-| `required`         | object | Defines multilingual error messages for required fields.          |
-| `passwordMismatch` | object | Defines multilingual error messages for password mismatch.        |
-| `capsLock` | object | Defines multilingual error messages for caps lock enabled.       |
-
-
-
-### Language Section (mandatory)
-
-| Property      | Type   | Description                                                                               |
-| ------------- | ------ | ----------------------------------------------------------------------------------------- |
-| `mandatory`   | array  | List of mandatory language codes that must be present in the schema.                      |
-| `optional`    | array  | List of optional language codes that may be included if available.                        |
-| `langCodeMap` | object | Bi-directional mapping between 2-letter and 3-letter language codes (e.g., `eng` ↔ `en`). |
