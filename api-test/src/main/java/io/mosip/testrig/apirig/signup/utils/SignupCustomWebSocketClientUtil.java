@@ -1,8 +1,8 @@
 package io.mosip.testrig.apirig.signup.utils;
 
 import io.mosip.testrig.apirig.utils.WebSocketClientUtil;
-import jakarta.websocket.CloseReason;
-import jakarta.websocket.Session;
+import javax.websocket.CloseReason;
+import javax.websocket.Session;
 
 import org.apache.log4j.Logger;
 
