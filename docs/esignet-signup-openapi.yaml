@@ -1366,6 +1366,7 @@ paths:
                     required:
                       - schema
                       - allowedValues
+                      - language
                     properties:
                       schema:
                         type: array
@@ -1387,20 +1388,14 @@ paths:
                             x-stoplight:
                               id: 61cgmqx27jkve
                             type: object
-                      mandatoryLanguages:
-                        type: array
-                        description: Mandatory languages
+                      language:
+                        $ref: '#/components/schemas/LanguageMap'
                         x-stoplight:
                           id: kifhqwkskzf6e
-                        items:
-                          type: string
-                      optionalLanguages:
-                        type: array
-                        description: Optional languages
+                      i18nValues:
+                        $ref: '#/components/schemas/i18nValues'
                         x-stoplight:
-                          id: kifhqwkskzf6e
-                        items:
-                          type: string
+                          id: y9jnn0utar3jn
                   errors:
                     type: array
                     items:
@@ -1494,10 +1489,12 @@ paths:
                           FR:
                             eng: Foreigner
                             fra: Étrangère
-                      mandatoryLanguages:
-                        - eng
-                      optionalLanguages:
-                        - fra
+                      language:
+                        mandatory:
+                          - eng
+                          - fra
+                        optional:
+                          - fra
                     errors:
                       - errorCode: invalid_transaction
                         errorMessage: invalid_transaction
@@ -1606,6 +1603,79 @@ components:
         - phone
       x-stoplight:
         id: 7gzdo83lsa98j
+    LanguageMap:
+      type: object
+      x-stoplight:
+        id: xh1rkrx5bkvz7
+      title: LanguageMap
+      description: Model to hold mandatory and optional languages
+      required:
+        - mandatory
+      properties:
+        mandatory:
+          type: array
+          description: 2 or 3 letter language codes
+          items:
+            x-stoplight:
+              id: txcs6mk8jyz71
+            type: string
+        optional:
+          type: array
+          x-stoplight:
+            id: 9vzs00vka0qdg
+          description: 2 or 3 letter language codes
+          items:
+            x-stoplight:
+              id: 3qan5aqj5j3df
+            type: string
+    i18nValues:
+      type: object
+      x-stoplight:
+        id: gxrtiw6m9olcc
+      title: i18nValues
+      description: |-
+        Model to hold i18nValues for errors, static labels and placeholders
+        Example:
+
+        "i18nValues": {
+          "errors": {
+                        "required": {
+                            "en": "This field is required",
+                            "ara": "هذه الخانة مطلوبه",
+                            "km": "វាលនេះត្រូវការទទួលបាន"
+                        }
+                    },
+          "labels": {
+                        "password_confirm": {
+                            "en": "Confirm Password",
+                            "km": "បញ្ជាក់លេខសម្ងាត់"
+                        }
+                    },
+          "placeholders": {
+                        "password_confirm": {
+                            "eng": "Enter your password again",
+                            "khm": "បញ្ចូលលេខសម្ងាត់របស់អ្នកម្ដងទៀត"
+                        }
+                    }
+                }
+      properties:
+        errors:
+          type: object
+          description: Multilingual messages for error codes.
+          additionalProperties:
+            type: object
+        labels:
+          type: object
+          description: Multilingual labels for static labels like *password_confirm*.
+          additionalProperties:
+            type: object
+        placeholders:
+          type: object
+          additionalProperties:
+            type: object
+          x-stoplight:
+            id: h5bdn6rgpagtc
+          description: Multilingual placeholders for static fields.
     LanguageTaggedValue:
       type: object
       title: LanguageTaggedValue
