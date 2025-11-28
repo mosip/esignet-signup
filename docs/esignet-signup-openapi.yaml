@@ -1663,18 +1663,16 @@ components:
           type: object
           description: Multilingual messages for error codes.
           additionalProperties:
-            x-stoplight:
-              id: v81s0krbi8q2f
             type: object
         labels:
-          type: array
+          type: object
           description: Multilingual labels for static labels like *password_confirm*.
-          items:
-            type: string
-            x-stoplight:
-              id: rkz527es6vprq
+          additionalProperties:
+            type: object
         placeholders:
-          type: string
+          type: object
+          additionalProperties:
+            type: object
           x-stoplight:
             id: h5bdn6rgpagtc
           description: Multilingual placeholders for static fields.
