@@ -70,7 +70,7 @@ For instructions on setting up eSignet Core, refer to the [eSignet Docker Compos
    // change directory to target
    cd target
    // running the signup-service jar file, with external plugin
-   java -Dloader.path=<plugin-path> -jar <signup-service jar file name>
+   java -Dfile.encoding=UTF-8 -Dloader.path=<plugin-path> -jar <signup-service jar file name>
    ```
 
 6. Access the service Swagger at:  
