@@ -7,7 +7,6 @@ package io.mosip.signup;
 
 import io.micrometer.tracing.Tracer;
 import io.mosip.esignet.core.config.*;
-import io.mosip.signup.config.MicrometerTracingValve;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.actuate.autoconfigure.tracing.BraveAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -21,15 +20,10 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableAsync
 @SpringBootApplication(scanBasePackages = "io.mosip.signup.*," +
         "io.mosip.kernel.auth.defaultadapter," +
+        "io.mosip.kernel.core.logger.config" +
         "${mosip.signup.integration.impl.basepackage}")
 @Import({SharedComponentConfig.class, RedisCacheConfig.class, SimpleCacheConfig.class, BraveAutoConfiguration.class})
 public class SignUpServiceApplication {
-
-    @Bean
-    public MicrometerTracingValve micrometerTracingValve(Tracer tracer) {
-        return new MicrometerTracingValve(tracer);
-    }
-
     public static void main(String[] args) {
         SpringApplication.run(SignUpServiceApplication.class, args);
     }
