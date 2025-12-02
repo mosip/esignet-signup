@@ -13,7 +13,7 @@ set -o errtrace
 set -o pipefail
 
 NS=signup
-CHART_VERSION=1.3.0-develop
+CHART_VERSION=1.3.0
 PLUGIN_NAME="esignet-mock-plugin.jar"
 
 echo "Installing signup-with-plugins using $PLUGIN_NAME"
@@ -60,7 +60,7 @@ helm -n $NS install signup mosip/signup \
   -f values.yaml --version $CHART_VERSION \
   --set plugin_name_env=$PLUGIN_NAME \
   --set metrics.serviceMonitor.enabled=$servicemonitorflag \
-  --set image.repository=mosipqa/signup-with-plugins --set image.tag=develop \
+  --set image.repository=mosipid/signup-with-plugins --set image.tag=1.3.0 \
   $ENABLE_INSECURE --wait
 
 # --- Wait for deployments to be ready ---
