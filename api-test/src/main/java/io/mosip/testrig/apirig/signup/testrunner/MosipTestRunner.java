@@ -108,8 +108,12 @@ public class MosipTestRunner {
 				AdminTestUtil.createEditAndPublishPolicy();
 				PartnerRegistration.deviceGeneration();
 
+				BaseTestCase.domain=".mosip.net";
+				
 				// Generating biometric details with mock MDS
 				BiometricDataProvider.generateBiometricTestData("Registration");
+				
+				BaseTestCase.domain = System.getProperty("env.endpoint", "localhost").replaceFirst("^https?://", "").replaceAll("/$", "");
 				
 				DependencyResolver.loadDependencies(getGlobalResourcePath() + "/config/testCaseInterDependency_"
 						+ SignupUtil.getPluginName() + ".json");
