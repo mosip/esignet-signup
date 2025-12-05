@@ -28,7 +28,6 @@ SIGNUP_CLIENT_SECRET_VALUE=$(kubectl -n keycloak get secrets keycloak-client-sec
 IAMHOST_URL=$(kubectl -n signup get cm esignet-global -o jsonpath={.data.mosip-iam-external-host})
 
 echo "Copying keycloak configmaps and secret"
-$COPY_UTIL configmap keycloak-host keycloak $NS
 $COPY_UTIL configmap keycloak-env-vars keycloak $NS
 $COPY_UTIL secret keycloak keycloak $NS
 
