@@ -136,7 +136,7 @@ public class BaseTestUtil {
 		switch (browser) {
 		case "chrome":
 			if (System.getProperty("os.name").equalsIgnoreCase("Linux")
-					&& EsignetConfigManager.getdocker().equals("yes")) {
+					&& "yes".equalsIgnoreCase(EsignetConfigManager.getdocker())) {
 				String configFilePath = "/usr/bin/chromedriver";
 				System.setProperty("webdriver.chrome.driver", configFilePath);
 			} else {
