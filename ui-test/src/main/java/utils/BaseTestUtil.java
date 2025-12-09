@@ -251,5 +251,4 @@ public class BaseTestUtil {
 	public static String getThreadLocalLanguage() {
 		return scenarioLanguageThreadLocal.get();
 	}
-
 }
