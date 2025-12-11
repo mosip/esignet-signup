@@ -60,7 +60,6 @@ helm -n $NS install signup mosip/signup \
   -f values.yaml --version $CHART_VERSION \
   --set plugin_name_env=$PLUGIN_NAME \
   --set metrics.serviceMonitor.enabled=$servicemonitorflag \
-  --set image.repository=mosipid/signup-with-plugins --set image.tag=1.3.0 \
   $ENABLE_INSECURE --wait
 
 # --- Wait for deployments to be ready ---
