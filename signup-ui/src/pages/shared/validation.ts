@@ -5,10 +5,6 @@ import { SettingsDto } from "~typings/types";
 export const validateUsername = (settings: SettingsDto) =>
   yup
     .string()
-    .matches(/^[^0].*$/, {
-      message: "username_lead_zero_validation",
-      excludeEmptyString: true,
-    })
     .test("isUsernameValid", "username_validation", (value) => {
       if (value === "") return true;
       return new RegExp(settings.response.configs["identifier.pattern"]).test(
