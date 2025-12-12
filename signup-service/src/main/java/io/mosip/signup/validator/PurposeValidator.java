@@ -5,8 +5,8 @@
  */
 package io.mosip.signup.validator;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 import io.mosip.signup.util.Purpose;
 
 public class PurposeValidator implements ConstraintValidator<io.mosip.signup.validator.Purpose, Purpose> {

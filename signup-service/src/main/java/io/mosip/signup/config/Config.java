@@ -13,8 +13,9 @@ import io.mosip.signup.services.CacheUtilService;
 import net.javacrumbs.shedlock.core.LockProvider;
 import net.javacrumbs.shedlock.provider.redis.spring.RedisLockProvider;
 import net.javacrumbs.shedlock.spring.annotation.EnableSchedulerLock;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
+import org.apache.hc.client5.http.config.RequestConfig;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
+import org.apache.hc.core5.util.Timeout;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.context.annotation.Bean;
@@ -28,6 +29,8 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.client.RestTemplate;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
 
 import java.util.List;
 import java.util.concurrent.Executor;
@@ -47,6 +50,12 @@ public class Config {
 
     @Value("${mosip.signup.http.selftoken.restTemplate.total-max-connections:100}")
     private int selfTokenRestTemplateTotalMaxConnections;
+
+    @Value("${mosip.signup.http.selftoken.restTemplate.connect-timeout-ms:5000}")
+    private int connectTimeoutMs;
+
+    @Value("${mosip.signup.http.selftoken.restTemplate.read-timeout-ms:10000}")
+    private int readTimeoutMs;
 
     @Bean
     public ObjectMapper objectMapper() {
@@ -88,10 +97,21 @@ public class Config {
     @Bean
     public RestTemplate selfTokenRestTemplate(CacheUtilService cacheUtilService) {
         RestTemplate restTemplate = new RestTemplate();
-        CloseableHttpClient httpClient = HttpClients.custom()
-                .setMaxConnPerRoute(selfTokenRestTemplateMaxConnectionPerRoute)
-                .setMaxConnTotal(selfTokenRestTemplateTotalMaxConnections)
+
+        PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager();
+        connectionManager.setDefaultMaxPerRoute(selfTokenRestTemplateMaxConnectionPerRoute);
+        connectionManager.setMaxTotal(selfTokenRestTemplateTotalMaxConnections);
+        RequestConfig requestConfig = RequestConfig.custom()
+                .setConnectTimeout(Timeout.ofMilliseconds(connectTimeoutMs))
+                .setResponseTimeout(Timeout.ofMilliseconds(readTimeoutMs))
                 .build();
+
+        CloseableHttpClient httpClient = HttpClients.custom()
+                .setConnectionManager(connectionManager)
+                .setDefaultRequestConfig(requestConfig)
+                .disableAutomaticRetries()
+                .build();
+
         HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory(httpClient);
         restTemplate.setRequestFactory(requestFactory);
         restTemplate.getInterceptors().add((request, body, execution) -> {

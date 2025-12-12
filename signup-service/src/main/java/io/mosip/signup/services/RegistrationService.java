@@ -29,11 +29,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Base64Utils;
 import org.springframework.web.multipart.MultipartFile;
+import java.util.Base64;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
+
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
 
@@ -331,7 +332,7 @@ public class RegistrationService {
 
         try {
             RegistrationFiles registrationFiles = new RegistrationFiles();
-            registrationFiles.getUploadedFiles().put(fieldName, Base64Utils.encodeToString(file.getBytes()));
+            registrationFiles.getUploadedFiles().put(fieldName, Base64.getEncoder().encodeToString(file.getBytes()));
             cacheUtilService.setRegistrationFiles(transactionId, registrationFiles);
 
             RegisterResponse registerResponse = new RegisterResponse();

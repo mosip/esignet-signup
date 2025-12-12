@@ -5,12 +5,12 @@
  */
 package io.mosip.signup;
 
-import brave.Tracer;
+import io.micrometer.tracing.Tracer;
 import io.mosip.esignet.core.config.*;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.actuate.autoconfigure.tracing.BraveAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.cloud.sleuth.autoconfig.TraceAutoConfiguration;
 import org.springframework.context.annotation.*;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -20,16 +20,10 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableAsync
 @SpringBootApplication(scanBasePackages = "io.mosip.signup.*," +
         "io.mosip.kernel.auth.defaultadapter," +
+        "io.mosip.kernel.core.logger.config" +
         "${mosip.signup.integration.impl.basepackage}")
-@Import({SharedComponentConfig.class, RedisCacheConfig.class, SimpleCacheConfig.class,
-        AccessLogSleuthConfiguration.class, TraceAutoConfiguration.class})
+@Import({SharedComponentConfig.class, RedisCacheConfig.class, SimpleCacheConfig.class, BraveAutoConfiguration.class})
 public class SignUpServiceApplication {
-
-    @Bean
-    public SleuthValve sleuthValve(Tracer tracer) {
-        return new SleuthValve(tracer);
-    }
-
     public static void main(String[] args) {
         SpringApplication.run(SignUpServiceApplication.class, args);
     }

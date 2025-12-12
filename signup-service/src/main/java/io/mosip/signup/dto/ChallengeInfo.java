@@ -10,7 +10,7 @@ import io.mosip.signup.validator.ChallengeFormat;
 import io.mosip.signup.validator.ChallengeType;
 import lombok.Data;
 
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotBlank;
 
 @Data
 public class ChallengeInfo {

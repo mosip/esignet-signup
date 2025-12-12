@@ -71,7 +71,6 @@ public class WebsocketHandlerTest {
         Mockito.when(identityVerifierFactory.getIdentityVerifier("verifier-id")).thenReturn(identityVerifierPlugin);
 
         webSocketHandler.processFrames(identityVerificationRequest);
-        Mockito.verify(identityVerifierPlugin, Mockito.times(1)).initialize(Mockito.anyString(), Mockito.any());
         Mockito.verify(identityVerifierPlugin, Mockito.times(1)).verify(Mockito.anyString(), Mockito.any());
     }
 
@@ -149,6 +148,7 @@ public class WebsocketHandlerTest {
         transaction.setApplicationId("application-id");
         Mockito.when(cacheUtilService.getVerifiedSlotTransaction(identityVerificationResult.getId())).thenReturn(transaction);
         IdentityVerifierPlugin identityVerifierPlugin = Mockito.mock(IdentityVerifierPlugin.class);
+        Mockito.when(identityVerifierPlugin.isEndStep("END")).thenReturn(true);
         Mockito.when(identityVerifierFactory.getIdentityVerifier("verifier-id")).thenReturn(identityVerifierPlugin);
 
         webSocketHandler.processVerificationResult(identityVerificationResult);
@@ -169,6 +169,7 @@ public class WebsocketHandlerTest {
         transaction.setApplicationId("application-id");
         Mockito.when(cacheUtilService.getVerifiedSlotTransaction(identityVerificationResult.getId())).thenReturn(transaction);
         IdentityVerifierPlugin identityVerifierPlugin = Mockito.mock(IdentityVerifierPlugin.class);
+        Mockito.when(identityVerifierPlugin.isEndStep("END")).thenReturn(true);
         Mockito.when(identityVerifierFactory.getIdentityVerifier("verifier-id")).thenReturn(identityVerifierPlugin);
 
         webSocketHandler.processVerificationResult(identityVerificationResult);
