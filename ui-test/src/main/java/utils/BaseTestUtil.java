@@ -30,7 +30,6 @@ import org.yaml.snakeyaml.Yaml;
 
 import io.cucumber.java.Scenario;
 import io.github.bonigarcia.wdm.WebDriverManager;
-import runners.Runner;
 
 public class BaseTestUtil {
 	private static final Logger LOGGER = Logger.getLogger(BaseTestUtil.class.getName());
@@ -139,7 +138,7 @@ public class BaseTestUtil {
 		case "chrome":
 			if (System.getProperty("os.name").equalsIgnoreCase("Linux")
 					&& "yes".equalsIgnoreCase(EsignetConfigManager.getDocker())) {
-				String chromedriverPath = EsignetConfigManager.getProperty("chromeDriverPath", "");
+				String chromedriverPath = EsignetConfigManager.getProperty("chromeDriverPath", "/usr/bin/chromedriver");
 
 				File driverFile = new File(chromedriverPath);
 
