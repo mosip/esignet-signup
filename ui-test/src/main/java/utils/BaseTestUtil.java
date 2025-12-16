@@ -136,7 +136,13 @@ public class BaseTestUtil {
 
 		switch (browser) {
 		case "chrome":
-			WebDriverManager.chromedriver().setup();
+			if (System.getProperty("os.name").equalsIgnoreCase("Linux")
+					&& "yes".equalsIgnoreCase(EsignetConfigManager.getDocker())) {
+				String configFilePath = "/usr/bin/chromedriver";
+				System.setProperty("webdriver.chrome.driver", configFilePath);
+			} else {
+				WebDriverManager.chromedriver().setup();
+			}
 
 			ChromeOptions chromeOptions = new ChromeOptions();
 

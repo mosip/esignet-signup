@@ -73,4 +73,8 @@ public class EsignetConfigManager extends io.mosip.testrig.apirig.utils.ConfigMa
 	public static String getRunLanguage() {
 		return getProperty("runLanguage", "");
 	}
+	
+	public static String getDocker() {
+		return getProperty("runDocker", "");
+	}
 }
