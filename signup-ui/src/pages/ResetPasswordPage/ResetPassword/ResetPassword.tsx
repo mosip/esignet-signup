@@ -133,7 +133,7 @@ export const ResetPassword = ({ methods, settings }: ResetPasswordProps) => {
             <button
               type="button"
               onClick={handleBack}
-              className="absolute left-0 ml-8 cursor-pointer"
+              className="absolute left-0 ml-8"
               aria-label="Go back"
             >
               <Icons.back id="back-button" name="back-button" />

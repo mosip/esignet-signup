@@ -318,7 +318,7 @@ export const Otp = ({ methods, settings }: OtpProps) => {
           <button
             type="button"
             onClick={handleBack}
-            className="absolute left-0 ml-8 cursor-pointer"
+            className="absolute left-0 ml-8"
             aria-label="Go back"
           >
             <Icons.back
