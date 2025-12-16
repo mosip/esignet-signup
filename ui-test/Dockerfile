@@ -1,5 +1,5 @@
 # --- Base image ---
-FROM eclipse-temurin:21-jre-alpine
+FROM eclipse-temurin:21-jre
 
 # --- Build-time arguments (MUST be declared before LABEL) ---
 ARG SOURCE
