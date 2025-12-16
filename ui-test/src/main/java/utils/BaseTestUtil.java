@@ -136,12 +136,7 @@ public class BaseTestUtil {
 
 		switch (browser) {
 		case "chrome":
-			if (Runner.getRunType().contains("IDE")) {
-				WebDriverManager.chromedriver().setup();
-			} else {
-				String configFilePath = "/usr/bin/chromedriver";
-				System.setProperty("webdriver.chrome.driver", configFilePath);
-			}
+			WebDriverManager.chromedriver().setup();
 
 			ChromeOptions chromeOptions = new ChromeOptions();
 
