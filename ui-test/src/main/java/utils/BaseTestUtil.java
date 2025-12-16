@@ -30,7 +30,6 @@ import org.yaml.snakeyaml.Yaml;
 
 import io.cucumber.java.Scenario;
 import io.github.bonigarcia.wdm.WebDriverManager;
-import runners.Runner;
 
 public class BaseTestUtil {
 	private static final Logger LOGGER = Logger.getLogger(BaseTestUtil.class.getName());
