@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
+import java.io.File;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.WebDriver;
@@ -138,8 +139,17 @@ public class BaseTestUtil {
 		case "chrome":
 			if (System.getProperty("os.name").equalsIgnoreCase("Linux")
 					&& "yes".equalsIgnoreCase(EsignetConfigManager.getDocker())) {
-				String configFilePath = "/usr/bin/chromedriver";
-				System.setProperty("webdriver.chrome.driver", configFilePath);
+				String chromedriverPath = EsignetConfigManager.getProperty("chromeDriverPath", "");
+
+				File driverFile = new File(chromedriverPath);
+
+				if (!driverFile.exists() || !driverFile.canExecute()) {
+					throw new RuntimeException("Invalid ChromeDriver path configured: " + chromedriverPath
+							+ ". Ensure ChromeDriver exists and is executable.");
+				}
+
+				System.setProperty("webdriver.chrome.driver", chromedriverPath);
+
 			} else {
 				WebDriverManager.chromedriver().setup();
 			}
