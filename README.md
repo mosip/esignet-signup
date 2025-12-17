@@ -12,7 +12,7 @@ Currently, signup supports below features:
 3. Online video based identity verification workflow integration via plugin
 
 ## Build (for developers)
-The project requires JDK 11.
+The project requires JDK 21.
 1. Build:
     ```
     $ mvn clean install -Dgpg.skip=true -Dmaven.gitcommitid.skip=true
