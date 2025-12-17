@@ -146,7 +146,7 @@ public class SimplePostForAutoGenIdForUrlEncoded extends SignupUtil implements I
 				String tempUrl = SignupConfigManager.getEsignetBaseUrl();
 				String endPoint = tempUrl + testCaseDTO.getEndPoint();
 				if (testCaseDTO.getEndPoint().contains("$GETENDPOINTFROMWELLKNOWN$")
-						&& BaseTestCase.currentModule.contains("signup")) {
+						&& BaseTestCase.currentModule.toLowerCase().contains("signup")) {
 					endPoint = SignupUtil.getValueFromEsignetWellKnownEndPoint("token_endpoint",
 							SignupConfigManager.getEsignetBaseUrl());
 				}
