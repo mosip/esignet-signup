@@ -153,7 +153,7 @@ The steps here install Testrig components, which include SIGNUP-APITESTRIG .
 These components are used to test the working of SIGNUP modules.
 
 1.SIGNUP-APITESTRIG Installation
-[signup-apitestrig ](deploy/signup-apitestrig/README.md)
+[signup-apitestrig](deploy/signup-apitestrig/README.md)
 
 ## APIs
 API documentation is available [here](docs/esignet-signup-openapi.yaml).

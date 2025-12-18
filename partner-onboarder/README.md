@@ -35,7 +35,7 @@ sudo systemctl restart nfs-kernel-server
 * The keystore file(.p12) ,which contains the private-key is then stored as a secret in the k8s cluster,from where it is mounted on to the esignet-signup pod in the esignet namespace.
 # Troubleshooting:
 * Once onboarder job is completed, detailed `html report` is prepared and stored at provided S3 bucket / NFS directory.
-* Once onboarder helm installation is complted, please check the reports to confirm successful onboarding.
+* Once onboarder helm installation is completed, please check the reports to confirm successful onboarding.
 
 ### Commonly found issues
 1. KER-ATH-401: Authentication Failed
