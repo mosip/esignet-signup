@@ -21,7 +21,7 @@ if [ "$flag" = "n" ]; then
 fi
 
 NS=signup
-CHART_VERSION=1.3.0-beta.1
+CHART_VERSION=1.3.0-beta.2-develop
 
 echo Create $NS namespace
 kubectl create ns $NS || true
@@ -96,7 +96,6 @@ function installing_onboarder() {
     echo "Copy configmaps"
     COPY_UTIL=../deploy/copy_cm_func.sh
     $COPY_UTIL configmap keycloak-env-vars keycloak $NS
-    $COPY_UTIL configmap keycloak-host keycloak $NS
 
     $COPY_UTIL secret keycloak keycloak $NS
     $COPY_UTIL secret keycloak-client-secrets keycloak $NS

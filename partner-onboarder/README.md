@@ -14,7 +14,15 @@ chmod 777 /srv/nfs/mosip/<sandbox>/onboarder
 ```
 * Add the following entry to the /etc/exports file:
 ```
-/srv/nfs/mosip/<sandbox>/onboarder *(ro,sync,no_root_squash,no_all_squash,insecure,subtree_check)
+/srv/nfs/mosip/<sandbox>/onboarder *(rw,sync,no_root_squash,no_all_squash,insecure,subtree_check)
+```
+* Apply export command
+```
+sudo exportfs -rav
+```
+* Restart the nfs-server
+```
+sudo systemctl restart nfs-kernel-server
 ```
 * Set `values.yaml` to run onboarder for specific modules.
 * run `./install.sh`.
@@ -26,11 +34,11 @@ chmod 777 /srv/nfs/mosip/<sandbox>/onboarder
 * After generating the same it uses the public key in JWK format in the OIDC client creation process.
 * The keystore file(.p12) ,which contains the private-key is then stored as a secret in the k8s cluster,from where it is mounted on to the esignet-signup pod in the esignet namespace.
 # Troubleshooting:
-* Once onboarder job is completed, detailed `html report` is prepared and stored at provided S3 bucket / NFS directory. 
-* Once onboarder helm installation is complted, please check the reports to confirm successful onboarding.
+* Once onboarder job is completed, detailed `html report` is prepared and stored at provided S3 bucket / NFS directory.
+* Once onboarder helm installation is completed, please check the reports to confirm successful onboarding.
 
-### Commonly found issues 
+### Commonly found issues
 1. KER-ATH-401: Authentication Failed
-    Resolution: You need to provide correct secretkey for mosip-deployment-client.
+   Resolution: You need to provide correct secretkey for mosip-deployment-client.
 1. Certificate dates are not valid
-    Resolution: Check with admin regarding certificate renewal through re-onboarding.
+   Resolution: Check with admin regarding certificate renewal through re-onboarding.

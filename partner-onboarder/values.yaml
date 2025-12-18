@@ -23,7 +23,7 @@ onboarding:
 #  volumes:
 #    reports:
 #      name: onboarder-reports
-#      storageClass: nfs-client
+#      storageClass: nfs-csi
 #      accessModes:
 #        - ReadWriteMany
 #      size: 10Mi

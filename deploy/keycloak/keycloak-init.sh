@@ -14,7 +14,7 @@ set -o errtrace  # Trace ERR through 'time command' and other functions
 set -o pipefail  # Trace ERR through pipes
 
 NS=signup
-CHART_VERSION=12.0.1
+CHART_VERSION=12.0.2
 COPY_UTIL=../copy_cm_func.sh
 
 helm repo add mosip https://mosip.github.io/mosip-helm
@@ -25,9 +25,9 @@ kubectl create ns $NS || true
 echo "mosip-signup-client secret  is created already"
 SIGNUP_CLIENT_SECRET_KEY='mosip_signup_client_secret'
 SIGNUP_CLIENT_SECRET_VALUE=$(kubectl -n keycloak get secrets keycloak-client-secrets -o jsonpath={.data.$SIGNUP_CLIENT_SECRET_KEY} | base64 -d)
+IAMHOST_URL=$(kubectl -n signup get cm esignet-global -o jsonpath={.data.mosip-iam-external-host})
 
 echo "Copying keycloak configmaps and secret"
-$COPY_UTIL configmap keycloak-host keycloak $NS
 $COPY_UTIL configmap keycloak-env-vars keycloak $NS
 $COPY_UTIL secret keycloak keycloak $NS
 
@@ -37,6 +37,8 @@ helm -n $NS install signup-keycloak-init mosip/keycloak-init \
   -f keycloak-init-values.yaml \
   --set clientSecrets[0].name="$SIGNUP_CLIENT_SECRET_KEY" \
   --set clientSecrets[0].secret="$SIGNUP_CLIENT_SECRET_VALUE" \
+  --set keycloakInternalHost="keycloak.keycloak" \
+  --set keycloakExternalHost="$IAMHOST_URL" \
   --version $CHART_VERSION --wait --wait-for-jobs
 
 SIGNUP_CLIENT_SECRET_VALUE=$(kubectl -n $NS get secrets keycloak-client-secrets -o jsonpath={.data.$SIGNUP_CLIENT_SECRET_KEY})
