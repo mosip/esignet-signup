@@ -55,7 +55,7 @@ services:
 
 
   esignet:
-    image: 'mosipqa/esignet-with-plugins:1.7.x'
+    image: 'mosipid/esignet-with-plugins:1.7.1'
     user: root
     ports:
       - 8088:8088
@@ -79,7 +79,7 @@ services:
       - mock-identity-system
 
   esignet-ui:
-    image: 'mosipqa/oidc-ui:1.7.x'
+    image: 'mosipid/oidc-ui:1.7.1'
     user: root
     ports:
       - 3000:3000
