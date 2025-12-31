@@ -41,7 +41,21 @@ export type EkycVerificationStore = {
   setSlotId: (slotId: string | null) => void;
   providerListStatus: boolean;
   setProviderListStatus: (providerListStatus: boolean) => void;
+  reset: () => void;
 };
+
+const initialState = {
+  step: EkycVerificationStep.VerificationSteps,
+  criticalError: null,
+  kycProvider: null,
+  kycProviderDetail: null,
+  kycProvidersList: null,
+  hashCode: null,
+  isNoBackground: false,
+  errorBannerMessage: null,
+  slotId: null,
+  providerListStatus: false,
+}
 
 export const useEkycVerificationStore = create<EkycVerificationStore>()(
   devtools((set, get) => ({
@@ -105,6 +119,7 @@ export const useEkycVerificationStore = create<EkycVerificationStore>()(
       if (isEqual(current.providerListStatus, providerListStatus)) return;
       set((state) => ({ providerListStatus }));
     },
+    reset: () => set(() => initialState)
   }))
 );
 

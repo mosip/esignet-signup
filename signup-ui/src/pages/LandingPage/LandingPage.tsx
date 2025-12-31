@@ -3,10 +3,12 @@ import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import { ReactComponent as SomethingWentWrongSvg } from "~assets/svg/something-went-wrong.svg";
-import { RESET_PASSWORD, SIGNUP_ROUTE } from "~constants/routes";
+import { EKYC_VERIFICATION, RESET_PASSWORD, SIGNUP_ROUTE } from "~constants/routes";
 import { Button } from "~components/ui/button";
 import { useSignUpStore } from "~pages/SignUpPage/useSignUpStore";
 import { useResetPasswordStore } from "~pages/ResetPasswordPage/useResetPasswordStore";
+import { generateState } from "~utils/link";
+import { useEkycVerificationStore } from "~pages/EkycVerificationPage/useEkycVerificationStore";
 
 export const LandingPage = () => {
   const { t } = useTranslation();
@@ -14,6 +16,7 @@ export const LandingPage = () => {
   const { hash: fromSignInHash } = useLocation();
   const resetSignupStore = useSignUpStore.getState().reset;
   const resetForgotPasswordStore = useResetPasswordStore.getState().reset;
+  const resetEkycVerificationStore = useEkycVerificationStore.getState().reset;
 
   const handleResetPassword = (e: any) => {
     e.preventDefault();
@@ -25,6 +28,13 @@ export const LandingPage = () => {
     e.preventDefault();
     resetSignupStore();
     navigate(`${SIGNUP_ROUTE}${fromSignInHash}`);
+  };
+
+  const handleVerifyIdentity = (e: any) => {
+    e.preventDefault();
+    resetEkycVerificationStore();
+    const state = generateState();
+    navigate(`${EKYC_VERIFICATION}${fromSignInHash}?state=${state}`);
   };
 
   return (
@@ -40,9 +50,9 @@ export const LandingPage = () => {
             {t("landing_page_description")}
           </p>
         </div>
-        <div className="flex w-full flex-row items-center justify-center gap-x-2 sm:flex-col">
+        <div className="flex w-full flex-row items-center justify-center gap-x-2 md:flex-col">
           <Button
-            className="h-[52px] w-[250px] border-[2px] border-primary bg-white text-primary hover:text-primary/80 sm:mb-3 sm:w-full"
+            className="h-[52px] w-[250px] border-[2px] border-primary bg-white text-primary hover:text-primary/80 md:mb-3 md:w-full"
             id="reset-password-button"
             name="reset-password-button"
             variant="outline"
@@ -51,12 +61,21 @@ export const LandingPage = () => {
             {t("reset_password")}
           </Button>
           <Button
-            className="h-[52px] w-[250px] sm:w-full"
+            className="h-[52px] w-[250px] md:w-full"
             id="register-button"
             name="register-button"
             onClick={handleRegister}
           >
             {t("register")}
+          </Button>
+          <Button
+            className="h-[52px] w-[250px] border-[2px] border-primary bg-white text-primary hover:text-primary/80 md:mt-3 md:w-full"
+            id="verify-identity-button"
+            name="verify-identity-button"
+            variant="outline"
+            onClick={handleVerifyIdentity}
+          >
+            {t("verify_identity")}
           </Button>
         </div>
       </div>
