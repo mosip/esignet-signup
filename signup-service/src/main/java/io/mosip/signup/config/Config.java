@@ -8,7 +8,6 @@ package io.mosip.signup.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.fasterxml.jackson.module.afterburner.AfterburnerModule;
 import io.mosip.signup.services.CacheUtilService;
 import net.javacrumbs.shedlock.core.LockProvider;
 import net.javacrumbs.shedlock.provider.redis.spring.RedisLockProvider;
@@ -60,7 +59,6 @@ public class Config {
     @Bean
     public ObjectMapper objectMapper() {
         return JsonMapper.builder()
-                .addModule(new AfterburnerModule())
                 .addModule(new JavaTimeModule())
                 .build();
     }
