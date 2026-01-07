@@ -1,9 +1,9 @@
 import { useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { useTranslation } from "react-i18next";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 import { Form } from "~components/ui/form";
+import { getStateData } from "~utils/identityVerificationUtil";
 import { useKycProvidersList } from "~pages/shared/mutations";
 import {
   CancelPopup,
@@ -41,9 +41,8 @@ interface EkycVerificationPageProps {
 export const EkycVerificationPage = ({
   settings,
 }: EkycVerificationPageProps) => {
-  const { t } = useTranslation();
   const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
 
   const {
     step,
@@ -76,11 +75,74 @@ export const EkycVerificationPage = ({
     navigate("/");
   };
 
+  /**
+   * Authorizes the user by constructing the authorization URL with necessary query parameters
+   * @param queryParam Query parameters to include in the authorization URL
+   */
+  const authorizeUser = (queryParam: any = {}) => {
+    const clientId = settings?.response?.configs["signup.oauth-client-id"];
+    const authorizeURI =
+      settings?.response?.configs["signin.authorization-url"];
+    const identityVerificationRedirectURI =
+      settings?.response?.configs["identity-verification.redirect-url"];
+
+    const uiLocales =
+      searchParams.get("ui_locales") ??
+      queryParam.ui_locales ??
+      (window as any)?._env_?.DEFAULT_LANG;
+
+    const paramObj = {
+      client_id: clientId ?? "",
+      state: queryParam.state ?? "",
+      redirect_uri:
+        queryParam.redirect_uri ?? identityVerificationRedirectURI ?? "",
+      scope: queryParam.scope ?? "openid",
+      response_type: "code",
+      ui_locales: uiLocales,
+      ...(queryParam.acr_values && { acr_values: queryParam.acr_values }),
+      ...(queryParam.claims && { claims: queryParam.claims }),
+      ...(queryParam.id_token_hint && {
+        id_token_hint: queryParam.id_token_hint,
+      }),
+    };
+
+    const redirectParams = new URLSearchParams(paramObj).toString();
+
+    const redirectURI = `${authorizeURI}?${redirectParams}`;
+
+    window.location.replace(redirectURI);
+  };
+
   useEffect(() => {
     const hasRequiredParams =
       searchParams.has("state") &&
       searchParams.has("code") &&
       searchParams.has("ui_locales");
+
+    const stateValue = searchParams.get("state");
+    if (stateValue && stateValue !== "") {
+      // checking state data from local storage
+      // if state data is present then only authorize the user
+      const stateData = getStateData(stateValue);
+      if (stateData) {
+        authorizeUser({
+          state: stateValue,
+          redirect_uri: stateData.redirectUrl,
+          scope: stateData.scope,
+          acr_values: stateData.acrValues,
+          claims: stateData.claims,
+          ui_locales: stateData.uiLocales,
+        });
+      }
+    }
+
+    // Authorize user if id_token_hint is present in query params
+    if (searchParams.has("id_token_hint")) {
+      authorizeUser({
+        state: stateValue,
+        id_token_hint: searchParams.get("id_token_hint") ?? "",
+      });
+    }
 
     if (hasRequiredParams) {
       setHashCode({
@@ -110,30 +172,6 @@ export const EkycVerificationPage = ({
           }
         },
       });
-    } else if (searchParams.has("id_token_hint")) {
-      const authorizeURI = settings?.response?.configs["signin.authorization-url"];
-      const clientIdURI = settings?.response?.configs["signup.oauth-client-id"];
-      const identityVerificationRedirectURI =
-        settings?.response?.configs["identity-verification.redirect-url"];
-      const urlObj = new URL(window.location.href);
-      const state = urlObj.searchParams.get("state");
-
-      const paramObj = {
-        state: state ?? "",
-        client_id: clientIdURI ?? "",
-        redirect_uri: identityVerificationRedirectURI ?? "",
-        scope: "openid",
-        response_type: "code",
-        id_token_hint: searchParams.get("id_token_hint") ?? "",
-        ui_locales:
-          searchParams.get("ui_locales") ?? (window as any)._env_.DEFAULT_LANG,
-      };
-
-      const redirectParams = new URLSearchParams(paramObj).toString();
-
-      const redirectURI = `${authorizeURI}?${redirectParams}`;
-
-      window.location.replace(redirectURI);
     } else {
       navigateToLandingPage();
     }

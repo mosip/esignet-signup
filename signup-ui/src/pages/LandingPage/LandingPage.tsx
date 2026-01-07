@@ -3,12 +3,16 @@ import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import { ReactComponent as SomethingWentWrongSvg } from "~assets/svg/something-went-wrong.svg";
-import { EKYC_VERIFICATION, RESET_PASSWORD, SIGNUP_ROUTE } from "~constants/routes";
+import {
+  EKYC_VERIFICATION,
+  RESET_PASSWORD,
+  SIGNUP_ROUTE,
+} from "~constants/routes";
 import { Button } from "~components/ui/button";
-import { useSignUpStore } from "~pages/SignUpPage/useSignUpStore";
-import { useResetPasswordStore } from "~pages/ResetPasswordPage/useResetPasswordStore";
-import { generateState } from "~utils/link";
+import { generateState } from "~utils/identityVerificationUtil";
 import { useEkycVerificationStore } from "~pages/EkycVerificationPage/useEkycVerificationStore";
+import { useResetPasswordStore } from "~pages/ResetPasswordPage/useResetPasswordStore";
+import { useSignUpStore } from "~pages/SignUpPage/useSignUpStore";
 
 export const LandingPage = () => {
   const { t } = useTranslation();
