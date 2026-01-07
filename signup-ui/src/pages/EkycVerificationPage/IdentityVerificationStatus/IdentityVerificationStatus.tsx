@@ -1,6 +1,8 @@
 import { useCallback, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { useLocation, useNavigate } from "react-router-dom";
 
+import { ROOT_ROUTE } from "~constants/routes";
 import { useIdentityVerificationStatus } from "~pages/shared/queries";
 import {
   DefaultEkyVerificationProp,
@@ -20,6 +22,8 @@ export const IdentityVerificationStatus = ({
   cancelPopup,
 }: DefaultEkyVerificationProp) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const { hash: fromSignInHash } = useLocation();
 
   const { hashCode } = useEkycVerificationStore(
     useCallback(
@@ -32,6 +36,9 @@ export const IdentityVerificationStatus = ({
 
   const retriableErrorCodes =
     settings.configs["status.request.retry.error.codes"].split(",");
+
+  // Configurable auto-redirect delay (in seconds)
+  const autoRedirectDelay = settings?.configs["identity-verification.success.redirect-delay"];
 
   useEffect(() => {
     if (window.videoLocalStream) {
@@ -97,16 +104,29 @@ export const IdentityVerificationStatus = ({
     identityVerificationStatus?.response?.status ===
     IdentityVerificationStatusType.COMPLETED
   ) {
-    window.onbeforeunload = null;
-    window.location.href = `${
-      settings.configs["esignet-consent.redirect-url"]
-    }?key=${hashCode?.state || ""}`;
+    const handleRedirect = (e?: React.MouseEvent<HTMLButtonElement>) => {
+      window.onbeforeunload = null;
+      
+      const hasESignetHash = fromSignInHash && fromSignInHash.length > 0;
+      
+      if (hasESignetHash) {
+        window.location.href = `${
+          settings.configs["esignet-consent.redirect-url"]
+        }?key=${hashCode?.state || ""}`;
+      } else {
+        navigate(ROOT_ROUTE);
+      }
+    };
 
     return (
       <IdentityVerificationStatusLayout
         status="success"
         title={t("identity_verification_status.successful.title")}
         description={t("identity_verification_status.successful.description")}
+        btnLabel={t("continue")}
+        onBtnClick={handleRedirect}
+        autoRedirect={true}
+        autoRedirectDelay={autoRedirectDelay}
       />
     );
   }

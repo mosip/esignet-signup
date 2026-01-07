@@ -205,7 +205,8 @@
   "identity_verification_status": {
     "successful": {
       "title": "Verification Successful!",
-      "description": "Please wait while we finalize the process"
+      "description": "Please wait while we finalize the process",
+      "countdown": "Redirecting in <CountDownSpan>{{countDown}}</CountDownSpan>"
     },
     "failed": {
       "title": "Verification Unsuccessful!",

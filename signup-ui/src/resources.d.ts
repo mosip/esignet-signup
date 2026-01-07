@@ -120,6 +120,7 @@ interface Resources {
       successful: {
         title: string;
         description: string;
+        countdown: string;
       };
       failed: {
         title: string;

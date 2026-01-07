@@ -204,8 +204,9 @@
   },
   "identity_verification_status": {
     "successful": {
-      "title": "ការផ្ទៀងផ្ទាត់បានជោគជ័យ!",
-      "description": "សូមរង់ចាំខណៈពេលដែលយើងបញ្ចប់ដំណើរការ"
+      "title": "ផ្ទៀងផ្ទាត់ដោយជោគជ័យ!",
+      "description": "សូមរង់ចាំខណៈពេលយើងបញ្ចប់ដំណើរការ",
+      "countdown": "ការបញ្ជូនបន្តក្នុងរយៈពេល <CountDownSpan>{{countDown}}</CountDownSpan>"
     },
     "failed": {
       "title": "ការផ្ទៀងផ្ទាត់មិនបានជោគជ័យ!",
