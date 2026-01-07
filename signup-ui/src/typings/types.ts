@@ -168,6 +168,7 @@ export interface SettingsConfig {
   "offline.polling.url": string;
   "broswer.minimum-version": { [key: string]: string };
   "esignet-consent.redirect-url": string;
+  "identity-verification.success.redirect-delay": number;
 }
 
 export interface Settings {
