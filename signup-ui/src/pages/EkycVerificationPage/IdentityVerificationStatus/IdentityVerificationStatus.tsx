@@ -38,7 +38,8 @@ export const IdentityVerificationStatus = ({
     settings.configs["status.request.retry.error.codes"].split(",");
 
   // Configurable auto-redirect delay (in seconds)
-  const autoRedirectDelay = settings?.configs["identity-verification.success.redirect-delay"];
+  const autoRedirectDelay =
+    settings?.configs["identity-verification.success.redirect-delay"];
 
   useEffect(() => {
     if (window.videoLocalStream) {
@@ -106,9 +107,9 @@ export const IdentityVerificationStatus = ({
   ) {
     const handleRedirect = (e?: React.MouseEvent<HTMLButtonElement>) => {
       window.onbeforeunload = null;
-      
+
       const hasESignetHash = fromSignInHash && fromSignInHash.length > 0;
-      
+
       if (hasESignetHash) {
         window.location.href = `${
           settings.configs["esignet-consent.redirect-url"]

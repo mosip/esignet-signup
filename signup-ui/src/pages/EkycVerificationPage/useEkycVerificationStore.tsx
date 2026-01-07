@@ -20,6 +20,19 @@ export enum EkycVerificationStep {
   IdentityVerificationStatus,
 }
 
+const initialState = {
+  step: EkycVerificationStep.VerificationSteps,
+  criticalError: null as Error | null,
+  kycProvider: null as KycProvider | null,
+  kycProviderDetail: null as KycProviderDetail | null,
+  kycProvidersList: null as KycProvider[] | null,
+  hashCode: null as SignupHashCode | null,
+  isNoBackground: false as boolean,
+  errorBannerMessage: null as string | null,
+  slotId: null as string | null,
+  providerListStatus: false as boolean,
+}
+
 export type EkycVerificationStore = {
   step: EkycVerificationStep;
   setStep: (step: EkycVerificationStep) => void;
@@ -43,19 +56,6 @@ export type EkycVerificationStore = {
   setProviderListStatus: (providerListStatus: boolean) => void;
   reset: () => void;
 };
-
-const initialState = {
-  step: EkycVerificationStep.VerificationSteps,
-  criticalError: null,
-  kycProvider: null,
-  kycProviderDetail: null,
-  kycProvidersList: null,
-  hashCode: null,
-  isNoBackground: false,
-  errorBannerMessage: null,
-  slotId: null,
-  providerListStatus: false,
-}
 
 export const useEkycVerificationStore = create<EkycVerificationStore>()(
   devtools((set, get) => ({
