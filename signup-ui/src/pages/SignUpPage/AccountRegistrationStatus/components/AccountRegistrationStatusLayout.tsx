@@ -7,9 +7,10 @@ import { ReactComponent as WarningIconSvg } from "~assets/svg/warning-icon.svg";
 import { Button } from "~components/ui/button";
 import { Step, StepContent } from "~components/ui/step";
 import { EKYC_VERIFICATION } from "~constants/routes";
-import { getSignInRedirectURLV2, generateState } from "~utils/link";
+import { getSignInRedirectURLV2 } from "~utils/link";
 import { useSettings } from "~pages/shared/queries";
 import { useEkycVerificationStore } from "~pages/EkycVerificationPage/useEkycVerificationStore";
+import { generateState } from "~utils/identityVerificationUtil";
 
 interface AccountRegistrationStatusLayoutProps {
   status: "success" | "warning" | "failed";
