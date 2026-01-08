@@ -36,10 +36,6 @@ export const generateRandomString = (strLength = 16) => {
   return result;
 };
 
-export const generateState = () => {
-  return generateRandomString(16);
-}
-
 export const replaceUILocales = (
   hash: string,
   locale: string | null
