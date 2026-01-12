@@ -10,8 +10,7 @@ import {
 import { IdentityVerificationStatusLayout } from "./components/IdentityVerificationStatusLayout";
 
 export const IdentityVerificationStatusFailed = ({
-  settings,
-  cancelPopup,
+  handleDismiss,
 }: DefaultEkyVerificationProp) => {
   const { t } = useTranslation();
 
@@ -28,10 +27,10 @@ export const IdentityVerificationStatusFailed = ({
     HTMLButtonElement
   > = (e) => {
     e.preventDefault();
-    window.onbeforeunload = null;
-    window.location.href = `${
-      settings.configs["esignet-consent.redirect-url"]
-    }?key=${hashCode?.state || ""}&error=identity_verification_failed`;
+    handleDismiss({
+      key: hashCode?.state || "",
+      error: "identity_verification_failed",
+    });
   };
 
   return (

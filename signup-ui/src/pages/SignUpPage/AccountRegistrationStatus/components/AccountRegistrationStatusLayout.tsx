@@ -21,16 +21,17 @@ export const AccountRegistrationStatusLayout = ({
   status,
   message,
 }: AccountRegistrationStatusLayoutProps) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { data: settings } = useSettings();
   const { hash: fromSignInHash, search } = useLocation();
   const navigate = useNavigate();
   const resetEkycVerificationStore = useEkycVerificationStore.getState().reset;
+  const rpConfig = settings?.response?.configs["rp.config"];
 
   const handleAction = (e: any) => {
     e.preventDefault();
     window.location.href = getSignInRedirectURLV2(
-      settings?.response.configs["signin.redirect-url"],
+      rpConfig?.redirect_uri_signin,
       fromSignInHash,
       search,
       "/signup"
@@ -40,7 +41,13 @@ export const AccountRegistrationStatusLayout = ({
   const handleVerifyIdentity = (e: any) => {
     e.preventDefault();
     resetEkycVerificationStore();
-    const state = generateState();
+    const state = generateState({
+      redirectUrl: rpConfig?.redirect_uri_verification,
+      expiryTime: rpConfig?.expiry_time,
+      scope: rpConfig?.scope,
+      acrValues: rpConfig?.acr_values,
+      uiLocales: i18n.language,
+    });
     navigate(`${EKYC_VERIFICATION}${fromSignInHash}?state=${state}`);
   };
 

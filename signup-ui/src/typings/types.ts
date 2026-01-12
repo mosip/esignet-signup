@@ -127,6 +127,20 @@ export interface BaseRequestDto {
   request: { [key: string]: any };
 }
 
+export interface RpConfig {
+  client_id: string;
+  redirect_uri_verification: string;
+  redirect_uri_signin: string;
+  redirect_uri_consent: string;
+  authorization_endpoint: string;
+  response_type: string;
+  scope: string;
+  claims: string;
+  acr_values: string;
+  expiry_time: number;
+  redirect_delay: number;
+}
+
 export interface SettingsConfig {
   "identifier.name": string;
   "identifier.pattern": string;
@@ -169,6 +183,7 @@ export interface SettingsConfig {
   "broswer.minimum-version": { [key: string]: string };
   "esignet-consent.redirect-url": string;
   "identity-verification.success.redirect-delay": number;
+  "rp.config": RpConfig;
 }
 
 export interface Settings {
@@ -336,6 +351,7 @@ export interface IdentityVerificationState {
 export interface DefaultEkyVerificationProp {
   settings: Settings;
   cancelPopup: (cancelProp: CancelPopup) => any;
+  handleDismiss: (params: any) => void;
 }
 
 export interface CancelPopup {

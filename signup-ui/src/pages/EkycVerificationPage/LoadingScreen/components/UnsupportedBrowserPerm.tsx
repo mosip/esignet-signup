@@ -9,16 +9,18 @@ import {
   StepHeader,
   StepTitle,
 } from "~components/ui/step";
-import { useSettings } from "~pages/shared/queries";
 
 import {
   hashCodeSelector,
   useEkycVerificationStore,
 } from "../../useEkycVerificationStore";
 
-export const UnsupportedBrowserPerm = () => {
+export const UnsupportedBrowserPerm = ({
+  handleDismiss,
+}: {
+  handleDismiss: (args: { key: string; error: string }) => void;
+}) => {
   const { t } = useTranslation();
-  const { data: settings } = useSettings();
 
   const { hashCode } = useEkycVerificationStore(
     useCallback(
@@ -30,10 +32,10 @@ export const UnsupportedBrowserPerm = () => {
   );
 
   const handleOkay = () => {
-    window.onbeforeunload = null;
-    window.location.href = `${settings?.response?.configs[
-      "esignet-consent.redirect-url"
-    ]}?key=${hashCode?.state || ""}&error=incompatible_browser`;
+    handleDismiss({
+      key: hashCode?.state || "",
+      error: "incompatible_browser",
+    });
   };
 
   return (
