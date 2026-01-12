@@ -22,6 +22,34 @@ const clearLocalStorageKey = (keyPrefix: string) => {
 };
 
 /**
+ * Removes a specific token from a %20-separated (URL-encoded) list.
+ * Preserves colons (:) and other safe characters when re-encoding.
+ *
+ * @param {string} acr - The input string (URL-encoded, tokens separated by %20).
+ * @param {string} tokenToRemove - The exact token to remove (plain text, not encoded).
+ * @returns {string} - The URL-encoded string with the token removed.
+ */
+const removeEncodedToken = (acr: string, tokenToRemove: string): string => {
+  if (acr === "") {
+    return "mosip:idp:acr:generated-code%20mosip:idp:acr:password%20mosip:idp:acr:linked-wallet%20mosip:idp:acr:knowledge";
+  }
+  // 1) Decode to operate on plain text
+  const decoded = decodeURIComponent(acr); // %20 -> ' '
+
+  // 2) Split on whitespace (handles multiple spaces just in case)
+  const tokens = decoded.trim().split(/\s+/);
+
+  // 3) Filter out the target token (exact match)
+  const filtered = tokens.filter((t) => t !== tokenToRemove);
+
+  // 4) Re-encode; keep ':' readable, optionally also keep '-' safe
+  // encodeURIComponent encodes ':', so we bring it back for readability.
+  return encodeURIComponent(filtered.join(" "))
+    .replace(/%3A/g, ":")
+    .replace(/%2D/g, "-"); // optional: keep dashes readable
+};
+
+/**
  * Generates a unique state string for identity verification and stores related data in localStorage.
  * The state includes a timestamp, redirect URL, and expiry time.
  * @param stateObj - An object containing optional redirectUrl and expiryTime (in seconds).
@@ -29,6 +57,7 @@ const clearLocalStorageKey = (keyPrefix: string) => {
  */
 export const generateState = (stateObj: any = {}): string => {
   const currentDate = new Date();
+
   const stateData = {
     timestamp: currentDate.getTime(),
     redirectUrl:
@@ -37,9 +66,10 @@ export const generateState = (stateObj: any = {}): string => {
     claims: stateObj.claims || "",
     expiry: currentDate.getTime() + (stateObj.expiryTime || 600) * 1000, // default 10 minutes
     uiLocales: stateObj.uiLocales || (window as any)._env_.DEFAULT_LANG,
-    acrValues:
-      stateObj.acrValues ||
-      "mosip:idp:acr:generated-code%20mosip:idp:acr:password%20mosip:idp:acr:linked-wallet%20mosip:idp:acr:knowledge",
+    acrValues: removeEncodedToken(
+      stateObj.acrValues || "",
+      "mosip:idp:acr:id-token"
+    ),
   };
 
   const stateKey = randomKey("identity-verification");

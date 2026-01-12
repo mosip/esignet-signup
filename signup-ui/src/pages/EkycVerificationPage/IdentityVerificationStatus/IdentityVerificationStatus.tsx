@@ -20,6 +20,7 @@ import { IdentityVerificationStatusFailed } from "./IdentityVerificationStatusFa
 export const IdentityVerificationStatus = ({
   settings,
   cancelPopup,
+  handleDismiss,
 }: DefaultEkyVerificationProp) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -37,9 +38,7 @@ export const IdentityVerificationStatus = ({
   const retriableErrorCodes =
     settings.configs["status.request.retry.error.codes"].split(",");
 
-  // Configurable auto-redirect delay (in seconds)
-  const autoRedirectDelay =
-    settings?.configs["identity-verification.success.redirect-delay"];
+  const autoRedirectDelay = settings.configs["rp.config"].redirect_delay;
 
   useEffect(() => {
     if (window.videoLocalStream) {
@@ -67,6 +66,7 @@ export const IdentityVerificationStatus = ({
       <IdentityVerificationStatusFailed
         settings={settings}
         cancelPopup={cancelPopup}
+        handleDismiss={handleDismiss}
       />
     );
   }
@@ -76,10 +76,10 @@ export const IdentityVerificationStatus = ({
   //    - UPDATE_PENDING
   //    - error codes specified in `status.request.retry.error.codes`
   if (isIdentityVerificationStatusError) {
-    window.onbeforeunload = null;
-    window.location.href = `${
-      settings.configs["esignet-consent.redirect-url"]
-    }?key=${hashCode?.state || ""}&error=ekyc_failed`;
+    handleDismiss({
+      key: hashCode?.state || "",
+      error: "ekyc_failed",
+    });
   }
 
   // scenario:
@@ -91,12 +91,10 @@ export const IdentityVerificationStatus = ({
       identityVerificationStatus.errors[0].errorCode
     )
   ) {
-    window.onbeforeunload = null;
-    window.location.href = `${
-      settings.configs["esignet-consent.redirect-url"]
-    }?key=${hashCode?.state || ""}&error=${
-      identityVerificationStatus.errors[0].errorCode
-    }`;
+    handleDismiss({
+      key: hashCode?.state || "",
+      error: identityVerificationStatus.errors[0].errorCode,
+    });
   }
 
   // scenario:
@@ -111,9 +109,7 @@ export const IdentityVerificationStatus = ({
       const hasESignetHash = fromSignInHash && fromSignInHash.length > 0;
 
       if (hasESignetHash) {
-        window.location.href = `${
-          settings.configs["esignet-consent.redirect-url"]
-        }?key=${hashCode?.state || ""}`;
+        handleDismiss({ key: hashCode?.state || "" });
       } else {
         navigate(ROOT_ROUTE);
       }

@@ -12,11 +12,15 @@ import { Button } from "~components/ui/button";
 import { generateState } from "~utils/identityVerificationUtil";
 import { useEkycVerificationStore } from "~pages/EkycVerificationPage/useEkycVerificationStore";
 import { useResetPasswordStore } from "~pages/ResetPasswordPage/useResetPasswordStore";
+import { useSettings } from "~pages/shared/queries";
 import { useSignUpStore } from "~pages/SignUpPage/useSignUpStore";
 
 export const LandingPage = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
+
+  const { data: settings } = useSettings();
+
   const { hash: fromSignInHash } = useLocation();
   const resetSignupStore = useSignUpStore.getState().reset;
   const resetForgotPasswordStore = useResetPasswordStore.getState().reset;
@@ -37,7 +41,14 @@ export const LandingPage = () => {
   const handleVerifyIdentity = (e: any) => {
     e.preventDefault();
     resetEkycVerificationStore();
-    const state = generateState();
+    const rpConfig = settings?.response?.configs["rp.config"];
+    const state = generateState({
+      redirectUrl: rpConfig?.redirect_uri_verification,
+      expiryTime: rpConfig?.expiry_time,
+      scope: rpConfig?.scope,
+      acrValues: rpConfig?.acr_values,
+      uiLocales: i18n.language,
+    });
     navigate(`${EKYC_VERIFICATION}${fromSignInHash}?state=${state}`);
   };
 

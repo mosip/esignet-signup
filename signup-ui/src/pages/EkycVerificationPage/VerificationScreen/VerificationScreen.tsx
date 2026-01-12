@@ -38,6 +38,7 @@ import { EkycStatusAlert } from "./components/EkycStatusAlert";
 export const VerificationScreen = ({
   cancelPopup,
   settings,
+  handleDismiss,
 }: DefaultEkyVerificationProp) => {
   const { t, i18n } = useTranslation("translation", {
     keyPrefix: "verification_screen",
@@ -115,12 +116,10 @@ export const VerificationScreen = ({
             className="my-4 h-16 w-full"
             type="button"
             onClick={() => {
-              window.onbeforeunload = null;
-              window.location.replace(
-                `${settings?.configs["esignet-consent.redirect-url"]}?key=${
-                  hashCode?.state || ""
-                }&error=web_socket_fail`
-              );
+              handleDismiss({
+                key: hashCode?.state || "",
+                error: "web_socket_fail",
+              });
             }}
           >
             {t("web_socket_error.button")}
