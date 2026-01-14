@@ -16,6 +16,7 @@ import {
 import { IdentityVerificationStatusLayout } from "./components/IdentityVerificationStatusLayout";
 import { IdentityVerificationStatusLoader } from "./components/IdentityVerificationStatusLoader";
 import { IdentityVerificationStatusFailed } from "./IdentityVerificationStatusFailed";
+import { getStateData } from "~utils/identityVerificationUtil";
 
 export const IdentityVerificationStatus = ({
   settings,
@@ -106,12 +107,10 @@ export const IdentityVerificationStatus = ({
     const handleRedirect = (e?: React.MouseEvent<HTMLButtonElement>) => {
       window.onbeforeunload = null;
 
-      const hasESignetHash = fromSignInHash && fromSignInHash.length > 0;
-
-      if (hasESignetHash) {
-        handleDismiss({ key: hashCode?.state || "" });
-      } else {
+      if (getStateData(hashCode?.state || "")) {
         navigate(ROOT_ROUTE);
+      } else {
+        handleDismiss({ key: hashCode?.state || "" });
       }
     };
 

@@ -80,20 +80,22 @@ export const AccountRegistrationStatusLayout = ({
         </div>
         <div className="flex w-full flex-row items-center justify-center gap-x-2 md:flex-col">
           <Button
-          id="success-continue-button"
-          className="my-4 h-16 md:mb-3 w-full"
-          onClick={handleAction}
-        >
-          {fromSignInHash ? t("login") : t("okay")}
-        </Button>
-        <Button
-          id="verify-identity-button"
-          className="my-4 h-16 border-primary bg-white text-primary hover:text-primary/80 md:mt-3 w-full"
-          variant="outline"
-          onClick={handleVerifyIdentity}
-        >
-          {t("proceed_to_verification")}
-        </Button>
+            id="success-continue-button"
+            className="my-4 h-16 md:mb-3 w-full"
+            onClick={handleAction}
+          >
+            {fromSignInHash ? t("login") : t("okay")}
+          </Button>
+          {status === "success" && (
+            <Button
+              id="verify-identity-button"
+              className="my-4 h-16 border-primary bg-white text-primary hover:text-primary/80 md:mt-3 w-full"
+              variant="outline"
+              onClick={handleVerifyIdentity}
+            >
+              {t("proceed_to_verification")}
+            </Button>
+          )}
         </div>
       </StepContent>
     </Step>
