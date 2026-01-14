@@ -134,6 +134,7 @@ export const AccountSetup = ({ settings, methods }: AccountSetupProps) => {
         consent: data.consent ? "AGREE" : "DISAGREE",
         userInfo: {
           ...data,
+          'IDSchemaVersion': '0.1',
         },
         locale: i18n.language,
       },
