@@ -330,9 +330,35 @@ public class RegistrationService {
             throw new SignUpException(ErrorConstants.INVALID_REQUEST);
         }
 
+        String contentType = file.getContentType();
+        if(contentType == null || !contentType.startsWith("image/")) {
+            log.error("Invalid file type: {}. Only image formats are allowed.", contentType);
+            throw new SignUpException(ErrorConstants.INVALID_FILE_TYPE);
+        }
+
         try {
-            RegistrationFiles registrationFiles = new RegistrationFiles();
-            registrationFiles.getUploadedFiles().put(fieldName, Base64.getEncoder().encodeToString(file.getBytes()));
+
+            String newFileBase64 = Base64.getEncoder().encodeToString(file.getBytes());
+            String newFileHash = IdentityProviderUtil.generateB64EncodedHash(IdentityProviderUtil.ALGO_SHA3_256, newFileBase64);
+
+            RegistrationFiles existingFiles = cacheUtilService.getRegistrationFiles(transactionId);
+            if (existingFiles != null && existingFiles.getUploadedFiles() != null) {
+                String existingFileBase64 = existingFiles.getUploadedFiles().get(fieldName);
+                if (existingFileBase64 != null) {
+                    String existingFileHash = IdentityProviderUtil.generateB64EncodedHash(IdentityProviderUtil.ALGO_SHA3_256, existingFileBase64);
+                    if (newFileHash.equals(existingFileHash)) {
+                        log.error("Duplicate file upload detected for field: {}", fieldName);
+                        throw new SignUpException(ErrorConstants.FILE_ALREADY_EXISTS);
+                    }
+                    log.info("Replacing existing file for field: {}", fieldName);
+                }
+            }
+
+            RegistrationFiles registrationFiles = existingFiles != null ? existingFiles : new RegistrationFiles();
+            if (registrationFiles.getUploadedFiles() == null) {
+                registrationFiles.setUploadedFiles(new HashMap<>());
+            }
+            registrationFiles.getUploadedFiles().put(fieldName, newFileBase64);
             cacheUtilService.setRegistrationFiles(transactionId, registrationFiles);
 
             RegisterResponse registerResponse = new RegisterResponse();

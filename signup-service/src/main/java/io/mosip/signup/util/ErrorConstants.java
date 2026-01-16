@@ -62,4 +62,6 @@ public class ErrorConstants {
 
     public static final String TOKEN_REQUEST_FAILED = "token_request_failed";
     public static final String UPLOAD_FAILED = "upload_failed";
+    public static final String INVALID_FILE_TYPE = "invalid_file_type";
+    public static final String FILE_ALREADY_EXISTS = "file_already_exists";
 }
