@@ -22,7 +22,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
         "io.mosip.kernel.auth.defaultadapter," +
         "io.mosip.kernel.core.logger.config" +
         "${mosip.signup.integration.impl.basepackage}")
-@Import({SharedComponentConfig.class, RedisCacheConfig.class, SimpleCacheConfig.class, BraveAutoConfiguration.class})
+@Import({SharedComponentConfig.class, RedisCacheConfig.class, SimpleCacheConfig.class, BraveAutoConfiguration.class, ActuatorSanitizationConfig.class})
 public class SignUpServiceApplication {
     public static void main(String[] args) {
         SpringApplication.run(SignUpServiceApplication.class, args);
