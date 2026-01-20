@@ -1,4 +1,4 @@
-import { FormConfig } from "@anushase/json-form-builder/dist/types";
+import { FormConfig } from "@mosip/json-form-builder/dist/types";
 
 export interface ResetPasswordForm {
   username: string;
@@ -106,14 +106,14 @@ export const UploadFilePossibleErrors = ["upload_failed"];
 export type UploadFileErrors = (typeof UploadFilePossibleErrors)[number];
 export interface Error {
   errorCode:
-    | GenerateChallengeErrors
-    | VerifyChallengeErrors
-    | RegisterErrors
-    | RegisterStatusErrors
-    | ResetPasswordErrors
-    | SlotAvailabilityErrors
-    | IdentityVerificationStatusErrors
-    | UploadFileErrors;
+  | GenerateChallengeErrors
+  | VerifyChallengeErrors
+  | RegisterErrors
+  | RegisterStatusErrors
+  | ResetPasswordErrors
+  | SlotAvailabilityErrors
+  | IdentityVerificationStatusErrors
+  | UploadFileErrors;
   errorMessage: string;
 }
 
@@ -202,8 +202,8 @@ type ResetPasswordChallengeGenerationRequest =
 
 export type GenerateChallengeRequestDto = BaseRequestDto & {
   request:
-    | RegistrationChallengeGenerationRequest
-    | ResetPasswordChallengeGenerationRequest;
+  | RegistrationChallengeGenerationRequest
+  | ResetPasswordChallengeGenerationRequest;
 };
 
 export type GenerateChallengeResponseDto = BaseResponseDto & {

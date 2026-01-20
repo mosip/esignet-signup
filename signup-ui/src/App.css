@@ -442,7 +442,6 @@ input[type="password"]::-ms-clear {
   .input_box {
     border-radius: 6px;
     border: 1px solid hsl(var(--input));
-    height: 3rem;
     color: inherit;
     padding: 10px 12px;
     margin-top: 6px;
