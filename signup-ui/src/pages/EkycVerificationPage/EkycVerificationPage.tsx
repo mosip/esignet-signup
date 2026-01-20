@@ -122,31 +122,6 @@ export const EkycVerificationPage = ({
       searchParams.has("code") &&
       searchParams.has("ui_locales");
 
-    const stateValue = searchParams.get("state");
-    if (stateValue && stateValue !== "") {
-      // checking state data from local storage
-      // if state data is present then only authorize the user
-      const stateData = getStateData(stateValue);
-      if (stateData) {
-        authorizeUser({
-          state: stateValue,
-          redirect_uri: stateData.redirectUrl,
-          scope: stateData.scope,
-          acr_values: stateData.acrValues,
-          claims: stateData.claims,
-          ui_locales: stateData.uiLocales,
-        });
-      }
-    }
-
-    // Authorize user if id_token_hint is present in query params
-    if (searchParams.has("id_token_hint")) {
-      authorizeUser({
-        state: stateValue,
-        id_token_hint: searchParams.get("id_token_hint") ?? "",
-      });
-    }
-
     if (hasRequiredParams) {
       setHashCode({
         state: searchParams.get("state") ?? "",
@@ -176,6 +151,30 @@ export const EkycVerificationPage = ({
         },
       });
     } else {
+      const stateValue = searchParams.get("state");
+      if (stateValue && stateValue !== "") {
+        // checking state data from local storage
+        // if state data is present then only authorize the user
+        const stateData = getStateData(stateValue);
+        if (stateData) {
+          authorizeUser({
+            state: stateValue,
+            redirect_uri: stateData.redirectUrl,
+            scope: stateData.scope,
+            acr_values: stateData.acrValues,
+            claims: stateData.claims,
+            ui_locales: stateData.uiLocales,
+          });
+        }
+      }
+
+      // Authorize user if id_token_hint is present in query params
+      if (searchParams.has("id_token_hint")) {
+        authorizeUser({
+          state: stateValue,
+          id_token_hint: searchParams.get("id_token_hint") ?? "",
+        });
+      }
       navigateToLandingPage();
     }
   }, [settings]);
@@ -193,7 +192,10 @@ export const EkycVerificationPage = ({
   const cancelAlertPopoverComp = (cancelProp: CancelPopup) => {
     const handleDismiss = () => {
       window.onbeforeunload = null;
-      window.location.href = `${rpConfig?.redirect_uri_consent}?key=${
+      const url = getStateData(searchParams.get("state") || "")
+        ? window.location.origin
+        : rpConfig?.redirect_uri_consent;
+      window.location.href = `${url}?key=${
         searchParams.get("state") || ""
       }&error=dismiss`;
     };
@@ -210,8 +212,11 @@ export const EkycVerificationPage = ({
 
   const handleDismiss = (params: any) => {
     window.onbeforeunload = null;
+    const url = getStateData(searchParams.get("state") || "")
+      ? window.location.origin
+      : rpConfig?.redirect_uri_consent;
     const urlSearchParams = new URLSearchParams(params).toString();
-    window.location.href = `${rpConfig?.redirect_uri_consent}?${urlSearchParams}`;
+    window.location.href = `${url}?${urlSearchParams}`;
   };
 
   const defaultProps: DefaultEkyVerificationProp = {

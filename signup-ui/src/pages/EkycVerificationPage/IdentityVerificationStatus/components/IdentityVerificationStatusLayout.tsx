@@ -1,4 +1,4 @@
-import { MouseEventHandler, useEffect, useState, useMemo } from "react";
+import { MouseEventHandler, useEffect, useMemo } from "react";
 import { Trans } from "react-i18next";
 import { useTimer } from "react-timer-hook";
 
@@ -49,8 +49,11 @@ export const IdentityVerificationStatusLayout = ({
     };
   }, [autoRedirect, status, onBtnClick, autoRedirectDelay, restart, pause]);
 
-  const countdownDisplay = useMemo(() => convertTime(totalSeconds), [totalSeconds]);
-
+  const countdownDisplay = useMemo(
+    () => convertTime(totalSeconds),
+    [totalSeconds]
+  );
+  
   return (
     <Step>
       <StepContent>
@@ -58,17 +61,20 @@ export const IdentityVerificationStatusLayout = ({
           {status === "success" ? <Icons.success /> : <Icons.failed />}
           <h1 className="status__title">{title}</h1>
           <p className="status__description">{description}</p>
-          <p className="redirect_countdown">
-            <Trans
-              i18nKey="identity_verification_status.successful.countdown"
-              components={{
-                CountDownSpan: <span className="font-bold" />,
-              }}
-              values={{ countDown: countdownDisplay }}
+          {status === "success" && (
+            <p className="redirect_countdown">
+              <Trans
+                i18nKey="identity_verification_status.successful.countdown"
+                components={{
+                  CountDownSpan: <span className="font-bold" />,
+                }}
+                values={{ countDown: countdownDisplay }}
               />
-          </p>
+            </p>
+          )}
         </div>
-        {(status === "failed" || (status === "success" && btnLabel && onBtnClick)) && (
+        {(status === "failed" ||
+          (status === "success" && btnLabel && onBtnClick)) && (
           <Button
             id="success-continue-button"
             className="status__btn"
