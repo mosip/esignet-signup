@@ -136,11 +136,12 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"var token = pm.cookies.get(\"XSRF-TOKEN\")",
+									"var token = pm.response.json().token;",
 									"pm.environment.set(\"csrf_token\", token);"
 								],
 								"type": "text/javascript",
-								"packages": {}
+								"packages": {},
+								"requests": {}
 							}
 						}
 					],
@@ -353,11 +354,12 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"var token = pm.cookies.get(\"XSRF-TOKEN\")",
+									"var token = pm.response.json().token;",
 									"pm.environment.set(\"csrf_token\", token);"
 								],
 								"type": "text/javascript",
-								"packages": {}
+								"packages": {},
+								"requests": {}
 							}
 						}
 					],
@@ -527,11 +529,12 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"var token = pm.cookies.get(\"XSRF-TOKEN\")",
+									"var token = pm.response.json().token;",
 									"pm.environment.set(\"csrf_token\", token);"
 								],
 								"type": "text/javascript",
-								"packages": {}
+								"packages": {},
+								"requests": {}
 							}
 						}
 					],
@@ -562,9 +565,6 @@
 								"exec": [
 									"var btoa = require('btoa');",
 									"",
-									"var token = pm.cookies.get(\"XSRF-TOKEN\")",
-									"pm.environment.set(\"csrf_token\", token);",
-									"",
 									"pm.test(\"Validate transactionId\", function () {",
 									"    var jsonData = pm.response.json();",
 									"    pm.expect(jsonData.response.transactionId).not.equals(null);",
@@ -590,7 +590,8 @@
 									"});"
 								],
 								"type": "text/javascript",
-								"packages": {}
+								"packages": {},
+								"requests": {}
 							}
 						}
 					],
@@ -632,17 +633,6 @@
 					"name": "Authenticate User (Id token)",
 					"event": [
 						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"var token = pm.cookies.get(\"XSRF-TOKEN\")",
-									"pm.environment.set(\"csrf_token\", token);"
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						},
-						{
 							"listen": "prerequest",
 							"script": {
 								"exec": [
@@ -661,7 +651,8 @@
 									"pm.environment.set(\"idt_challenge\", base64Encoded);"
 								],
 								"type": "text/javascript",
-								"packages": {}
+								"packages": {},
+								"requests": {}
 							}
 						}
 					],
@@ -713,9 +704,6 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"var token = pm.cookies.get(\"XSRF-TOKEN\")",
-									"pm.environment.set(\"csrf_token\", token);",
-									"",
 									"pm.test(\"Validate code\", function () {",
 									"    var jsonData = pm.response.json();",
 									"    pm.expect(jsonData.response.code).not.equals(null);",
@@ -723,7 +711,8 @@
 									"});"
 								],
 								"type": "text/javascript",
-								"packages": {}
+								"packages": {},
+								"requests": {}
 							}
 						},
 						{
@@ -733,7 +722,8 @@
 									""
 								],
 								"type": "text/javascript",
-								"packages": {}
+								"packages": {},
+								"requests": {}
 							}
 						}
 					],
@@ -787,11 +777,12 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"var token = pm.cookies.get(\"XSRF-TOKEN\")",
+									"var token = pm.response.json().token;",
 									"pm.environment.set(\"csrf_token\", token);"
 								],
 								"type": "text/javascript",
-								"packages": {}
+								"packages": {},
+								"requests": {}
 							}
 						}
 					],
