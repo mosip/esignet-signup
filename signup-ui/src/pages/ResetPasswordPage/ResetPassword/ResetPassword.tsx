@@ -86,7 +86,7 @@ export const ResetPassword = ({ methods, settings }: ResetPasswordProps) => {
     !isResetPasswordDirty ||
     getValues("newPassword") === resetPasswordFormDefaultValues.newPassword ||
     getValues("confirmNewPassword") ===
-      resetPasswordFormDefaultValues.confirmNewPassword;
+    resetPasswordFormDefaultValues.confirmNewPassword;
 
   const handleContinue = useCallback(
     async (e: MouseEvent<HTMLButtonElement>) => {
@@ -102,7 +102,7 @@ export const ResetPassword = ({ methods, settings }: ResetPasswordProps) => {
           request: {
             identifier: `${
               settings.response.configs["identifier.prefix"]
-            }${getValues("username")}`,
+              }${getValues("username")}`,
             password: getValues("newPassword"),
             locale: null
           },
@@ -129,19 +129,22 @@ export const ResetPassword = ({ methods, settings }: ResetPasswordProps) => {
     <div className="my-10 sm:mb-10 sm:mt-0">
       <Step>
         <StepHeader>
-          <StepTitle className="relative flex w-full items-center justify-center gap-x-4 text-[26px] font-semibold">
+          <div className="relative flex w-full items-center justify-center">
             <button
               type="button"
               onClick={handleBack}
-              className="absolute left-0 ml-8"
+              className="absolute left-0"
               aria-label="Go back"
             >
-              <Icons.back id="back-button" name="back-button" />
+              <Icons.back
+                id="back-button"
+                name="back-button"
+              />
             </button>
-            <div className="text-center font-semibold tracking-normal">
+            <StepTitle className="text-center text-[22px] font-semibold">
               {t("reset_password")}
-            </div>
-          </StepTitle>
+            </StepTitle>
+          </div>
           <StepDescription>{t("reset_password_description")}</StepDescription>
         </StepHeader>
         <StepDivider />
@@ -199,7 +202,7 @@ export const ResetPassword = ({ methods, settings }: ResetPasswordProps) => {
                           className={cn(
                             "h-[52px] py-6",
                             passwordResetFormError.newPassword &&
-                              "border-destructive"
+                            "border-destructive"
                           )}
                           minLength={
                             settings.response.configs["password.length.min"]
@@ -237,7 +240,7 @@ export const ResetPassword = ({ methods, settings }: ResetPasswordProps) => {
                           className={cn(
                             "h-[52px] py-6",
                             passwordResetFormError.confirmNewPassword &&
-                              "border-destructive"
+                            "border-destructive"
                           )}
                           minLength={
                             settings.response.configs["password.length.min"]

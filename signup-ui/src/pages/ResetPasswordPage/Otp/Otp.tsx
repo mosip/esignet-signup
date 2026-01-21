@@ -184,7 +184,7 @@ export const Otp = ({ methods, settings }: OtpProps) => {
             request: {
               identifier: `${
                 settings.response.configs["identifier.prefix"]
-              }${getValues("username")}`,
+                }${getValues("username")}`,
               captchaToken: getValues("captchaToken"),
               locale: getLocale(i18n.language, langCodeMapping),
               regenerateChallenge: true,
@@ -257,7 +257,7 @@ export const Otp = ({ methods, settings }: OtpProps) => {
           request: {
             identifier: `${
               settings.response.configs["identifier.prefix"]
-            }${getValues("username")}`,
+              }${getValues("username")}`,
             challengeInfo: [
               {
                 challenge: getValues("otp"),
@@ -313,12 +313,12 @@ export const Otp = ({ methods, settings }: OtpProps) => {
 
   return (
     <Step>
-      <StepHeader className="px-0 sm:px-[18px] sm:pb-[25px] sm:pt-[33px]">
-        <StepTitle className="relative flex w-full items-center justify-center gap-x-4 text-base font-semibold">
+      <StepHeader className="px-8 sm:px-[18px] sm:pb-[25px] sm:pt-[33px]">
+        <div className="relative flex w-full items-center justify-center">
           <button
             type="button"
             onClick={handleBack}
-            className="absolute left-0 ml-8"
+            className="absolute left-0"
             aria-label="Go back"
           >
             <Icons.back
@@ -326,10 +326,10 @@ export const Otp = ({ methods, settings }: OtpProps) => {
               name="back-button"
             />
           </button>
-          <div className="w-full text-center text-[22px] font-semibold">
+          <StepTitle className="text-center text-[22px] font-semibold">
             {t("otp_header")}
-          </div>
-        </StepTitle>
+          </StepTitle>
+        </div>
         <StepDescription className="w-full pt-2 tracking-normal">
           <div className="text-muted-neutral-gray">
             {t("otp_subheader", {
@@ -428,13 +428,13 @@ export const Otp = ({ methods, settings }: OtpProps) => {
             </Button>
             {resendAttempts !==
               settings.response.configs["resend.attempts"] && (
-              <ResendAttempt
-                currentAttempts={resendAttempts}
-                totalAttempts={settings.response.configs["resend.attempts"]}
-                attemptRetryAfter={settings.response.configs["otp.blocked"]}
-                showRetry={resendAttempts === 0 && resendOtpTotalSecs === 0}
-              />
-            )}
+                <ResendAttempt
+                  currentAttempts={resendAttempts}
+                  totalAttempts={settings.response.configs["resend.attempts"]}
+                  attemptRetryAfter={settings.response.configs["otp.blocked"]}
+                  showRetry={resendAttempts === 0 && resendOtpTotalSecs === 0}
+                />
+              )}
             {resendAttempts === 0 && resendOtpTotalSecs === 0 && (
               <Button
                 id="landing-page-button"
