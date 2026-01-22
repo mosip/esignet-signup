@@ -4,7 +4,6 @@ import {
   KeyboardEvent,
   MouseEvent,
   useCallback,
-  useMemo,
   useRef,
   useState,
 } from "react";
@@ -211,7 +210,7 @@ export const UserInfo = ({ settings, methods }: UserInfoProps) => {
             {!!fromSignInHash && (
               <a
                 href={getSignInRedirectURLV2(
-                  settings?.response.configs["rp.config"].redirect_uri_signin,
+                  settings?.response?.configs["rp.config"]?.redirect_uri_signin,
                   fromSignInHash,
                   search,
                   RESET_PASSWORD

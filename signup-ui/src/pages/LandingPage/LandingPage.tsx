@@ -89,6 +89,7 @@ export const LandingPage = () => {
             name="verify-identity-button"
             variant="outline"
             onClick={handleVerifyIdentity}
+            disabled={settings !== undefined ? false : true}
           >
             {t("verify_identity")}
           </Button>
