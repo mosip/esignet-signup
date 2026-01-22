@@ -5,8 +5,21 @@
  * @returns {string} - A base64 encoded string representing the unique state key.
  */
 const randomKey = (prefix: string): string => {
-  const timestamp = new Date().getTime();
-  return `${prefix}-${timestamp}`;
+  const randomUid = crypto.randomUUID().replace(/-/g, "");
+  return `${prefix}-${randomUid}`;
+};
+
+/**
+ * Encodes or decodes a string using Base64.
+ * @param str String to be encoded or decoded
+ * @param encode Whether to encode (true) or decode (false)
+ * @returns Encoded or decoded string
+ */
+const encoderDecoder = (str: string, encode: boolean = false): string => {
+  if (encode) {
+    return Buffer.from(str, "utf8").toString("base64");
+  }
+  return Buffer.from(str, "base64").toString("utf8");
 };
 
 /**
@@ -75,9 +88,9 @@ export const generateState = (stateObj: any = {}): string => {
   const stateKey = randomKey("identity-verification");
 
   clearLocalStorageKey("identity-verification");
-  localStorage.setItem(stateKey, btoa(JSON.stringify(stateData)));
+  localStorage.setItem(stateKey, encoderDecoder(JSON.stringify(stateData), true));
 
-  return btoa(stateKey);
+  return encoderDecoder(stateKey, true);
 };
 
 /**
@@ -87,10 +100,10 @@ export const generateState = (stateObj: any = {}): string => {
  */
 export const getStateData = (stateKeyEncoded: string): any | null => {
   try {
-    const stateKey = atob(stateKeyEncoded);
+    const stateKey = encoderDecoder(stateKeyEncoded);
     const stateDataEncoded = localStorage.getItem(stateKey);
     if (stateDataEncoded) {
-      const stateData = JSON.parse(atob(stateDataEncoded));
+      const stateData = JSON.parse(encoderDecoder(stateDataEncoded));
       const currentTime = new Date().getTime();
       if (stateData.expiry && currentTime > stateData.expiry) {
         // State has expired
