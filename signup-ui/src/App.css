@@ -455,26 +455,9 @@ input[type="password"]::-ms-clear {
     }
   }
 
-  .error-message .error-text {
-    font:
-      500 10px/16px var(--font-inter),
-      sans-serif;
-    color: #fe6b6b;
-    margin-top: 4px;
-
-    &:before {
-      content: "⮾";
-      font-size: 12px;
-      margin-right: 4px;
-    }
-  }
-
   .required {
     color: #fe6b6b;
     letter-spacing: 0%;
-    font:
-      500 14px/16px var(--font-inter),
-      sans-serif;
   }
 
   .checkbox-container input[type="checkbox"] {

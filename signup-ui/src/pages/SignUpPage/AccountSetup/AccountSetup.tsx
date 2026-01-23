@@ -41,7 +41,7 @@ export const AccountSetup = ({ settings, methods }: AccountSetupProps) => {
   const formBuilderRef: any = useRef(null); // Reference to form instance
   const { t, i18n } = useTranslation();
 
-  const fileUploadTypeList = ["photo"];
+  const fileUploadTypeList = ["photo", "fileupload"];
 
   const identifierName =
     settings?.response.configs["identifier.name"] || "username";
