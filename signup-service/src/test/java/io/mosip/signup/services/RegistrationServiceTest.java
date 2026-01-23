@@ -5,6 +5,7 @@
  */
 package io.mosip.signup.services;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.esignet.core.exception.EsignetException;
@@ -1885,20 +1886,38 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    public void uploadFile_withValidTransaction_thenPass() {
+    public void uploadFile_withValidTransaction_thenPass() throws JsonProcessingException {
         String transactionId = "txn-123";
         String fieldName = "photo";
-        byte[] fileContent = "test-image".getBytes();
-        MultipartFile file = new MockMultipartFile("file", fileContent);
+        byte[] pngBytes = new byte[]{
+                (byte) 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A,
+                0x00, 0x00, 0x00, 0x0D, 0x49, 0x48, 0x44, 0x52
+        };
+        MultipartFile file = new MockMultipartFile("file", "photo.png", "image/png", pngBytes);
 
         RegistrationTransaction transaction = new RegistrationTransaction("user", Purpose.REGISTRATION);
         when(cacheUtilService.getChallengeVerifiedTransaction(transactionId)).thenReturn(transaction);
+
+        String uiSpecJson = """
+        {
+          "schema": [
+            {
+              "id": "photo",
+              "controlType": "fileupload",
+              "acceptedFileTypes": ["image/jpeg", "image/png"]
+            }
+          ]
+        }
+        """;
+        JsonNode uiSpecNode = objectMapper.readTree(uiSpecJson);
+        when(profileRegistryPlugin.getUISpecification()).thenReturn(uiSpecNode);
 
         RegisterResponse response = registrationService.uploadFile(transactionId, fieldName, file);
 
         Assert.assertNotNull(response);
         Assert.assertEquals(ActionStatus.UPLOADED, response.getStatus());
         verify(cacheUtilService, times(1)).setRegistrationFiles(eq(transactionId), any(RegistrationFiles.class));
+        verify(profileRegistryPlugin, times(1)).getUISpecification();
     }
 
     @Test(expected = InvalidTransactionException.class)

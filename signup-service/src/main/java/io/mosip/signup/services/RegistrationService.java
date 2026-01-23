@@ -30,13 +30,18 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Base64;
+import org.apache.tika.Tika;
 
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static io.mosip.signup.util.SignUpConstants.*;
 
@@ -97,6 +102,8 @@ public class RegistrationService {
 
     @Value("${mosip.signup.file.fieldname.regex:[A-Za-z0-9_-]+}")
     private String fileFieldNameRegex;
+
+    private final Tika tika = new Tika();
 
     /**
      * Generate and regenerate challenge based on the "regenerate" flag in the request.
@@ -330,35 +337,28 @@ public class RegistrationService {
             throw new SignUpException(ErrorConstants.INVALID_REQUEST);
         }
 
-        String contentType = file.getContentType();
-        if(contentType == null || !contentType.startsWith("image/")) {
-            log.error("Invalid file type: {}. Only image formats are allowed.", contentType);
+        byte[] fileBytes;
+        try {
+            fileBytes = file.getBytes();
+        } catch (IOException e) {
+            log.error("Failed to read uploaded file bytes", e);
+            throw new SignUpException(ErrorConstants.UPLOAD_FAILED);
+        }
+
+        JsonNode uiSpec = profileRegistryPlugin.getUISpecification();
+        Set<String> allowedTypes = UiSpecUtils.findAcceptedFileTypes(uiSpec);
+
+        String detectedMimeType = tika.detect(fileBytes);
+
+        if (!allowedTypes.contains(detectedMimeType)) {
+            log.error("Invalid file type detected. Declared: {}, Detected: {}. Allowed: {}",
+                    file.getContentType(), detectedMimeType, allowedTypes);
             throw new SignUpException(ErrorConstants.INVALID_FILE_TYPE);
         }
 
         try {
-
-            String newFileBase64 = Base64.getEncoder().encodeToString(file.getBytes());
-            String newFileHash = IdentityProviderUtil.generateB64EncodedHash(IdentityProviderUtil.ALGO_SHA3_256, newFileBase64);
-
-            RegistrationFiles existingFiles = cacheUtilService.getRegistrationFiles(transactionId);
-            if (existingFiles != null && existingFiles.getUploadedFiles() != null) {
-                String existingFileBase64 = existingFiles.getUploadedFiles().get(fieldName);
-                if (existingFileBase64 != null) {
-                    String existingFileHash = IdentityProviderUtil.generateB64EncodedHash(IdentityProviderUtil.ALGO_SHA3_256, existingFileBase64);
-                    if (newFileHash.equals(existingFileHash)) {
-                        log.error("Duplicate file upload detected for field: {}", fieldName);
-                        throw new SignUpException(ErrorConstants.FILE_ALREADY_EXISTS);
-                    }
-                    log.info("Replacing existing file for field: {}", fieldName);
-                }
-            }
-
-            RegistrationFiles registrationFiles = existingFiles != null ? existingFiles : new RegistrationFiles();
-            if (registrationFiles.getUploadedFiles() == null) {
-                registrationFiles.setUploadedFiles(new HashMap<>());
-            }
-            registrationFiles.getUploadedFiles().put(fieldName, newFileBase64);
+            RegistrationFiles registrationFiles = new RegistrationFiles();
+            registrationFiles.getUploadedFiles().put(fieldName, Base64.getEncoder().encodeToString(file.getBytes()));
             cacheUtilService.setRegistrationFiles(transactionId, registrationFiles);
 
             RegisterResponse registerResponse = new RegisterResponse();
