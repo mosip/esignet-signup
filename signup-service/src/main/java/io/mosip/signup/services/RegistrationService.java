@@ -329,9 +329,6 @@ public class RegistrationService {
         JsonNode uiSpec = profileRegistryPlugin.getUISpecification();
         UploadFileUtils.FileTypeConfig config = UploadFileUtils.extractFileUploadConfig(uiSpec);
 
-        Set<String> allowedTypes = config.getAcceptedFileTypes();
-        Set<String> allowedFieldNames = config.getFieldNames();
-
         String detectedMimeType = UploadFileUtils.detectMimeType(fileBytes);
 
         if ("application/octet-stream".equals(detectedMimeType)) {
@@ -339,14 +336,11 @@ public class RegistrationService {
             throw new SignUpException(ErrorConstants.INVALID_FILE_TYPE);
         }
 
-        if (!allowedFieldNames.contains(fieldName)) {
-            log.error("Invalid fieldName for file {} {}", fieldName, file);
-            throw new SignUpException(ErrorConstants.INVALID_REQUEST);
-        }
+        Set<String> allowedTypesForField = config.getAcceptedTypesForField(fieldName);
 
-        if (!allowedTypes.contains(detectedMimeType)) {
-            log.error("Invalid file type detected. Declared: {}, Detected: {}. Allowed: {}",
-                    file.getContentType(), detectedMimeType, allowedTypes);
+        if (allowedTypesForField.isEmpty() || !allowedTypesForField.contains(detectedMimeType)) {
+            log.error("Invalid file type for field: {}. Detected: {}, Allowed: {}",
+                    fieldName, detectedMimeType, allowedTypesForField);
             throw new SignUpException(ErrorConstants.INVALID_FILE_TYPE);
         }
     }
