@@ -30,18 +30,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Base64;
-import org.apache.tika.Tika;
 
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static io.mosip.signup.util.SignUpConstants.*;
 
@@ -102,8 +97,6 @@ public class RegistrationService {
 
     @Value("${mosip.signup.file.fieldname.regex:[A-Za-z0-9_-]+}")
     private String fileFieldNameRegex;
-
-    private final Tika tika = new Tika();
 
     /**
      * Generate and regenerate challenge based on the "regenerate" flag in the request.
@@ -324,6 +317,40 @@ public class RegistrationService {
         return profileRegistryPlugin.getUISpecification();
     }
 
+    private void validateFieldAndFile(MultipartFile file, String fieldName) {
+        byte[] fileBytes;
+        try {
+            fileBytes = file.getBytes();
+        } catch (IOException e) {
+            log.error("Failed to read uploaded file bytes", e);
+            throw new SignUpException(ErrorConstants.UPLOAD_FAILED);
+        }
+
+        JsonNode uiSpec = profileRegistryPlugin.getUISpecification();
+        UploadFileUtils.FileTypeConfig config = UploadFileUtils.extractFileUploadConfig(uiSpec);
+
+        Set<String> allowedTypes = config.getAcceptedFileTypes();
+        Set<String> allowedFieldNames = config.getFieldNames();
+
+        String detectedMimeType = UploadFileUtils.detectMimeType(fileBytes);
+
+        if ("application/octet-stream".equals(detectedMimeType)) {
+            log.error("Unrecognized file type for field: {}", fieldName);
+            throw new SignUpException(ErrorConstants.INVALID_FILE_TYPE);
+        }
+
+        if (!allowedFieldNames.contains(fieldName)) {
+            log.error("Invalid fieldName for file {} {}", fieldName, file);
+            throw new SignUpException(ErrorConstants.INVALID_REQUEST);
+        }
+
+        if (!allowedTypes.contains(detectedMimeType)) {
+            log.error("Invalid file type detected. Declared: {}, Detected: {}. Allowed: {}",
+                    file.getContentType(), detectedMimeType, allowedTypes);
+            throw new SignUpException(ErrorConstants.INVALID_FILE_TYPE);
+        }
+    }
+
     public RegisterResponse uploadFile(String transactionId, String fieldName, MultipartFile file) throws SignUpException {
         RegistrationTransaction transaction = cacheUtilService.getChallengeVerifiedTransaction(transactionId);
         if(transaction == null) {
@@ -337,24 +364,7 @@ public class RegistrationService {
             throw new SignUpException(ErrorConstants.INVALID_REQUEST);
         }
 
-        byte[] fileBytes;
-        try {
-            fileBytes = file.getBytes();
-        } catch (IOException e) {
-            log.error("Failed to read uploaded file bytes", e);
-            throw new SignUpException(ErrorConstants.UPLOAD_FAILED);
-        }
-
-        JsonNode uiSpec = profileRegistryPlugin.getUISpecification();
-        Set<String> allowedTypes = UiSpecUtils.findAcceptedFileTypes(uiSpec);
-
-        String detectedMimeType = tika.detect(fileBytes);
-
-        if (!allowedTypes.contains(detectedMimeType)) {
-            log.error("Invalid file type detected. Declared: {}, Detected: {}. Allowed: {}",
-                    file.getContentType(), detectedMimeType, allowedTypes);
-            throw new SignUpException(ErrorConstants.INVALID_FILE_TYPE);
-        }
+        validateFieldAndFile(file, fieldName);
 
         try {
             RegistrationFiles registrationFiles = new RegistrationFiles();
