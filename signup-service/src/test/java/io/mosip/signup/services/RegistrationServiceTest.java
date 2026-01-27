@@ -1955,10 +1955,9 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    public void uploadFile_withFieldNameNotInUISpec_throwsInvalidFileType() throws JsonProcessingException {
+    public void uploadFile_withFieldNameNotInUISpec_throwsInvalidField() throws JsonProcessingException {
         String transactionId = "txn-123";
         String fieldName = "unknownField";
-        // Valid PNG magic bytes
         byte[] pngBytes = new byte[]{
                 (byte) 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A
         };
@@ -1967,7 +1966,6 @@ public class RegistrationServiceTest {
         RegistrationTransaction transaction = new RegistrationTransaction("user", Purpose.REGISTRATION);
         when(cacheUtilService.getChallengeVerifiedTransaction(transactionId)).thenReturn(transaction);
 
-        // UI spec with only "photo" field - "unknownField" is not present, so allowedTypesForField will be empty
         String uiSpecJson = """
         {
           "schema": [
@@ -1978,17 +1976,15 @@ public class RegistrationServiceTest {
             }
           ]
         }
-    """;
+        """;
         JsonNode uiSpecNode = objectMapper.readTree(uiSpecJson);
         when(profileRegistryPlugin.getUISpecification()).thenReturn(uiSpecNode);
 
-        try {
-            registrationService.uploadFile(transactionId, fieldName, file);
-            Assert.fail("Expected SignUpException to be thrown");
-        } catch (SignUpException e) {
-            Assert.assertEquals(ErrorConstants.INVALID_FILE_TYPE, e.getErrorCode());
-        }
+        SignUpException ex = Assert.assertThrows(SignUpException.class,
+                () -> registrationService.uploadFile(transactionId, fieldName, file));
+        Assert.assertEquals(ErrorConstants.INVALID_FIELD, ex.getErrorCode());
     }
+
 
     @Test
     public void uploadFile_withMimeTypeNotInAllowedTypes_throwsInvalidFileType() throws JsonProcessingException {

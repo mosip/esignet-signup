@@ -44,23 +44,15 @@ public class UploadFileUtils {
         return "application/octet-stream";
     }
 
-    public static class FileTypeConfig {
-        private final Map<String, Set<String>> fieldAcceptedTypes;
-
-        public FileTypeConfig(Map<String, Set<String>> fieldAcceptedTypes) {
-            this.fieldAcceptedTypes = fieldAcceptedTypes;
+    public static Set<String> getAcceptedTypesForField(JsonNode root, String targetFieldName) {
+        if (root == null || targetFieldName == null || targetFieldName.isBlank()) {
+            return Collections.emptySet();
         }
-        public Set<String> getAcceptedTypesForField(String fieldName) {
-            return fieldAcceptedTypes.getOrDefault(fieldName, Collections.emptySet());
-        }
-    }
-    public static FileTypeConfig extractFileUploadConfig(JsonNode root) {
-        Map<String, Set<String>> fieldAcceptedTypes = new LinkedHashMap<>();
-
-        if (root == null) return new FileTypeConfig(fieldAcceptedTypes);
 
         JsonNode schemaNode = root.get("schema");
-        if (schemaNode == null || !schemaNode.isArray()) return new FileTypeConfig(fieldAcceptedTypes);
+        if (schemaNode == null || !schemaNode.isArray()) {
+            return Collections.emptySet();
+        }
 
         for (JsonNode field : schemaNode) {
             JsonNode controlTypeNode = field.get("controlType");
@@ -71,37 +63,38 @@ public class UploadFileUtils {
                 continue;
             }
 
-            // Extract field ID
             JsonNode idNode = field.get("id");
             if (idNode == null || !idNode.isTextual()) continue;
+
             String fieldName = idNode.asText().trim();
-            if (fieldName.isEmpty()) continue;
+            if (!fieldName.equals(targetFieldName)) continue;
 
-            Set<String> acceptedTypes = new HashSet<>();
-
-            // Extract accepted file types
-            JsonNode acceptedFileTypesNode = field.get("acceptedFileTypes");
-            if (acceptedFileTypesNode != null) {
-                if (acceptedFileTypesNode.isArray()) {
-                    for (JsonNode typeNode : acceptedFileTypesNode) {
-                        if (typeNode.isTextual()) {
-                            String trimmed = typeNode.asText().trim();
-                            if (!trimmed.isEmpty()) {
-                                acceptedTypes.add(trimmed);
-                            }
-                        }
-                    }
-                } else if (acceptedFileTypesNode.isTextual()) {
-                    Arrays.stream(acceptedFileTypesNode.asText().split(","))
-                            .map(String::trim)
-                            .filter(s -> !s.isEmpty())
-                            .forEach(acceptedTypes::add);
-                }
-            }
-
-            fieldAcceptedTypes.put(fieldName, acceptedTypes);
+            // Found the target field - extract accepted types
+            return extractAcceptedTypes(field.get("acceptedFileTypes"));
         }
 
-        return new FileTypeConfig(fieldAcceptedTypes);
+        return Collections.emptySet();
+    }
+
+    private static Set<String> extractAcceptedTypes(JsonNode acceptedFileTypesNode) {
+        if (acceptedFileTypesNode == null) return Collections.emptySet();
+
+        Set<String> acceptedTypes = new HashSet<>();
+
+        if (acceptedFileTypesNode.isArray()) {
+            for (JsonNode typeNode : acceptedFileTypesNode) {
+                if (typeNode.isTextual()) {
+                    String trimmed = typeNode.asText().trim();
+                    if (!trimmed.isEmpty()) acceptedTypes.add(trimmed);
+                }
+            }
+        } else if (acceptedFileTypesNode.isTextual()) {
+            Arrays.stream(acceptedFileTypesNode.asText().split(","))
+                    .map(String::trim)
+                    .filter(s -> !s.isEmpty())
+                    .forEach(acceptedTypes::add);
+        }
+
+        return acceptedTypes.isEmpty() ? Collections.emptySet() : acceptedTypes;
     }
 }
