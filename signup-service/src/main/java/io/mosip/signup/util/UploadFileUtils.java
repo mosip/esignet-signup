@@ -1,14 +1,13 @@
 package io.mosip.signup.util;
 import com.fasterxml.jackson.databind.JsonNode;
 import java.util.*;
-import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 public class UploadFileUtils {
-
+    public static final String UNKNOWN_MIME_TYPE = "application/octet-stream";
     private static final Map<String, String> MAGIC_SIGNATURES = Map.of(
             "89504E47", "image/png",
             "FFD8FF", "image/jpeg",
-            "52494646", "image/webp",
             "25504446", "application/pdf",
             "504B0304", "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
             "D0CF11E0", "application/msword"
@@ -16,7 +15,7 @@ public class UploadFileUtils {
 
     public static String detectMimeType(byte[] fileBytes) {
         if (fileBytes == null || fileBytes.length < 4) {
-            return "application/octet-stream";
+            return UNKNOWN_MIME_TYPE;
         }
 
         StringBuilder hexBuilder = new StringBuilder();
@@ -36,12 +35,12 @@ public class UploadFileUtils {
 
         // Check other signatures
         for (Map.Entry<String, String> entry : MAGIC_SIGNATURES.entrySet()) {
-            if (hexString.startsWith(entry.getKey()) && !entry.getKey().equals("52494646")) {
+            if (hexString.startsWith(entry.getKey())) {
                 return entry.getValue();
             }
         }
 
-        return "application/octet-stream";
+        return UNKNOWN_MIME_TYPE;
     }
 
     public static Set<String> getAcceptedTypesForField(JsonNode root, String targetFieldName) {
@@ -54,26 +53,29 @@ public class UploadFileUtils {
             return Collections.emptySet();
         }
 
-        for (JsonNode field : schemaNode) {
-            JsonNode controlTypeNode = field.get("controlType");
-            if (controlTypeNode == null || !controlTypeNode.isTextual()) continue;
+        return StreamSupport.stream(schemaNode.spliterator(), false)
+                .filter(UploadFileUtils::isFileUploadField)
+                .filter(field -> targetFieldName.equals(getFieldId(field)))
+                .findFirst()
+                .map(field -> extractAcceptedTypes(field.get("acceptedFileTypes")))
+                .orElse(Collections.emptySet());
+    }
 
-            String controlType = controlTypeNode.asText().trim();
-            if (!controlType.equalsIgnoreCase("photo") && !controlType.equalsIgnoreCase("fileUpload")) {
-                continue;
-            }
-
-            JsonNode idNode = field.get("id");
-            if (idNode == null || !idNode.isTextual()) continue;
-
-            String fieldName = idNode.asText().trim();
-            if (!fieldName.equals(targetFieldName)) continue;
-
-            // Found the target field - extract accepted types
-            return extractAcceptedTypes(field.get("acceptedFileTypes"));
+    private static boolean isFileUploadField(JsonNode field) {
+        JsonNode controlTypeNode = field.get("controlType");
+        if (controlTypeNode == null || !controlTypeNode.isTextual()) {
+            return false;
         }
+        String controlType = controlTypeNode.asText().trim();
+        return controlType.equalsIgnoreCase("photo") || controlType.equalsIgnoreCase("fileUpload");
+    }
 
-        return Collections.emptySet();
+    private static String getFieldId(JsonNode field) {
+        JsonNode idNode = field.get("id");
+        if (idNode == null || !idNode.isTextual()) {
+            return null;
+        }
+        return idNode.asText().trim();
     }
 
     private static Set<String> extractAcceptedTypes(JsonNode acceptedFileTypesNode) {

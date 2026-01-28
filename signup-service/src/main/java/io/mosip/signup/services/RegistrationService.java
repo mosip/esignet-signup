@@ -336,7 +336,7 @@ public class RegistrationService {
 
         String detectedMimeType = UploadFileUtils.detectMimeType(fileBytes);
 
-        if ("application/octet-stream".equals(detectedMimeType)) {
+        if (UploadFileUtils.UNKNOWN_MIME_TYPE.equals(detectedMimeType)) {
             log.error("Unrecognized file type for field: {}", fieldName);
             throw new SignUpException(ErrorConstants.INVALID_FILE_TYPE);
         }
