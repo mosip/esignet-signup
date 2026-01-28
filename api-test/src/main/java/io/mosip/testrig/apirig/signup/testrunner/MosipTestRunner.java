@@ -117,6 +117,8 @@ public class MosipTestRunner {
 					SignupUtil.testCasesInRunScope = DependencyResolver.getDependencies(testCasesToExecuteString);
 				}
 				
+				AdminTestUtil.fetchAndStoreCsrfToken();
+				
 				startTestRunner();
 				
 				// Used for generating the test case interdependency JSON file
@@ -139,6 +141,8 @@ public class MosipTestRunner {
 				if (!testCasesToExecuteString.isBlank()) {
 					SignupUtil.testCasesInRunScope = DependencyResolver.getDependencies(testCasesToExecuteString);
 				}
+				
+				AdminTestUtil.fetchAndStoreCsrfToken();
 				
 				startTestRunner();
 				

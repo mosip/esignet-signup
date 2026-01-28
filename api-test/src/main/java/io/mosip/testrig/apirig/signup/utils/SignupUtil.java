@@ -1286,7 +1286,7 @@ public class SignupUtil extends AdminTestUtil {
 					.toString();
 
 		}
-		headers.put(XSRF_HEADERNAME, properties.getProperty(GlobalConstants.XSRFTOKEN));
+		headers.put(XSRF_HEADERNAME, BaseTestCase.CSRF_TOKEN);
 		headers.put(OAUTH_HASH_HEADERNAME, encodedResp);
 		headers.put(OAUTH_TRANSID_HEADERNAME, transactionId);
 		
@@ -1303,8 +1303,8 @@ public class SignupUtil extends AdminTestUtil {
 				|| BaseTestCase.currentModule.equals(GlobalConstants.RESIDENT)) {
 			inputJson = smtpOtpHandler(inputJson, testCaseName);
 		}
-
-		token = properties.getProperty(GlobalConstants.XSRFTOKEN);
+		
+		token = BaseTestCase.CSRF_COOKIE;
 		
 		if (request.has(GlobalConstants.IDV_TRANSACTION_ID)) {
 			headerTransactionID = request.get(GlobalConstants.IDV_TRANSACTION_ID).toString();
