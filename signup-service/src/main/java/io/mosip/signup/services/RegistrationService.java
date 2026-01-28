@@ -30,6 +30,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.InputStream;
 import java.util.Base64;
 
 
@@ -318,15 +320,7 @@ public class RegistrationService {
     }
 
     private void validateFieldAndFile(MultipartFile file, String fieldName) {
-        byte[] fileBytes;
-        try {
-            fileBytes = file.getBytes();
-        } catch (IOException e) {
-            log.error("Failed to read uploaded file bytes", e);
-            throw new SignUpException(ErrorConstants.UPLOAD_FAILED);
-        }
-
-        JsonNode uiSpec = profileRegistryPlugin.getUISpecification();
+        JsonNode uiSpec = getUiSpec();
         Set<String> allowedTypesForField = UploadFileUtils.getAcceptedTypesForField(uiSpec, fieldName);
 
         if (allowedTypesForField.isEmpty()) {
@@ -334,7 +328,13 @@ public class RegistrationService {
             throw new SignUpException(ErrorConstants.INVALID_FIELD);
         }
 
-        String detectedMimeType = UploadFileUtils.detectMimeType(fileBytes);
+        String detectedMimeType;
+        try (InputStream inputStream = file.getInputStream()) {
+            detectedMimeType = UploadFileUtils.detectMimeType(inputStream);
+        } catch (IOException e) {
+            log.error("Failed to read uploaded file", e);
+            throw new SignUpException(ErrorConstants.UPLOAD_FAILED);
+        }
 
         if (UploadFileUtils.UNKNOWN_MIME_TYPE.equals(detectedMimeType)) {
             log.error("Unrecognized file type for field: {}", fieldName);
