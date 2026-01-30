@@ -331,10 +331,12 @@ public class RegistrationService {
         }
 
         try {
-            RegistrationFiles registrationFiles = new RegistrationFiles();
+            RegistrationFiles registrationFiles = cacheUtilService.getRegistrationFiles(transactionId);
+            if (registrationFiles == null) {
+                registrationFiles = new RegistrationFiles();
+            }
             registrationFiles.getUploadedFiles().put(fieldName, Base64.getEncoder().encodeToString(file.getBytes()));
             cacheUtilService.setRegistrationFiles(transactionId, registrationFiles);
-
             RegisterResponse registerResponse = new RegisterResponse();
             registerResponse.setStatus(ActionStatus.UPLOADED);
             return registerResponse;

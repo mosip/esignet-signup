@@ -159,7 +159,7 @@ public class CacheUtilService {
         return registrationTransaction;
     }
 
-    @Cacheable(value = SignUpConstants.REGISTRATION_FILES, key = "#transactionId")
+    @CachePut(value = SignUpConstants.REGISTRATION_FILES, key = "#transactionId")
     public RegistrationFiles setRegistrationFiles(String transactionId, RegistrationFiles registrationFiles) {
         return registrationFiles;
     }
