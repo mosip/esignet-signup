@@ -51,8 +51,7 @@ public class UploadFileUtils {
         // Check for ZIP-based formats
         if (hexString.startsWith(ZIP_SIGNATURE)) {
             bis.reset();
-            byte[] fullBytes = bis.readAllBytes();
-            return detectOfficeFormat(fullBytes);
+            return detectOfficeFormat(bis);
         }
 
         // Check other signatures
@@ -65,8 +64,8 @@ public class UploadFileUtils {
         return UNKNOWN_MIME_TYPE;
     }
 
-    private static String detectOfficeFormat(byte[] fileBytes) {
-        try (ZipInputStream zis = new ZipInputStream(new ByteArrayInputStream(fileBytes))) {
+    private static String detectOfficeFormat(InputStream inputStream) {
+        try (ZipInputStream zis = new ZipInputStream(inputStream)) {
             ZipEntry entry;
             while ((entry = zis.getNextEntry()) != null) {
                 String entryName = entry.getName();
