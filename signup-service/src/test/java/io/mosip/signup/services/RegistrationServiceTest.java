@@ -2039,11 +2039,30 @@ public class RegistrationServiceTest {
 
         RegistrationTransaction transaction = new RegistrationTransaction("user", Purpose.REGISTRATION);
         when(cacheUtilService.getChallengeVerifiedTransaction(transactionId)).thenReturn(transaction);
+
+        byte[] pngBytes = new byte[]{(byte) 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A};
+
+        when(file.getInputStream()).thenAnswer(invocation -> new java.io.ByteArrayInputStream(pngBytes));
+        when(file.isEmpty()).thenReturn(false);
         when(file.getBytes()).thenThrow(new IOException("Read error"));
+
+        String uiSpecJson = """
+            {
+                "schema": [
+                    {
+                        "id": "photo",
+                        "controlType": "fileUpload",
+                        "acceptedFileTypes": ["image/png", "image/jpeg"]
+                    }
+                ]
+            }
+        """;
+        JsonNode uiSpecNode = objectMapper.readTree(uiSpecJson);
+        when(profileRegistryPlugin.getUISpecification()).thenReturn(uiSpecNode);
 
         try {
             registrationService.uploadFile(transactionId, fieldName, file);
-            Assert.fail();
+            Assert.fail("Expected SignUpException to be thrown");
         } catch (SignUpException signUpException) {
             Assert.assertEquals(ErrorConstants.UPLOAD_FAILED, signUpException.getErrorCode());
         }

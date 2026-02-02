@@ -2,7 +2,6 @@ package io.mosip.signup.util;
 import com.fasterxml.jackson.databind.JsonNode;
 import io.mosip.signup.exception.SignUpException;
 import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
