@@ -1937,7 +1937,7 @@ public class RegistrationServiceTest {
           "schema": [
             {
               "id": "photo",
-              "controlType": "photo",
+              "controlType": "fileUpload",
               "acceptedFileTypes": ["image/png", "image/jpeg"]
             }
           ]
