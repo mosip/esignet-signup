@@ -346,7 +346,7 @@ export const Otp = ({ methods, settings }: OtpProps) => {
       <StepAlert>
         {/* Error message */}
         <ActionMessage hidden={!challengeVerificationError}>
-          <p className="truncate text-xs text-destructive">
+          <p className="text-xs text-destructive">
             {challengeVerificationError &&
               t(`error_response.${challengeVerificationError.errorCode}`)}
           </p>

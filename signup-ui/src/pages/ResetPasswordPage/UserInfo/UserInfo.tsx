@@ -241,7 +241,7 @@ export const UserInfo = ({ settings, methods }: UserInfoProps) => {
         <StepAlert className="relative">
           {/* Error message */}
           <ActionMessage hidden={!challengeGenerationError}>
-            <p className="truncate text-xs text-destructive">
+            <p className="text-xs text-destructive">
               {challengeGenerationError &&
                 t(`error_response.${challengeGenerationError.errorCode}`)}
             </p>

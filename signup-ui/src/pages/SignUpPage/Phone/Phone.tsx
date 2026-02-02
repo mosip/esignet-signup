@@ -197,7 +197,7 @@ export const Phone = ({ settings, methods }: PhoneProps) => {
       <StepAlert className="relative">
         {/* Error message */}
         <ActionMessage hidden={!hasError}>
-          <p className="truncate text-xs text-destructive">
+          <p className="text-xs text-destructive">
             {error && t(`error_response.${error.errorCode}`)}
           </p>
           <Icons.close

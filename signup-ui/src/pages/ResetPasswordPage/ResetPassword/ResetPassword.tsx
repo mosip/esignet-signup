@@ -151,7 +151,7 @@ export const ResetPassword = ({ methods, settings }: ResetPasswordProps) => {
         <StepAlert className="relative">
           {/* Error message */}
           <ActionMessage hidden={!passwordResetError}>
-            <p className="truncate text-xs text-destructive">
+            <p className="text-xs text-destructive">
               {passwordResetError &&
                 t(`error_response.${passwordResetError.errorCode}`)}
             </p>
