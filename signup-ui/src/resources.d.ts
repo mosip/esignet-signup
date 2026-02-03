@@ -2,6 +2,8 @@ interface Resources {
   translation: {
     logo_alt: string;
     register: string;
+    verify_identity: string;
+    proceed_to_verification: string;
     landing_page_title: string;
     landing_page_description: string;
     enter_your_number: string;
@@ -120,6 +122,7 @@ interface Resources {
       successful: {
         title: string;
         description: string;
+        countdown: string;
       };
       failed: {
         title: string;

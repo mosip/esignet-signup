@@ -1,6 +1,8 @@
 import { useCallback, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { useLocation, useNavigate } from "react-router-dom";
 
+import { ROOT_ROUTE } from "~constants/routes";
 import { useIdentityVerificationStatus } from "~pages/shared/queries";
 import {
   DefaultEkyVerificationProp,
@@ -14,12 +16,16 @@ import {
 import { IdentityVerificationStatusLayout } from "./components/IdentityVerificationStatusLayout";
 import { IdentityVerificationStatusLoader } from "./components/IdentityVerificationStatusLoader";
 import { IdentityVerificationStatusFailed } from "./IdentityVerificationStatusFailed";
+import { getStateData } from "~utils/identityVerificationUtil";
 
 export const IdentityVerificationStatus = ({
   settings,
   cancelPopup,
+  handleDismiss,
 }: DefaultEkyVerificationProp) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const { hash: fromSignInHash } = useLocation();
 
   const { hashCode } = useEkycVerificationStore(
     useCallback(
@@ -32,6 +38,8 @@ export const IdentityVerificationStatus = ({
 
   const retriableErrorCodes =
     settings.configs["status.request.retry.error.codes"].split(",");
+
+  const autoRedirectDelay = settings.configs["rp.config"].redirect_delay;
 
   useEffect(() => {
     if (window.videoLocalStream) {
@@ -59,6 +67,7 @@ export const IdentityVerificationStatus = ({
       <IdentityVerificationStatusFailed
         settings={settings}
         cancelPopup={cancelPopup}
+        handleDismiss={handleDismiss}
       />
     );
   }
@@ -68,10 +77,10 @@ export const IdentityVerificationStatus = ({
   //    - UPDATE_PENDING
   //    - error codes specified in `status.request.retry.error.codes`
   if (isIdentityVerificationStatusError) {
-    window.onbeforeunload = null;
-    window.location.href = `${
-      settings.configs["esignet-consent.redirect-url"]
-    }?key=${hashCode?.state || ""}&error=ekyc_failed`;
+    handleDismiss({
+      key: hashCode?.state || "",
+      error: "ekyc_failed",
+    });
   }
 
   // scenario:
@@ -83,12 +92,10 @@ export const IdentityVerificationStatus = ({
       identityVerificationStatus.errors[0].errorCode
     )
   ) {
-    window.onbeforeunload = null;
-    window.location.href = `${
-      settings.configs["esignet-consent.redirect-url"]
-    }?key=${hashCode?.state || ""}&error=${
-      identityVerificationStatus.errors[0].errorCode
-    }`;
+    handleDismiss({
+      key: hashCode?.state || "",
+      error: identityVerificationStatus.errors[0].errorCode,
+    });
   }
 
   // scenario:
@@ -97,16 +104,25 @@ export const IdentityVerificationStatus = ({
     identityVerificationStatus?.response?.status ===
     IdentityVerificationStatusType.COMPLETED
   ) {
-    window.onbeforeunload = null;
-    window.location.href = `${
-      settings.configs["esignet-consent.redirect-url"]
-    }?key=${hashCode?.state || ""}`;
+    const handleRedirect = (e?: React.MouseEvent<HTMLButtonElement>) => {
+      window.onbeforeunload = null;
+
+      if (getStateData(hashCode?.state || "")) {
+        navigate(ROOT_ROUTE);
+      } else {
+        handleDismiss({ key: hashCode?.state || "" });
+      }
+    };
 
     return (
       <IdentityVerificationStatusLayout
         status="success"
         title={t("identity_verification_status.successful.title")}
         description={t("identity_verification_status.successful.description")}
+        btnLabel={t("continue")}
+        onBtnClick={handleRedirect}
+        autoRedirect={true}
+        autoRedirectDelay={autoRedirectDelay}
       />
     );
   }

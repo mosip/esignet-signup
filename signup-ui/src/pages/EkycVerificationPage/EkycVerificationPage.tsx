@@ -1,9 +1,9 @@
 import { useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { useTranslation } from "react-i18next";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 import { Form } from "~components/ui/form";
+import { getStateData } from "~utils/identityVerificationUtil";
 import { useKycProvidersList } from "~pages/shared/mutations";
 import {
   CancelPopup,
@@ -41,9 +41,10 @@ interface EkycVerificationPageProps {
 export const EkycVerificationPage = ({
   settings,
 }: EkycVerificationPageProps) => {
-  const { t } = useTranslation();
   const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
+
+  const rpConfig = settings?.response?.configs["rp.config"];
 
   const {
     step,
@@ -74,6 +75,45 @@ export const EkycVerificationPage = ({
 
   const navigateToLandingPage = () => {
     navigate("/");
+  };
+
+  /**
+   * Authorizes the user by constructing the authorization URL with necessary query parameters
+   * @param queryParam Query parameters to include in the authorization URL
+   */
+  const authorizeUser = (queryParam: any = {}) => {
+    const clientId = rpConfig?.client_id;
+    const authorizeURI = rpConfig?.authorization_endpoint;
+    const identityVerificationRedirectURI = rpConfig?.redirect_uri_verification;
+    const scope = rpConfig?.scope;
+    const responseType = rpConfig?.response_type;
+
+    const uiLocales =
+      searchParams.get("ui_locales") ??
+      queryParam.ui_locales ??
+      (window as any)?._env_?.DEFAULT_LANG;
+
+    const paramObj = {
+      client_id: clientId ?? "",
+      state: queryParam.state ?? "",
+      redirect_uri:
+        queryParam.redirect_uri ?? identityVerificationRedirectURI ?? "",
+      scope: queryParam.scope ?? scope ?? "openid",
+      response_type: responseType ?? "code",
+      ui_locales: uiLocales,
+      ...(queryParam.acr_values && { acr_values: queryParam.acr_values }),
+      ...(queryParam.claims && { claims: queryParam.claims }),
+      ...(queryParam.id_token_hint && {
+        id_token_hint: queryParam.id_token_hint,
+        acr_values: "mosip:idp:acr:id-token",
+      }),
+    };
+
+    const redirectParams = new URLSearchParams(paramObj).toString();
+
+    const redirectURI = `${authorizeURI}?${redirectParams}`;
+
+    window.location.replace(redirectURI);
   };
 
   useEffect(() => {
@@ -110,31 +150,31 @@ export const EkycVerificationPage = ({
           }
         },
       });
-    } else if (searchParams.has("id_token_hint")) {
-      const authorizeURI = settings?.response?.configs["signin.authorization-url"];
-      const clientIdURI = settings?.response?.configs["signup.oauth-client-id"];
-      const identityVerificationRedirectURI =
-        settings?.response?.configs["identity-verification.redirect-url"];
-      const urlObj = new URL(window.location.href);
-      const state = urlObj.searchParams.get("state");
-
-      const paramObj = {
-        state: state ?? "",
-        client_id: clientIdURI ?? "",
-        redirect_uri: identityVerificationRedirectURI ?? "",
-        scope: "openid",
-        response_type: "code",
-        id_token_hint: searchParams.get("id_token_hint") ?? "",
-        ui_locales:
-          searchParams.get("ui_locales") ?? (window as any)._env_.DEFAULT_LANG,
-      };
-
-      const redirectParams = new URLSearchParams(paramObj).toString();
-
-      const redirectURI = `${authorizeURI}?${redirectParams}`;
-
-      window.location.replace(redirectURI);
     } else {
+      const stateValue = searchParams.get("state");
+      if (stateValue && stateValue !== "") {
+        // checking state data from local storage
+        // if state data is present then only authorize the user
+        const stateData = getStateData(stateValue);
+        if (stateData) {
+          authorizeUser({
+            state: stateValue,
+            redirect_uri: stateData.redirectUrl,
+            scope: stateData.scope,
+            acr_values: stateData.acrValues,
+            claims: stateData.claims,
+            ui_locales: stateData.uiLocales,
+          });
+        }
+      }
+
+      // Authorize user if id_token_hint is present in query params
+      if (searchParams.has("id_token_hint")) {
+        authorizeUser({
+          state: stateValue,
+          id_token_hint: searchParams.get("id_token_hint") ?? "",
+        });
+      }
       navigateToLandingPage();
     }
   }, [settings]);
@@ -152,9 +192,12 @@ export const EkycVerificationPage = ({
   const cancelAlertPopoverComp = (cancelProp: CancelPopup) => {
     const handleDismiss = () => {
       window.onbeforeunload = null;
-      window.location.href = `${settings?.response?.configs[
-        "esignet-consent.redirect-url"
-      ]}?key=${searchParams.get("state") || ""}&error=dismiss`;
+      const url = getStateData(searchParams.get("state") || "")
+        ? window.location.origin
+        : rpConfig?.redirect_uri_consent;
+      window.location.href = `${url}?key=${
+        searchParams.get("state") || ""
+      }&error=dismiss`;
     };
     return (
       cancelProp.cancelButton && (
@@ -167,9 +210,19 @@ export const EkycVerificationPage = ({
     );
   };
 
+  const handleDismiss = (params: any) => {
+    window.onbeforeunload = null;
+    const url = getStateData(searchParams.get("state") || "")
+      ? window.location.origin
+      : rpConfig?.redirect_uri_consent;
+    const urlSearchParams = new URLSearchParams(params).toString();
+    window.location.href = `${url}?${urlSearchParams}`;
+  };
+
   const defaultProps: DefaultEkyVerificationProp = {
     settings: settings?.response,
     cancelPopup: cancelAlertPopoverComp,
+    handleDismiss: handleDismiss,
   };
 
   const getEkycVerificationStepContent = (step: EkycVerificationStep) => {
@@ -177,7 +230,7 @@ export const EkycVerificationPage = ({
       case EkycVerificationStep.VerificationSteps:
         return <VerificationSteps {...defaultProps} />;
       case EkycVerificationStep.LoadingScreen:
-        return <LoadingScreen />;
+        return <LoadingScreen handleDismiss={handleDismiss} />;
       case EkycVerificationStep.KycProviderList:
         return <KycProviderList {...defaultProps} />;
       case EkycVerificationStep.TermsAndCondition:
@@ -218,7 +271,9 @@ export const EkycVerificationPage = ({
           "invalid_transaction",
           "identifier_already_registered",
           "grant_exchange_failed",
-        ].includes(criticalError.errorCode) && <EkycVerificationPopover />}
+        ].includes(criticalError.errorCode) && (
+          <EkycVerificationPopover handleDismiss={handleDismiss} />
+        )}
 
       <Form {...methods}>
         <form noValidate>{getEkycVerificationStepContent(step)}</form>

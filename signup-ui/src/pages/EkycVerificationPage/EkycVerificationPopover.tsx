@@ -11,7 +11,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "~components/ui/alert-dialog";
-import { useSettings } from "~pages/shared/queries";
 
 import {
   criticalErrorSelector,
@@ -19,10 +18,13 @@ import {
   useEkycVerificationStore,
 } from "./useEkycVerificationStore";
 
-export const EkycVerificationPopover = () => {
+export const EkycVerificationPopover = ({
+  handleDismiss,
+}: {
+  handleDismiss: (args: { key: string; error: string }) => void;
+}) => {
   const { t } = useTranslation();
 
-  const { data: settings } = useSettings();
   const { criticalError, hashCode } = useEkycVerificationStore(
     useCallback(
       (state) => ({
@@ -35,10 +37,10 @@ export const EkycVerificationPopover = () => {
 
   const handleAction = (e: any) => {
     e.preventDefault();
-    window.onbeforeunload = null;
-    window.location.href = `${settings?.response?.configs[
-      "esignet-consent.redirect-url"
-    ]}?key=${hashCode?.state || ""}&error=${criticalError?.errorCode}`;
+    handleDismiss({
+      key: hashCode?.state || "",
+      error: criticalError?.errorCode || "",
+    });
   };
 
   return (

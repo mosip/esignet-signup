@@ -19,7 +19,10 @@ import {
 import { SlotCheckingLoading } from "./components/SlotCheckingLoading";
 import { SlotUnavailableAlert } from "./components/SlotUnavailableAlert";
 
-export const SlotChecking = ({ settings }: DefaultEkyVerificationProp) => {
+export const SlotChecking = ({
+  settings,
+  handleDismiss,
+}: DefaultEkyVerificationProp) => {
   const { slotAvailabilityMutation } = useSlotAvailability({
     retryAttempt: settings.configs["slot.request.limit"],
     retryDelay: settings.configs["slot.request.delay"],
@@ -75,10 +78,8 @@ export const SlotChecking = ({ settings }: DefaultEkyVerificationProp) => {
 
   if (slotAvailabilityMutation.isPending) {
     return <SlotCheckingLoading />;
-  } else if (
-    criticalError?.errorCode === "slot_not_available"
-  ) {
-    return <SlotUnavailableAlert />;
+  } else if (criticalError?.errorCode === "slot_not_available") {
+    return <SlotUnavailableAlert handleDismiss={handleDismiss} />;
   }
   return <></>;
 };
