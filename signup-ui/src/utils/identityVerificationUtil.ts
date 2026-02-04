@@ -17,9 +17,11 @@ const randomKey = (prefix: string): string => {
  */
 const encoderDecoder = (str: string, encode: boolean = false): string => {
   if (encode) {
-    return Buffer.from(str, "utf8").toString("base64");
+    // Encode: string -> base64
+    return btoa(unescape(encodeURIComponent(str)));
   }
-  return Buffer.from(str, "base64").toString("utf8");
+  // Decode: base64 -> string
+  return decodeURIComponent(escape(atob(str)));
 };
 
 /**

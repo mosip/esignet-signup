@@ -74,9 +74,19 @@ const NavBar = () => {
   return (
     <nav className={navbarStyle}>
       <div className="container flex h-full items-center justify-between px-[4rem] py-2 md:px-[0.5rem]">
-        <div className="ltr:ml-1 ltr:sm:ml-8 rtl:mr-1 rtl:sm:mr-8">
-          <img className="brand-logo" alt="brand_logo" />
+        <div className="flex items-center gap-3 ltr:ml-1 ltr:sm:ml-8 rtl:mr-1 rtl:sm:mr-8">
+          <img className="brand-logo" alt="Veridonia Logo" />
+          <div className="flex flex-col">
+            <h1 className="text-lg font-semibold text-primary">
+              {t("republic_of_veridonia")}
+            </h1>
+            <p className="text-xs text-gray-600">
+              {t("official_government_portal")}
+            </p>
+          </div>
         </div>
+        
+        {/* Right side - Language selector */}
         <div className="flex ltr:mr-1 ltr:sm:mr-8 rtl:ml-1 rtl:sm:ml-8">
           <div className="mx-2 rtl:scale-x-[-1]">
             <Language />

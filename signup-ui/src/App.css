@@ -18,7 +18,8 @@ body {
 
 .brand-logo {
   content: var(--brand-logo-url);
-  height: 40px;
+  height: 48px;
+  width: 48px;
 }
 
 .brand-only-logo {
@@ -425,6 +426,25 @@ body {
 
 .status-loader__title {
   @apply text-center text-2xl font-semibold;
+}
+
+/* Verification Success Page Styles */
+.verification-success-header {
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  border-radius: 1rem 1rem 0 0;
+}
+
+.verification-success-content {
+  background: var(--verification-success-bg);
+}
+
+.verification-status-badge {
+  background: var(--verification-success-badge-bg);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
+.verification-status-icon {
+  content: var(--verification-success-icon-url);
 }
 
 input[type="password"]::-ms-reveal,

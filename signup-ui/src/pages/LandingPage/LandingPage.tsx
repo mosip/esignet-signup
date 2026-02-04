@@ -1,17 +1,16 @@
-import { PageLayout } from "~layouts/PageLayout";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router-dom";
 
-import { ReactComponent as SomethingWentWrongSvg } from "~assets/svg/something-went-wrong.svg";
 import {
   EKYC_VERIFICATION,
-  RESET_PASSWORD,
   SIGNUP_ROUTE,
 } from "~constants/routes";
-import { Button } from "~components/ui/button";
+import { Card, CardContent } from "~components/ui/card";
+import NavBar from "~components/ui/nav-bar";
+import LandingFooter from "~components/ui/landing-footer";
+import { PageLayout } from "~layouts/PageLayout";
 import { generateState } from "~utils/identityVerificationUtil";
 import { useEkycVerificationStore } from "~pages/EkycVerificationPage/useEkycVerificationStore";
-import { useResetPasswordStore } from "~pages/ResetPasswordPage/useResetPasswordStore";
 import { useSettings } from "~pages/shared/queries";
 import { useSignUpStore } from "~pages/SignUpPage/useSignUpStore";
 
@@ -23,22 +22,15 @@ export const LandingPage = () => {
 
   const { hash: fromSignInHash } = useLocation();
   const resetSignupStore = useSignUpStore.getState().reset;
-  const resetForgotPasswordStore = useResetPasswordStore.getState().reset;
   const resetEkycVerificationStore = useEkycVerificationStore.getState().reset;
 
-  const handleResetPassword = (e: any) => {
-    e.preventDefault();
-    resetForgotPasswordStore();
-    navigate(`${RESET_PASSWORD}${fromSignInHash}`);
-  };
-
-  const handleRegister = (e: any) => {
+  const handleSetupAccount = (e: any) => {
     e.preventDefault();
     resetSignupStore();
     navigate(`${SIGNUP_ROUTE}${fromSignInHash}`);
   };
 
-  const handleVerifyIdentity = (e: any) => {
+  const handleEkycVerification = (e: any) => {
     e.preventDefault();
     resetEkycVerificationStore();
     const rpConfig = settings?.response?.configs["rp.config"];
@@ -53,48 +45,109 @@ export const LandingPage = () => {
   };
 
   return (
-    <PageLayout
-      className="h-[calc(100vh-13vh)] w-full items-center justify-center p-16 px-32 sm:px-[30px]"
-      childClassName="h-full"
-    >
-      <div className="flex h-full w-full flex-col items-center justify-center gap-y-8 rounded-xl bg-white shadow-lg md:shadow-none">
-        <SomethingWentWrongSvg />
-        <div className="flex flex-col items-center gap-y-2">
-          <h1 className="text-center text-2xl">{t("landing_page_title")}</h1>
-          <p className="text-center text-gray-500">
-            {t("landing_page_description")}
+    <div className="flex min-h-screen flex-col">
+      {/* NavBar */}
+      <NavBar />
+      
+      <PageLayout childClassName="my-5 flex justify-center">
+        <div className="w-full max-w-4xl">
+          <div className="mb-8 flex justify-center">
+            <div className="rounded-md bg-primary/10 px-4 py-2 text-sm font-medium text-primary">
+              {t("secure_login")}
+            </div>
+          </div>
+
+          <h1 className="mb-4 text-center text-4xl font-bold text-primary md:text-3xl sm:text-2xl">
+            {t("landing_page_title")}
+          </h1>
+
+          <p className="mb-12 text-center text-lg text-primary-light md:text-base">
+            {t("landing_page_subtitle")}
           </p>
+
+          <div className="mb-12 grid grid-cols-2 gap-6 sm:grid-cols-1">
+            <Card
+              className="cursor-pointer border-2 border-gray-200 transition-all hover:border-primary hover:shadow-lg"
+              onClick={handleSetupAccount}
+            >
+              <CardContent className="flex flex-col items-center p-8 text-center">
+                <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-xl">
+                  <img 
+                    src="/images/user_register.png" 
+                    alt="Setup Account"
+                    className="h-12 w-12"
+                  />
+                </div>
+                
+                <h2 className="mb-3 text-xl font-semibold text-primary">
+                  {t("setup_new_account")}
+                </h2>
+                
+                <p className="text-sm text-primary-light">
+                  {t("setup_account_description")}
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card
+              className="cursor-pointer border-2 border-gray-200 transition-all hover:border-primary hover:shadow-lg"
+              onClick={handleEkycVerification}
+            >
+              <CardContent className="flex flex-col items-center p-8 text-center">
+                <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-xl">
+                  <img 
+                    src="/images/kycVerification.png" 
+                    alt="eKYC Verification"
+                    className="h-12 w-12"
+                  />
+                </div>
+                
+                <h2 className="mb-3 text-xl font-semibold text-primary">
+                  {t("proceed_with_ekyc")}
+                </h2>
+                
+                <p className="text-sm text-primary-light">
+                  {t("ekyc_description")}
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="flex flex-col items-center">
+            <p className="mb-4 text-center text-sm text-primary-hover">
+              {t("trusted_by")}
+            </p>
+            <div className="flex flex-wrap items-center justify-center gap-6">
+              <div className="flex items-center gap-2">
+                <img 
+                  src="/images/ssl_icon.svg" 
+                  alt="SSL Secured"
+                  className="h-4 w-4"
+                />
+                <span className="text-xs text-primary-light">{t("ssl_secured")}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <img 
+                  src="/images/encrypt_icon.svg" 
+                  alt="Encrypted"
+                  className="h-4 w-4"
+                />
+                <span className="text-xs text-primary-light">{t("encrypted")}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <img 
+                  src="/images/verified_icon.svg" 
+                  alt="Government Verified"
+                  className="h-4 w-4"
+                />
+                <span className="text-xs text-primary-light">{t("government_verified")}</span>
+              </div>
+            </div>
+          </div>
         </div>
-        <div className="flex w-full flex-row items-center justify-center gap-x-2 md:flex-col">
-          <Button
-            className="h-[52px] w-[250px] border-[2px] border-primary bg-white text-primary hover:text-primary/80 md:mb-3 md:w-full"
-            id="reset-password-button"
-            name="reset-password-button"
-            variant="outline"
-            onClick={handleResetPassword}
-          >
-            {t("reset_password")}
-          </Button>
-          <Button
-            className="h-[52px] w-[250px] md:w-full"
-            id="register-button"
-            name="register-button"
-            onClick={handleRegister}
-          >
-            {t("register")}
-          </Button>
-          <Button
-            className="h-[52px] w-[250px] border-[2px] border-primary bg-white text-primary hover:text-primary/80 md:mt-3 md:w-full"
-            id="verify-identity-button"
-            name="verify-identity-button"
-            variant="outline"
-            onClick={handleVerifyIdentity}
-            disabled={settings !== undefined ? false : true}
-          >
-            {t("verify_identity")}
-          </Button>
-        </div>
-      </div>
-    </PageLayout>
+      </PageLayout>
+
+      <LandingFooter />
+    </div>
   );
 };
