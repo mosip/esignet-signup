@@ -81,6 +81,7 @@ public class BaseTestUtil {
 			bsOptions.put("os", EsignetConfigManager.getproperty("browserStackOs"));
 			bsOptions.put("osVersion", EsignetConfigManager.getproperty("osVersion"));
 			bsOptions.put("projectName", "MOSIP ESignet UI Test");
+			bsOptions.put("local", "true");
 			caps.setCapability("bstack:options", bsOptions);
 
 			if (browser.equalsIgnoreCase("chrome")) {
