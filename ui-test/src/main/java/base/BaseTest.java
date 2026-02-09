@@ -89,7 +89,10 @@ public class BaseTest {
 			WebDriver driver;
 
 			if (runOnBrowserStack) {
-				BrowserStackLocalManager.start();
+				boolean bsLocalEnabled = Boolean.parseBoolean(EsignetConfigManager.getproperty("browserstack.local"));
+				if (bsLocalEnabled) {
+					BrowserStackLocalManager.start();
+				}
 				driver = setupBrowserStackDriver(scenario, runMultipleBrowsers, browserTagPresent, scenarioBrowser);
 			} else {
 				driver = setupLocalDriver(scenario, runMultipleBrowsers, browserTagPresent, scenarioBrowser);
