@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
@@ -222,7 +223,7 @@ public class BaseTest {
 				BrowserStackLocalManager.stop();
 				LOGGER.info("BrowserStack Local (WireGuard) stopped");
 			} catch (Exception e) {
-				LOGGER.warn("Error stopping BrowserStack Local", e);
+				LOGGER.error("Error stopping BrowserStack Local", e);
 			}
 		}
 	}
@@ -281,12 +282,6 @@ public class BaseTest {
 		executeLsCommand(System.getProperty("user.dir") + "/test-output/ExtentReport.html");
 		executeLsCommand(System.getProperty("user.dir") + "/screenshots/");
 
-		try {
-			Thread.sleep(10000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-
 		executeLsCommand(System.getProperty("user.dir") + "/test-output/");
 		String timestamp = new SimpleDateFormat("yyyy-MM-dd-HH-mm").format(new Date());
 		String name = getEnvName() + "-" + timestamp + "-T-" + totalCount + "-P-" + passedCount + "-F-" + failedCount
@@ -343,7 +338,7 @@ public class BaseTest {
 			if (exitCode != 0) {
 				BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
 				String errorLine;
-				System.err.println("--- Directory listing error ---");
+				LOGGER.info("--- Directory listing error ---");
 				while ((errorLine = errorReader.readLine()) != null) {
 					System.err.println(errorLine);
 				}
@@ -357,9 +352,8 @@ public class BaseTest {
 
 	public static String getEnvName() {
 		String baseUrl = EsignetConfigManager.getproperty("baseurl");
-		String domainPart = baseUrl.replace("https://", "").replace("http://", "");
-		domainPart = domainPart.split("/")[0]; // remove path if any
-		String[] parts = domainPart.split("\\.");
+		String host = URI.create(baseUrl).getHost();
+		String[] parts = host.split("\\.");
 
 		LOGGER.info("--- ApplnURI ---" + BaseTestCase.ApplnURI);
 		BaseTestCase.ApplnURI = System.getProperty("env.endpoint");
