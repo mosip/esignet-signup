@@ -2,7 +2,6 @@ import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import { ReactComponent as FailedIconSvg } from "~assets/svg/failed-icon.svg";
-import { ReactComponent as SuccessIconSvg } from "~assets/svg/success-icon.svg";
 import { ReactComponent as WarningIconSvg } from "~assets/svg/warning-icon.svg";
 import { Button } from "~components/ui/button";
 import { Step, StepContent } from "~components/ui/step";
@@ -34,7 +33,7 @@ export const AccountRegistrationStatusLayout = ({
       rpConfig?.redirect_uri_signin,
       fromSignInHash,
       search,
-      "/signup"
+      "/"
     );
   };
 
@@ -52,50 +51,77 @@ export const AccountRegistrationStatusLayout = ({
   };
 
   return (
-    <Step>
-      <StepContent>
-        <div className="flex flex-col items-center gap-4 py-4">
-          {status === "success" ? (
-            <SuccessIconSvg />
-          ) : status === "warning" ? (
-            <WarningIconSvg />
-          ) : (
-            <FailedIconSvg />
-          )}
-          <div className="text-center text-lg font-semibold">
-            {status === "success" ? (
-              <>
-                <h1>{t("congratulations")}</h1>
-                <h2>{t("account_created_successfully")}</h2>
-              </>
+    <Step className={status === "success" ? "overflow-hidden" : ""}>
+      <StepContent className={status === "success" ? "p-0" : ""}>
+        {status === "success" && (
+          <div className="verification-success-header w-full py-6 px-6 text-center">
+            <div className="mb-4 flex justify-center">
+              <img
+                className="verification-status-icon h-20 w-20"
+                alt="Success"
+              />
+            </div>
+            <div className="text-center">
+              <h1 className="text-3xl font-bold text-white md:text-2xl sm:text-xl">
+                {t("congratulations")}
+              </h1>
+              <h2 className="mt-2 text-xl font-semibold text-white md:text-lg sm:text-base">
+                {t("account_created_successfully")}
+              </h2>
+            </div>
+          </div>
+        )}
+
+        {/* Warning/Failed Header */}
+        {status !== "success" && (
+          <div className="flex flex-col items-center gap-4 py-4">
+            {status === "warning" ? (
+              <WarningIconSvg />
             ) : (
+              <FailedIconSvg />
+            )}
+            <div className="text-center text-lg font-semibold">
               <h1>
                 {status === "warning"
                   ? t("signup_pending")
                   : t("signup_failed")}
               </h1>
+            </div>
+          </div>
+        )}
+
+        <div className={status === "success" ? "verification-success-content flex flex-col items-center px-6 py-6 text-center sm:px-8" : "px-6"}>
+          {status === "success" && (
+            <>
+              <p className="mb-3 text-center text-base text-primary-light md:text-sm">
+                {t("account_created_success_description")}
+              </p>
+              <p className="mb-6 text-center text-base font-medium text-primary md:text-sm">
+                {t("account_created_visa_id")}
+              </p>
+            </>
+          )}
+
+          {/* Action Buttons */}
+          <div className="flex w-full max-w-md flex-col gap-2">
+            <Button
+              id="success-continue-button"
+              className="h-16 w-full"
+              onClick={handleAction}
+            >
+              {fromSignInHash ? t("login") : t("okay")}
+            </Button>
+            {status === "success" && (
+              <Button
+                id="verify-identity-button"
+                className="h-16 w-full border-primary bg-white text-primary hover:bg-primary/5 hover:text-primary"
+                variant="outline"
+                onClick={handleVerifyIdentity}
+              >
+                {t("proceed_to_verification")}
+              </Button>
             )}
           </div>
-          <p className="text-center text-gray-500">{message}</p>
-        </div>
-        <div className="flex w-full flex-row items-center justify-center gap-x-2 md:flex-col">
-          <Button
-            id="success-continue-button"
-            className="my-4 h-16 md:mb-3 w-full"
-            onClick={handleAction}
-          >
-            {fromSignInHash ? t("login") : t("okay")}
-          </Button>
-          {status === "success" && (
-            <Button
-              id="verify-identity-button"
-              className="my-4 h-16 border-primary bg-white text-primary hover:text-primary/80 md:mt-3 w-full"
-              variant="outline"
-              onClick={handleVerifyIdentity}
-            >
-              {t("proceed_to_verification")}
-            </Button>
-          )}
         </div>
       </StepContent>
     </Step>

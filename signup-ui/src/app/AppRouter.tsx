@@ -53,6 +53,9 @@ export const AppRouter = () => {
   return (
     <WithSuspense>
       <Routes>
+        {/* Landing Page */}
+        <Route path={ROOT_ROUTE} element={<LandingPage />} />
+        
         <Route element={<AppLayout />}>
           <Route path={SIGNUP_ROUTE} element={<SignUpPage />} />
           <Route path={RESET_PASSWORD} element={<ResetPasswordPage />} />
@@ -65,7 +68,6 @@ export const AppRouter = () => {
             path={UNDER_CONSTRUCTION}
             element={<UnderConstructionPage />}
           />
-          <Route path={ROOT_ROUTE} element={<LandingPage />} />
           <Route path="*" element={<Navigate to={REDIRECT_ROUTE} />} />
         </Route>
       </Routes>

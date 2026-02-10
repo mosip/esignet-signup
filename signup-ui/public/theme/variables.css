@@ -9,7 +9,7 @@
   --language-icon-color: #ffffff;
   --language-icon-bg-color: var(--default);
   --brand-only-logo-url: url("/logo.png");
-  --brand-logo-url: url("/images/brand_logo.png");
+  --brand-logo-url: url("/images/veridonia_emblem.svg");
 
   --signup-background: #f7f9fd;
   --side-section-bg-with: 225px;
@@ -65,6 +65,9 @@
   --primary: 21 83% 55%;
   --primary-color: 21 83% 55%;
   --primary-foreground-color: 0 0% 100%;
+
+  --primary-light: 21 83% 55% / 0.7;
+  --primary-hover: 21 83% 55% / 0.5;
 
   --secondary-color: 210 40% 96.1%;
   --secondary-foreground-color: 222.2 47.4% 11.2%;
@@ -140,6 +143,12 @@
   --video-preview-disabled-subheader-color: #7e7e7e;
   --video-preview-disabled-background: #f8f8f8;
   --video-preview-disabled-border-radius: 10px;
+
+  /* Verification Success Page Colors */
+  --verification-success-bg: #f7f7f7f2;
+  --verification-success-shadow: 0px 25px 50px -12px rgba(0, 0, 0, 0.25);
+  --verification-success-badge-bg: #ffffff;
+  --verification-success-icon-url: url("/images/verified_success.png");
 }
 
 [class="dark"] {
@@ -188,7 +197,7 @@
   --language-icon-color: #ffffff;
   --language-icon-bg-color: var(--default);
   --brand-only-logo-url: url("/logo.png");
-  --brand-logo-url: url("/images/brand_logo.png");
+  --brand-logo-url: url("/images/veridonia_emblem.png");
 
   --signup-background: #f7f9fd;
   --side-section-bg-with: 320px;
@@ -333,7 +342,7 @@
   --language-icon-color: #ffffff;
   --language-icon-bg-color: var(--default);
   --brand-only-logo-url: url("/logo.png");
-  --brand-logo-url: url("/images/brand_logo.png");
+  --brand-logo-url: url("/images/veridonia_emblem.png");
 
   --signup-background: #f7f9fd;
   --side-section-bg-with: 225px;
