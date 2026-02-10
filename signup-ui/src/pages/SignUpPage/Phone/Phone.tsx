@@ -188,7 +188,7 @@ export const Phone = ({ settings, methods }: PhoneProps) => {
             </div>
           ) : (
             <div className="grow px-3 text-center font-semibold tracking-normal xs:px-2">
-              {t("enter_your_number")}
+              {t("enter_your_email")}
             </div>
           )}
         </StepTitle>
@@ -214,7 +214,7 @@ export const Phone = ({ settings, methods }: PhoneProps) => {
           <div className="flex flex-col gap-y-3">
             {/* Phone number input */}
             <FormField
-              name="phone"
+              name="email"
               control={control}
               render={({ field }) => (
                 <FormItem>
@@ -226,15 +226,12 @@ export const Phone = ({ settings, methods }: PhoneProps) => {
                           formError.phone && "border-destructive"
                         )}
                       >
-                        <span className="flex self-center border-r-[1px] border-input px-3 text-muted-foreground/60">
-                          {settings.response.configs["identifier.prefix"]}
-                        </span>
                         <div className="w-full">
                           <Input
                             {...field}
                             id="phone_input"
-                            type="tel"
-                            placeholder={t("enter_your_number_placeholder")}
+                            type="email"
+                            placeholder={t("enter_your_email_placeholder")}
                             className="h-[inherit] border-none outline-none"
                             minLength={
                               settings.response.configs["identifier.length.min"]

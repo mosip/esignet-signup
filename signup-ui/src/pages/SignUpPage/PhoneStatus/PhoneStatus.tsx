@@ -104,8 +104,8 @@ export const PhoneStatus = ({ methods }: PhoneStatusProps) => {
           </p>
         </div>
         <Button
-          id="mobile-number-verified-continue-button"
-          name="mobile-number-verified-continue-button"
+          id="email-verified-continue-button"
+          name="email-verified-continue-button"
           className="my-4 h-16 w-full"
           onClick={handleContinue}
         >

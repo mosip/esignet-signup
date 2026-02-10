@@ -50,18 +50,12 @@ export const LandingPage = () => {
       <NavBar />
       
       <PageLayout childClassName="my-5 flex justify-center">
-        <div className="w-full max-w-4xl">
-          <div className="mb-8 flex justify-center">
-            <div className="rounded-md bg-primary/10 px-4 py-2 text-sm font-medium text-primary">
-              {t("secure_login")}
-            </div>
-          </div>
-
+        <div className="w-full max-w-4xl px-4 md:px-6">
           <h1 className="mb-4 text-center text-4xl font-bold text-primary md:text-3xl sm:text-2xl">
             {t("landing_page_title")}
           </h1>
 
-          <p className="mb-12 text-center text-lg text-primary-light md:text-base">
+          <p className="mx-auto mb-12 max-w-3xl text-center text-lg text-primary-light md:text-base sm:px-4">
             {t("landing_page_subtitle")}
           </p>
 
@@ -73,7 +67,7 @@ export const LandingPage = () => {
               <CardContent className="flex flex-col items-center p-8 text-center">
                 <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-xl">
                   <img 
-                    src="/images/user_register.png" 
+                    src="/images/account_setup.png" 
                     alt="Setup Account"
                     className="h-12 w-12"
                   />
@@ -96,7 +90,7 @@ export const LandingPage = () => {
               <CardContent className="flex flex-col items-center p-8 text-center">
                 <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-xl">
                   <img 
-                    src="/images/kycVerification.png" 
+                    src="/images/ekyc_verification.png" 
                     alt="eKYC Verification"
                     className="h-12 w-12"
                   />
