@@ -333,6 +333,7 @@ PrepareSignupRedirectNegTC:
       description: Create ID token for the signup service withuot path Fragment - Failure
       role: resident
       restMethod: post
+      additionalDependencies: TC_ESignet_ClaimDetailsNegTC_V3_04,TC_ESignet_AuthenticateUserNegTC_01
       inputTemplate: signup/PrepareSignupRedirectNegTC/PrepareSignupRedirectNegTC
       outputTemplate: signup/error
       input: '{
@@ -355,6 +356,7 @@ PrepareSignupRedirectNegTC:
       description: Create ID token for the signup service with path Fragment as null - Failure
       role: resident
       restMethod: post
+      additionalDependencies: TC_ESignet_ClaimDetailsNegTC_V3_04,TC_ESignet_AuthenticateUserNegTC_01
       inputTemplate: signup/PrepareSignupRedirectNegTC/PrepareSignupRedirectNegTC
       outputTemplate: signup/error
       input: '{
@@ -402,6 +404,7 @@ PrepareSignupRedirectNegTC:
       restMethod: post
       checkErrorsOnlyInResponse: true
       validityCheckRequired: true
+      additionalDependencies: TC_ESignet_AuthenticateUserNegTC_01
       inputTemplate: signup/PrepareSignupRedirectNegTC/PrepareSignupRedirectNegTC
       outputTemplate: signup/PrepareSignupRedirectNegTC/PrepareSignupRedirectNegTCResult
       input: '{

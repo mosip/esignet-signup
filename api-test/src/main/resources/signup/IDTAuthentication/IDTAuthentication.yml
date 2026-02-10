@@ -116,6 +116,7 @@ IDTAuthentication:
 }'
    Signup_ESignet_IDTAuthentication_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdVerStatusWithoutWebsocket_Smoke:
       endPoint: /v1/esignet/authorization/v3/authenticate
+      uniqueIdentifier: TC_ESignet_IDTAuthentication_06
       description: Create transaction Id and consentAction with valid details and this testcase is prerequisite for id verification status
       role: resident
       restMethod: post

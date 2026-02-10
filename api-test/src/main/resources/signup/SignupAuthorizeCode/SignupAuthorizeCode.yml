@@ -6,6 +6,7 @@ SignupAuthorizeCode:
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true
+      additionalDependencies: TC_ESignet_IDTAuthentication_01
       inputTemplate: signup/SignupAuthorizeCode/SignupAuthorizeCode
       outputTemplate: signup/SignupAuthorizeCode/SignupAuthorizeCodeResult
       input: '{
@@ -26,6 +27,7 @@ SignupAuthorizeCode:
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true
+      additionalDependencies: TC_ESignet_IDTAuthentication_02
       inputTemplate: signup/SignupAuthorizeCode/SignupAuthorizeCode
       outputTemplate: signup/SignupAuthorizeCode/SignupAuthorizeCodeResult
       input: '{
@@ -46,6 +48,7 @@ SignupAuthorizeCode:
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true
+      additionalDependencies: TC_ESignet_IDTAuthentication_03
       inputTemplate: signup/SignupAuthorizeCode/SignupAuthorizeCode
       outputTemplate: signup/SignupAuthorizeCode/SignupAuthorizeCodeResult
       input: '{
@@ -66,6 +69,7 @@ SignupAuthorizeCode:
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true
+      additionalDependencies: TC_ESignet_IDTAuthentication_04
       inputTemplate: signup/SignupAuthorizeCode/SignupAuthorizeCode
       outputTemplate: signup/SignupAuthorizeCode/SignupAuthorizeCodeResult
       input: '{
@@ -86,6 +90,7 @@ SignupAuthorizeCode:
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true
+      additionalDependencies: TC_ESignet_IDTAuthentication_05
       inputTemplate: signup/SignupAuthorizeCode/SignupAuthorizeCode
       outputTemplate: signup/SignupAuthorizeCode/SignupAuthorizeCodeResult
       input: '{
@@ -101,10 +106,12 @@ SignupAuthorizeCode:
 }'
    Signup_ESignet_SignupAuthorizeCode_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdVerStatusWithoutWebsocket_Smoke_sid:
       endPoint: /v1/esignet/authorization/auth-code
+      uniqueIdentifier: TC_ESignet_SignupAuthorizeCode_06
       description: Create authorization code with valid details and this testcase is prerequisite
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true
+      additionalDependencies: TC_ESignet_IDTAuthentication_06
       inputTemplate: signup/SignupAuthorizeCode/SignupAuthorizeCode
       outputTemplate: signup/SignupAuthorizeCode/SignupAuthorizeCodeResult
       input: '{

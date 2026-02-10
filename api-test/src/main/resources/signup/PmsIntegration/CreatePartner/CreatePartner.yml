@@ -1,9 +1,11 @@
 createPartnerSelfRegistration:
    Signup_Esignet_PartnerSelfRegistration_All_Valid_Smoke_sid:
       endPoint: /v1/partnermanager/partners
+      uniqueIdentifier: TC_ESignet_CreatePartnerSelfRegistration_01
       description: PartnerSelfRegistration with all valid details
       role: partner
       restMethod: post
+      additionalDependencies: TC_ESignet_UploadPartnerCert_01, TC_ESignet_PublishPolicy_01
       inputTemplate: signup/PmsIntegration/CreatePartner/createPartner
       outputTemplate: signup/PmsIntegration/CreatePartner/createPartnerResult
       input: '{

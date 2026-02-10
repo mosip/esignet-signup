@@ -6,6 +6,7 @@ AuthenticateUserV3:
       restMethod: post
       checkErrorsOnlyInResponse: true
       validityCheckRequired: true
+      additionalDependencies: TC_ESignet_GenerateChallenge_01,TC_ESignet_VerifyChallenge_01,TC_ESignet_RegisterUser_01,TC_ESignet_GenerateChallengeForResetPassword_01,TC_ESignet_VerifyChallengeForResetPassword_01
       inputTemplate: signup/RegistrationFlowL2/AuthenticateUserV3/AuthenticateUser
       outputTemplate: signup/RegistrationFlowL2/AuthenticateUserV3/AuthenticateUserResult
       input: '{

@@ -269,7 +269,13 @@ public class SignupUtil extends AdminTestUtil {
 				}
 			}
 		}
-
+		
+		// Handle extra workflow dependencies
+		if (testCaseDTO != null && testCaseDTO.getAdditionalDependencies() != null
+				&& AdminTestUtil.generateDependency == true) {
+			addAdditionalDependencies(testCaseDTO);
+		}
+		
 		return testCaseDTO;
 	}
 	

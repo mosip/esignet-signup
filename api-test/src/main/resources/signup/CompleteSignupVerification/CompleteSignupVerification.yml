@@ -6,6 +6,7 @@ CompleteSignupVerification:
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true
+      additionalDependencies: TC_ESignet_GetIdentityVerificationStatus_01
       inputTemplate: signup/CompleteSignupVerification/CompleteSignupVerification
       outputTemplate: signup/CompleteSignupVerification/CompleteSignupVerificationResult
       input: '{
@@ -22,6 +23,7 @@ CompleteSignupVerification:
       description: Completing the Signup verifcation with incomplete KYC
       role: resident
       restMethod: post
+      additionalDependencies: TC_ESignet_IDTAuthentication_02
       inputTemplate: signup/CompleteSignupVerification/CompleteSignupVerification
       outputTemplate: signup/error
       input: '{
@@ -43,6 +45,7 @@ CompleteSignupVerification:
       description: Completing the Signup verifcation with incomplete KYC
       role: resident
       restMethod: post
+      additionalDependencies: TC_ESignet_IDTAuthentication_03
       inputTemplate: signup/CompleteSignupVerification/CompleteSignupVerification
       outputTemplate: signup/error
       input: '{

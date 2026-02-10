@@ -698,6 +698,7 @@ VerifyChallengeNegTC:
       uniqueIdentifier: TC_ESignet_VerifyChallengeNegTC_21
       role: resident
       restMethod: post
+      additionalDependencies: TC_ESignet_RegisterUser_01
       inputTemplate: signup/VerifyChallengeNegTC/VerifyChallengeNegTC
       outputTemplate: signup/error
       input: '{

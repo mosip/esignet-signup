@@ -6,6 +6,7 @@ CompleteSignupVerification:
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true
+      additionalDependencies: TC_ESignet_GetIdentityVerificationStatus_Registered_Phone_01
       inputTemplate: signup/RegistrationFlowL2/CompleteSignupVerification/CompleteSignupVerification
       outputTemplate: signup/RegistrationFlowL2/CompleteSignupVerification/CompleteSignupVerificationResult
       input: '{

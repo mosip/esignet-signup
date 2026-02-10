@@ -2,6 +2,7 @@ AuthenticateUserV3:
    Signup_ESignet_AuthenticateUser_V3_AuthToken_Xsrf__uin_Otp_Valid_Smoke:
       endPoint: /v1/esignet/authorization/v3/authenticate
       uniqueIdentifier: TC_ESignet_AuthenticateUserV3_01
+      description: Verify OTP based user authentication in eSignet V3 flow using UIN
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true
@@ -32,6 +33,8 @@ AuthenticateUserV3:
 }'
    Signup_ESignet_AuthenticateUser_V3_AuthToken_Xsrf__uin_Otp_Valid_forGetSlot_disabilityTypeVISION_Smoke:
       endPoint: /v1/esignet/authorization/v3/authenticate
+      uniqueIdentifier: TC_ESignet_AuthenticateUserV3_02
+      description: Verify OTP based authentication in eSignet V3 flow for GetSlot with VISION disability type
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true
@@ -62,6 +65,8 @@ AuthenticateUserV3:
 }'
    Signup_ESignet_AuthenticateUser_V3_AuthToken_Xsrf__uin_Otp_Valid_forGetSlot_disabilityTypeAUDITORY_Smoke:
       endPoint: /v1/esignet/authorization/v3/authenticate
+      uniqueIdentifier: TC_ESignet_AuthenticateUserV3_03
+      description: Verify OTP based authentication in eSignet V3 flow for GetSlot with AUDITORY disability type
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true
@@ -92,6 +97,8 @@ AuthenticateUserV3:
 }'
    Signup_ESignet_AuthenticateUser_V3_AuthToken_Xsrf__uin_Otp_Valid_forGetSlot_disabilityTypeMOBILITY_Smoke:
       endPoint: /v1/esignet/authorization/v3/authenticate
+      uniqueIdentifier: TC_ESignet_AuthenticateUserV3_04
+      description: Verify OTP based authentication in eSignet V3 flow for GetSlot with MOBILITY disability type
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true
@@ -122,6 +129,8 @@ AuthenticateUserV3:
 }'
    Signup_ESignet_AuthenticateUser_V3_AuthToken_Xsrf__uin_Otp_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_Smoke:
       endPoint: /v1/esignet/authorization/v3/authenticate
+      uniqueIdentifier: TC_ESignet_AuthenticateUserV3_05
+      description: Verify OTP based authentication in eSignet V3 flow for GetSlot with NEUROLOGICAL disability type
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true
@@ -152,6 +161,8 @@ AuthenticateUserV3:
 }'
    Signup_ESignet_AuthenticateUser_V3_AuthToken_Xsrf__uin_Otp_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdVerStatusWithoutWebsocket_Smoke:
       endPoint: /v1/esignet/authorization/v3/authenticate
+      uniqueIdentifier: TC_ESignet_AuthenticateUserV3_06
+      description: Verify OTP based authentication in eSignet V3 flow for GetSlot with NEUROLOGICAL disability type
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true
@@ -182,6 +193,8 @@ AuthenticateUserV3:
 }'
    Signup_ESignet_AuthenticateUser_V3_AuthToken_Xsrf__uin_Otp_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdTAuth_Smoke:
       endPoint: /v1/esignet/authorization/v3/authenticate
+      uniqueIdentifier: TC_ESignet_AuthenticateUserV3_07
+      description: Verify OTP based authentication in eSignet V3 flow for GetSlot with NEUROLOGICAL disability type forIdTAuth
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true
@@ -212,6 +225,8 @@ AuthenticateUserV3:
 }'
    Signup_ESignet_AuthenticateUser_V3_AuthToken_Xsrf__uin_Otp_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forDeletingCookies_Smoke:
       endPoint: /v1/esignet/authorization/v3/authenticate
+      uniqueIdentifier: TC_ESignet_AuthenticateUserV3_08
+      description: Verify OTP based authentication in eSignet V3 flow for GetSlot with NEUROLOGICAL disability type forDeletingCookies
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true
@@ -242,6 +257,8 @@ AuthenticateUserV3:
 }'
    Signup_ESignet_AuthenticateUser_V3_AuthToken_Xsrf__uin_Otp_Valid_forprepareSignUpRedirect_Unauthenticated_Smoke:
       endPoint: /v1/esignet/authorization/v3/authenticate
+      uniqueIdentifier: TC_ESignet_AuthenticateUserV3_09
+      description: Verify OTP based authentication in eSignet V3 flow for prepareSignUpRedirect Unauthenticated
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true

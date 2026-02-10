@@ -5,6 +5,7 @@ GetIdentityVerificationStatus:
       description: Getting the status of Identity verification
       role: resident
       restMethod: get
+      additionalDependencies: TC_Signup_ESignet_WebSocketConnection_Registered_Phone_01
       checkErrorsOnlyInResponse: true
       inputTemplate: signup/RegistrationFlowL2/GetIdentityVerificationStatus/GetIdentityVerificationStatus
       outputTemplate: signup/RegistrationFlowL2/GetIdentityVerificationStatus/GetIdentityVerificationStatusResult

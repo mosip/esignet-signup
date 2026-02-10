@@ -1,6 +1,7 @@
 ApproveAPIKey:
    Signup_Esignet_ApproveRejectPartnerAPIKeyReq_All_Valid_Smoke:
       endPoint: /v1/partnermanager/partners/policy/{mappingkey}
+      uniqueIdentifier: TC_ESignet_ApproveRejectPartnerAPIKey_01
       description: Approve or Reject partner Api key request all valid details
       role: partner
       restMethod: put

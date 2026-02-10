@@ -7,6 +7,7 @@ AuthorizationCode:
       checkErrorsOnlyInResponse: true
       restMethod: post
       validityCheckRequired: true
+      additionalDependencies: TC_ESignet_CompleteSignupVerification_Registered_Phone_01
       inputTemplate: signup/RegistrationFlowL2/AuthorizationCode/AuthorizationCode
       outputTemplate: signup/RegistrationFlowL2/AuthorizationCode/AuthorizationCodeResult
       input: '{
