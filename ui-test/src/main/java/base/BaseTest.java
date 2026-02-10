@@ -141,6 +141,8 @@ public class BaseTest {
 				HttpURLConnection conn = (HttpURLConnection) new URL(jsonUrl).openConnection();
 				conn.setRequestMethod("GET");
 				conn.setRequestProperty("Authorization", basicAuth);
+				conn.setConnectTimeout(10000);
+				conn.setReadTimeout(10000); 
 
 				if (conn.getResponseCode() == 200) {
 					StringBuilder response = new StringBuilder();
@@ -230,14 +232,10 @@ public class BaseTest {
 
 	@AfterAll
 	public static void afterAllReportUpdation() {
-		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-			LOGGER.info("Shutdown hook triggered. Uploading report...");
-			if (extent != null) {
-				extent.flush();
-			}
-			pushReportsToS3();
-		}));
+	    LOGGER.info("Finalizing report and uploading ...");
 
+	    ExtentReportManager.flushReport();
+	    pushReportsToS3();
 	}
 
 	public static WebDriver getDriver() {
