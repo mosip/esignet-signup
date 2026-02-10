@@ -1,5 +1,5 @@
 :root {
-  --default: #eb6f2d;
+  --default: #603814;
   --font-inter: "Inter";
   --font-kantumruypro: "Kantumruy Pro Variable";
   --background-body: #f7f9fd;
@@ -62,12 +62,19 @@
   --primary-step: 0 0% 100%;
   --primary-step-foreground: 222.2 47.4% 11.2%;
 
-  --primary: 21 83% 55%;
+  /* --primary: 21 83% 55%;
   --primary-color: 21 83% 55%;
+  --primary-foreground-color: 0 0% 100%; */
+
+  --primary: 25 59% 23%;
+  --primary-color: 25 59% 23%;
   --primary-foreground-color: 0 0% 100%;
 
-  --primary-light: 21 83% 55% / 0.7;
-  --primary-hover: 21 83% 55% / 0.5;
+  /* --primary-light: 21 83% 55% / 0.7;
+  --primary-hover: 21 83% 55% / 0.5; */
+
+  --primary-light: 25 59% 23% / 0.7;
+  --primary-hover: 25 59% 23% / 0.5;
 
   --secondary-color: 210 40% 96.1%;
   --secondary-foreground-color: 222.2 47.4% 11.2%;
@@ -108,7 +115,7 @@
   --error-banner-text-color: #d52929;
   --error-banner-bg-color: #faefef;
   --error-banner-font: normal normal 600 14px/17px Inter;
-  
+
   --kyc-box-border: 2px solid #b2b2b2;
   --kyc-box-selected-border: 2px solid var(--default);
   --kyc-box-icon-border: 1px solid #d8d8d8;
@@ -438,7 +445,7 @@
   --error-banner-text-color: #d52929;
   --error-banner-bg-color: #faefef;
   --error-banner-font: normal normal 600 14px/17px Inter;
-  
+
   --kyc-box-border: 2px solid #b2b2b2;
   --kyc-box-selected-border: 2px solid var(--default);
   --kyc-box-icon-border: 1px solid #d8d8d8;
