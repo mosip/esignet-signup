@@ -909,7 +909,7 @@ public class SignupUtil extends AdminTestUtil {
 					eachValueJson.put(GlobalConstants.LANGUAGE, "");
 				} else
 					eachValueJson.put(GlobalConstants.LANGUAGE, languageList.get(i));
-//				String generatedString = "";
+				String generatedString = "";
 
 				try {
 					if (!fullNamePattern.isEmpty()) {
@@ -1767,7 +1767,7 @@ public class SignupUtil extends AdminTestUtil {
 
 			request.put("consent", "{{consent}}");
 			request.put("locale", "eng");
-			
+
 			if (currentTestCaseName.contains("_SName_Valid")) {
 				CertsUtil.addCertificateToCache(currentTestCaseName + "_$REGISTEREDUSERFULLNAME$",
 						userInfo.get("fullName").toString());
@@ -1782,15 +1782,15 @@ public class SignupUtil extends AdminTestUtil {
 	}
 	
 	private static String generateFromRegex(String regex) {
-	    try {
-	        return genStringAsperRegex(regex); // Generex method
-	    } catch (Exception e) {
-	        return "testAutomation";
-	    }
+		try {
+			return genStringAsperRegex(regex); // Generex method
+		} catch (Exception e) {
+			return "testAutomation";
+		}
 	}
 
 	private static boolean isBackendRequiredField(String id, JsonNode allowedValues) {
-	    return allowedValues.has(id) || "phone".equals(id);
+		return allowedValues.has(id) || "phone".equals(id);
 	}
 	
 }
