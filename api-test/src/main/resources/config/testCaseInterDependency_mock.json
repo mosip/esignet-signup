@@ -1060,7 +1060,7 @@
         "TC_ESignet_VerifyChallengeNegTC_40"
     ],
     "TC_Signup_ESignet_PrepareSignupRedirect_Prerequisite_03": [
-        "TC_ESignet_AuthenticateUserV3_02",
+        "TC_ESignet_AuthenticateUserV3_03",
         "TC_Signup_ESignet_OAuthDetailsRequestV3_Prerequisite_04",
         "TC_Signup_ESignet_ClaimDetails_Prerequisite_03"
     ],
