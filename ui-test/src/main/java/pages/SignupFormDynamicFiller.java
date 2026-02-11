@@ -50,15 +50,16 @@ public class SignupFormDynamicFiller {
 				registrationPage.clickOnCaptureButton();
 				continue;
 			}
-			
+
 			if ("checkbox".equalsIgnoreCase(controlType) && matchingElements.size() > 1) {
-			    int index = new Random().nextInt(matchingElements.size());
-			    WebElement randomCheckbox = matchingElements.get(index);
+				int index = new Random().nextInt(matchingElements.size());
+				WebElement randomCheckbox = matchingElements.get(index);
 
-			    ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({block:'center'});", randomCheckbox);
-			    ((JavascriptExecutor) driver).executeScript("arguments[0].click();", randomCheckbox);
+				((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({block:'center'});",
+						randomCheckbox);
+				((JavascriptExecutor) driver).executeScript("arguments[0].click();", randomCheckbox);
 
-			    continue;
+				continue;
 			}
 
 			if ("checkbox".equalsIgnoreCase(controlType)) {
@@ -69,7 +70,7 @@ public class SignupFormDynamicFiller {
 				}
 				continue;
 			}
-			
+
 			if ("hidden".equalsIgnoreCase(type) || !element.isEnabled()) {
 				continue;
 			}
@@ -80,15 +81,13 @@ public class SignupFormDynamicFiller {
 				for (WebElement nameField : matchingElements) {
 					String lang = nameField.getAttribute("data-lang");
 
+					nameField.clear();
+
 					if ("eng".equalsIgnoreCase(lang)) {
-						nameField.clear();
 						nameField.sendKeys(names.english);
 					} else if ("khm".equalsIgnoreCase(lang)) {
-						nameField.clear();
 						nameField.sendKeys(names.khmer);
 						RegisteredDetails.setFullName(names.khmer);
-					} else {
-						logger.info("Full name entry not supported for language: " + lang);
 					}
 				}
 				continue;
@@ -117,26 +116,50 @@ public class SignupFormDynamicFiller {
 				Select dropdown = new Select(element);
 				List<WebElement> options = dropdown.getOptions();
 				if (options.size() > 1) {
-					int index = new Random().nextInt(options.size() - 1) + 1;
-					dropdown.selectByIndex(index);
+					dropdown.selectByIndex(new Random().nextInt(options.size() - 1) + 1);
 				}
 				continue;
 			}
-			
+
 			if ("date".equalsIgnoreCase(controlType)) {
-			    String dob = EsignetUtil.getRandomDOB();
-			    element.clear();
-			    element.sendKeys(dob);
-			    continue;
+
+				String dob = EsignetUtil.getRandomDOB().replace("-", "/");
+
+				WebElement visibleDob = driver.findElement(By.id("dob"));
+
+				JavascriptExecutor js = (JavascriptExecutor) driver;
+
+				js.executeScript("arguments[0].removeAttribute('readonly')", visibleDob);
+
+				visibleDob.clear();
+				visibleDob.sendKeys(dob);
+
+				continue;
 			}
 
-			if ("textbox".equalsIgnoreCase(controlType)
-					&& (tag.equalsIgnoreCase("input") || tag.equalsIgnoreCase("textarea"))) {
+			if ("textbox".equalsIgnoreCase(controlType) || "textarea".equalsIgnoreCase(controlType)) {
+
+				if ("hidden".equalsIgnoreCase(type) || !element.isEnabled())
+					continue;
+
 				String regex = EsignetUtil.getRegexForField(fieldId);
 				String value = EsignetUtil.generateValueFromRegex(regex);
+
 				element.clear();
 				element.sendKeys(value);
 			}
+
+			if ("radio".equalsIgnoreCase(controlType)) {
+
+				List<WebElement> radios = driver.findElements(By.xpath(
+						"//input[@type='radio' and (@name='" + fieldId + "' or @data-field-id='" + fieldId + "')]"));
+
+				if (!radios.isEmpty()) {
+					radios.get(new Random().nextInt(radios.size())).click();
+				}
+				continue;
+			}
 		}
 	}
+
 }

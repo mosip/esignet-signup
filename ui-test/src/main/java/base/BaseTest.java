@@ -22,6 +22,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.testng.SkipException;
 
 import com.aventstack.extentreports.ExtentReports;
 
@@ -47,6 +48,7 @@ public class BaseTest {
 
 	private static final ThreadLocal<WebDriver> driverThreadLocal = new ThreadLocal<>();
 	private static final ThreadLocal<JavascriptExecutor> jseThreadLocal = new ThreadLocal<>();
+	private static final ThreadLocal<Boolean> isKnownIssueScenario = new ThreadLocal<>();
 
 	private final String url = EsignetConfigManager.getproperty("baseurl");
 
@@ -73,6 +75,14 @@ public class BaseTest {
 	@Before
 	public void beforeAll(Scenario scenario) {
 		LOGGER.info("Initializing WebDriver...");
+
+		if (runners.Runner.knownIssues.containsKey(scenario.getName())) {
+			String bugId = runners.Runner.knownIssues.get(scenario.getName());
+			LOGGER.info("Skipping Known Issue Scenario: " + scenario.getName() + " | Bug: " + bugId);
+			isKnownIssueScenario.set(true);
+			throw new SkipException("Known Issue - Skipped: " + scenario.getName() + " | " + bugId);
+		}
+		isKnownIssueScenario.set(false);
 
 		totalCount++;
 		String browser = BaseTestUtil.getBrowserForScenario(scenario);
@@ -142,7 +152,7 @@ public class BaseTest {
 				conn.setRequestMethod("GET");
 				conn.setRequestProperty("Authorization", basicAuth);
 				conn.setConnectTimeout(10000);
-				conn.setReadTimeout(10000); 
+				conn.setReadTimeout(10000);
 
 				if (conn.getResponseCode() == 200) {
 					StringBuilder response = new StringBuilder();
@@ -182,16 +192,34 @@ public class BaseTest {
 
 		try {
 			if (scenario.isFailed()) {
+
 				failedCount++;
 				ExtentReportManager.incrementFailed();
 
 				// Use scenario name + failed step (fallback to scenario name if step unknown)
 				String failedStepName = scenario.getName().replaceAll("[^a-zA-Z0-9]", "_");
-
+				
 				// Attach single screenshot
 				ScreenshotUtil.attachScreenshot(driver, failedStepName);
 
 				ExtentReportManager.getTest().fail("❌ Scenario Failed: " + scenario.getName());
+
+			} else if (scenario.getStatus().toString().equalsIgnoreCase("SKIPPED")
+					&& runners.Runner.knownIssues.containsKey(scenario.getName())) {
+
+				String bugId = runners.Runner.knownIssues.get(scenario.getName());
+				String bugUrl = "https://mosip.atlassian.net/browse/" + bugId;
+
+				ExtentReportManager.incrementKnownIssue();
+				ExtentReportManager.createTest(scenario.getName());
+				ExtentReportManager.getTest().skip(
+						"🟠 Skipped due to Known Issue → <a href='" + bugUrl + "' target='_blank'>" + bugId + "</a>");
+
+			} else if (scenario.getStatus().toString().equalsIgnoreCase("SKIPPED")) {
+
+				ExtentReportManager.incrementSkipped();
+				ExtentReportManager.getTest().skip("⚠️ Scenario Skipped: " + scenario.getName());
+
 			} else {
 				passedCount++;
 				ExtentReportManager.incrementPassed();
@@ -232,10 +260,10 @@ public class BaseTest {
 
 	@AfterAll
 	public static void afterAllReportUpdation() {
-	    LOGGER.info("Finalizing report and uploading ...");
+		LOGGER.info("Finalizing report and uploading ...");
 
-	    ExtentReportManager.flushReport();
-	    pushReportsToS3();
+		ExtentReportManager.flushReport();
+		pushReportsToS3();
 	}
 
 	public static WebDriver getDriver() {
@@ -282,8 +310,9 @@ public class BaseTest {
 
 		executeLsCommand(System.getProperty("user.dir") + "/test-output/");
 		String timestamp = new SimpleDateFormat("yyyy-MM-dd-HH-mm").format(new Date());
-		String name = getEnvName() + "-" + timestamp + "-T-" + totalCount + "-P-" + passedCount + "-F-" + failedCount
-				+ ".html";
+		String name = getEnvName() + "-" + timestamp + "-T-" + ExtentReportManager.getTotalCount() + "-P-"
+				+ ExtentReportManager.getPassedCount() + "-F-" + ExtentReportManager.getFailedCount() + "-S-"
+				+ ExtentReportManager.getSkippedCount() + "-KI-" + ExtentReportManager.getKnownIssueCount() + ".html";
 		String newFileName = "EsignetUi-" + name;
 		File originalReportFile = new File(System.getProperty("user.dir") + "/test-output/ExtentReport.html");
 		File newReportFile = new File(System.getProperty("user.dir") + "/test-output/" + newFileName);

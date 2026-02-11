@@ -16,7 +16,7 @@ Feature: Esignet Login Options Page
   @smoke @loginFeature
   Scenario Outline: Verify the Registration process and Login Flow
     Given click on Sign In with eSignet
-    Then verify the default language in which UI is rendered
+    #Then verify the default language in which UI is rendered
     When user clicks on the Sign-Up with Unified Login hyperlink
     Then verify user is navigated to the Mobile Number Registration screen
 

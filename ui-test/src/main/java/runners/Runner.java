@@ -1,11 +1,17 @@
 package runners;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -37,6 +43,7 @@ import utils.MultiLanguageUtil;
 )
 public class Runner extends AbstractTestNGCucumberTests {
 	private static final Logger LOGGER = Logger.getLogger(BaseTestUtil.class.getName());
+	public static Map<String, String> knownIssues = new ConcurrentHashMap<>();
 
 	@Override
 	@DataProvider(parallel = true, name = "scenarios")
@@ -182,4 +189,41 @@ public class Runner extends AbstractTestNGCucumberTests {
 		else
 			return "IDE";
 	}
+
+	static {
+		loadKnownIssues();
+	}
+
+	private static void loadKnownIssues() {
+
+		try (BufferedReader br = new BufferedReader(new InputStreamReader(
+				new FileInputStream(System.getProperty("user.dir") + "/src/main/resources/config/Known_Issues.txt"),
+				StandardCharsets.UTF_8))) {
+
+			String line;
+			while ((line = br.readLine()) != null) {
+
+				line = line.trim();
+
+				if (line.isEmpty() || line.startsWith("#") || !line.contains("------")) {
+					continue;
+				}
+
+				String[] parts = line.split("------", 2);
+
+				if (parts.length == 2) {
+					String bugId = parts[0].trim();
+					String scenarioName = parts[1].trim().replaceAll("\\s+", " ");
+
+					knownIssues.put(scenarioName, bugId);
+				}
+			}
+
+			LOGGER.info("Known Issues Loaded: " + knownIssues);
+
+		} catch (Exception e) {
+			LOGGER.warning("Known_Issues.txt not found or unreadable: " + e.getMessage());
+		}
+	}
+
 }

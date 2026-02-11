@@ -59,7 +59,7 @@ public class RegistrationPage extends BasePage {
 	@FindBy(id = "phone_input")
 	WebElement helpTextInTextBox;
 
-	@FindBy(xpath = "//p[contains(@class,'rounded-b-lg bg-destructive')]")
+	@FindBy(id = ":r4:-form-item-message")
 	WebElement numberCannotStartWithZeroErrorMessage;
 
 	@FindBy(xpath = "//p[contains(@class,'rounded-b-lg bg-destructive')]")
@@ -161,7 +161,7 @@ public class RegistrationPage extends BasePage {
 	@FindBy(id = "consent")
 	WebElement termsAndConditionsCheckbox;
 
-	@FindBy(xpath = "//button[@class='form-button']")
+	@FindBy(id = "form-submit-button")
 	WebElement setupContinueButton;
 
 	@FindBy(id = "km_language")
@@ -231,36 +231,35 @@ public class RegistrationPage extends BasePage {
 	WebElement captureButton;
 
 	public boolean isRegistrationScreenDisplayed() {
-		return isElementVisible(registrationScreen, "Chcek if Registration screen displayed");
+		return isElementVisible(registrationScreen, "Check if Registration screen displayed");
 	}
 
 	public boolean isHeaderInRegistrationPageDisplayed() {
-		return isElementVisible(headerInRegistrationPage, "Chcek if Header In Registration Page Displayed");
+		return isElementVisible(headerInRegistrationPage, "Check if Header In Registration Page Displayed");
 	}
 
 	public boolean isEnterMobileNumberTextBoxDisplayed() {
-		return isElementVisible(enterMobileNumberTextBox, "Chcek if Mobile Number TextBox Displayed");
+		return isElementVisible(enterMobileNumberTextBox, "Check if Mobile Number TextBox Displayed");
 	}
 
 	public boolean isContinueButtonVisible() {
 		return isElementVisible(continueButton,"check continue button is displayed");
-
 	}
 
 	public boolean isLanguageSelectionVisible() {
-		return isElementVisible(languageSelection, "Chcek if Lang selection is Visible");
+		return isElementVisible(languageSelection, "Check if Lang selection is Visible");
 	}
 
 	public boolean isFooterTextDisplayed() {
-		return isElementVisible(footerText, "Chcek if footer text is Visible");
+		return isElementVisible(footerText, "Check if footer text is Visible");
 	}
 
 	public boolean isFooterLogoDisplayed() {
-		return isElementVisible(footerLogo, "Chcek if footer logo is Visible");
+		return isElementVisible(footerLogo, "Check if footer logo is Visible");
 	}
 
 	public boolean isTextBoxPrefilledWithCountryCode() {
-		return isElementVisible(prefilledCountryCode, "Chcek if Text Box Prefilled With CountryCode");
+		return isElementVisible(prefilledCountryCode, "Check if Text Box Prefilled With CountryCode");
 	}
 
 	public boolean isHelpTextInMobileNumberTextBoxDisplayed(String expectedText) {
@@ -281,7 +280,7 @@ public class RegistrationPage extends BasePage {
 
 	public void enterMobileNumber(String number) {
 		enterMobileNumberTextBox.clear();
-		enterText(enterMobileNumberTextBox, number, "Enterd Mobile Number");
+		enterText(enterMobileNumberTextBox, number, "Entered Mobile Number");
 		lastEnteredMobileNumber = number;
 	}
 
@@ -577,7 +576,7 @@ public class RegistrationPage extends BasePage {
 	}
 
 	public boolean isFullNameHasToBeInKhmerErrorDisplayed() {
-		return isElementVisible(fullNameHasToBeInKhmerOnlyError,"Cjeck if Full name has to be Khmenr Error Displayed");
+		return isElementVisible(fullNameHasToBeInKhmerOnlyError,"Check if Full name has to be Khmenr Error Displayed");
 	}
 
 	public void enterOnlySpacesFullName(int length) {

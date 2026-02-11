@@ -52,7 +52,7 @@ public class LoginOptionsPage extends BasePage {
 	@FindBy(id = "password-eye")
 	WebElement passwordEyeIcon;
 
-	@FindBy(xpath = "//small[@class='text-[#FE6B6B] font-medium flex items-center !mt-1']")
+	@FindBy(id = "error-banner-message")
 	WebElement invalidPasswordError;
 
 	@FindBy(id = "error-banner-message")

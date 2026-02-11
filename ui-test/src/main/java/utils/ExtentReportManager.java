@@ -29,6 +29,7 @@ public class ExtentReportManager {
 	private static int passedCount = 0;
 	private static int failedCount = 0;
 	private static int skippedCount = 0;
+	private static int knownIssueCount = 0;
 
 	public static void initReport() {
 		if (extent == null) {
@@ -145,6 +146,10 @@ public class ExtentReportManager {
 		skippedCount++;
 	}
 
+	public static synchronized void incrementKnownIssue() {
+		knownIssueCount++;
+	}
+
 	public static int getPassedCount() {
 		return passedCount;
 	}
@@ -157,18 +162,22 @@ public class ExtentReportManager {
 		return skippedCount;
 	}
 
+	public static int getKnownIssueCount() {
+		return knownIssueCount;
+	}
+
 	public static int getTotalCount() {
-		return passedCount + failedCount + skippedCount;
+		return passedCount + failedCount + skippedCount + knownIssueCount;
 	}
 
 	public static void logStep(String message) {
-	    if (message != null && message.trim().startsWith("ℹ️ Step completed successfully:")) {
-	        return;
-	    }
+		if (message != null && message.trim().startsWith("ℹ️ Step completed successfully:")) {
+			return;
+		}
 		ExtentTest test = testThread.get();
 		if (test != null) {
 			test.info(message);
-	    } else {
+		} else {
 			LOGGER.warn("logStep called but no test is active: {}", message);
 		}
 	}
