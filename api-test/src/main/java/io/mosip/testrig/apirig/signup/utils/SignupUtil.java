@@ -1592,7 +1592,7 @@ public class SignupUtil extends AdminTestUtil {
 
 			kernelAuthLib = new KernelAuthentication();
 			String token = kernelAuthLib.getTokenByRole(GlobalConstants.RESIDENT);
-			String url = SignupConstants.SIGNUP_BASE_URL + props.getProperty("registartionUiSpec");
+			String url = SignupConstants.SIGNUP_BASE_URL + props.getProperty("registrationUiSpec");
 
 			Response response = RestClient.getRequestWithCookie(url, MediaType.APPLICATION_JSON,
 					MediaType.APPLICATION_JSON, GlobalConstants.AUTHORIZATION, token);
@@ -1601,7 +1601,11 @@ public class SignupUtil extends AdminTestUtil {
 			JsonNode root = mapper.readTree(response.asString());
 
 			JsonNode responseNode = root.path("response");
-			ArrayNode fields = (ArrayNode) responseNode.path("schema");
+			JsonNode schemaNode = responseNode.path("schema");
+			if (!schemaNode.isArray()) {
+				throw new RuntimeException("UI spec response missing 'schema' array");
+			}
+			ArrayNode fields = (ArrayNode) schemaNode;
 			JsonNode allowedValues = responseNode.path("allowedValues");
 
 			ObjectNode finalBody = mapper.createObjectNode();
@@ -1644,6 +1648,7 @@ public class SignupUtil extends AdminTestUtil {
 						if (subType != null && allowedValues.has(subType)) {
 
 							JsonNode radioValues = allowedValues.path(subType);
+							if (!radioValues.fieldNames().hasNext()) continue;
 							String selectedKey = radioValues.fieldNames().next();
 							JsonNode langObject = radioValues.path(selectedKey);
 
@@ -1711,7 +1716,11 @@ public class SignupUtil extends AdminTestUtil {
 
 				case "dropdown":
 					if (allowedValues.has(id)) {
-						userInfo.put(id, allowedValues.path(id).fieldNames().next());
+						Iterator<String> names = allowedValues.path(id).fieldNames();
+						if (names.hasNext()) {
+							userInfo.put(id, names.next());
+						}
+
 					}
 					break;
 
@@ -1740,7 +1749,13 @@ public class SignupUtil extends AdminTestUtil {
 
 				case "date":
 					String format = field.path("format").asText("yyyy-MM-dd");
-					userInfo.put(id, LocalDate.now().minusYears(18).format(DateTimeFormatter.ofPattern(format)));
+					try {
+						userInfo.put(id, LocalDate.now().minusYears(18).format(DateTimeFormatter.ofPattern(format)));
+					} catch (IllegalArgumentException e) {
+						logger.warn("Invalid date format from UI spec: " + format + ", falling back to yyyy-MM-dd");
+						userInfo.put(id,
+								LocalDate.now().minusYears(18).format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+					}
 					break;
 
 				case "checkbox":
@@ -1769,14 +1784,20 @@ public class SignupUtil extends AdminTestUtil {
 			request.put("locale", "eng");
 
 			if (currentTestCaseName.contains("_SName_Valid")) {
-				CertsUtil.addCertificateToCache(currentTestCaseName + "_$REGISTEREDUSERFULLNAME$",
-						userInfo.get("fullName").toString());
+				JsonNode fullNameNode = userInfo.get("fullName");
+				if (fullNameNode != null) {
+					CertsUtil.addCertificateToCache(currentTestCaseName + "_$REGISTEREDUSERFULLNAME$",
+							fullNameNode.toString());
+				} else {
+					logger.warn("fullName field not found in userInfo for caching");
+				}
+
 			}
 
 			return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(finalBody);
 
 		} catch (Exception e) {
-			logger.info("Failed to generate HBS from UI spec", e);
+			logger.error("Failed to generate HBS from UI spec", e);
 			throw new RuntimeException("Failed to generate HBS from UI spec", e);
 		}
 	}
