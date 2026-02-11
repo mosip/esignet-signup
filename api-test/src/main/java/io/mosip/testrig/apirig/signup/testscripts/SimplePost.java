@@ -98,8 +98,15 @@ public class SimplePost extends SignupUtil implements ITest {
 				throw new SkipException(GlobalConstants.VID_FEATURE_NOT_SUPPORTED);
 			}
 		}
-
-		String inputJson = getJsonFromTemplate(testCaseDTO.getInput(), testCaseDTO.getInputTemplate());
+		
+		String inputJson ;
+		
+		if (testCaseName.contains("_RegisterUser_")) {
+			testCaseDTO.setInputTemplate(SignupUtil.generateHbsForRegisterUserRequest());
+			inputJson = getJsonFromTemplate(testCaseDTO.getInput(), testCaseDTO.getInputTemplate(), false);
+		} else {
+			inputJson = getJsonFromTemplate(testCaseDTO.getInput(), testCaseDTO.getInputTemplate());
+		}
 
 		if (inputJson.contains("$PHONENUMBERFROMREGEXFORSIGNUP$")) {
 			String phoneNumber = SignupUtil.getPhoneNumberFromRegex();

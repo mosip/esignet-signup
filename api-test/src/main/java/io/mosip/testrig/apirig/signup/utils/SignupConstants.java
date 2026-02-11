@@ -82,5 +82,9 @@ public class SignupConstants {
 	public static final String TRUE_STRING = "true";
 	
 	public static final String ALL_ONE_OTP_STRING = "111111";
+	
+	public static final String AUTOMATION_USER = "AutomationUser";
+	
+	public static final String AUTOMATION_USER_KHM = "អ្នកប្រើប្រាស់ស្វ័យប្រវត្តិ";
 
 }

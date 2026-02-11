@@ -1,12 +1,15 @@
 package io.mosip.testrig.apirig.signup.utils;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -24,6 +27,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.testng.SkipException;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.nimbusds.jose.JWSAlgorithm;
@@ -49,7 +56,7 @@ import io.mosip.testrig.apirig.utils.KeycloakUserManager;
 import io.mosip.testrig.apirig.utils.RestClient;
 import io.mosip.testrig.apirig.utils.SecurityXSSException;
 import io.mosip.testrig.apirig.utils.SkipTestCaseHandler;
-import io.restassured.RestAssured;
+import io.mosip.testrig.apirig.utils.Translator;
 import io.restassured.response.Response;
 
 public class SignupUtil extends AdminTestUtil {
@@ -902,7 +909,7 @@ public class SignupUtil extends AdminTestUtil {
 					eachValueJson.put(GlobalConstants.LANGUAGE, "");
 				} else
 					eachValueJson.put(GlobalConstants.LANGUAGE, languageList.get(i));
-				String generatedString = "";
+//				String generatedString = "";
 
 				try {
 					if (!fullNamePattern.isEmpty()) {
@@ -1579,6 +1586,211 @@ public class SignupUtil extends AdminTestUtil {
 
 		return testCaseDTO;
 	}
+	
+	public static String generateHbsForRegisterUserRequest() {
+		try {
 
+			kernelAuthLib = new KernelAuthentication();
+			String token = kernelAuthLib.getTokenByRole(GlobalConstants.RESIDENT);
+			String url = SignupConstants.SIGNUP_BASE_URL + props.getProperty("registartionUiSpec");
+
+			Response response = RestClient.getRequestWithCookie(url, MediaType.APPLICATION_JSON,
+					MediaType.APPLICATION_JSON, GlobalConstants.AUTHORIZATION, token);
+
+			ObjectMapper mapper = new ObjectMapper();
+			JsonNode root = mapper.readTree(response.asString());
+
+			JsonNode responseNode = root.path("response");
+			ArrayNode fields = (ArrayNode) responseNode.path("schema");
+			JsonNode allowedValues = responseNode.path("allowedValues");
+
+			ObjectNode finalBody = mapper.createObjectNode();
+			finalBody.put("requestTime", "{{requestTime}}");
+			finalBody.put("verifiedTransactionID", "{{verifiedTransactionID}}");
+
+			ObjectNode request = finalBody.putObject("request");
+			ObjectNode userInfo = request.putObject("userInfo");
+
+			for (JsonNode field : fields) {
+
+				String id = field.path("id").asText();
+				String controlType = field.path("controlType").asText();
+				String type = field.path("type").asText();
+				String subType = field.path("subType").asText(null);
+				boolean disabled = field.path("disabled").asBoolean(false);
+
+				// Skip disabled fields unless backend-controlled
+				if (disabled && !isBackendRequiredField(id, allowedValues)) {
+					continue;
+				}
+
+				// SIMPLE TYPE (Multilingual)
+				if ("simpleType".equals(type)) {
+
+					ArrayNode arr = userInfo.putArray(id);
+					List<String> languageList = new ArrayList<>(signupSupportedLanguage);
+
+					boolean isMultilingualNameField = field.has("validators") && field.get("validators").size() > 1;
+
+					for (String lang : languageList) {
+
+						if (lang == null || lang.isEmpty())
+							continue;
+
+						ObjectNode each = arr.addObject();
+						each.put("language", lang);
+
+						// If radio with subType
+						if (subType != null && allowedValues.has(subType)) {
+
+							JsonNode radioValues = allowedValues.path(subType);
+							String selectedKey = radioValues.fieldNames().next();
+							JsonNode langObject = radioValues.path(selectedKey);
+
+							if (langObject.has(lang)) {
+								each.put("value", langObject.path(lang).asText());
+							} else {
+								each.put("value", langObject.fields().next().getValue().asText());
+							}
+
+						} else if (isMultilingualNameField) {
+
+							String translatedName;
+
+							if ("khm".equals(lang)) {
+								translatedName = SignupConstants.AUTOMATION_USER_KHM;
+							} else {
+								translatedName = Translator.translate(lang, SignupConstants.AUTOMATION_USER);
+							}
+
+							each.put("value", translatedName);
+
+						} else if (field.has("validators") && field.get("validators").size() > 0) {
+
+							String regex = field.get("validators").get(0).path("regex").asText(null);
+
+							if (regex != null) {
+								each.put("value", generateFromRegex(regex));
+							} else {
+								each.put("value", "testAutomation");
+							}
+
+						} else {
+							each.put("value", "testAutomation");
+						}
+					}
+					continue;
+				}
+
+				// Regex-based value (textarea / textbox)
+				if (field.has("validators") && field.get("validators").size() > 0) {
+					String regex = field.get("validators").get(0).path("regex").asText(null);
+
+					if (regex != null) {
+						if (regex.contains("@")) {
+							userInfo.put(id, "testAutomation@mosip.com");
+						} else {
+							userInfo.put(id, generateFromRegex(regex));
+						}
+						continue;
+					}
+				}
+
+				// Control-type based fallback
+				switch (controlType) {
+
+				case "phone":
+					userInfo.put(id, "{{phone}}");
+					request.put("username", "{{username}}");
+					break;
+
+				case "password":
+					userInfo.put(id, PASSWORD_FOR_ADDIDENTITY_AND_REGISTRATION);
+					request.put("password", PASSWORD_FOR_ADDIDENTITY_AND_REGISTRATION);
+					break;
+
+				case "dropdown":
+					if (allowedValues.has(id)) {
+						userInfo.put(id, allowedValues.path(id).fieldNames().next());
+					}
+					break;
+
+				case "radio":
+					if (subType != null && allowedValues.has(subType)) {
+
+						JsonNode radioValues = allowedValues.path(subType);
+						String selectedKey = radioValues.fieldNames().next();
+						JsonNode langObject = radioValues.path(selectedKey);
+
+						ArrayNode arr = userInfo.putArray(id);
+
+						Iterator<Map.Entry<String, JsonNode>> fieldsIter = langObject.fields();
+
+						while (fieldsIter.hasNext()) {
+							Map.Entry<String, JsonNode> entry = fieldsIter.next();
+
+							arr.addObject().put("language", entry.getKey()).put("value", entry.getValue().asText());
+						}
+					}
+					break;
+
+				case "textarea":
+					userInfo.put(id, "testAutomation");
+					break;
+
+				case "date":
+					String format = field.path("format").asText("yyyy-MM-dd");
+					userInfo.put(id, LocalDate.now().minusYears(18).format(DateTimeFormatter.ofPattern(format)));
+					break;
+
+				case "checkbox":
+					userInfo.put(id, true);
+					break;
+
+				case "fileupload":
+				case "photo":
+					// Ignore (handled separately by upload endpoint)
+					break;
+
+				case "textbox":
+					if (allowedValues.has(id)) {
+						userInfo.put(id, allowedValues.path(id).asText());
+					} else {
+						userInfo.put(id, "testAutomation");
+					}
+					break;
+
+				default:
+					userInfo.put(id, "testAutomation");
+				}
+			}
+
+			request.put("consent", "{{consent}}");
+			request.put("locale", "eng");
+			
+			if (currentTestCaseName.contains("_SName_Valid")) {
+				CertsUtil.addCertificateToCache(currentTestCaseName + "_$REGISTEREDUSERFULLNAME$",
+						userInfo.get("fullName").toString());
+			}
+
+			return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(finalBody);
+
+		} catch (Exception e) {
+			logger.info("Failed to generate HBS from UI spec", e);
+			throw new RuntimeException("Failed to generate HBS from UI spec", e);
+		}
+	}
+	
+	private static String generateFromRegex(String regex) {
+	    try {
+	        return genStringAsperRegex(regex); // Generex method
+	    } catch (Exception e) {
+	        return "testAutomation";
+	    }
+	}
+
+	private static boolean isBackendRequiredField(String id, JsonNode allowedValues) {
+	    return allowedValues.has(id) || "phone".equals(id);
+	}
 	
 }

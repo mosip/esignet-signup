@@ -5,16 +5,12 @@ RegisterUser:
       role: resident
       restMethod: post
       inputTemplate: signup/RegisterUser/RegisterUser
-      outputTemplate: signup/RegisterUser/RegisterUserResult
       input: '{
     "verifiedTransactionID": "$ID:ESignet_VerifyChallenge_STransId_smoke_Pos_VTransactionID$",
     "username": "$ID:ESignet_GenerateChallenge_STransId_Valid_smoke_Pos_PHONE$",
-    "password": "$PASSWORDTOREGISTERUSER$",
     "consent": "AGREE",
-    "fullName": "$FULLNAMETOREGISTERUSER$",
     "requestTime": "$TIMESTAMP$",
-    "phone": "$ID:ESignet_GenerateChallenge_STransId_Valid_smoke_Pos_PHONE$",
-    "preferredLang": "khm"
+    "phone": "$ID:ESignet_GenerateChallenge_STransId_Valid_smoke_Pos_PHONE$"
 }'
       output: '{
   "status":"PENDING"
