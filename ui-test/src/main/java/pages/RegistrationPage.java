@@ -356,7 +356,7 @@ public class RegistrationPage extends BasePage {
 	}
 
 	public boolean isEnterOtpPageDisplayed() {
-		return isElementVisible(otpPage, "Check if OTP Screen is visible");
+		return isElementVisible(verifyOtpButton, "Check if OTP Screen is visible");
 	}
 
 	public boolean isOtpPageHeaderDisplayed() {
