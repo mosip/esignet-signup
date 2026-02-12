@@ -196,9 +196,9 @@ public class Runner extends AbstractTestNGCucumberTests {
 
 	private static void loadKnownIssues() {
 
-		try (BufferedReader br = new BufferedReader(new InputStreamReader(
-				new FileInputStream(System.getProperty("user.dir") + "/src/main/resources/config/Known_Issues.txt"),
-				StandardCharsets.UTF_8))) {
+		try (BufferedReader br = new BufferedReader(
+				new InputStreamReader(Runner.class.getClassLoader().getResourceAsStream("config/Known_Issues.txt"),
+						StandardCharsets.UTF_8))) {
 
 			String line;
 			while ((line = br.readLine()) != null) {
@@ -222,7 +222,7 @@ public class Runner extends AbstractTestNGCucumberTests {
 			LOGGER.info("Known Issues Loaded: " + knownIssues);
 
 		} catch (Exception e) {
-			LOGGER.warning("Known_Issues.txt not found or unreadable: " + e.getMessage());
+			LOGGER.warning("Error reading Known_Issues.txt: " + e.getMessage());
 		}
 	}
 

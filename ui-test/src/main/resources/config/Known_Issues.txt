@@ -1,3 +1,10 @@
 #Add the Known Issue scenario with its bug id here
 #Ex:bugId------scenario
 #Ex:ES-1234------Verify the notification when OTP requested
+ES-2853------Verify the forget password options for otp
+ES-2853------Verify the reset password options
+ES-2850------Verify the Registration process and Login Flow
+ES-2687------Signup and Mobile Number Registration
+ES-2853------Completing Registration Process
+ES-2853------OTP input acceptance and Verify button state
+ES-2853------Verify sign-up portal by navigating directly through sign-up URL

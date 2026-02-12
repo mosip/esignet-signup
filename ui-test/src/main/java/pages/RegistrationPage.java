@@ -559,6 +559,8 @@ public class RegistrationPage extends BasePage {
 	}
 
 	public void enterFullNameInKhmer(String name) {
+		((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({block:'center'});",
+				fullNameKhmerField);
 		clearField(fullNameKhmerField);
 		enterTextJS(fullNameKhmerField, name);
 	}
