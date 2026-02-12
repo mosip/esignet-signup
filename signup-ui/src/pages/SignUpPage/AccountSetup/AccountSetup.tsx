@@ -78,7 +78,7 @@ export const AccountSetup = ({ settings, methods }: AccountSetupProps) => {
     const uploadMutationList = uiSchema?.schema
       .filter(
         ({ id, controlType }) =>
-          fileUploadTypeList.includes(controlType) && data[id].value
+          fileUploadTypeList.includes(controlType) && data[id] && data[id].value
       )
       .map(({ id }) => {
         const temp = new FormData();
