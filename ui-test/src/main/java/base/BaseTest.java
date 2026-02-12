@@ -16,14 +16,11 @@ import java.util.List;
 
 import org.json.JSONObject;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.SkipException;
-
 import com.aventstack.extentreports.ExtentReports;
 
 import io.cucumber.java.After;
@@ -60,9 +57,8 @@ public class BaseTest {
 	@BeforeAll
 	public static void beforeAll() {
 		boolean runOnBrowserStack = Boolean.parseBoolean(EsignetConfigManager.getproperty("runOnBrowserStack"));
-		boolean bsLocalEnabled = Boolean.parseBoolean(EsignetConfigManager.getproperty("browserstack.local"));
 
-		if (runOnBrowserStack && bsLocalEnabled) {
+		if (runOnBrowserStack) {
 			try {
 				BrowserStackLocalManager.start();
 				LOGGER.info("BrowserStack Local (WireGuard) started");
@@ -100,7 +96,6 @@ public class BaseTest {
 			WebDriver driver;
 
 			if (runOnBrowserStack) {
-				BrowserStackLocalManager.start();
 				driver = setupBrowserStackDriver(scenario, runMultipleBrowsers, browserTagPresent, scenarioBrowser);
 			} else {
 				driver = setupLocalDriver(scenario, runMultipleBrowsers, browserTagPresent, scenarioBrowser);
@@ -198,7 +193,7 @@ public class BaseTest {
 
 				// Use scenario name + failed step (fallback to scenario name if step unknown)
 				String failedStepName = scenario.getName().replaceAll("[^a-zA-Z0-9]", "_");
-				
+
 				// Attach single screenshot
 				ScreenshotUtil.attachScreenshot(driver, failedStepName);
 
@@ -246,9 +241,8 @@ public class BaseTest {
 	@AfterAll
 	public static void afterAll() {
 		boolean runOnBrowserStack = Boolean.parseBoolean(EsignetConfigManager.getproperty("runOnBrowserStack"));
-		boolean bsLocalEnabled = Boolean.parseBoolean(EsignetConfigManager.getproperty("browserstack.local"));
 
-		if (runOnBrowserStack && bsLocalEnabled) {
+		if (runOnBrowserStack) {
 			try {
 				BrowserStackLocalManager.stop();
 				LOGGER.info("BrowserStack Local (WireGuard) stopped");
