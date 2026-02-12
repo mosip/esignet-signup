@@ -1592,7 +1592,8 @@ public class SignupUtil extends AdminTestUtil {
 
 			kernelAuthLib = new KernelAuthentication();
 			String token = kernelAuthLib.getTokenByRole(GlobalConstants.RESIDENT);
-			String url = SignupConstants.SIGNUP_BASE_URL + props.getProperty("registrationUiSpec");
+			String url = SignupConstants.SIGNUP_BASE_URL
+					+ props.getProperty(SignupConstants.SIGNUP_REGISTRATION_UI_SPEC);
 
 			Response response = RestClient.getRequestWithCookie(url, MediaType.APPLICATION_JSON,
 					MediaType.APPLICATION_JSON, GlobalConstants.AUTHORIZATION, token);
@@ -1600,28 +1601,28 @@ public class SignupUtil extends AdminTestUtil {
 			ObjectMapper mapper = new ObjectMapper();
 			JsonNode root = mapper.readTree(response.asString());
 
-			JsonNode responseNode = root.path("response");
-			JsonNode schemaNode = responseNode.path("schema");
+			JsonNode responseNode = root.path(GlobalConstants.RESPONSE);
+			JsonNode schemaNode = responseNode.path(SignupConstants.SCHEMA);
 			if (!schemaNode.isArray()) {
 				throw new RuntimeException("UI spec response missing 'schema' array");
 			}
 			ArrayNode fields = (ArrayNode) schemaNode;
-			JsonNode allowedValues = responseNode.path("allowedValues");
+			JsonNode allowedValues = responseNode.path(SignupConstants.ALLOWED_VALUES);
 
 			ObjectNode finalBody = mapper.createObjectNode();
-			finalBody.put("requestTime", "{{requestTime}}");
-			finalBody.put("verifiedTransactionID", "{{verifiedTransactionID}}");
+			finalBody.put(SignupConstants.REQUEST_TIME, SignupConstants.REQUEST_TIME_PLACEHOLDER);
+			finalBody.put(GlobalConstants.VERIFIEDTRANSACTIONID, SignupConstants.VERIFIED_TRANSACTION_ID_PLACEHOLDER);
 
-			ObjectNode request = finalBody.putObject("request");
-			ObjectNode userInfo = request.putObject("userInfo");
+			ObjectNode request = finalBody.putObject(GlobalConstants.REQUEST);
+			ObjectNode userInfo = request.putObject(SignupConstants.USER_INFO);
 
 			for (JsonNode field : fields) {
 
-				String id = field.path("id").asText();
-				String controlType = field.path("controlType").asText();
-				String type = field.path("type").asText();
-				String subType = field.path("subType").asText(null);
-				boolean disabled = field.path("disabled").asBoolean(false);
+				String id = field.path(SignupConstants.ID).asText();
+				String controlType = field.path(SignupConstants.CONTROL_TYPE).asText();
+				String type = field.path(SignupConstants.TYPE).asText();
+				String subType = field.path(SignupConstants.SUB_TYPE).asText(null);
+				boolean disabled = field.path(SignupConstants.DISABLED).asBoolean(false);
 
 				// Skip disabled fields unless backend-controlled
 				if (disabled && !isBackendRequiredField(id, allowedValues)) {
@@ -1629,12 +1630,13 @@ public class SignupUtil extends AdminTestUtil {
 				}
 
 				// SIMPLE TYPE (Multilingual)
-				if ("simpleType".equals(type)) {
+				if (GlobalConstants.SIMPLETYPE.equals(type)) {
 
 					ArrayNode arr = userInfo.putArray(id);
 					List<String> languageList = new ArrayList<>(signupSupportedLanguage);
 
-					boolean isMultilingualNameField = field.has("validators") && field.get("validators").size() > 1;
+					boolean isMultilingualNameField = field.has(SignupConstants.VALIDATORS_STRING)
+							&& field.get(SignupConstants.VALIDATORS_STRING).size() > 1;
 
 					for (String lang : languageList) {
 
@@ -1642,58 +1644,63 @@ public class SignupUtil extends AdminTestUtil {
 							continue;
 
 						ObjectNode each = arr.addObject();
-						each.put("language", lang);
+						each.put(GlobalConstants.LANGUAGE, lang);
 
 						// If radio with subType
 						if (subType != null && allowedValues.has(subType)) {
 
 							JsonNode radioValues = allowedValues.path(subType);
-							if (!radioValues.fieldNames().hasNext()) continue;
+							if (!radioValues.fieldNames().hasNext())
+								continue;
 							String selectedKey = radioValues.fieldNames().next();
 							JsonNode langObject = radioValues.path(selectedKey);
 
 							if (langObject.has(lang)) {
-								each.put("value", langObject.path(lang).asText());
+								each.put(GlobalConstants.VALUE, langObject.path(lang).asText());
 							} else {
-								each.put("value", langObject.fields().next().getValue().asText());
+								each.put(GlobalConstants.VALUE, langObject.fields().next().getValue().asText());
 							}
 
 						} else if (isMultilingualNameField) {
 
 							String translatedName;
 
-							if ("khm".equals(lang)) {
+							if (SignupConstants.KHM.equals(lang)) {
 								translatedName = SignupConstants.AUTOMATION_USER_KHM;
 							} else {
 								translatedName = Translator.translate(lang, SignupConstants.AUTOMATION_USER);
 							}
 
-							each.put("value", translatedName);
+							each.put(GlobalConstants.VALUE, translatedName);
 
-						} else if (field.has("validators") && field.get("validators").size() > 0) {
+						} else if (field.has(SignupConstants.VALIDATORS_STRING)
+								&& field.get(SignupConstants.VALIDATORS_STRING).size() > 0) {
 
-							String regex = field.get("validators").get(0).path("regex").asText(null);
+							String regex = field.get(SignupConstants.VALIDATORS_STRING).get(0)
+									.path(SignupConstants.REGEX).asText(null);
 
 							if (regex != null) {
-								each.put("value", generateFromRegex(regex));
+								each.put(GlobalConstants.VALUE, generateFromRegex(regex));
 							} else {
-								each.put("value", "testAutomation");
+								each.put(GlobalConstants.VALUE, SignupConstants.TEST_AUTOMATION);
 							}
 
 						} else {
-							each.put("value", "testAutomation");
+							each.put(GlobalConstants.VALUE, SignupConstants.TEST_AUTOMATION);
 						}
 					}
 					continue;
 				}
 
 				// Regex-based value (textarea / textbox)
-				if (field.has("validators") && field.get("validators").size() > 0) {
-					String regex = field.get("validators").get(0).path("regex").asText(null);
+				if (field.has(SignupConstants.VALIDATORS_STRING)
+						&& field.get(SignupConstants.VALIDATORS_STRING).size() > 0) {
+					String regex = field.get(SignupConstants.VALIDATORS_STRING).get(0).path(SignupConstants.REGEX)
+							.asText(null);
 
 					if (regex != null) {
-						if (regex.contains("@")) {
-							userInfo.put(id, "testAutomation@mosip.com");
+						if (regex.contains(SignupConstants.AT_SYMBOL)) {
+							userInfo.put(id, SignupConstants.TEST_AUTOMATION_EMAIL);
 						} else {
 							userInfo.put(id, generateFromRegex(regex));
 						}
@@ -1704,27 +1711,26 @@ public class SignupUtil extends AdminTestUtil {
 				// Control-type based fallback
 				switch (controlType) {
 
-				case "phone":
-					userInfo.put(id, "{{phone}}");
-					request.put("username", "{{username}}");
+				case SignupConstants.PHONE_STRING:
+					userInfo.put(id, SignupConstants.PHONE_PLACEHOLDER);
+					request.put(GlobalConstants.USERNAME, SignupConstants.USERNAME_PLACEHOLDER);
 					break;
 
-				case "password":
+				case GlobalConstants.PASSWORD:
 					userInfo.put(id, PASSWORD_FOR_ADDIDENTITY_AND_REGISTRATION);
-					request.put("password", PASSWORD_FOR_ADDIDENTITY_AND_REGISTRATION);
+					request.put(GlobalConstants.PASSWORD, PASSWORD_FOR_ADDIDENTITY_AND_REGISTRATION);
 					break;
 
-				case "dropdown":
+				case SignupConstants.DROPDOWN:
 					if (allowedValues.has(id)) {
 						Iterator<String> names = allowedValues.path(id).fieldNames();
 						if (names.hasNext()) {
 							userInfo.put(id, names.next());
 						}
-
 					}
 					break;
 
-				case "radio":
+				case SignupConstants.RADIO:
 					if (subType != null && allowedValues.has(subType)) {
 
 						JsonNode radioValues = allowedValues.path(subType);
@@ -1738,53 +1744,54 @@ public class SignupUtil extends AdminTestUtil {
 						while (fieldsIter.hasNext()) {
 							Map.Entry<String, JsonNode> entry = fieldsIter.next();
 
-							arr.addObject().put("language", entry.getKey()).put("value", entry.getValue().asText());
+							arr.addObject().put(GlobalConstants.LANGUAGE, entry.getKey()).put(GlobalConstants.VALUE,
+									entry.getValue().asText());
 						}
 					}
 					break;
 
-				case "textarea":
-					userInfo.put(id, "testAutomation");
+				case SignupConstants.TEXTAREA:
+					userInfo.put(id, SignupConstants.TEST_AUTOMATION);
 					break;
 
-				case "date":
-					String format = field.path("format").asText("yyyy-MM-dd");
+				case SignupConstants.DATE:
+					String format = field.path(SignupConstants.FORMAT).asText(SignupConstants.YEAR_MONTH_DAY);
 					try {
 						userInfo.put(id, LocalDate.now().minusYears(18).format(DateTimeFormatter.ofPattern(format)));
 					} catch (IllegalArgumentException e) {
 						logger.warn("Invalid date format from UI spec: " + format + ", falling back to yyyy-MM-dd");
-						userInfo.put(id,
-								LocalDate.now().minusYears(18).format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+						userInfo.put(id, LocalDate.now().minusYears(18)
+								.format(DateTimeFormatter.ofPattern(SignupConstants.YEAR_MONTH_DAY)));
 					}
 					break;
 
-				case "checkbox":
+				case SignupConstants.CHECKBOX:
 					userInfo.put(id, true);
 					break;
 
-				case "fileupload":
-				case "photo":
+				case SignupConstants.FILEUPLOAD:
+				case SignupConstants.PHOTO:
 					// Ignore (handled separately by upload endpoint)
 					break;
 
-				case "textbox":
+				case SignupConstants.TEXTBOX:
 					if (allowedValues.has(id)) {
 						userInfo.put(id, allowedValues.path(id).asText());
 					} else {
-						userInfo.put(id, "testAutomation");
+						userInfo.put(id, SignupConstants.TEST_AUTOMATION);
 					}
 					break;
 
 				default:
-					userInfo.put(id, "testAutomation");
+					userInfo.put(id, SignupConstants.TEST_AUTOMATION);
 				}
 			}
 
-			request.put("consent", "{{consent}}");
-			request.put("locale", "eng");
+			request.put(SignupConstants.CONSENT, SignupConstants.CONSENT_PLACEHOLDER);
+			request.put(SignupConstants.LOCALE, SignupConstants.ENG);
 
 			if (currentTestCaseName.contains("_SName_Valid")) {
-				JsonNode fullNameNode = userInfo.get("fullName");
+				JsonNode fullNameNode = userInfo.get(GlobalConstants.FULLNAME);
 				if (fullNameNode != null) {
 					CertsUtil.addCertificateToCache(currentTestCaseName + "_$REGISTEREDUSERFULLNAME$",
 							fullNameNode.toString());
@@ -1806,7 +1813,7 @@ public class SignupUtil extends AdminTestUtil {
 		try {
 			return genStringAsperRegex(regex); // Generex method
 		} catch (Exception e) {
-			return "testAutomation";
+			return SignupConstants.TEST_AUTOMATION;
 		}
 	}
 
