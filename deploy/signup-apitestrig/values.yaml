@@ -2,8 +2,8 @@ modules:
   esignet-signup:
     enabled: true
     image:
-      repository: mosipid/apitest-esignet-signup
-      tag: 1.2.2
+      repository: mosipqa/apitest-esignet-signup
+      tag: 1.4.x
       pullPolicy: Always
 
 extraEnvVarsCM:
