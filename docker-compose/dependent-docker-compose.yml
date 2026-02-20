@@ -63,8 +63,8 @@ services:
       - plugin_name_env=esignet-mock-plugin.jar
       - KAFKA_ENABLED=false
       - SPRING_CACHE_TYPE=redis
-      - SPRING_REDIS_HOST=redis
-      - SPRING_REDIS_PASSWORD=
+      - SPRING_DATA_REDIS_HOST=redis
+      - SPRING_DATA_REDIS_PASSWORD=
       - MOSIP_ESIGNET_DATABASE_URL=jdbc:postgresql://database:5432/mosip_esignet?currentSchema=esignet
       - MOSIP_ESIGNET_DATABASE_USERNAME=postgres
       - MOSIP_ESIGNET_DATABASE_PASSWORD=postgres
