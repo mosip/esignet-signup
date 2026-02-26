@@ -23,7 +23,7 @@ import {
   StepTitle,
 } from "~components/ui/step";
 import { cn } from "~utils/cn";
-import { handleInputFilter } from "~utils/input";
+import { handleEmailFilter, handleInputFilter } from "~utils/input";
 import { getLocale } from "~utils/language";
 import { getSignInRedirectURLV2 } from "~utils/link";
 import { useGenerateChallenge } from "~pages/shared/mutations";
@@ -102,7 +102,7 @@ export const Phone = ({ settings, methods }: PhoneProps) => {
   };
 
   const handleUsernameInput = (event: KeyboardEvent<HTMLInputElement>) =>
-    handleInputFilter(
+    handleEmailFilter(
       event,
       settings.response.configs["identifier.allowed.characters"]
     );
@@ -214,7 +214,7 @@ export const Phone = ({ settings, methods }: PhoneProps) => {
           <div className="flex flex-col gap-y-3">
             {/* Phone number input */}
             <FormField
-              name="email"
+              name="phone"
               control={control}
               render={({ field }) => (
                 <FormItem>
@@ -230,7 +230,7 @@ export const Phone = ({ settings, methods }: PhoneProps) => {
                           <Input
                             {...field}
                             id="phone_input"
-                            type="email"
+                            type="tel"
                             placeholder={t("enter_your_email_placeholder")}
                             className="h-[inherit] border-none outline-none"
                             minLength={
