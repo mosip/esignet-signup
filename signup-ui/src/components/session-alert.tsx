@@ -77,7 +77,7 @@ export const SessionAlert = ({
   const handleReturnToLogin = (e: any) => {
     e.preventDefault();
     window.location.href = getSignInRedirectURLV2(
-      settings?.response.configs["signin.redirect-url"],
+      settings?.response.configs["rp.config"].redirect_uri_signin,
       fromSignInHash,
       search,
       "/signup"

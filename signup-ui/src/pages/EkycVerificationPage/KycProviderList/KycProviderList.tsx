@@ -37,6 +37,7 @@ const POLLING_BASE_URL =
 export const KycProviderList = ({
   cancelPopup,
   settings,
+  handleDismiss,
 }: DefaultEkyVerificationProp) => {
   const { i18n, t } = useTranslation("translation", {
     keyPrefix: "kyc_provider",
@@ -88,10 +89,10 @@ export const KycProviderList = ({
   const handleCancel = (e: any) => {
     e.preventDefault();
     if (kycProvidersList === null || kycProvidersList.length === 0) {
-      window.onbeforeunload = null;
-      window.location.href = `${settings?.configs[
-        "esignet-consent.redirect-url"
-      ]}?key=${hashCode?.state || ""}&error=no_ekyc_provider`;
+      handleDismiss({
+        key: hashCode?.state || "",
+        error: "no_ekyc_provider",
+      });
     } else {
       setCancelButton(true);
     }

@@ -172,7 +172,7 @@ export const Phone = ({ settings, methods }: PhoneProps) => {
           {!!fromSignInHash && (
             <a
               href={getSignInRedirectURLV2(
-                settings?.response.configs["signin.redirect-url"],
+                settings?.response.configs["rp.config"].redirect_uri_signin,
                 fromSignInHash,
                 search,
                 "/signup"
