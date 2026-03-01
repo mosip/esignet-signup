@@ -15,7 +15,7 @@ public class BooleanDeserializer extends JsonDeserializer<Boolean> {
         String value = parser.getText();
 
         if (StringUtils.isBlank(value)) {
-            throw new InvalidRequestException(ErrorConstants.INVALID_REQUEST);
+            throw new InvalidRequestException();
         }
 
         switch (value.toLowerCase()) {
@@ -24,7 +24,7 @@ public class BooleanDeserializer extends JsonDeserializer<Boolean> {
             case "false":
                 return false;
             default:
-                throw new InvalidRequestException(ErrorConstants.INVALID_REQUEST);
+                throw new InvalidRequestException();
         }
     }
 }

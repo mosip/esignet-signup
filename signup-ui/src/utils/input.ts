@@ -4,7 +4,15 @@ export const handleInputFilter = (
   event: KeyboardEvent<HTMLInputElement>,
   condition: string
 ) => {
-  const allowedKeys = ["Backspace", "Delete", "ArrowLeft", "ArrowRight", "a", "c", "v"];
+  const allowedKeys = [
+    "Backspace",
+    "Delete",
+    "ArrowLeft",
+    "ArrowRight",
+    "a",
+    "c",
+    "v",
+  ];
 
   // Allow select all key: Ctrl + "a"
   // Allow copy key: Ctrl + "c"
@@ -30,9 +38,29 @@ export const handleInputFilter = (
   // handling Unidentified key from Android keyboard by hard-filtering the Unidentified key
   if (event.key === "Unidentified") {
     event.currentTarget.value = event.currentTarget.value
-    .split("")
-    .filter(newKey => new RegExp(condition).test(newKey))
-    .join("");
+      .split("")
+      .filter((newKey) => new RegExp(condition).test(newKey))
+      .join("");
+    event.preventDefault();
+  }
+};
+
+export const handleEmailFilter = (
+  event: KeyboardEvent<HTMLInputElement>,
+  condition: string
+) => {
+  const allowedCharacters = new RegExp(condition);
+
+  if (!allowedCharacters.test(event.key)) {
+    event.preventDefault(); // Prevent non-allowed characters
+  }
+
+  // handling Unidentified key from Android keyboard by hard-filtering the Unidentified key
+  if (event.key === "Unidentified") {
+    event.currentTarget.value = event.currentTarget.value
+      .split("")
+      .filter((newKey) => new RegExp(condition).test(newKey))
+      .join("");
     event.preventDefault();
   }
 };
