@@ -4,6 +4,14 @@ import { NavigateFunction } from "react-router-dom";
 import { SOMETHING_WENT_WRONG } from "~constants/routes";
 import { getCsrfToken } from "~pages/shared/service";
 
+declare global {
+  interface Window {
+    _env_?: {
+      SECURE_WEBSOCKET?: boolean;
+    };
+  }
+}
+
 const API_BASE_URL =
   process.env.NODE_ENV === "development"
     ? process.env.REACT_APP_API_BASE_URL
@@ -12,7 +20,9 @@ const API_BASE_URL =
 export const WS_BASE_URL =
   process.env.NODE_ENV === "development" || process.env.NODE_ENV === "test"
     ? `ws://${process.env.REACT_APP_API_BASE_URL?.split("://")[1]}`
-    : `wss://${window.location.host}/v1/signup`;
+    : window._env_?.SECURE_WEBSOCKET === true
+      ? `wss://${window.location.host}/v1/signup`
+      : `ws://${window.location.host}/v1/signup`;
 
 export class HttpError extends Error {
   code: number;
