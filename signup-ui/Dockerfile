@@ -12,6 +12,9 @@ ENV DEFAULT_FEVICON=$defaultFevicon
 ARG defaultTitle
 ENV DEFAULT_TITLE=$defaultTitle
 
+ARG secureWebsocket="true"
+ENV SECURE_WEBSOCKET=$secureWebsocket
+
 ARG signUpPublicUrl
 ENV PUBLIC_URL=$signUpPublicUrl
 ENV SIGNUP_UI_PUBLIC_URL=$signUpPublicUrl
@@ -84,7 +87,7 @@ COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
 # copy build files to nginx html directory
 COPY --from=build_signup_ui /build  ${work_dir}
 
-RUN echo "DEFAULT_THEME=$DEFAULT_THEME" >> ${work_dir}/env.env && echo "DEFAULT_LANG=$DEFAULT_LANG" >> ${work_dir}/env.env && echo "DEFAULT_FEVICON=$DEFAULT_FEVICON" >> ${work_dir}/env.env env && echo "DEFAULT_TITLE=$DEFAULT_TITLE" >> ${work_dir}/env.env
+RUN echo "DEFAULT_THEME=$DEFAULT_THEME" >> ${work_dir}/env.env && echo "DEFAULT_LANG=$DEFAULT_LANG" >> ${work_dir}/env.env && echo "DEFAULT_FEVICON=$DEFAULT_FEVICON" >> ${work_dir}/env.env env && echo "DEFAULT_TITLE=$DEFAULT_TITLE" >> ${work_dir}/env.env && echo "SECURE_WEBSOCKET=$SECURE_WEBSOCKET" >> ${work_dir}/env.env
 
 RUN chown -R ${container_user}:${container_user} /home/${container_user}
 

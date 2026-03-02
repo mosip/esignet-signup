@@ -5,4 +5,5 @@ window._env_ = {
   DEFAULT_FEVICON: "favicon.ico",
   DEFAULT_TITLE: "eSignet-Signup",
   SUPPORTED_LNG: ["en", "km"],
+  SECURE_WEBSOCKET: true
 };
