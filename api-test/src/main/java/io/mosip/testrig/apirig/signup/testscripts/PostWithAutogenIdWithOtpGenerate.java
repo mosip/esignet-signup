@@ -29,6 +29,7 @@ import io.mosip.testrig.apirig.testrunner.HealthChecker;
 import io.mosip.testrig.apirig.utils.AdminTestException;
 import io.mosip.testrig.apirig.utils.AuthenticationTestException;
 import io.mosip.testrig.apirig.utils.GlobalConstants;
+import io.mosip.testrig.apirig.utils.NotificationListener;
 import io.mosip.testrig.apirig.utils.OutputValidationUtil;
 import io.mosip.testrig.apirig.utils.ReportUtil;
 import io.mosip.testrig.apirig.utils.SecurityXSSException;
@@ -132,6 +133,7 @@ public class PostWithAutogenIdWithOtpGenerate extends SignupUtil implements ITes
 		int currLoopCount = 0;
 		while (currLoopCount < maxLoopCount) {
 			String input = inputstringKeyWordHandeler(inputStrJson, testCaseName);
+			NotificationListener.markRequestStart();
 			if (testCaseName.contains(GlobalConstants.ESIGNET_)) {
 				if (SignupConfigManager.isInServiceNotDeployedList(GlobalConstants.ESIGNET)) {
 					throw new SkipException("esignet is not deployed hence skipping the testcase");
@@ -237,6 +239,8 @@ public class PostWithAutogenIdWithOtpGenerate extends SignupUtil implements ITes
 	@AfterMethod(alwaysRun = true)
 	public void setResultTestName(ITestResult result) {
 		result.setAttribute("TestCaseName", testCaseName);
+		// Always cleanup watermark
+		NotificationListener.markRequestRemove();
 	}
 
 	@AfterClass(alwaysRun = true)
