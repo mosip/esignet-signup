@@ -53,6 +53,7 @@ import io.mosip.testrig.apirig.utils.GlobalMethods;
 import io.mosip.testrig.apirig.utils.JWKKeyUtil;
 import io.mosip.testrig.apirig.utils.KernelAuthentication;
 import io.mosip.testrig.apirig.utils.KeycloakUserManager;
+import io.mosip.testrig.apirig.utils.NotificationListener;
 import io.mosip.testrig.apirig.utils.RestClient;
 import io.mosip.testrig.apirig.utils.SecurityXSSException;
 import io.mosip.testrig.apirig.utils.SkipTestCaseHandler;
@@ -269,7 +270,13 @@ public class SignupUtil extends AdminTestUtil {
 				}
 			}
 		}
-
+		
+		// Handle extra workflow dependencies
+		if (testCaseDTO != null && testCaseDTO.getAdditionalDependencies() != null
+				&& AdminTestUtil.generateDependency == true) {
+			addAdditionalDependencies(testCaseDTO);
+		}
+		
 		return testCaseDTO;
 	}
 	
@@ -548,7 +555,7 @@ public class SignupUtil extends AdminTestUtil {
 						emailId = removeLeadingPlusSigns(emailId);
 					}
 					logger.info(emailId);
-					otp = OTPListener.getOtp(emailId);
+					otp = NotificationListener.getOtp(emailId);
 					request.getJSONObject(GlobalConstants.REQUEST).put("otp", otp);
 					inputJson = request.toString();
 					return inputJson;
@@ -574,7 +581,7 @@ public class SignupUtil extends AdminTestUtil {
 									emailId = removeLeadingPlusSigns(emailId);
 								}
 								logger.info(emailId);
-								otp = OTPListener.getOtp(emailId);
+								otp = NotificationListener.getOtp(emailId);
 								request.getJSONObject(GlobalConstants.REQUEST)
 										.getJSONArray(GlobalConstants.CHALLENGELIST).getJSONObject(0)
 										.put(GlobalConstants.CHALLENGE, otp);
@@ -1698,7 +1705,7 @@ public class SignupUtil extends AdminTestUtil {
 					String regex = field.get(SignupConstants.VALIDATORS_STRING).get(0).path(SignupConstants.REGEX)
 							.asText(null);
 
-					if (regex != null) {
+					if (regex != null && !regex.contains("(?")) {
 						if (regex.contains(SignupConstants.AT_SYMBOL)) {
 							userInfo.put(id, SignupConstants.TEST_AUTOMATION_EMAIL);
 						} else {

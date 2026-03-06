@@ -246,6 +246,7 @@ SignupAuthorizeCodeNegTC:
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true
+      additionalDependencies: TC_ESignet_ClaimDetailsNegTC_V3_11,TC_ESignet_IDTAuthenticationNegTC_40
       inputTemplate: signup/SignupAuthorizeCodeNegTC/SignupAuthorizeCodeNegTC
       outputTemplate: signup/SignupAuthorizeCodeNegTC/SignupAuthorizeCodeNegTCResult
       input: '{

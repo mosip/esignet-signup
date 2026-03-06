@@ -5,6 +5,7 @@ GetIdentityVerificationStatus:
       description: Get Identity Verification Status with invalid an IDV slot assigned in the cookie
       role: resident
       restMethod: get
+      additionalDependencies: TC_Signup_ESignet_WebSocketConnection_02
       inputTemplate: signup/GetIdentityVerificationStatus/GetIdentityVerificationStatus
       outputTemplate: signup/GetIdentityVerificationStatus/GetIdentityVerificationStatusResult
       input: '{
@@ -21,6 +22,7 @@ GetIdentityVerificationStatus:
       role: resident
       restMethod: get
       checkErrorsOnlyInResponse: true
+      additionalDependencies: TC_Signup_ESignet_WebSocketConnection_01
       inputTemplate: signup/GetIdentityVerificationStatus/GetIdentityVerificationStatus
       outputTemplate: signup/GetIdentityVerificationStatus/GetIdentityVerificationStatusResult
       input: '{

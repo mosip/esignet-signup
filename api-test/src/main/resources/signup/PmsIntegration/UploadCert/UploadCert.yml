@@ -1,10 +1,12 @@
 uploadPartnerCert:
    Signup_Esignet_UploadPartnerCert_All_Valid_Smoke:
       endPoint: /v1/partnermanager/partners/certificate/upload
+      uniqueIdentifier: TC_ESignet_UploadPartnerCert_01
       description: Upload partner certificate with all valid details
       role: partner
       checkErrorsOnlyInResponse: true
       restMethod: post
+      additionalDependencies: TC_ESignet_UploadCACertificate_01,TC_ESignet_UploadCInterCertificate_02
       inputTemplate: signup/PmsIntegration/UploadCert/uploadCert
       outputTemplate: signup/PmsIntegration/UploadCert/uploadCertResult
       input: '{

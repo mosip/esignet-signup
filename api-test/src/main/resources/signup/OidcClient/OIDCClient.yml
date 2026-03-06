@@ -5,6 +5,7 @@ CreateOIDCClient:
       description: Create OIDC client with all valid details
       role: partner
       restMethod: post
+      additionalDependencies: TC_ESignet_ApproveRejectPartnerAPIKey_01
       inputTemplate: signup/OidcClient/OIDCClient
       outputTemplate: signup/OidcClient/OIDCClientResult
       input: '{

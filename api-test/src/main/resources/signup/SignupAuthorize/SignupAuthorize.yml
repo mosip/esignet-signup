@@ -126,6 +126,7 @@ SignupAuthorize:
 }'
    Signup_ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdVerStatusWithoutWebsocket_Smoke_sid:
       endPoint: /v1/esignet/authorization/v3/oauth-details
+      uniqueIdentifier: TC_ESignet_SignupAuthorize_06
       description: Create consent details and unique transactionID with valid details and this testcase is prerequisite
       role: resident
       restMethod: post
@@ -150,6 +151,7 @@ SignupAuthorize:
 }'
    Signup_ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdtAuth_Smoke_sid:
       endPoint: /v1/esignet/authorization/v3/oauth-details
+      uniqueIdentifier: TC_ESignet_SignupAuthorize_07
       description: Create consent details and unique transactionID with valid details and this testcase is prerequisite
       role: resident
       restMethod: post
@@ -174,6 +176,7 @@ SignupAuthorize:
 }'
    Signup_ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forDeletingCookies_Smoke_sid:
       endPoint: /v1/esignet/authorization/v3/oauth-details
+      uniqueIdentifier: TC_ESignet_SignupAuthorize_08
       description: Create consent details and unique transactionID with valid details and this testcase is prerequisite
       role: resident
       restMethod: post

@@ -5,6 +5,7 @@ WebSocketConnection:
       description: Creating websocket connection and sending message to it
       role: resident
       checkErrorsOnlyInResponse: true
+      additionalDependencies: TC_ESignet_InitiateIdVerification_Registered_Phone_01
       inputTemplate: signup/RegistrationFlowL2/WebSocketConnection/WebSocketConnection
       outputTemplate: signup/RegistrationFlowL2/WebSocketConnection/WebSocketConnectionResult
       input: '{

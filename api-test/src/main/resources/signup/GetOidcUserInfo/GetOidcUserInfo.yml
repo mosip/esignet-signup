@@ -6,6 +6,7 @@ GetOidcUserInfo:
       role: resident
       restMethod: get
       validityCheckRequired: true
+      additionalDependencies: TC_ESignet_CompleteSignupVerification_01,TC_ESignet_IDTAuthentication_01
       inputTemplate: signup/GetOidcUserInfo/GetOidcUserInfo
       outputTemplate: signup/GetOidcUserInfo/GetOidcUserInfoResult
       input: '{

@@ -1637,6 +1637,7 @@ RegisterUserNegTC:
 
    Signup_ESignet_RegisterUserNegTC_Valid_smoke_For_Neg_Scenario:
       endPoint: /v1/signup/registration/register
+      uniqueIdentifier: TC_ESignet_RegisterUserNegTC_68
       role: resident
       restMethod: post
       inputTemplate: signup/RegisterUser/RegisterUser
@@ -1657,7 +1658,7 @@ RegisterUserNegTC:
 
    Signup_ESignet_RegisterUserNegTC_with_khm_preferredLang:
       endPoint: /v1/signup/registration/register
-      uniqueIdentifier: TC_ESignet_RegisterUserNegTC_68
+      uniqueIdentifier: TC_ESignet_RegisterUserNegTC_74
       role: resident
       restMethod: post
       inputTemplate: signup/RegisterUser/RegisterUser

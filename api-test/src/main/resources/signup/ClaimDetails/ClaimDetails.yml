@@ -7,6 +7,7 @@ ClaimDetails:
       restMethod: get
       checkErrorsOnlyInResponse: true
       validityCheckRequired: true
+      additionalDependencies: TC_ESignet_AuthenticateUserV3_01
       inputTemplate: signup/ClaimDetails/ClaimDetails
       outputTemplate: signup/ClaimDetails/ClaimDetailsResult
       input: '{
@@ -17,12 +18,13 @@ ClaimDetails:
 }'
    Signup_ESignet_ClaimDetails_AuthToken_Xsrf_uin_Valid_forGetSlot_disabilityTypeVISION_Smoke:
       endPoint: /v1/esignet/authorization/claim-details
-      uniqueIdentifier: TC_Signup_ESignet_ClaimDetails_Prerequisite
+      uniqueIdentifier: TC_Signup_ESignet_ClaimDetails_Prerequisite_02
       description: Fetching the claim details and this testcase is prerequisite
       role: resident
       restMethod: get
       checkErrorsOnlyInResponse: true
       validityCheckRequired: true
+      additionalDependencies: TC_ESignet_AuthenticateUserV3_02
       inputTemplate: signup/ClaimDetails/ClaimDetails
       outputTemplate: signup/ClaimDetails/ClaimDetailsResult
       input: '{
@@ -33,12 +35,13 @@ ClaimDetails:
 }'
    Signup_ESignet_ClaimDetails_AuthToken_Xsrf_uin_Valid_forGetSlot_disabilityTypeAUDITORY_Smoke:
       endPoint: /v1/esignet/authorization/claim-details
-      uniqueIdentifier: TC_Signup_ESignet_ClaimDetails_Prerequisite
+      uniqueIdentifier: TC_Signup_ESignet_ClaimDetails_Prerequisite_03
       description: Fetching the claim details and this testcase is prerequisite
       role: resident
       restMethod: get
       checkErrorsOnlyInResponse: true
       validityCheckRequired: true
+      additionalDependencies: TC_ESignet_AuthenticateUserV3_03
       inputTemplate: signup/ClaimDetails/ClaimDetails
       outputTemplate: signup/ClaimDetails/ClaimDetailsResult
       input: '{
@@ -49,12 +52,13 @@ ClaimDetails:
 }'
    Signup_ESignet_ClaimDetails_AuthToken_Xsrf_uin_Valid_forGetSlot_disabilityTypeMOBILITY_Smoke:
       endPoint: /v1/esignet/authorization/claim-details
-      uniqueIdentifier: TC_Signup_ESignet_ClaimDetails_Prerequisite
+      uniqueIdentifier: TC_Signup_ESignet_ClaimDetails_Prerequisite_04
       description: Fetching the claim details and this testcase is prerequisite
       role: resident
       restMethod: get
       checkErrorsOnlyInResponse: true
       validityCheckRequired: true
+      additionalDependencies: TC_ESignet_AuthenticateUserV3_04
       inputTemplate: signup/ClaimDetails/ClaimDetails
       outputTemplate: signup/ClaimDetails/ClaimDetailsResult
       input: '{
@@ -65,12 +69,13 @@ ClaimDetails:
 }'
    Signup_ESignet_ClaimDetails_AuthToken_Xsrf_uin_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_Smoke:
       endPoint: /v1/esignet/authorization/claim-details
-      uniqueIdentifier: TC_Signup_ESignet_ClaimDetails_Prerequisite
+      uniqueIdentifier: TC_Signup_ESignet_ClaimDetails_Prerequisite_05
       description: Fetching the claim details and this testcase is prerequisite
       role: resident
       restMethod: get
       checkErrorsOnlyInResponse: true
       validityCheckRequired: true
+      additionalDependencies: TC_ESignet_AuthenticateUserV3_05
       inputTemplate: signup/ClaimDetails/ClaimDetails
       outputTemplate: signup/ClaimDetails/ClaimDetailsResult
       input: '{

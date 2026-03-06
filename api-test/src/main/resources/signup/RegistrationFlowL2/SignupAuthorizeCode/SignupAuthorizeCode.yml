@@ -6,6 +6,7 @@ SignupAuthorizeCode:
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true
+      additionalDependencies: TC_ESignet_IDTAuthentication_Registered_Phone_01
       inputTemplate: signup/RegistrationFlowL2/SignupAuthorizeCode/SignupAuthorizeCode
       outputTemplate: signup/RegistrationFlowL2/SignupAuthorizeCode/SignupAuthorizeCodeResult
       input: '{

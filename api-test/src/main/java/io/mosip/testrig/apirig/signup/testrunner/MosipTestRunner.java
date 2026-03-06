@@ -63,6 +63,8 @@ public class MosipTestRunner {
 	
 	public static String PLUGIN_NAME = null;
 
+	private static String generateDependency;
+	
 	/**
 	 * C Main method to start mosip test execution
 	 * 
@@ -89,7 +91,18 @@ public class MosipTestRunner {
 			GlobalMethods.reportCaptchaStatus(GlobalConstants.CAPTCHA_ENABLED, false);
 			setLogLevels();
 			
+			AdminTestUtil.fetchAndStoreCsrfToken();
+			
 			String testCasesToExecuteString = SignupConfigManager.getproperty("testCasesToExecute");
+			
+			generateDependency = SignupConfigManager.getproperty("generateDependencyJson");
+
+			if (!"yes".equalsIgnoreCase(generateDependency)) {
+				if (testCasesToExecuteString != null && !testCasesToExecuteString.isBlank()) {
+					DependencyResolver.loadDependencies(BaseTestCase.getTestCaseInterDependencyPath(SignupUtil.getPluginName()));
+					SignupUtil.testCasesInRunScope = DependencyResolver.getDependencies(testCasesToExecuteString);
+				}
+			}
 
 			if (SignupUtil.getIdentityPluginNameFromEsignetActuator().toLowerCase()
 					.contains("idaauthenticatorimpl") == true) {
@@ -111,18 +124,10 @@ public class MosipTestRunner {
 				// Generating biometric details with mock MDS
 				BiometricDataProvider.generateBiometricTestData("Registration");
 				
-				DependencyResolver.loadDependencies(getGlobalResourcePath() + "/config/testCaseInterDependency_"
-						+ SignupUtil.getPluginName() + ".json");
-				if (!testCasesToExecuteString.isBlank()) {
-					SignupUtil.testCasesInRunScope = DependencyResolver.getDependencies(testCasesToExecuteString);
-				}
 				
-				AdminTestUtil.fetchAndStoreCsrfToken();
 				
 				startTestRunner();
 				
-				// Used for generating the test case interdependency JSON file
-				//AdminTestUtil.generateTestCaseInterDependencies(getGlobalResourcePath() + "/config/testCaseInterDependency_" + SignupUtil.getPluginName() + ".json");
 				SignupUtil.dBCleanUp();
 				KeycloakUserManager.removeUser();
 				KeycloakUserManager.closeKeycloakInstance();
@@ -136,18 +141,9 @@ public class MosipTestRunner {
 				SignupConfigManager.add(additionalPropertiesMap);
 				SignupUtil.getSupportedLanguages();
 				
-				DependencyResolver.loadDependencies(getGlobalResourcePath() + "/config/testCaseInterDependency_"
-						+ SignupUtil.getPluginName() + ".json");
-				if (!testCasesToExecuteString.isBlank()) {
-					SignupUtil.testCasesInRunScope = DependencyResolver.getDependencies(testCasesToExecuteString);
-				}
-				
-				AdminTestUtil.fetchAndStoreCsrfToken();
 				
 				startTestRunner();
 				
-				// Used for generating the test case interdependency JSON file
-				//AdminTestUtil.generateTestCaseInterDependencies(getGlobalResourcePath() + "/config/testCaseInterDependency_" + SignupUtil.getPluginName() + ".json");
 			}
 
 		} catch (Exception e) {
@@ -156,6 +152,11 @@ public class MosipTestRunner {
 		OTPListener.bTerminate = true;
 
 		HealthChecker.bTerminate = true;
+		
+		if ("yes".equalsIgnoreCase(generateDependency)) {
+			LOGGER.info("Generating test case inter-dependencies");
+			AdminTestUtil.generateTestCaseInterDependencies(BaseTestCase.getTestCaseInterDependencyPath(SignupUtil.getPluginName()));
+		}
 
 		System.exit(0);
 
@@ -365,5 +366,5 @@ public class MosipTestRunner {
 		else
 			return "IDE";
 	}
-
+	
 }

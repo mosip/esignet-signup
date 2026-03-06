@@ -1,6 +1,7 @@
 definePolicy:
    Signup_Esignet_DefinePolicy_All_Valid_Smoke_sid:
       endPoint: /v1/policymanager/policies
+      uniqueIdentifier: TC_ESignet_DefinePolicy_01
       description: Define policy with all valid details
       role: partner
       restMethod: post

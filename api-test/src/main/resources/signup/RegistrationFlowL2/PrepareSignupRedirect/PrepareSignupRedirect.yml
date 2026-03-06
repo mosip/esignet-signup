@@ -7,6 +7,7 @@ PrepareSignupRedirect:
       restMethod: post
       checkErrorsOnlyInResponse: true
       validityCheckRequired: true
+      additionalDependencies: TC_Signup_ESignet_ClaimDetails_Registered_Phone_01
       inputTemplate: signup/RegistrationFlowL2/PrepareSignupRedirect/PrepareSignupRedirect
       outputTemplate: signup/RegistrationFlowL2/PrepareSignupRedirect/PrepareSignupRedirectResult
       input: '{

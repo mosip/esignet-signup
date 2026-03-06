@@ -5,6 +5,7 @@ PrepareSignupRedirect:
       description: Create ID token for the signup service with valid data
       role: resident
       restMethod: post
+      additionalDependencies: TC_ESignet_AuthenticateUserV3_01, TC_Signup_ESignet_ClaimDetails_01
       checkErrorsOnlyInResponse: true
       validityCheckRequired: true
       inputTemplate: signup/PrepareSignupRedirect/PrepareSignupRedirect
@@ -25,6 +26,7 @@ PrepareSignupRedirect:
       restMethod: post
       checkErrorsOnlyInResponse: true
       validityCheckRequired: true
+      additionalDependencies: TC_ESignet_AuthenticateUserV3_02,TC_Signup_ESignet_ClaimDetails_Prerequisite_02
       inputTemplate: signup/PrepareSignupRedirect/PrepareSignupRedirect
       outputTemplate: signup/PrepareSignupRedirect/PrepareSignupRedirectResult
       input: '{
@@ -43,6 +45,7 @@ PrepareSignupRedirect:
       restMethod: post
       checkErrorsOnlyInResponse: true
       validityCheckRequired: true
+      additionalDependencies: TC_ESignet_AuthenticateUserV3_03,TC_Signup_ESignet_ClaimDetails_Prerequisite_03
       inputTemplate: signup/PrepareSignupRedirect/PrepareSignupRedirect
       outputTemplate: signup/PrepareSignupRedirect/PrepareSignupRedirectResult
       input: '{
@@ -61,6 +64,7 @@ PrepareSignupRedirect:
       restMethod: post
       checkErrorsOnlyInResponse: true
       validityCheckRequired: true
+      additionalDependencies: TC_ESignet_AuthenticateUserV3_04,TC_Signup_ESignet_ClaimDetails_Prerequisite_04
       inputTemplate: signup/PrepareSignupRedirect/PrepareSignupRedirect
       outputTemplate: signup/PrepareSignupRedirect/PrepareSignupRedirectResult
       input: '{
@@ -79,6 +83,7 @@ PrepareSignupRedirect:
       restMethod: post
       checkErrorsOnlyInResponse: true
       validityCheckRequired: true
+      additionalDependencies: TC_ESignet_AuthenticateUserV3_05,TC_Signup_ESignet_ClaimDetails_Prerequisite_05
       inputTemplate: signup/PrepareSignupRedirect/PrepareSignupRedirect
       outputTemplate: signup/PrepareSignupRedirect/PrepareSignupRedirectResult
       input: '{
@@ -97,6 +102,7 @@ PrepareSignupRedirect:
       restMethod: post
       checkErrorsOnlyInResponse: true
       validityCheckRequired: true
+      additionalDependencies: TC_ESignet_AuthenticateUserV3_06
       inputTemplate: signup/PrepareSignupRedirect/PrepareSignupRedirect
       outputTemplate: signup/PrepareSignupRedirect/PrepareSignupRedirectResult
       input: '{
@@ -115,6 +121,7 @@ PrepareSignupRedirect:
       restMethod: post
       checkErrorsOnlyInResponse: true
       validityCheckRequired: true
+      additionalDependencies: TC_ESignet_AuthenticateUserV3_07
       inputTemplate: signup/PrepareSignupRedirect/PrepareSignupRedirect
       outputTemplate: signup/PrepareSignupRedirect/PrepareSignupRedirectResult
       input: '{
@@ -133,6 +140,7 @@ PrepareSignupRedirect:
       restMethod: post
       checkErrorsOnlyInResponse: true
       validityCheckRequired: true
+      additionalDependencies: TC_ESignet_AuthenticateUserV3_08
       inputTemplate: signup/PrepareSignupRedirect/PrepareSignupRedirect
       outputTemplate: signup/PrepareSignupRedirect/PrepareSignupRedirectResult
       input: '{

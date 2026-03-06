@@ -1,6 +1,7 @@
 uploadCACert:
    Signup_Esignet_UploadCACertificate_All_Valid_Smoke:
       endPoint: /v1/partnermanager/partners/certificate/ca/upload
+      uniqueIdentifier: TC_ESignet_UploadCACertificate_01
       description: upload CACertificate with all valid details
       role: partner
       restMethod: post
@@ -16,6 +17,7 @@ uploadCACert:
 }'
    Signup_Esignet_UploadCInterCertificate_All_Valid_Smoke:
       endPoint: /v1/partnermanager/partners/certificate/ca/upload
+      uniqueIdentifier: TC_ESignet_UploadCInterCertificate_02
       description: upload CACertificate with all valid details
       role: partner
       restMethod: post

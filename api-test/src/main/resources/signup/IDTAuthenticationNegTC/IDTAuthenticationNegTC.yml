@@ -747,6 +747,7 @@ IDTAuthenticationNegTC:
 }'
    Signup_ESignet_IDTAuthenticationNegTC_AuthToken_Xsrf_emptyString_individualId_Neg:
       endPoint: /v1/esignet/authorization/v3/authenticate
+      uniqueIdentifier: TC_ESignet_IDTAuthenticationNegTC_28
       description: Perform IDT authentication with empty string individualId - Failure
       role: resident
       restMethod: post

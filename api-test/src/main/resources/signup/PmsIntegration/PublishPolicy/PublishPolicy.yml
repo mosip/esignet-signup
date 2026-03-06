@@ -1,6 +1,7 @@
 createPublishPolicy:
    Signup_Esignet_PublishPolicy_All_Valid_Smoke:
       endPoint: /v1/policymanager/policies/{policyId}/group/{policygroupId}/publish
+      uniqueIdentifier: TC_ESignet_PublishPolicy_01
       description: Publish policy with all valid details
       role: partner
       restMethod: post

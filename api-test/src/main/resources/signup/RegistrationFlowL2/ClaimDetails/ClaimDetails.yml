@@ -7,6 +7,7 @@ ClaimDetails:
       restMethod: get
       checkErrorsOnlyInResponse: true
       validityCheckRequired: true
+      additionalDependencies: TC_ESignet_AuthenticateUserV3_Registered_Phone_01
       inputTemplate: signup/RegistrationFlowL2/ClaimDetails/ClaimDetails
       outputTemplate: signup/RegistrationFlowL2/ClaimDetails/ClaimDetailsResult
       input: '{
