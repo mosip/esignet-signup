@@ -24,10 +24,16 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
+
+import static io.mosip.signup.util.SignUpConstants.*;
 
 @Slf4j
 @Component
@@ -46,50 +52,77 @@ public class NotificationHelper {
     @Value("${mosip.signup.default-language}")
     private String defaultLanguage;
 
-    @Value("#{${mosip.signup.sms-notification-template.encoded-langcodes}}")
+    @Value("#{${mosip.signup.notification-template.encoded-langcodes}}")
     private List<String> encodedLangCodes;
 
     @Value("${mosip.signup.identifier.prefix:}")
     private String identifierPrefix;
 
-    @Value("${mosip.signup.identifier.remove-prefix:false}")
-    private boolean removeIdentifierPrefix;
+    @Value("${mosip.signup.sms-notification.remove-country-code:false}")
+    private boolean removeCountryCode;
 
-    public void sendSMSNotification
-            (String number, String locale, String templateKey, Map<String, String> params){
+    @Value("${mosip.signup.send-notification.channel}")
+    private String defaultChannel;
 
+    public void sendNotification(String identifier, String locale, String templateKey, Map<String, String> params) {
         locale = locale != null ? locale : defaultLanguage;
+        boolean isEncoded = encodedLangCodes.contains(locale);
 
-        String message = encodedLangCodes.contains(locale)?
-                new String(Base64.getDecoder().decode(environment.getProperty(templateKey + "." + locale))):
-                environment.getProperty(templateKey + "." + locale);
+        if (EMAIL_CHANNEL.equalsIgnoreCase(defaultChannel)) {
+            String subject = resolveTemplate(EMAIL_SUBJECT_PROPERTY_PREFIX + templateKey + "." + locale, isEncoded, params);
+            String content = resolveTemplate(EMAIL_CONTENT_PROPERTY_PREFIX + templateKey + "." + locale, isEncoded, params);
 
-        if (params != null && message != null) {
-            for (Map.Entry<String, String> entry : params.entrySet()) {
-                message = message.replace(entry.getKey(), entry.getValue());
+            // multipart/form-data
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+            MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
+            formData.add("mailTo", identifier);
+            formData.add("mailSubject", subject);
+            formData.add("mailContent", content);
+
+            try {
+                RestResponseWrapper<NotificationResponse> responseWrapper = selfTokenRestTemplate.exchange(sendNotificationEndpoint, HttpMethod.POST, new HttpEntity<>(formData, headers), new ParameterizedTypeReference<RestResponseWrapper<NotificationResponse>>() {
+                }).getBody();
+                log.debug("Email notification response -> {}", responseWrapper);
+            } catch (RestClientException e) {
+                log.error("Failed to send email notification", e);
+                throw new SignUpException(ErrorConstants.OTP_NOTIFICATION_FAILED);
             }
-        }
-        String phoneNumber = removeIdentifierPrefix ? number.substring(identifierPrefix.length()) : number;
-        NotificationRequest notificationRequest = new NotificationRequest(phoneNumber, message);
 
-        RestRequestWrapper<NotificationRequest> restRequestWrapper = new RestRequestWrapper<>();
-        restRequestWrapper.setRequesttime(IdentityProviderUtil.getUTCDateTime());
-        restRequestWrapper.setRequest(notificationRequest);
+        } else {
+            String message = resolveTemplate(SMS_TEMPLATE_PROPERTY_PREFIX + templateKey + "." + locale, isEncoded, params);
 
-        try {
-            RestResponseWrapper<NotificationResponse> responseWrapper = selfTokenRestTemplate.exchange(sendNotificationEndpoint,
-                    HttpMethod.POST,
-                    new HttpEntity<>(restRequestWrapper),
-                    new ParameterizedTypeReference<RestResponseWrapper<NotificationResponse>>(){}).getBody();
-            log.debug("Notification response -> {}", responseWrapper);
-        } catch (RestClientException e){
-            throw new SignUpException(ErrorConstants.OTP_NOTIFICATION_FAILED);
+            String phoneNumber = removeCountryCode ? identifier.substring(identifierPrefix.length()) : identifier;
+
+            NotificationRequest notificationRequest = new NotificationRequest(phoneNumber, message);
+            RestRequestWrapper<NotificationRequest> restRequestWrapper = new RestRequestWrapper<>();
+            restRequestWrapper.setRequesttime(IdentityProviderUtil.getUTCDateTime());
+            restRequestWrapper.setRequest(notificationRequest);
+
+            try {
+                RestResponseWrapper<NotificationResponse> responseWrapper = selfTokenRestTemplate.exchange(sendNotificationEndpoint, HttpMethod.POST, new HttpEntity<>(restRequestWrapper), new ParameterizedTypeReference<RestResponseWrapper<NotificationResponse>>() {
+                }).getBody();
+                log.debug("SMS notification response -> {}", responseWrapper);
+            } catch (RestClientException e) {
+                log.error("Failed to send SMS notification", e);
+                throw new SignUpException(ErrorConstants.OTP_NOTIFICATION_FAILED);
+            }
         }
     }
 
     @Async
-    public void sendSMSNotificationAsync
-            (String number, String locale, String templateKey, Map<String, String> params){
-        sendSMSNotification(number, locale, templateKey, params);
+    public void sendNotificationAsync(String identifier, String locale, String templateKey, Map<String, String> params) {
+        sendNotification(identifier, locale, templateKey, params);
+    }
+
+    private String resolveTemplate(String templateKey, boolean isEncoded, Map<String, String> params) {
+        String template = isEncoded ? new String(Base64.getDecoder().decode(environment.getProperty(templateKey))) : environment.getProperty(templateKey);
+
+        if (params != null && template != null) {
+            for (Map.Entry<String, String> entry : params.entrySet()) {
+                template = template.replace(entry.getKey(), entry.getValue());
+            }
+        }
+        return template;
     }
 }
