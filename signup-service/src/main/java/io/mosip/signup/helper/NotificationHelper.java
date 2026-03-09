@@ -43,7 +43,7 @@ public class NotificationHelper {
     @Value("${mosip.signup.send-notification.endpoint}")
     private String sendNotificationEndpoint;
 
-    @Value("{${mosip.signup.default-language}")
+    @Value("${mosip.signup.default-language}")
     private String defaultLanguage;
 
     @Value("#{${mosip.signup.sms-notification-template.encoded-langcodes}}")
