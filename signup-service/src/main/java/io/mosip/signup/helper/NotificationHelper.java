@@ -52,6 +52,9 @@ public class NotificationHelper {
     @Value("${mosip.signup.identifier.prefix:}")
     private String identifierPrefix;
 
+    @Value("${mosip.signup.identifier.remove-prefix:false}")
+    private boolean removeIdentifierPrefix;
+
     public void sendSMSNotification
             (String number, String locale, String templateKey, Map<String, String> params){
 
@@ -66,8 +69,8 @@ public class NotificationHelper {
                 message = message.replace(entry.getKey(), entry.getValue());
             }
         }
-
-        NotificationRequest notificationRequest = new NotificationRequest(number.substring(identifierPrefix.length()), message);
+        String phoneNumber = removeIdentifierPrefix ? number.substring(identifierPrefix.length()) : number;
+        NotificationRequest notificationRequest = new NotificationRequest(phoneNumber, message);
 
         RestRequestWrapper<NotificationRequest> restRequestWrapper = new RestRequestWrapper<>();
         restRequestWrapper.setRequesttime(IdentityProviderUtil.getUTCDateTime());
