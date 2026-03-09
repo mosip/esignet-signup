@@ -167,15 +167,23 @@ export const AccountSetup = ({ settings, methods }: AccountSetupProps) => {
     if (!uiSchema) return;
     langConfigService.getLocaleConfiguration().then((langConfig) => {
       if (JsonFormBuilder && !(window as any).__form_rendered__) {
+        const identifierKey = settings.response.configs["identifier.name"];
+
         const form = JsonFormBuilder(
           {
             ...uiSchema,
+            schema: uiSchema.schema
+              .filter(Boolean)
+              .map((field: any) =>
+                field.id === identifierKey
+                  ? { ...field, disabled: true }
+                  : field
+              ),
             language: {
               ...uiSchema.language,
               langCodeMap: langConfig.langCodeMapping,
             },
-            allowedValues: {
-              ...uiSchema.allowedValues,
+            prefilledValues: {
               [identifierName]: `${
                 settings.response.configs["identifier.prefix"]
               }${getValues("phone")}`,

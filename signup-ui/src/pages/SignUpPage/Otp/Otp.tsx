@@ -4,6 +4,7 @@ import { Trans, useTranslation } from "react-i18next";
 import PinInput from "react-pin-input";
 import { useTimer } from "react-timer-hook";
 
+import { criticalErrorsToPopup } from "~constants/criticalErrors";
 import { ResendAttempt } from "~components/resend-attempt";
 import { ActionMessage } from "~components/ui/action-message";
 import { Button } from "~components/ui/button";
@@ -19,7 +20,7 @@ import {
   StepTitle,
 } from "~components/ui/step";
 import { getLocale } from "~utils/language";
-import { maskPhoneNumber } from "~utils/phone";
+import { maskData } from "~utils/mask";
 import { convertTime, getTimeoutTime } from "~utils/timer";
 import {
   useGenerateChallenge,
@@ -45,7 +46,6 @@ import {
   stepSelector,
   useSignUpStore,
 } from "../useSignUpStore";
-import { criticalErrorsToPopup } from "~constants/criticalErrors";
 
 interface OtpProps {
   settings: SettingsDto;
@@ -64,7 +64,7 @@ export const Otp = ({ methods, settings }: OtpProps) => {
     setResendOtp,
     resendAttempts,
     setResendAttempts,
-    setVerificationChallengeError
+    setVerificationChallengeError,
   } = useSignUpStore(
     useCallback(
       (state) => ({
@@ -74,7 +74,8 @@ export const Otp = ({ methods, settings }: OtpProps) => {
         setResendOtp: setResendOtpSelector(state),
         resendAttempts: resendAttemptsSelector(state),
         setResendAttempts: setResendAttemptsSelector(state),
-        setVerificationChallengeError: setVerificationChallengeErrorSelector(state)
+        setVerificationChallengeError:
+          setVerificationChallengeErrorSelector(state),
       }),
       []
     )
@@ -182,7 +183,7 @@ export const Otp = ({ methods, settings }: OtpProps) => {
             request: {
               identifier: `${
                 settings.response.configs["identifier.prefix"]
-                }${getValues("phone")}`,
+              }${getValues("phone")}`,
               captchaToken: getValues("captchaToken"),
               locale: getLocale(i18n.language, langCodeMapping),
               regenerateChallenge: true,
@@ -256,7 +257,7 @@ export const Otp = ({ methods, settings }: OtpProps) => {
           request: {
             identifier: `${
               settings.response.configs["identifier.prefix"]
-              }${getValues("phone")}`,
+            }${getValues("phone")}`,
             challengeInfo: [
               {
                 challenge: getValues("otp"),
@@ -273,7 +274,7 @@ export const Otp = ({ methods, settings }: OtpProps) => {
               if (
                 [
                   "already-registered",
-                  "identifier_already_registered"
+                  "identifier_already_registered",
                 ].includes(errors[0].errorCode)
               ) {
                 setVerificationChallengeError(errors[0]);
@@ -286,7 +287,7 @@ export const Otp = ({ methods, settings }: OtpProps) => {
             }
 
             if (errors.length === 0) {
-              setVerificationChallengeError(null)
+              setVerificationChallengeError(null);
               setStep(SignUpStep.PhoneStatus);
             }
           },
@@ -316,10 +317,7 @@ export const Otp = ({ methods, settings }: OtpProps) => {
             className="absolute left-0"
             aria-label="Go back"
           >
-            <Icons.back
-              id="back-button"
-              name="back-button"
-            />
+            <Icons.back id="back-button" name="back-button" />
           </button>
           <StepTitle className="text-center text-[22px] font-semibold">
             {t("otp_header")}
@@ -329,11 +327,19 @@ export const Otp = ({ methods, settings }: OtpProps) => {
           <div className="text-muted-neutral-gray">
             {t("otp_subheader", {
               no_of_digit: settings?.response.configs["otp.length"],
+              identifier: "number",
             })}
           </div>
           <div className="font-medium text-muted-dark-gray">
-            <span>{settings.response.configs["identifier.prefix"]}</span>{" "}
-            <span>{maskPhoneNumber(getValues("phone"), 4)}</span>
+            <span>{}</span>{" "}
+            <span>
+              {maskData(
+                `${settings.response.configs["identifier.prefix"]}${getValues(
+                  "phone"
+                )}`,
+                4
+              )}
+            </span>
           </div>
         </StepDescription>
       </StepHeader>
@@ -424,13 +430,13 @@ export const Otp = ({ methods, settings }: OtpProps) => {
             </Button>
             {resendAttempts !==
               settings.response.configs["resend.attempts"] && (
-                <ResendAttempt
-                  currentAttempts={resendAttempts}
-                  totalAttempts={settings.response.configs["resend.attempts"]}
-                  attemptRetryAfter={settings.response.configs["otp.blocked"]}
-                  showRetry={resendAttempts === 0 && resendOtpTotalSecs === 0}
-                />
-              )}
+              <ResendAttempt
+                currentAttempts={resendAttempts}
+                totalAttempts={settings.response.configs["resend.attempts"]}
+                attemptRetryAfter={settings.response.configs["otp.blocked"]}
+                showRetry={resendAttempts === 0 && resendOtpTotalSecs === 0}
+              />
+            )}
             {resendAttempts === 0 && resendOtpTotalSecs === 0 && (
               <Button
                 id="landing-page-button"
