@@ -28,6 +28,7 @@ import {
   setCriticalErrorSelector,
   setStepSelector,
   SignUpStep,
+  userDataSelector,
   useSignUpStore,
 } from "../useSignUpStore";
 import { UploadFileErrorModal } from "./components/UploadFileErrorModal";
@@ -50,12 +51,13 @@ export const AccountSetup = ({ settings, methods }: AccountSetupProps) => {
 
   const [uiSchema, setUiSchema] = useState<FormConfig | null>(null);
 
-  const { setStep, criticalError, setCriticalError } = useSignUpStore(
+  const { setStep, criticalError, setCriticalError, userData } = useSignUpStore(
     useCallback(
       (state) => ({
         setStep: setStepSelector(state),
         setCriticalError: setCriticalErrorSelector(state),
         criticalError: criticalErrorSelector(state),
+        userData: userDataSelector(state),
       }),
       []
     )
@@ -166,27 +168,28 @@ export const AccountSetup = ({ settings, methods }: AccountSetupProps) => {
   useEffect(() => {
     if (!uiSchema) return;
     langConfigService.getLocaleConfiguration().then((langConfig) => {
-      if (JsonFormBuilder && !(window as any).__form_rendered__) {
+      if (JsonFormBuilder && !(window as any).__form_rendered__ && userData) {
         const identifierKey = settings.response.configs["identifier.name"];
+        const fields = [...uiSchema.schema].filter(Boolean);
+
+        const index = fields.findIndex((f: any) => f.id === identifierKey);
+
+        if (index !== -1) {
+          const [identifier] = fields.splice(index, 1);
+          fields.unshift({ ...identifier, disabled: true });
+        }
 
         const form = JsonFormBuilder(
           {
             ...uiSchema,
-            schema: uiSchema.schema
-              .filter(Boolean)
-              .map((field: any) =>
-                field.id === identifierKey
-                  ? { ...field, disabled: true }
-                  : field
-              ),
+            schema: fields,
             language: {
               ...uiSchema.language,
               langCodeMap: langConfig.langCodeMapping,
             },
             prefilledValues: {
-              [identifierName]: `${
-                settings.response.configs["identifier.prefix"]
-              }${getValues("phone")}`,
+              [identifierName]:
+                userData[settings.response.configs["identifier.name"]],
             },
           },
           "form-container",

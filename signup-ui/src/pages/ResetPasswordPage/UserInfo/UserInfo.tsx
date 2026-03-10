@@ -1,38 +1,14 @@
-import {
-  ChangeEvent,
-  ClipboardEvent,
-  KeyboardEvent,
-  MouseEvent,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { JsonFormBuilder } from "@mosip/json-form-builder";
-import { FormConfig, FormField } from "@mosip/json-form-builder/dist/types";
+import { FormConfig } from "@mosip/json-form-builder/dist/types";
 import ReCAPTCHA from "react-google-recaptcha";
-import {
-  ControllerRenderProps,
-  FieldValues,
-  useFormContext,
-  UseFormReturn,
-} from "react-hook-form";
+import { useFormContext, UseFormReturn } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import { RESET_PASSWORD } from "~constants/routes";
 import { ActionMessage } from "~components/ui/action-message";
-// import { Button } from "~components/ui/button";
-// import {
-//   FormControl,
-//   FormField,
-//   FormItem,
-//   FormLabel,
-//   FormMessage,
-// } from "~components/ui/form";
 import { Icons } from "~components/ui/icons";
-// import { Input } from "~components/ui/input";
 import {
   Step,
   StepAlert,
@@ -42,9 +18,7 @@ import {
   StepHeader,
   StepTitle,
 } from "~components/ui/step";
-// import { cn } from "~utils/cn";
-// import { handleInputFilter } from "~utils/input";
-import { getLocale } from "~utils/language";
+import { buildFilteredSchema } from "~utils/filterSchema";
 import { getSignInRedirectURLV2 } from "~utils/link";
 import { useGenerateChallenge } from "~pages/shared/mutations";
 import { useUiSpec } from "~pages/shared/queries";
@@ -55,7 +29,6 @@ import {
   SettingsDto,
 } from "~typings/types";
 import type { Error } from "~typings/types";
-import { langCodeMappingSelector, useLanguageStore } from "~/useLanguageStore";
 
 // import { resetPasswordFormDefaultValues } from "../ResetPasswordPage";
 import {
@@ -77,7 +50,6 @@ interface UserInfoProps {
 export const UserInfo = ({ settings, methods }: UserInfoProps) => {
   const formBuilderRef: any = useRef(null); // Reference to form instance
   const { i18n, t } = useTranslation();
-  const navigate = useNavigate();
 
   const _reCaptchaRef = useRef<ReCAPTCHA>(null);
   const { hash: fromSignInHash, search } = useLocation();
@@ -86,6 +58,8 @@ export const UserInfo = ({ settings, methods }: UserInfoProps) => {
     useState<Error | null>(null);
 
   const { data: uiSchemaResponse } = useUiSpec();
+
+  const navigate = useNavigate();
 
   const [uiSchema, setUiSchema] = useState<FormConfig | null>(null);
 
@@ -109,95 +83,6 @@ export const UserInfo = ({ settings, methods }: UserInfoProps) => {
     );
 
   const { generateChallengeMutation } = useGenerateChallenge();
-
-  function buildResetPasswordSchema(response: FormConfig) {
-    const schemaIds = new Set((response?.schema || []).map((f) => f.id));
-    const identifierKey = settings?.response?.configs?.["identifier.name"];
-
-    try {
-      if (!identifierKey) {
-        throw new Error(
-          "Configuration error: 'identifier.name' is missing. Please configure the identifier field used to identify the user."
-        );
-      }
-
-      if (!schemaIds.has(identifierKey)) {
-        throw new Error(
-          `Configuration error: Identifier field '${identifierKey}' is not present in the schema.`
-        );
-      }
-
-      if (response.resetPasswordChallengeFields?.includes(identifierKey)) {
-        throw new Error(
-          `Configuration error: "${identifierKey}" is defined as identifier.name and is automatically used to identify the user. It must not be included in resetPasswordChallengeFields.`
-        );
-      }
-
-      if (
-        !response.resetPasswordChallengeFields ||
-        !Array.isArray(response.resetPasswordChallengeFields) ||
-        response.resetPasswordChallengeFields.length === 0
-      ) {
-        throw new Error(
-          "Configuration error: 'resetPasswordChallengeFields' is missing or empty. Please configure the challenge fields required for reset password."
-        );
-      }
-
-      if (
-        !response.resetPasswordChallengeFields.every((id) => schemaIds.has(id))
-      ) {
-        throw new Error(
-          "Configuration error: Some reset password challenge fields are not present in the schema."
-        );
-      }
-    } catch (err) {
-      console.error(err);
-      navigate("/something-went-wrong");
-    }
-
-    const challengeFields = Array.from(
-      new Set([
-        settings.response.configs["identifier.name"],
-        ...response.resetPasswordChallengeFields,
-      ])
-    );
-
-    // Filter schema
-    const filteredSchema = challengeFields
-      .map((id) => response.schema.find((field: FormField) => field.id === id))
-      .filter((field): field is FormField => Boolean(field))
-      .map((field) => ({
-        ...field,
-        required: true,
-        disabled: resendOtp,
-      }));
-
-    // Collect subTypes used
-    const requiredSubTypes = new Set(
-      filteredSchema.map((field: any) => field.subType).filter(Boolean)
-    );
-
-    // Filter allowedValues
-    const filteredAllowedValues: Record<string, any> = {};
-    const allowedValues = response.allowedValues ?? {};
-
-    Object.keys(allowedValues).forEach((key) => {
-      if (requiredSubTypes.has(key)) {
-        filteredAllowedValues[key] = allowedValues[key];
-      }
-    });
-
-    return {
-      ...response,
-      schema: filteredSchema,
-      allowedValues: filteredAllowedValues,
-      language: {
-        ...response.language,
-        mandatory: [response.language.mandatory[0]],
-        optional: [],
-      },
-    };
-  }
 
   useEffect(() => {
     return () => {
@@ -259,7 +144,20 @@ export const UserInfo = ({ settings, methods }: UserInfoProps) => {
 
   useEffect(() => {
     if (uiSchemaResponse && uiSchemaResponse.response) {
-      setUiSchema(buildResetPasswordSchema(uiSchemaResponse?.response) ?? null);
+      try {
+        const schema = buildFilteredSchema(
+          uiSchemaResponse?.response,
+          settings,
+          "reset-pwd",
+          resendOtp
+        );
+
+        setUiSchema(schema ?? null);
+      } catch (err) {
+        console.error(err);
+        navigate("/something-went-wrong");
+        return;
+      }
     }
   }, [uiSchemaResponse]);
 
@@ -358,7 +256,6 @@ export const UserInfo = ({ settings, methods }: UserInfoProps) => {
           </ActionMessage>
         </StepAlert>
         <StepContent>
-          {/* Phone and reCAPTCHA inputs */}
           <div id="form-container" className="registration-form"></div>
         </StepContent>
       </Step>

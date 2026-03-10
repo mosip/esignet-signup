@@ -19,7 +19,6 @@ import {
   StepHeader,
   StepTitle,
 } from "~components/ui/step";
-import { getLocale } from "~utils/language";
 import { maskData } from "~utils/mask";
 import { convertTime, getTimeoutTime } from "~utils/timer";
 import {
@@ -44,6 +43,7 @@ import {
   setVerificationChallengeErrorSelector,
   SignUpStep,
   stepSelector,
+  userDataSelector,
   useSignUpStore,
 } from "../useSignUpStore";
 
@@ -65,6 +65,7 @@ export const Otp = ({ methods, settings }: OtpProps) => {
     resendAttempts,
     setResendAttempts,
     setVerificationChallengeError,
+    userData,
   } = useSignUpStore(
     useCallback(
       (state) => ({
@@ -76,6 +77,7 @@ export const Otp = ({ methods, settings }: OtpProps) => {
         setResendAttempts: setResendAttemptsSelector(state),
         setVerificationChallengeError:
           setVerificationChallengeErrorSelector(state),
+        userData: userDataSelector(state),
       }),
       []
     )
@@ -173,7 +175,7 @@ export const Otp = ({ methods, settings }: OtpProps) => {
   const handleResendOtp = useCallback(
     (e: any) => {
       e.preventDefault();
-      if (settings?.response.configs && resendAttempts > 0) {
+      if (settings?.response.configs && resendAttempts > 0 && userData) {
         setChallengeVerificationError(null);
         if (captchaRequired) {
           redirectBack(true);
@@ -181,11 +183,10 @@ export const Otp = ({ methods, settings }: OtpProps) => {
           const generateChallengeRequestDto: GenerateChallengeRequestDto = {
             requestTime: new Date().toISOString(),
             request: {
-              identifier: `${
-                settings.response.configs["identifier.prefix"]
-              }${getValues("phone")}`,
-              captchaToken: getValues("captchaToken"),
-              locale: getLocale(i18n.language, langCodeMapping),
+              identifier:
+                userData[settings.response.configs["identifier.name"]],
+              captchaToken: userData.recaptchaToken,
+              locale: i18n.language,
               regenerateChallenge: true,
               purpose: "REGISTRATION",
             },
@@ -249,15 +250,16 @@ export const Otp = ({ methods, settings }: OtpProps) => {
 
       const isStepValid = await trigger();
 
-      if (isStepValid) {
+      if (isStepValid && userData) {
         setChallengeVerificationError(null);
+
+        const identifier =
+          userData[settings.response.configs["identifier.name"]];
 
         const verifyChallengeRequestDto: VerifyChallengeRequestDto = {
           requestTime: new Date().toISOString(),
           request: {
-            identifier: `${
-              settings.response.configs["identifier.prefix"]
-            }${getValues("phone")}`,
+            identifier: identifier,
             challengeInfo: [
               {
                 challenge: getValues("otp"),
