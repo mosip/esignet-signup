@@ -61,56 +61,15 @@ public class NotificationHelper {
     @Value("${mosip.signup.sms-notification.remove-country-code:false}")
     private boolean removeCountryCode;
 
-    @Value("${mosip.signup.send-notification.channel}")
+    @Value("${mosip.signup.send-notification.channel:sms}")
     private String defaultChannel;
 
     public void sendNotification(String identifier, String locale, String templateKey, Map<String, String> params) {
         locale = locale != null ? locale : defaultLanguage;
-        boolean isEncoded = encodedLangCodes.contains(locale);
-
         if (EMAIL_CHANNEL.equalsIgnoreCase(defaultChannel)) {
-            String subject = resolveTemplate(EMAIL_SUBJECT_PROPERTY_PREFIX + templateKey + "." + locale, isEncoded, params);
-            String content = resolveTemplate(EMAIL_CONTENT_PROPERTY_PREFIX + templateKey + "." + locale, isEncoded, params);
-
-            // multipart/form-data
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-            MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
-            formData.add("mailTo", identifier);
-            formData.add("mailSubject", subject);
-            formData.add("mailContent", content);
-
-            try {
-                RestResponseWrapper<NotificationResponse> responseWrapper = selfTokenRestTemplate.exchange(sendNotificationEndpoint, HttpMethod.POST, new HttpEntity<>(formData, headers), new ParameterizedTypeReference<RestResponseWrapper<NotificationResponse>>() {
-                }).getBody();
-                log.debug("Email notification response -> {}", responseWrapper);
-            } catch (RestClientException e) {
-                log.error("Failed to send email notification for identifier {}", identifier, e);
-                throw new SignUpException(ErrorConstants.OTP_NOTIFICATION_FAILED);
-            }
-
+            sendEmailNotification(identifier, locale, templateKey, params);
         } else if (SMS_CHANNEL.equalsIgnoreCase(defaultChannel)) {
-            String message = resolveTemplate(SMS_TEMPLATE_PROPERTY_PREFIX + templateKey + "." + locale, isEncoded, params);
-
-            String phoneNumber = identifier;
-
-            if (removeCountryCode && identifier.startsWith(identifierPrefix)) {
-                phoneNumber = identifier.substring(identifierPrefix.length());
-            }
-
-            NotificationRequest notificationRequest = new NotificationRequest(phoneNumber, message);
-            RestRequestWrapper<NotificationRequest> restRequestWrapper = new RestRequestWrapper<>();
-            restRequestWrapper.setRequesttime(IdentityProviderUtil.getUTCDateTime());
-            restRequestWrapper.setRequest(notificationRequest);
-
-            try {
-                RestResponseWrapper<NotificationResponse> responseWrapper = selfTokenRestTemplate.exchange(sendNotificationEndpoint, HttpMethod.POST, new HttpEntity<>(restRequestWrapper), new ParameterizedTypeReference<RestResponseWrapper<NotificationResponse>>() {
-                }).getBody();
-                log.debug("SMS notification response -> {}", responseWrapper);
-            } catch (RestClientException e) {
-                log.error("Failed to send SMS notification for identifier {}", identifier, e);
-                throw new SignUpException(ErrorConstants.OTP_NOTIFICATION_FAILED);
-            }
+            sendSMSNotification(identifier, locale, templateKey, params);
         } else {
             log.error("Unsupported notification channel configured: {}", defaultChannel);
             throw new SignUpException(ErrorConstants.INVALID_NOTIFICATION_CHANNEL);
@@ -120,6 +79,55 @@ public class NotificationHelper {
     @Async
     public void sendNotificationAsync(String identifier, String locale, String templateKey, Map<String, String> params) {
         sendNotification(identifier, locale, templateKey, params);
+    }
+
+    private void sendEmailNotification(String identifier, String locale, String templateKey, Map<String, String> params) {
+        boolean isEncoded = encodedLangCodes.contains(locale);
+        String subject = resolveTemplate(EMAIL_SUBJECT_PROPERTY_PREFIX + templateKey + "." + locale, isEncoded, params);
+        String content = resolveTemplate(EMAIL_CONTENT_PROPERTY_PREFIX + templateKey + "." + locale, isEncoded, params);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+        MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
+        formData.add("mailTo", identifier);
+        formData.add("mailSubject", subject);
+        formData.add("mailContent", content);
+        try {
+            RestResponseWrapper<NotificationResponse> responseWrapper = selfTokenRestTemplate.exchange(sendNotificationEndpoint, HttpMethod.POST, new HttpEntity<>(formData, headers), new ParameterizedTypeReference<RestResponseWrapper<NotificationResponse>>() {
+            }).getBody();
+            validateResponse(responseWrapper, "Email");
+        } catch (RestClientException e) {
+            log.error("Failed to send email notification", e);
+            throw new SignUpException(ErrorConstants.OTP_NOTIFICATION_FAILED);
+        }
+    }
+
+    private void sendSMSNotification(String identifier, String locale, String templateKey, Map<String, String> params) {
+        boolean isEncoded = encodedLangCodes.contains(locale);
+        String message = resolveTemplate(SMS_TEMPLATE_PROPERTY_PREFIX + templateKey + "." + locale, isEncoded, params);
+        String phoneNumber = identifier;
+        if (removeCountryCode && identifier.startsWith(identifierPrefix)) {
+            phoneNumber = identifier.substring(identifierPrefix.length());
+        }
+        NotificationRequest notificationRequest = new NotificationRequest(phoneNumber, message);
+        RestRequestWrapper<NotificationRequest> restRequestWrapper = new RestRequestWrapper<>();
+        restRequestWrapper.setRequesttime(IdentityProviderUtil.getUTCDateTime());
+        restRequestWrapper.setRequest(notificationRequest);
+        try {
+            RestResponseWrapper<NotificationResponse> responseWrapper = selfTokenRestTemplate.exchange(sendNotificationEndpoint, HttpMethod.POST, new HttpEntity<>(restRequestWrapper), new ParameterizedTypeReference<RestResponseWrapper<NotificationResponse>>() {
+            }).getBody();
+            validateResponse(responseWrapper, "SMS");
+        } catch (RestClientException e) {
+            log.error("Failed to send SMS notification", e);
+            throw new SignUpException(ErrorConstants.OTP_NOTIFICATION_FAILED);
+        }
+    }
+
+    private void validateResponse(RestResponseWrapper<NotificationResponse> responseWrapper, String channel) {
+        if (responseWrapper == null || (responseWrapper.getErrors() != null && !responseWrapper.getErrors().isEmpty())) {
+            log.error("{} notification failed. Response: {}", channel, responseWrapper);
+            throw new SignUpException(ErrorConstants.OTP_NOTIFICATION_FAILED);
+        }
+        log.debug("{} notification response -> {}", channel, responseWrapper);
     }
 
     private String resolveTemplate(String templateKey, boolean isEncoded, Map<String, String> params) {
