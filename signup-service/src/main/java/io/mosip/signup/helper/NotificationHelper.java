@@ -85,14 +85,18 @@ public class NotificationHelper {
                 }).getBody();
                 log.debug("Email notification response -> {}", responseWrapper);
             } catch (RestClientException e) {
-                log.error("Failed to send email notification", e);
+                log.error("Failed to send email notification for identifier {}", identifier, e);
                 throw new SignUpException(ErrorConstants.OTP_NOTIFICATION_FAILED);
             }
 
-        } else {
+        } else if (SMS_CHANNEL.equalsIgnoreCase(defaultChannel)) {
             String message = resolveTemplate(SMS_TEMPLATE_PROPERTY_PREFIX + templateKey + "." + locale, isEncoded, params);
 
-            String phoneNumber = removeCountryCode ? identifier.substring(identifierPrefix.length()) : identifier;
+            String phoneNumber = identifier;
+
+            if (removeCountryCode && identifier.startsWith(identifierPrefix)) {
+                phoneNumber = identifier.substring(identifierPrefix.length());
+            }
 
             NotificationRequest notificationRequest = new NotificationRequest(phoneNumber, message);
             RestRequestWrapper<NotificationRequest> restRequestWrapper = new RestRequestWrapper<>();
@@ -104,9 +108,12 @@ public class NotificationHelper {
                 }).getBody();
                 log.debug("SMS notification response -> {}", responseWrapper);
             } catch (RestClientException e) {
-                log.error("Failed to send SMS notification", e);
+                log.error("Failed to send SMS notification for identifier {}", identifier, e);
                 throw new SignUpException(ErrorConstants.OTP_NOTIFICATION_FAILED);
             }
+        } else {
+            log.error("Unsupported notification channel configured: {}", defaultChannel);
+            throw new SignUpException(ErrorConstants.INVALID_NOTIFICATION_CHANNEL);
         }
     }
 
@@ -116,9 +123,20 @@ public class NotificationHelper {
     }
 
     private String resolveTemplate(String templateKey, boolean isEncoded, Map<String, String> params) {
-        String template = isEncoded ? new String(Base64.getDecoder().decode(environment.getProperty(templateKey))) : environment.getProperty(templateKey);
+        String rawTemplate = environment.getProperty(templateKey);
+        if (rawTemplate == null) {
+            log.error("Notification template not configured: {}", templateKey);
+            throw new SignUpException(ErrorConstants.NOTIFICATION_TEMPLATE_NOT_FOUND);
+        }
 
-        if (params != null && template != null) {
+        String template;
+        try {
+            template = isEncoded ? new String(Base64.getDecoder().decode(rawTemplate)) : rawTemplate;
+        } catch (IllegalArgumentException e) {
+            log.error("Invalid encoded notification template: {}", templateKey, e);
+            throw new SignUpException(ErrorConstants.NOTIFICATION_TEMPLATE_NOT_FOUND);
+        }
+        if (params != null) {
             for (Map.Entry<String, String> entry : params.entrySet()) {
                 template = template.replace(entry.getKey(), entry.getValue());
             }
