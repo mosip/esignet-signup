@@ -57,28 +57,18 @@ public class NotificationHelperTest {
         String templateKey = "send-otp";
         String message = "Hello, {{name}}!";
 
-        when(environment.getProperty("mosip.signup.sms-notification-template." + templateKey + "." + locale))
-                .thenReturn(Base64.getEncoder().encodeToString(message.getBytes()));
+        when(environment.getProperty("mosip.signup.sms-notification-template." + templateKey + "." + locale)).thenReturn(Base64.getEncoder().encodeToString(message.getBytes()));
         Map<String, String> params = new HashMap<>();
         params.put("{{name}}", "John");
 
         RestResponseWrapper<NotificationResponse> responseWrapper = new RestResponseWrapper<>();
         ResponseEntity<RestResponseWrapper<NotificationResponse>> responseEntity = mock(ResponseEntity.class);
         when(responseEntity.getBody()).thenReturn(responseWrapper);
-        when(selfTokenRestTemplate.exchange(
-                eq(sendNotificationEndpoint),
-                eq(HttpMethod.POST),
-                any(HttpEntity.class),
-                any(ParameterizedTypeReference.class)))
-                .thenReturn(responseEntity);
+        when(selfTokenRestTemplate.exchange(eq(sendNotificationEndpoint), eq(HttpMethod.POST), any(HttpEntity.class), any(ParameterizedTypeReference.class))).thenReturn(responseEntity);
 
         notificationHelper.sendNotification("1234567890", locale, templateKey, params);
 
-        verify(selfTokenRestTemplate, times(1)).exchange(
-                eq(sendNotificationEndpoint),
-                eq(HttpMethod.POST),
-                any(HttpEntity.class),
-                any(ParameterizedTypeReference.class));
+        verify(selfTokenRestTemplate, times(1)).exchange(eq(sendNotificationEndpoint), eq(HttpMethod.POST), any(HttpEntity.class), any(ParameterizedTypeReference.class));
     }
 
     @Test(expected = SignUpException.class)
@@ -87,15 +77,9 @@ public class NotificationHelperTest {
         String templateKey = "send-otp";
         String message = "Hello, {{name}}!";
 
-        when(environment.getProperty("mosip.signup.sms-notification-template." + templateKey + "." + locale))
-                .thenReturn(Base64.getEncoder().encodeToString(message.getBytes()));
+        when(environment.getProperty("mosip.signup.sms-notification-template." + templateKey + "." + locale)).thenReturn(Base64.getEncoder().encodeToString(message.getBytes()));
 
-        when(selfTokenRestTemplate.exchange(
-                eq(sendNotificationEndpoint),
-                eq(HttpMethod.POST),
-                any(HttpEntity.class),
-                any(ParameterizedTypeReference.class)))
-                .thenThrow(new RestClientException("Error in RestTemplate"));
+        when(selfTokenRestTemplate.exchange(eq(sendNotificationEndpoint), eq(HttpMethod.POST), any(HttpEntity.class), any(ParameterizedTypeReference.class))).thenThrow(new RestClientException("Error in RestTemplate"));
 
         notificationHelper.sendNotification("1234567890", locale, templateKey, null);
     }
@@ -106,8 +90,7 @@ public class NotificationHelperTest {
         String templateKey = "send-otp";
         String message = "Hello, {{name}}!";
 
-        when(environment.getProperty("mosip.signup.sms-notification-template." + templateKey + "." + defaultLanguage))
-                .thenReturn(Base64.getEncoder().encodeToString(message.getBytes()));
+        when(environment.getProperty("mosip.signup.sms-notification-template." + templateKey + "." + defaultLanguage)).thenReturn(Base64.getEncoder().encodeToString(message.getBytes()));
 
         Map<String, String> params = new HashMap<>();
         params.put("{{name}}", "John");
@@ -115,20 +98,11 @@ public class NotificationHelperTest {
         RestResponseWrapper<NotificationResponse> responseWrapper = new RestResponseWrapper<>();
         ResponseEntity<RestResponseWrapper<NotificationResponse>> responseEntity = mock(ResponseEntity.class);
         when(responseEntity.getBody()).thenReturn(responseWrapper);
-        when(selfTokenRestTemplate.exchange(
-                eq(sendNotificationEndpoint),
-                eq(HttpMethod.POST),
-                any(HttpEntity.class),
-                any(ParameterizedTypeReference.class)))
-                .thenReturn(responseEntity);
+        when(selfTokenRestTemplate.exchange(eq(sendNotificationEndpoint), eq(HttpMethod.POST), any(HttpEntity.class), any(ParameterizedTypeReference.class))).thenReturn(responseEntity);
 
         notificationHelper.sendNotification("1234567890", locale, templateKey, params);
 
-        verify(selfTokenRestTemplate, times(1)).exchange(
-                eq(sendNotificationEndpoint),
-                eq(HttpMethod.POST),
-                any(HttpEntity.class),
-                any(ParameterizedTypeReference.class));
+        verify(selfTokenRestTemplate, times(1)).exchange(eq(sendNotificationEndpoint), eq(HttpMethod.POST), any(HttpEntity.class), any(ParameterizedTypeReference.class));
     }
 
     @Test
@@ -139,25 +113,18 @@ public class NotificationHelperTest {
         String locale = "eng";
         String message = "Hello";
 
-        when(environment.getProperty("mosip.signup.sms-notification-template." + templateKey + "." + locale))
-                .thenReturn(Base64.getEncoder().encodeToString(message.getBytes()));
+        when(environment.getProperty("mosip.signup.sms-notification-template." + templateKey + "." + locale)).thenReturn(Base64.getEncoder().encodeToString(message.getBytes()));
 
         RestResponseWrapper<NotificationResponse> responseWrapper = new RestResponseWrapper<>();
         ResponseEntity<RestResponseWrapper<NotificationResponse>> responseEntity = mock(ResponseEntity.class);
 
         when(responseEntity.getBody()).thenReturn(responseWrapper);
 
-        when(selfTokenRestTemplate.exchange(
-                eq(sendNotificationEndpoint),
-                eq(HttpMethod.POST),
-                any(HttpEntity.class),
-                any(ParameterizedTypeReference.class)))
-                .thenReturn(responseEntity);
+        when(selfTokenRestTemplate.exchange(eq(sendNotificationEndpoint), eq(HttpMethod.POST), any(HttpEntity.class), any(ParameterizedTypeReference.class))).thenReturn(responseEntity);
 
         spyNotificationHelper.sendNotificationAsync("1234567890", locale, templateKey, null);
 
-        verify(spyNotificationHelper, times(1))
-                .sendNotification("1234567890", locale, templateKey, null);
+        verify(spyNotificationHelper, times(1)).sendNotification("1234567890", locale, templateKey, null);
     }
 
     @Test
@@ -167,28 +134,17 @@ public class NotificationHelperTest {
         String locale = "eng";
         String templateKey = "send-otp";
 
-        when(environment.getProperty("mosip.signup.email-notification-template.subject." + templateKey + "." + locale))
-                .thenReturn("OTP Verification");
-        when(environment.getProperty("mosip.signup.email-notification-template.content." + templateKey + "." + locale))
-                .thenReturn("Use {challenge} to verify your account.");
+        when(environment.getProperty("mosip.signup.email-notification-template.subject." + templateKey + "." + locale)).thenReturn("OTP Verification");
+        when(environment.getProperty("mosip.signup.email-notification-template.content." + templateKey + "." + locale)).thenReturn("Use {challenge} to verify your account.");
 
         RestResponseWrapper<NotificationResponse> responseWrapper = new RestResponseWrapper<>();
         ResponseEntity<RestResponseWrapper<NotificationResponse>> responseEntity = mock(ResponseEntity.class);
         when(responseEntity.getBody()).thenReturn(responseWrapper);
-        when(selfTokenRestTemplate.exchange(
-                eq(sendNotificationEndpoint),
-                eq(HttpMethod.POST),
-                any(HttpEntity.class),
-                any(ParameterizedTypeReference.class)))
-                .thenReturn(responseEntity);
+        when(selfTokenRestTemplate.exchange(eq(sendNotificationEndpoint), eq(HttpMethod.POST), any(HttpEntity.class), any(ParameterizedTypeReference.class))).thenReturn(responseEntity);
 
         notificationHelper.sendNotification("user@example.com", locale, templateKey, null);
 
-        verify(selfTokenRestTemplate, times(1)).exchange(
-                eq(sendNotificationEndpoint),
-                eq(HttpMethod.POST),
-                any(HttpEntity.class),
-                any(ParameterizedTypeReference.class));
+        verify(selfTokenRestTemplate, times(1)).exchange(eq(sendNotificationEndpoint), eq(HttpMethod.POST), any(HttpEntity.class), any(ParameterizedTypeReference.class));
     }
 
     @Test(expected = SignUpException.class)
@@ -203,8 +159,7 @@ public class NotificationHelperTest {
         String locale = "eng";
         String templateKey = "send-otp";
 
-        when(environment.getProperty("mosip.signup.sms-notification-template." + templateKey + "." + locale))
-                .thenReturn(null);  // property not configured
+        when(environment.getProperty("mosip.signup.sms-notification-template." + templateKey + "." + locale)).thenReturn(null);  // property not configured
 
         notificationHelper.sendNotification("+85512345678", locale, templateKey, null);
     }
@@ -218,26 +173,16 @@ public class NotificationHelperTest {
         String templateKey = "send-otp";
         String message = "Use {challenge} to verify your account.";
 
-        when(environment.getProperty("mosip.signup.sms-notification-template." + templateKey + "." + locale))
-                .thenReturn(message);
+        when(environment.getProperty("mosip.signup.sms-notification-template." + templateKey + "." + locale)).thenReturn(message);
 
         RestResponseWrapper<NotificationResponse> responseWrapper = new RestResponseWrapper<>();
         ResponseEntity<RestResponseWrapper<NotificationResponse>> responseEntity = mock(ResponseEntity.class);
         when(responseEntity.getBody()).thenReturn(responseWrapper);
-        when(selfTokenRestTemplate.exchange(
-                eq(sendNotificationEndpoint),
-                eq(HttpMethod.POST),
-                any(HttpEntity.class),
-                any(ParameterizedTypeReference.class)))
-                .thenReturn(responseEntity);
+        when(selfTokenRestTemplate.exchange(eq(sendNotificationEndpoint), eq(HttpMethod.POST), any(HttpEntity.class), any(ParameterizedTypeReference.class))).thenReturn(responseEntity);
 
         // +855 prefix should be stripped → 12345678
         notificationHelper.sendNotification("+85512345678", locale, templateKey, null);
 
-        verify(selfTokenRestTemplate, times(1)).exchange(
-                eq(sendNotificationEndpoint),
-                eq(HttpMethod.POST),
-                any(HttpEntity.class),
-                any(ParameterizedTypeReference.class));
+        verify(selfTokenRestTemplate, times(1)).exchange(eq(sendNotificationEndpoint), eq(HttpMethod.POST), any(HttpEntity.class), any(ParameterizedTypeReference.class));
     }
 }
