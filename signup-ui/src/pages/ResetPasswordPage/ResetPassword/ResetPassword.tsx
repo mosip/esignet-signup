@@ -39,6 +39,7 @@ import {
   setCriticalErrorSelector,
   setStepSelector,
   stepSelector,
+  userDataSelector,
   useResetPasswordStore,
 } from "../useResetPasswordStore";
 
@@ -55,12 +56,13 @@ export const ResetPassword = ({ methods, settings }: ResetPasswordProps) => {
   const [passwordResetError, setPasswordResetError] = useState<Error | null>(
     null
   );
-  const { step, setStep, setCriticalError } = useResetPasswordStore(
+  const { step, setStep, setCriticalError, userData } = useResetPasswordStore(
     useCallback(
       (state) => ({
         step: stepSelector(state),
         setStep: setStepSelector(state),
         setCriticalError: setCriticalErrorSelector(state),
+        userData: userDataSelector(state),
       }),
       []
     )
@@ -78,7 +80,7 @@ export const ResetPassword = ({ methods, settings }: ResetPasswordProps) => {
   const { resetPasswordMutation } = useResetPassword();
 
   const handleBack = useCallback(() => {
-    navigate(0)
+    navigate(0);
   }, []);
 
   const disabledContinue =
@@ -86,7 +88,7 @@ export const ResetPassword = ({ methods, settings }: ResetPasswordProps) => {
     !isResetPasswordDirty ||
     getValues("newPassword") === resetPasswordFormDefaultValues.newPassword ||
     getValues("confirmNewPassword") ===
-    resetPasswordFormDefaultValues.confirmNewPassword;
+      resetPasswordFormDefaultValues.confirmNewPassword;
 
   const handleContinue = useCallback(
     async (e: MouseEvent<HTMLButtonElement>) => {
@@ -96,15 +98,13 @@ export const ResetPassword = ({ methods, settings }: ResetPasswordProps) => {
 
       const isStepValid = await trigger();
 
-      if (isStepValid) {
+      if (isStepValid && userData) {
         const resetPasswordRequestDto: ResetPasswordRequestDto = {
           requestTime: new Date().toISOString(),
           request: {
-            identifier: `${
-              settings.response.configs["identifier.prefix"]
-              }${getValues("username")}`,
+            identifier: userData[settings.response.configs["identifier.name"]],
             password: getValues("newPassword"),
-            locale: null
+            locale: null,
           },
         };
 
@@ -136,10 +136,7 @@ export const ResetPassword = ({ methods, settings }: ResetPasswordProps) => {
               className="absolute left-0"
               aria-label="Go back"
             >
-              <Icons.back
-                id="back-button"
-                name="back-button"
-              />
+              <Icons.back id="back-button" name="back-button" />
             </button>
             <StepTitle className="text-center text-[22px] font-semibold">
               {t("reset_password")}
@@ -202,7 +199,7 @@ export const ResetPassword = ({ methods, settings }: ResetPasswordProps) => {
                           className={cn(
                             "h-[52px] py-6",
                             passwordResetFormError.newPassword &&
-                            "border-destructive"
+                              "border-destructive"
                           )}
                           minLength={
                             settings.response.configs["password.length.min"]
@@ -211,8 +208,8 @@ export const ResetPassword = ({ methods, settings }: ResetPasswordProps) => {
                             settings.response.configs["password.length.max"]
                           }
                           onBlur={() => {
-                            trigger("newPassword")
-                            trigger("confirmNewPassword")
+                            trigger("newPassword");
+                            trigger("confirmNewPassword");
                           }}
                         />
                       </FormControl>
@@ -240,7 +237,7 @@ export const ResetPassword = ({ methods, settings }: ResetPasswordProps) => {
                           className={cn(
                             "h-[52px] py-6",
                             passwordResetFormError.confirmNewPassword &&
-                            "border-destructive"
+                              "border-destructive"
                           )}
                           minLength={
                             settings.response.configs["password.length.min"]

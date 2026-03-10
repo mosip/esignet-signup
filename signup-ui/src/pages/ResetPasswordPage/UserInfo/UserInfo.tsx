@@ -1,35 +1,14 @@
-import {
-  ChangeEvent,
-  ClipboardEvent,
-  KeyboardEvent,
-  MouseEvent,
-  useCallback,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { JsonFormBuilder } from "@mosip/json-form-builder";
+import { FormConfig } from "@mosip/json-form-builder/dist/types";
 import ReCAPTCHA from "react-google-recaptcha";
-import {
-  ControllerRenderProps,
-  FieldValues,
-  useFormContext,
-  UseFormReturn,
-} from "react-hook-form";
+import { useFormContext, UseFormReturn } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import { RESET_PASSWORD } from "~constants/routes";
 import { ActionMessage } from "~components/ui/action-message";
-import { Button } from "~components/ui/button";
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "~components/ui/form";
 import { Icons } from "~components/ui/icons";
-import { Input } from "~components/ui/input";
 import {
   Step,
   StepAlert,
@@ -39,26 +18,27 @@ import {
   StepHeader,
   StepTitle,
 } from "~components/ui/step";
-import { cn } from "~utils/cn";
-import { handleInputFilter } from "~utils/input";
-import { getLocale } from "~utils/language";
+import { buildFilteredSchema } from "~utils/filterSchema";
 import { getSignInRedirectURLV2 } from "~utils/link";
 import { useGenerateChallenge } from "~pages/shared/mutations";
+import { useUiSpec } from "~pages/shared/queries";
+import langConfigService from "~services/langConfig.service";
 import {
-  Error,
   GenerateChallengeRequestDto,
   ResetPasswordForm,
   SettingsDto,
 } from "~typings/types";
-import { langCodeMappingSelector, useLanguageStore } from "~/useLanguageStore";
+import type { Error } from "~typings/types";
 
-import { resetPasswordFormDefaultValues } from "../ResetPasswordPage";
+// import { resetPasswordFormDefaultValues } from "../ResetPasswordPage";
 import {
   resendOtpSelector,
   ResetPasswordStep,
   setCriticalErrorSelector,
   setResendOtpSelector,
   setStepSelector,
+  setUserDataSelector,
+  userDataSelector,
   useResetPasswordStore,
 } from "../useResetPasswordStore";
 
@@ -68,6 +48,7 @@ interface UserInfoProps {
 }
 
 export const UserInfo = ({ settings, methods }: UserInfoProps) => {
+  const formBuilderRef: any = useRef(null); // Reference to form instance
   const { i18n, t } = useTranslation();
 
   const _reCaptchaRef = useRef<ReCAPTCHA>(null);
@@ -76,16 +57,17 @@ export const UserInfo = ({ settings, methods }: UserInfoProps) => {
   const [challengeGenerationError, setChallengeGenerationError] =
     useState<Error | null>(null);
 
-  const {
-    trigger,
-    formState: {
-      errors: UserInfoFormErrors,
-      isValid: isUserInfoValid,
-      isDirty: isUserInfoDirty,
-    },
-  } = methods;
+  const { data: uiSchemaResponse } = useUiSpec();
 
-  const { setStep, setCriticalError, resendOtp, setResendOtp } =
+  const navigate = useNavigate();
+
+  const [uiSchema, setUiSchema] = useState<FormConfig | null>(null);
+
+  const updateAfterLangChange = () => {
+    formBuilderRef.current?.updateLanguage(i18n.language, t("submit"));
+  };
+
+  const { setStep, setCriticalError, resendOtp, setUserData, userData } =
     useResetPasswordStore(
       useCallback(
         (state) => ({
@@ -93,112 +75,135 @@ export const UserInfo = ({ settings, methods }: UserInfoProps) => {
           setCriticalError: setCriticalErrorSelector(state),
           resendOtp: resendOtpSelector(state),
           setResendOtp: setResendOtpSelector(state),
+          setUserData: setUserDataSelector(state),
+          userData: userDataSelector(state),
         }),
         []
       )
     );
 
-  const { langCodeMapping } = useLanguageStore(
-    useCallback(
-      (state) => ({
-        langCodeMapping: langCodeMappingSelector(state),
-      }),
-      []
-    )
-  );
-
   const { generateChallengeMutation } = useGenerateChallenge();
 
-  const handleReCaptchaChange = (token: string | null) => {
-    setValue("captchaToken", token ?? "", { shouldValidate: true });
-  };
+  useEffect(() => {
+    return () => {
+      (window as any).__form_rendered__ = false;
+      formBuilderRef.current = null;
+      const container = document.getElementById("form-container");
+      if (container) container.innerHTML = ""; // optional: clean old content
+    };
+  }, []);
 
-  const handleReCaptchaExpired = () => {
-    setValue("captchaToken", "", { shouldValidate: true });
-  };
+  useEffect(() => {
+    if (!uiSchema) return;
+    langConfigService.getLocaleConfiguration().then((langConfig) => {
+      if (JsonFormBuilder && !(window as any).__form_rendered__) {
+        let restUserData;
 
-  const handleUsernameInput = (event: KeyboardEvent<HTMLInputElement>) =>
-    handleInputFilter(
-      event,
-      settings.response.configs["identifier.allowed.characters"]
-    );
+        if (userData) {
+          const { recaptchaToken, ...rest } = userData;
+          restUserData = rest;
+        }
 
-  // checking clipboard data with regex, before pasting it into the input field
-  const handleUsernamePaste = (event: ClipboardEvent<HTMLInputElement>) => {
-    const allowedCharsRegex = new RegExp(
-      settings.response.configs["identifier.allowed.characters"],
-      "g"
-    );
+        const form = JsonFormBuilder(
+          {
+            ...uiSchema,
+            prefilledValues: {
+              ...(resendOtp ? restUserData : userData),
+            },
+            language: {
+              ...uiSchema.language,
+              langCodeMap: langConfig.langCodeMapping,
+            },
+          },
+          "form-container",
+          {
+            submitButton: {
+              label: t("submit"),
+              action: handleContinue as any,
+            },
+            language: {
+              currentLanguage: i18n.language,
+              defaultLanguage: (window as any)._env_.DEFAULT_LANG,
+            },
+            recaptcha: {
+              siteKey: settings.response.configs["captcha.site.key"],
+              enabled:
+                settings.response.configs["send-challenge.captcha.required"],
+              language: i18n.language,
+            },
+          }
+        );
+        form.render();
+        formBuilderRef.current = form; // Store the form instance in the ref
+        (window as any).__form_rendered__ = true; // Indicate that the form has been rendered
+      } else if (!JsonFormBuilder) {
+        console.error("JsonFormBuilder is not defined.");
+      }
+    });
+  }, [uiSchema, resendOtp]);
 
-    if (!allowedCharsRegex.test(event.clipboardData.getData("text/plain"))) {
-      event.preventDefault();
+  useEffect(() => {
+    if (!uiSchemaResponse?.response) {
+      console.error("Failed to get UI spec response.");
+      navigate("/something-went-wrong");
+      return;
     }
-  };
 
-  const handleFullNameInput = (
-    event: ChangeEvent<HTMLInputElement>,
-    field: ControllerRenderProps<FieldValues, "fullname">
-  ) => {
-    const allowedCharsRegex = new RegExp(
-      settings.response.configs["fullname.allowed.characters"],
-      "g"
-    );
+    try {
+      const schema = buildFilteredSchema(
+        uiSchemaResponse?.response,
+        settings,
+        "reset-pwd",
+        resendOtp
+      );
 
-    const filteredText = allowedCharsRegex.test(event.target.value)
-      ? event.target.value
-      : event.target.value.slice(0, -1);
-    field.onChange(filteredText);
-  };
+      setUiSchema(schema ?? null);
+    } catch (err) {
+      console.error(err);
+      navigate("/something-went-wrong");
+    }
+  }, [uiSchemaResponse]);
 
-  const disabledContinue =
-    !isUserInfoValid ||
-    !isUserInfoDirty ||
-    getValues("username") === resetPasswordFormDefaultValues.username ||
-    getValues("fullname") === resetPasswordFormDefaultValues.fullname ||
-    (settings.response.configs["send-challenge.captcha.required"] &&
-      getValues("captchaToken") ===
-        resetPasswordFormDefaultValues.captchaToken);
+  useEffect(() => {
+    updateAfterLangChange();
+  }, [i18n.language]);
 
   const handleContinue = useCallback(
-    async (e: MouseEvent<HTMLButtonElement>) => {
-      e.preventDefault();
-
+    async (data: any) => {
       if (generateChallengeMutation.isPending) return;
 
-      const isStepValid = await trigger();
+      const identifierKey = settings.response.configs["identifier.name"];
 
-      if (isStepValid) {
-        const generateChallengeRequestDto: GenerateChallengeRequestDto = {
-          requestTime: new Date().toISOString(),
-          request: {
-            identifier: `${
-              settings.response.configs["identifier.prefix"]
-            }${getValues("username")}`,
-            captchaToken: getValues("captchaToken"),
-            locale: getLocale(i18n.language, langCodeMapping),
-            regenerateChallenge: resendOtp ? true : false,
-            purpose: "RESET_PASSWORD",
-          },
-        };
+      const generateChallengeRequestDto: GenerateChallengeRequestDto = {
+        requestTime: new Date().toISOString(),
+        request: {
+          identifier: data[identifierKey],
+          captchaToken: data.recaptchaToken,
+          locale: i18n.language,
+          regenerateChallenge: resendOtp ? true : false,
+          purpose: "RESET_PASSWORD",
+        },
+      };
 
-        return generateChallengeMutation.mutate(generateChallengeRequestDto, {
-          onSuccess: ({ response, errors }) => {
-            if (errors.length > 0) {
-              if (errors[0].errorCode === "invalid_transaction") {
-                setCriticalError(errors[0]);
-              } else {
-                setChallengeGenerationError(errors[0]);
-              }
-              _reCaptchaRef.current?.reset();
-              setValue("captchaToken", "", { shouldValidate: true });
+      setUserData(data);
+
+      return generateChallengeMutation.mutate(generateChallengeRequestDto, {
+        onSuccess: ({ response, errors }) => {
+          if (errors.length > 0) {
+            if (errors[0].errorCode === "invalid_transaction") {
+              setCriticalError(errors[0]);
+            } else {
+              setChallengeGenerationError(errors[0]);
             }
+            _reCaptchaRef.current?.reset();
+            setValue("captchaToken", "", { shouldValidate: true });
+          }
 
-            if (response && errors.length === 0) {
-              setStep(ResetPasswordStep.Otp);
-            }
-          },
-        });
-      }
+          if (response && errors.length === 0) {
+            setStep(ResetPasswordStep.Otp);
+          }
+        },
+      });
     },
     [generateChallengeMutation]
   );
@@ -233,7 +238,7 @@ export const UserInfo = ({ settings, methods }: UserInfoProps) => {
           </StepTitle>
           {!resendOtp && (
             <StepDescription>
-              {t("forgot_password_description")}
+              <div className="mt-2">{t("forgot_password_description")}</div>
             </StepDescription>
           )}
         </StepHeader>
@@ -254,118 +259,7 @@ export const UserInfo = ({ settings, methods }: UserInfoProps) => {
           </ActionMessage>
         </StepAlert>
         <StepContent>
-          {/* Phone and reCAPTCHA inputs */}
-          <div className="flex flex-col gap-y-6 px-6 sm:px-0">
-            <div className="flex flex-col gap-y-6">
-              {/* Phone number input */}
-              <FormField
-                name="username"
-                control={control}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t("username")}</FormLabel>
-                    <div className="relative w-full rounded-md">
-                      <FormControl>
-                        <div
-                          className={cn(
-                            "flex h-[52px] rounded-md border-[1px] border-input",
-                            UserInfoFormErrors.username && "border-destructive"
-                          )}
-                        >
-                          <span className="flex self-center border-r-[1px] border-input px-3 text-muted-foreground/60">
-                            {settings.response.configs["identifier.prefix"]}
-                          </span>
-                          <div className="w-full">
-                            <Input
-                              {...field}
-                              id="phone_input"
-                              type="tel"
-                              placeholder={t("enter_your_number_placeholder")}
-                              className="h-[inherit] border-none outline-none"
-                              minLength={
-                                settings.response.configs[
-                                  "identifier.length.min"
-                                ]
-                              }
-                              maxLength={
-                                settings.response.configs[
-                                  "identifier.length.max"
-                                ]
-                              }
-                              onPaste={handleUsernamePaste}
-                              onKeyUp={handleUsernameInput}
-                              onKeyDown={handleUsernameInput}
-                              disabled={resendOtp}
-                            />
-                          </div>
-                        </div>
-                      </FormControl>
-                      <FormMessage className="w-full" />
-                    </div>
-                  </FormItem>
-                )}
-              />
-              {/* Full Name */}
-              <FormField
-                control={control}
-                name="fullname"
-                render={({ field }) => (
-                  <FormItem className="space-y-0">
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-1">
-                        <FormLabel>{t("full_name")}</FormLabel>
-                      </div>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          id="fullname"
-                          placeholder={t("full_name_placeholder")}
-                          className={cn(
-                            "h-[52px] py-6",
-                            UserInfoFormErrors.fullname && "border-destructive"
-                          )}
-                          minLength={
-                            settings.response.configs["fullname.length.min"]
-                          }
-                          maxLength={
-                            settings.response.configs["fullname.length.max"]
-                          }
-                          onChange={(event) =>
-                            handleFullNameInput(event, field)
-                          }
-                          disabled={resendOtp}
-                        />
-                      </FormControl>
-                    </div>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              {/* ReCaptcha */}
-              {settings.response.configs["send-challenge.captcha.required"] && (
-                <div id="captcha" className="flex items-center justify-center">
-                  <ReCAPTCHA
-                    ref={_reCaptchaRef}
-                    onChange={handleReCaptchaChange}
-                    onExpired={handleReCaptchaExpired}
-                    className="recaptcha"
-                    sitekey={
-                      settings.response.configs["captcha.site.key"] ?? ""
-                    }
-                  />
-                </div>
-              )}
-            </div>
-            <Button
-              id="continue-button"
-              name="continue-button"
-              onClick={handleContinue}
-              isLoading={generateChallengeMutation.isPending}
-              disabled={disabledContinue}
-            >
-              {t("continue")}
-            </Button>
-          </div>
+          <div id="form-container" className="registration-form"></div>
         </StepContent>
       </Step>
     </div>

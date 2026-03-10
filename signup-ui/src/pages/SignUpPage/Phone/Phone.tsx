@@ -1,19 +1,13 @@
-import { KeyboardEvent, useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { JsonFormBuilder } from "@mosip/json-form-builder";
+import { FormConfig } from "@mosip/json-form-builder/dist/types";
 import ReCAPTCHA from "react-google-recaptcha";
 import { useFormContext, UseFormReturn } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import { ActionMessage } from "~components/ui/action-message";
-import { Button } from "~components/ui/button";
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormMessage,
-} from "~components/ui/form";
 import { Icons } from "~components/ui/icons";
-import { Input } from "~components/ui/input";
 import {
   Step,
   StepAlert,
@@ -22,25 +16,26 @@ import {
   StepHeader,
   StepTitle,
 } from "~components/ui/step";
-import { cn } from "~utils/cn";
-import { handleInputFilter } from "~utils/input";
-import { getLocale } from "~utils/language";
+import { buildFilteredSchema } from "~utils/filterSchema";
 import { getSignInRedirectURLV2 } from "~utils/link";
 import { useGenerateChallenge } from "~pages/shared/mutations";
+import { useUiSpec } from "~pages/shared/queries";
+import langConfigService from "~services/langConfig.service";
 import {
   Error,
   GenerateChallengeRequestDto,
   SettingsDto,
 } from "~typings/types";
-import { langCodeMappingSelector, useLanguageStore } from "~/useLanguageStore";
 
-import { SignUpForm, signUpFormDefaultValues } from "../SignUpPage";
+import { SignUpForm } from "../SignUpPage";
 import {
   resendOtpSelector,
   setCriticalErrorSelector,
   setResendOtpSelector,
   setStepSelector,
+  setUserDataSelector,
   SignUpStep,
+  userDataSelector,
   useSignUpStore,
 } from "../useSignUpStore";
 
@@ -49,23 +44,33 @@ interface PhoneProps {
   methods: UseFormReturn<SignUpForm, any, undefined>;
 }
 export const Phone = ({ settings, methods }: PhoneProps) => {
+  const formBuilderRef: any = useRef(null); // Reference to form instance
   const { i18n, t } = useTranslation();
-  const { setStep, setCriticalError, resendOtp, setResendOtp } = useSignUpStore(
+
+  const { data: uiSchemaResponse } = useUiSpec();
+  const navigate = useNavigate();
+  const [uiSchema, setUiSchema] = useState<FormConfig | null>(null);
+
+  const updateAfterLangChange = () => {
+    formBuilderRef.current?.updateLanguage(i18n.language, t("submit"));
+  };
+
+  const {
+    setStep,
+    setCriticalError,
+    resendOtp,
+    setResendOtp,
+    setUserData,
+    userData,
+  } = useSignUpStore(
     useCallback(
       (state) => ({
         setStep: setStepSelector(state),
         setCriticalError: setCriticalErrorSelector(state),
         resendOtp: resendOtpSelector(state),
         setResendOtp: setResendOtpSelector(state),
-      }),
-      []
-    )
-  );
-
-  const { langCodeMapping } = useLanguageStore(
-    useCallback(
-      (state) => ({
-        langCodeMapping: langCodeMappingSelector(state),
+        setUserData: setUserDataSelector(state),
+        userData: userDataSelector(state),
       }),
       []
     )
@@ -78,10 +83,89 @@ export const Phone = ({ settings, methods }: PhoneProps) => {
   const [error, setError] = useState<Error | null>(null);
   const { hash: fromSignInHash, search } = useLocation();
 
-  const {
-    trigger,
-    formState: { errors: formError, isValid, isDirty },
-  } = methods;
+  useEffect(() => {
+    return () => {
+      (window as any).__form_rendered__ = false;
+      formBuilderRef.current = null;
+      const container = document.getElementById("form-container");
+      if (container) container.innerHTML = ""; // optional: clean old content
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!uiSchema) return;
+    langConfigService.getLocaleConfiguration().then((langConfig) => {
+      if (JsonFormBuilder && !(window as any).__form_rendered__) {
+        let restUserData;
+
+        if (userData) {
+          const { recaptchaToken, ...rest } = userData;
+          restUserData = rest;
+        }
+
+        const form = JsonFormBuilder(
+          {
+            ...uiSchema,
+            prefilledValues: {
+              ...(resendOtp ? restUserData : userData),
+            },
+            language: {
+              ...uiSchema.language,
+              langCodeMap: langConfig.langCodeMapping,
+            },
+          },
+          "form-container",
+          {
+            submitButton: {
+              label: t("submit"),
+              action: handleContinue as any,
+            },
+            language: {
+              currentLanguage: i18n.language,
+              defaultLanguage: (window as any)._env_.DEFAULT_LANG,
+            },
+            recaptcha: {
+              siteKey: settings.response.configs["captcha.site.key"],
+              enabled:
+                settings.response.configs["send-challenge.captcha.required"],
+              language: i18n.language,
+            },
+          }
+        );
+        form.render();
+        formBuilderRef.current = form; // Store the form instance in the ref
+        (window as any).__form_rendered__ = true; // Indicate that the form has been rendered
+      } else if (!JsonFormBuilder) {
+        console.error("JsonFormBuilder is not defined.");
+      }
+    });
+  }, [uiSchema, resendOtp]);
+
+  useEffect(() => {
+    if (!uiSchemaResponse?.response) {
+      console.error("Failed to get UI spec response.");
+      navigate("/something-went-wrong");
+      return;
+    }
+
+    try {
+      const schema = buildFilteredSchema(
+        uiSchemaResponse.response,
+        settings,
+        "signup",
+        resendOtp
+      );
+
+      setUiSchema(schema ?? null);
+    } catch (err) {
+      console.error(err);
+      navigate("/something-went-wrong");
+    }
+  }, [uiSchemaResponse]);
+
+  useEffect(() => {
+    updateAfterLangChange();
+  }, [i18n.language]);
 
   useEffect(() => {
     if (!hasError) return;
@@ -93,76 +177,49 @@ export const Phone = ({ settings, methods }: PhoneProps) => {
     return () => clearInterval(intervalId);
   }, [hasError]);
 
-  const handleReCaptchaChange = (token: string | null) => {
-    setValue("captchaToken", token ?? "", { shouldValidate: true });
-  };
-
-  const handleReCaptchaExpired = () => {
-    setValue("captchaToken", "", { shouldValidate: true });
-  };
-
-  const handleUsernameInput = (event: KeyboardEvent<HTMLInputElement>) =>
-    handleInputFilter(
-      event,
-      settings.response.configs["identifier.allowed.characters"]
-    );
-
-  const disabledContinue =
-    !isValid ||
-    !isDirty ||
-    getValues("phone") === signUpFormDefaultValues.phone ||
-    (settings.response.configs["send-challenge.captcha.required"] &&
-      getValues("captchaToken") === signUpFormDefaultValues.captchaToken);
-
   const handleContinue = useCallback(
-    async (e: any) => {
-      e.preventDefault();
-
+    async (data: any) => {
       if (generateChallengeMutation.isPending) return;
 
-      const isStepValid = await trigger();
+      const identifierKey = settings.response.configs["identifier.name"];
 
-      if (isStepValid) {
-        setHasError(false);
+      const generateChallengeRequestDto: GenerateChallengeRequestDto = {
+        requestTime: new Date().toISOString(),
+        request: {
+          identifier: data[identifierKey],
+          captchaToken: data.recaptchaToken,
+          locale: i18n.language,
+          regenerateChallenge: resendOtp ? true : false,
+          purpose: "REGISTRATION",
+        },
+      };
 
-        const generateChallengeRequestDto: GenerateChallengeRequestDto = {
-          requestTime: new Date().toISOString(),
-          request: {
-            identifier: `${
-              settings.response.configs["identifier.prefix"]
-            }${getValues("phone")}`,
-            captchaToken: getValues("captchaToken"),
-            locale: getLocale(i18n.language, langCodeMapping),
-            regenerateChallenge: resendOtp ? true : false,
-            purpose: "REGISTRATION",
-          },
-        };
+      setUserData(data);
 
-        return generateChallengeMutation.mutate(generateChallengeRequestDto, {
-          onSuccess: ({ response, errors }) => {
-            if (errors.length > 0) {
-              if (errors[0].errorCode === "invalid_transaction") {
-                setCriticalError(errors[0]);
-              } else {
-                setError(errors[0]);
-                setHasError(true);
-              }
-              _reCaptchaRef.current?.reset();
-              setValue("captchaToken", "", { shouldValidate: true });
+      return generateChallengeMutation.mutate(generateChallengeRequestDto, {
+        onSuccess: ({ response, errors }) => {
+          if (errors.length > 0) {
+            if (errors[0].errorCode === "invalid_transaction") {
+              setCriticalError(errors[0]);
+            } else {
+              setError(errors[0]);
+              setHasError(true);
             }
+            _reCaptchaRef.current?.reset();
+            setValue("captchaToken", "", { shouldValidate: true });
+          }
 
-            if (response && errors.length === 0) {
-              setStep(SignUpStep.Otp);
-              setResendOtp(false);
-            }
-          },
-          onError: () => {
-            setHasError(true);
-          },
-        });
-      }
+          if (response && errors.length === 0) {
+            setStep(SignUpStep.Otp);
+            setResendOtp(false);
+          }
+        },
+        onError: () => {
+          setHasError(true);
+        },
+      });
     },
-    [generateChallengeMutation, getValues, setStep, trigger, setValue]
+    [generateChallengeMutation, getValues, setStep, setValue]
   );
 
   return (
@@ -188,7 +245,9 @@ export const Phone = ({ settings, methods }: PhoneProps) => {
             </div>
           ) : (
             <div className="grow px-3 text-center font-semibold tracking-normal xs:px-2">
-              {t("enter_your_number")}
+              {t("enter_your_number", {
+                identifier: settings.response.configs["identifier.name"],
+              })}
             </div>
           )}
         </StepTitle>
@@ -209,75 +268,7 @@ export const Phone = ({ settings, methods }: PhoneProps) => {
         </ActionMessage>
       </StepAlert>
       <StepContent>
-        {/* Phone and reCAPTCHA inputs */}
-        <div className="flex flex-col gap-y-6 p-6 sm:p-0">
-          <div className="flex flex-col gap-y-3">
-            {/* Phone number input */}
-            <FormField
-              name="phone"
-              control={control}
-              render={({ field }) => (
-                <FormItem>
-                  <div className="relative w-full rounded-md">
-                    <FormControl>
-                      <div
-                        className={cn(
-                          "input flex h-[52px] rounded-md border-[1px] border-input",
-                          formError.phone && "border-destructive"
-                        )}
-                      >
-                        <span className="flex self-center border-r-[1px] border-input px-3 text-muted-foreground/60">
-                          {settings.response.configs["identifier.prefix"]}
-                        </span>
-                        <div className="w-full">
-                          <Input
-                            {...field}
-                            id="phone_input"
-                            type="tel"
-                            placeholder={t("enter_your_number_placeholder")}
-                            className="h-[inherit] border-none outline-none"
-                            minLength={
-                              settings.response.configs["identifier.length.min"]
-                            }
-                            maxLength={
-                              settings.response.configs["identifier.length.max"]
-                            }
-                            onKeyDown={handleUsernameInput}
-                            onKeyUp={handleUsernameInput}
-                            disabled={resendOtp}
-                          />
-                        </div>
-                      </div>
-                    </FormControl>
-                    <FormMessage className="w-full" />
-                  </div>
-                </FormItem>
-              )}
-            />
-
-            {settings.response.configs["send-challenge.captcha.required"] && (
-              <div id="captcha" className="flex items-center justify-center">
-                {/* I'm not a robot checkbox */}
-                <ReCAPTCHA
-                  ref={_reCaptchaRef}
-                  onChange={handleReCaptchaChange}
-                  onExpired={handleReCaptchaExpired}
-                  className="recaptcha"
-                  sitekey={settings.response.configs["captcha.site.key"] ?? ""}
-                />
-              </div>
-            )}
-          </div>
-          <Button
-            id="continue-button"
-            name="continue-button"
-            onClick={handleContinue}
-            disabled={disabledContinue}
-            isLoading={generateChallengeMutation.isPending}
-          >
-            {t("continue")}
-          </Button>
-        </div>
+        <div id="form-container" className="registration-form"></div>
       </StepContent>
     </Step>
   );
