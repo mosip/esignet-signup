@@ -142,21 +142,24 @@ export const Phone = ({ settings, methods }: PhoneProps) => {
   }, [uiSchema, resendOtp]);
 
   useEffect(() => {
-    if (uiSchemaResponse && uiSchemaResponse.response) {
-      try {
-        const schema = buildFilteredSchema(
-          uiSchemaResponse?.response,
-          settings,
-          "signup",
-          resendOtp
-        );
+    if (!uiSchemaResponse?.response) {
+      console.error("Failed to get UI spec response.");
+      navigate("/something-went-wrong");
+      return;
+    }
 
-        setUiSchema(schema ?? null);
-      } catch (err) {
-        console.error(err);
-        navigate("/something-went-wrong");
-        return;
-      }
+    try {
+      const schema = buildFilteredSchema(
+        uiSchemaResponse.response,
+        settings,
+        "signup",
+        resendOtp
+      );
+
+      setUiSchema(schema ?? null);
+    } catch (err) {
+      console.error(err);
+      navigate("/something-went-wrong");
     }
   }, [uiSchemaResponse]);
 
@@ -242,7 +245,9 @@ export const Phone = ({ settings, methods }: PhoneProps) => {
             </div>
           ) : (
             <div className="grow px-3 text-center font-semibold tracking-normal xs:px-2">
-              {t("enter_your_number")}
+              {t("enter_your_number", {
+                identifier: settings.response.configs["identifier.name"],
+              })}
             </div>
           )}
         </StepTitle>

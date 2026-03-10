@@ -143,21 +143,24 @@ export const UserInfo = ({ settings, methods }: UserInfoProps) => {
   }, [uiSchema, resendOtp]);
 
   useEffect(() => {
-    if (uiSchemaResponse && uiSchemaResponse.response) {
-      try {
-        const schema = buildFilteredSchema(
-          uiSchemaResponse?.response,
-          settings,
-          "reset-pwd",
-          resendOtp
-        );
+    if (!uiSchemaResponse?.response) {
+      console.error("Failed to get UI spec response.");
+      navigate("/something-went-wrong");
+      return;
+    }
 
-        setUiSchema(schema ?? null);
-      } catch (err) {
-        console.error(err);
-        navigate("/something-went-wrong");
-        return;
-      }
+    try {
+      const schema = buildFilteredSchema(
+        uiSchemaResponse?.response,
+        settings,
+        "reset-pwd",
+        resendOtp
+      );
+
+      setUiSchema(schema ?? null);
+    } catch (err) {
+      console.error(err);
+      navigate("/something-went-wrong");
     }
   }, [uiSchemaResponse]);
 

@@ -326,20 +326,28 @@ export const Otp = ({ methods, settings }: OtpProps) => {
           </StepTitle>
         </div>
         <StepDescription className="w-full pt-2 tracking-normal">
-          <div className="text-muted-neutral-gray">
-            {t("otp_subheader", {
-              no_of_digit: settings?.response.configs["otp.length"],
-              identifier: "number",
-            })}
-          </div>
+          {userData && (
+            <div className="text-muted-neutral-gray">
+              {t("otp_subheader", {
+                no_of_digit: settings?.response.configs["otp.length"],
+                identifier: userData[
+                  settings.response.configs["identifier.name"]
+                ].includes("@")
+                  ? "email"
+                  : "number",
+              })}
+            </div>
+          )}
           <div className="font-medium text-muted-dark-gray">
             <span>{}</span>{" "}
             <span>
-              {maskData(
-                `${settings.response.configs["identifier.prefix"]}${getValues(
-                  "phone"
-                )}`,
-                4
+              {userData && (
+                <span>
+                  {maskData(
+                    `${userData[settings.response.configs["identifier.name"]]}`,
+                    4
+                  )}
+                </span>
               )}
             </span>
           </div>

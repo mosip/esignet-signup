@@ -39,9 +39,9 @@ export const buildFilteredSchema = (response: FormConfig, settings: SettingsDto,
     }
 
     if (
-        !response.resetPasswordChallengeFields.every(
-            (id: any) => schemaIds.has(id)
-        ) && page === "reset-pwd"
+        page === "reset-pwd" &&
+        !response.resetPasswordChallengeFields?.every((id: string) =>
+            schemaIds.has(id))
     ) {
         throw new Error(
             "Configuration error: Some reset password challenge fields are not present in the schema."
