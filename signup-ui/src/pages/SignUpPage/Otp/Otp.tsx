@@ -19,6 +19,7 @@ import {
   StepHeader,
   StepTitle,
 } from "~components/ui/step";
+import { getThreeLetterLocale } from "~utils/locale";
 import { maskData } from "~utils/mask";
 import { convertTime, getTimeoutTime } from "~utils/timer";
 import {
@@ -31,7 +32,6 @@ import {
   SettingsDto,
   VerifyChallengeRequestDto,
 } from "~typings/types";
-import { langCodeMappingSelector, useLanguageStore } from "~/useLanguageStore";
 
 import { SignUpForm, signUpFormDefaultValues } from "../SignUpPage";
 import {
@@ -43,6 +43,7 @@ import {
   setVerificationChallengeErrorSelector,
   SignUpStep,
   stepSelector,
+  uiSpecResponseSelector,
   userDataSelector,
   useSignUpStore,
 } from "../useSignUpStore";
@@ -66,6 +67,7 @@ export const Otp = ({ methods, settings }: OtpProps) => {
     setResendAttempts,
     setVerificationChallengeError,
     userData,
+    uiSpecResponse,
   } = useSignUpStore(
     useCallback(
       (state) => ({
@@ -78,18 +80,12 @@ export const Otp = ({ methods, settings }: OtpProps) => {
         setVerificationChallengeError:
           setVerificationChallengeErrorSelector(state),
         userData: userDataSelector(state),
+        uiSpecResponse: uiSpecResponseSelector(state),
       }),
       []
     )
   );
-  const { langCodeMapping } = useLanguageStore(
-    useCallback(
-      (state) => ({
-        langCodeMapping: langCodeMappingSelector(state),
-      }),
-      []
-    )
-  );
+
   const { trigger, reset, resetField, formState } = methods;
   const [captchaRequired, setCaptchaRequired] = useState<boolean>(false);
   const { generateChallengeMutation } = useGenerateChallenge();
@@ -186,7 +182,10 @@ export const Otp = ({ methods, settings }: OtpProps) => {
               identifier:
                 userData[settings.response.configs["identifier.name"]],
               captchaToken: userData.recaptchaToken,
-              locale: i18n.language,
+              locale: getThreeLetterLocale(
+                i18n.language,
+                uiSpecResponse?.language?.langCodeMap
+              ),
               regenerateChallenge: true,
               purpose: "REGISTRATION",
             },

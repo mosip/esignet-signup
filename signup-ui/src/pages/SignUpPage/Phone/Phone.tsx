@@ -18,6 +18,7 @@ import {
 } from "~components/ui/step";
 import { buildFilteredSchema } from "~utils/filterSchema";
 import { getSignInRedirectURLV2 } from "~utils/link";
+import { getThreeLetterLocale } from "~utils/locale";
 import { useGenerateChallenge } from "~pages/shared/mutations";
 import { useUiSpec } from "~pages/shared/queries";
 import langConfigService from "~services/langConfig.service";
@@ -33,6 +34,7 @@ import {
   setCriticalErrorSelector,
   setResendOtpSelector,
   setStepSelector,
+  setUiSpecResponseSelector,
   setUserDataSelector,
   SignUpStep,
   userDataSelector,
@@ -62,6 +64,7 @@ export const Phone = ({ settings, methods }: PhoneProps) => {
     setResendOtp,
     setUserData,
     userData,
+    setUiSpecResponse,
   } = useSignUpStore(
     useCallback(
       (state) => ({
@@ -71,6 +74,7 @@ export const Phone = ({ settings, methods }: PhoneProps) => {
         setResendOtp: setResendOtpSelector(state),
         setUserData: setUserDataSelector(state),
         userData: userDataSelector(state),
+        setUiSpecResponse: setUiSpecResponseSelector(state),
       }),
       []
     )
@@ -108,10 +112,6 @@ export const Phone = ({ settings, methods }: PhoneProps) => {
             ...uiSchema,
             prefilledValues: {
               ...(resendOtp ? restUserData : userData),
-            },
-            language: {
-              ...uiSchema.language,
-              langCodeMap: langConfig.langCodeMapping,
             },
           },
           "form-container",
@@ -153,6 +153,7 @@ export const Phone = ({ settings, methods }: PhoneProps) => {
       );
 
       setUiSchema(schema ?? null);
+      setUiSpecResponse(schema ?? null);
     } catch (err) {
       console.error(err);
       navigate("/something-went-wrong");
@@ -184,7 +185,10 @@ export const Phone = ({ settings, methods }: PhoneProps) => {
         request: {
           identifier: data[identifierKey],
           captchaToken: data.recaptchaToken,
-          locale: i18n.language,
+          locale: getThreeLetterLocale(
+            i18n.language,
+            uiSchema?.language?.langCodeMap
+          ),
           regenerateChallenge: resendOtp ? true : false,
           purpose: "REGISTRATION",
         },
