@@ -12,6 +12,7 @@ import {
   StepHeader,
   StepTitle,
 } from "~components/ui/step";
+import { getThreeLetterLocale } from "~utils/locale";
 import { useRegister, useUploadFile } from "~pages/shared/mutations";
 import { useUiSpec } from "~pages/shared/queries";
 import langConfigService from "~services/langConfig.service";
@@ -137,7 +138,10 @@ export const AccountSetup = ({ settings, methods }: AccountSetupProps) => {
         userInfo: {
           ...data,
         },
-        locale: i18n.language,
+        locale: getThreeLetterLocale(
+          i18n.language,
+          uiSchema?.language?.langCodeMap
+        ),
       },
     };
 
@@ -183,10 +187,6 @@ export const AccountSetup = ({ settings, methods }: AccountSetupProps) => {
           {
             ...uiSchema,
             schema: fields,
-            language: {
-              ...uiSchema.language,
-              langCodeMap: langConfig.langCodeMapping,
-            },
             prefilledValues: {
               [identifierName]:
                 userData[settings.response.configs["identifier.name"]],

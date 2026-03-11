@@ -18,6 +18,7 @@ const initialState = {
   resendOtp: false,
   resendAttempts: null,
   userData: null,
+  uiSpecResponse: null,
 };
 
 export type ResetPasswordStore = {
@@ -32,6 +33,8 @@ export type ResetPasswordStore = {
   reset: () => void;
   userData: Record<string, any> | null;
   setUserData: (data: Record<string, any>) => void;
+  uiSpecResponse: Record<string, any> | null;
+  setUiSpecResponse: (data: Record<string, any>) => void;
 };
 
 export const useResetPasswordStore = create<ResetPasswordStore>()(
@@ -62,6 +65,12 @@ export const useResetPasswordStore = create<ResetPasswordStore>()(
       const current = get();
       if (isEqual(current.userData, data)) return;
       set(() => ({ userData: data }));
+    },
+
+    setUiSpecResponse: (data: Record<string, any>) => {
+      const current = get();
+      if (isEqual(current.uiSpecResponse, data)) return;
+      set(() => ({ uiSpecResponse: data }));
     },
   }))
 );
@@ -105,3 +114,11 @@ export const userDataSelector = (
 export const setUserDataSelector = (
   state: ResetPasswordStore
 ): ResetPasswordStore["setUserData"] => state.setUserData;
+
+export const uiSpecResponseSelector = (
+  state: ResetPasswordStore
+): ResetPasswordStore["uiSpecResponse"] => state.uiSpecResponse;
+
+export const setUiSpecResponseSelector = (
+  state: ResetPasswordStore
+): ResetPasswordStore["setUiSpecResponse"] => state.setUiSpecResponse;

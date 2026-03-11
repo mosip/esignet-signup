@@ -20,6 +20,7 @@ const initialState = {
   resendAttempts: null,
   verificationChallengeError: null as Error | null,
   userData: null,
+  uiSpecResponse: null,
 };
 
 export type SignUpStore = {
@@ -36,6 +37,8 @@ export type SignUpStore = {
   reset: () => void;
   userData: Record<string, any> | null;
   setUserData: (data: Record<string, any>) => void;
+  uiSpecResponse: Record<string, any> | null;
+  setUiSpecResponse: (data: Record<string, any>) => void;
 };
 
 export const useSignUpStore = create<SignUpStore>()(
@@ -76,6 +79,11 @@ export const useSignUpStore = create<SignUpStore>()(
       const current = get();
       if (isEqual(current.userData, data)) return;
       set(() => ({ userData: data }));
+    },
+    setUiSpecResponse: (data: Record<string, any>) => {
+      const current = get();
+      if (isEqual(current.uiSpecResponse, data)) return;
+      set(() => ({ uiSpecResponse: data }));
     },
   }))
 );
@@ -126,3 +134,11 @@ export const userDataSelector = (state: SignUpStore): SignUpStore["userData"] =>
 export const setUserDataSelector = (
   state: SignUpStore
 ): SignUpStore["setUserData"] => state.setUserData;
+
+export const uiSpecResponseSelector = (
+  state: SignUpStore
+): SignUpStore["uiSpecResponse"] => state.uiSpecResponse;
+
+export const setUiSpecResponseSelector = (
+  state: SignUpStore
+): SignUpStore["setUiSpecResponse"] => state.setUiSpecResponse;
