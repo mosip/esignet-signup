@@ -4,7 +4,7 @@ This is the docker-compose setup to run eSignet Signup service with mock identit
 
 ## Prerequisites
 
-1. Java 11
+1. JDK 21
 2. Maven
 3. Docker
 4. Git bash
