@@ -65,7 +65,7 @@ In this version, signup-service require below MOSIP kernel modules and its depen
 
 
 ## Build & Run (for developers)
-The project requires JDK 11.
+The project requires JDK 21.
 1. Build and install:
     ```
     $ mvn clean install -Dgpg.skip=true -Dmaven.gitcommitid.skip=true
