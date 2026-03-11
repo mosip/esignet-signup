@@ -147,8 +147,8 @@ public class RegistrationService {
 
         HashMap<String, String> hashMap = new LinkedHashMap<>();
         hashMap.put("{challenge}", challenge);
-        notificationHelper.sendSMSNotification(generateChallengeRequest.getIdentifier(), transaction.getLocale(),
-                SEND_OTP_SMS_NOTIFICATION_TEMPLATE_KEY, hashMap);
+        notificationHelper.sendNotification(generateChallengeRequest.getIdentifier(), transaction.getLocale(),
+                SEND_OTP_TEMPLATE_KEY, hashMap);
         return new GenerateChallengeResponse(ActionStatus.SUCCESS);
     }
 
@@ -244,8 +244,8 @@ public class RegistrationService {
         cacheUtilService.setStatusCheckTransaction(transactionId, transaction);
 
         String locale = registerRequest.getLocale() == null ? transaction.getLocale() : registerRequest.getLocale();
-        notificationHelper.sendSMSNotificationAsync(registerRequest.getUsername(), locale,
-                REGISTRATION_SMS_NOTIFICATION_TEMPLATE_KEY, null);
+        notificationHelper.sendNotificationAsync(registerRequest.getUsername(), locale,
+                REGISTRATION_TEMPLATE_KEY, null);
 
         RegisterResponse registration = new RegisterResponse();
         registration.setStatus(ActionStatus.PENDING);
@@ -284,8 +284,8 @@ public class RegistrationService {
         cacheUtilService.setStatusCheckTransaction(transactionId, transaction);
 
         String locale = resetPasswordRequest.getLocale() == null ? transaction.getLocale() : resetPasswordRequest.getLocale();
-        notificationHelper.sendSMSNotificationAsync(resetPasswordRequest.getIdentifier(), locale,
-                FORGOT_PASSWORD_SMS_NOTIFICATION_TEMPLATE_KEY, null);
+        notificationHelper.sendNotificationAsync(resetPasswordRequest.getIdentifier(), locale,
+                FORGOT_PASSWORD_TEMPLATE_KEY, null);
 
         RegistrationStatusResponse resetPassword = new RegistrationStatusResponse();
         resetPassword.setStatus(ProfileCreateUpdateStatus.PENDING);

@@ -40,6 +40,8 @@ public class ErrorConstants {
     public static final String KNOWLEDGEBASE_MISMATCH = "knowledgebase_mismatch";
     public static final String IDENTIFIER_BLOCKED = "identifier_blocked";
     public static final String OTP_NOTIFICATION_FAILED = "otp_notification_failed";
+    public static final String INVALID_NOTIFICATION_CHANNEL = "invalid_notification_channel";
+    public static final String NOTIFICATION_TEMPLATE_NOT_FOUND = "notification_template_not_found";
     public static final String SERVER_UNREACHABLE = "server_unreachable";
 
     public static final String INVALID_IDENTITY_VERIFIER_ID = "invalid_identity_verifier_id";
