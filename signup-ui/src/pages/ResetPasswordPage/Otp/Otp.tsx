@@ -330,11 +330,9 @@ export const Otp = ({ methods, settings }: OtpProps) => {
             <div className="text-muted-neutral-gray">
               {t("otp_subheader", {
                 no_of_digit: settings?.response.configs["otp.length"],
-                identifier: userData[
-                  settings.response.configs["identifier.name"]
-                ].includes("@")
-                  ? "email"
-                  : "number",
+                identifier: t(
+                  settings.response.configs["identifier.name"] as any
+                ),
               })}
             </div>
           )}

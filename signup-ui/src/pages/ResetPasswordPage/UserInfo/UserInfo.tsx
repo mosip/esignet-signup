@@ -143,15 +143,11 @@ export const UserInfo = ({ settings, methods }: UserInfoProps) => {
   }, [uiSchema, resendOtp]);
 
   useEffect(() => {
-    if (!uiSchemaResponse?.response) {
-      console.error("Failed to get UI spec response.");
-      navigate("/something-went-wrong");
-      return;
-    }
+    if (!uiSchemaResponse?.response) return;
 
     try {
       const schema = buildFilteredSchema(
-        uiSchemaResponse?.response,
+        uiSchemaResponse.response,
         settings,
         "reset-pwd",
         resendOtp

@@ -142,11 +142,7 @@ export const Phone = ({ settings, methods }: PhoneProps) => {
   }, [uiSchema, resendOtp]);
 
   useEffect(() => {
-    if (!uiSchemaResponse?.response) {
-      console.error("Failed to get UI spec response.");
-      navigate("/something-went-wrong");
-      return;
-    }
+    if (!uiSchemaResponse?.response) return;
 
     try {
       const schema = buildFilteredSchema(
@@ -246,7 +242,9 @@ export const Phone = ({ settings, methods }: PhoneProps) => {
           ) : (
             <div className="grow px-3 text-center font-semibold tracking-normal xs:px-2">
               {t("enter_your_number", {
-                identifier: settings.response.configs["identifier.name"],
+                identifier: t(
+                  settings.response.configs["identifier.name"] as any
+                ),
               })}
             </div>
           )}
