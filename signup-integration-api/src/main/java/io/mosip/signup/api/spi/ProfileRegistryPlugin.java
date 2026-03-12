@@ -12,10 +12,12 @@ import io.mosip.signup.api.exception.InvalidProfileException;
 import io.mosip.signup.api.exception.ProfileException;
 import io.mosip.signup.api.util.ErrorConstants;
 import io.mosip.signup.api.util.ProfileCreateUpdateStatus;
+import org.springframework.cache.annotation.Cacheable;
 
-import java.util.Map;
 
 public interface ProfileRegistryPlugin {
+
+    static final String UI_SPEC = "ui_spec";
 
     /**
      * Validates the input data in the profileDto.
@@ -64,6 +66,7 @@ public interface ProfileRegistryPlugin {
      * @return A JsonNode containing the UI specification details.
      * If not implemented, it throws a custom exception to indicate that the UI specification was not found.
      */
+    @Cacheable(value = UI_SPEC, key = "'latest'")
     default JsonNode getUISpecification() {
         throw new ProfileException(ErrorConstants.UI_SPEC_NOT_FOUND);
     }
