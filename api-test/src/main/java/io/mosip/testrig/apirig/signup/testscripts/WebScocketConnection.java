@@ -1,7 +1,5 @@
 package io.mosip.testrig.apirig.signup.testscripts;
 
-import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.Map;
 
 import javax.websocket.CloseReason;
@@ -13,15 +11,11 @@ import org.json.JSONObject;
 import org.testng.ITest;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
-import org.testng.Reporter;
 import org.testng.SkipException;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import org.testng.internal.BaseTestMethod;
-import org.testng.internal.TestResult;
-
 
 import io.mosip.testrig.apirig.dto.TestCaseDTO;
 import io.mosip.testrig.apirig.signup.utils.SignupConfigManager;
