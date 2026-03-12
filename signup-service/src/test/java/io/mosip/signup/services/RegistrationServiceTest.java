@@ -1113,7 +1113,7 @@ public class RegistrationServiceTest {
         when(challengeManagerService.generateChallenge(any())).thenReturn("1111");
         when(captchaHelper.validateCaptcha(
                 generateChallengeRequest.getCaptchaToken())).thenReturn(true);
-        doThrow(new SignUpException("otp_notification_failed")).when(notificationHelper).sendSMSNotification(any(), any(), any(), any());
+        doThrow(new SignUpException("otp_notification_failed")).when(notificationHelper).sendNotification(any(), any(), any(), any());
 
         try{
             registrationService.generateChallenge(generateChallengeRequest, "");

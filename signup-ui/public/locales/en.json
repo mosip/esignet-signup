@@ -6,6 +6,7 @@
   "enter_your_number": "Please enter your {identifier} to continue",
   "email": "email",
   "number": "mobile number",
+  "phone": "mobile number",
   "enter_your_number_placeholder": "Enter 8-9 digit mobile number",
   "fail_to_send_otp": "Failed to send OTP. Please provide a valid mobile number.",
   "otp_header": "Enter OTP",

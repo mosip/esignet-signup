@@ -20,6 +20,7 @@ import {
   StepTitle,
 } from "~components/ui/step";
 import { base64Input } from "~utils/base64Input";
+import { getThreeLetterLocale } from "~utils/locale";
 import { maskData } from "~utils/mask";
 import { convertTime, getTimeoutTime } from "~utils/timer";
 import {
@@ -44,6 +45,7 @@ import {
   setResendOtpSelector,
   setStepSelector,
   stepSelector,
+  uiSpecResponseSelector,
   userDataSelector,
   useResetPasswordStore,
 } from "../useResetPasswordStore";
@@ -66,6 +68,7 @@ export const Otp = ({ methods, settings }: OtpProps) => {
     resendAttempts,
     setResendAttempts,
     userData,
+    uiSpecResponse,
   } = useResetPasswordStore(
     useCallback(
       (state) => ({
@@ -76,6 +79,7 @@ export const Otp = ({ methods, settings }: OtpProps) => {
         resendAttempts: resendAttemptsSelector(state),
         setResendAttempts: setResendAttemptsSelector(state),
         userData: userDataSelector(state),
+        uiSpecResponse: uiSpecResponseSelector(state),
       }),
       []
     )
@@ -177,7 +181,10 @@ export const Otp = ({ methods, settings }: OtpProps) => {
               identifier:
                 userData[settings.response.configs["identifier.name"]],
               captchaToken: userData.recaptchaToken,
-              locale: i18n.language,
+              locale: getThreeLetterLocale(
+                i18n.language,
+                uiSpecResponse?.language?.langCodeMap
+              ),
               regenerateChallenge: true,
               purpose: "RESET_PASSWORD",
             },
@@ -330,11 +337,9 @@ export const Otp = ({ methods, settings }: OtpProps) => {
             <div className="text-muted-neutral-gray">
               {t("otp_subheader", {
                 no_of_digit: settings?.response.configs["otp.length"],
-                identifier: userData[
-                  settings.response.configs["identifier.name"]
-                ].includes("@")
-                  ? "email"
-                  : "number",
+                identifier: t(
+                  settings.response.configs["identifier.name"] as any
+                ),
               })}
             </div>
           )}

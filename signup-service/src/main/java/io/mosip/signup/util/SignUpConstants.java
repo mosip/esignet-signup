@@ -24,15 +24,19 @@ public class SignUpConstants {
     public static final String IDV_SLOT_ALLOTTED = "IDV_SLOT_ALLOTTED";
     public static final String CONSENT_AGREE = "AGREE";
     public static final String EMTPY = "";
-    public static final String SEND_OTP_SMS_NOTIFICATION_TEMPLATE_KEY = "mosip.signup.sms-notification-template.send-otp";
-    public static final String REGISTRATION_SMS_NOTIFICATION_TEMPLATE_KEY = "mosip.signup.sms-notification-template.registration";
-    public static final String FORGOT_PASSWORD_SMS_NOTIFICATION_TEMPLATE_KEY = "mosip.signup.sms-notification-template.forgot-password";
+    public static final String SEND_OTP_TEMPLATE_KEY = "send-otp";
+    public static final String REGISTRATION_TEMPLATE_KEY = "registration";
+    public static final String FORGOT_PASSWORD_TEMPLATE_KEY = "forgot-password";
+    public static final String SMS_TEMPLATE_PROPERTY_PREFIX = "mosip.signup.sms-notification-template.";
+    public static final String EMAIL_SUBJECT_PROPERTY_PREFIX = "mosip.signup.email-notification-template.subject.";
+    public static final String EMAIL_CONTENT_PROPERTY_PREFIX = "mosip.signup.email-notification-template.content.";
     public static final String ACTIVATED = "ACTIVATED";
-
     public static final String SLOTS_CONNECTED = "slots_connected";
     public static final String SLOT_ALLOTTED = "slot_allotted";
     public static final String VERIFIED_SLOT = "verified_slot";
     public static final String VALUE_SEPARATOR = "###";
     public static final String UI_SPEC = "ui_spec";
+    public static final String EMAIL_CHANNEL = "email";
+    public static final String SMS_CHANNEL = "sms";
 
 }
