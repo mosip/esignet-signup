@@ -7,6 +7,7 @@ package io.mosip.signup.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.esignet.core.dto.RequestWrapper;
+import io.mosip.signup.api.exception.ProfileException;
 import io.mosip.signup.api.spi.ProfileRegistryPlugin;
 import io.mosip.signup.api.util.ProfileCreateUpdateStatus;
 import io.mosip.signup.config.SecurityConfig;
@@ -16,7 +17,6 @@ import io.mosip.signup.helper.AuditHelper;
 import io.mosip.signup.services.RegistrationService;
 import io.mosip.signup.util.ErrorConstants;
 import io.mosip.signup.util.SignUpConstants;
-import io.mosip.signup.validator.IdentifierValidator;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -34,7 +34,6 @@ import org.springframework.web.client.RestTemplate;
 
 import jakarta.servlet.http.Cookie;
 
-import java.awt.color.ProfileDataException;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -211,7 +210,7 @@ public class ResetPasswordControllerTest {
         RequestWrapper<ResetPasswordRequest> resetPasswordWrapper = new RequestWrapper<>();
         ZonedDateTime requestTime = ZonedDateTime.now(ZoneOffset.UTC);
 
-        doThrow(ProfileDataException.class).when(profileRegistryPlugin).validate(Mockito.eq("UPDATE"), any());
+        doThrow(ProfileException.class).when(profileRegistryPlugin).validate(Mockito.eq("UPDATE"), any());
 
         ResetPasswordRequest resetPasswordRequest = new ResetPasswordRequest();
         resetPasswordRequest.setIdentifier("+855123");

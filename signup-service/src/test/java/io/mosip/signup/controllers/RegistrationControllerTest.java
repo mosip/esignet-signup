@@ -5,13 +5,12 @@
  */
 package io.mosip.signup.controllers;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.esignet.core.dto.RequestWrapper;
 import io.mosip.esignet.core.exception.EsignetException;
 import io.mosip.esignet.core.util.IdentityProviderUtil;
 import io.mosip.signup.api.dto.ProfileDto;
-import io.mosip.signup.api.exception.InvalidProfileException;
+import io.mosip.signup.api.exception.ProfileException;
 import io.mosip.signup.api.spi.ProfileRegistryPlugin;
 import io.mosip.signup.api.util.ProfileCreateUpdateStatus;
 import io.mosip.signup.config.SecurityConfig;
@@ -41,7 +40,6 @@ import org.springframework.web.client.RestTemplate;
 
 import jakarta.servlet.http.Cookie;
 
-import java.awt.color.ProfileDataException;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -847,7 +845,7 @@ public class RegistrationControllerTest {
         registerRequest.setPassword("Password@2023");
         registerRequest.setLocale(locale);
 
-        doThrow(ProfileDataException.class).when(profileRegistryPlugin).validate(Mockito.eq("UPDATE"), Mockito.any(ProfileDto.class));
+        doThrow(ProfileException.class).when(profileRegistryPlugin).validate(Mockito.eq("UPDATE"), Mockito.any(ProfileDto.class));
 
         RequestWrapper<RegisterRequest> wrapper = new RequestWrapper<RegisterRequest>();
         wrapper.setRequestTime(IdentityProviderUtil.getUTCDateTime());
@@ -879,7 +877,7 @@ public class RegistrationControllerTest {
         registerRequest.setPassword("Password@2023");
         registerRequest.setLocale(locale);
 
-        doThrow(ProfileDataException.class).when(profileRegistryPlugin).validate(Mockito.eq("UPDATE"), Mockito.any(ProfileDto.class));
+        doThrow(ProfileException.class).when(profileRegistryPlugin).validate(Mockito.eq("UPDATE"), Mockito.any(ProfileDto.class));
 
         RequestWrapper<RegisterRequest> wrapper = new RequestWrapper<RegisterRequest>();
         wrapper.setRequestTime(IdentityProviderUtil.getUTCDateTime());
