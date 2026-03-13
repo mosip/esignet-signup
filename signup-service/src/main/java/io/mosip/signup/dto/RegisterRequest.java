@@ -6,15 +6,9 @@
 package io.mosip.signup.dto;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.mosip.signup.util.ErrorConstants;
-import io.mosip.signup.validator.Language;
-import io.mosip.signup.validator.Password;
-import io.mosip.signup.validator.UserInfo;
-import io.mosip.signup.validator.Username;
+import io.mosip.signup.validator.*;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -22,7 +16,7 @@ import jakarta.validation.constraints.Pattern;
 @Data
 public class RegisterRequest {
 
-    @Username
+    @Identifier
     private String username;
 
     @Password

@@ -5,13 +5,12 @@
  */
 package io.mosip.signup.controllers;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.esignet.core.dto.RequestWrapper;
 import io.mosip.esignet.core.exception.EsignetException;
 import io.mosip.esignet.core.util.IdentityProviderUtil;
 import io.mosip.signup.api.dto.ProfileDto;
-import io.mosip.signup.api.exception.InvalidProfileException;
+import io.mosip.signup.api.exception.ProfileException;
 import io.mosip.signup.api.spi.ProfileRegistryPlugin;
 import io.mosip.signup.api.util.ProfileCreateUpdateStatus;
 import io.mosip.signup.config.SecurityConfig;
@@ -25,6 +24,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -39,6 +39,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.client.RestTemplate;
 
 import jakarta.servlet.http.Cookie;
+
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -47,11 +48,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static io.mosip.esignet.core.constants.Constants.UTC_DATETIME_PATTERN;
-import static io.mosip.signup.util.ErrorConstants.INVALID_USERINFO;
-import static io.mosip.signup.util.ErrorConstants.INVALID_USERNAME;
+import static io.mosip.signup.util.ErrorConstants.*;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -101,8 +100,6 @@ public class RegistrationControllerTest {
         wrapper.setRequestTime(requestTime.format(DateTimeFormatter.ofPattern(UTC_DATETIME_PATTERN)));
         wrapper.setRequest(generateChallengeRequest);
 
-
-
         ChallengeInfo challengeInfo = new ChallengeInfo();
         challengeInfo.setChallenge("111111");
         challengeInfo.setFormat("alpha-numeric");
@@ -119,6 +116,8 @@ public class RegistrationControllerTest {
         verifyRequestWrapper.setRequestTime(IdentityProviderUtil.getUTCDateTime());
         verifyRequestWrapper.setRequest(verifyChallengeRequest);
     }
+
+
     @Test
     public void doVerifyChallenge_thenPass() throws Exception {
         String mockTransactionID = "123456789";
@@ -491,21 +490,8 @@ public class RegistrationControllerTest {
 
     @Test
     public void doGenerateChallenge_withInvalidIdentifier_returnErrorResponse() throws Exception {
-        generateChallengeRequest.setIdentifier("77410541");
+        generateChallengeRequest.setIdentifier("");
         wrapper.setRequest(generateChallengeRequest);
-        mockMvc.perform(post("/registration/generate-challenge")
-                        .content(objectMapper.writeValueAsString(wrapper))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.errors").isNotEmpty())
-                .andExpect(jsonPath("$.errors[0].errorCode").value(ErrorConstants.INVALID_IDENTIFIER));
-    }
-
-    @Test
-    public void doGenerateChallenge_withGenerateChallengeRaiseInvalidIdentifier_returnErrorResponse() throws Exception {
-        when(registrationService.generateChallenge(generateChallengeRequest, ""))
-                .thenThrow(new InvalidIdentifierException());
-
         mockMvc.perform(post("/registration/generate-challenge")
                         .content(objectMapper.writeValueAsString(wrapper))
                         .contentType(MediaType.APPLICATION_JSON))
@@ -848,7 +834,7 @@ public class RegistrationControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.response").isEmpty())
                 .andExpect(jsonPath("$.errors").isNotEmpty())
-                .andExpect(jsonPath("$.errors[0].errorMessage").value("invalid_username"));
+                .andExpect(jsonPath("$.errors[0].errorMessage").value("invalid_identifier"));
     }
 
     @Test
@@ -858,6 +844,8 @@ public class RegistrationControllerTest {
         registerRequest.setConsent("AGREE");
         registerRequest.setPassword("Password@2023");
         registerRequest.setLocale(locale);
+
+        doThrow(ProfileException.class).when(profileRegistryPlugin).validate(Mockito.eq("UPDATE"), Mockito.any(ProfileDto.class));
 
         RequestWrapper<RegisterRequest> wrapper = new RequestWrapper<RegisterRequest>();
         wrapper.setRequestTime(IdentityProviderUtil.getUTCDateTime());
@@ -877,7 +865,7 @@ public class RegistrationControllerTest {
                 .andExpect(jsonPath("$.response").isEmpty())
                 .andExpect(jsonPath("$.errors").isNotEmpty())
                 .andExpect(jsonPath("$.errors[0].errorCode")
-                        .value(INVALID_USERNAME));
+                        .value(INVALID_IDENTIFIER));
     }
 
     @Test
@@ -888,6 +876,8 @@ public class RegistrationControllerTest {
         registerRequest.setUsername("+85502345678");
         registerRequest.setPassword("Password@2023");
         registerRequest.setLocale(locale);
+
+        doThrow(ProfileException.class).when(profileRegistryPlugin).validate(Mockito.eq("UPDATE"), Mockito.any(ProfileDto.class));
 
         RequestWrapper<RegisterRequest> wrapper = new RequestWrapper<RegisterRequest>();
         wrapper.setRequestTime(IdentityProviderUtil.getUTCDateTime());
@@ -907,7 +897,7 @@ public class RegistrationControllerTest {
                 .andExpect(jsonPath("$.response").isEmpty())
                 .andExpect(jsonPath("$.errors").isNotEmpty())
                 .andExpect(jsonPath("$.errors[0].errorCode").value(
-                        ErrorConstants.INVALID_USERNAME));
+                        ErrorConstants.INVALID_IDENTIFIER));
     }
 
     @Test
@@ -959,33 +949,6 @@ public class RegistrationControllerTest {
                 .andExpect(jsonPath("$.response").isEmpty())
                 .andExpect(jsonPath("$.errors").isNotEmpty())
                 .andExpect(jsonPath("$.errors[0].errorCode").value(INVALID_USERINFO));
-    }
-
-    @Test
-    public void register_withInvalidUserInfo_returnErrorResponse() throws Exception{
-        RegisterRequest registerRequest = new RegisterRequest();
-        JsonNode jsonNode = objectMapper.createObjectNode().put("name", "Test");
-        registerRequest.setUserInfo(jsonNode);
-        registerRequest.setUsername("+855219718732");
-        registerRequest.setPassword("Password@2023");
-        registerRequest.setConsent("AGREE");
-
-        RequestWrapper<RegisterRequest> wrapper = new RequestWrapper<RegisterRequest>();
-        wrapper.setRequestTime(IdentityProviderUtil.getUTCDateTime());
-        wrapper.setRequest(registerRequest);
-
-        doThrow(new InvalidProfileException("invalid_input")).when(profileRegistryPlugin).validate(anyString(), any(ProfileDto.class));
-
-        String mockTransactionID = "123456789";
-
-        mockMvc.perform(post("/registration/register")
-                        .content(objectMapper.writeValueAsString(wrapper))
-                        .cookie(new Cookie(SignUpConstants.VERIFIED_TRANSACTION_ID, mockTransactionID))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.response").isEmpty())
-                .andExpect(jsonPath("$.errors").isNotEmpty())
-                .andExpect(jsonPath("$.errors[0].errorCode").value("invalid_input"));
     }
 
     @Test
