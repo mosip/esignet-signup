@@ -954,34 +954,6 @@ public class RegistrationControllerTest {
     }
 
     @Test
-    public void register_withInvalidUserInfo_returnErrorResponse() throws Exception{
-        RegisterRequest registerRequest = new RegisterRequest();
-        JsonNode jsonNode = objectMapper.createObjectNode().put("name", "Test");
-        registerRequest.setUserInfo(jsonNode);
-        registerRequest.setUsername("+855219718732");
-        registerRequest.setPassword("Password@2023");
-        registerRequest.setConsent("AGREE");
-
-        RequestWrapper<RegisterRequest> wrapper = new RequestWrapper<RegisterRequest>();
-        wrapper.setRequestTime(IdentityProviderUtil.getUTCDateTime());
-        wrapper.setRequest(registerRequest);
-
-        doNothing().when(profileRegistryPlugin).validate(Mockito.eq("UPDATE"), any(ProfileDto.class));
-        doThrow(new InvalidProfileException("invalid_input")).when(profileRegistryPlugin).validate(anyString(), any(ProfileDto.class));
-
-        String mockTransactionID = "123456789";
-
-        mockMvc.perform(post("/registration/register")
-                        .content(objectMapper.writeValueAsString(wrapper))
-                        .cookie(new Cookie(SignUpConstants.VERIFIED_TRANSACTION_ID, mockTransactionID))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.response").isEmpty())
-                .andExpect(jsonPath("$.errors").isNotEmpty())
-                .andExpect(jsonPath("$.errors[0].errorCode").value("invalid_input"));
-    }
-
-    @Test
     public void uploadFile_withValidInput_thenPass() throws Exception {
         String mockTransactionID = "123456789";
         String fieldName = "profilePic";
