@@ -20,11 +20,20 @@ export function maskData(value: string, separatorIdx: number) {
   // GENERIC MASKING (phone / id / others)
   const visibleEnd = 2;
 
-  const start = cleanValue.slice(0, separatorIdx);
-  const end = cleanValue.slice(-visibleEnd);
+  const safeSeparatorIdx = Math.max(
+    0,
+    Math.min(separatorIdx, cleanValue.length)
+  );
+  const endVisible = Math.min(
+    visibleEnd,
+    Math.max(cleanValue.length - safeSeparatorIdx, 0)
+  );
+
+  const start = cleanValue.slice(0, safeSeparatorIdx);
+  const end = cleanValue.slice(cleanValue.length - endVisible);
 
   const maskedLength = Math.max(
-    cleanValue.length - (separatorIdx + visibleEnd),
+    cleanValue.length - (safeSeparatorIdx + endVisible),
     0
   );
 

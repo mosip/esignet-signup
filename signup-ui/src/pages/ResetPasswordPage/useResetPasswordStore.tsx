@@ -30,11 +30,11 @@ export type ResetPasswordStore = {
   setResendOtp: (resendOtp: boolean) => void;
   resendAttempts: any;
   setResendAttempts: (resendAttempts: any) => void;
-  reset: () => void;
   userData: Record<string, any> | null;
-  setUserData: (data: Record<string, any>) => void;
+  setUserData: (data: Record<string, any> | null) => void;
   uiSpecResponse: Record<string, any> | null;
-  setUiSpecResponse: (data: Record<string, any>) => void;
+  setUiSpecResponse: (data: Record<string, any> | null) => void;
+  reset: () => void;
 };
 
 export const useResetPasswordStore = create<ResetPasswordStore>()(
@@ -60,18 +60,17 @@ export const useResetPasswordStore = create<ResetPasswordStore>()(
       if (isEqual(current.resendAttempts, resendAttempts)) return;
       set(() => ({ resendAttempts }));
     },
-    reset: () => set(() => initialState),
-    setUserData: (data: Record<string, any>) => {
+    setUserData: (data: Record<string, any> | null) => {
       const current = get();
       if (isEqual(current.userData, data)) return;
       set(() => ({ userData: data }));
     },
-
-    setUiSpecResponse: (data: Record<string, any>) => {
+    setUiSpecResponse: (data: Record<string, any> | null) => {
       const current = get();
       if (isEqual(current.uiSpecResponse, data)) return;
       set(() => ({ uiSpecResponse: data }));
     },
+    reset: () => set(() => initialState),
   }))
 );
 
