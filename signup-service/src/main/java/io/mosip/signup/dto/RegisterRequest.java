@@ -25,7 +25,6 @@ public class RegisterRequest {
     @Username
     private String username;
 
-    @Password
     private String password;
 
     @NotBlank(message = ErrorConstants.INVALID_CONSENT)
