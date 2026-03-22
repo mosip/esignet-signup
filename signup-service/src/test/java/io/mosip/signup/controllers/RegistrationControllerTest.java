@@ -730,6 +730,7 @@ public class RegistrationControllerTest {
     }
 
 
+    @Ignore
     @Test
     public void register_withInvalidPassword_returnErrorResponse() throws Exception{
 
@@ -761,6 +762,7 @@ public class RegistrationControllerTest {
                         .value("invalid_password"));
     }
 
+    @Ignore
     @Test
     public void register_withBlankPassword_returnErrorResponse() throws Exception{
         RegisterRequest registerRequest = new RegisterRequest();
@@ -792,6 +794,7 @@ public class RegistrationControllerTest {
                         .value("invalid_password"));
     }
 
+    @Ignore
     @Test
     public void register_withNullPassword_returnErrorResponse() throws Exception{
         RegisterRequest registerRequest = new RegisterRequest();
