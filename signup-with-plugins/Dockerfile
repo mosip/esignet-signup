@@ -1,4 +1,4 @@
-FROM mosipdev/signup-service:develop
+FROM mosipdev/signup-service:ES-2797
 
 ARG SOURCE
 ARG COMMIT_HASH
