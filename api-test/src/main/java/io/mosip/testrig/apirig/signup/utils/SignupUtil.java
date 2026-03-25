@@ -1705,7 +1705,7 @@ public class SignupUtil extends AdminTestUtil {
 					String regex = field.get(SignupConstants.VALIDATORS_STRING).get(0).path(SignupConstants.REGEX)
 							.asText(null);
 
-					if (regex != null && !regex.contains("(?")) {
+					if (regex != null && !regex.contains("(?") && !(id.equalsIgnoreCase(SignupConstants.PHONE_STRING))) {
 						if (regex.contains(SignupConstants.AT_SYMBOL)) {
 							userInfo.put(id, SignupConstants.TEST_AUTOMATION_EMAIL);
 						} else {
