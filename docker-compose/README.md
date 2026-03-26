@@ -4,7 +4,7 @@ This is the docker-compose setup to run eSignet Signup service with mock identit
 
 ## Prerequisites
 
-1. Java 11
+1. JDK 21
 2. Maven
 3. Docker
 4. Git bash
@@ -43,7 +43,7 @@ For instructions on setting up eSignet Core, refer to the [eSignet Docker Compos
 2. Update below properties in [application-local.properties](../signup-service/src/main/resources/application-local.properties) with valid values:
 
    ```
-   mosip.internal.domain.url=https://api-internal.<env-name>.mosip.net
+   MOSIP_API_INTERNAL_HOST=https://api-internal.<env-name>.mosip.net
 
    keycloak.external.url=https://iam.<env-name>.mosip.net
 

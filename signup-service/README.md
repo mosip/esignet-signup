@@ -15,7 +15,7 @@ In this version, signup-service require below MOSIP kernel modules and its depen
 3. kernel authmanager
 4. kernel notifier
 
-**Note:** To run signup-service locally `mosip.internal.domain.url` property should be set with a valid base URL of any MOSIP(LTS) environment.
+**Note:** To run signup-service locally `MOSIP_API_INTERNAL_HOST` property should be set with a valid base URL of any MOSIP(LTS) environment.
 
 ### Signup service uses spring cache to store the transaction details.
 
@@ -65,7 +65,7 @@ In this version, signup-service require below MOSIP kernel modules and its depen
 
 
 ## Build & Run (for developers)
-The project requires JDK 11.
+The project requires JDK 21.
 1. Build and install:
     ```
     $ mvn clean install -Dgpg.skip=true -Dmaven.gitcommitid.skip=true
@@ -84,11 +84,11 @@ The project requires JDK 11.
    
    3.4 Update below properties in [application-local.properties](src/main/resources/application-local.properties) to point to right MOSIP environment.
 
-      -> `mosip.internal.domain.url=https://api-internal.dev.mosip.net`
+      -> `MOSIP_API_INTERNAL_HOST=https://api-internal.env-name.mosip.net`   // add the right environment name in the URL
 
       -> `keycloak.external.url=https://iam.dev.mosip.net`
 
-      -> `mosip.signup.client.secret=actual-secret`
+      -> `mosip.signup.client.secret=actual-secret`  // add the actual client secret for the signup-service client registered in the Keycloak
 
    3.4 Go to [SignUpServiceApplication.java](src/main/java/io/mosip/signup/SignUpServiceApplication.java) and run from the main class.
 
