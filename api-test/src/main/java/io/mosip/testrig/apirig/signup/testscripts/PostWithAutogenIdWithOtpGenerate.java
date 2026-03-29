@@ -210,6 +210,7 @@ public class PostWithAutogenIdWithOtpGenerate extends SignupUtil implements ITes
 
 			if (testCaseName.startsWith("Signup_ESignet_VerifyChallengeNegTC_")
 					|| testCaseName.startsWith("Signup_ESignet_VerifyChallengeForResetPasswordNegTC_")) {
+				jsonInput = SignupUtil.otpHandler(jsonInput, testCaseName);
 				response = postRequestWithCookieAuthHeaderAndXsrfToken(tempUrl + testCaseDTO.getEndPoint(), jsonInput,
 						COOKIENAME, testCaseDTO.getTestCaseName());
 			} else {

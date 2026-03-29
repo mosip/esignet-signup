@@ -168,6 +168,7 @@ public class SimplePost extends SignupUtil implements ITest {
 					response = postRequestWithCookieAuthHeader(tempUrl + testCaseDTO.getEndPoint(), inputJson,
 							COOKIENAME, testCaseDTO.getRole(), testCaseDTO.getTestCaseName());
 				} else {
+					inputJson = otpHandler(inputJson, testCaseName);
 					response = postRequestWithCookieAuthHeaderAndXsrfToken(tempUrl + testCaseDTO.getEndPoint(),
 							inputJson, COOKIENAME, testCaseDTO.getTestCaseName());
 

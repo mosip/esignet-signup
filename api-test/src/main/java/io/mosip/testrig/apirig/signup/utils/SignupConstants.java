@@ -90,5 +90,7 @@ public class SignupConstants {
 	public static final String PHONE_PLACEHOLDER = "{{phone}}";
 	public static final String USERNAME_PLACEHOLDER = "{{username}}";
 	public static final String CONSENT_PLACEHOLDER = "{{consent}}";
+	
+	public static final String CHALLENGEINFO = "challengeInfo";
 
 }

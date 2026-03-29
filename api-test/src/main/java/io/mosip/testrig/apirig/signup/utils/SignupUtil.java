@@ -560,7 +560,7 @@ public class SignupUtil extends AdminTestUtil {
 					inputJson = request.toString();
 					return inputJson;
 				}
-			} else if (request.has(GlobalConstants.REQUEST)) {
+			} else if (request.getJSONObject(GlobalConstants.REQUEST).has(GlobalConstants.CHALLENGELIST)) {
 				if (request.getJSONObject(GlobalConstants.REQUEST).has(GlobalConstants.CHALLENGELIST)) {
 					if (request.getJSONObject(GlobalConstants.REQUEST).getJSONArray(GlobalConstants.CHALLENGELIST)
 							.length() > 0) {
@@ -591,6 +591,52 @@ public class SignupUtil extends AdminTestUtil {
 					}
 				}
 				return inputJson;
+			}
+			if (testCaseName.contains("ESignet_VerifyChallenge") && request.has(GlobalConstants.REQUEST)) {
+				if (request.getJSONObject(GlobalConstants.REQUEST).has(SignupConstants.CHALLENGEINFO)) {
+					if (request.getJSONObject(GlobalConstants.REQUEST).getJSONArray(SignupConstants.CHALLENGEINFO)
+							.length() > 0) {
+						if (request.getJSONObject(GlobalConstants.REQUEST).getJSONArray(SignupConstants.CHALLENGEINFO)
+								.getJSONObject(0).has(GlobalConstants.CHALLENGE)) {
+							if (request.getJSONObject(GlobalConstants.REQUEST).getJSONArray(SignupConstants.CHALLENGEINFO)
+									.getJSONObject(0).getString(GlobalConstants.CHALLENGE)
+									.endsWith(GlobalConstants.MAILINATOR_COM)
+									|| request.getJSONObject(GlobalConstants.REQUEST)
+											.getJSONArray(SignupConstants.CHALLENGEINFO).getJSONObject(0)
+											.getString(GlobalConstants.CHALLENGE).endsWith(GlobalConstants.MOSIP_NET)
+									|| request.getJSONObject(GlobalConstants.REQUEST)
+											.getJSONArray(SignupConstants.CHALLENGEINFO).getJSONObject(0)
+											.getString(GlobalConstants.CHALLENGE).endsWith(GlobalConstants.OTP_AS_PHONE)) {
+								emailId = request.getJSONObject(GlobalConstants.REQUEST)
+										.getJSONArray(SignupConstants.CHALLENGEINFO).getJSONObject(0)
+										.getString(GlobalConstants.CHALLENGE);
+								if (emailId.endsWith(GlobalConstants.OTP_AS_PHONE)) {
+									emailId = emailId.replace(GlobalConstants.OTP_AS_PHONE, "");
+									boolean removeCountryCode = Boolean.parseBoolean(
+											getValueFromSignupActuator("classpath:/application-default.properties",
+													"mosip.signup.sms-notification.remove-country-code"));
+
+									String prefix = getValueFromSignupActuator(
+											"classpath:/application-default.properties",
+											"mosip.signup.identifier.prefix");
+
+									if (removeCountryCode && prefix != null && !prefix.isEmpty()) {
+										if (emailId.startsWith(prefix)) {
+											emailId = emailId.substring(prefix.length());
+										}
+									}
+									emailId = removeLeadingPlusSigns(emailId);
+								}
+								logger.info(emailId);
+								otp = NotificationListener.getOtp(emailId);
+								request.getJSONObject(GlobalConstants.REQUEST).getJSONArray(SignupConstants.CHALLENGEINFO)
+										.getJSONObject(0).put(GlobalConstants.CHALLENGE, otp);
+								inputJson = request.toString();
+								return inputJson;
+							}
+						}
+					}
+				}
 			}
 		}
 
@@ -1705,7 +1751,7 @@ public class SignupUtil extends AdminTestUtil {
 					String regex = field.get(SignupConstants.VALIDATORS_STRING).get(0).path(SignupConstants.REGEX)
 							.asText(null);
 
-					if (regex != null && !regex.contains("(?")) {
+					if (regex != null && !regex.contains("(?") && !(id.equalsIgnoreCase(SignupConstants.PHONE_STRING))) {
 						if (regex.contains(SignupConstants.AT_SYMBOL)) {
 							userInfo.put(id, SignupConstants.TEST_AUTOMATION_EMAIL);
 						} else {
@@ -1785,7 +1831,7 @@ public class SignupUtil extends AdminTestUtil {
 					if (allowedValues.has(id)) {
 						userInfo.put(id, allowedValues.path(id).asText());
 					} else {
-						userInfo.put(id, SignupConstants.TEST_AUTOMATION);
+						userInfo.put(id, SignupConstants.TEST_AUTOMATION_EMAIL);
 					}
 					break;
 
