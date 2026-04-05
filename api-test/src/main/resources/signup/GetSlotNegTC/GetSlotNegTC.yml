@@ -719,4 +719,46 @@ GetSlotNegTC:
     }
   ]
 }'
- 
+   Signup_ESignet_GetSlot_AuthToken_Xsrf_Invalid_RequestObject_Neg:
+      endPoint: /v1/signup/identity-verification/slot
+      uniqueIdentifier: TC_Signup_ESignet_GetSlotNegTC_34
+      description: To validate the error response when an invalid request object parameter is provided in the request body while retrieving the slot ID to initiate the video identity verification process
+      role: resident
+      restMethod: post
+      inputTemplate: signup/GetSlotNegTC/GetSlotNegTC
+      outputTemplate: signup/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "idvTransactionID": "xrLsLMfTc2gD3bd8HUMmt3QOYroIXtyNgqmAHziggvY",
+        "verifierId": "mock",
+        "consent": "AGREE"
+}'
+      output: '{
+      "errors": [
+    {
+      "errorCode": "invalid_transaction"
+    }
+  ]
+}'
+   Signup_ESignet_GetSlot_AuthToken_Xsrf_Invalid_idvTransactionID_Neg:
+      endPoint: /v1/signup/identity-verification/slot
+      uniqueIdentifier: TC_Signup_ESignet_GetSlotNegTC_35
+      description: To verify system behavior when the idvTransactionID is absent in the request body during slot ID retrieval for video identity verification
+      role: resident
+      restMethod: post
+      inputTemplate: signup/GetSlotNegTC/GetSlotNegTC2
+      outputTemplate: signup/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "idvTransactionID": "$REMOVE$",
+        "verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_id$",
+        "consent": "AGREE",
+        "disabilityType": "VISION"
+}'
+      output: '{
+      "errors": [
+    {
+      "errorCode": "invalid_transaction"
+    }
+  ]
+}'
