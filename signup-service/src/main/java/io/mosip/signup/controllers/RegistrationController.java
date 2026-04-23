@@ -44,21 +44,6 @@ public class RegistrationController {
     @Autowired
     AuditHelper auditHelper;
 
-    @InitBinder
-    protected void initBinder(WebDataBinder binder) {
-        if(binder.getTarget() != null && RequestWrapper.class.equals(binder.getTarget().getClass())) {
-            RequestWrapper dto = (RequestWrapper) binder.getTarget();
-            if(dto.getRequest() != null && RegisterRequest.class.equals(dto.getRequest().getClass())) {
-                RegisterRequest registerRequest = (RegisterRequest) dto.getRequest();
-                //TODO remove this logic after changes in the UI is done to pass password inside userinfo
-                registerRequest.setUserInfo(
-                        ((ObjectNode)registerRequest.getUserInfo()).set("password", JsonNodeFactory.instance.textNode(registerRequest.getPassword()))
-                );
-                ((RequestWrapper) binder.getTarget()).setRequest(registerRequest);
-            }
-        }
-    }
-
 
     @PostMapping("/generate-challenge")
     public ResponseWrapper<GenerateChallengeResponse> generateChallenge (@Valid @RequestBody RequestWrapper<GenerateChallengeRequest> requestWrapper,

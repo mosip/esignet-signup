@@ -143,6 +143,37 @@ CREATE TABLE esignet.public_key_registry(
 );
 
 
+CREATE TABLE esignet.ca_cert_store(
+	cert_id varchar(36) NOT NULL,
+	cert_subject varchar(500) NOT NULL,
+	cert_issuer varchar(500) NOT NULL,
+	issuer_id varchar(36) NOT NULL,
+	cert_not_before timestamp,
+	cert_not_after timestamp,
+	crl_uri varchar(120),
+	cert_data varchar(4000),
+	cert_thumbprint varchar(100),
+	cert_serial_no varchar(50),
+	partner_domain varchar(36),
+	cr_by varchar(256),
+	cr_dtimes timestamp,
+	upd_by varchar(256),
+	upd_dtimes timestamp,
+	is_deleted boolean DEFAULT FALSE,
+	del_dtimes timestamp,
+	ca_cert_type varchar(25),
+	CONSTRAINT pk_cacs_id PRIMARY KEY (cert_id),
+	CONSTRAINT cert_thumbprint_unique UNIQUE (cert_thumbprint,partner_domain)
+);
+
+CREATE TABLE IF NOT EXISTS esignet.server_profile (
+    profile_name VARCHAR(100) NOT NULL,
+    feature VARCHAR(100) NOT NULL,
+    additional_config_key VARCHAR(200) NOT NULL,
+    CONSTRAINT pk_server_profile PRIMARY KEY (profile_name, feature)
+);
+
+
 INSERT INTO esignet.KEY_POLICY_DEF(APP_ID,KEY_VALIDITY_DURATION,PRE_EXPIRE_DAYS,ACCESS_ALLOWED,IS_ACTIVE,CR_BY,CR_DTIMES) VALUES('ROOT', 2920, 1125, 'NA', true, 'mosipadmin', now());
 INSERT INTO esignet.KEY_POLICY_DEF(APP_ID,KEY_VALIDITY_DURATION,PRE_EXPIRE_DAYS,ACCESS_ALLOWED,IS_ACTIVE,CR_BY,CR_DTIMES) VALUES('OIDC_SERVICE', 1095, 50, 'NA', true, 'mosipadmin', now());
 INSERT INTO esignet.KEY_POLICY_DEF(APP_ID,KEY_VALIDITY_DURATION,PRE_EXPIRE_DAYS,ACCESS_ALLOWED,IS_ACTIVE,CR_BY,CR_DTIMES) VALUES('OIDC_PARTNER', 1095, 50, 'NA', true, 'mosipadmin', now());
@@ -242,6 +273,29 @@ CREATE TABLE mockidentitysystem.partner_data (
     status character varying(50),
     cr_dtimes timestamp NOT NULL,
     CONSTRAINT pk_partner_data_partner_id_client_id PRIMARY KEY (partner_id, client_id)
+);
+
+CREATE TABLE mockidentitysystem.ca_cert_store(
+	cert_id varchar(36) NOT NULL,
+	cert_subject varchar(500) NOT NULL,
+	cert_issuer varchar(500) NOT NULL,
+	issuer_id varchar(36) NOT NULL,
+	cert_not_before timestamp,
+	cert_not_after timestamp,
+	crl_uri varchar(120),
+	cert_data varchar(4000),
+	cert_thumbprint varchar(100),
+	cert_serial_no varchar(50),
+	partner_domain varchar(36),
+	cr_by varchar(256),
+	cr_dtimes timestamp,
+	upd_by varchar(256),
+	upd_dtimes timestamp,
+	is_deleted boolean DEFAULT FALSE,
+	del_dtimes timestamp,
+	ca_cert_type varchar(25),
+	CONSTRAINT pk_cacs_id PRIMARY KEY (cert_id),
+	CONSTRAINT cert_thumbprint_unique UNIQUE (cert_thumbprint,partner_domain)
 );
 
 INSERT INTO mockidentitysystem.KEY_POLICY_DEF(APP_ID,KEY_VALIDITY_DURATION,PRE_EXPIRE_DAYS,ACCESS_ALLOWED,IS_ACTIVE,CR_BY,CR_DTIMES) VALUES('ROOT', 2920, 1125, 'NA', true, 'mosipadmin', now());

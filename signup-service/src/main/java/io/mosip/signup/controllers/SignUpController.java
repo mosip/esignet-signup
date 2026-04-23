@@ -5,6 +5,7 @@
  */
 package io.mosip.signup.controllers;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import io.mosip.esignet.core.dto.ResponseWrapper;
 import io.mosip.esignet.core.util.IdentityProviderUtil;
 import io.mosip.signup.dto.*;
