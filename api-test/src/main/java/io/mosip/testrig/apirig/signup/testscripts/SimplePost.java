@@ -133,9 +133,9 @@ public class SimplePost extends SignupUtil implements ITest {
 		}
 
 		if (inputJson.contains("$PASSWORDTORESET$")) {
-			String passwordToReset = PASSWORD_TO_RESET;
+			String passwordToReset = PASSWORD_FOR_ADDIDENTITY_AND_REGISTRATION;
 			if (passwordToReset != null && !passwordToReset.isEmpty()) {
-				inputJson = replaceKeywordWithValue(inputJson, "$PASSWORDTORESET$", PASSWORD_FOR_ADDIDENTITY_AND_REGISTRATION);
+				inputJson = replaceKeywordWithValue(inputJson, "$PASSWORDTORESET$", passwordToReset);
 			}
 		}
 

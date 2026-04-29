@@ -744,7 +744,7 @@ GetSlotNegTC:
    Signup_ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_Already_AlreadyUsedSlotId_Neg:
       endPoint: /v1/signup/identity-verification/slot
       uniqueIdentifier: TC_Signup_ESignet_GetSlotNegTC_35
-      description: Verify that the API returns an invalid_transaction error when attempting to fetch a slot using an already got the slot and same transaction ID
+      description: Verify that the API returns an invalid_transaction error when attempting to fetch a slot using an already-used transaction ID
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true

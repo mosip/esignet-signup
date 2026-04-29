@@ -1955,7 +1955,8 @@ public class SignupUtil extends AdminTestUtil {
 		public static JSONArray getRequiredFieldsFromSchema() {
 
 			try {
-				String url = "https://api.esqa2.mosip.net/v1/mock-identity-system/identity/identity-schema";
+				String endpoint = ConfigManager.getproperty("mockIdentityIdentitySchemaEndpoint");
+				String url = BaseTestCase.ApplnURI + endpoint;
 
 				Response response = RestClient.getRequest(url, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
 
