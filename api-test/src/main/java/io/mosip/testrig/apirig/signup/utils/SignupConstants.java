@@ -90,5 +90,20 @@ public class SignupConstants {
 	public static final String PHONE_PLACEHOLDER = "{{phone}}";
 	public static final String USERNAME_PLACEHOLDER = "{{username}}";
 	public static final String CONSENT_PLACEHOLDER = "{{consent}}";
+	
+	public static final String CHALLENGEINFO = "challengeInfo";
+	public static final String PREFERRED_LANG = "preferredLang";
+	
+    public static final String REQUEST = "request";
+    public static final String RESPONSE = "response";
+
+    public static final String LANGUAGE = "language";
+    public static final String VALUE = "value";
+
+    public static final String ITEMS = "items";
+    public static final String PROPERTIES = "properties";
+    public static final String PATTERN = "pattern";
+    public static final String ENUM = "enum";
+    public static final String ALLOF = "allOf";
 
 }

@@ -233,7 +233,7 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_username"
+      "errorCode": "invalid_identifier"
     }
   ]
 }'
@@ -330,7 +330,7 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_username"
+      "errorCode": "invalid_identifier"
     }
   ]
 }'
@@ -354,7 +354,7 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_username"
+      "errorCode": "invalid_identifier"
     }
   ]
 }'
@@ -378,7 +378,7 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_username"
+      "errorCode": "invalid_identifier"
     }
   ]
 }'
@@ -402,7 +402,7 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_username"
+      "errorCode": "invalid_identifier"
     }
   ]
 }'
@@ -426,7 +426,7 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_username"
+      "errorCode": "invalid_identifier"
     }
   ]
 }'
@@ -450,7 +450,7 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_username"
+      "errorCode": "invalid_identifier"
     }
   ]
 }'
@@ -474,7 +474,7 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_username"
+      "errorCode": "invalid_identifier"
     }
   ]
 }'
@@ -528,7 +528,7 @@ RegisterUserNegTC:
     }
   ]
 }'
-   Signup_ESignet_RegisterUserNegTC_WITH_all_zero_in_phone:
+   Signup_ESignet_RegisterUserNegTC_WITH_all_zero_in_Username:
       endPoint: /v1/signup/registration/register
       uniqueIdentifier: TC_ESignet_RegisterUserNegTC_23
       role: resident
@@ -548,7 +548,7 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_username"
+      "errorCode": "invalid_identifier"
     }
   ]
 }'
@@ -572,11 +572,11 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_username"
+      "errorCode": "invalid_identifier"
     }
   ]
 }'
-   Signup_ESignet_RegisterUserNegTC_WITH_alphanumeric_in_phone:
+   Signup_ESignet_RegisterUserNegTC_WITH_alphanumeric_in_Username:
       endPoint: /v1/signup/registration/register
       uniqueIdentifier: TC_ESignet_RegisterUserNegTC_25
       role: resident
@@ -596,7 +596,7 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_username"
+      "errorCode": "invalid_identifier"
     }
   ]
 }'
@@ -620,7 +620,7 @@ RegisterUserNegTC:
       output: '{
       	"errors": [
     {
-      "errorCode": "invalid_username"
+      "errorCode": "invalid_identifier"
     }
   ]
 }'
