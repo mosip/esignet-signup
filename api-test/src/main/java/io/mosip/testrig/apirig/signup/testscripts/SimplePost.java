@@ -1,5 +1,6 @@
 package io.mosip.testrig.apirig.signup.testscripts;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,6 +18,8 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+import org.testng.internal.BaseTestMethod;
+import org.testng.internal.TestResult;
 
 import io.mosip.testrig.apirig.dto.OutputValidationDto;
 import io.mosip.testrig.apirig.dto.TestCaseDTO;
@@ -99,7 +102,7 @@ public class SimplePost extends SignupUtil implements ITest {
 		String inputJson ;
 		
 		if (testCaseName.contains("_RegisterUser_")) {
-			testCaseDTO.setInputTemplate(SignupUtil.generateHbsForRegisterUserRequest());
+			testCaseDTO.setInputTemplate(generateHbsForRegisterUserRequest());
 			inputJson = getJsonFromTemplate(testCaseDTO.getInput(), testCaseDTO.getInputTemplate(), false);
 		} else {
 			inputJson = getJsonFromTemplate(testCaseDTO.getInput(), testCaseDTO.getInputTemplate());
@@ -130,7 +133,7 @@ public class SimplePost extends SignupUtil implements ITest {
 		}
 
 		if (inputJson.contains("$PASSWORDTORESET$")) {
-			String passwordToReset = PASSWORD_TO_RESET;
+			String passwordToReset = PASSWORD_FOR_ADDIDENTITY_AND_REGISTRATION;
 			if (passwordToReset != null && !passwordToReset.isEmpty()) {
 				inputJson = replaceKeywordWithValue(inputJson, "$PASSWORDTORESET$", passwordToReset);
 			}
@@ -165,6 +168,7 @@ public class SimplePost extends SignupUtil implements ITest {
 					response = postRequestWithCookieAuthHeader(tempUrl + testCaseDTO.getEndPoint(), inputJson,
 							COOKIENAME, testCaseDTO.getRole(), testCaseDTO.getTestCaseName());
 				} else {
+					inputJson = otpHandler(inputJson, testCaseName);
 					response = postRequestWithCookieAuthHeaderAndXsrfToken(tempUrl + testCaseDTO.getEndPoint(),
 							inputJson, COOKIENAME, testCaseDTO.getTestCaseName());
 

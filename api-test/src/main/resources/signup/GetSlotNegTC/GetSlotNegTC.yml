@@ -719,4 +719,68 @@ GetSlotNegTC:
     }
   ]
 }'
- 
+   Signup_ESignet_GetSlot_AuthToken_Xsrf_with_invalid_IDVtransaction_Neg:
+      endPoint: /v1/signup/identity-verification/slot
+      uniqueIdentifier: TC_Signup_ESignet_GetSlotNegTC_34
+      description: Verify that the API returns an invalid_transaction error when an invalid idvTransactionID is provided in the slot request
+      role: resident
+      restMethod: post
+      inputTemplate: signup/GetSlotNegTC/GetSlotNegTC2
+      outputTemplate: signup/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "idvTransactionID": "ufDA4yCUN6p7pWGzzz5oGSgmk3KJNuwreDiVaFfBRME",
+        "verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_NegTC_Valid_Smoke_Sid_Neg_id$",
+        "consent": "AGREE",
+        "disabilityType": "VISION"
+}'
+      output: '{
+      "errors": [
+    {
+      "errorCode": "invalid_transaction"
+    }
+  ]
+}'
+   Signup_ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_Already_AlreadyUsedSlotId_Neg:
+      endPoint: /v1/signup/identity-verification/slot
+      uniqueIdentifier: TC_Signup_ESignet_GetSlotNegTC_35
+      description: Verify that the API returns an invalid_transaction error when attempting to fetch a slot using an already-used transaction ID
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/GetSlot/GetSlot
+      outputTemplate: signup/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_Smoke_Sid_idvTransactionID$",
+        "verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_Smoke_Sid_id$",
+        "consent": "AGREE"
+}'
+      output: '{
+      "errors": [
+    {
+      "errorCode": "invalid_transaction"
+    }
+  ]
+}'
+   Signup_ESignet_GetSlot_AuthToken_Xsrf_with_Invalid_verifierId_Neg:
+      endPoint: /v1/signup/identity-verification/slot
+      uniqueIdentifier: TC_ESignet_GetSlotNegTC_36
+      description: To get the slot ID to begin the video identity verification process with invalid verifierId and expecting error code in the response
+      role: resident
+      restMethod: post
+      inputTemplate: signup/GetSlotNegTC/GetSlotNegTC
+      outputTemplate: signup/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_Smoke_Sid_idvTransactionID$",
+        "verifierId": "mock-identity-verifier-invalid",
+        "consent": "AGREE"
+}'
+      output: '{
+      "errors": [
+    {
+      "errorCode": "invalid_transaction"
+    }
+  ]
+}'

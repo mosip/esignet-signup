@@ -1,5 +1,6 @@
 package io.mosip.testrig.apirig.signup.utils;
 
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -12,6 +13,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
+import java.util.Random;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
@@ -45,8 +48,10 @@ import io.mosip.testrig.apirig.dbaccess.DBManager;
 import io.mosip.testrig.apirig.dto.TestCaseDTO;
 import io.mosip.testrig.apirig.signup.testrunner.MosipTestRunner;
 import io.mosip.testrig.apirig.testrunner.BaseTestCase;
+import io.mosip.testrig.apirig.testrunner.OTPListener;
 import io.mosip.testrig.apirig.utils.AdminTestUtil;
 import io.mosip.testrig.apirig.utils.CertsUtil;
+import io.mosip.testrig.apirig.utils.ConfigManager;
 import io.mosip.testrig.apirig.utils.GlobalConstants;
 import io.mosip.testrig.apirig.utils.GlobalMethods;
 import io.mosip.testrig.apirig.utils.JWKKeyUtil;
@@ -68,7 +73,7 @@ public class SignupUtil extends AdminTestUtil {
 	public static String schemaJsonData = null;
 	
 	public static List<String> testCasesInRunScope = new ArrayList<>();
-	
+	public static JSONArray mockrequiredFields = null;
 	public static void setLogLevel() {
 		if (SignupConfigManager.IsDebugEnabled())
 			logger.setLevel(Level.ALL);
@@ -275,6 +280,46 @@ public class SignupUtil extends AdminTestUtil {
 				&& AdminTestUtil.generateDependency == true) {
 			addAdditionalDependencies(testCaseDTO);
 		}
+
+		if (testCaseName.contains("Signup_ESignet_RegisterUserNegTC_WITHout_preferredLang")) {
+
+			String plugin = getPluginName();
+			boolean isPreferredLangRequired = false;
+
+			if ("mock".equalsIgnoreCase(plugin)) {
+				isPreferredLangRequired = (mockrequiredFields != null
+						&& isElementPresent(mockrequiredFields, SignupConstants.PREFERRED_LANG));
+
+			} else if ("mosip-id".equalsIgnoreCase(plugin)) {
+				try {
+					if (schemaJsonData == null || schemaJsonData.isEmpty()) {
+						getSchemaJson();
+					}
+
+					JSONObject schemaFileJson = new JSONObject(schemaJsonData);
+					JSONObject identity = schemaFileJson.getJSONObject("properties").getJSONObject("identity");
+
+					if (identity.has("required")) {
+						JSONArray requiredFields = identity.getJSONArray("required");
+
+						for (int i = 0; i < requiredFields.length(); i++) {
+							if (SignupConstants.PREFERRED_LANG.equals(requiredFields.getString(i))) {
+								isPreferredLangRequired = true;
+								break;
+							}
+						}
+					}
+
+				} catch (Exception e) {
+					logger.error("Error checking preferredLang in mosip schema", e);
+				}
+			}
+
+			if (!isPreferredLangRequired) {
+				logger.info("Skipping testcase as preferredLang is not required");
+				throw new SkipException(GlobalConstants.FEATURE_NOT_SUPPORTED_MESSAGE);
+			}
+		}
 		
 		return testCaseDTO;
 	}
@@ -305,11 +350,18 @@ public class SignupUtil extends AdminTestUtil {
 
 					try {
 						String regex = extractValidatorValue(dobFieldKey);
-						String validValue = genStringAsperRegex(regex);
-						jsonString = replaceKeywordValue(jsonString, "$DATE_OF_BIRTH_VALUE$", validValue);
+
+						if (regex != null && !regex.isBlank()) {
+							String validValue = genStringAsperRegex(regex);
+							jsonString = replaceKeywordValue(jsonString, "$DATE_OF_BIRTH_VALUE$", validValue);
+						} else {
+							logger.warn("No regex for DOB, using default value");
+							jsonString = replaceKeywordValue(jsonString, "$DATE_OF_BIRTH_VALUE$", "1990/01/01");
+						}
+
 					} catch (Exception e) {
 						logger.error("DOB value generation failed for key: " + dobFieldKey, e);
-						jsonString = replaceKeywordValue(jsonString, "$DATE_OF_BIRTH_VALUE$", "1990/01/01"); // fallback
+						jsonString = replaceKeywordValue(jsonString, "$DATE_OF_BIRTH_VALUE$", "1990/01/01");
 					}
 				}
 			}
@@ -367,7 +419,7 @@ public class SignupUtil extends AdminTestUtil {
 		}
 		
 		if (jsonString.contains("$RESETPASSWORDFORAUTHENTICATION$")) {
-			jsonString = replaceKeywordValue(jsonString, "$RESETPASSWORDFORAUTHENTICATION$", PASSWORD_TO_RESET);
+			jsonString = replaceKeywordValue(jsonString, "$RESETPASSWORDFORAUTHENTICATION$", PASSWORD_FOR_ADDIDENTITY_AND_REGISTRATION);
 		}
 		
 		if (jsonString.contains("$RANDOMIDFOROIDCCLIENT$")) {
@@ -559,7 +611,7 @@ public class SignupUtil extends AdminTestUtil {
 					inputJson = request.toString();
 					return inputJson;
 				}
-			} else if (request.has(GlobalConstants.REQUEST)) {
+			} else if (request.getJSONObject(GlobalConstants.REQUEST).has(GlobalConstants.CHALLENGELIST)) {
 				if (request.getJSONObject(GlobalConstants.REQUEST).has(GlobalConstants.CHALLENGELIST)) {
 					if (request.getJSONObject(GlobalConstants.REQUEST).getJSONArray(GlobalConstants.CHALLENGELIST)
 							.length() > 0) {
@@ -590,6 +642,52 @@ public class SignupUtil extends AdminTestUtil {
 					}
 				}
 				return inputJson;
+			}
+			if (testCaseName.contains("ESignet_VerifyChallenge") && request.has(GlobalConstants.REQUEST)) {
+				if (request.getJSONObject(GlobalConstants.REQUEST).has(SignupConstants.CHALLENGEINFO)) {
+					if (request.getJSONObject(GlobalConstants.REQUEST).getJSONArray(SignupConstants.CHALLENGEINFO)
+							.length() > 0) {
+						if (request.getJSONObject(GlobalConstants.REQUEST).getJSONArray(SignupConstants.CHALLENGEINFO)
+								.getJSONObject(0).has(GlobalConstants.CHALLENGE)) {
+							if (request.getJSONObject(GlobalConstants.REQUEST).getJSONArray(SignupConstants.CHALLENGEINFO)
+									.getJSONObject(0).getString(GlobalConstants.CHALLENGE)
+									.endsWith(GlobalConstants.MAILINATOR_COM)
+									|| request.getJSONObject(GlobalConstants.REQUEST)
+											.getJSONArray(SignupConstants.CHALLENGEINFO).getJSONObject(0)
+											.getString(GlobalConstants.CHALLENGE).endsWith(GlobalConstants.MOSIP_NET)
+									|| request.getJSONObject(GlobalConstants.REQUEST)
+											.getJSONArray(SignupConstants.CHALLENGEINFO).getJSONObject(0)
+											.getString(GlobalConstants.CHALLENGE).endsWith(GlobalConstants.OTP_AS_PHONE)) {
+								emailId = request.getJSONObject(GlobalConstants.REQUEST)
+										.getJSONArray(SignupConstants.CHALLENGEINFO).getJSONObject(0)
+										.getString(GlobalConstants.CHALLENGE);
+								if (emailId.endsWith(GlobalConstants.OTP_AS_PHONE)) {
+									emailId = emailId.replace(GlobalConstants.OTP_AS_PHONE, "");
+									boolean removeCountryCode = Boolean.parseBoolean(
+											getValueFromSignupActuator("classpath:/application-default.properties",
+													"mosip.signup.sms-notification.remove-country-code"));
+
+									String prefix = getValueFromSignupActuator(
+											"classpath:/application-default.properties",
+											"mosip.signup.identifier.prefix");
+
+									if (removeCountryCode && prefix != null && !prefix.isEmpty()) {
+										if (emailId.startsWith(prefix)) {
+											emailId = emailId.substring(prefix.length());
+										}
+									}
+									emailId = removeLeadingPlusSigns(emailId);
+								}
+								logger.info(emailId);
+								otp = NotificationListener.getOtp(emailId);
+								request.getJSONObject(GlobalConstants.REQUEST).getJSONArray(SignupConstants.CHALLENGEINFO)
+										.getJSONObject(0).put(GlobalConstants.CHALLENGE, otp);
+								inputJson = request.toString();
+								return inputJson;
+							}
+						}
+					}
+				}
 			}
 		}
 
@@ -1073,16 +1171,43 @@ public class SignupUtil extends AdminTestUtil {
         }
     }
 
-    public static String extractValidatorValue(String key) {
-        try {
-            return signUpSchemaIdentityJson.getJSONObject(SignupConstants.PROPERTIES_STRING).getJSONObject(key)
-                    .getJSONArray(SignupConstants.VALIDATORS_STRING).getJSONObject(0)
-                    .getString(SignupConstants.VALIDATOR_STRING);
-        } catch (Exception e) {
-            logger.error("Error extracting validator value for key: " + key, e);
-            return null;
-        }
-    }
+	public static String extractValidatorValue(String key) {
+		try {
+			if (signUpSchemaIdentityJson == null) {
+				loadSignUpSchema();
+			}
+
+			if (!signUpSchemaIdentityJson.has(SignupConstants.PROPERTIES_STRING)) {
+				return null;
+			}
+
+			JSONObject properties = signUpSchemaIdentityJson.getJSONObject(SignupConstants.PROPERTIES_STRING);
+
+			if (!properties.has(key)) {
+				return null;
+			}
+
+			JSONObject fieldObj = properties.getJSONObject(key);
+
+			JSONArray validators = fieldObj.optJSONArray(SignupConstants.VALIDATORS_STRING);
+
+			if (validators == null || validators.length() == 0) {
+				return null;
+			}
+
+			JSONObject firstValidator = validators.optJSONObject(0);
+
+			if (firstValidator == null) {
+				return null;
+			}
+
+			return firstValidator.optString(SignupConstants.VALIDATOR_STRING, null);
+
+		} catch (Exception e) {
+			logger.error("Error extracting validator value for key: " + key, e);
+			return null;
+		}
+	}
     
     public static String getFullNameRegexPattern(String key) {
     	String value = null;
@@ -1593,7 +1718,7 @@ public class SignupUtil extends AdminTestUtil {
 		return testCaseDTO;
 	}
 	
-	public static String generateHbsForRegisterUserRequest() {
+	public String generateHbsForRegisterUserRequest() {
 		try {
 
 			kernelAuthLib = new KernelAuthentication();
@@ -1704,7 +1829,7 @@ public class SignupUtil extends AdminTestUtil {
 					String regex = field.get(SignupConstants.VALIDATORS_STRING).get(0).path(SignupConstants.REGEX)
 							.asText(null);
 
-					if (regex != null && !regex.contains("(?")) {
+					if (regex != null && !regex.contains("(?") && !(id.equalsIgnoreCase(SignupConstants.PHONE_STRING))) {
 						if (regex.contains(SignupConstants.AT_SYMBOL)) {
 							userInfo.put(id, SignupConstants.TEST_AUTOMATION_EMAIL);
 						} else {
@@ -1784,7 +1909,7 @@ public class SignupUtil extends AdminTestUtil {
 					if (allowedValues.has(id)) {
 						userInfo.put(id, allowedValues.path(id).asText());
 					} else {
-						userInfo.put(id, SignupConstants.TEST_AUTOMATION);
+						userInfo.put(id, SignupConstants.TEST_AUTOMATION_EMAIL);
 					}
 					break;
 
@@ -1827,4 +1952,371 @@ public class SignupUtil extends AdminTestUtil {
 		return allowedValues.has(id) || "phone".equals(id);
 	}
 	
+		public static JSONArray getRequiredFieldsFromSchema() {
+
+			try {
+				String endpoint = ConfigManager.getproperty("mockIdentityIdentitySchemaEndpoint");
+				String url = BaseTestCase.ApplnURI + endpoint;
+
+				Response response = RestClient.getRequest(url, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
+
+				String responseBody = response.asString();
+				logger.info("Schema Response: " + responseBody);
+
+				if (responseBody != null && responseBody.trim().startsWith("{")) {
+
+					JSONObject schemaJson = new JSONObject(responseBody);
+
+					// 🔥 FIX: go inside "response"
+					JSONObject actualSchema = schemaJson.getJSONObject("response");
+
+					logger.info("Actual Schema: " + actualSchema);
+
+					if (actualSchema.has("required")) {
+						mockrequiredFields = actualSchema.getJSONArray("required");
+						logger.info("Required Fields: " + mockrequiredFields);
+					} else {
+						logger.warn("No 'required' field found in schema");
+					}
+
+				} else {
+					logger.error("Invalid schema response (not JSON)");
+				}
+
+			} catch (Exception e) {
+				logger.error("Error fetching required fields from schema", e);
+			}
+
+			return mockrequiredFields;
+		}
+		
+	public static String getMockIdentitySchema() {
+		try {
+
+			String endpoint = ConfigManager.getproperty("mockIdentityIdentitySchemaEndpoint");
+			String url = BaseTestCase.ApplnURI + endpoint;
+
+			Response response = RestClient.getRequest(url, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
+
+			return response.asString();
+
+		} catch (Exception e) {
+			throw new RuntimeException("Failed to fetch schema", e);
+		}
+	}
+	
+	public static String generateDynamicRequest(String schemaStr, String testCaseName) {
+
+		try {
+			JSONObject fullSchema = new JSONObject(schemaStr);
+			JSONObject schemaRoot = fullSchema.has("response") ? fullSchema.getJSONObject("response") : fullSchema;
+			JSONObject identity = (JSONObject) processSchema(schemaRoot, fullSchema, "request", null, true, testCaseName);
+			return new JSONObject().put("request", identity).put("requestTime", "$TIMESTAMP$").toString();
+
+		} catch (Exception e) {
+			throw new RuntimeException("Failed to generate dynamic request", e);
+		}
+	}
+	
+	private static Object processSchema(JSONObject schema, JSONObject root,
+			String field, String parentField, boolean required, String testCaseName) {
+
+		schema = resolveSchema(schema, root);
+
+		String type = schema.optString("type", "string");
+
+		if (schema.has("type") && schema.get("type") instanceof JSONArray) {
+			JSONArray types = schema.getJSONArray("type");
+			for (int i = 0; i < types.length(); i++) {
+				if ("array".equals(types.getString(i))) {
+					type = "array";
+					break;
+				}
+			}
+		}
+
+		switch (type) {
+
+		case "object":
+
+			JSONObject obj = new JSONObject();
+			JSONObject props = schema.optJSONObject("properties");
+			JSONArray req = schema.optJSONArray("required");
+
+			if (props != null) {
+				for (String key : props.keySet()) {
+
+					boolean isReq = req != null && req.toList().contains(key);
+
+					obj.put(key, processSchema(props.getJSONObject(key), root, key, key, isReq, testCaseName));
+				}
+			}
+			return obj;
+
+		case "array":
+
+			JSONArray arr = new JSONArray();
+			JSONObject items = schema.optJSONObject("items");
+
+			if (items == null && schema.has("allOf")) {
+				JSONArray allOf = schema.getJSONArray("allOf");
+
+				for (int i = 0; i < allOf.length(); i++) {
+					JSONObject part = resolveSchema(allOf.getJSONObject(i), root);
+
+					if (part.has("items")) {
+						items = part.getJSONObject("items");
+						break;
+					}
+				}
+			}
+
+			if (items == null)
+				return arr;
+
+			items = resolveSchema(items, root);
+
+			JSONObject propsArr = items.optJSONObject("properties");
+
+			if (propsArr != null && propsArr.has("language") && propsArr.has("value")) {
+
+				JSONArray langArr = new JSONArray();
+
+				JSONObject row = new JSONObject();
+				row.put("language", "eng");
+
+				String keyToUse = resolveKey(field, parentField);
+
+				String propValue = null;
+
+				if (!"phone".equalsIgnoreCase(keyToUse) && !"individualId".equalsIgnoreCase(keyToUse)) {
+
+					propValue = VALUE_MAP.getProperty(keyToUse);
+
+					if (propValue == null) {
+						propValue = VALUE_MAP.getProperty(keyToUse.toLowerCase());
+					}
+				}
+
+				Object val;
+
+				if (propValue != null && !propValue.trim().isEmpty()) {
+
+					if ("fullname".equalsIgnoreCase(keyToUse) || "givenname".equalsIgnoreCase(keyToUse)
+							|| "familyname".equalsIgnoreCase(keyToUse)) {
+
+						propValue = propValue.replaceAll("[^a-zA-Z\\s]", "");
+					}
+
+					val = propValue;
+					logger.debug("PROPERTY USED: " + keyToUse + " = " + val);
+
+				} else {
+
+					val = generateValue(propsArr.getJSONObject("value"), keyToUse, testCaseName);
+					logger.debug("FALLBACK USED: " + keyToUse);
+				}
+
+				row.put("value", val);
+				langArr.put(row);
+
+				return langArr;
+			}
+
+			arr.put(processSchema(items, root, field, parentField, true, testCaseName));
+			return arr;
+
+		default:
+
+			String keyToUse = resolveKey(field, parentField);
+
+			Object override = getOverrideValue(keyToUse, testCaseName);
+			if (override != null) {
+				logger.debug("OVERRIDE USED: " + keyToUse + " = " + override);
+				return override;
+			}
+
+			String propValue = null;
+
+			if (!"phone".equalsIgnoreCase(keyToUse) && !"individualId".equalsIgnoreCase(keyToUse)) {
+
+				propValue = VALUE_MAP.getProperty(keyToUse);
+
+				if (propValue == null) {
+					propValue = VALUE_MAP.getProperty(keyToUse.toLowerCase());
+				}
+			}
+
+			if (propValue != null && !propValue.trim().isEmpty()) {
+				logger.debug("PROPERTY USED: " + keyToUse + " = " + propValue);
+				return propValue;
+			}
+
+			logger.debug("FALLBACK USED: " + keyToUse);
+
+			return generateValue(schema, keyToUse, testCaseName);
+		}
+	}
+	
+	private static String resolveKey(String field, String parentField) {
+
+		if ("value".equalsIgnoreCase(field) || "items".equalsIgnoreCase(field) || "request".equalsIgnoreCase(field)) {
+			return parentField;
+		}
+
+		return field;
+	}
+	
+	private static JSONObject resolveSchema(JSONObject schema, JSONObject root) {
+
+		JSONObject result = new JSONObject();
+
+		JSONObject effectiveRoot = root.has("response") ? root.getJSONObject("response") : root;
+
+		if (schema.has("$ref")) {
+			String ref = schema.getString("$ref");
+
+			Object current = effectiveRoot;
+
+			for (String part : ref.substring(2).split("/")) {
+				current = ((JSONObject) current).get(part);
+			}
+
+			result = merge(result, (JSONObject) current);
+		}
+
+		if (schema.has("allOf")) {
+			JSONArray arr = schema.getJSONArray("allOf");
+
+			for (int i = 0; i < arr.length(); i++) {
+				result = merge(result, resolveSchema(arr.getJSONObject(i), effectiveRoot));
+			}
+		}
+
+		JSONObject copy = new JSONObject(schema.toString());
+		copy.remove("$ref");
+		copy.remove("allOf");
+
+		return merge(result, copy);
+	}
+	
+	private static JSONObject merge(JSONObject base, JSONObject override) {
+
+		JSONObject result = new JSONObject(base.toString());
+
+		for (String key : override.keySet()) {
+
+			Object val = override.get(key);
+
+			if (result.has(key) && result.get(key) instanceof JSONObject && val instanceof JSONObject) {
+				result.put(key, merge(result.getJSONObject(key), (JSONObject) val));
+			} else {
+				result.put(key, val);
+			}
+		}
+
+		return result;
+	}
+	
+	private static Object generateValue(JSONObject schema, String field, String testCaseName) {
+
+		if ("email".equalsIgnoreCase(field)) {
+			return testCaseName + "@mosip.net";
+		}
+
+		if (!"phone".equalsIgnoreCase(field) && !"individualId".equalsIgnoreCase(field)) {
+
+			String prop = VALUE_MAP.getProperty(field);
+			if (prop == null) {
+				prop = VALUE_MAP.getProperty(field.toLowerCase());
+			}
+
+			if (prop != null && !prop.trim().isEmpty()) {
+
+				if ("fullname".equalsIgnoreCase(field) || "givenname".equalsIgnoreCase(field)
+						|| "familyname".equalsIgnoreCase(field)) {
+
+					prop = prop.replaceAll("[^a-zA-Z\\s]", "");
+				}
+
+				return prop;
+			}
+		}
+
+		if (schema.has("pattern")) {
+			try {
+				String pattern = schema.getString("pattern").replaceAll("\\(\\?=.*?\\)", "");
+				return genStringAsperRegex(pattern);
+			} catch (Exception ignored) {
+			}
+		}
+
+		if (schema.has("enum")) {
+			JSONArray arr = schema.getJSONArray("enum");
+			return arr.get(0);
+		}
+
+		return "Test_" + field;
+	}
+	
+	private static Object getOverrideValue(String field, String testCaseName) {
+
+		if ("email".equalsIgnoreCase(field)) {
+			return testCaseName + "@mosip.net";
+		}
+
+		return null;
+	}
+	
+	private static final Properties VALUE_MAP = new Properties();
+
+	static {
+		try (InputStream is = Thread.currentThread().getContextClassLoader()
+				.getResourceAsStream("config/valueMapping.properties")) {
+
+			if (is == null) {
+				throw new RuntimeException("valueMapping.properties NOT FOUND");
+			}
+
+			VALUE_MAP.load(is);
+
+			logger.debug("VALUE_MAP LOADED: " + VALUE_MAP);
+
+		} catch (Exception e) {
+			throw new RuntimeException("Failed to load valueMapping.properties", e);
+		}
+	}
+	
+	public void extractAndStoreIdentityDetails(String testCaseName, String requestBody) {
+
+		try {
+			JSONObject root = new JSONObject(requestBody);
+
+			JSONObject request = root.has("request") ? root.getJSONObject("request") : root;
+
+			String individualId = request.optString("individualId", null);
+			String email = request.optString("email", null);
+			String password = request.optString("password", null);
+			String phone = request.optString("phone", null);
+
+			if (individualId != null && !individualId.isEmpty()) {
+				writeAutoGeneratedId(testCaseName, "UIN", individualId);
+			}
+
+			if (email != null && !email.isEmpty()) {
+				writeAutoGeneratedId(testCaseName, "EMAIL", email);
+			}
+
+			if (password != null && !password.isEmpty()) {
+				writeAutoGeneratedId(testCaseName, "PASSWORD", password);
+			}
+
+			if (phone != null && !phone.isEmpty()) {
+				writeAutoGeneratedId(testCaseName, "PHONE", phone);
+			}
+
+		} catch (Exception e) {
+			throw new RuntimeException("Failed to extract identity details", e);
+		}
+	}
 }

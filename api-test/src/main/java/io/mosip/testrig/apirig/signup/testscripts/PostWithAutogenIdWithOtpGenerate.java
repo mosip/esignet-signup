@@ -1,5 +1,6 @@
 package io.mosip.testrig.apirig.signup.testscripts;
 
+import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 
@@ -16,6 +17,8 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+import org.testng.internal.BaseTestMethod;
+import org.testng.internal.TestResult;
 
 import io.mosip.testrig.apirig.dto.OutputValidationDto;
 import io.mosip.testrig.apirig.dto.TestCaseDTO;
@@ -207,6 +210,7 @@ public class PostWithAutogenIdWithOtpGenerate extends SignupUtil implements ITes
 
 			if (testCaseName.startsWith("Signup_ESignet_VerifyChallengeNegTC_")
 					|| testCaseName.startsWith("Signup_ESignet_VerifyChallengeForResetPasswordNegTC_")) {
+				jsonInput = SignupUtil.otpHandler(jsonInput, testCaseName);
 				response = postRequestWithCookieAuthHeaderAndXsrfToken(tempUrl + testCaseDTO.getEndPoint(), jsonInput,
 						COOKIENAME, testCaseDTO.getTestCaseName());
 			} else {
