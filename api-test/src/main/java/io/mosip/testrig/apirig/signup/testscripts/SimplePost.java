@@ -102,7 +102,7 @@ public class SimplePost extends SignupUtil implements ITest {
 		String inputJson ;
 		
 		if (testCaseName.contains("_RegisterUser_")) {
-			testCaseDTO.setInputTemplate(SignupUtil.generateHbsForRegisterUserRequest());
+			testCaseDTO.setInputTemplate(generateHbsForRegisterUserRequest());
 			inputJson = getJsonFromTemplate(testCaseDTO.getInput(), testCaseDTO.getInputTemplate(), false);
 		} else {
 			inputJson = getJsonFromTemplate(testCaseDTO.getInput(), testCaseDTO.getInputTemplate());
@@ -133,7 +133,7 @@ public class SimplePost extends SignupUtil implements ITest {
 		}
 
 		if (inputJson.contains("$PASSWORDTORESET$")) {
-			String passwordToReset = PASSWORD_TO_RESET;
+			String passwordToReset = PASSWORD_FOR_ADDIDENTITY_AND_REGISTRATION;
 			if (passwordToReset != null && !passwordToReset.isEmpty()) {
 				inputJson = replaceKeywordWithValue(inputJson, "$PASSWORDTORESET$", passwordToReset);
 			}
