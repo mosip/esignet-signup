@@ -140,6 +140,7 @@ public class MosipTestRunner {
 				additionalPropertiesMap.put(SignupConstants.PRE_CONFIGURED_OTP_STRING, SignupConstants.ALL_ONE_OTP_STRING);
 				SignupConfigManager.add(additionalPropertiesMap);
 				SignupUtil.getSupportedLanguages();
+				SignupUtil.getRequiredFieldsFromSchema();
 				
 				
 				startTestRunner();
