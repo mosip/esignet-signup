@@ -14,6 +14,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.util.List;
 import java.time.Duration;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.TimeoutException;
@@ -31,11 +32,11 @@ public class RegistrationPage extends BasePage {
 	@FindBy(xpath = "//div[@class='grow px-3 text-center font-semibold tracking-normal xs:px-2']")
 	WebElement headerInRegistrationPage;
 
-	@FindBy(id = "phone_input")
+	@FindBy(id = "phone")
 	WebElement enterMobileNumberTextBox;
 
-	@FindBy(id = "continue-button")
-	WebElement continueButton;
+	@FindBy(id = "form-submit-button")
+	WebElement submitButton;
 
 	@FindBy(id = "back-button")
 	WebElement backButton;
@@ -55,7 +56,7 @@ public class RegistrationPage extends BasePage {
 	@FindBy(xpath = "//div[contains(@id,'-form-item')]/span")
 	WebElement prefilledCountryCode;
 
-	@FindBy(id = "phone_input")
+	@FindBy(id = "phone")
 	WebElement helpTextInTextBox;
 
 	@FindBy(id = ":r4:-form-item-message")
@@ -242,7 +243,7 @@ public class RegistrationPage extends BasePage {
 	}
 
 	public boolean isContinueButtonVisible() {
-		return isElementVisible(continueButton,"check continue button is displayed");
+		return isElementVisible(submitButton,"check continue button is displayed");
 	}
 
 	public boolean isLanguageSelectionVisible() {
@@ -266,10 +267,10 @@ public class RegistrationPage extends BasePage {
 		return placeholder != null && !placeholder.isEmpty();
 	}
 
-	private String lastEnteredMobileNumber;
+	private String lastEnteredIdentifier;
 
-	public String getLastEnteredMobileNumber() {
-		return lastEnteredMobileNumber;
+	public String getLastEnteredIdentifier() {
+		return lastEnteredIdentifier;
 	}
 
 	public boolean isPlaceholderGone() {
@@ -278,9 +279,20 @@ public class RegistrationPage extends BasePage {
 	}
 
 	public void enterMobileNumber(String number) {
-		enterMobileNumberTextBox.clear();
-		enterText(enterMobileNumberTextBox, number, "Entered Mobile Number");
-		lastEnteredMobileNumber = number;
+		enterIdentifierValue(number);
+		lastEnteredIdentifier = number;
+	}
+
+	public WebElement getIdentifierFieldElement() {
+	    String fieldId = EsignetUtil.getIdentifierFieldId();
+	    return driver.findElement(By.id(fieldId));
+	}
+	
+	public void enterIdentifierValue(String value) {
+	    WebElement field = getIdentifierFieldElement();
+	    field.clear();
+	    enterText(field, value, "Entered Identifier Value");
+	    lastEnteredIdentifier = value;
 	}
 
 	public void enterOtp(String otp) {
@@ -301,7 +313,7 @@ public class RegistrationPage extends BasePage {
 	}
 
 	public boolean isContinueButtonEnabled() {
-		return isButtonEnabled(continueButton, "Check if Continue Button is Enabled");
+		return isButtonEnabled(submitButton, "Check if Continue Button is Enabled");
 	}
 
 	public boolean isErrorMessageDisplayed() {
@@ -324,7 +336,7 @@ public class RegistrationPage extends BasePage {
 	}
 
 	public void clickOnContinueButton() {
-		clickOnElement(continueButton, "Click on continue Button");
+		clickOnElement(submitButton, "Click on continue Button");
 	}
 
 	public boolean isZeroErrorMessageDisplayed() {

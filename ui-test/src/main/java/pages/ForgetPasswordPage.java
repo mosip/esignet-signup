@@ -14,6 +14,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import base.BasePage;
 import utils.EsignetUtil;
+import utils.EsignetUtil.RegisteredDetails;
 
 public class ForgetPasswordPage extends BasePage {
 
@@ -25,19 +26,16 @@ public class ForgetPasswordPage extends BasePage {
 	@FindBy(id = "sign-in-with-esignet")
 	WebElement signInWithEsignet;
 
-	@FindBy(id = "phone_input")
-	WebElement enterMobileNumberField;
-
 	@FindBy(xpath = "//img[@class='brand-logo']")
 	WebElement brandLogo;
 
-	@FindBy(xpath = "//span[@class='flex self-center border-r-[1px] border-input px-3 text-muted-foreground/60']")
+	@FindBy(xpath = "//input[@class='input_box prefix-button']")
 	WebElement phonePrefix;
-
-	@FindBy(id = "phone_input")
+	
+	@FindBy(id = "phone")
 	WebElement phoneInput;
 
-	@FindBy(xpath = "//span[@class='flex self-center border-r-[1px] border-input px-3 text-muted-foreground/60']")
+	@FindBy(xpath = "//input[@class='input_box prefix-button']")
 	WebElement countryCodeSpan;
 
 	@FindBy(id = ":r4:-form-item-message")
@@ -49,14 +47,11 @@ public class ForgetPasswordPage extends BasePage {
 	@FindBy(xpath = "//div[@class='text-center text-gray-500']")
 	WebElement forgetPasswordSubHeadning;
 
-	@FindBy(xpath = "//label[@class='text-sm font-semibold leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70']")
+	@FindBy(xpath = "//div[@class='label-div-display']")
 	WebElement userNameLabel;
 
-	@FindBy(xpath = "//label[@class='text-sm font-semibold leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70']")
-	WebElement fullNameLabel;
-
-	@FindBy(id = "continue-button")
-	WebElement continueButton;
+	@FindBy(id = "form-submit-button")
+	WebElement submitButton;
 
 	@FindBy(id = "language-select-button")
 	WebElement langSelectionButton;
@@ -162,10 +157,12 @@ public class ForgetPasswordPage extends BasePage {
 
 	@FindBy(id = "reset-password-button")
 	WebElement resetPasswordButton;
+	
+	@FindBy(xpath = "//span[@class='error-text']")
+	WebElement errorMessageInForgotPasswordScreen;
 
-	public void enterMobileNumber(String number) {
-		enterMobileNumberField.clear();
-		enterText(enterMobileNumberField, number, "Enterd Mobile Number");
+	public void enterMobileNumber(String value) {
+		enterIdentifierValue(value);
 	}
 
 	public void clickOnSignInWIthEsignet() {
@@ -195,20 +192,19 @@ public class ForgetPasswordPage extends BasePage {
 
 	public boolean isCountryCodeNonEditable() {
 		return isElementVisible(countryCodeSpan, "check country code is displayed")
-				&& !getElementTagName(countryCodeSpan).equalsIgnoreCase("input");
+				&& countryCodeSpan.getAttribute("readonly") != null;
 	}
-
+	
 	public boolean isPhoneErrorVisible() {
-		return !phoneErrorForInvalidValue.isEmpty() && phoneErrorForInvalidValue.get(0).isDisplayed();
+		return isElementDisplayed(errorMessageInForgotPasswordScreen);
 	}
 
 	public void enterPhoneNumber(String number) {
-		phoneInput.clear();
-		enterText(phoneInput, number, "Entered phone number");
+			enterIdentifierValue(number);
 	}
 
 	public void triggerPhoneValidation() {
-		clickOnElement(countryCodeSpan, "click outside the phone number field");
+		clickOnElement(forgetPasswordHeading, "click outside the phone number field");
 	}
 
 	public boolean isForgetPasswordHeadingVisible() {
@@ -223,12 +219,8 @@ public class ForgetPasswordPage extends BasePage {
 		return isElementVisible(userNameLabel, "check username label");
 	}
 
-	public boolean isFullNameLabelVisible() {
-		return isElementVisible(fullNameLabel, "check fullname label");
-	}
-
 	public boolean isContinueButtonVisible() {
-		return isElementVisible(continueButton, "check continue button displayed");
+		return isElementVisible(submitButton, "check continue button displayed");
 	}
 
 	public boolean isLangSelectionButtonVisible() {
@@ -257,23 +249,19 @@ public class ForgetPasswordPage extends BasePage {
 	}
 
 	public boolean isContinueButtonDisabled() {
-		return !isButtonEnabled(continueButton, "check continue button disabled");
-	}
-
-	public void enterFullName(String name) {
-		enterText(fullNameInput, name, "Entered fullname");
+		return !isButtonEnabled(submitButton, "check continue button disabled");
 	}
 
 	public boolean isFullNameErrorVisible() {
 		try {
-			return isElementVisible(fullNameError, "check error displayed");
+			return isElementVisible(errorMessageInForgotPasswordScreen, "check error displayed");
 		} catch (NoSuchElementException e) {
 			return false;
 		}
 	}
 
 	public boolean isFullNameErrorPresent() {
-		return driver.findElements(By.xpath("//p[@id=':r5:-form-item-message']")).size() > 0;
+		return isElementDisplayed(errorMessageInForgotPasswordScreen);
 	}
 
 	public boolean isFullnameRestrictedToMaxChars() {
@@ -282,11 +270,11 @@ public class ForgetPasswordPage extends BasePage {
 	}
 
 	public boolean isContinueButtonEnabled() {
-		return isButtonEnabled(continueButton, "check continue button enabled");
+		return isButtonEnabled(submitButton, "check continue button enabled");
 	}
 
 	public void clickOnContinueButton() {
-		clickOnElement(continueButton, "click on continue button");
+		clickOnElement(submitButton, "click on continue button");
 	}
 
 	public boolean isResendOtpCountdownVisible() {
@@ -507,5 +495,30 @@ public class ForgetPasswordPage extends BasePage {
 	public void clickOnResetPasswordButton() {
 		clickOnElement(resetPasswordButton, "click on reset password button");
 	}
+	
+	public WebElement getIdentifierFieldElement() {
+	    String fieldId = EsignetUtil.getIdentifierFieldId();
+	    return driver.findElement(By.id(fieldId));
+	}
+	
+	public void enterIdentifierValue(String value) {
+	    WebElement field = getIdentifierFieldElement();
+	    field.clear();
+	    enterText(field, value, "Entered Identifier Value");
+	}
+	
+	public WebElement getFullNameFieldElement() {
+	    String mandatoryLang = EsignetUtil.getMandatoryLanguage();  // eng
+	    String fieldId = "fullName_" + mandatoryLang;              // fullName_eng
 
+	    return driver.findElement(By.id(fieldId));
+	}
+	
+	public void enterFullName(String value) {
+	    WebElement field = getFullNameFieldElement();
+	    field.clear();
+	    enterText(field, value, "Entered Full Name");
+	}
+	
+	
 }

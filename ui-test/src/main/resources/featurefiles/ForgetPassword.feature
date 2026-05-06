@@ -7,9 +7,11 @@ Feature: Esignet Forgot Password Page
     Given user directly navigates to sign-up portal URL
     And user clicks on Register button
     Then user enters mobile_number in the mobile number text box
+    Then mark otp request timestamp
     And user clicks on the Continue button
     When user enters the OTP
     And user clicks on the Verify OTP button 
+    Then remove otp request timestamp
     Then user click on Continue button in Success Screen
     And user fills the signup form using UI specification
     And user clicks on Continue button in Setup Account Page
@@ -51,7 +53,8 @@ Feature: Esignet Forgot Password Page
     Then user verify continue button is not enabled
 
     When user enters more than max digits into the mobile number field
-    Then verify the mobile number field should restrict to max digits
+    And user clicks outside the input to trigger validation
+    Then phone number should be invalid
 
 
   @smoke @forgetPasswordFullNameVerification
@@ -76,7 +79,8 @@ Feature: Esignet Forgot Password Page
     Then user verify full name error message
 
     When user enters name more than maximum characters into the fullname field
-    And only 30 characters are retained in the fullname field
+    And user clicks outside the input to trigger validation
+    Then user verify full name error message
 
     When user enters registered fullname into the full name field
     And user clicks outside the input to trigger validation
@@ -239,6 +243,7 @@ Feature: Esignet Forgot Password Page
     And user click on reset password button
     And user enters registered fullname into the full name field
     And user enters Registered mobile number into the mobile number field
+    Then mark otp request timestamp
     Then user click on continue button
   	When user enters the OTP in forgot password flow
   	And user clicks on the Verify OTP button
@@ -246,6 +251,7 @@ Feature: Esignet Forgot Password Page
     And user enters new confirm password in Forgot Password flow
     And user clicks on Reset button
   	And verify password changed successful notification is displayed
+  	Then remove otp request timestamp
 
 
   @smoke @otpTimerVerification

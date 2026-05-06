@@ -2,6 +2,7 @@ package runners;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -14,15 +15,18 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.junit.runner.RunWith;
 import org.testng.TestNG;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import com.aventstack.extentreports.service.ExtentService;
+
+import io.cucumber.junit.Cucumber;
 import io.cucumber.testng.AbstractTestNGCucumberTests;
 import io.cucumber.testng.CucumberOptions;
 import io.cucumber.testng.FeatureWrapper;
 import io.cucumber.testng.PickleWrapper;
-import io.mosip.testrig.apirig.testrunner.AllNotificationListner;
 import io.mosip.testrig.apirig.testrunner.OTPListener;
 import utils.BaseTestUtil;
 import utils.EsignetConfigManager;
@@ -110,20 +114,22 @@ public class Runner extends AbstractTestNGCucumberTests {
 	}
 
 	public static void main(String[] args) {
-		OTPListener otpListener = new OTPListener();
-		AllNotificationListner allNotificationListner = new AllNotificationListner();
+		OTPListener otpListener = null;
+		//AllNotificationListner allNotificationListner = null;
 		try {
 			LOGGER.info("** ------------- Esignet UI Automation run started---------------------------- **");
 			EsignetConfigManager.init();
 			ExtentReportManager.initReport();
+			otpListener = new OTPListener();
+			//allNotificationListner = new AllNotificationListner();
 			otpListener.run();
-			allNotificationListner.run();
+			//allNotificationListner.run();
 			startTestRunner();
 		} catch (Exception e) {
 			LOGGER.severe("Exception " + e.getMessage());
 		}
 		otpListener.bTerminate = true;
-		allNotificationListner.bTerminate = true;
+		//allNotificationListner.bTerminate = true;
 		System.exit(0);
 	}
 

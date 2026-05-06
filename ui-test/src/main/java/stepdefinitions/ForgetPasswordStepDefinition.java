@@ -7,8 +7,7 @@ import org.apache.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 import org.testng.Assert;
 import io.cucumber.java.en.When;
-import io.mosip.testrig.apirig.testrunner.AllNotificationListner;
-import io.mosip.testrig.apirig.testrunner.OTPListener;
+import io.mosip.testrig.apirig.utils.NotificationListener;
 import base.BasePage;
 import base.BaseTest;
 import io.cucumber.java.en.Then;
@@ -40,15 +39,18 @@ public class ForgetPasswordStepDefinition {
 
 	@Then("user enters mobile_number in the mobile number text box")
 	public void userEnterValidMobileNumber() {
-		String mobileNumber = EsignetUtil.generateMobileNumberFromRegex();
-		RegisteredDetails.setMobileNumber(mobileNumber);
-		forgetPasswordPage.enterMobileNumber(mobileNumber);
+		String fieldId = EsignetUtil.getIdentifierFieldId();
+		String regex = EsignetUtil.getRegexForField(fieldId);
+		String value = EsignetUtil.generateValueFromRegex(regex);
+		RegisteredDetails.setMobileNumber(value);
+		forgetPasswordPage.enterIdentifierValue(value);
 	}
 
 	@When("user enters the OTP")
 	public void userEnterOtp() {
-		String mobile = RegisteredDetails.getMobileNumber();
-		forgetPasswordPage.enterOtp(OTPListener.getOtp(mobile));
+		String number = RegisteredDetails.getMobileNumber();
+		number = EsignetUtil.normalizeIdentifierForOtp(number);
+		forgetPasswordPage.enterOtp(NotificationListener.getOtp(number));
 	}
 
 	@When("user click on reset password button")
@@ -116,11 +118,6 @@ public class ForgetPasswordStepDefinition {
 	@Then("user verify username label on forget password")
 	public void userVerifyUserLabelOnForgetPassword() {
 		Assert.assertTrue(forgetPasswordPage.isUserNameLabelVisible(), "User Label on foget password visible");
-	}
-
-	@Then("user verify fullname label on forget password")
-	public void userVerifyFullnameLabelOnForgetPassword() {
-		Assert.assertTrue(forgetPasswordPage.isFullNameLabelVisible(), "Fullname Label on foget password visible");
 	}
 
 	@Then("user verify continue button on forget password")
@@ -212,7 +209,7 @@ public class ForgetPasswordStepDefinition {
 	@When("user enters other language input into the fullname field")
 	public void userEntersFullNameInOtherLanguage() {
 		EsignetUtil.FullName names = EsignetUtil.generateNamesFromUiSpec();
-		forgetPasswordPage.enterFullName(names.english);
+		forgetPasswordPage.enterFullName(names.khmer);
 	}
 
 	@Then("user verify full name error message")
@@ -233,8 +230,8 @@ public class ForgetPasswordStepDefinition {
 
 	@When("user enters registered fullname into the full name field")
 	public void userEntersRegisteredFullname() {
-		String registeredFullname = RegisteredDetails.getFullName();
-		forgetPasswordPage.enterFullName(registeredFullname);
+	    String registeredFullname = RegisteredDetails.getFullName();
+	    forgetPasswordPage.enterFullName(registeredFullname);
 	}
 
 	@Then("user verify continue button is enabled")
@@ -538,10 +535,9 @@ public class ForgetPasswordStepDefinition {
 	@Then("verify password changed successful notification is displayed")
 	public void verifyPasswordResetNotificationReceived() {
 		String registeredNumber = RegisteredDetails.getMobileNumber();
-		String notification = AllNotificationListner.getNotification(registeredNumber);
+		String notification = NotificationListener.getNotification(registeredNumber);
 		boolean isNotificationReceived = notification != null && !notification.isEmpty();
-		Assert.assertTrue(isNotificationReceived,
-				"Password reset notification not received for: " + registeredNumber);
+		Assert.assertTrue(isNotificationReceived, "Password reset notification not received for: " + registeredNumber);
 	}
 
 	@Then("verify it is accessible,user is redirected to the Forget Password screen")
