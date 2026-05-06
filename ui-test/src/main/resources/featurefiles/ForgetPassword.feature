@@ -84,9 +84,7 @@ Feature: Esignet Forgot Password Page
     When user enters registered fullname into the full name field
     And user clicks outside the input to trigger validation
     Then user verify full name error message not displayed
-
     Then user verify continue button is not enabled
-
     When user enters Registered mobile number into the mobile number field
     Then user verify continue button is enabled
     Then user click on continue button
