@@ -17,7 +17,6 @@ Feature: Esignet Forgot Password Page
     And user clicks on Continue button in Setup Account Page
     And verify that success screen should display the message Congratulations! Your account has been created successfully. Please login to proceed.
   
-   
   @smoke @forgetPasswordOptionsVerification
   Scenario Outline: Verify the forget password options for phoneNumber
     Given user directly navigates to sign-up portal URL
