@@ -230,8 +230,8 @@ public class ForgetPasswordStepDefinition {
 
 	@When("user enters registered fullname into the full name field")
 	public void userEntersRegisteredFullname() {
-	    String registeredFullname = RegisteredDetails.getFullName();
-	    forgetPasswordPage.enterFullName(registeredFullname);
+		String registeredFullname = RegisteredDetails.getFullName();
+		forgetPasswordPage.enterFullName(registeredFullname);
 	}
 
 	@Then("user verify continue button is enabled")

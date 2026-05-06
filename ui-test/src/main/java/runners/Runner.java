@@ -115,21 +115,17 @@ public class Runner extends AbstractTestNGCucumberTests {
 
 	public static void main(String[] args) {
 		OTPListener otpListener = null;
-		//AllNotificationListner allNotificationListner = null;
 		try {
 			LOGGER.info("** ------------- Esignet UI Automation run started---------------------------- **");
 			EsignetConfigManager.init();
 			ExtentReportManager.initReport();
 			otpListener = new OTPListener();
-			//allNotificationListner = new AllNotificationListner();
 			otpListener.run();
-			//allNotificationListner.run();
 			startTestRunner();
 		} catch (Exception e) {
 			LOGGER.severe("Exception " + e.getMessage());
 		}
 		otpListener.bTerminate = true;
-		//allNotificationListner.bTerminate = true;
 		System.exit(0);
 	}
 

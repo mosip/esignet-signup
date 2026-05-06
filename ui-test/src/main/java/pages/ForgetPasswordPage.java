@@ -31,7 +31,7 @@ public class ForgetPasswordPage extends BasePage {
 
 	@FindBy(xpath = "//input[@class='input_box prefix-button']")
 	WebElement phonePrefix;
-	
+
 	@FindBy(id = "phone")
 	WebElement phoneInput;
 
@@ -157,7 +157,7 @@ public class ForgetPasswordPage extends BasePage {
 
 	@FindBy(id = "reset-password-button")
 	WebElement resetPasswordButton;
-	
+
 	@FindBy(xpath = "//span[@class='error-text']")
 	WebElement errorMessageInForgotPasswordScreen;
 
@@ -194,13 +194,13 @@ public class ForgetPasswordPage extends BasePage {
 		return isElementVisible(countryCodeSpan, "check country code is displayed")
 				&& countryCodeSpan.getAttribute("readonly") != null;
 	}
-	
+
 	public boolean isPhoneErrorVisible() {
 		return isElementDisplayed(errorMessageInForgotPasswordScreen);
 	}
 
 	public void enterPhoneNumber(String number) {
-			enterIdentifierValue(number);
+		enterIdentifierValue(number);
 	}
 
 	public void triggerPhoneValidation() {
@@ -495,30 +495,29 @@ public class ForgetPasswordPage extends BasePage {
 	public void clickOnResetPasswordButton() {
 		clickOnElement(resetPasswordButton, "click on reset password button");
 	}
-	
-	public WebElement getIdentifierFieldElement() {
-	    String fieldId = EsignetUtil.getIdentifierFieldId();
-	    return driver.findElement(By.id(fieldId));
-	}
-	
-	public void enterIdentifierValue(String value) {
-	    WebElement field = getIdentifierFieldElement();
-	    field.clear();
-	    enterText(field, value, "Entered Identifier Value");
-	}
-	
-	public WebElement getFullNameFieldElement() {
-	    String mandatoryLang = EsignetUtil.getMandatoryLanguage();  // eng
-	    String fieldId = "fullName_" + mandatoryLang;              // fullName_eng
 
-	    return driver.findElement(By.id(fieldId));
+	public WebElement getIdentifierFieldElement() {
+		String fieldId = EsignetUtil.getIdentifierFieldId();
+		return driver.findElement(By.id(fieldId));
 	}
-	
+
+	public void enterIdentifierValue(String value) {
+		WebElement field = getIdentifierFieldElement();
+		field.clear();
+		enterText(field, value, "Entered Identifier Value");
+	}
+
+	public WebElement getFullNameFieldElement() {
+		String mandatoryLang = EsignetUtil.getMandatoryLanguage();
+		String fieldId = "fullName_" + mandatoryLang;
+
+		return driver.findElement(By.id(fieldId));
+	}
+
 	public void enterFullName(String value) {
-	    WebElement field = getFullNameFieldElement();
-	    field.clear();
-	    enterText(field, value, "Entered Full Name");
+		WebElement field = getFullNameFieldElement();
+		field.clear();
+		enterText(field, value, "Entered Full Name");
 	}
-	
-	
+
 }

@@ -66,11 +66,11 @@ public class LoginOptionsStepDefinition {
 		RegisteredDetails.setMobileNumber(value);
 		registrationPage.enterIdentifierValue(value);
 	}
-	
+
 	@When("user enters the correct OTP as input")
 	public void userEntersOtp() {
-	    String mobile = RegisteredDetails.getMobileNumber();
-	    registrationPage.enterOtp(NotificationListener.getOtp(mobile));
+		String mobile = RegisteredDetails.getMobileNumber();
+		registrationPage.enterOtp(NotificationListener.getOtp(mobile));
 	}
 
 	@And("user redirected to registration page")

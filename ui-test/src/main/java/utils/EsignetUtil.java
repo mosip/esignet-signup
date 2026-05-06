@@ -740,22 +740,22 @@ public class EsignetUtil extends AdminTestUtil {
 
 		return number;
 	}
-	
+
 	public static String getMandatoryLanguage() {
-	    JSONObject response = getSignupUISpecResponse().optJSONObject("response");
-	    if (response == null) return "eng";
+		JSONObject response = getSignupUISpecResponse().optJSONObject("response");
+		if (response == null)
+			return "eng";
 
-	    JSONObject langObj = response.optJSONObject("language");
-	    if (langObj == null) return "eng";
+		JSONObject langObj = response.optJSONObject("language");
+		if (langObj == null)
+			return "eng";
 
-	    JSONArray mandatory = langObj.optJSONArray("mandatory");
-	    if (mandatory != null && mandatory.length() > 0) {
-	        return mandatory.getString(0);
-	    }
+		JSONArray mandatory = langObj.optJSONArray("mandatory");
+		if (mandatory != null && mandatory.length() > 0) {
+			return mandatory.getString(0);
+		}
 
-	    return "eng"; // fallback
+		return "eng"; // fallback
 	}
-	
-	
 
 }

@@ -31,7 +31,7 @@ public class SignUpPage extends BasePage {
 	WebElement registerButton;
 
 	public void clickOnSignUp() {
-		clickOnElement(signUp,"Click on Signup Button");
+		clickOnElement(signUp, "Click on Signup Button");
 	}
 
 	public void navigateToSignupPortal() {
@@ -39,23 +39,23 @@ public class SignUpPage extends BasePage {
 	}
 
 	public boolean isHeaderInSignUpErrorScreenDisplayed() {
-		return isElementVisible(signUpErrorHearder,"Check if Header SignUp Error Screen is Displayed");
+		return isElementVisible(signUpErrorHearder, "Check if Header SignUp Error Screen is Displayed");
 	}
 
 	public boolean isMessageInSignUpErrorScreenDisplayed() {
-		return isElementVisible(signUpErrorMessage,"Check if Message In SignUp Error Screen is Displayed");
+		return isElementVisible(signUpErrorMessage, "Check if Message In SignUp Error Screen is Displayed");
 	}
 
 	public boolean isResetPasswordButtonDisplayed() {
-		return isElementVisible(resetPasswordBtn,"Check if Reset Password Button Displayed");
+		return isElementVisible(resetPasswordBtn, "Check if Reset Password Button Displayed");
 	}
 
 	public boolean isRegisterButtonDisplayed() {
-		return isElementVisible(registerButton,"Check if Register Button is Displayed");
+		return isElementVisible(registerButton, "Check if Register Button is Displayed");
 	}
 
 	public void clickOnRegisterButton() {
-		clickOnElement(registerButton,"Click on Registraion Button");
+		clickOnElement(registerButton, "Click on Registraion Button");
 	}
 
 }
