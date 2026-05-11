@@ -241,17 +241,7 @@ updateStrategy:
 ##     value: "bar"
 ##
 
-extraEnvVars: |
-  - name: MOSIP_ESIGNET_HOST
-    valueFrom:
-      configMapKeyRef:
-        name: esignet-global
-        key: mosip-esignet-host
-  - name: MOSIP_SIGNUP_HOST
-    valueFrom:
-      configMapKeyRef:
-        name: esignet-global
-        key: mosip-signup-host
+extraEnvVars:
   - name: KEYCLOAK_EXTERNAL_URL
     valueFrom:
       configMapKeyRef:
@@ -515,3 +505,5 @@ volumes:
       path: /home/mosip/keys
 pluginNameEnv: esignet-mock-plugin.jar
 pluginUrlEnv:
+
+domainConfig: {}
