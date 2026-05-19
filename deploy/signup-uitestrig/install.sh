@@ -19,7 +19,7 @@ if [[ "${confirm:-}" != "Y" && "${confirm:-}" != "y" ]]; then
 fi
 
 NS="signup-uitestrig"
-CHART_VERSION="0.0.1-develop"
+CHART_VERSION="1.5.0"
 COPY_UTIL="../copy_cm_func.sh"
 
 echo "Ensure namespace $NS exists (creating if missing)..."
