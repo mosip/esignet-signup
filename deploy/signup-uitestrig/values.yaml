@@ -3,8 +3,8 @@ modules:
     enabled: true
     image:
       registry: docker.io
-      repository: mosipdev/uitest-signup
-      tag: develop
+      repository: mosipid/uitest-signup
+      tag: 1.4.0
 
 extraEnvVarsCM:
   - esignet-global
