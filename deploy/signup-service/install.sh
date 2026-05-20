@@ -34,7 +34,7 @@ function installing_signup() {
   done
 
   NS=signup
-  CHART_VERSION=1.8.0
+  CHART_VERSION=1.4.0-develop
 
   helm repo add mosip https://mosip.github.io/mosip-helm
   helm repo update
