@@ -13,7 +13,7 @@ set -o errtrace
 set -o pipefail
 
 NS=signup
-CHART_VERSION=1.8.0
+CHART_VERSION=1.4.0
 PLUGIN_NAME="esignet-mock-plugin.jar"
 
 echo "Installing signup-with-plugins using $PLUGIN_NAME"
