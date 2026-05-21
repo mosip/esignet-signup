@@ -41,7 +41,9 @@ export const AccountRegistrationStatus = () => {
       return (
         <AccountRegistrationStatusLayout
           status="failed"
-          message={t(`error_response.${criticalError.errorCode}`)}
+          message={t(`error_response.${criticalError.errorCode}`, {
+            defaultValue: t("something_went_wrong"),
+          })}
         />
       );
     }
