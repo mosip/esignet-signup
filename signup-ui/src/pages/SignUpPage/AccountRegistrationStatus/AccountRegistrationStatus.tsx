@@ -11,12 +11,14 @@ import {
   RegistrationWithFailedStatus,
 } from "~typings/types";
 
+import { criticalErrorSelector, useSignUpStore } from "../useSignUpStore";
 import { AccountRegistrationStatusLayout } from "./components/AccountRegistrationStatusLayout";
 
 export const AccountRegistrationStatus = () => {
   const { t } = useTranslation();
 
   const queryClient = useQueryClient();
+  const criticalError = useSignUpStore(criticalErrorSelector);
 
   const [registration] = useMutationState<RegistrationResponseDto>({
     filters: { mutationKey: mutationKeys.registration, status: "success" },
@@ -35,6 +37,17 @@ export const AccountRegistrationStatus = () => {
   const { hash: fromSignInHash } = useLocation();
 
   if (!registration) {
+    if (criticalError) {
+      return (
+        <AccountRegistrationStatusLayout
+          status="failed"
+          message={t(`error_response.${criticalError.errorCode}`, {
+            defaultValue: t("something_went_wrong"),
+          })}
+        />
+      );
+    }
+
     return (
       <AccountRegistrationStatusLayout
         status="failed"
