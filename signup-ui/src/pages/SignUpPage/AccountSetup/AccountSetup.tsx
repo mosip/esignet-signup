@@ -123,6 +123,7 @@ export const AccountSetup = ({ settings, methods }: AccountSetupProps) => {
         errorCode: (error as Error).message,
         errorMessage: "File upload failed",
       });
+      setStep(SignUpStep.AccountRegistrationStatus);
       if ((error as Error).message === "invalid_transaction") {
         setStep(SignUpStep.AccountRegistrationStatus);
       }
