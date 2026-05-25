@@ -114,7 +114,7 @@ jobs:
   sonar_analysis:
     needs: build_maven_esignet_signup
     if: "${{  github.event_name != 'pull_request' }}"
-    uses: mosip/kattu/.github/workflows/maven-sonar-analysis.yml@master-java21
+    uses: mosip/kattu/.github/workflows/maven-sonar-analysis-new.yml@dsd9685
     with:
       SERVICE_LOCATION: ./
     secrets:
@@ -302,7 +302,7 @@ jobs:
   sonar_analysis_apitest_esignet_signup:
     needs: build_maven_apitest_esignet_signup
     if: "${{  github.event_name != 'pull_request' }}"
-    uses: mosip/kattu/.github/workflows/maven-sonar-analysis.yml@master-java21
+    uses: mosip/kattu/.github/workflows/maven-sonar-analysis-new.yml@dsd9685
     with:
       SERVICE_LOCATION: ./api-test
     secrets:
