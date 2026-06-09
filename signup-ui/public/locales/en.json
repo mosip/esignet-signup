@@ -270,7 +270,7 @@
     "identity_inactive": "Identifier inactive",
     "fetch_identity_failed": "Fetch Identifier Failed",
     "challenge_format_and_type_mismatch": "Challenge format and type mismatch",
-    "knowledgebase_mismatch": "The mobile number or name entered is invalid. Please enter valid credentials associated with your account and try again.",
+    "knowledgebase_mismatch": "The information you have entered is invalid. Please provide valid information associated with your account and try again.",
     "identifier_blocked": "The user account is currently blocked. Please try again after some time.",
     "unsupported_purpose": "Request is invalid. Please try again.",
     "server_unreachable": "Unable to process your request. Please try again after some time.",
