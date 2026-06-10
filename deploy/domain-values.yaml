@@ -1,0 +1,3 @@
+domainConfig:
+  MOSIP_ESIGNET_HOST: esignet.sandbox.xyz.net
+  MOSIP_SIGNUP_HOST: signup.sandbox.xyz.net
