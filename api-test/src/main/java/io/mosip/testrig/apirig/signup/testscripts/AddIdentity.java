@@ -151,6 +151,8 @@ public class AddIdentity extends SignupUtil implements ITest {
 						logger.error(e.getMessage());
 					}
 				inputJson = replaceKeywordWithValue(inputJson, "$PHONENUMBERFORIDENTITY$", phoneNumber);
+			}
+			if (inputJson.contains("$EMAILVALUE$")) {
 				inputJson = replaceKeywordWithValue(inputJson, "$EMAILVALUE$", email);
 			}
 			
