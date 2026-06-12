@@ -241,7 +241,17 @@ updateStrategy:
 ##     value: "bar"
 ##
 
-extraEnvVars:
+extraEnvVars: |
+  - name: MOSIP_ESIGNET_HOST
+    valueFrom:
+      configMapKeyRef:
+        name: esignet-global
+        key: mosip-esignet-host
+  - name: MOSIP_SIGNUP_HOST
+    valueFrom:
+      configMapKeyRef:
+        name: esignet-global
+        key: mosip-signup-host
   - name: KEYCLOAK_EXTERNAL_URL
     valueFrom:
       configMapKeyRef:
@@ -332,8 +342,9 @@ initContainers:
     env:
       - name: ENABLE_INSECURE
         value: "true"
-      - name: mosip-api-internal-host
-        value: '{{ index .Values.domainConfig "MOSIP_API_INTERNAL_HOST" | default "" }}'
+    envFrom:
+      - configMapRef:
+          name: global
     image: docker.io/openjdk:21-jre
     imagePullPolicy: Always
     name: cacerts

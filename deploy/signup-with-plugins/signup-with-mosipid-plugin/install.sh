@@ -57,7 +57,7 @@ fi
 
 echo Installing signup-with-mosipid-plugin
 helm -n $NS install signup mosip/signup \
-  -f values.yaml -f ../../domain-values.yaml --version $CHART_VERSION \
+  -f values.yaml --version $CHART_VERSION \
   --set plugin_name_env=$PLUGIN_NAME \
   --set metrics.serviceMonitor.enabled=$servicemonitorflag \
   $ENABLE_INSECURE --wait
