@@ -19,6 +19,12 @@ public class UploadFileUtils {
             "D0CF11E0", "application/msword"
     );
 
+    private static final int MAX_ZIP_ENTRIES = 1_024;
+    private static final long MAX_TOTAL_UNCOMPRESSED_BYTES = 50L * 1024L * 1024L;
+    private static final long MAX_BYTES_PER_ENTRY = 10L * 1024L * 1024L;
+    private static final double MAX_COMPRESSION_RATIO = 100d;
+    private static final int    MAX_ENTRY_NAME_LENGTH = 1_024;
+
     public static String detectMimeType(InputStream inputStream) throws IOException {
         if (inputStream == null) {
             return UNKNOWN_MIME_TYPE;
@@ -64,10 +70,28 @@ public class UploadFileUtils {
     }
 
     private static String detectOfficeFormat(InputStream inputStream) {
+        long totalUncompressed = 0L;
+        int entryCount = 0;
+        final byte[] drain = new byte[4096];
+
         try (ZipInputStream zis = new ZipInputStream(inputStream)) {
             ZipEntry entry;
             while ((entry = zis.getNextEntry()) != null) {
+
+                //Zip rejected: entry count exceeded
+                if (++entryCount > MAX_ZIP_ENTRIES) {
+                    throw new SignUpException(ErrorConstants.INVALID_FILE_TYPE);
+                }
+
+                //Zip rejected: suspicious entry name
                 String entryName = entry.getName();
+                if (entryName == null
+                        || entryName.length() > MAX_ENTRY_NAME_LENGTH
+                        || entryName.contains("..")
+                        || entryName.startsWith("/")
+                        || entryName.startsWith("\\")) {
+                    throw new SignUpException(ErrorConstants.INVALID_FILE_TYPE);
+                }
 
                 // DOCX: contains word/document.xml
                 if ("word/document.xml".equalsIgnoreCase(entryName)) {
@@ -78,9 +102,29 @@ public class UploadFileUtils {
                     return "application/vnd.openxmlformats-officedocument.presentationml.presentation";
                 }
 
+                long entryUncompressed = 0L;
+                int n;
+                while ((n = zis.read(drain)) > 0) {
+                    entryUncompressed += n;
+                    totalUncompressed += n;
+
+                    //Zip rejected: uncompressed size exceeded
+                    if (entryUncompressed > MAX_BYTES_PER_ENTRY
+                            || totalUncompressed > MAX_TOTAL_UNCOMPRESSED_BYTES) {
+                        throw new SignUpException(ErrorConstants.INVALID_FILE_TYPE);
+                    }
+
+                    //Zip rejected: compression ratio exceeded
+                    long compressed = entry.getCompressedSize();
+                    if (compressed > 0
+                            && (double) entryUncompressed / (double) compressed > MAX_COMPRESSION_RATIO) {
+                        throw new SignUpException(ErrorConstants.INVALID_FILE_TYPE);
+                    }
+                }
+
                 zis.closeEntry();
             }
-        } catch (IOException ignored) {
+        } catch (IOException e) {
             throw new SignUpException(ErrorConstants.UPLOAD_FAILED);
         }
         return UNKNOWN_MIME_TYPE;

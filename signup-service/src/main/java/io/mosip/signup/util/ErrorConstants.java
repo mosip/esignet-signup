@@ -64,6 +64,7 @@ public class ErrorConstants {
 
     public static final String TOKEN_REQUEST_FAILED = "token_request_failed";
     public static final String UPLOAD_FAILED = "upload_failed";
+    public static final String FILE_TOO_LARGE = "file_too_large";
     public static final String INVALID_FILE_TYPE = "invalid_file_type";
     public static final String INVALID_FIELD = "invalid_field";
 }

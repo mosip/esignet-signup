@@ -99,6 +99,9 @@ public class RegistrationService {
     @Value("${mosip.signup.file.fieldname.regex:[A-Za-z0-9_-]+}")
     private String fileFieldNameRegex;
 
+    @Value("${mosip.signup.upload.max-file-size-bytes:5242880}")
+    private long maxUploadBytes;
+
     /**
      * Generate and regenerate challenge based on the "regenerate" flag in the request.
      * if regenerate is false - always creates a new transaction and set-cookie header is sent in the response.
@@ -323,6 +326,12 @@ public class RegistrationService {
         if (allowedTypesForField.isEmpty()) {
             log.error("Invalid field for file upload:  {}",fieldName);
             throw new SignUpException(ErrorConstants.INVALID_FIELD);
+        }
+
+        if (file.getSize() <= 0 || file.getSize() > maxUploadBytes) {
+            log.warn("File for field {} rejected: size={} bytes (max={})",
+                    fieldName, file.getSize(), maxUploadBytes);
+            throw new SignUpException(ErrorConstants.FILE_TOO_LARGE);
         }
 
         String detectedMimeType;
