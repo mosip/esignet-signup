@@ -1,0 +1,151 @@
+## Brings up the complete eSignet Signup setup for a demo: signup-service and signup-ui
+## along with all their dependent services. This is not for production use.
+## Refer to README.md in this directory for the pre-requisite steps (OIDC keystore generation,
+## client onboarding) before running `docker compose up`.
+
+services:
+
+  database:
+    image: 'postgres:bookworm'
+    ports:
+      - 5455:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  mock-identity-system:
+    image: 'mosipdev/mock-identity-system:develop'
+    user: root
+    ports:
+      - 8082:8082
+    environment:
+      - container_user=mosip
+      - active_profile_env=default,local
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://database:5432/mosip_mockidentitysystem?currentSchema=mockidentitysystem
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - MOSIP_MOCK_IDA_KYC_TRANSACTION_TIMEOUT_SECS=1200
+      - MOSIP_MOCK_IDA_IDENTITY_SCHEMA_URL=classpath:/mock-identity-signup-schema.json
+      - MOSIP_ESIGNET_HOST=localhost:8088
+    depends_on:
+      - database
+
+  redis:
+    image: redis:6.0
+    container_name: redis-server
+    ports:
+      - "6379:6379"
+    restart: always
+
+  zookeeper:
+    image: wurstmeister/zookeeper
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+
+  kafka:
+    image: wurstmeister/kafka
+    ports:
+      - "9092:9092"
+      - "9093:9093"
+    environment:
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka:9092,OUTSIDE://localhost:9093
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_LISTENERS: INSIDE://0.0.0.0:9092,OUTSIDE://0.0.0.0:9093
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+
+
+  esignet:
+    image: 'mosipdev/esignet-with-plugins:develop'
+    user: root
+    ports:
+      - 8088:8088
+    environment:
+      - container_user=mosip
+      - active_profile_env=default,local
+      - plugin_name_env=esignet-mock-plugin.jar
+      - KAFKA_ENABLED=false
+      - SPRING_CACHE_TYPE=redis
+      - SPRING_DATA_REDIS_HOST=redis
+      - SPRING_DATA_REDIS_PASSWORD=
+      - MOSIP_ESIGNET_DATABASE_URL=jdbc:postgresql://database:5432/mosip_esignet?currentSchema=esignet
+      - MOSIP_ESIGNET_DATABASE_USERNAME=postgres
+      - MOSIP_ESIGNET_DATABASE_PASSWORD=postgres
+      - SPRING_AUTOCONFIGURE_EXCLUDE=org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration
+      - MOSIP_ESIGNET_MOCK_DOMAIN_URL=http://mock-identity-system:8082
+      - MOSIP_ESIGNET_INTEGRATION_KEY_BINDER=MockKeyBindingWrapperService
+      ## Must match the client ID of the signup OIDC client onboarded in eSignet
+      ## (the signup Postman collection creates it as 'mosip-signup-oauth-client')
+      - MOSIP_ESIGNET_SIGNUP_ID_TOKEN_AUDIENCE=mosip-signup-oauth-client
+    depends_on:
+      - database
+      - redis
+      - mock-identity-system
+
+  esignet-ui:
+    image: 'mosipdev/oidc-ui:develop'
+    user: root
+    ports:
+      - 3000:3000
+    environment:
+      - container_user=mosip
+      - DEFAULT_WELLKNOWN=%5B%7B%22name%22%3A%22OpenID%20Configuration%22%2C%22value%22%3A%22%2F.well-known%2Fopenid-configuration%22%7D%2C%7B%22name%22%3A%22Jwks%20Json%22%2C%22value%22%3A%22%2F.well-known%2Fjwks.json%22%7D%2C%7B%22name%22%3A%22Authorization%20Server%22%2C%22value%22%3A%22%2F.well-known%2Foauth-authorization-server%22%7D%5D
+      - SIGN_IN_WITH_ESIGNET_PLUGIN_URL=https://raw.githubusercontent.com/mosip/artifactory-ref-impl/master/artifacts/src/mosip-plugins/sign-in-with-esignet/sign-in-with-esignet.zip
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - esignet
+
+  signup-service:
+    image: 'mosipdev/signup-with-plugins:develop'
+    user: root
+    ports:
+      - 8089:8089
+    environment:
+      - container_user=mosip
+      - active_profile_env=default,local
+      - plugin_name_env=esignet-mock-plugin.jar
+      - SPRING_DATA_REDIS_HOST=redis
+      - SPRING_DATA_REDIS_PORT=6379
+      - SPRING_DATA_REDIS_PASSWORD=
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      ## browser facing URLs: signup-ui is published on host port 3001 and esignet-ui on 3000
+      - MOSIP_SIGNUP_DOMAIN_URL=http://localhost:3001
+      - MOSIP_ESIGNET_DOMAIN_URL=http://localhost:3000
+      - MOSIP_ESIGNET_MOCK_DOMAIN_URL=http://mock-identity-system:8082
+      ## server to server calls to eSignet go over the compose network
+      - MOSIP_SIGNUP_OAUTH_TOKEN_URI=http://esignet:8088/v1/esignet/oauth/v2/token
+      - MOSIP_SIGNUP_OAUTH_USERINFO_URI=http://esignet:8088/v1/esignet/oidc/userinfo
+      ## no zipkin server in this setup, disable tracing to avoid log noise
+      - MANAGEMENT_TRACING_ENABLED=false
+      ## Replace the below 3 values with valid values from your MOSIP environment.
+      ## They are required for OTP generation and notifications (refer README.md).
+      - MOSIP_API_INTERNAL_HOST=https://api-internal.<env-name>.mosip.net
+      - KEYCLOAK_EXTERNAL_URL=https://iam.<env-name>.mosip.net
+      - MOSIP_SIGNUP_CLIENT_SECRET=<secret-from-env>
+    volumes:
+      ## Run postman-collection/create-signup-oidc-keystore.sh to generate
+      ## oidckeystore.p12 in the repository root before `docker compose up`
+      - ../oidckeystore.p12:/home/mosip/oidckeystore.p12
+    depends_on:
+      - database
+      - redis
+      - kafka
+      - esignet
+      - mock-identity-system
+
+  signup-ui:
+    image: 'mosipdev/signup-ui:develop'
+    user: root
+    ports:
+      ## host port 3001 since esignet-ui already uses 3000
+      - 3001:3000
+    environment:
+      - container_user=mosip
+    volumes:
+      - ./signup-ui-nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - signup-service
