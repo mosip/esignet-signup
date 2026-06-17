@@ -515,3 +515,5 @@ volumes:
       path: /home/mosip/keys
 pluginNameEnv: esignet-mock-plugin.jar
 pluginUrlEnv:
+
+domainConfig: {}
