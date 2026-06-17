@@ -23,7 +23,7 @@ public class UploadFileUtils {
     private static final long MAX_TOTAL_UNCOMPRESSED_BYTES = 50L * 1024L * 1024L;
     private static final long MAX_BYTES_PER_ENTRY = 10L * 1024L * 1024L;
     private static final double MAX_COMPRESSION_RATIO = 100d;
-    private static final int    MAX_ENTRY_NAME_LENGTH = 1_024;
+    private static final int MAX_ENTRY_NAME_LENGTH = 1_024;
 
     public static String detectMimeType(InputStream inputStream) throws IOException {
         if (inputStream == null) {
