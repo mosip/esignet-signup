@@ -10,6 +10,59 @@ This is the docker-compose setup to run eSignet Signup service with mock identit
 4. Git bash
 5. Postman
 
+## Bring up the complete signup setup for a demo
+
+The [docker-compose.yml](docker-compose.yml) file brings up the complete signup setup — `signup-service` and `signup-ui` along with all the dependent services. With this setup, the signup service need not be run from the IDE.
+
+### Step 1: Generate the signup OIDC keystore
+
+1. Open a Git bash terminal in the [postman-collection](../postman-collection) folder and run:
+
+   ```bash
+   ./create-signup-oidc-keystore.sh
+   ```
+
+   This generates `oidckeystore.p12` and `public_key.jwk` in the repository root. The keystore is mounted into the `signup-service` container by `docker-compose.yml`, and `public_key.jwk` is needed while onboarding the signup OIDC client in [Step 4](#step-4-onboard-the-signup-oidc-client).
+
+### Step 2: Configure environment-specific values
+
+Update the below environment variables of the `signup-service` in `docker-compose.yml` with valid values. They are required for OTP generation and notifications:
+
+   ```properties
+   MOSIP_API_INTERNAL_HOST=https://api-internal.<env-name>.mosip.net
+   KEYCLOAK_EXTERNAL_URL=https://iam.<env-name>.mosip.net
+   MOSIP_SIGNUP_CLIENT_SECRET=<secret-from-env>
+   ```
+
+   > **Note:** `MOSIP_ESIGNET_SIGNUP_ID_TOKEN_AUDIENCE` is already set on the `esignet` service to `mosip-signup-oauth-client`, which is the client ID created by the signup Postman collection in [Step 4](#step-4-onboard-the-signup-oidc-client). If you onboard the signup OIDC client with a different client ID, update this variable accordingly.
+
+### Step 3: Start the services
+
+Open a terminal in the current directory and run:
+
+   ```bash
+   docker compose up
+   ```
+
+Wait until all the services are up:
+
+| Service | URL |
+|---|---|
+| signup UI | [http://localhost:3001](http://localhost:3001) |
+| signup service Swagger | [http://localhost:8089/v1/signup/swagger-ui.html](http://localhost:8089/v1/signup/swagger-ui.html) |
+| eSignet UI | [http://localhost:3000](http://localhost:3000) |
+| eSignet service Swagger | [http://localhost:8088/v1/esignet/swagger-ui.html](http://localhost:8088/v1/esignet/swagger-ui.html) |
+
+### Step 4: Onboard the signup OIDC client
+
+1. Import the files located in the [postman-collection](../postman-collection) folder into Postman and follow the [Postman README](../postman-collection/README.md) to create the signup OIDC client. Use the `public_key.jwk` generated in [Step 1](#step-1-generate-the-signup-oidc-keystore) as the client public key.
+
+2. To create an eSignet client and a mock identity, refer to the [eSignet Docker Compose documentation](https://github.com/mosip/esignet/blob/master/docker-compose/README.md#how-to-bring-up-the-complete-esignet-setup-for-a-demo).
+
+### Step 5: Access the signup UI
+
+Open [http://localhost:3001](http://localhost:3001) in the browser and walk through the signup flow.
+
 ## Run signup service in local with all its dependencies
 
 ### Step 1: Configure Dependent Services
