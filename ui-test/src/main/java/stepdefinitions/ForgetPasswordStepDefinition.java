@@ -40,15 +40,18 @@ public class ForgetPasswordStepDefinition {
 
 	@Then("user enters mobile_number in the mobile number text box")
 	public void userEnterValidMobileNumber() {
-		String mobileNumber = EsignetUtil.generateMobileNumberFromRegex();
-		RegisteredDetails.setMobileNumber(mobileNumber);
-		forgetPasswordPage.enterMobileNumber(mobileNumber);
+		String fieldId = EsignetUtil.getIdentifierFieldId();
+		String regex = EsignetUtil.getRegexForField(fieldId);
+		String value = EsignetUtil.generateValueFromRegex(regex);
+		RegisteredDetails.setMobileNumber(value);
+		forgetPasswordPage.enterIdentifierValue(value);
 	}
 
 	@When("user enters the OTP")
 	public void userEnterOtp() {
-		String mobile = RegisteredDetails.getMobileNumber();
-		forgetPasswordPage.enterOtp(OTPListener.getOtp(mobile));
+		String number = RegisteredDetails.getMobileNumber();
+		number = EsignetUtil.normalizeIdentifierForOtp(number);
+		forgetPasswordPage.enterOtp(OTPListener.getOtp(number));
 	}
 
 	@When("user click on reset password button")
@@ -540,8 +543,7 @@ public class ForgetPasswordStepDefinition {
 		String registeredNumber = RegisteredDetails.getMobileNumber();
 		String notification = AllNotificationListner.getNotification(registeredNumber);
 		boolean isNotificationReceived = notification != null && !notification.isEmpty();
-		Assert.assertTrue(isNotificationReceived,
-				"Password reset notification not received for: " + registeredNumber);
+		Assert.assertTrue(isNotificationReceived, "Password reset notification not received for: " + registeredNumber);
 	}
 
 	@Then("verify it is accessible,user is redirected to the Forget Password screen")

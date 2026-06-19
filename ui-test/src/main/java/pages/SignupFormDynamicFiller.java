@@ -131,15 +131,14 @@ public class SignupFormDynamicFiller {
 			if ("date".equalsIgnoreCase(controlType)) {
 
 				String dob = EsignetUtil.getRandomDOB().replace("-", "/");
-
-				WebElement visibleDob = driver.findElement(By.id("dob"));
-
+				WebElement dateField = element;
 				JavascriptExecutor js = (JavascriptExecutor) driver;
 
-				js.executeScript("arguments[0].removeAttribute('readonly')", visibleDob);
+				js.executeScript("arguments[0].scrollIntoView({block:'center'});", dateField);
+				js.executeScript("arguments[0].removeAttribute('readonly');", dateField);
 
-				visibleDob.clear();
-				visibleDob.sendKeys(dob);
+				dateField.clear();
+				dateField.sendKeys(dob);
 
 				continue;
 			}
@@ -190,8 +189,8 @@ public class SignupFormDynamicFiller {
 		}
 
 		if (driver.getClass().getName().contains("RemoteWebDriver")) {
-	        ((RemoteWebDriver) driver).setFileDetector(new LocalFileDetector());
-	    }
+			((RemoteWebDriver) driver).setFileDetector(new LocalFileDetector());
+		}
 
 		WebElement uploadInput = driver.findElement(By.xpath("//input[@type='file' and (contains(@id,'" + fieldId
 				+ "') or contains(@data-field-id,'" + fieldId + "'))]"));
