@@ -6,6 +6,7 @@ import { useFormContext, UseFormReturn } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router-dom";
 
+import { SOMETHING_WENT_WRONG } from "~constants/routes";
 import { ActionMessage } from "~components/ui/action-message";
 import { Icons } from "~components/ui/icons";
 import {
@@ -49,7 +50,7 @@ export const Phone = ({ settings, methods }: PhoneProps) => {
   const formBuilderRef: any = useRef(null); // Reference to form instance
   const { i18n, t } = useTranslation();
 
-  const { data: uiSchemaResponse } = useUiSpec();
+  const { data: uiSchemaResponse, status } = useUiSpec();
   const navigate = useNavigate();
   const [uiSchema, setUiSchema] = useState<FormConfig | null>(null);
 
@@ -142,11 +143,11 @@ export const Phone = ({ settings, methods }: PhoneProps) => {
   }, [uiSchema, resendOtp]);
 
   useEffect(() => {
-    if (!uiSchemaResponse?.response) return;
+    if (status === "pending") return;
 
     try {
       const schema = buildFilteredSchema(
-        uiSchemaResponse.response,
+        uiSchemaResponse?.response,
         settings,
         "signup",
         resendOtp
@@ -156,9 +157,13 @@ export const Phone = ({ settings, methods }: PhoneProps) => {
       setUiSpecResponse(schema ?? null);
     } catch (err) {
       console.error(err);
-      navigate("/something-went-wrong");
+      navigate(SOMETHING_WENT_WRONG, {
+        state: {
+          errorMessage: t("error_response.uispec_config_error"),
+        },
+      });
     }
-  }, [uiSchemaResponse]);
+  }, [uiSchemaResponse, status, resendOtp]);
 
   useEffect(() => {
     updateAfterLangChange();

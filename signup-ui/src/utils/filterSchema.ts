@@ -2,15 +2,32 @@ import { FormConfig, FormField } from "@mosip/json-form-builder/dist/types";
 
 import { SettingsDto } from "~typings/types";
 
-export const buildFilteredSchema = (
-  response: FormConfig,
+export function validateUiSpec(
+  response: FormConfig | null | undefined,
   settings: SettingsDto,
-  page: string,
-  resendOtp?: boolean
-) => {
-  const schemaIds = new Set((response?.schema || []).map((f: any) => f.id));
-  const identifierKey = settings?.response?.configs?.["identifier.name"];
+  page: string
+): asserts response is FormConfig {
   const isResetPasswordPage = page === "reset-pwd";
+
+  // --- Structural validation (invalid/empty spec arrives as HTTP 200) ---
+  if (!response || typeof response !== "object") {
+    throw new Error(
+      "Configuration error: UI spec response is missing or not a valid JSON."
+    );
+  }
+
+  if (!Array.isArray(response.schema) || response.schema.length === 0) {
+    throw new Error(
+      "Configuration error: UI spec 'schema' is missing, empty, or not an array."
+    );
+  }
+
+  // --- Configuration validation ---
+  const schemaIds = new Set(response.schema.map((field: FormField) => field.id));
+  const identifierKey = settings?.response?.configs?.["identifier.name"];
+  const challengeFields = [
+    ...new Set(response.resetPasswordChallengeFields ?? []),
+  ];
 
   if (!identifierKey) {
     throw new Error(
@@ -24,36 +41,62 @@ export const buildFilteredSchema = (
     );
   }
 
-  if (
-    response.resetPasswordChallengeFields?.includes(identifierKey) &&
-    isResetPasswordPage
-  ) {
-    throw new Error(
-      `Configuration error: "${identifierKey}" is defined as identifier.name and is automatically used to identify the user. It must not be included in resetPasswordChallengeFields.`
-    );
-  }
+  if (isResetPasswordPage) {
+    if (!challengeFields.length) {
+      throw new Error(
+        "Configuration error: 'resetPasswordChallengeFields' is missing or empty. Please configure the challenge fields required for reset password."
+      );
+    }
 
-  if (
-    (!response.resetPasswordChallengeFields ||
-      !Array.isArray(response.resetPasswordChallengeFields) ||
-      response.resetPasswordChallengeFields.length === 0) &&
-    isResetPasswordPage
-  ) {
-    throw new Error(
-      "Configuration error: 'resetPasswordChallengeFields' is missing or empty. Please configure the challenge fields required for reset password."
-    );
-  }
+    if (challengeFields.includes(identifierKey)) {
+      throw new Error(
+        `Configuration error: "${identifierKey}" is defined as identifier.name and is automatically used to identify the user. It must not be included in resetPasswordChallengeFields.`
+      );
+    }
 
-  if (
-    isResetPasswordPage &&
-    !response.resetPasswordChallengeFields?.every((id: string) =>
-      schemaIds.has(id)
-    )
-  ) {
-    throw new Error(
-      "Configuration error: Some reset password challenge fields are not present in the schema."
-    );
+    const missingFields = challengeFields.filter((id) => id && !schemaIds.has(id));
+
+    if (missingFields.length) {
+      throw new Error(
+        `Configuration error: Some reset password challenge fields are not present in the schema: ${missingFields.join(
+          ", "
+        )}.`
+      );
+    }
+
+    const unsupportedControlTypes = ["password", "fileupload", "photo"];
+    const invalidFields = challengeFields
+      .map((id) => response.schema.find((field: FormField) => field.id === id))
+      .filter((field): field is FormField => {
+        if (!field) {
+          return false;
+        }
+
+        return unsupportedControlTypes.includes(String(field.controlType));
+      });
+
+    if (invalidFields.length) {
+      throw new Error(
+        `Configuration error: resetPasswordChallengeFields contains field(s) with unsupported control types:\n${invalidFields
+          .map(
+            (field, index) =>
+              `${index + 1}) field ID '${field.id}' with control type '${field.controlType}'`
+          )
+          .join("\n")}`
+      );
+    }
   }
+}
+
+export const buildFilteredSchema = (
+  response: FormConfig | null | undefined,
+  settings: SettingsDto,
+  page: string,
+  resendOtp?: boolean
+) => {
+  validateUiSpec(response, settings, page);
+
+  const isResetPasswordPage = page === "reset-pwd";
 
   const challengeFields = Array.from(
     new Set([

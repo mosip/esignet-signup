@@ -6,7 +6,7 @@ import { useFormContext, UseFormReturn } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router-dom";
 
-import { RESET_PASSWORD } from "~constants/routes";
+import { RESET_PASSWORD, SOMETHING_WENT_WRONG } from "~constants/routes";
 import { ActionMessage } from "~components/ui/action-message";
 import { Icons } from "~components/ui/icons";
 import {
@@ -59,7 +59,7 @@ export const UserInfo = ({ settings, methods }: UserInfoProps) => {
   const [challengeGenerationError, setChallengeGenerationError] =
     useState<Error | null>(null);
 
-  const { data: uiSchemaResponse } = useUiSpec();
+  const { data: uiSchemaResponse, status } = useUiSpec();
 
   const navigate = useNavigate();
 
@@ -148,11 +148,11 @@ export const UserInfo = ({ settings, methods }: UserInfoProps) => {
   }, [uiSchema, resendOtp]);
 
   useEffect(() => {
-    if (!uiSchemaResponse?.response) return;
+    if (status === "pending") return;
 
     try {
       const schema = buildFilteredSchema(
-        uiSchemaResponse.response,
+        uiSchemaResponse?.response,
         settings,
         "reset-pwd",
         resendOtp
@@ -162,9 +162,13 @@ export const UserInfo = ({ settings, methods }: UserInfoProps) => {
       setUiSpecResponse(schema ?? null);
     } catch (err) {
       console.error(err);
-      navigate("/something-went-wrong");
+      navigate(SOMETHING_WENT_WRONG, {
+        state: {
+          errorMessage: t("error_response.uispec_config_error"),
+        },
+      });
     }
-  }, [uiSchemaResponse]);
+  }, [uiSchemaResponse, status, resendOtp]);
 
   useEffect(() => {
     updateAfterLangChange();
