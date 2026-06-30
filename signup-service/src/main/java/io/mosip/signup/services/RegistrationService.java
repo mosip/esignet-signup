@@ -99,7 +99,7 @@ public class RegistrationService {
     @Value("${mosip.signup.file.fieldname.regex:[A-Za-z0-9_-]+}")
     private String fileFieldNameRegex;
 
-    @Value("${mosip.signup.upload.max-file-size-bytes:5242880}")
+    @Value("${mosip.signup.upload.max-file-size-bytes:1048576}")
     private long maxUploadBytes;
 
     /**

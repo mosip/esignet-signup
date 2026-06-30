@@ -45,7 +45,6 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -53,8 +52,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 import static io.mosip.signup.util.ErrorConstants.INVALID_KBI_CHALLENGE;
 import static io.mosip.signup.util.ErrorConstants.KNOWLEDGEBASE_MISMATCH;
@@ -119,7 +116,7 @@ public class RegistrationServiceTest {
         ReflectionTestUtils.setField(registrationService, "captchaRequired", false);
         ReflectionTestUtils.setField(registrationService, "captchaHelper", captchaHelper);
         ReflectionTestUtils.setField(registrationService, "fileFieldNameRegex", "[A-Za-z0-9_-]+");
-        ReflectionTestUtils.setField(registrationService, "maxUploadBytes", 5L * 1024L * 1024L);
+        ReflectionTestUtils.setField(registrationService, "maxUploadBytes", 1024L * 1024L);
     }
 
     @Test
@@ -2151,212 +2148,5 @@ public class RegistrationServiceTest {
         Assert.assertEquals(ErrorConstants.FILE_TOO_LARGE, ex.getErrorCode());
     }
 
-
-    private void stubPhotoFieldAcceptingPng() throws JsonProcessingException {
-        String uiSpecJson = """
-            {
-              "schema": [
-                {
-                  "id": "photo",
-                  "controlType": "fileUpload",
-                  "acceptedFileTypes": ["image/png"]
-                }
-              ]
-            }
-            """;
-        when(profileRegistryPlugin.getUISpecification())
-                .thenReturn(objectMapper.readTree(uiSpecJson));
-    }
-
-    /** Build a ZIP with {@code entryCount} small entries. Used to trip
-     *  the MAX_ZIP_ENTRIES guard rail. */
-    private static byte[] buildZipWithManyEntries(int entryCount) throws IOException {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try (ZipOutputStream zos = new ZipOutputStream(baos)) {
-            for (int i = 0; i < entryCount; i++) {
-                zos.putNextEntry(new ZipEntry("entry-" + i + ".txt"));
-                zos.write(new byte[]{(byte) 'x'});
-                zos.closeEntry();
-            }
-        }
-        return baos.toByteArray();
-    }
-
-    /** Build a ZIP that contains a single entry holding {@code uncompressedBytes}
-     *  bytes of zeros (DEFLATE compresses zeros ~1000:1, so the resulting
-     *  archive itself stays tiny). Memory footprint is bounded to a 64 KB
-     *  reusable chunk regardless of {@code uncompressedBytes}. */
-    private static byte[] buildZipWithSingleLargeEntry(String entryName, long uncompressedBytes) throws IOException {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try (ZipOutputStream zos = new ZipOutputStream(baos)) {
-            zos.putNextEntry(new ZipEntry(entryName));
-            byte[] chunk = new byte[64 * 1024]; // zeros
-            long remaining = uncompressedBytes;
-            while (remaining > 0) {
-                int toWrite = (int) Math.min(remaining, chunk.length);
-                zos.write(chunk, 0, toWrite);
-                remaining -= toWrite;
-            }
-            zos.closeEntry();
-        }
-        return baos.toByteArray();
-    }
-
-    /** Build a ZIP with several large but per-entry-legal payloads. Used to
-     *  trip the MAX_TOTAL_UNCOMPRESSED_BYTES (50 MB) guard rail without
-     *  tripping the per-entry one (10 MB). */
-    private static byte[] buildZipWithMultipleLargeEntries(int entryCount, long bytesPerEntry) throws IOException {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try (ZipOutputStream zos = new ZipOutputStream(baos)) {
-            byte[] chunk = new byte[64 * 1024]; // zeros
-            for (int i = 0; i < entryCount; i++) {
-                zos.putNextEntry(new ZipEntry("blob-" + i + ".bin"));
-                long remaining = bytesPerEntry;
-                while (remaining > 0) {
-                    int toWrite = (int) Math.min(remaining, chunk.length);
-                    zos.write(chunk, 0, toWrite);
-                    remaining -= toWrite;
-                }
-                zos.closeEntry();
-            }
-        }
-        return baos.toByteArray();
-    }
-
-    /** Build a tiny ZIP carrying a single entry with the given name. Used to
-     *  exercise the entry-name guard rails (path traversal, length, leading
-     *  separator). */
-    private static byte[] buildZipWithSingleNamedEntry(String entryName) throws IOException {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try (ZipOutputStream zos = new ZipOutputStream(baos)) {
-            zos.putNextEntry(new ZipEntry(entryName));
-            zos.write(new byte[]{(byte) 'x'});
-            zos.closeEntry();
-        }
-        return baos.toByteArray();
-    }
-
-    @Test(timeout = 5000)
-    public void uploadFile_withZipExceedingMaxEntries_throwsInvalidFileType() throws IOException {
-        String transactionId = "txn-zip-entries";
-        // 1025 > MAX_ZIP_ENTRIES (1024) — must be rejected on the 1025th entry.
-        byte[] maliciousZip = buildZipWithManyEntries(1025);
-        MultipartFile file = new MockMultipartFile("file", "bomb.png", "image/png", maliciousZip);
-
-        when(cacheUtilService.getChallengeVerifiedTransaction(transactionId))
-                .thenReturn(new RegistrationTransaction("user", Purpose.REGISTRATION));
-        stubPhotoFieldAcceptingPng();
-
-        SignUpException ex = Assert.assertThrows(SignUpException.class,
-                () -> registrationService.uploadFile(transactionId, "photo", file));
-        Assert.assertEquals(ErrorConstants.INVALID_FILE_TYPE, ex.getErrorCode());
-        verify(cacheUtilService, never())
-                .setRegistrationFiles(eq(transactionId), any(RegistrationFiles.class));
-    }
-
-    @Test(timeout = 5000)
-    public void uploadFile_withZipEntryExceedingPerEntrySize_throwsInvalidFileType() throws IOException {
-        String transactionId = "txn-zip-per-entry";
-        // 10 MB + 64 KB of zeros in one entry — compresses to a few KB on disk
-        // (well below the 5 MB outer cap), but the inner expansion trips
-        // MAX_BYTES_PER_ENTRY (10 MB) during drain.
-        long oversizedEntry = (10L * 1024L * 1024L) + (64L * 1024L);
-        byte[] maliciousZip = buildZipWithSingleLargeEntry("payload.bin", oversizedEntry);
-
-        // Sanity guard: the compressed archive must stay below the 5 MB outer
-        // cap, otherwise we'd be testing the multipart limit instead of the
-        // zip-bomb guard rails.
-        Assert.assertTrue("Archive unexpectedly large: " + maliciousZip.length,
-                maliciousZip.length < 5 * 1024 * 1024);
-
-        MultipartFile file = new MockMultipartFile("file", "bomb.png", "image/png", maliciousZip);
-
-        when(cacheUtilService.getChallengeVerifiedTransaction(transactionId))
-                .thenReturn(new RegistrationTransaction("user", Purpose.REGISTRATION));
-        stubPhotoFieldAcceptingPng();
-
-        SignUpException ex = Assert.assertThrows(SignUpException.class,
-                () -> registrationService.uploadFile(transactionId, "photo", file));
-        Assert.assertEquals(ErrorConstants.INVALID_FILE_TYPE, ex.getErrorCode());
-        verify(cacheUtilService, never())
-                .setRegistrationFiles(eq(transactionId), any(RegistrationFiles.class));
-    }
-
-    @Test(timeout = 5000)
-    public void uploadFile_withZipExceedingTotalUncompressedSize_throwsInvalidFileType() throws IOException {
-        String transactionId = "txn-zip-total";
-        // 6 entries × 9 MB = 54 MB > MAX_TOTAL_UNCOMPRESSED_BYTES (50 MB).
-        // Each entry stays under MAX_BYTES_PER_ENTRY (10 MB), so the rejection
-        // can only be attributed to the *total* guard rail.
-        byte[] maliciousZip = buildZipWithMultipleLargeEntries(6, 9L * 1024L * 1024L);
-
-        Assert.assertTrue("Archive unexpectedly large: " + maliciousZip.length,
-                maliciousZip.length < 5 * 1024 * 1024);
-
-        MultipartFile file = new MockMultipartFile("file", "bomb.png", "image/png", maliciousZip);
-
-        when(cacheUtilService.getChallengeVerifiedTransaction(transactionId))
-                .thenReturn(new RegistrationTransaction("user", Purpose.REGISTRATION));
-        stubPhotoFieldAcceptingPng();
-
-        SignUpException ex = Assert.assertThrows(SignUpException.class,
-                () -> registrationService.uploadFile(transactionId, "photo", file));
-        Assert.assertEquals(ErrorConstants.INVALID_FILE_TYPE, ex.getErrorCode());
-        verify(cacheUtilService, never())
-                .setRegistrationFiles(eq(transactionId), any(RegistrationFiles.class));
-    }
-
-    @Test(timeout = 5000)
-    public void uploadFile_withZipPathTraversalEntryName_throwsInvalidFileType() throws IOException {
-        String transactionId = "txn-zip-traversal";
-        byte[] maliciousZip = buildZipWithSingleNamedEntry("../../etc/passwd");
-        MultipartFile file = new MockMultipartFile("file", "bomb.png", "image/png", maliciousZip);
-
-        when(cacheUtilService.getChallengeVerifiedTransaction(transactionId))
-                .thenReturn(new RegistrationTransaction("user", Purpose.REGISTRATION));
-        stubPhotoFieldAcceptingPng();
-
-        SignUpException ex = Assert.assertThrows(SignUpException.class,
-                () -> registrationService.uploadFile(transactionId, "photo", file));
-        Assert.assertEquals(ErrorConstants.INVALID_FILE_TYPE, ex.getErrorCode());
-        verify(cacheUtilService, never())
-                .setRegistrationFiles(eq(transactionId), any(RegistrationFiles.class));
-    }
-
-    @Test(timeout = 5000)
-    public void uploadFile_withZipExcessivelyLongEntryName_throwsInvalidFileType() throws IOException {
-        String transactionId = "txn-zip-name-length";
-        // > MAX_ENTRY_NAME_LENGTH (1024)
-        String longName = "a".repeat(1025);
-        byte[] maliciousZip = buildZipWithSingleNamedEntry(longName);
-        MultipartFile file = new MockMultipartFile("file", "bomb.png", "image/png", maliciousZip);
-
-        when(cacheUtilService.getChallengeVerifiedTransaction(transactionId))
-                .thenReturn(new RegistrationTransaction("user", Purpose.REGISTRATION));
-        stubPhotoFieldAcceptingPng();
-
-        SignUpException ex = Assert.assertThrows(SignUpException.class,
-                () -> registrationService.uploadFile(transactionId, "photo", file));
-        Assert.assertEquals(ErrorConstants.INVALID_FILE_TYPE, ex.getErrorCode());
-        verify(cacheUtilService, never())
-                .setRegistrationFiles(eq(transactionId), any(RegistrationFiles.class));
-    }
-
-    @Test(timeout = 5000)
-    public void uploadFile_withZipAbsolutePathEntryName_throwsInvalidFileType() throws IOException {
-        String transactionId = "txn-zip-absolute";
-        byte[] maliciousZip = buildZipWithSingleNamedEntry("/etc/shadow");
-        MultipartFile file = new MockMultipartFile("file", "bomb.png", "image/png", maliciousZip);
-
-        when(cacheUtilService.getChallengeVerifiedTransaction(transactionId))
-                .thenReturn(new RegistrationTransaction("user", Purpose.REGISTRATION));
-        stubPhotoFieldAcceptingPng();
-
-        SignUpException ex = Assert.assertThrows(SignUpException.class,
-                () -> registrationService.uploadFile(transactionId, "photo", file));
-        Assert.assertEquals(ErrorConstants.INVALID_FILE_TYPE, ex.getErrorCode());
-        verify(cacheUtilService, never())
-                .setRegistrationFiles(eq(transactionId), any(RegistrationFiles.class));
-    }
 
 }

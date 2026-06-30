@@ -1,17 +1,12 @@
 package io.mosip.signup.util;
 import com.fasterxml.jackson.databind.JsonNode;
-import io.mosip.signup.exception.SignUpException;
-import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 import java.util.stream.StreamSupport;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 public class UploadFileUtils {
     public static final String UNKNOWN_MIME_TYPE = "application/octet-stream";
-    private static final String ZIP_SIGNATURE = "504B0304";
     private static final Map<String, String> MAGIC_SIGNATURES = Map.of(
             "89504E47", "image/png",
             "FFD8FF", "image/jpeg",
@@ -19,22 +14,13 @@ public class UploadFileUtils {
             "D0CF11E0", "application/msword"
     );
 
-    private static final int MAX_ZIP_ENTRIES = 1_024;
-    private static final long MAX_TOTAL_UNCOMPRESSED_BYTES = 50L * 1024L * 1024L;
-    private static final long MAX_BYTES_PER_ENTRY = 10L * 1024L * 1024L;
-    private static final double MAX_COMPRESSION_RATIO = 100d;
-    private static final int MAX_ENTRY_NAME_LENGTH = 1_024;
-
     public static String detectMimeType(InputStream inputStream) throws IOException {
         if (inputStream == null) {
             return UNKNOWN_MIME_TYPE;
         }
-        // Wrap to support mark/reset for ZIP files
-        BufferedInputStream bis = new BufferedInputStream(inputStream);
-        bis.mark(Integer.MAX_VALUE);
 
         byte[] headerBytes = new byte[12];
-        int bytesRead = bis.read(headerBytes);
+        int bytesRead = inputStream.read(headerBytes);
 
         if (bytesRead < 4) {
             return UNKNOWN_MIME_TYPE;
@@ -53,12 +39,6 @@ public class UploadFileUtils {
             return "image/webp";
         }
 
-        // Check for ZIP-based formats
-        if (hexString.startsWith(ZIP_SIGNATURE)) {
-            bis.reset();
-            return detectOfficeFormat(bis);
-        }
-
         // Check other signatures
         for (Map.Entry<String, String> entry : MAGIC_SIGNATURES.entrySet()) {
             if (hexString.startsWith(entry.getKey())) {
@@ -66,67 +46,6 @@ public class UploadFileUtils {
             }
         }
 
-        return UNKNOWN_MIME_TYPE;
-    }
-
-    private static String detectOfficeFormat(InputStream inputStream) {
-        long totalUncompressed = 0L;
-        int entryCount = 0;
-        final byte[] drain = new byte[4096];
-
-        try (ZipInputStream zis = new ZipInputStream(inputStream)) {
-            ZipEntry entry;
-            while ((entry = zis.getNextEntry()) != null) {
-
-                //Zip rejected: entry count exceeded
-                if (++entryCount > MAX_ZIP_ENTRIES) {
-                    throw new SignUpException(ErrorConstants.INVALID_FILE_TYPE);
-                }
-
-                //Zip rejected: suspicious entry name
-                String entryName = entry.getName();
-                if (entryName == null
-                        || entryName.length() > MAX_ENTRY_NAME_LENGTH
-                        || entryName.contains("..")
-                        || entryName.startsWith("/")
-                        || entryName.startsWith("\\")) {
-                    throw new SignUpException(ErrorConstants.INVALID_FILE_TYPE);
-                }
-
-                // DOCX: contains word/document.xml
-                if ("word/document.xml".equalsIgnoreCase(entryName)) {
-                    return "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
-                }
-                // PPTX: contains ppt/presentation.xml
-                if ("ppt/presentation.xml".equalsIgnoreCase(entryName)) {
-                    return "application/vnd.openxmlformats-officedocument.presentationml.presentation";
-                }
-
-                long entryUncompressed = 0L;
-                int n;
-                while ((n = zis.read(drain)) > 0) {
-                    entryUncompressed += n;
-                    totalUncompressed += n;
-
-                    //Zip rejected: uncompressed size exceeded
-                    if (entryUncompressed > MAX_BYTES_PER_ENTRY
-                            || totalUncompressed > MAX_TOTAL_UNCOMPRESSED_BYTES) {
-                        throw new SignUpException(ErrorConstants.INVALID_FILE_TYPE);
-                    }
-
-                    //Zip rejected: compression ratio exceeded
-                    long compressed = entry.getCompressedSize();
-                    if (compressed > 0
-                            && (double) entryUncompressed / (double) compressed > MAX_COMPRESSION_RATIO) {
-                        throw new SignUpException(ErrorConstants.INVALID_FILE_TYPE);
-                    }
-                }
-
-                zis.closeEntry();
-            }
-        } catch (IOException e) {
-            throw new SignUpException(ErrorConstants.UPLOAD_FAILED);
-        }
         return UNKNOWN_MIME_TYPE;
     }
 
