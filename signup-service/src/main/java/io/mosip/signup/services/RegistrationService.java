@@ -28,6 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.unit.DataSize;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
@@ -99,8 +100,8 @@ public class RegistrationService {
     @Value("${mosip.signup.file.fieldname.regex:[A-Za-z0-9_-]+}")
     private String fileFieldNameRegex;
 
-    @Value("${mosip.signup.upload.max-file-size-bytes:1048576}")
-    private long maxUploadBytes;
+    @Value("${spring.servlet.multipart.max-file-size}")
+    private DataSize maxUploadSize;
 
     /**
      * Generate and regenerate challenge based on the "regenerate" flag in the request.
@@ -328,9 +329,9 @@ public class RegistrationService {
             throw new SignUpException(ErrorConstants.INVALID_FIELD);
         }
 
-        if (file.getSize() > maxUploadBytes) {
+        if (file.getSize() > maxUploadSize.toBytes()) {
             log.warn("File for field {} rejected: size={} bytes (max={})",
-                    fieldName, file.getSize(), maxUploadBytes);
+                    fieldName, file.getSize(), maxUploadSize.toBytes());
             throw new SignUpException(ErrorConstants.FILE_TOO_LARGE);
         }
 

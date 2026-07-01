@@ -41,6 +41,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.util.unit.DataSize;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -116,7 +117,7 @@ public class RegistrationServiceTest {
         ReflectionTestUtils.setField(registrationService, "captchaRequired", false);
         ReflectionTestUtils.setField(registrationService, "captchaHelper", captchaHelper);
         ReflectionTestUtils.setField(registrationService, "fileFieldNameRegex", "[A-Za-z0-9_-]+");
-        ReflectionTestUtils.setField(registrationService, "maxUploadBytes", 1024L * 1024L);
+        ReflectionTestUtils.setField(registrationService, "maxUploadSize", DataSize.ofMegabytes(1));
     }
 
     @Test
@@ -2120,9 +2121,7 @@ public class RegistrationServiceTest {
         String transactionId = "txn-too-large";
         String fieldName = "photo";
 
-        // Override the cap to 1 KB locally so we don't have to allocate a real 5 MB+ buffer.
-        // The actual 5 MB cap is enforced by Spring's multipart parser + setUp().
-        ReflectionTestUtils.setField(registrationService, "maxUploadBytes", 1024L);
+        ReflectionTestUtils.setField(registrationService, "maxUploadSize", DataSize.ofKilobytes(1));
 
         byte[] tooBig = new byte[2048]; // 2 KB > 1 KB
         MultipartFile file = new MockMultipartFile("file", "big.png", "image/png", tooBig);
