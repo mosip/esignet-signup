@@ -77,6 +77,8 @@ browsers=chrome,edge          # Used when runMultipleBrowsers is true
 browserstack_username=<your_browserstack_username>
 browserstack_access_key=<your_browserstack_key>
 ```
+Automation scripts rely on **MOSIP_SIGNUP_IDENTIFIER_REGEX** for input validation during signup flows.
+Ensure that **MOSIP_SIGNUP_IDENTIFIER_REGEX** is explicitly defined in the configuration.
 
 ---
 
