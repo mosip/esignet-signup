@@ -724,6 +724,9 @@ public class EsignetUtil extends AdminTestUtil {
 	public static String normalizeIdentifierForOtp(String number) {
 		boolean removeCode = Boolean.parseBoolean(getRemoveCountryCode());
 		String prefix = getIdentifierPrefix();
+		if (prefix == null) {
+			prefix = "";
+		}
 
 		prefix = removeLeadingPlusSigns(prefix);
 		number = removeLeadingPlusSigns(number);

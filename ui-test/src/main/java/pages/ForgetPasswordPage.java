@@ -186,7 +186,7 @@ public class ForgetPasswordPage extends BasePage {
 	}
 
 	public boolean isWaterMarkDisplayed() {
-		String placeholder = getElementAttribute(phoneInput, "placeholder");
+		String placeholder = getElementAttribute(getIdentifierFieldElement(), "placeholder");
 		return placeholder != null && !placeholder.isEmpty();
 	}
 
@@ -233,7 +233,7 @@ public class ForgetPasswordPage extends BasePage {
 	}
 
 	public boolean isMobileFieldHasNumericOnly() {
-		WebElement field = phoneInput;
+		WebElement field = getIdentifierFieldElement();
 		{
 			String value = getElementValue(field, "get the value of the field");
 			if (value != null && !value.matches("\\d*")) {
@@ -244,7 +244,7 @@ public class ForgetPasswordPage extends BasePage {
 	}
 
 	public boolean isPhoneNumberFieldEmpty() {
-		String value = getElementValue(phoneInput, "Get Mobile Field Empty Or Unchanged value");
+		String value = getElementValue(getIdentifierFieldElement(), "Get Mobile Field Empty Or Unchanged value");
 		return value == null || value.isEmpty();
 	}
 
@@ -292,7 +292,7 @@ public class ForgetPasswordPage extends BasePage {
 	}
 
 	public boolean isInputRestrictedToNineDigits() {
-		String value = getElementValue(phoneInput, "get the entered value");
+		String value = getElementValue(getIdentifierFieldElement(), "get the entered value");
 		return value != null && value.length() == 9;
 	}
 

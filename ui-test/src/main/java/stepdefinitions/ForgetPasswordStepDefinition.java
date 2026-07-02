@@ -209,7 +209,9 @@ public class ForgetPasswordStepDefinition {
 	@When("user enters other language input into the fullname field")
 	public void userEntersFullNameInOtherLanguage() {
 		EsignetUtil.FullName names = EsignetUtil.generateNamesFromUiSpec();
-		forgetPasswordPage.enterFullName(names.khmer);
+		String mandatoryLang = EsignetUtil.getMandatoryLanguage();
+		String otherLanguageName = "eng".equalsIgnoreCase(mandatoryLang) ? names.khmer : names.english;
+		forgetPasswordPage.enterFullName(otherLanguageName);
 	}
 
 	@Then("user verify full name error message")

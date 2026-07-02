@@ -69,7 +69,7 @@ public class LoginOptionsStepDefinition {
 
 	@When("user enters the correct OTP as input")
 	public void userEntersOtp() {
-		String mobile = RegisteredDetails.getMobileNumber();
+		String mobile = EsignetUtil.normalizeIdentifierForOtp(RegisteredDetails.getMobileNumber());
 		registrationPage.enterOtp(NotificationListener.getOtp(mobile));
 	}
 

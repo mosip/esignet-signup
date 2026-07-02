@@ -5,7 +5,6 @@ import utils.EsignetUtil;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -32,9 +31,6 @@ public class RegistrationPage extends BasePage {
 	@FindBy(xpath = "//div[@class='grow px-3 text-center font-semibold tracking-normal xs:px-2']")
 	WebElement headerInRegistrationPage;
 
-	@FindBy(id = "phone")
-	WebElement enterMobileNumberTextBox;
-
 	@FindBy(id = "form-submit-button")
 	WebElement submitButton;
 
@@ -55,9 +51,6 @@ public class RegistrationPage extends BasePage {
 
 	@FindBy(xpath = "//div[contains(@id,'-form-item')]/span")
 	WebElement prefilledCountryCode;
-
-	@FindBy(id = "phone")
-	WebElement helpTextInTextBox;
 
 	@FindBy(id = ":r4:-form-item-message")
 	WebElement numberCannotStartWithZeroErrorMessage;
@@ -133,9 +126,6 @@ public class RegistrationPage extends BasePage {
 
 	@FindBy(xpath = "//div[@class='text-center text-gray-500']")
 	WebElement setupAccountDescription;
-
-	@FindBy(id = "phone")
-	WebElement usernameField;
 
 	@FindBy(id = "fullName_eng")
 	WebElement fullNameEnglishField;
@@ -239,7 +229,7 @@ public class RegistrationPage extends BasePage {
 	}
 
 	public boolean isEnterMobileNumberTextBoxDisplayed() {
-		return isElementVisible(enterMobileNumberTextBox, "Check if Mobile Number TextBox Displayed");
+		return isElementVisible(getIdentifierFieldElement(), "Check if Mobile Number TextBox Displayed");
 	}
 
 	public boolean isContinueButtonVisible() {
@@ -263,7 +253,7 @@ public class RegistrationPage extends BasePage {
 	}
 
 	public boolean isHelpTextInMobileNumberTextBoxDisplayed(String expectedText) {
-		String placeholder = getElementAttribute(helpTextInTextBox, "placeholder");
+		String placeholder = getElementAttribute(getIdentifierFieldElement(), "placeholder");
 		return placeholder != null && !placeholder.isEmpty();
 	}
 
@@ -274,7 +264,7 @@ public class RegistrationPage extends BasePage {
 	}
 
 	public boolean isPlaceholderGone() {
-		String value = getElementValue(enterMobileNumberTextBox, "Get value of Plachold Gone");
+		String value = getElementValue(getIdentifierFieldElement(), "Get value of Plachold Gone");
 		return value != null && !value.isEmpty();
 	}
 
@@ -344,17 +334,17 @@ public class RegistrationPage extends BasePage {
 	}
 
 	public boolean isNumberRestrictedToNineDigits() {
-		String value = getElementValue(enterMobileNumberTextBox, "Get value of Number Restricted");
+		String value = getElementValue(getIdentifierFieldElement(), "Get value of Number Restricted");
 		return value != null && value.length() == 9;
 	}
 
 	public boolean isMobileFieldEmptyOrUnchanged() {
-		String value = getElementValue(enterMobileNumberTextBox, "Get Mobile Field Empty Or Unchanged value");
+		String value = getElementValue(getIdentifierFieldElement(), "Get Mobile Field Empty Or Unchanged value");
 		return value == null || value.isEmpty();
 	}
 
 	public boolean isMobileFieldContainingOnlyDigits() {
-		String value = getElementValue(enterMobileNumberTextBox, "Get Mobile Field and Verify only Contains Digits");
+		String value = getElementValue(getIdentifierFieldElement(), "Get Mobile Field and Verify only Contains Digits");
 		return value != null && value.matches("\\d+");
 	}
 
@@ -515,7 +505,7 @@ public class RegistrationPage extends BasePage {
 	}
 
 	public boolean isUsernameFieldVisible() {
-		return isElementVisible(usernameField, "Check if Username Field is Visible");
+		return isElementVisible(getIdentifierFieldElement(), "Check if Username Field is Visible");
 	}
 
 	public boolean isFullNameInKhmerFieldVisible() {
@@ -547,12 +537,13 @@ public class RegistrationPage extends BasePage {
 	}
 
 	public String getUsernameFieldValue() {
-		return getElementValue(usernameField, "Get UserName Field value");
+		return getElementValue(getIdentifierFieldElement(), "Get UserName Field value");
 	}
 
 	public boolean isUsernameFieldReadOnly() {
-		String readonly = getElementAttribute(usernameField, "readonly");
-		String disabled = getElementAttribute(usernameField, "disabled");
+		WebElement field = getIdentifierFieldElement();
+		String readonly = getElementAttribute(field, "readonly");
+		String disabled = getElementAttribute(field, "disabled");
 		return readonly != null || disabled != null;
 	}
 
@@ -823,7 +814,8 @@ public class RegistrationPage extends BasePage {
 	}
 
 	public void clickOnCaptureButton() {
-		new Actions(driver).pause(Duration.ofSeconds(1)).perform();
+		new WebDriverWait(driver, Duration.ofSeconds(10))
+				.until(ExpectedConditions.elementToBeClickable(captureButton));
 		clickOnElement(captureButton, "click on capture button");
 	}
 
