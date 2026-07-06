@@ -18,6 +18,7 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.mosip.testrig.apirig.testrunner.OTPListener;
+import io.mosip.testrig.apirig.utils.NotificationListener;
 import pages.LoginOptionsPage;
 import pages.RegistrationPage;
 import utils.EsignetUtil;
@@ -59,15 +60,17 @@ public class LoginOptionsStepDefinition {
 
 	@When("user enter valid mobile number in the mobile number field")
 	public void userEnterMobNumber() {
-		String phoneNumber = EsignetUtil.generateMobileNumberFromRegex();
-		RegisteredDetails.setMobileNumber(phoneNumber);
-		loginOptionsPage.enterMobileNumber(phoneNumber);
+		String fieldId = EsignetUtil.getIdentifierFieldId();
+		String regex = EsignetUtil.getRegexForField(fieldId);
+		String value = EsignetUtil.generateValueFromRegex(regex);
+		RegisteredDetails.setMobileNumber(value);
+		registrationPage.enterIdentifierValue(value);
 	}
-	
+
 	@When("user enters the correct OTP as input")
 	public void userEntersOtp() {
-	    String mobile = RegisteredDetails.getMobileNumber();
-	    registrationPage.enterOtp(OTPListener.getOtp(mobile));
+		String mobile = EsignetUtil.normalizeIdentifierForOtp(RegisteredDetails.getMobileNumber());
+		registrationPage.enterOtp(NotificationListener.getOtp(mobile));
 	}
 
 	@And("user redirected to registration page")
