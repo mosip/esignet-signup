@@ -51,7 +51,7 @@
 		<maven.compiler.target>21</maven.compiler.target>
 		<cucumber.version>7.21.1</cucumber.version>
 		<maven.compiler.source>21</maven.compiler.source>
-		<selenium.version>4.14.1</selenium.version>
+		<selenium.version>4.45.0</selenium.version>
 		<surefire.plugin.version>3.5.3</surefire.plugin.version>
 		<maven.shade.plugin.version>3.2.4</maven.shade.plugin.version>
 		<lombok.version>1.18.30</lombok.version>
@@ -65,8 +65,8 @@
 		</dependency>
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
-			<artifactId>selenium-devtools-v134</artifactId>
-			<version>4.31.0</version>
+			<artifactId>selenium-devtools-v149</artifactId>
+			<version>${selenium.version}</version>
 		</dependency>
 
 		<dependency>
