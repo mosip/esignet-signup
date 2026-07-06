@@ -1,6 +1,7 @@
 package pages;
 
 import base.BasePage;
+import utils.EsignetConfigManager;
 import utils.EsignetUtil;
 
 import org.openqa.selenium.WebDriver;
@@ -403,6 +404,11 @@ public class RegistrationPage extends BasePage {
 	}
 
 	public void clickOnVerifyOtpButton() {
+		// The Verify button is enabled only after the entered OTP passes form
+		// validation; clicking on mere visibility can hit a still-disabled button
+		// (ElementClickInterceptedException). Wait until it is actually clickable.
+		new WebDriverWait(driver, Duration.ofSeconds(EsignetConfigManager.getTimeout()))
+				.until(ExpectedConditions.elementToBeClickable(verifyOtpButton));
 		clickOnElement(verifyOtpButton, "Click verify OTP Button");
 	}
 

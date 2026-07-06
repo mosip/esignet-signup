@@ -70,7 +70,28 @@ public class LoginOptionsStepDefinition {
 	@When("user enters the correct OTP as input")
 	public void userEntersOtp() {
 		String mobile = EsignetUtil.normalizeIdentifierForOtp(RegisteredDetails.getMobileNumber());
-		registrationPage.enterOtp(NotificationListener.getOtp(mobile));
+		registrationPage.enterOtp(waitForDeliveredOtp(mobile));
+	}
+
+	// The OTP notification can land just after the first queue poll; a single
+	// getOtp() then returns blank, the OTP field stays empty and the Verify button
+	// never enables. Re-poll a few times so a late-delivered OTP is still entered.
+	// The real backend/OTP is still exercised - this only tolerates delivery lag.
+	private String waitForDeliveredOtp(String mobile) {
+		String otp = null;
+		for (int attempt = 1; attempt <= 3; attempt++) {
+			otp = NotificationListener.getOtp(mobile);
+			if (otp != null && otp.trim().matches("\\d{4,}")) {
+				return otp.trim();
+			}
+			try {
+				Thread.sleep(3000);
+			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				break;
+			}
+		}
+		return otp == null ? "" : otp.trim();
 	}
 
 	@And("user redirected to registration page")
