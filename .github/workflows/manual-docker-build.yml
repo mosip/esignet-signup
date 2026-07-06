@@ -11,7 +11,7 @@ on:
 
 jobs:
   build_maven_signup_with_plugins:
-    uses: mosip/kattu/.github/workflows/maven-build.yml@master
+    uses: mosip/kattu/.github/workflows/maven-build.yml@develop
     with:
       SERVICE_LOCATION: ./signup-with-plugins
       BUILD_ARTIFACT: signup-with-plugins
