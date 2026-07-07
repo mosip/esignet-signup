@@ -39,3 +39,5 @@ testng-report/
 /reg
 ./reg
 reports
+screenshots/
+bs_local.log

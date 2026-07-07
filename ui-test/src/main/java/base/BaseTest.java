@@ -172,7 +172,6 @@ public class BaseTest {
 						ExtentReportManager.getTest()
 								.info("<a href='" + videoUrl + "' target='_blank'>Click here to view only Video</a>");
 					}
-					BrowserStackLocalManager.stop();
 
 				} else {
 					ExtentReportManager.getTest().warning(
