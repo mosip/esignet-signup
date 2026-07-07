@@ -25,10 +25,11 @@ on:
 
 jobs:
   build_maven_esignet_signup:
-    uses: mosip/kattu/.github/workflows/maven-build.yml@develop
+    uses: Mahesh-Binayak/kattu/.github/workflows/maven-build.yml@gpgupdate-masterj21
     with:
       SERVICE_LOCATION: ./
       BUILD_ARTIFACT: signup-service
+      MAVEN_NON_EXEC_ARTIFACTS: signup-plugins
     secrets:
       OSSRH_USER: ${{ secrets.OSSRH_USER }}
       OSSRH_SECRET: ${{ secrets.OSSRH_SECRET }}
@@ -99,7 +100,7 @@ jobs:
   publish_to_nexus:
     if: "${{ !contains(github.ref, 'master') && github.event_name != 'pull_request' }}"
     needs: build_maven_esignet_signup
-    uses: mosip/kattu/.github/workflows/maven-publish-to-nexus.yml@develop
+    uses: Mahesh-Binayak/kattu/.github/workflows/maven-publish-to-nexus.yml@gpgupdate-masterj21
     with:
       SERVICE_LOCATION: ./
     secrets:
@@ -151,10 +152,11 @@ jobs:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
       
   build_maven_signup_with_plugins:
-    uses: mosip/kattu/.github/workflows/maven-build.yml@develop
+    uses: Mahesh-Binayak/kattu/.github/workflows/maven-build.yml@gpgupdate-masterj21
     with:
       SERVICE_LOCATION: ./signup-with-plugins
       BUILD_ARTIFACT: signup-with-plugins
+      MAVEN_NON_EXEC_ARTIFACTS: "esignet-mock-plugin.jar,mosip-identity-plugin.jar"
     secrets:
       OSSRH_USER: ${{ secrets.OSSRH_USER }}
       OSSRH_SECRET: ${{ secrets.OSSRH_SECRET }}
@@ -206,7 +208,7 @@ jobs:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
 
   build_maven_apitest_esignet_signup:
-    uses: mosip/kattu/.github/workflows/maven-build.yml@develop
+    uses: Mahesh-Binayak/kattu/.github/workflows/maven-build.yml@gpgupdate-masterj21
     with:
       SERVICE_LOCATION: ./api-test
       BUILD_ARTIFACT: apitest-esignet-signup
@@ -317,7 +319,7 @@ jobs:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
 
   build-maven-ui-test:
-    uses: mosip/kattu/.github/workflows/maven-build.yml@develop
+    uses: Mahesh-Binayak/kattu/.github/workflows/maven-build.yml@gpgupdate-masterj21
     with:
       SERVICE_LOCATION: ./ui-test
       BUILD_ARTIFACT: ui-test

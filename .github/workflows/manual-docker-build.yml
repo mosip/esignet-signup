@@ -11,10 +11,11 @@ on:
 
 jobs:
   build_maven_signup_with_plugins:
-    uses: mosip/kattu/.github/workflows/maven-build.yml@develop
+    uses: Mahesh-Binayak/kattu/.github/workflows/maven-build.yml@gpgupdate-masterj21
     with:
       SERVICE_LOCATION: ./signup-with-plugins
       BUILD_ARTIFACT: signup-with-plugins
+      MAVEN_NON_EXEC_ARTIFACTS: "esignet-mock-plugin.jar,mosip-identity-plugin.jar"
     secrets:
       OSSRH_USER: ${{ secrets.OSSRH_USER }}
       OSSRH_SECRET: ${{ secrets.OSSRH_SECRET }}
