@@ -40,8 +40,9 @@ public class SignupFormDynamicFiller {
 				continue;
 			}
 
-			List<WebElement> matchingElements = driver
-					.findElements(By.xpath("//*[@id='" + fieldId + "' or @data-field-id='" + fieldId + "']"));
+			List<WebElement> matchingElements = driver.findElements(By.xpath(
+					"//*[self::input or self::select or self::textarea][@id='" + fieldId + "' or @data-field-id='"
+							+ fieldId + "']"));
 
 			if (matchingElements.isEmpty()) {
 				logger.info("No element found for fieldId: " + fieldId);
@@ -167,7 +168,9 @@ public class SignupFormDynamicFiller {
 						"//input[@type='radio' and (@name='" + fieldId + "' or @data-field-id='" + fieldId + "')]"));
 
 				if (!radios.isEmpty()) {
-					radios.get(new Random().nextInt(radios.size())).click();
+					WebElement radio = radios.get(new Random().nextInt(radios.size()));
+					((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({block:'center'});", radio);
+					((JavascriptExecutor) driver).executeScript("arguments[0].click();", radio);
 				}
 				continue;
 			}
