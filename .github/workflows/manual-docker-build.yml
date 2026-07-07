@@ -11,7 +11,7 @@ on:
 
 jobs:
   build_maven_signup_with_plugins:
-    uses: Mahesh-Binayak/kattu/.github/workflows/maven-build.yml@gpgupdate-masterj21
+    uses: mosip/kattu/.github/workflows/maven-build.yml@gpgupdate-masterj21
     with:
       SERVICE_LOCATION: ./signup-with-plugins
       BUILD_ARTIFACT: signup-with-plugins
