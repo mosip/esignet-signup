@@ -41,7 +41,6 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
-import org.springframework.util.unit.DataSize;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -117,7 +116,6 @@ public class RegistrationServiceTest {
         ReflectionTestUtils.setField(registrationService, "captchaRequired", false);
         ReflectionTestUtils.setField(registrationService, "captchaHelper", captchaHelper);
         ReflectionTestUtils.setField(registrationService, "fileFieldNameRegex", "[A-Za-z0-9_-]+");
-        ReflectionTestUtils.setField(registrationService, "maxUploadSize", DataSize.ofMegabytes(1));
     }
 
     @Test
@@ -2044,7 +2042,6 @@ public class RegistrationServiceTest {
 
         byte[] pngBytes = new byte[]{(byte) 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A};
 
-        when(file.getSize()).thenReturn((long) pngBytes.length);
         when(file.getInputStream()).thenAnswer(invocation -> new java.io.ByteArrayInputStream(pngBytes));
         when(file.isEmpty()).thenReturn(false);
         when(file.getBytes()).thenThrow(new IOException("Read error"));
@@ -2115,37 +2112,5 @@ public class RegistrationServiceTest {
             Assert.assertEquals(ErrorConstants.INVALID_REQUEST, signUpException.getErrorCode());
         }
     }
-
-    @Test
-    public void uploadFile_withFileExceedingMaxSize_throwsFileTooLarge() throws JsonProcessingException {
-        String transactionId = "txn-too-large";
-        String fieldName = "photo";
-
-        ReflectionTestUtils.setField(registrationService, "maxUploadSize", DataSize.ofKilobytes(1));
-
-        byte[] tooBig = new byte[2048]; // 2 KB > 1 KB
-        MultipartFile file = new MockMultipartFile("file", "big.png", "image/png", tooBig);
-
-        RegistrationTransaction transaction = new RegistrationTransaction("user", Purpose.REGISTRATION);
-        when(cacheUtilService.getChallengeVerifiedTransaction(transactionId)).thenReturn(transaction);
-
-        String uiSpecJson = """
-            {
-              "schema": [
-                {
-                  "id": "photo",
-                  "controlType": "fileUpload",
-                  "acceptedFileTypes": ["image/png"]
-                }
-              ]
-            }
-            """;
-        when(profileRegistryPlugin.getUISpecification()).thenReturn(objectMapper.readTree(uiSpecJson));
-
-        SignUpException ex = Assert.assertThrows(SignUpException.class,
-                () -> registrationService.uploadFile(transactionId, fieldName, file));
-        Assert.assertEquals(ErrorConstants.FILE_TOO_LARGE, ex.getErrorCode());
-    }
-
 
 }

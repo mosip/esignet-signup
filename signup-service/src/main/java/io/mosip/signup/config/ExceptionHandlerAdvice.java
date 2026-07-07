@@ -10,7 +10,6 @@ import io.mosip.esignet.core.dto.ResponseWrapper;
 import io.mosip.esignet.core.exception.EsignetException;
 import io.mosip.esignet.core.util.IdentityProviderUtil;
 import io.mosip.signup.exception.SignUpException;
-import io.mosip.signup.util.ErrorConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +30,6 @@ import org.springframework.web.context.request.WebRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
-import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.*;
@@ -83,15 +81,6 @@ public class ExceptionHandlerAdvice extends ResponseEntityExceptionHandler {
     }
 
     @Override
-    protected ResponseEntity<Object> handleMaxUploadSizeExceededException(
-            MaxUploadSizeExceededException ex,
-            HttpHeaders headers,
-            HttpStatusCode status,
-            WebRequest request) {
-        return handleExceptions(ex, request);
-    }
-
-    @Override
     protected ResponseEntity handleHandlerMethodValidationException(
             HandlerMethodValidationException ex,
             HttpHeaders headers,
@@ -127,11 +116,6 @@ public class ExceptionHandlerAdvice extends ResponseEntityExceptionHandler {
         }
         if(ex instanceof MissingServletRequestParameterException || ex instanceof HttpMessageNotReadableException || ex instanceof HttpMediaTypeNotAcceptableException) {
             return new ResponseEntity<ResponseWrapper>(getResponseWrapper(INVALID_REQUEST, ex.getMessage()),
-                    HttpStatus.OK);
-        }
-        if(ex instanceof MaxUploadSizeExceededException) {
-            return new ResponseEntity<ResponseWrapper>(
-                    getResponseWrapper(ErrorConstants.FILE_TOO_LARGE, getMessage(ErrorConstants.FILE_TOO_LARGE)),
                     HttpStatus.OK);
         }
         if(ex instanceof SignUpException) {
