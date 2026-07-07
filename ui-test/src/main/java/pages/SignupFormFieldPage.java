@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.time.Duration;
 import java.util.List;
 
@@ -82,6 +84,23 @@ public class SignupFormFieldPage extends BasePage {
 				.until(ExpectedConditions.visibilityOfElementLocated(locator));
 	}
 
+	/**
+	 * Waits (up to the standard timeout) for at least one matching element to be
+	 * present in the DOM, returning {@code false} instead of throwing on timeout.
+	 * Presence (not visibility) is used so form hydration is tolerated without
+	 * false negatives on inputs that are present but visually styled/hidden
+	 * (e.g. radio and file inputs behind custom controls).
+	 */
+	private boolean waitUntilRendered(By locator) {
+		try {
+			new WebDriverWait(driver, Duration.ofSeconds(10))
+					.until(ExpectedConditions.presenceOfElementLocated(locator));
+			return true;
+		} catch (org.openqa.selenium.TimeoutException e) {
+			return false;
+		}
+	}
+
 	// ---- Submit / mandatory validation ---------------------------------------
 
 	private final RegistrationPage registrationPage = new RegistrationPage(driver);
@@ -112,11 +131,11 @@ public class SignupFormFieldPage extends BasePage {
 	}
 
 	public boolean isRadioFieldRendered(String fieldId) {
-		return !getRadioOptions(fieldId).isEmpty();
+		return waitUntilRendered(radioGroup(fieldId));
 	}
 
 	public boolean isRadioLabelRendered(String fieldId) {
-		return !driver.findElements(labelBy(fieldId)).isEmpty();
+		return waitUntilRendered(labelBy(fieldId));
 	}
 
 	public void selectRadioOption(String fieldId, int index) {
@@ -154,7 +173,7 @@ public class SignupFormFieldPage extends BasePage {
 	// ---- Textarea -------------------------------------------------------------
 
 	public boolean isTextareaRendered(String fieldId) {
-		return !driver.findElements(textareaBy(fieldId)).isEmpty();
+		return waitUntilRendered(textareaBy(fieldId));
 	}
 
 	public WebElement getTextarea(String fieldId) {
@@ -196,33 +215,56 @@ public class SignupFormFieldPage extends BasePage {
 	// ---- File upload ----------------------------------------------------------
 
 	public boolean isFileUploadRendered(String fieldId) {
-		return !driver.findElements(fileInputBy(fieldId)).isEmpty();
+		return waitUntilRendered(fileInputBy(fieldId));
 	}
 
 	public boolean isFileUploadLabelRendered(String fieldId) {
-		return isFileUploadRendered(fieldId) || !driver.findElements(labelBy(fieldId)).isEmpty();
+		return isFileUploadRendered(fieldId) && waitUntilRendered(labelBy(fieldId));
 	}
 
 	public void uploadClasspathFile(String fieldId, String classpathResource, String fileName) throws IOException {
-		File tempFile = File.createTempFile("upload-", "-" + fileName);
-		tempFile.deleteOnExit();
+		Path tempPath = createRestrictedTempFile("upload-", "-" + fileName);
 		try (InputStream in = getClass().getClassLoader().getResourceAsStream(classpathResource)) {
 			if (in == null) {
 				throw new IOException("Upload resource not found: " + classpathResource);
 			}
-			Files.copy(in, tempFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+			Files.copy(in, tempPath, StandardCopyOption.REPLACE_EXISTING);
 		}
-		sendFileToInput(fieldId, tempFile);
+		sendFileToInput(fieldId, tempPath.toFile());
 		logger.info("Uploaded supported file for " + fieldId + ": " + fileName);
 	}
 
 	/** Creates a throwaway unsupported (.exe) file on the fly and uploads it. */
 	public void uploadUnsupportedFile(String fieldId) throws IOException {
-		File tempFile = File.createTempFile("malware-", ".exe");
-		tempFile.deleteOnExit();
-		Files.write(tempFile.toPath(), new byte[] { 0x4D, 0x5A });
-		sendFileToInput(fieldId, tempFile);
+		Path tempPath = createRestrictedTempFile("malware-", ".exe");
+		Files.write(tempPath, new byte[] { 0x4D, 0x5A });
+		sendFileToInput(fieldId, tempPath.toFile());
 		logger.info("Uploaded unsupported .exe file for " + fieldId);
+	}
+
+	/**
+	 * Creates a temp file restricted to the owner. Uses POSIX owner-only
+	 * permissions where the filesystem supports them, falling back to the File
+	 * permission API on non-POSIX platforms (e.g. Windows).
+	 */
+	private Path createRestrictedTempFile(String prefix, String suffix) throws IOException {
+		Path tempPath;
+		try {
+			tempPath = Files.createTempFile(prefix, suffix,
+					PosixFilePermissions.asFileAttribute(PosixFilePermissions.fromString("rw-------")));
+		} catch (UnsupportedOperationException e) {
+			tempPath = Files.createTempFile(prefix, suffix);
+			File f = tempPath.toFile();
+			boolean restricted = f.setReadable(false, false);
+			restricted = f.setReadable(true, true) && restricted;
+			restricted = f.setWritable(false, false) && restricted;
+			restricted = f.setWritable(true, true) && restricted;
+			if (!restricted) {
+				logger.warn("Could not fully restrict permissions on temp file: " + tempPath);
+			}
+		}
+		tempPath.toFile().deleteOnExit();
+		return tempPath;
 	}
 
 	private void sendFileToInput(String fieldId, File file) {

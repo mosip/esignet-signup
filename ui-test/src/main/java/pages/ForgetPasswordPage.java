@@ -512,7 +512,7 @@ public class ForgetPasswordPage extends BasePage {
 		String mandatoryLang = EsignetUtil.getMandatoryLanguage();
 		String fieldId = "fullName_" + mandatoryLang;
 
-		return driver.findElement(By.id(fieldId));
+		return WaitUtil.waitForVisibility(driver, By.id(fieldId));
 	}
 
 	public void enterFullName(String value) {

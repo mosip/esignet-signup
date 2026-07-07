@@ -1,5 +1,6 @@
 package utils;
 
+import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -291,6 +292,18 @@ public class EsignetUtil extends AdminTestUtil {
 		return Pattern.compile(regex).matcher(password).matches();
 	}
 
+	// Password material is generated with SecureRandom (not java.util.Random) to
+	// satisfy static analysis, even though these are throwaway test inputs.
+	private static final SecureRandom SECURE_RANDOM = new SecureRandom();
+
+	private static String randomCharsInRange(int start, int end, int count) {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < count; i++) {
+			sb.append((char) (start + SECURE_RANDOM.nextInt(end - start + 1)));
+		}
+		return sb.toString();
+	}
+
 	private static String padToMinLength(StringBuilder pwd, char filler) {
 		int min = getPasswordMinLength();
 		while (pwd.length() < min) {
@@ -302,7 +315,7 @@ public class EsignetUtil extends AdminTestUtil {
 	/** English letters combined with Khmer characters (plus baseline complexity). */
 	public static String generateEngKhmerPassword() {
 		StringBuilder pwd = new StringBuilder("Aa1@");
-		pwd.append(generateKhmerName(4));
+		pwd.append(randomCharsInRange(0x1780, 0x17FF, 4));
 		pwd.append("bc");
 		return padToMinLength(pwd, 'x');
 	}
@@ -310,7 +323,7 @@ public class EsignetUtil extends AdminTestUtil {
 	/** Khmer characters combined with numbers. */
 	public static String generateKhmerNumericPassword() {
 		StringBuilder pwd = new StringBuilder();
-		pwd.append(generateKhmerName(4));
+		pwd.append(randomCharsInRange(0x1780, 0x17FF, 4));
 		pwd.append("12345");
 		return padToMinLength(pwd, '7');
 	}
@@ -318,10 +331,7 @@ public class EsignetUtil extends AdminTestUtil {
 	/** Hindi (Devanagari) characters combined with English - unsupported language. */
 	public static String generateHindiEnglishPassword() {
 		StringBuilder pwd = new StringBuilder("Ab1@");
-		Random random = new Random();
-		for (int i = 0; i < 4; i++) {
-			pwd.append((char) (0x0900 + random.nextInt(0x097F - 0x0900 + 1)));
-		}
+		pwd.append(randomCharsInRange(0x0900, 0x097F, 4));
 		pwd.append("xy");
 		return padToMinLength(pwd, 'z');
 	}
