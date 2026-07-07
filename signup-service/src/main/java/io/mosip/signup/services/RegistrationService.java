@@ -325,7 +325,6 @@ public class RegistrationService {
             throw new SignUpException(ErrorConstants.INVALID_FIELD);
         }
 
-
         String detectedMimeType;
         try (InputStream inputStream = file.getInputStream()) {
             detectedMimeType = UploadFileUtils.detectMimeType(inputStream);
