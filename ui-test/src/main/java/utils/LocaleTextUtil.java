@@ -3,6 +3,7 @@ package utils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
@@ -54,11 +55,17 @@ public class LocaleTextUtil {
 			base = base + "/";
 		}
 		String url = base + "locales/" + lang + ".json";
-		try (InputStream in = URI.create(url).toURL().openStream()) {
-			String json = new String(in.readAllBytes(), StandardCharsets.UTF_8);
-			JsonNode node = MAPPER.readTree(json);
-			cache.put(lang, node);
-			return node;
+		int timeoutMs = EsignetConfigManager.getTimeout() * 1000;
+		try {
+			URLConnection conn = URI.create(url).toURL().openConnection();
+			conn.setConnectTimeout(timeoutMs);
+			conn.setReadTimeout(timeoutMs);
+			try (InputStream in = conn.getInputStream()) {
+				String json = new String(in.readAllBytes(), StandardCharsets.UTF_8);
+				JsonNode node = MAPPER.readTree(json);
+				cache.put(lang, node);
+				return node;
+			}
 		} catch (IOException e) {
 			logger.error("Failed to load locale file: " + url, e);
 			throw new RuntimeException("Failed to load locale file: " + url, e);

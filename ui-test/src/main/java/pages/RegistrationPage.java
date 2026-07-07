@@ -3,6 +3,7 @@ package pages;
 import base.BasePage;
 import utils.EsignetConfigManager;
 import utils.EsignetUtil;
+import utils.WaitUtil;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -276,7 +277,7 @@ public class RegistrationPage extends BasePage {
 
 	public WebElement getIdentifierFieldElement() {
 		String fieldId = EsignetUtil.getIdentifierFieldId();
-		return driver.findElement(By.id(fieldId));
+		return WaitUtil.waitForVisibility(driver, By.id(fieldId));
 	}
 
 	public void enterIdentifierValue(String value) {
@@ -756,6 +757,10 @@ public class RegistrationPage extends BasePage {
 
 	public void clickOnSetupAccountContinueButton() {
 		clickOnElement(setupContinueButton, "Click on Setup Account continue button");
+	}
+
+	public boolean isSetupAccountContinueEnabled() {
+		return isButtonEnabled(setupContinueButton, "Check Setup Account continue button enabled");
 	}
 
 	public void clickOnContinueButtonInSetupAccountScreen() {

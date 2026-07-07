@@ -358,7 +358,9 @@ public class SignUpStepDef {
 	@When("user enters the complete 6-digit OTP")
 	public void userEntersOtp() {
 		String number = EsignetUtil.normalizeIdentifierForOtp(lastGeneratedIdentifier);
-		registrationPage.enterOtp(NotificationListener.getOtp(number));
+		String otp = EsignetUtil.waitForDeliveredOtp(number);
+		Assert.assertTrue(otp != null && !otp.trim().isEmpty(), "OTP was not delivered for: " + number);
+		registrationPage.enterOtp(otp);
 	}
 
 	@Then("verify OTP is masked as soon as it is entered")

@@ -18,7 +18,6 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.mosip.testrig.apirig.testrunner.OTPListener;
-import io.mosip.testrig.apirig.utils.NotificationListener;
 import pages.LoginOptionsPage;
 import pages.RegistrationPage;
 import utils.EsignetUtil;
@@ -70,28 +69,7 @@ public class LoginOptionsStepDefinition {
 	@When("user enters the correct OTP as input")
 	public void userEntersOtp() {
 		String mobile = EsignetUtil.normalizeIdentifierForOtp(RegisteredDetails.getMobileNumber());
-		registrationPage.enterOtp(waitForDeliveredOtp(mobile));
-	}
-
-	// The OTP notification can land just after the first queue poll; a single
-	// getOtp() then returns blank, the OTP field stays empty and the Verify button
-	// never enables. Re-poll a few times so a late-delivered OTP is still entered.
-	// The real backend/OTP is still exercised - this only tolerates delivery lag.
-	private String waitForDeliveredOtp(String mobile) {
-		String otp = null;
-		for (int attempt = 1; attempt <= 3; attempt++) {
-			otp = NotificationListener.getOtp(mobile);
-			if (otp != null && otp.trim().matches("\\d{4,}")) {
-				return otp.trim();
-			}
-			try {
-				Thread.sleep(3000);
-			} catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
-				break;
-			}
-		}
-		return otp == null ? "" : otp.trim();
+		registrationPage.enterOtp(EsignetUtil.waitForDeliveredOtp(mobile));
 	}
 
 	@And("user redirected to registration page")
@@ -453,6 +431,51 @@ public class LoginOptionsStepDefinition {
 	public void entersAlphaNumeric() {
 		String alphaNumeric = EsignetUtil.getAlphaNumeric();
 		loginOptionsPage.enterRegisteredMobileNumber(alphaNumeric);
+	}
+
+	// ---- Password language + login field ------------------------------------
+
+	private String lastLanguagePassword;
+
+	@When("user enters a valid format mobile number in the login mobile field")
+	public void userEntersValidFormatMobile() {
+		String number = EsignetUtil.generateMobileNumberFromRegex();
+		loginOptionsPage.enterRegisteredMobileNumber(number);
+	}
+
+	@When("user enters English and Khmer combined password into password field")
+	public void userEntersEngKhmerPassword() {
+		lastLanguagePassword = EsignetUtil.generateEngKhmerPassword();
+		loginOptionsPage.enterRegisteredPassword(lastLanguagePassword);
+	}
+
+	@When("user enters Khmer and numbers combined password into password field")
+	public void userEntersKhmerNumericPassword() {
+		lastLanguagePassword = EsignetUtil.generateKhmerNumericPassword();
+		loginOptionsPage.enterRegisteredPassword(lastLanguagePassword);
+	}
+
+	@When("user enters Hindi and English combined password into password field")
+	public void userEntersHindiEnglishPassword() {
+		lastLanguagePassword = EsignetUtil.generateHindiEnglishPassword();
+		loginOptionsPage.enterRegisteredPassword(lastLanguagePassword);
+	}
+
+	@Then("verify the password field is retained the entered value")
+	public void verifyPasswordFieldRetainsValue() {
+		String retained = loginOptionsPage.getEnteredPassword();
+		assertEquals("Password field should retain the multi-language input", lastLanguagePassword, retained);
+	}
+
+	@When("user enters a valid password into the password field")
+	public void userEntersValidPassword() {
+		String password = EsignetUtil.generateValidPasswordFromActuator();
+		loginOptionsPage.enterRegisteredPassword(password);
+	}
+
+	@Then("verify the login button is in disabled state")
+	public void verifyLoginButtonDisabledState() {
+		Assert.assertTrue(loginOptionsPage.isLoginButtonDisabled(), "Login button should be disabled");
 	}
 
 }
