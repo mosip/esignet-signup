@@ -1,5 +1,6 @@
 package utils;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -13,6 +14,11 @@ public class WaitUtil {
 	public static void waitForVisibility(WebDriver driver, WebElement element) {
 		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(TIMEOUT));
 		wait.until(ExpectedConditions.visibilityOf(element));
+	}
+
+	public static WebElement waitForVisibility(WebDriver driver, By locator) {
+		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(TIMEOUT));
+		return wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
 	}
 
 	public static void waitForClickability(WebDriver driver, WebElement element) {

@@ -22,6 +22,7 @@ import javax.ws.rs.core.MediaType;
 
 import io.mosip.testrig.apirig.utils.AdminTestUtil;
 import io.mosip.testrig.apirig.utils.GlobalConstants;
+import io.mosip.testrig.apirig.utils.NotificationListener;
 import io.mosip.testrig.apirig.utils.RestClient;
 import io.restassured.response.Response;
 import constants.UiConstants;
@@ -275,6 +276,54 @@ public class EsignetUtil extends AdminTestUtil {
 			pwd.append(all.charAt(random.nextInt(all.length())));
 		}
 		return pwd.toString();
+	}
+
+	// ---- Mixed-language passwords (login password-language tests) --------------
+	// Whether the client shows a format error is driven by the deployed password
+	// policy regex, so tests assert against matchesPasswordPolicy(..) rather than a
+	// hard-coded accept/reject - keeping them correct across environments.
+
+	public static boolean matchesPasswordPolicy(String password) {
+		String regex = getPasswordPattern();
+		if (regex == null || regex.trim().isEmpty()) {
+			return false;
+		}
+		return Pattern.compile(regex).matcher(password).matches();
+	}
+
+	private static String padToMinLength(StringBuilder pwd, char filler) {
+		int min = getPasswordMinLength();
+		while (pwd.length() < min) {
+			pwd.append(filler);
+		}
+		return pwd.toString();
+	}
+
+	/** English letters combined with Khmer characters (plus baseline complexity). */
+	public static String generateEngKhmerPassword() {
+		StringBuilder pwd = new StringBuilder("Aa1@");
+		pwd.append(generateKhmerName(4));
+		pwd.append("bc");
+		return padToMinLength(pwd, 'x');
+	}
+
+	/** Khmer characters combined with numbers. */
+	public static String generateKhmerNumericPassword() {
+		StringBuilder pwd = new StringBuilder();
+		pwd.append(generateKhmerName(4));
+		pwd.append("12345");
+		return padToMinLength(pwd, '7');
+	}
+
+	/** Hindi (Devanagari) characters combined with English - unsupported language. */
+	public static String generateHindiEnglishPassword() {
+		StringBuilder pwd = new StringBuilder("Ab1@");
+		Random random = new Random();
+		for (int i = 0; i < 4; i++) {
+			pwd.append((char) (0x0900 + random.nextInt(0x097F - 0x0900 + 1)));
+		}
+		pwd.append("xy");
+		return padToMinLength(pwd, 'z');
 	}
 
 	private static JSONObject signupUISpecResponse;
@@ -661,7 +710,7 @@ public class EsignetUtil extends AdminTestUtil {
 			value.append(chars.charAt(random.nextInt(chars.length())));
 		}
 
-		if (regex.contains("(?!0)") && value.charAt(0) == '0') {
+		if (regex.contains("(?!0)") && value.length() > 0 && value.charAt(0) == '0') {
 			value.setCharAt(0, (char) ('1' + random.nextInt(9)));
 		}
 
@@ -742,6 +791,16 @@ public class EsignetUtil extends AdminTestUtil {
 		}
 
 		return number;
+	}
+
+	// NotificationListener.getOtp() already blocks and self-polls the queue for the
+	// full OTP-expiry window, returning the moment the OTP is delivered. A single call
+	// therefore already tolerates delivery lag - looping over it only multiplies the
+	// worst-case wait (3x the OTP-expiry window) when the OTP never arrives, and any
+	// OTP that lands after that window has already expired and is useless anyway.
+	public static String waitForDeliveredOtp(String mobile) {
+		String otp = NotificationListener.getOtp(mobile);
+		return otp == null ? "" : otp.trim();
 	}
 
 	public static String getMandatoryLanguage() {

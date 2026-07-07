@@ -15,6 +15,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import base.BasePage;
 import utils.EsignetUtil;
 import utils.EsignetUtil.RegisteredDetails;
+import utils.WaitUtil;
 
 public class ForgetPasswordPage extends BasePage {
 
@@ -498,7 +499,7 @@ public class ForgetPasswordPage extends BasePage {
 
 	public WebElement getIdentifierFieldElement() {
 		String fieldId = EsignetUtil.getIdentifierFieldId();
-		return driver.findElement(By.id(fieldId));
+		return WaitUtil.waitForVisibility(driver, By.id(fieldId));
 	}
 
 	public void enterIdentifierValue(String value) {
