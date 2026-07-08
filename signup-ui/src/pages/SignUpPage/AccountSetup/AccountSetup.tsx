@@ -3,7 +3,9 @@ import { JsonFormBuilder } from "@mosip/json-form-builder";
 import { FormConfig } from "@mosip/json-form-builder/dist/types";
 import { UseFormReturn } from "react-hook-form";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 
+import { SOMETHING_WENT_WRONG } from "~constants/routes";
 import {
   Step,
   StepContent,
@@ -13,6 +15,7 @@ import {
   StepTitle,
 } from "~components/ui/step";
 import { getThreeLetterLocale } from "~utils/locale";
+import { validateUiSpec } from "~utils/filterSchema";
 import { useRegister, useUploadFile } from "~pages/shared/mutations";
 import { useUiSpec } from "~pages/shared/queries";
 import langConfigService from "~services/langConfig.service";
@@ -48,7 +51,8 @@ export const AccountSetup = ({ settings, methods }: AccountSetupProps) => {
   const identifierName =
     settings?.response.configs["identifier.name"] || "username";
 
-  const { data: uiSchemaResponse } = useUiSpec();
+  const { data: uiSchemaResponse, status } = useUiSpec();
+  const navigate = useNavigate();
 
   const [uiSchema, setUiSchema] = useState<FormConfig | null>(null);
 
@@ -212,8 +216,20 @@ export const AccountSetup = ({ settings, methods }: AccountSetupProps) => {
   }, [uiSchema]);
 
   useEffect(() => {
-    setUiSchema(uiSchemaResponse?.response ?? null);
-  }, [uiSchemaResponse]);
+    if (status === "pending") return;
+
+    try {
+      validateUiSpec(uiSchemaResponse?.response, settings, "signup");
+      setUiSchema(uiSchemaResponse?.response ?? null);
+    } catch (err) {
+      console.error(err);
+      navigate(SOMETHING_WENT_WRONG, {
+        state: {
+          errorMessage: t("error_response.uispec_config_error"),
+        },
+      });
+    }
+  }, [uiSchemaResponse, status]);
 
   useEffect(() => {
     updateAfterLangChange();

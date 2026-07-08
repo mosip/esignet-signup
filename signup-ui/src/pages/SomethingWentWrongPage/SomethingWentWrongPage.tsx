@@ -15,7 +15,7 @@ export const SomethingWentWrongPage = () => {
       title={
         state?.code ? getReasonPhrase(state?.code) : t("something_went_wrong")
       }
-      description={t("something_went_wrong_detail")}
+      description={state?.errorMessage || t("something_went_wrong_detail")}
       image={<SomethingWentWrongSvg />}
     />
   );
