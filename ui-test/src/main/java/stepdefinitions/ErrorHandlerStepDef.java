@@ -18,7 +18,7 @@ import utils.NetworkErrorInterceptor;
  *
  * Two layers are covered:
  * - Generic page + language switch via direct navigation (runs everywhere).
- * - Real HTTP 4XX/5XX (400/403/404/405/415/500/502/504) forced through CDP
+ * - Real HTTP 4XX/5XX (400/403/404/405/415/500/502/503/504) forced through CDP
  *   interception (@localOnly), which drives the app's axios error interceptor
  *   into the error page carrying the status code, so the title renders the HTTP
  *   reason phrase.

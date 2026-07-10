@@ -111,6 +111,7 @@ public class SignupFormFieldStepDef {
 
 	@Then("verify the supported file is accepted for the {string} field")
 	public void verifySupportedFileAccepted(String fieldId) {
+		formFieldPage.waitForFieldValid(fieldId);
 		Assert.assertFalse(formFieldPage.isUnsupportedFileErrorShown(fieldId),
 				"Supported file should be accepted without a validation error for '" + fieldId + "'");
 	}

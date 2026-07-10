@@ -140,6 +140,10 @@ public class SignupFormFieldPage extends BasePage {
 
 	public void selectRadioOption(String fieldId, int index) {
 		List<WebElement> radios = getRadioOptions(fieldId);
+		if (index < 0 || index >= radios.size()) {
+			throw new IllegalArgumentException("Cannot select radio option " + index + " for field '" + fieldId
+					+ "': " + radios.size() + " option(s) available");
+		}
 		WebElement radio = radios.get(index);
 		((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({block:'center'});", radio);
 		((JavascriptExecutor) driver).executeScript("arguments[0].click();", radio);
@@ -277,6 +281,23 @@ public class SignupFormFieldPage extends BasePage {
 
 	public boolean isUnsupportedFileErrorShown(String fieldId) {
 		return isFieldInvalid(fieldId) || !getFieldErrorText(fieldId).isEmpty();
+	}
+
+	/**
+	 * Waits (up to the standard timeout) for the field's validation to settle to a
+	 * valid state: {@code aria-invalid} cleared and no inline error text. This lets
+	 * asynchronous client-side validation finish after an upload before acceptance
+	 * is asserted. Returns {@code false} if it does not become valid within the
+	 * timeout.
+	 */
+	public boolean waitForFieldValid(String fieldId) {
+		try {
+			new WebDriverWait(driver, Duration.ofSeconds(10))
+					.until(d -> !isUnsupportedFileErrorShown(fieldId));
+			return true;
+		} catch (org.openqa.selenium.TimeoutException e) {
+			return false;
+		}
 	}
 
 	public String getUploadedFileName(String fieldId) {
