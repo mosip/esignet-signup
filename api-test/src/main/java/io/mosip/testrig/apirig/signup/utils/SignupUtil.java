@@ -1941,11 +1941,17 @@ public class SignupUtil extends AdminTestUtil {
 		}
 	}
 
+	private static JsonNode cachedRegistrationUiSpecSchema;
+
 	/**
-	 * Reads the registration UI spec and returns the id of the first field whose
-	 * controlType marks it as a file-upload field (e.g. "photoCapture").
+	 * Fetches the registration UI spec's schema node once and caches it, so
+	 * repeated lookups (upload field id, upload file path, etc.) don't each
+	 * trigger a fresh API call to the UI spec endpoint.
 	 */
-	public String getUploadFieldIdFromUiSpec() {
+	private JsonNode getRegistrationUiSpecSchema() {
+		if (cachedRegistrationUiSpecSchema != null) {
+			return cachedRegistrationUiSpecSchema;
+		}
 		try {
 			kernelAuthLib = new KernelAuthentication();
 			String token = kernelAuthLib.getTokenByRole(GlobalConstants.RESIDENT);
@@ -1957,21 +1963,29 @@ public class SignupUtil extends AdminTestUtil {
 
 			ObjectMapper mapper = new ObjectMapper();
 			JsonNode root = mapper.readTree(response.asString());
-			JsonNode schemaNode = root.path(GlobalConstants.RESPONSE).path(SignupConstants.SCHEMA);
+			cachedRegistrationUiSpecSchema = root.path(GlobalConstants.RESPONSE).path(SignupConstants.SCHEMA);
+			return cachedRegistrationUiSpecSchema;
+		} catch (Exception e) {
+			logger.error("Failed to fetch registration UI spec", e);
+			throw new RuntimeException("Failed to fetch registration UI spec", e);
+		}
+	}
 
-			if (schemaNode.isArray()) {
-				for (JsonNode field : schemaNode) {
-					String controlType = field.path(SignupConstants.CONTROL_TYPE).asText();
-					if (SignupConstants.FILEUPLOAD.equals(controlType) || SignupConstants.PHOTO.equals(controlType)) {
-						return field.path(SignupConstants.ID).asText();
-					}
+	/**
+	 * Reads the registration UI spec and returns the id of the first field whose
+	 * controlType marks it as a file-upload field (e.g. "photoCapture").
+	 */
+	public String getUploadFieldIdFromUiSpec() {
+		JsonNode schemaNode = getRegistrationUiSpecSchema();
+		if (schemaNode.isArray()) {
+			for (JsonNode field : schemaNode) {
+				String controlType = field.path(SignupConstants.CONTROL_TYPE).asText();
+				if (SignupConstants.FILEUPLOAD.equals(controlType) || SignupConstants.PHOTO.equals(controlType)) {
+					return field.path(SignupConstants.ID).asText();
 				}
 			}
-			throw new RuntimeException("No file-upload field found in UI spec");
-		} catch (Exception e) {
-			logger.error("Failed to resolve upload field id from UI spec", e);
-			throw new RuntimeException("Failed to resolve upload field id from UI spec", e);
 		}
+		throw new RuntimeException("No file-upload field found in UI spec");
 	}
 
 	private static final String DEFAULT_UPLOAD_FILE_PATH = "signup/UploadFile/testPhoto.jpg";
@@ -2007,31 +2021,15 @@ public class SignupUtil extends AdminTestUtil {
 	 * declare acceptedFileTypes or none of them have a matching test asset.
 	 */
 	public String getUploadFilePathFromUiSpec() {
-		try {
-			kernelAuthLib = new KernelAuthentication();
-			String token = kernelAuthLib.getTokenByRole(GlobalConstants.RESIDENT);
-			String url = SignupConstants.SIGNUP_BASE_URL
-					+ props.getProperty(SignupConstants.SIGNUP_REGISTRATION_UI_SPEC);
-
-			Response response = RestClient.getRequestWithCookie(url, MediaType.APPLICATION_JSON,
-					MediaType.APPLICATION_JSON, GlobalConstants.AUTHORIZATION, token);
-
-			ObjectMapper mapper = new ObjectMapper();
-			JsonNode root = mapper.readTree(response.asString());
-			JsonNode schemaNode = root.path(GlobalConstants.RESPONSE).path(SignupConstants.SCHEMA);
-
-			if (schemaNode.isArray()) {
-				for (JsonNode field : schemaNode) {
-					if (isFileUploadField(field)) {
-						return resolveUploadFilePathForField(field);
-					}
+		JsonNode schemaNode = getRegistrationUiSpecSchema();
+		if (schemaNode.isArray()) {
+			for (JsonNode field : schemaNode) {
+				if (isFileUploadField(field)) {
+					return resolveUploadFilePathForField(field);
 				}
 			}
-			throw new RuntimeException("No file-upload field found in UI spec");
-		} catch (Exception e) {
-			logger.error("Failed to resolve upload file path from UI spec", e);
-			throw new RuntimeException("Failed to resolve upload file path from UI spec", e);
 		}
+		throw new RuntimeException("No file-upload field found in UI spec");
 	}
 
 	/**

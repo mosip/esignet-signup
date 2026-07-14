@@ -1,6 +1,6 @@
 {
-  "verifiedTransactionID": "{{verifiedTransactionID}}",
-  "field": "{{field}}",
-  "filePath": "{{filePath}}",
-  "fileKeyName": "{{fileKeyName}}"
+  "verifiedTransactionID": "{{verifiedTransactionID}}"{{#unless omitField}},
+  "field": "{{field}}"{{/unless}}{{#unless omitFileParts}},
+  "filePath": [{{#each filePath}}"{{this}}"{{#unless @last}},{{/unless}}{{/each}}],
+  "fileKeyName": "{{fileKeyName}}"{{/unless}}
 }

@@ -7,13 +7,13 @@ UploadFile:
       restMethod: post
       additionalDependencies: TC_ESignet_VerifyChallenge_01
       inputTemplate: signup/UploadFile/UploadFile
+      outputTemplate: signup/UploadFile/UploadFileResult
       input: '{
     "verifiedTransactionID": "$ID:ESignet_VerifyChallenge_STransId_smoke_Pos_VTransactionID$",
     "field": "$UPLOADFILEFIELDID$",
-    "filePath": "$UPLOADFILEPATH$",
+    "filePath": ["$UPLOADFILEPATH$"],
     "fileKeyName": "file"
 }'
-      outputTemplate: signup/UploadFile/UploadFileResult
       output: '{
   "status":"UPLOADED"
 }'
