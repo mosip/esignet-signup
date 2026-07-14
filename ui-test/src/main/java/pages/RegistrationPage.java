@@ -5,7 +5,6 @@ import utils.EsignetUtil;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -14,10 +13,10 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.util.List;
 import java.time.Duration;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.TimeoutException;
-import utils.EsignetConfigManager;
 
 public class RegistrationPage extends BasePage {
 
@@ -32,15 +31,12 @@ public class RegistrationPage extends BasePage {
 	@FindBy(xpath = "//div[@class='grow px-3 text-center font-semibold tracking-normal xs:px-2']")
 	WebElement headerInRegistrationPage;
 
-	@FindBy(id = "phone_input")
-	WebElement enterMobileNumberTextBox;
-
-	@FindBy(id = "continue-button")
-	WebElement continueButton;
+	@FindBy(id = "form-submit-button")
+	WebElement submitButton;
 
 	@FindBy(id = "back-button")
 	WebElement backButton;
-  
+
 	@FindBy(id = "register-button")
 	WebElement registerButton;
 
@@ -55,9 +51,6 @@ public class RegistrationPage extends BasePage {
 
 	@FindBy(xpath = "//div[contains(@id,'-form-item')]/span")
 	WebElement prefilledCountryCode;
-
-	@FindBy(id = "phone_input")
-	WebElement helpTextInTextBox;
 
 	@FindBy(id = ":r4:-form-item-message")
 	WebElement numberCannotStartWithZeroErrorMessage;
@@ -134,9 +127,6 @@ public class RegistrationPage extends BasePage {
 	@FindBy(xpath = "//div[@class='text-center text-gray-500']")
 	WebElement setupAccountDescription;
 
-	@FindBy(id = "phone")
-	WebElement usernameField;
-
 	@FindBy(id = "fullName_eng")
 	WebElement fullNameEnglishField;
 
@@ -193,7 +183,7 @@ public class RegistrationPage extends BasePage {
 
 	@FindBy(xpath = "//label[@for='consent']")
 	WebElement messageToAcceptTermsAndCondition;
-	
+
 	@FindBy(xpath = "//input[@id='consent']/following::div[@class='error-message'][1]")
 	private WebElement consentFieldRequiredErrorMessage;
 
@@ -223,10 +213,10 @@ public class RegistrationPage extends BasePage {
 
 	@FindBy(id = "username")
 	WebElement screenInEnglishLanguage;
-	
+
 	@FindBy(xpath = "//div[@class='alternate-icon-div']")
 	WebElement uploadPhoto;
-	
+
 	@FindBy(xpath = "//button[contains(@id,'capture-button')]")
 	WebElement captureButton;
 
@@ -239,11 +229,11 @@ public class RegistrationPage extends BasePage {
 	}
 
 	public boolean isEnterMobileNumberTextBoxDisplayed() {
-		return isElementVisible(enterMobileNumberTextBox, "Check if Mobile Number TextBox Displayed");
+		return isElementVisible(getIdentifierFieldElement(), "Check if Mobile Number TextBox Displayed");
 	}
 
 	public boolean isContinueButtonVisible() {
-		return isElementVisible(continueButton,"check continue button is displayed");
+		return isElementVisible(submitButton, "check continue button is displayed");
 	}
 
 	public boolean isLanguageSelectionVisible() {
@@ -263,25 +253,36 @@ public class RegistrationPage extends BasePage {
 	}
 
 	public boolean isHelpTextInMobileNumberTextBoxDisplayed(String expectedText) {
-		String placeholder = getElementAttribute(helpTextInTextBox, "placeholder");
+		String placeholder = getElementAttribute(getIdentifierFieldElement(), "placeholder");
 		return placeholder != null && !placeholder.isEmpty();
 	}
 
-	private String lastEnteredMobileNumber;
+	private String lastEnteredIdentifier;
 
-	public String getLastEnteredMobileNumber() {
-		return lastEnteredMobileNumber;
+	public String getLastEnteredIdentifier() {
+		return lastEnteredIdentifier;
 	}
 
 	public boolean isPlaceholderGone() {
-		String value = getElementValue(enterMobileNumberTextBox,"Get value of Plachold Gone");
+		String value = getElementValue(getIdentifierFieldElement(), "Get value of Plachold Gone");
 		return value != null && !value.isEmpty();
 	}
 
 	public void enterMobileNumber(String number) {
-		enterMobileNumberTextBox.clear();
-		enterText(enterMobileNumberTextBox, number, "Entered Mobile Number");
-		lastEnteredMobileNumber = number;
+		enterIdentifierValue(number);
+		lastEnteredIdentifier = number;
+	}
+
+	public WebElement getIdentifierFieldElement() {
+		String fieldId = EsignetUtil.getIdentifierFieldId();
+		return driver.findElement(By.id(fieldId));
+	}
+
+	public void enterIdentifierValue(String value) {
+		WebElement field = getIdentifierFieldElement();
+		field.clear();
+		enterText(field, value, "Entered Identifier Value");
+		lastEnteredIdentifier = value;
 	}
 
 	public void enterOtp(String otp) {
@@ -302,7 +303,7 @@ public class RegistrationPage extends BasePage {
 	}
 
 	public boolean isContinueButtonEnabled() {
-		return isButtonEnabled(continueButton, "Check if Continue Button is Enabled");
+		return isButtonEnabled(submitButton, "Check if Continue Button is Enabled");
 	}
 
 	public boolean isErrorMessageDisplayed() {
@@ -325,7 +326,7 @@ public class RegistrationPage extends BasePage {
 	}
 
 	public void clickOnContinueButton() {
-		clickOnElement(continueButton, "Click on continue Button");
+		clickOnElement(submitButton, "Click on continue Button");
 	}
 
 	public boolean isZeroErrorMessageDisplayed() {
@@ -333,17 +334,17 @@ public class RegistrationPage extends BasePage {
 	}
 
 	public boolean isNumberRestrictedToNineDigits() {
-		String value = getElementValue(enterMobileNumberTextBox,"Get value of Number Restricted");
+		String value = getElementValue(getIdentifierFieldElement(), "Get value of Number Restricted");
 		return value != null && value.length() == 9;
 	}
 
 	public boolean isMobileFieldEmptyOrUnchanged() {
-		String value = getElementValue(enterMobileNumberTextBox,"Get Mobile Field Empty Or Unchanged value");
+		String value = getElementValue(getIdentifierFieldElement(), "Get Mobile Field Empty Or Unchanged value");
 		return value == null || value.isEmpty();
 	}
 
 	public boolean isMobileFieldContainingOnlyDigits() {
-		String value = getElementValue(enterMobileNumberTextBox,"Get Mobile Field and Verify only Contains Digits");
+		String value = getElementValue(getIdentifierFieldElement(), "Get Mobile Field and Verify only Contains Digits");
 		return value != null && value.matches("\\d+");
 	}
 
@@ -384,7 +385,7 @@ public class RegistrationPage extends BasePage {
 	}
 
 	public boolean isBackToEditMobileNumberOptionVisible() {
-		return isElementVisible(backButton,"Back button is visible");
+		return isElementVisible(backButton, "Back button is visible");
 	}
 
 	public void waitUntilOtpExpires() {
@@ -394,11 +395,11 @@ public class RegistrationPage extends BasePage {
 	}
 
 	public boolean isResendOtpButtonEnabled() {
-		return isButtonEnabled(resendOtpButton, "Check if Resend Otp Button is Enabled" );
+		return isButtonEnabled(resendOtpButton, "Check if Resend Otp Button is Enabled");
 	}
 
 	public void clickOnResendOtpButton() {
-		clickOnElement(resendOtpButton,"click Resend Otp Button");
+		clickOnElement(resendOtpButton, "click Resend Otp Button");
 	}
 
 	public void clickOnVerifyOtpButton() {
@@ -410,22 +411,22 @@ public class RegistrationPage extends BasePage {
 	}
 
 	public boolean isIncorrectOtpErrorDisplayed() {
-		return isElementVisible(incorrectOtpError,"Check if incorrect OTP Message Displayed");
+		return isElementVisible(incorrectOtpError, "Check if incorrect OTP Message Displayed");
 	}
 
 	public boolean isOtpFieldEmptyOrUnchanged() {
-		String value = getElementValue(otpInputField,"Get OTP Empty value");
+		String value = getElementValue(otpInputField, "Get OTP Empty value");
 		return value == null || value.isEmpty();
 	}
 
 	public boolean isOtpFieldEmptyfterAlphabetEntry() {
-		String value = getElementValue(otpInputField,"Get empty Value after entering Alphabet");
+		String value = getElementValue(otpInputField, "Get empty Value after entering Alphabet");
 		return value == null || value.isEmpty();
 	}
 
 	public boolean isOtpFieldsNumericOnly() {
 		for (WebElement field : otpInputFields) {
-			String value = getElementValue(field,"Get Value of OTP Value");
+			String value = getElementValue(field, "Get Value of OTP Value");
 			if (value != null && !value.matches("\\d*")) {
 				return false;
 			}
@@ -452,7 +453,7 @@ public class RegistrationPage extends BasePage {
 	}
 
 	public boolean isVerifyOtpButtonEnabled() {
-		return isButtonEnabled(verifyOtpButton,"Check if Verify OTP button is Enabled");
+		return isButtonEnabled(verifyOtpButton, "Check if Verify OTP button is Enabled");
 	}
 
 	public boolean isSuccessScreenDisplayed() {
@@ -464,7 +465,7 @@ public class RegistrationPage extends BasePage {
 	}
 
 	public boolean iSuccessMessageDisplayed() {
-		return isElementVisible(successMessage,"Check if Success Message is Displayed");
+		return isElementVisible(successMessage, "Check if Success Message is Displayed");
 	}
 
 	public boolean isContinueButtonDisplayed() {
@@ -472,15 +473,15 @@ public class RegistrationPage extends BasePage {
 	}
 
 	public boolean isFailureHeaderDisplayed() {
-		return isElementVisible(failureHeader,"Check if Failure Header is Displayed" );
+		return isElementVisible(failureHeader, "Check if Failure Header is Displayed");
 	}
 
 	public boolean isFailureMessageDisplayed() {
-		return isElementVisible(failureMessage,"Check if Failure Message is Displayed");
+		return isElementVisible(failureMessage, "Check if Failure Message is Displayed");
 	}
 
 	public boolean isLoginButtonVisible() {
-		return isElementVisible(loginButtonInSignUpFailedScreen,"Check if Login Button is Visible");
+		return isElementVisible(loginButtonInSignUpFailedScreen, "Check if Login Button is Visible");
 	}
 
 	public void clickOnLoginButtonInSignUpFailedScreen() {
@@ -492,7 +493,7 @@ public class RegistrationPage extends BasePage {
 	}
 
 	public void clickOnErrorCloseIcon() {
-		clickOnElement(errorCloseIcon,"Click on Error Close Icon");
+		clickOnElement(errorCloseIcon, "Click on Error Close Icon");
 	}
 
 	public boolean isSetupAccountHeaderVisible() {
@@ -504,7 +505,7 @@ public class RegistrationPage extends BasePage {
 	}
 
 	public boolean isUsernameFieldVisible() {
-		return isElementVisible(usernameField,"Check if Username Field is Visible" );
+		return isElementVisible(getIdentifierFieldElement(), "Check if Username Field is Visible");
 	}
 
 	public boolean isFullNameInKhmerFieldVisible() {
@@ -512,7 +513,7 @@ public class RegistrationPage extends BasePage {
 	}
 
 	public boolean isPasswordFieldVisible() {
-		return isElementVisible(passwordField,"Check if Password Field is Visible");
+		return isElementVisible(passwordField, "Check if Password Field is Visible");
 	}
 
 	public boolean isConfirmPasswordFieldVisible() {
@@ -520,37 +521,38 @@ public class RegistrationPage extends BasePage {
 	}
 
 	public boolean isPasswordToggleIconVisible() {
-		return isElementVisible(passwordToggleIcon,"Check if Password Toggle Icon is Visible");
+		return isElementVisible(passwordToggleIcon, "Check if Password Toggle Icon is Visible");
 	}
 
 	public boolean isPasswordPolicyIconVisible() {
-		return isElementVisible(passwordInfoIcon,"Check if Password Policy Icon is Visible");
+		return isElementVisible(passwordInfoIcon, "Check if Password Policy Icon is Visible");
 	}
 
 	public boolean isTermsCheckboxVisible() {
-		return isElementVisible(termsAndConditionsCheckbox,"Check if Terms Checkbox is Visible");
+		return isElementVisible(termsAndConditionsCheckbox, "Check if Terms Checkbox is Visible");
 	}
 
 	public boolean isSetupContinueButtonVisible() {
-		return isElementVisible(setupContinueButton,"Check if Setup Continue Button is Visible");
+		return isElementVisible(setupContinueButton, "Check if Setup Continue Button is Visible");
 	}
 
 	public String getUsernameFieldValue() {
-		return getElementValue(usernameField,"Get UserName Field value");
+		return getElementValue(getIdentifierFieldElement(), "Get UserName Field value");
 	}
 
 	public boolean isUsernameFieldReadOnly() {
-		String readonly = getElementAttribute(usernameField, "readonly");
-		String disabled = getElementAttribute(usernameField, "disabled");
+		WebElement field = getIdentifierFieldElement();
+		String readonly = getElementAttribute(field, "readonly");
+		String disabled = getElementAttribute(field, "disabled");
 		return readonly != null || disabled != null;
 	}
 
 	public void clickOnLanguageSelectionOption() {
-		clickOnElement(languageSelection,"Click on Lang Selection Option");
+		clickOnElement(languageSelection, "Click on Lang Selection Option");
 	}
 
 	public void clickOnKhmerLanguage() {
-		clickOnElement(khmerLanguageSelection,"Click on Khmer Language");
+		clickOnElement(khmerLanguageSelection, "Click on Khmer Language");
 	}
 
 	public void enterFullNameInEnglish(String name) {
@@ -574,11 +576,11 @@ public class RegistrationPage extends BasePage {
 	}
 
 	public void clickOnOutsideNameField() {
-		clickOnElement(setupAccountHeader,"Click on Out side Name field");
+		clickOnElement(setupAccountHeader, "Click on Out side Name field");
 	}
 
 	public boolean isFullNameHasToBeInKhmerErrorDisplayed() {
-		return isElementVisible(fullNameHasToBeInKhmerOnlyError,"Check if Full name has to be Khmenr Error Displayed");
+		return isElementVisible(fullNameHasToBeInKhmerOnlyError, "Check if Full name has to be Khmenr Error Displayed");
 	}
 
 	public void enterOnlySpacesFullName(int length) {
@@ -587,15 +589,15 @@ public class RegistrationPage extends BasePage {
 	}
 
 	public void clickOnEnglishLanguage() {
-		clickOnElement(englishLanguageSelection,"Click On English Language");
+		clickOnElement(englishLanguageSelection, "Click On English Language");
 	}
 
 	public boolean isPleaseEnterValidUsernameErrorDisplayed() {
-		return isElementVisible(pleaseEnterValidNameError,"Check if Please Enter Valid Username Error is Displayed");
+		return isElementVisible(pleaseEnterValidNameError, "Check if Please Enter Valid Username Error is Displayed");
 	}
 
 	public boolean isLanguageChanged() {
-		return isElementVisible(setupAccountHeader,"Check if Lang change updated");
+		return isElementVisible(setupAccountHeader, "Check if Lang change updated");
 	}
 
 	public String getPasswordFieldPlaceholder() {
@@ -604,11 +606,11 @@ public class RegistrationPage extends BasePage {
 
 	public void enterPassword(String password) {
 		clearField(passwordField);
-		enterText(passwordField, password,"Enter password");
+		enterText(passwordField, password, "Enter password");
 	}
 
 	public boolean isPasswordDoesNotMeetThePolicyErrorDisplayed() {
-		return isElementVisible(passwordFieldError,"Check if Password Does Not Meet The Policy Error is Displayed");
+		return isElementVisible(passwordFieldError, "Check if Password Does Not Meet The Policy Error is Displayed");
 	}
 
 	public void tabsOutOfField() {
@@ -637,7 +639,8 @@ public class RegistrationPage extends BasePage {
 	}
 
 	public boolean isPasswordAndConfirmPasswordDoesNotMatchErrorDisplayed() {
-		return isElementVisible(confirmPasswordFieldError,"Check if Password And Confirm Password Does Not Match Error Displayed");
+		return isElementVisible(confirmPasswordFieldError,
+				"Check if Password And Confirm Password Does Not Match Error Displayed");
 	}
 
 	public boolean isPasswordFieldMasked() {
@@ -649,7 +652,7 @@ public class RegistrationPage extends BasePage {
 	}
 
 	public void clickOnPasswordUnmaskIcon() {
-		clickOnElement(passwordToggleIcon,"Click on Password Unmask Icon");
+		clickOnElement(passwordToggleIcon, "Click on Password Unmask Icon");
 	}
 
 	public boolean isPasswordFieldUnmasked() {
@@ -657,7 +660,7 @@ public class RegistrationPage extends BasePage {
 	}
 
 	public void clickOnConfirmPasswordUnmaskIcon() {
-		clickOnElement(confirmPasswordToggleIcon,"Click on Confirm Password Unmask Icon");
+		clickOnElement(confirmPasswordToggleIcon, "Click on Confirm Password Unmask Icon");
 	}
 
 	public boolean isConfirmPasswordFieldUnmasked() {
@@ -665,7 +668,7 @@ public class RegistrationPage extends BasePage {
 	}
 
 	public void clickOnPasswordInfoIcon() {
-		clickOnElement(passwordInfoIcon,"Click on Password Info Icon");
+		clickOnElement(passwordInfoIcon, "Click on Password Info Icon");
 	}
 
 	public String getPasswordTooltipText() {
@@ -673,7 +676,7 @@ public class RegistrationPage extends BasePage {
 	}
 
 	public void clickOnFullNameInKhmerInfoIcon() {
-		clickOnElement(fullNameInKhmerInfoIcon,"Click on Full Name In Khmer Info Icon ");
+		clickOnElement(fullNameInKhmerInfoIcon, "Click on Full Name In Khmer Info Icon ");
 	}
 
 	public boolean isFullNameInKhmerTooltipMessage() {
@@ -699,11 +702,11 @@ public class RegistrationPage extends BasePage {
 	}
 
 	public void clickOnTermsAndConditionLink() {
-		clickOnElement(termsAndConditionsLink,"Click on Terms And Conditions Link");
+		clickOnElement(termsAndConditionsLink, "Click on Terms And Conditions Link");
 	}
 
 	public boolean isTermsAndConditionsPopupDisplayed() {
-		return isElementVisible(termsAndConditionsPopUp,"Check if Terms And Conditions Popup Displayed" );
+		return isElementVisible(termsAndConditionsPopUp, "Check if Terms And Conditions Popup Displayed");
 	}
 
 	public void clickOnClosePopupIcon() {
@@ -711,11 +714,11 @@ public class RegistrationPage extends BasePage {
 	}
 
 	public boolean isSetupAccountPageVisible() {
-		return isElementVisible(setupAccountHeader,"Check if Setup Account Page Visible");
+		return isElementVisible(setupAccountHeader, "Check if Setup Account Page Visible");
 	}
 
 	public void clickOnPrivacyPolicyLink() {
-		clickOnElement(privacyPolicyLink,"Click on Privacy Policy Link");
+		clickOnElement(privacyPolicyLink, "Click on Privacy Policy Link");
 	}
 
 	public boolean isPrivacyPolicyPopupDisplayed() {
@@ -740,15 +743,15 @@ public class RegistrationPage extends BasePage {
 	public WebElement getTermsAndConditionsCheckbox() {
 		return termsAndConditionsCheckbox;
 	}
-	
+
 	public boolean isFieldRequiredErrorMessageDisplayed() {
-		return isElementVisible(consentFieldRequiredErrorMessage,"Check error is Displayed");
+		return isElementVisible(consentFieldRequiredErrorMessage, "Check error is Displayed");
 	}
 
 	public void clickOnSetupAccountContinueButton() {
 		clickOnElement(setupContinueButton, "Click on Setup Account continue button");
 	}
-	
+
 	public void clickOnContinueButtonInSetupAccountScreen() {
 		// NOTE: This button requires both a JS click and a Selenium click due to
 		// layout shifting and delayed interactability. A single click fails
@@ -760,14 +763,14 @@ public class RegistrationPage extends BasePage {
 	}
 
 	public boolean isScreenDisplayedInEnglishLang() {
-		return isElementVisible(screenInEnglishLanguage,"Check if Screen Displayed in English");
+		return isElementVisible(screenInEnglishLanguage, "Check if Screen Displayed in English");
 	}
 
 	public String getOtpResendAttemptsText(int expectedRemainingAttempts) {
 		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
 		wait.until(ExpectedConditions.textToBePresentInElement(remainingAttemptsMeassage,
 				String.valueOf(expectedRemainingAttempts)));
-		return getText(remainingAttemptsMeassage,"Get text from Remaing attempts");
+		return getText(remainingAttemptsMeassage, "Get text from Remaing attempts");
 	}
 
 	public boolean isAccountCreatedSuccessfullyMessageDisplayed() {
@@ -778,11 +781,11 @@ public class RegistrationPage extends BasePage {
 	}
 
 	public boolean isLoginButtonDisplayed() {
-		return isElementVisible(loginButtonInSuccessScreen,"Check if Login Button Displayed");
+		return isElementVisible(loginButtonInSuccessScreen, "Check if Login Button Displayed");
 	}
 
 	public void clickOnLoginButtonInSuccessScreen() {
-		clickOnElement(loginButtonInSuccessScreen,"Click on Login Button in Success Screen");
+		clickOnElement(loginButtonInSuccessScreen, "Click on Login Button in Success Screen");
 	}
 
 	public boolean isLoginScreenDisplayed() {
@@ -790,11 +793,11 @@ public class RegistrationPage extends BasePage {
 	}
 
 	public boolean isOkayButtonDisplayed() {
-		return isElementVisible(loginButtonInSuccessScreen,"Check if Okay Button Displayed");
+		return isElementVisible(loginButtonInSuccessScreen, "Check if Okay Button Displayed");
 	}
 
 	public void clickOnOkayButtonInSuccessScreen() {
-		clickOnElement(loginButtonInSuccessScreen,"Click on Okay button on Success screen");
+		clickOnElement(loginButtonInSuccessScreen, "Click on Okay button on Success screen");
 	}
 
 	public boolean isAccountSetupInProgressDisplayed() {
@@ -805,14 +808,15 @@ public class RegistrationPage extends BasePage {
 			return false;
 		}
 	}
-	
+
 	public void clickOnUploadPhoto() {
-		clickOnElement(uploadPhoto,"click on upload photo section");
+		clickOnElement(uploadPhoto, "click on upload photo section");
 	}
 
 	public void clickOnCaptureButton() {
-		new Actions(driver).pause(Duration.ofSeconds(1)).perform();
-		clickOnElement(captureButton,"click on capture button");
+		new WebDriverWait(driver, Duration.ofSeconds(10))
+				.until(ExpectedConditions.elementToBeClickable(captureButton));
+		clickOnElement(captureButton, "click on capture button");
 	}
 
 }

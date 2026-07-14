@@ -22,10 +22,12 @@ Feature: Esignet Login Options Page
 
     When user enter valid mobile number in the mobile number field
     Then validate that the Continue button enabled
+    Then mark otp request timestamp
     And user clicks on the Continue button
     Then verify user is navigated to the OTP screen
     When user enters the correct OTP as input
     And user clicks on the Verify OTP button
+    Then remove otp request timestamp
     And verify user is redirected to the success screen
     Then user clicks on continue button on success page
     And user redirected to registration page

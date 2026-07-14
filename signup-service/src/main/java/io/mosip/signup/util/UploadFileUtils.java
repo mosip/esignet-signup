@@ -1,17 +1,12 @@
 package io.mosip.signup.util;
 import com.fasterxml.jackson.databind.JsonNode;
-import io.mosip.signup.exception.SignUpException;
-import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 import java.util.stream.StreamSupport;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 public class UploadFileUtils {
     public static final String UNKNOWN_MIME_TYPE = "application/octet-stream";
-    private static final String ZIP_SIGNATURE = "504B0304";
     private static final Map<String, String> MAGIC_SIGNATURES = Map.of(
             "89504E47", "image/png",
             "FFD8FF", "image/jpeg",
@@ -23,12 +18,9 @@ public class UploadFileUtils {
         if (inputStream == null) {
             return UNKNOWN_MIME_TYPE;
         }
-        // Wrap to support mark/reset for ZIP files
-        BufferedInputStream bis = new BufferedInputStream(inputStream);
-        bis.mark(Integer.MAX_VALUE);
 
         byte[] headerBytes = new byte[12];
-        int bytesRead = bis.read(headerBytes);
+        int bytesRead = inputStream.read(headerBytes);
 
         if (bytesRead < 4) {
             return UNKNOWN_MIME_TYPE;
@@ -47,12 +39,6 @@ public class UploadFileUtils {
             return "image/webp";
         }
 
-        // Check for ZIP-based formats
-        if (hexString.startsWith(ZIP_SIGNATURE)) {
-            bis.reset();
-            return detectOfficeFormat(bis);
-        }
-
         // Check other signatures
         for (Map.Entry<String, String> entry : MAGIC_SIGNATURES.entrySet()) {
             if (hexString.startsWith(entry.getKey())) {
@@ -60,29 +46,6 @@ public class UploadFileUtils {
             }
         }
 
-        return UNKNOWN_MIME_TYPE;
-    }
-
-    private static String detectOfficeFormat(InputStream inputStream) {
-        try (ZipInputStream zis = new ZipInputStream(inputStream)) {
-            ZipEntry entry;
-            while ((entry = zis.getNextEntry()) != null) {
-                String entryName = entry.getName();
-
-                // DOCX: contains word/document.xml
-                if ("word/document.xml".equalsIgnoreCase(entryName)) {
-                    return "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
-                }
-                // PPTX: contains ppt/presentation.xml
-                if ("ppt/presentation.xml".equalsIgnoreCase(entryName)) {
-                    return "application/vnd.openxmlformats-officedocument.presentationml.presentation";
-                }
-
-                zis.closeEntry();
-            }
-        } catch (IOException ignored) {
-            throw new SignUpException(ErrorConstants.UPLOAD_FAILED);
-        }
         return UNKNOWN_MIME_TYPE;
     }
 

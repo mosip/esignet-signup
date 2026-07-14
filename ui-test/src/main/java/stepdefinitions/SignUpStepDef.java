@@ -16,8 +16,7 @@ import base.BaseTest;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import io.mosip.testrig.apirig.testrunner.AllNotificationListner;
-import io.mosip.testrig.apirig.testrunner.OTPListener;
+import io.mosip.testrig.apirig.utils.NotificationListener;
 import pages.LoginOptionsPage;
 import pages.RegistrationPage;
 import pages.SignUpPage;
@@ -201,6 +200,16 @@ public class SignUpStepDef {
 		registrationPage.clickOnContinueButton();
 	}
 
+	@Then("mark otp request timestamp")
+	public void markOtpRequestTimestamp() {
+		NotificationListener.markRequestStart();
+	}
+
+	@Then("remove otp request timestamp")
+	public void removeOtpRequestTimestamp() {
+		NotificationListener.markRequestRemove();
+	}
+
 	@Then("verify user is navigated to the OTP screen")
 	public void userIsNavigatedToOtpPage() {
 		assertTrue(registrationPage.isEnterOtpPageDisplayed());
@@ -348,7 +357,8 @@ public class SignUpStepDef {
 
 	@When("user enters the complete 6-digit OTP")
 	public void userEntersOtp() {
-		registrationPage.enterOtp(OTPListener.getOtp(lastGeneratedMobileNumber));
+		String number = EsignetUtil.normalizeIdentifierForOtp(lastGeneratedIdentifier);
+		registrationPage.enterOtp(NotificationListener.getOtp(number));
 	}
 
 	@Then("verify OTP is masked as soon as it is entered")
@@ -458,7 +468,7 @@ public class SignUpStepDef {
 
 	@Then("verify the Username field is auto-filled with the verified mobile number")
 	public void verifyUsernameIsAutoFilledWithMobileNumber() {
-		String expectedMobile = registrationPage.getLastEnteredMobileNumber();
+		String expectedMobile = registrationPage.getLastEnteredIdentifier();
 		String actualUsername = registrationPage.getUsernameFieldValue();
 		assertEquals(expectedMobile, actualUsername);
 	}
@@ -843,9 +853,9 @@ public class SignUpStepDef {
 
 	@Then("verify notification is received for otp requested")
 	public void verifyOtpNotificationReceived() {
-		String notification = AllNotificationListner.getNotification(lastGeneratedMobileNumber);
+		String notification = NotificationListener.getNotification(lastGeneratedIdentifier);
 		boolean isNotificationReceived = notification != null && !notification.isEmpty();
-		Assert.assertTrue(isNotificationReceived, "OTP notification not received for: " + lastGeneratedMobileNumber);
+		Assert.assertTrue(isNotificationReceived, "OTP notification not received for: " + lastGeneratedIdentifier);
 	}
 
 	@Then("user accepts the Terms and Condition checkbox")
@@ -855,23 +865,26 @@ public class SignUpStepDef {
 
 	@Then("verify registration success notification is received")
 	public void verifyRegistrationSuccessNotificationReceived() {
-		String notification = AllNotificationListner.getNotification(lastGeneratedMobileNumber);
+		String notification = NotificationListener.getNotification(lastGeneratedIdentifier);
 		boolean isNotificationReceived = notification != null && !notification.isEmpty();
 		Assert.assertTrue(isNotificationReceived,
-				"Registration success notification not received for: " + lastGeneratedMobileNumber);
+				"Registration success notification not received for: " + lastGeneratedIdentifier);
 	}
 
-	private String lastGeneratedMobileNumber;
+	private String lastGeneratedIdentifier;
 
 	@When("user enters valid_mobile_number in the mobile number text box")
 	public void userEntersValidMobileNumber() {
-		lastGeneratedMobileNumber = EsignetUtil.generateMobileNumberFromRegex();
-		registrationPage.enterMobileNumber(lastGeneratedMobileNumber);
+		String fieldId = EsignetUtil.getIdentifierFieldId();
+		String regex = EsignetUtil.getRegexForField(fieldId);
+		String value = EsignetUtil.generateValueFromRegex(regex);
+		lastGeneratedIdentifier = value;
+		registrationPage.enterIdentifierValue(value);
 	}
 
 	@When("user enters already registered number in the mobile number text box")
 	public void userEntersRegisteredMobileNumber() {
-		registrationPage.enterMobileNumber(lastGeneratedMobileNumber);
+		registrationPage.enterIdentifierValue(lastGeneratedIdentifier);
 	}
 
 	private String lastGeneratedPassword;

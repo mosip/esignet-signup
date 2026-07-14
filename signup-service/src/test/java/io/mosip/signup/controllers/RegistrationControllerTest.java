@@ -205,7 +205,7 @@ public class RegistrationControllerTest {
                 .andExpect(jsonPath("$.errors").isNotEmpty())
                 .andExpect(jsonPath("$.errors[0].errorCode").value(ErrorConstants.INVALID_CHALLENGE))
                 .andExpect(jsonPath("$.errors[0].errorMessage")
-                        .value(ErrorConstants.INVALID_CHALLENGE));
+                        .value("Invalid Authentication challenge provided."));
     }
     @Test
     public void doVerifyChallenge_withInvalidChallengeFormat_returnErrorResponse() throws Exception {
@@ -397,7 +397,7 @@ public class RegistrationControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.errors").isNotEmpty())
                 .andExpect(jsonPath("$.errors[0].errorCode").value(ErrorConstants.INVALID_TRANSACTION))
-                .andExpect(jsonPath("$.errors[0].errorMessage").value(ErrorConstants.INVALID_TRANSACTION));
+                .andExpect(jsonPath("$.errors[0].errorMessage").value("Invalid transaction or transaction expired."));
     }
 
     @Test

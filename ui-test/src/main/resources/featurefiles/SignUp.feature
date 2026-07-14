@@ -118,11 +118,13 @@ Scenario Outline: OTP input acceptance and Verify button state
   
   When user clicks the back button on the OTP screen
   And user enters valid_mobile_number in the mobile number text box
+  Then mark otp request timestamp
   And user clicks on the Continue button
   When user enters the complete 6-digit OTP
   Then verify OTP is masked as soon as it is entered
   And validate the verify button is enabled
   And user clicks on the Verify OTP button
+  Then remove otp request timestamp
   And verify user is redirected to the success screen
   And verify the header Successful! is displayed
   And verify the message Your mobile number has been verified successfully. Please continue to setup your account and complete the registration process. is displayed
@@ -138,9 +140,11 @@ Scenario Outline: Completing Registration Process
   Given user directly navigates to sign-up portal URL
   And user clicks on Register button
   And user enters valid_mobile_number in the mobile number text box
+  Then mark otp request timestamp
   And user clicks on the Continue button
   When user enters the complete 6-digit OTP
   And user clicks on the Verify OTP button
+  Then remove otp request timestamp
   And verify user is redirected to the success screen
   When user click on Continue button in Success Screen
   Then verify setup account screen is displayed with header Setup Account
@@ -283,9 +287,11 @@ Scenario Outline: Completing Registration Process
   #Then verify user is redirected back to the Registration screen
   
   #And user enters valid_mobile_number in the mobile number text box
+  #Then mark otp request timestamp
   #And user clicks on the Continue button
   #When user enters the complete 6-digit OTP
   #And user clicks on the Verify OTP button
+  #Then remove otp request timestamp
   #And user click on Continue button in Success Screen
   
   #And user fills the signup form using UI specification
@@ -299,9 +305,11 @@ Scenario Outline: Completing Registration Process
   Then verify user is redirected back to the Registration screen
   
   When user enters already registered number in the mobile number text box
+  Then mark otp request timestamp
   And user clicks on the Continue button
   When user enters the complete 6-digit OTP
   And user clicks on the Verify OTP button
+  Then remove otp request timestamp
   Then verify Sign-Up Failed! is displayed as a heading
   And verify the failure message The provided mobile number is already registered. Please use the Login option to proceed. shown
   And verify a Login button is visible
@@ -318,12 +326,13 @@ Scenario Outline: Verify sign-up portal by navigating directly through sign-up U
   Then verify user is navigated to the Mobile Number Registration screen 
   
   When user enters valid_mobile_number in the mobile number text box
+  Then mark otp request timestamp
   And user clicks on the Continue button
   Then verify user is navigated to the OTP screen
   When user enters the complete 6-digit OTP
   And user clicks on the Verify OTP button 
   Then user click on Continue button in Success Screen
-  
+  Then remove otp request timestamp
   And user fills the signup form using UI specification
   When user clicks on Continue button in Setup Account Page
   
@@ -339,6 +348,7 @@ Scenario Outline: Verify sign-up portal by navigating directly through sign-up U
   Given user directly navigates to sign-up portal URL
   And user clicks on Register button
   And user enters valid_mobile_number in the mobile number text box
+  Then mark otp request timestamp
   And user clicks on the Continue button
   Then verify notification is received for otp requested
   When user enters the complete 6-digit OTP
@@ -347,3 +357,4 @@ Scenario Outline: Verify sign-up portal by navigating directly through sign-up U
   And user fills the signup form using UI specification
   And user clicks on Continue button in Setup Account Page
   And verify registration success notification is received
+  Then remove otp request timestamp

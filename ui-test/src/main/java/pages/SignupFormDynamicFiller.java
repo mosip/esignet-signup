@@ -40,8 +40,9 @@ public class SignupFormDynamicFiller {
 				continue;
 			}
 
-			List<WebElement> matchingElements = driver
-					.findElements(By.xpath("//*[@id='" + fieldId + "' or @data-field-id='" + fieldId + "']"));
+			List<WebElement> matchingElements = driver.findElements(By.xpath(
+					"//*[self::input or self::select or self::textarea][@id='" + fieldId + "' or @data-field-id='"
+							+ fieldId + "']"));
 
 			if (matchingElements.isEmpty()) {
 				logger.info("No element found for fieldId: " + fieldId);
@@ -85,6 +86,8 @@ public class SignupFormDynamicFiller {
 			if ("textbox".equalsIgnoreCase(controlType) && fieldId.toLowerCase().contains("name")) {
 				EsignetUtil.FullName names = EsignetUtil.generateNamesFromUiSpec();
 
+				String mandatoryLang = EsignetUtil.getMandatoryLanguage();
+
 				for (WebElement nameField : matchingElements) {
 					String lang = nameField.getAttribute("data-lang");
 
@@ -94,7 +97,11 @@ public class SignupFormDynamicFiller {
 						nameField.sendKeys(names.english);
 					} else if ("khm".equalsIgnoreCase(lang)) {
 						nameField.sendKeys(names.khmer);
-						RegisteredDetails.setFullName(names.khmer);
+					}
+
+					if (mandatoryLang.equalsIgnoreCase(lang)) {
+						String value = "eng".equalsIgnoreCase(lang) ? names.english : names.khmer;
+						RegisteredDetails.setFullName(value);
 					}
 				}
 				continue;
@@ -131,15 +138,14 @@ public class SignupFormDynamicFiller {
 			if ("date".equalsIgnoreCase(controlType)) {
 
 				String dob = EsignetUtil.getRandomDOB().replace("-", "/");
-
-				WebElement visibleDob = driver.findElement(By.id("dob"));
-
+				WebElement dateField = element;
 				JavascriptExecutor js = (JavascriptExecutor) driver;
 
-				js.executeScript("arguments[0].removeAttribute('readonly')", visibleDob);
+				js.executeScript("arguments[0].scrollIntoView({block:'center'});", dateField);
+				js.executeScript("arguments[0].removeAttribute('readonly');", dateField);
 
-				visibleDob.clear();
-				visibleDob.sendKeys(dob);
+				dateField.clear();
+				dateField.sendKeys(dob);
 
 				continue;
 			}
@@ -162,7 +168,9 @@ public class SignupFormDynamicFiller {
 						"//input[@type='radio' and (@name='" + fieldId + "' or @data-field-id='" + fieldId + "')]"));
 
 				if (!radios.isEmpty()) {
-					radios.get(new Random().nextInt(radios.size())).click();
+					WebElement radio = radios.get(new Random().nextInt(radios.size()));
+					((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({block:'center'});", radio);
+					((JavascriptExecutor) driver).executeScript("arguments[0].click();", radio);
 				}
 				continue;
 			}
@@ -190,8 +198,8 @@ public class SignupFormDynamicFiller {
 		}
 
 		if (driver.getClass().getName().contains("RemoteWebDriver")) {
-	        ((RemoteWebDriver) driver).setFileDetector(new LocalFileDetector());
-	    }
+			((RemoteWebDriver) driver).setFileDetector(new LocalFileDetector());
+		}
 
 		WebElement uploadInput = driver.findElement(By.xpath("//input[@type='file' and (contains(@id,'" + fieldId
 				+ "') or contains(@data-field-id,'" + fieldId + "'))]"));

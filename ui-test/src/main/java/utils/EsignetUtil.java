@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Level;
@@ -616,43 +617,55 @@ public class EsignetUtil extends AdminTestUtil {
 		if (regex == null || regex.isEmpty()) {
 			return "defaultValue";
 		}
-
 		Random random = new Random();
-
 		StringBuilder chars = new StringBuilder();
+
 		if (regex.contains("A-Z"))
 			chars.append("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+
 		if (regex.contains("a-z"))
 			chars.append("abcdefghijklmnopqrstuvwxyz");
-		if (regex.contains("0-9") || regex.contains("\\d"))
+
+		if (regex.contains("\\d") || regex.contains("0-9"))
 			chars.append("0123456789");
 
-		if (chars.length() == 0) {
+		if (chars.length() == 0)
 			chars.append("abcdefghijklmnopqrstuvwxyz");
-		}
 
 		int min = 8, max = 8;
-		if (regex.contains("{") && regex.contains("}")) {
-			String range = regex.substring(regex.indexOf('{') + 1, regex.indexOf('}'));
-			String[] parts = range.split(",");
-			try {
-				if (parts.length == 2) {
-					min = Integer.parseInt(parts[0].trim());
-					max = Integer.parseInt(parts[1].trim());
-				} else {
-					min = max = Integer.parseInt(parts[0].trim());
+
+		try {
+			Matcher matcher = Pattern.compile("\\{(\\d*)(?:,(\\d*))?\\}").matcher(regex);
+
+			if (matcher.find()) {
+				String minStr = matcher.group(1);
+				String maxStr = matcher.group(2);
+
+				min = minStr.isEmpty() ? 1 : Integer.parseInt(minStr);
+				max = (maxStr == null || maxStr.isEmpty()) ? min : Integer.parseInt(maxStr);
+
+				if (max < min) {
+					max = min;
 				}
-			} catch (NumberFormatException ignored) {
 			}
+		} catch (Exception e) {
+			min = 8;
+			max = 8;
 		}
 
-		int length = min + random.nextInt(Math.max(1, max - min + 1));
-		StringBuilder sb = new StringBuilder();
+		int length = min + random.nextInt(max - min + 1);
+
+		StringBuilder value = new StringBuilder();
+
 		for (int i = 0; i < length; i++) {
-			sb.append(chars.charAt(random.nextInt(chars.length())));
+			value.append(chars.charAt(random.nextInt(chars.length())));
 		}
 
-		return sb.toString();
+		if (regex.contains("(?!0)") && value.charAt(0) == '0') {
+			value.setCharAt(0, (char) ('1' + random.nextInt(9)));
+		}
+
+		return value.toString();
 	}
 
 	public static Map<String, Map<String, Object>> getUiSpecFields() {
@@ -691,6 +704,61 @@ public class EsignetUtil extends AdminTestUtil {
 
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 		return dob.format(formatter);
+	}
+
+	public static String getIdentifierFieldId() {
+		return getValueFromSignupActuator("applicationConfig: [classpath:/application-default.properties]",
+				"mosip.signup.identifier.name");
+	}
+
+	public static String getRemoveCountryCode() {
+		return getValueFromSignupActuator("applicationConfig: [classpath:/application-default.properties]",
+				"mosip.signup.sms-notification.remove-country-code");
+	}
+
+	public static String getIdentifierPrefix() {
+		return getValueFromSignupActuator("applicationConfig: [classpath:/application-default.properties]",
+				"mosip.signup.identifier.prefix");
+	}
+
+	public static String normalizeIdentifierForOtp(String number) {
+		boolean removeCode = Boolean.parseBoolean(getRemoveCountryCode());
+		String prefix = getIdentifierPrefix();
+		if (prefix == null) {
+			prefix = "";
+		}
+
+		prefix = removeLeadingPlusSigns(prefix);
+		number = removeLeadingPlusSigns(number);
+
+		if (removeCode) {
+			if (number.startsWith(prefix)) {
+				number = number.substring(prefix.length());
+			}
+		} else {
+			if (!number.startsWith(prefix)) {
+				number = prefix + number;
+			}
+		}
+
+		return number;
+	}
+
+	public static String getMandatoryLanguage() {
+		JSONObject response = getSignupUISpecResponse().optJSONObject("response");
+		if (response == null)
+			return "eng";
+
+		JSONObject langObj = response.optJSONObject("language");
+		if (langObj == null)
+			return "eng";
+
+		JSONArray mandatory = langObj.optJSONArray("mandatory");
+		if (mandatory != null && mandatory.length() > 0) {
+			return mandatory.getString(0);
+		}
+
+		return "eng"; // fallback
 	}
 
 }
