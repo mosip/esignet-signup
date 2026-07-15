@@ -30,6 +30,20 @@
 			<class name="io.mosip.testrig.apirig.signup.testscripts.SimplePost" />
 		</classes>
 	</test>
+	<test name="UploadFile">
+		<parameter name="ymlFile"
+			value="signup/UploadFile/UploadFile.yml" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.signup.testscripts.SimplePost" />
+		</classes>
+	</test>
+	<test name="UploadFileNegTC">
+		<parameter name="ymlFile"
+			value="signup/UploadFileNegTC/UploadFileNegTC.yml" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.signup.testscripts.SimplePost" />
+		</classes>
+	</test>	
 	<test name="RegisterUser">
 		<parameter name="ymlFile"
 			value="signup/RegisterUser/RegisterUser.yml" />

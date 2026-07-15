@@ -1,0 +1,324 @@
+UploadFileNegTC:
+   Signup_ESignet_GenerateChallenge_STransId_UploadFileNegShared_Pos:
+      endPoint: /v1/signup/registration/generate-challenge
+      uniqueIdentifier: TC_ESignet_UploadFileNegTC_Shared_GenerateChallenge
+      description: Generate a challenge for a transaction shared by the request-level upload-file negative tests
+      role: resident
+      restMethod: post
+      inputTemplate: signup/GenerateChallenge/GenerateChallenge
+      outputTemplate: signup/GenerateChallenge/GenerateChallengeResult
+      input: '{
+   "identifier": "$PHONENUMBERFROMREGEXFORSIGNUP$",
+   "captchaToken": "",
+   "purpose": "REGISTRATION",
+   "requestTime": "$TIMESTAMP$"
+}'
+      output: '{
+  "status":"SUCCESS"
+}'
+
+   Signup_ESignet_VerifyChallenge_STransId_UploadFileNegShared_Pos:
+      endPoint: /v1/signup/registration/verify-challenge
+      uniqueIdentifier: TC_ESignet_UploadFileNegTC_Shared_VerifyChallenge
+      description: Verify the challenge to get a verifiedTransactionID for the request-level upload-file negative tests
+      role: resident
+      restMethod: post
+      additionalDependencies: TC_ESignet_UploadFileNegTC_Shared_GenerateChallenge
+      inputTemplate: signup/VerifyChallenge/VerifyChallenge
+      outputTemplate: signup/VerifyChallenge/VerifyChallengeResult
+      input: '{
+         "headerTransactionID": "$ID:ESignet_GenerateChallenge_STransId_UploadFileNegShared_Pos_TransactionID$",
+         "identifier": "$ID:ESignet_GenerateChallenge_STransId_UploadFileNegShared_Pos_PHONE$",
+         "challenge": "$ID:ESignet_GenerateChallenge_STransId_UploadFileNegShared_Pos_PHONE$@phone",
+         "format": "alpha-numeric",
+         "type": "OTP",
+         "requestTime": "$TIMESTAMP$"
+}'
+      output: '{
+  "status":"SUCCESS"
+}'
+
+   Signup_ESignet_GenerateChallenge_STransId_UploadFileNegValidation_Pos:
+      endPoint: /v1/signup/registration/generate-challenge
+      uniqueIdentifier: TC_ESignet_UploadFileNegTC_Validation_GenerateChallenge
+      description: Generate a challenge for a transaction shared by the upload-file negative tests that fail business validation (invalid field id, invalid file type, empty file)
+      role: resident
+      restMethod: post
+      inputTemplate: signup/GenerateChallenge/GenerateChallenge
+      outputTemplate: signup/GenerateChallenge/GenerateChallengeResult
+      input: '{
+   "identifier": "$PHONENUMBERFROMREGEXFORSIGNUP$",
+   "captchaToken": "",
+   "purpose": "REGISTRATION",
+   "requestTime": "$TIMESTAMP$"
+}'
+      output: '{
+  "status":"SUCCESS"
+}'
+
+   Signup_ESignet_VerifyChallenge_STransId_UploadFileNegValidation_Pos:
+      endPoint: /v1/signup/registration/verify-challenge
+      uniqueIdentifier: TC_ESignet_UploadFileNegTC_Validation_VerifyChallenge
+      description: Verify the challenge to get a verifiedTransactionID for the business-validation upload-file negative tests
+      role: resident
+      restMethod: post
+      additionalDependencies: TC_ESignet_UploadFileNegTC_Validation_GenerateChallenge
+      inputTemplate: signup/VerifyChallenge/VerifyChallenge
+      outputTemplate: signup/VerifyChallenge/VerifyChallengeResult
+      input: '{
+         "headerTransactionID": "$ID:ESignet_GenerateChallenge_STransId_UploadFileNegValidation_Pos_TransactionID$",
+         "identifier": "$ID:ESignet_GenerateChallenge_STransId_UploadFileNegValidation_Pos_PHONE$",
+         "challenge": "$ID:ESignet_GenerateChallenge_STransId_UploadFileNegValidation_Pos_PHONE$@phone",
+         "format": "alpha-numeric",
+         "type": "OTP",
+         "requestTime": "$TIMESTAMP$"
+}'
+      output: '{
+  "status":"SUCCESS"
+}'
+
+   Signup_ESignet_UploadFile_MissingFieldPart_StatusCode_Neg:
+      endPoint: /v1/signup/registration/upload-file
+      uniqueIdentifier: TC_ESignet_UploadFileNegTC_01
+      description: Verify behavior when the required 'field' multipart part is missing; expect a 400 Bad Request response
+      role: resident
+      restMethod: post
+      additionalDependencies: TC_ESignet_UploadFileNegTC_Shared_VerifyChallenge
+      inputTemplate: signup/UploadFile/UploadFile
+      input: '{
+    "verifiedTransactionID": "$ID:ESignet_VerifyChallenge_STransId_UploadFileNegShared_Pos_VTransactionID$",
+    "omitField": true,
+    "filePath": ["$UPLOADFILEPATH$"],
+    "fileKeyName": "file"
+}'
+      output: '400'
+
+   Signup_ESignet_UploadFile_InvalidField_Neg:
+      endPoint: /v1/signup/registration/upload-file
+      uniqueIdentifier: TC_ESignet_UploadFileNegTC_02
+      description: Verify behavior when the 'field' value does not match any UI spec field id; expect a 200 response with errorCode invalid_field
+      role: resident
+      restMethod: post
+      additionalDependencies: TC_ESignet_UploadFileNegTC_Validation_VerifyChallenge
+      inputTemplate: signup/UploadFile/UploadFile
+      outputTemplate: signup/error
+      input: '{
+    "verifiedTransactionID": "$ID:ESignet_VerifyChallenge_STransId_UploadFileNegValidation_Pos_VTransactionID$",
+    "field": "invalidFieldXYZ",
+    "filePath": ["$UPLOADFILEPATH$"],
+    "fileKeyName": "file"
+}'
+      output: '{
+  "errors": [
+    {
+      "errorCode": "invalid_field"
+    }
+  ]
+}'
+
+   Signup_ESignet_UploadFile_InvalidFileType_Neg:
+      endPoint: /v1/signup/registration/upload-file
+      uniqueIdentifier: TC_ESignet_UploadFileNegTC_03
+      description: Verify behavior when the uploaded file's content does not match an accepted file type; expect a 200 response with errorCode invalid_file_type
+      role: resident
+      restMethod: post
+      additionalDependencies: TC_ESignet_UploadFileNegTC_Validation_VerifyChallenge
+      inputTemplate: signup/UploadFile/UploadFile
+      outputTemplate: signup/error
+      input: '{
+    "verifiedTransactionID": "$ID:ESignet_VerifyChallenge_STransId_UploadFileNegValidation_Pos_VTransactionID$",
+    "field": "$UPLOADFILEFIELDID$",
+    "filePath": ["signup/UploadFile/testInvalidFile.txt"],
+    "fileKeyName": "file"
+}'
+      output: '{
+  "errors": [
+    {
+      "errorCode": "invalid_file_type"
+    }
+  ]
+}'
+
+   Signup_ESignet_UploadFile_LargeFileUpload_StatusCode_Neg:
+      endPoint: /v1/signup/registration/upload-file
+      uniqueIdentifier: TC_ESignet_UploadFileNegTC_04
+      description: Verify behavior when the uploaded file exceeds the server's max allowed request size; expect a 413 Payload Too Large response
+      role: resident
+      restMethod: post
+      additionalDependencies: TC_ESignet_UploadFileNegTC_Shared_VerifyChallenge
+      inputTemplate: signup/UploadFile/UploadFile
+      input: '{
+    "verifiedTransactionID": "$ID:ESignet_VerifyChallenge_STransId_UploadFileNegShared_Pos_VTransactionID$",
+    "field": "$UPLOADFILEFIELDID$",
+    "filePath": ["signup/UploadFile/testLargeFile.jpg"],
+    "fileKeyName": "file"
+}'
+      output: '413'
+
+   Signup_ESignet_GenerateChallenge_STransId_UploadFileNeg05_Pos:
+      endPoint: /v1/signup/registration/generate-challenge
+      uniqueIdentifier: TC_ESignet_UploadFileNegTC_05_GenerateChallenge
+      description: Generate a challenge for a dedicated transaction used only by the multiple-files upload test
+      role: resident
+      restMethod: post
+      inputTemplate: signup/GenerateChallenge/GenerateChallenge
+      outputTemplate: signup/GenerateChallenge/GenerateChallengeResult
+      input: '{
+   "identifier": "$PHONENUMBERFROMREGEXFORSIGNUP$",
+   "captchaToken": "",
+   "purpose": "REGISTRATION",
+   "requestTime": "$TIMESTAMP$"
+}'
+      output: '{
+  "status":"SUCCESS"
+}'
+
+   Signup_ESignet_VerifyChallenge_STransId_UploadFileNeg05_Pos:
+      endPoint: /v1/signup/registration/verify-challenge
+      uniqueIdentifier: TC_ESignet_UploadFileNegTC_05_VerifyChallenge
+      description: Verify the challenge to get a verifiedTransactionID for the multiple-files upload test
+      role: resident
+      restMethod: post
+      additionalDependencies: TC_ESignet_UploadFileNegTC_05_GenerateChallenge
+      inputTemplate: signup/VerifyChallenge/VerifyChallenge
+      outputTemplate: signup/VerifyChallenge/VerifyChallengeResult
+      input: '{
+         "headerTransactionID": "$ID:ESignet_GenerateChallenge_STransId_UploadFileNeg05_Pos_TransactionID$",
+         "identifier": "$ID:ESignet_GenerateChallenge_STransId_UploadFileNeg05_Pos_PHONE$",
+         "challenge": "$ID:ESignet_GenerateChallenge_STransId_UploadFileNeg05_Pos_PHONE$@phone",
+         "format": "alpha-numeric",
+         "type": "OTP",
+         "requestTime": "$TIMESTAMP$"
+}'
+      output: '{
+  "status":"SUCCESS"
+}'
+
+   Signup_ESignet_UploadFile_MultipleFiles_OnlyFirstUploaded_Neg:
+      endPoint: /v1/signup/registration/upload-file
+      uniqueIdentifier: TC_ESignet_UploadFileNegTC_05
+      description: Verify that when multiple files are sent under the same field, only the first is uploaded and processed; expect a 200 response with status UPLOADED
+      role: resident
+      restMethod: post
+      additionalDependencies: TC_ESignet_UploadFileNegTC_05_VerifyChallenge
+      inputTemplate: signup/UploadFile/UploadFile
+      outputTemplate: signup/UploadFile/UploadFileResult
+      input: '{
+    "verifiedTransactionID": "$ID:ESignet_VerifyChallenge_STransId_UploadFileNeg05_Pos_VTransactionID$",
+    "field": "$UPLOADFILEFIELDID$",
+    "filePath": ["signup/UploadFile/testPhoto.jpg", "signup/UploadFile/testPhoto2.jpg"],
+    "fileKeyName": "file"
+}'
+      output: '{
+  "status":"UPLOADED"
+}'
+
+   Signup_ESignet_UploadFile_EmptyFile_Neg:
+      endPoint: /v1/signup/registration/upload-file
+      uniqueIdentifier: TC_ESignet_UploadFileNegTC_06
+      description: Verify behavior when an empty (0 byte) file is uploaded; expect a 200 response with errorCode invalid_request
+      role: resident
+      restMethod: post
+      additionalDependencies: TC_ESignet_UploadFileNegTC_Validation_VerifyChallenge
+      inputTemplate: signup/UploadFile/UploadFile
+      outputTemplate: signup/error
+      input: '{
+    "verifiedTransactionID": "$ID:ESignet_VerifyChallenge_STransId_UploadFileNegValidation_Pos_VTransactionID$",
+    "field": "$UPLOADFILEFIELDID$",
+    "filePath": ["signup/UploadFile/testEmptyFile.jpg"],
+    "fileKeyName": "file"
+}'
+      output: '{
+  "errors": [
+    {
+      "errorCode": "invalid_request"
+    }
+  ]
+}'
+
+   Signup_ESignet_UploadFile_MissingFilePart_StatusCode_Neg:
+      endPoint: /v1/signup/registration/upload-file
+      uniqueIdentifier: TC_ESignet_UploadFileNegTC_07
+      description: Verify behavior when the required 'file' multipart part is missing; expect a 400 Bad Request response
+      role: resident
+      restMethod: post
+      additionalDependencies: TC_ESignet_UploadFileNegTC_Shared_VerifyChallenge
+      inputTemplate: signup/UploadFile/UploadFile
+      input: '{
+    "verifiedTransactionID": "$ID:ESignet_VerifyChallenge_STransId_UploadFileNegShared_Pos_VTransactionID$",
+    "field": "$UPLOADFILEFIELDID$",
+    "omitFileParts": true
+}'
+      output: '400'
+
+   Signup_ESignet_UploadFile_InvalidFieldName_StatusCode_Neg:
+      endPoint: /v1/signup/registration/upload-file
+      uniqueIdentifier: TC_ESignet_UploadFileNegTC_08
+      description: Verify behavior when the field part is sent under the wrong multipart key name; expect a 400 Bad Request response
+      role: resident
+      restMethod: post
+      additionalDependencies: TC_ESignet_UploadFileNegTC_Shared_VerifyChallenge
+      inputTemplate: signup/UploadFile/UploadFileCustomFieldKey
+      input: '{
+    "verifiedTransactionID": "$ID:ESignet_VerifyChallenge_STransId_UploadFileNegShared_Pos_VTransactionID$",
+    "filePath": "$UPLOADFILEPATH$",
+    "fileKeyName": "file",
+    "customFieldKey": "fieldName",
+    "customFieldValue": "$UPLOADFILEFIELDID$"
+}'
+      output: '400'
+
+   Signup_ESignet_UploadFile_ExpiredOrInvalidTransaction_Neg:
+      endPoint: /v1/signup/registration/upload-file
+      uniqueIdentifier: TC_ESignet_UploadFileNegTC_09
+      description: Upload a file with an expired/invalid verifiedTransactionID - expect errorCode invalid_transaction
+      role: resident
+      restMethod: post
+      inputTemplate: signup/UploadFile/UploadFile
+      outputTemplate: signup/error
+      input: '{
+    "verifiedTransactionID": "expired-or-invalid-transaction-id-00000000",
+    "field": "$UPLOADFILEFIELDID$",
+    "filePath": ["$UPLOADFILEPATH$"],
+    "fileKeyName": "file"
+}'
+      output: '{
+  "errors": [
+    {
+      "errorCode": "invalid_transaction"
+    }
+  ]
+}'
+
+   Signup_ESignet_UploadFile_SpecialCharsFieldName_StatusCode_Neg:
+      endPoint: /v1/signup/registration/upload-file
+      uniqueIdentifier: TC_ESignet_UploadFileNegTC_10
+      description: Verify behavior when the field part key name contains special characters; expect a 400 Bad Request response
+      role: resident
+      restMethod: post
+      additionalDependencies: TC_ESignet_UploadFileNegTC_Shared_VerifyChallenge
+      inputTemplate: signup/UploadFile/UploadFileCustomFieldKey
+      input: '{
+    "verifiedTransactionID": "$ID:ESignet_VerifyChallenge_STransId_UploadFileNegShared_Pos_VTransactionID$",
+    "filePath": "$UPLOADFILEPATH$",
+    "fileKeyName": "file",
+    "customFieldKey": "fi#ld@!",
+    "customFieldValue": "$UPLOADFILEFIELDID$"
+}'
+      output: '400'
+
+   Signup_ESignet_UploadFile_BlankFieldValue_StatusCode_Neg:
+      endPoint: /v1/signup/registration/upload-file
+      uniqueIdentifier: TC_ESignet_UploadFileNegTC_11
+      description: Verify behavior when the 'field' part is sent with a blank value; expect a 400 Bad Request response
+      role: resident
+      restMethod: post
+      additionalDependencies: TC_ESignet_UploadFileNegTC_Shared_VerifyChallenge
+      inputTemplate: signup/UploadFile/UploadFile
+      input: '{
+    "verifiedTransactionID": "$ID:ESignet_VerifyChallenge_STransId_UploadFileNegShared_Pos_VTransactionID$",
+    "field": "",
+    "filePath": ["$UPLOADFILEPATH$"],
+    "fileKeyName": "file"
+}'
+      output: '400'

@@ -76,6 +76,7 @@ public class SignupConstants {
 	public static final String CHECKBOX = "checkbox";
 	public static final String FILEUPLOAD = "fileupload";
 	public static final String PHOTO = "photo";
+	public static final String ACCEPTED_FILE_TYPES = "acceptedFileTypes";
 	public static final String CONSENT = "consent";
 	public static final String LOCALE = "locale";
 
