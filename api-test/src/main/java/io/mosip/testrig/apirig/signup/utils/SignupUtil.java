@@ -1,5 +1,6 @@
 package io.mosip.testrig.apirig.signup.utils;
 
+import java.io.File;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -1939,7 +1940,164 @@ public class SignupUtil extends AdminTestUtil {
 			throw new RuntimeException("Failed to generate HBS from UI spec", e);
 		}
 	}
-	
+
+	private static JsonNode cachedRegistrationUiSpecSchema;
+
+	/**
+	 * Fetches the registration UI spec's schema node once and caches it, so
+	 * repeated lookups (upload field id, upload file path, etc.) don't each
+	 * trigger a fresh API call to the UI spec endpoint.
+	 */
+	private JsonNode getRegistrationUiSpecSchema() {
+		if (cachedRegistrationUiSpecSchema != null) {
+			return cachedRegistrationUiSpecSchema;
+		}
+		try {
+			kernelAuthLib = new KernelAuthentication();
+			String token = kernelAuthLib.getTokenByRole(GlobalConstants.RESIDENT);
+			String url = SignupConstants.SIGNUP_BASE_URL
+					+ props.getProperty(SignupConstants.SIGNUP_REGISTRATION_UI_SPEC);
+
+			Response response = RestClient.getRequestWithCookie(url, MediaType.APPLICATION_JSON,
+					MediaType.APPLICATION_JSON, GlobalConstants.AUTHORIZATION, token);
+
+			ObjectMapper mapper = new ObjectMapper();
+			JsonNode root = mapper.readTree(response.asString());
+			cachedRegistrationUiSpecSchema = root.path(GlobalConstants.RESPONSE).path(SignupConstants.SCHEMA);
+			return cachedRegistrationUiSpecSchema;
+		} catch (Exception e) {
+			logger.error("Failed to fetch registration UI spec", e);
+			throw new RuntimeException("Failed to fetch registration UI spec", e);
+		}
+	}
+
+	/**
+	 * Reads the registration UI spec and returns the id of the first field whose
+	 * controlType marks it as a file-upload field (e.g. "photoCapture").
+	 */
+	public String getUploadFieldIdFromUiSpec() {
+		JsonNode schemaNode = getRegistrationUiSpecSchema();
+		if (schemaNode.isArray()) {
+			for (JsonNode field : schemaNode) {
+				String controlType = field.path(SignupConstants.CONTROL_TYPE).asText();
+				if (SignupConstants.FILEUPLOAD.equals(controlType) || SignupConstants.PHOTO.equals(controlType)) {
+					return field.path(SignupConstants.ID).asText();
+				}
+			}
+		}
+		throw new RuntimeException("No file-upload field found in UI spec");
+	}
+
+	private static final String DEFAULT_UPLOAD_FILE_PATH = "signup/UploadFile/testPhoto.jpg";
+
+	private static final Map<String, String> UPLOAD_FILE_BY_MIME_TYPE = Map.of(
+			"image/jpeg", DEFAULT_UPLOAD_FILE_PATH,
+			"image/png", "signup/UploadFile/testPhoto.png",
+			"application/pdf", "signup/UploadFile/testFile.pdf");
+
+	private static boolean isFileUploadField(JsonNode field) {
+		String controlType = field.path(SignupConstants.CONTROL_TYPE).asText();
+		return SignupConstants.FILEUPLOAD.equals(controlType) || SignupConstants.PHOTO.equals(controlType);
+	}
+
+	private static String resolveUploadFilePathForField(JsonNode field) {
+		JsonNode acceptedTypesNode = field.path(SignupConstants.ACCEPTED_FILE_TYPES);
+		if (acceptedTypesNode.isArray()) {
+			for (JsonNode mimeTypeNode : acceptedTypesNode) {
+				String filePath = UPLOAD_FILE_BY_MIME_TYPE.get(mimeTypeNode.asText());
+				if (filePath != null) {
+					return filePath;
+				}
+			}
+		}
+		return DEFAULT_UPLOAD_FILE_PATH;
+	}
+
+	/**
+	 * Reads the registration UI spec's acceptedFileTypes for the file-upload
+	 * field and resolves a matching local test asset, so the uploaded file's
+	 * format always matches whatever the spec currently accepts instead of a
+	 * hardcoded extension. Falls back to the jpeg asset when the spec doesn't
+	 * declare acceptedFileTypes or none of them have a matching test asset.
+	 */
+	public String getUploadFilePathFromUiSpec() {
+		JsonNode schemaNode = getRegistrationUiSpecSchema();
+		if (schemaNode.isArray()) {
+			for (JsonNode field : schemaNode) {
+				if (isFileUploadField(field)) {
+					return resolveUploadFilePathForField(field);
+				}
+			}
+		}
+		throw new RuntimeException("No file-upload field found in UI spec");
+	}
+
+	/**
+	 * Posts a multipart/form-data request (text fields + one file) carrying the
+	 * VERIFIED_TRANSACTION_ID cookie, mirroring postRequestWithCookieAuthHeaderAndXsrfToken's
+	 * verifiedTransactionID handling and postWithFormPathParamAndFile's filePath/fileKeyName handling.
+	 */
+	protected Response postRequestWithMultipartFileAndVerifiedTransactionCookie(String url, String jsonInput,
+			String testCaseName, String idKeyName) throws SecurityXSSException {
+		Response response = null;
+		String inputJson = inputJsonKeyWordHandeler(jsonInput, testCaseName);
+		JSONObject request = new JSONObject(inputJson);
+
+		File[] filesToUpload = null;
+		String fileKeyName = null;
+		if (request.has(GlobalConstants.FILE_PATH) && request.has(GlobalConstants.FILE_KEY_NAME)) {
+			Object filePathValue = request.get(GlobalConstants.FILE_PATH);
+			if (filePathValue instanceof JSONArray) {
+				JSONArray filePaths = (JSONArray) filePathValue;
+				filesToUpload = new File[filePaths.length()];
+				for (int i = 0; i < filePaths.length(); i++) {
+					filesToUpload[i] = new File(getResourcePath() + filePaths.get(i).toString());
+				}
+			} else {
+				filesToUpload = new File[] { new File(getResourcePath() + filePathValue.toString()) };
+			}
+			fileKeyName = request.get(GlobalConstants.FILE_KEY_NAME).toString();
+			request.remove(GlobalConstants.FILE_PATH);
+			request.remove(GlobalConstants.FILE_KEY_NAME);
+		} else {
+			logger.error("request doesn't contain filePath and fileKeyName: " + inputJson);
+		}
+
+		String verifiedTransactionId = "";
+		if (request.has(GlobalConstants.VERIFIEDTRANSACTIONID)) {
+			verifiedTransactionId = request.get(GlobalConstants.VERIFIEDTRANSACTIONID).toString();
+			request.remove(GlobalConstants.VERIFIEDTRANSACTIONID);
+		}
+
+		HashMap<String, String> formParams = new HashMap<>();
+		for (String key : request.keySet()) {
+			formParams.put(key, request.get(key).toString());
+		}
+
+		HashMap<String, String> headers = new HashMap<>();
+		headers.put(XSRF_HEADERNAME, BaseTestCase.CSRF_TOKEN);
+
+		logger.info(GlobalConstants.POST_REQ_URL + url);
+		GlobalMethods.reportRequest(headers.toString(), request.toString(), url);
+		try {
+			response = RestClient.postWithMultiPartFileAndVerifiedTransactionCookie(url, formParams, filesToUpload,
+					fileKeyName, MediaType.MULTIPART_FORM_DATA, verifiedTransactionId, headers);
+
+			GlobalMethods.checkXSSProtectionHeader(response, url);
+			GlobalMethods.reportResponse(response.getHeaders().asList().toString(), url, response);
+
+			if (testCaseName.toLowerCase().contains("_sid")) {
+				writeAutoGeneratedId(response, idKeyName, testCaseName);
+			}
+			return response;
+		} catch (SecurityXSSException se) {
+			throw se;
+		} catch (Exception e) {
+			logger.error(GlobalConstants.EXCEPTION_STRING_2 + e);
+			return response;
+		}
+	}
+
 	private static String generateFromRegex(String regex) {
 		try {
 			return genStringAsperRegex(regex); // Generex method

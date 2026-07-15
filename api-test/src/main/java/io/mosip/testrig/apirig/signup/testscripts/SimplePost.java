@@ -117,6 +117,14 @@ public class SimplePost extends SignupUtil implements ITest {
 			}
 		}
 
+		if (inputJson.contains("$UPLOADFILEFIELDID$")) {
+			inputJson = replaceKeywordWithValue(inputJson, "$UPLOADFILEFIELDID$", getUploadFieldIdFromUiSpec());
+		}
+
+		if (inputJson.contains("$UPLOADFILEPATH$")) {
+			inputJson = replaceKeywordWithValue(inputJson, "$UPLOADFILEPATH$", getUploadFilePathFromUiSpec());
+		}
+
 		if (inputJson.contains("$FULLNAMETOREGISTERUSER$")) {
 			String jsonString = SignupUtil.generateFullNameToRegisterUsers(inputJson, testCaseDTO.getTestCaseName());
 			if (!jsonString.isBlank())
@@ -163,7 +171,10 @@ public class SimplePost extends SignupUtil implements ITest {
 			String tempUrl = SignupConfigManager.getEsignetBaseUrl();
 			if (testCaseDTO.getEndPoint().contains("/signup/"))
 				tempUrl = SignupConfigManager.getSignupBaseUrl();
-			if (testCaseName.contains("ESignet_")) {
+			if (testCaseName.contains("_UploadFile_")) {
+				response = postRequestWithMultipartFileAndVerifiedTransactionCookie(tempUrl + testCaseDTO.getEndPoint(),
+						inputJson, testCaseDTO.getTestCaseName(), null);
+			} else if (testCaseName.contains("ESignet_")) {
 				if (testCaseName.contains("ESignet_SendBindingOtp")) {
 					response = postRequestWithCookieAuthHeader(tempUrl + testCaseDTO.getEndPoint(), inputJson,
 							COOKIENAME, testCaseDTO.getRole(), testCaseDTO.getTestCaseName());

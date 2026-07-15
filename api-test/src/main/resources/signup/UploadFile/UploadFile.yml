@@ -1,0 +1,19 @@
+UploadFile:
+   Signup_ESignet_UploadFile_PhotoCapture_smoke_Pos:
+      endPoint: /v1/signup/registration/upload-file
+      uniqueIdentifier: TC_ESignet_UploadFile_01
+      description: Upload the file for the dynamically resolved file-upload field from the UI spec
+      role: resident
+      restMethod: post
+      additionalDependencies: TC_ESignet_VerifyChallenge_01
+      inputTemplate: signup/UploadFile/UploadFile
+      outputTemplate: signup/UploadFile/UploadFileResult
+      input: '{
+    "verifiedTransactionID": "$ID:ESignet_VerifyChallenge_STransId_smoke_Pos_VTransactionID$",
+    "field": "$UPLOADFILEFIELDID$",
+    "filePath": ["$UPLOADFILEPATH$"],
+    "fileKeyName": "file"
+}'
+      output: '{
+  "status":"UPLOADED"
+}'

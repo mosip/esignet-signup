@@ -1,0 +1,1 @@
+this is a plain text file used to verify invalid file type rejection
