@@ -1,0 +1,24 @@
+OAuthConsentNoCapture:
+   Signup_ESignet_OAuthDetailsRequest_V3_ConsentNoCapture_uin_SameClaims_Smoke_sid:
+      endPoint: /v1/esignet/authorization/v3/oauth-details
+      uniqueIdentifier: TC_Signup_ESignet_OAuthConsentNoCapture_01
+      description: Verify OAuth details request succeeds for a new transaction requesting the same claims as a previously consented transaction - expected, a valid transactionId and encodedResp are returned
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/OAuthDetailsRequestV3/OAuthDetailsRequest
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
+        "scope": "openid profile",
+        "responseType": "code",
+        "redirectUri": "$IDPREDIRECTURI$",
+        "display": "popup",
+        "acrValues": "mosip:idp:acr:generated-code",
+        "nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
+        "state": "urlInfo1724138417665",
+        "claimsLocales": "en",
+        "uiLocales": "en-US"
+}'
+      output: '{
+}'

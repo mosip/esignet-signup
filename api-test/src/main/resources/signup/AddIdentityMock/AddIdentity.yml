@@ -210,3 +210,41 @@ AddIdentity:
       output: '{
   "status":"mock identity data created successfully"
 }'
+   Signup_AddIdentity_L2_Valid_forGetSlot_differentIdentifier_Parameters_smoke_Pos:
+      endPoint: /v1/mock-identity-system/identity
+      uniqueIdentifier: TC_IdRepo_Dependent_AddIdentityMock_12
+      description: Verify a new mock identity can be created for the GetSlot different-identifier scenario - expected, identity is created successfully
+      role: idrepo
+      restMethod: post
+      inputTemplate: signup/AddIdentityMock/AddIdentity
+      outputTemplate: signup/AddIdentityMock/addIdentityResult
+      input: '{
+	  "requesttime": "$TIMESTAMP$",
+	  "individualId": "$RANDOMINDIVIDUALIDFORMOCKIDENTITY$",
+	  "pin": "545411",
+	  "email": "$EMAILIDFORMOCKIDENTITY$",
+	  "password": "$PASSWORDFORMOCKIDENTITY$",
+	  "phone": "$PHONEFORMOCKIDENTITY$"
+}'
+      output: '{
+  "status":"mock identity data created successfully"
+}'
+   Signup_AddIdentity_L2_Valid_forPrepareSignupRedirectExpiry_Parameters_smoke_Pos:
+      endPoint: /v1/mock-identity-system/identity
+      uniqueIdentifier: TC_IdRepo_Dependent_AddIdentityMock_13
+      description: Verify a new mock identity can be created for the PrepareSignupRedirect transaction-expiry scenario - expected, identity is created successfully
+      role: idrepo
+      restMethod: post
+      inputTemplate: signup/AddIdentityMock/AddIdentity
+      outputTemplate: signup/AddIdentityMock/addIdentityResult
+      input: '{
+	  "requesttime": "$TIMESTAMP$",
+	  "individualId": "$RANDOMINDIVIDUALIDFORMOCKIDENTITY$",
+	  "pin": "545411",
+	  "email": "$EMAILIDFORMOCKIDENTITY$",
+	  "password": "$PASSWORDFORMOCKIDENTITY$",
+	  "phone": "$PHONEFORMOCKIDENTITY$"
+}'
+      output: '{
+  "status":"mock identity data created successfully"
+}'

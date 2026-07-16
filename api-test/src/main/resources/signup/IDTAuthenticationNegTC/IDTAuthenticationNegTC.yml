@@ -1159,3 +1159,90 @@ IDTAuthenticationNegTC:
         }
     ]
 }'
+   Signup_ESignet_IDTAuthenticationNegTC_AuthToken_Xsrf_Tampered_IdToken_Neg:
+      endPoint: /v1/esignet/authorization/v3/authenticate
+      uniqueIdentifier: TC_ESignet_IDTAuthenticationNegTC_43
+      description: Verify IDT authentication is rejected when the id_token is invalid - expected, invalid_token or auth_failed error
+      role: resident
+      restMethod: post
+      allowedErrorCodes: invalid_token,auth_failed
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/IDTAuthenticationNegTC/IDTAuthenticationNegTC
+      outputTemplate: signup/error
+      input: '{
+        "encodedHash": "$ID:ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdtAuth_Smoke_sid_encodedResp$",
+      	"requestTime": "$TIMESTAMP$",
+      	"pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdtAuth_Smoke_sid_pathFragmentCookie$",
+      	"pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdtAuth_Smoke_sid_transactionId$",
+      	"idtToken": "$ID:ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdtAuth_Smoke_sid_idToken$tampered",
+      	"transactionId": "$ID:ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdtAuth_Smoke_sid_transactionId$",
+      	"individualId": "$IDTINDIVIUALID$",
+      	"authFactorType" : "IDT",
+      	"challenge" : "$IDTCHALLENGE$",
+        "format" : "base64url-encoded-json"
+}'
+      output: '{
+    "errors": [
+        {
+            "errorCode": "invalid_token"
+        }
+    ]
+}'
+   Signup_ESignet_IDTAuthenticationNegTC_AuthToken_Xsrf_Expired_Challenge_Neg:
+      endPoint: /v1/esignet/authorization/v3/authenticate
+      uniqueIdentifier: TC_ESignet_IDTAuthenticationNegTC_44
+      description: Verify IDT authentication is rejected when the challenge value is invalid - expected, auth_failed error
+      role: resident
+      restMethod: post
+      allowedErrorCodes: auth_failed,invalid_token
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/IDTAuthenticationNegTC/IDTAuthenticationNegTC
+      outputTemplate: signup/error
+      input: '{
+        "encodedHash": "$ID:ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdtAuth_Smoke_sid_encodedResp$",
+      	"requestTime": "$TIMESTAMP$",
+      	"pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdtAuth_Smoke_sid_pathFragmentCookie$",
+      	"pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdtAuth_Smoke_sid_transactionId$",
+      	"idtToken": "$ID:ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdtAuth_Smoke_sid_idToken$expiredchallenge",
+      	"transactionId": "$ID:ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdtAuth_Smoke_sid_transactionId$",
+      	"individualId": "$IDTINDIVIUALID$",
+      	"authFactorType" : "IDT",
+      	"challenge" : "$IDTCHALLENGE$",
+        "format" : "base64url-encoded-json"
+}'
+      output: '{
+    "errors": [
+        {
+            "errorCode": "auth_failed"
+        }
+    ]
+}'
+   Signup_ESignet_IDTAuthenticationNegTC_AuthToken_Xsrf_Genuinely_Expired_IdToken_Neg:
+      endPoint: /v1/esignet/authorization/v3/authenticate
+      uniqueIdentifier: TC_ESignet_IDTAuthenticationNegTC_45
+      description: Verify IDT authentication is rejected when the id_token has expired - expected, invalid_token or auth_failed error
+      role: resident
+      restMethod: post
+      allowedErrorCodes: invalid_token,auth_failed
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/IDTAuthenticationNegTC/IDTAuthenticationNegTC
+      outputTemplate: signup/error
+      input: '{
+        "encodedHash": "$ID:ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdtAuth_Smoke_sid_encodedResp$",
+      	"requestTime": "$TIMESTAMP$",
+      	"pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdtAuth_Smoke_sid_pathFragmentCookie$",
+      	"pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdtAuth_Smoke_sid_transactionId$",
+      	"idtToken": "$ID:ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdtAuth_Smoke_sid_idToken$expired",
+      	"transactionId": "$ID:ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdtAuth_Smoke_sid_transactionId$",
+      	"individualId": "$IDTINDIVIUALID$",
+      	"authFactorType" : "IDT",
+      	"challenge" : "$IDTCHALLENGE$",
+        "format" : "base64url-encoded-json"
+}'
+      output: '{
+    "errors": [
+        {
+            "errorCode": "invalid_token"
+        }
+    ]
+}'

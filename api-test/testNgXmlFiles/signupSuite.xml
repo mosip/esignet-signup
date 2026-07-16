@@ -346,6 +346,117 @@
 				name="io.mosip.testrig.apirig.signup.testscripts.GetWithParam" />
 		</classes>
 	</test>
+	<!-- Consent NOCAPTURE verification via claim-details on a different transaction
+		with the same claims. Runs after AuthorizationCode has stored the consent. -->
+	<test name="OAuthConsentNoCapture">
+		<parameter name="ymlFile"
+			value="signup/ClaimDetailsConsentNoCapture/OAuthConsentNoCapture.yml" />
+		<parameter name="idKeyName" value="transactionId,encodedResp" />
+		<classes>
+			<class
+				name="io.mosip.testrig.apirig.signup.testscripts.SimplePostForAutoGenId" />
+		</classes>
+	</test>
+	<test name="AuthenticateConsentNoCapture">
+		<parameter name="ymlFile"
+			value="signup/ClaimDetailsConsentNoCapture/AuthenticateConsentNoCapture.yml" />
+		<classes>
+			<class
+				name="io.mosip.testrig.apirig.signup.testscripts.PostWithAutogenIdWithOtpGenerate" />
+		</classes>
+	</test>
+	<test name="ClaimDetailsConsentNoCapture">
+		<parameter name="ymlFile"
+			value="signup/ClaimDetailsConsentNoCapture/ClaimDetailsConsentNoCapture.yml" />
+		<classes>
+			<class
+				name="io.mosip.testrig.apirig.signup.testscripts.GetWithParam" />
+		</classes>
+	</test>
+	<!-- Trust-framework-mismatch verification via claim-details: claim is available
+		(identity-verified) but requested trust_framework does not match the stored
+		record, so verified must be false. Runs after CompleteSignupVerification. -->
+	<test name="OAuthDetailsTrustFrameworkMismatch">
+		<parameter name="ymlFile"
+			value="signup/ClaimDetailsTrustFrameworkMismatch/OAuthDetailsTrustFrameworkMismatch.yml" />
+		<parameter name="idKeyName" value="transactionId,encodedResp" />
+		<classes>
+			<class
+				name="io.mosip.testrig.apirig.signup.testscripts.SimplePostForAutoGenId" />
+		</classes>
+	</test>
+	<test name="AuthenticateTrustFrameworkMismatch">
+		<parameter name="ymlFile"
+			value="signup/ClaimDetailsTrustFrameworkMismatch/AuthenticateTrustFrameworkMismatch.yml" />
+		<classes>
+			<class
+				name="io.mosip.testrig.apirig.signup.testscripts.PostWithAutogenIdWithOtpGenerate" />
+		</classes>
+	</test>
+	<test name="ClaimDetailsTrustFrameworkMismatch">
+		<parameter name="ymlFile"
+			value="signup/ClaimDetailsTrustFrameworkMismatch/ClaimDetailsTrustFrameworkMismatch.yml" />
+		<classes>
+			<class
+				name="io.mosip.testrig.apirig.signup.testscripts.GetWithParam" />
+		</classes>
+	</test>
+	<!-- profileUpdateRequired verification via claim-details: essential claim is
+		available (identity-verified) and verified, so no profile update should be
+		required. Runs after CompleteSignupVerification. -->
+	<test name="OAuthDetailsProfileUpdateNotRequired">
+		<parameter name="ymlFile"
+			value="signup/ClaimDetailsProfileUpdateNotRequired/OAuthDetailsProfileUpdateNotRequired.yml" />
+		<parameter name="idKeyName" value="transactionId,encodedResp" />
+		<classes>
+			<class
+				name="io.mosip.testrig.apirig.signup.testscripts.SimplePostForAutoGenId" />
+		</classes>
+	</test>
+	<test name="AuthenticateProfileUpdateNotRequired">
+		<parameter name="ymlFile"
+			value="signup/ClaimDetailsProfileUpdateNotRequired/AuthenticateProfileUpdateNotRequired.yml" />
+		<classes>
+			<class
+				name="io.mosip.testrig.apirig.signup.testscripts.PostWithAutogenIdWithOtpGenerate" />
+		</classes>
+	</test>
+	<test name="ClaimDetailsProfileUpdateNotRequired">
+		<parameter name="ymlFile"
+			value="signup/ClaimDetailsProfileUpdateNotRequired/ClaimDetailsProfileUpdateNotRequired.yml" />
+		<classes>
+			<class
+				name="io.mosip.testrig.apirig.signup.testscripts.GetWithParam" />
+		</classes>
+	</test>
+	<!-- profileUpdateRequired verification for a voluntary (essential=false) claim
+		that is not available: profileUpdateRequired only considers essential
+		verified claims, so it must stay false regardless of this claim's status. -->
+	<test name="OAuthDetailsProfileUpdateVoluntary">
+		<parameter name="ymlFile"
+			value="signup/ClaimDetailsProfileUpdateVoluntary/OAuthDetailsProfileUpdateVoluntary.yml" />
+		<parameter name="idKeyName" value="transactionId,encodedResp" />
+		<classes>
+			<class
+				name="io.mosip.testrig.apirig.signup.testscripts.SimplePostForAutoGenId" />
+		</classes>
+	</test>
+	<test name="AuthenticateProfileUpdateVoluntary">
+		<parameter name="ymlFile"
+			value="signup/ClaimDetailsProfileUpdateVoluntary/AuthenticateProfileUpdateVoluntary.yml" />
+		<classes>
+			<class
+				name="io.mosip.testrig.apirig.signup.testscripts.PostWithAutogenIdWithOtpGenerate" />
+		</classes>
+	</test>
+	<test name="ClaimDetailsProfileUpdateVoluntary">
+		<parameter name="ymlFile"
+			value="signup/ClaimDetailsProfileUpdateVoluntary/ClaimDetailsProfileUpdateVoluntary.yml" />
+		<classes>
+			<class
+				name="io.mosip.testrig.apirig.signup.testscripts.GetWithParam" />
+		</classes>
+	</test>
 	<!-- End of Sign up L2 phase test cases -->
 
 	<!-- Start of Sign up L2 phase Negative test cases -->

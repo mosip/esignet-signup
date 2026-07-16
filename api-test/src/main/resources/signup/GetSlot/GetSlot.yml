@@ -110,5 +110,23 @@ GetSlot:
         "disabilityType": "VISION"
 }'
       output: '{
-       
+
+}'
+   Signup_ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_differentIdentifier_Smoke_Sid:
+      endPoint: /v1/signup/identity-verification/slot
+      uniqueIdentifier: TC_ESignet_GetSlot_07
+      description: Verify GetSlot succeeds using a valid transaction created for a different identity than the one used elsewhere in the suite - expected, a slot is allocated successfully
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/GetSlot/GetSlot
+      outputTemplate: signup/GetSlot/GetSlotResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_forGetSlot_differentIdentifier_Smoke_Sid_idvTransactionID$",
+        "verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_forGetSlot_differentIdentifier_Smoke_Sid_id$",
+        "consent": "AGREE"
+}'
+      output: '{
+
 }'

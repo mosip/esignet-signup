@@ -287,3 +287,100 @@ AuthenticateUserV3:
         "sendOtpResTemplate":"signup/SendOtp/SendOtpResult"
     }
 }'
+   Signup_ESignet_AuthenticateUser_V3_AuthToken_Xsrf_uin_Otp_Valid_ClaimNotAvailable_Smoke:
+      endPoint: /v1/esignet/authorization/v3/authenticate
+      uniqueIdentifier: TC_ESignet_AuthenticateUserV3_10
+      description: Verify OTP-based authentication succeeds on a fresh transaction used for the claim-availability check - expected, authentication succeeds and a valid transactionId/encodedResp is returned
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      validityCheckRequired: true
+      additionalDependencies: TC_Signup_ESignet_OAuthDetailsRequestV3_02
+      inputTemplate: signup/AuthenticateUserV3/AuthenticateUser
+      outputTemplate: signup/AuthenticateUserV3/AuthenticateUserResult
+      input: '{
+        "encodedHash": "$ID:ESignet_OAuthDetailsRequest_V3_WithClaimValues_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_encodedResp$",
+      	"requestTime": "$TIMESTAMP$",
+      	"transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_WithClaimValues_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_transactionId$",
+      	"individualId": "$ID:AddIdentity_L2_Valid_Parameters_smoke_Pos_UIN$",
+      	"authFactorType" : "OTP",
+      	"challenge" : "$ID:AddIdentity_L2_Valid_Parameters_smoke_Pos_PHONE$@phone",
+        "sendOtp":{
+    "encodedHash": "$ID:ESignet_OAuthDetailsRequest_V3_WithClaimValues_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_encodedResp$",
+    "requestTime": "$TIMESTAMP$",
+    "transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_WithClaimValues_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_transactionId$",
+    "individualId": "$ID:AddIdentity_L2_Valid_Parameters_smoke_Pos_UIN$",
+    "otpChannels": [{channel: "email"},{channel: "phone"}],
+    "sendOtpReqTemplate": "signup/SendOtp/SendOtp",
+    "sendOtpEndPoint": "/v1/esignet/authorization/send-otp"
+    }
+    }'
+      output: '{
+  "sendOtpResp":{
+        "sendOtpResTemplate":"signup/SendOtp/SendOtpResult"
+    }
+}'
+   Signup_ESignet_AuthenticateUser_V3_AuthToken_Xsrf__uin_Otp_Valid_forGetSlot_differentIdentifier_Smoke:
+      endPoint: /v1/esignet/authorization/v3/authenticate
+      uniqueIdentifier: TC_ESignet_AuthenticateUserV3_11
+      description: Verify OTP-based authentication succeeds for a separate identity used in the GetSlot different-identifier scenario - expected, authentication succeeds and a valid transaction is created
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      validityCheckRequired: true
+      inputTemplate: signup/AuthenticateUserV3/AuthenticateUser
+      outputTemplate: signup/AuthenticateUserV3/AuthenticateUserResult
+      input: '{
+        "encodedHash": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_differentIdentifier_Smoke_sid_encodedResp$",
+      	"requestTime": "$TIMESTAMP$",
+      	"transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_differentIdentifier_Smoke_sid_transactionId$",
+      	"individualId": "$ID:AddIdentity_L2_Valid_forGetSlot_differentIdentifier_Parameters_smoke_Pos_UIN$",
+      	"authFactorType" : "OTP",
+      	"challenge" : "$ID:AddIdentity_L2_Valid_forGetSlot_differentIdentifier_Parameters_smoke_Pos_PHONE$@phone",
+        "sendOtp":{
+    "encodedHash": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_differentIdentifier_Smoke_sid_encodedResp$",
+    "requestTime": "$TIMESTAMP$",
+    "transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_differentIdentifier_Smoke_sid_transactionId$",
+    "individualId": "$ID:AddIdentity_L2_Valid_forGetSlot_differentIdentifier_Parameters_smoke_Pos_UIN$",
+    "otpChannels": [{channel: "email"},{channel: "phone"}],
+    "sendOtpReqTemplate": "signup/SendOtp/SendOtp",
+    "sendOtpEndPoint": "/v1/esignet/authorization/send-otp"
+    }
+    }'
+      output: '{
+  "sendOtpResp":{
+        "sendOtpResTemplate":"signup/SendOtp/SendOtpResult"
+    }
+}'
+   Signup_ESignet_AuthenticateUser_V3_AuthToken_Xsrf__uin_Otp_Valid_forPrepareSignupRedirectExpiry_Smoke:
+      endPoint: /v1/esignet/authorization/v3/authenticate
+      uniqueIdentifier: TC_ESignet_AuthenticateUserV3_12
+      description: Verify OTP-based authentication succeeds for the transaction used in the PrepareSignupRedirect transaction-expiry scenario - expected, authentication succeeds and a valid transaction is created
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      validityCheckRequired: true
+      inputTemplate: signup/AuthenticateUserV3/AuthenticateUser
+      outputTemplate: signup/AuthenticateUserV3/AuthenticateUserResult
+      input: '{
+        "encodedHash": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forPrepareSignupRedirectExpiry_Smoke_sid_encodedResp$",
+      	"requestTime": "$TIMESTAMP$",
+      	"transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forPrepareSignupRedirectExpiry_Smoke_sid_transactionId$",
+      	"individualId": "$ID:AddIdentity_L2_Valid_forPrepareSignupRedirectExpiry_Parameters_smoke_Pos_UIN$",
+      	"authFactorType" : "OTP",
+      	"challenge" : "$ID:AddIdentity_L2_Valid_forPrepareSignupRedirectExpiry_Parameters_smoke_Pos_PHONE$@phone",
+        "sendOtp":{
+    "encodedHash": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forPrepareSignupRedirectExpiry_Smoke_sid_encodedResp$",
+    "requestTime": "$TIMESTAMP$",
+    "transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forPrepareSignupRedirectExpiry_Smoke_sid_transactionId$",
+    "individualId": "$ID:AddIdentity_L2_Valid_forPrepareSignupRedirectExpiry_Parameters_smoke_Pos_UIN$",
+    "otpChannels": [{channel: "email"},{channel: "phone"}],
+    "sendOtpReqTemplate": "signup/SendOtp/SendOtp",
+    "sendOtpEndPoint": "/v1/esignet/authorization/send-otp"
+    }
+    }'
+      output: '{
+  "sendOtpResp":{
+        "sendOtpResTemplate":"signup/SendOtp/SendOtpResult"
+    }
+}'

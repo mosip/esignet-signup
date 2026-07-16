@@ -16,6 +16,23 @@ ClaimDetails:
     }'
       output: '{
 }'
+   Signup_ESignet_ClaimDetails_AuthToken_Xsrf_uin_Valid_ClaimNotAvailable_Smoke:
+      endPoint: /v1/esignet/authorization/claim-details
+      uniqueIdentifier: TC_Signup_ESignet_ClaimDetails_13
+      description: Verify claim availability status returned by claim-details for an identity-verification transaction - expected, claims with no value in the identity record show available=false, all other claims show available=true
+      role: resident
+      restMethod: get
+      checkErrorsOnlyInResponse: true
+      validityCheckRequired: true
+      additionalDependencies: TC_ESignet_AuthenticateUserV3_10
+      inputTemplate: signup/ClaimDetails/ClaimDetails
+      outputTemplate: signup/ClaimDetails/ClaimDetailsResultClaimNotAvailable$MOCKVARIANT$
+      input: '{
+        "encodedHash": "$ID:ESignet_OAuthDetailsRequest_V3_WithClaimValues_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_encodedResp$",
+      	"transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_WithClaimValues_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_transactionId$"
+    }'
+      output: '{
+}'
    Signup_ESignet_ClaimDetails_AuthToken_Xsrf_uin_Valid_forGetSlot_disabilityTypeVISION_Smoke:
       endPoint: /v1/esignet/authorization/claim-details
       uniqueIdentifier: TC_Signup_ESignet_ClaimDetails_Prerequisite_02
@@ -81,6 +98,23 @@ ClaimDetails:
       input: '{
         "encodedHash": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_Smoke_sid_encodedResp$",
       	"transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_Smoke_sid_transactionId$"
+    }'
+      output: '{
+}'
+   Signup_ESignet_ClaimDetails_AuthToken_Xsrf_uin_Valid_forGetSlot_differentIdentifier_Smoke:
+      endPoint: /v1/esignet/authorization/claim-details
+      uniqueIdentifier: TC_Signup_ESignet_ClaimDetails_Prerequisite_06
+      description: Verify claim-details succeeds for the GetSlot different-identifier scenario - expected, claim details are returned successfully
+      role: resident
+      restMethod: get
+      checkErrorsOnlyInResponse: true
+      validityCheckRequired: true
+      additionalDependencies: TC_ESignet_AuthenticateUserV3_11
+      inputTemplate: signup/ClaimDetails/ClaimDetails
+      outputTemplate: signup/ClaimDetails/ClaimDetailsResult
+      input: '{
+        "encodedHash": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_differentIdentifier_Smoke_sid_encodedResp$",
+      	"transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_differentIdentifier_Smoke_sid_transactionId$"
     }'
       output: '{
 }'
