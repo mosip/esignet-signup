@@ -22,7 +22,7 @@ AuthenticateTrustFrameworkMismatch:
     "requestTime": "$TIMESTAMP$",
     "transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_TrustFrameworkMismatch_uin_Smoke_sid_transactionId$",
     "individualId": "$ID:AddIdentity_L2_Valid_Parameters_smoke_Pos_UIN$",
-    "otpChannels": [{channel: "email"},{channel: "phone"}],
+    "otpChannels": [{"channel": "email"},{"channel": "phone"}],
     "sendOtpReqTemplate": "signup/SendOtp/SendOtp",
     "sendOtpEndPoint": "/v1/esignet/authorization/send-otp"
     }

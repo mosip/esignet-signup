@@ -191,8 +191,8 @@ public class SimplePostForAutoGenId extends SignupUtil implements ITest {
 					actualJson = AdminTestUtil.decodeAndCombineJwt(idToken);
 				} catch (Exception e) {
 					logger.info(
-							"idToken not decodable, falling back to raw response validation (likely a negative test case): "
-									+ e.getMessage());
+							"idToken not decodable, falling back to raw response validation (likely a negative test case). Error: "
+									+ e.getClass().getSimpleName());
 				}
 				ouputValid = OutputValidationUtil.doJsonOutputValidation(actualJson,
 						inputstringKeyWordHandeler(
