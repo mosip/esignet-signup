@@ -21,7 +21,7 @@ AuthenticateUserV3:
     "requestTime": "$TIMESTAMP$",
     "transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_transactionId$",
     "individualId": "$ID:AddIdentity_L2_Valid_Parameters_smoke_Pos_UIN$",
-    "otpChannels": [{channel: "email"},{channel: "phone"}],
+    "otpChannels": [{"channel": "email"},{"channel": "phone"}],
     "sendOtpReqTemplate": "signup/SendOtp/SendOtp",
     "sendOtpEndPoint": "/v1/esignet/authorization/send-otp"
     }
@@ -53,7 +53,7 @@ AuthenticateUserV3:
     "requestTime": "$TIMESTAMP$",
     "transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeVISION_Smoke_sid_transactionId$",
     "individualId": "$ID:AddIdentity_L2_Valid_forGetSlot_disabilityTypeVISION_Parameters_smoke_Pos_UIN$",
-    "otpChannels": [{channel: "email"},{channel: "phone"}],
+    "otpChannels": [{"channel": "email"},{"channel": "phone"}],
     "sendOtpReqTemplate": "signup/SendOtp/SendOtp",
     "sendOtpEndPoint": "/v1/esignet/authorization/send-otp"
     }
@@ -85,7 +85,7 @@ AuthenticateUserV3:
     "requestTime": "$TIMESTAMP$",
     "transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeAUDITORY_Smoke_sid_transactionId$",
     "individualId": "$ID:AddIdentity_L2_Valid_forGetSlot_disabilityTypeAUDITORY_Parameters_smoke_Pos_UIN$",
-    "otpChannels": [{channel: "email"},{channel: "phone"}],
+    "otpChannels": [{"channel": "email"},{"channel": "phone"}],
     "sendOtpReqTemplate": "signup/SendOtp/SendOtp",
     "sendOtpEndPoint": "/v1/esignet/authorization/send-otp"
     }
@@ -117,7 +117,7 @@ AuthenticateUserV3:
     "requestTime": "$TIMESTAMP$",
     "transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeMOBILITY_Smoke_sid_transactionId$",
     "individualId": "$ID:AddIdentity_L2_Valid_forGetSlot_disabilityTypeMOBILITY_Parameters_smoke_Pos_UIN$",
-    "otpChannels": [{channel: "email"},{channel: "phone"}],
+    "otpChannels": [{"channel": "email"},{"channel": "phone"}],
     "sendOtpReqTemplate": "signup/SendOtp/SendOtp",
     "sendOtpEndPoint": "/v1/esignet/authorization/send-otp"
     }
@@ -149,7 +149,7 @@ AuthenticateUserV3:
     "requestTime": "$TIMESTAMP$",
     "transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_Smoke_sid_transactionId$",
     "individualId": "$ID:AddIdentity_L2_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_Parameters_smoke_Pos_UIN$",
-    "otpChannels": [{channel: "email"},{channel: "phone"}],
+    "otpChannels": [{"channel": "email"},{"channel": "phone"}],
     "sendOtpReqTemplate": "signup/SendOtp/SendOtp",
     "sendOtpEndPoint": "/v1/esignet/authorization/send-otp"
     }
@@ -181,7 +181,7 @@ AuthenticateUserV3:
     "requestTime": "$TIMESTAMP$",
     "transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdVerStatusWithoutWebsocket_Smoke_sid_transactionId$",
     "individualId": "$ID:AddIdentity_L2_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdVerStatusWithoutWebsocket_Parameters_smoke_Pos_UIN$",
-    "otpChannels": [{channel: "email"},{channel: "phone"}],
+    "otpChannels": [{"channel": "email"},{"channel": "phone"}],
     "sendOtpReqTemplate": "signup/SendOtp/SendOtp",
     "sendOtpEndPoint": "/v1/esignet/authorization/send-otp"
     }
@@ -213,7 +213,7 @@ AuthenticateUserV3:
     "requestTime": "$TIMESTAMP$",
     "transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdtAuth_Smoke_sid_transactionId$",
     "individualId": "$ID:AddIdentity_L2_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdTAuth_Parameters_smoke_Pos_UIN$",
-    "otpChannels": [{channel: "email"},{channel: "phone"}],
+    "otpChannels": [{"channel": "email"},{"channel": "phone"}],
     "sendOtpReqTemplate": "signup/SendOtp/SendOtp",
     "sendOtpEndPoint": "/v1/esignet/authorization/send-otp"
     }
@@ -245,7 +245,7 @@ AuthenticateUserV3:
     "requestTime": "$TIMESTAMP$",
     "transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forDeletingCookies_Smoke_sid_transactionId$",
     "individualId": "$ID:AddIdentity_L2_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_for_DeletingCookies_smoke_Pos_UIN$",
-    "otpChannels": [{channel: "email"},{channel: "phone"}],
+    "otpChannels": [{"channel": "email"},{"channel": "phone"}],
     "sendOtpReqTemplate": "signup/SendOtp/SendOtp",
     "sendOtpEndPoint": "/v1/esignet/authorization/send-otp"
     }
@@ -277,7 +277,7 @@ AuthenticateUserV3:
     "requestTime": "$TIMESTAMP$",
     "transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_for_prepareSignUpRedirect_Unauthenticated_Smoke_sid_transactionId$",
     "individualId": "$ID:AddIdentity_L2_Valid_forPrepareSignUpRedirect_unauthenticated_smoke_Pos_UIN$",
-    "otpChannels": [{channel: "email"},{channel: "phone"}],
+    "otpChannels": [{"channel": "email"},{"channel": "phone"}],
     "sendOtpReqTemplate": "signup/SendOtp/SendOtp",
     "sendOtpEndPoint": "/v1/esignet/authorization/send-otp"
     }
@@ -310,7 +310,7 @@ AuthenticateUserV3:
     "requestTime": "$TIMESTAMP$",
     "transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_WithClaimValues_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_transactionId$",
     "individualId": "$ID:AddIdentity_L2_Valid_Parameters_smoke_Pos_UIN$",
-    "otpChannels": [{channel: "email"},{channel: "phone"}],
+    "otpChannels": [{"channel": "email"},{"channel": "phone"}],
     "sendOtpReqTemplate": "signup/SendOtp/SendOtp",
     "sendOtpEndPoint": "/v1/esignet/authorization/send-otp"
     }
@@ -342,7 +342,7 @@ AuthenticateUserV3:
     "requestTime": "$TIMESTAMP$",
     "transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_differentIdentifier_Smoke_sid_transactionId$",
     "individualId": "$ID:AddIdentity_L2_Valid_forGetSlot_differentIdentifier_Parameters_smoke_Pos_UIN$",
-    "otpChannels": [{channel: "email"},{channel: "phone"}],
+    "otpChannels": [{"channel": "email"},{"channel": "phone"}],
     "sendOtpReqTemplate": "signup/SendOtp/SendOtp",
     "sendOtpEndPoint": "/v1/esignet/authorization/send-otp"
     }
@@ -374,7 +374,7 @@ AuthenticateUserV3:
     "requestTime": "$TIMESTAMP$",
     "transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forPrepareSignupRedirectExpiry_Smoke_sid_transactionId$",
     "individualId": "$ID:AddIdentity_L2_Valid_forPrepareSignupRedirectExpiry_Parameters_smoke_Pos_UIN$",
-    "otpChannels": [{channel: "email"},{channel: "phone"}],
+    "otpChannels": [{"channel": "email"},{"channel": "phone"}],
     "sendOtpReqTemplate": "signup/SendOtp/SendOtp",
     "sendOtpEndPoint": "/v1/esignet/authorization/send-otp"
     }
@@ -406,7 +406,7 @@ AuthenticateUserV3:
     "requestTime": "$TIMESTAMP$",
     "transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forWsFrameEdge_Smoke_sid_transactionId$",
     "individualId": "$ID:AddIdentity_L2_Valid_forGetSlot_differentIdentifier_Parameters_smoke_Pos_UIN$",
-    "otpChannels": [{channel: "email"},{channel: "phone"}],
+    "otpChannels": [{"channel": "email"},{"channel": "phone"}],
     "sendOtpReqTemplate": "signup/SendOtp/SendOtp",
     "sendOtpEndPoint": "/v1/esignet/authorization/send-otp"
     }
@@ -438,7 +438,7 @@ AuthenticateUserV3:
     "requestTime": "$TIMESTAMP$",
     "transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forNegOrder_Smoke_sid_transactionId$",
     "individualId": "$ID:AddIdentity_L2_Valid_forGetSlot_differentIdentifier_Parameters_smoke_Pos_UIN$",
-    "otpChannels": [{channel: "email"},{channel: "phone"}],
+    "otpChannels": [{"channel": "email"},{"channel": "phone"}],
     "sendOtpReqTemplate": "signup/SendOtp/SendOtp",
     "sendOtpEndPoint": "/v1/esignet/authorization/send-otp"
     }

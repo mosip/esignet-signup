@@ -32,8 +32,8 @@ import io.mosip.testrig.apirig.utils.GlobalMethods;
 import io.mosip.testrig.apirig.utils.SecurityXSSException;
 import io.restassured.response.Response;
 
-public class WebScocketConnection extends SignupUtil implements ITest {
-	private static final Logger logger = Logger.getLogger(WebScocketConnection.class);
+public class WebSocketConnection extends SignupUtil implements ITest {
+	private static final Logger logger = Logger.getLogger(WebSocketConnection.class);
 	protected String testCaseName = "";
 	public String idKeyName = null;
 	public Response response = null;
@@ -130,7 +130,8 @@ public class WebScocketConnection extends SignupUtil implements ITest {
 		// Data-driven assertion path: a test declares its expected websocket outcome in its output
 		// (expectConnectionFailure and/or expectedFeedbackCodes). One logic handles every negative
 		// and edge case; positive full-flow tests declare neither and fall through to the frame loop.
-		JSONObject expectedOutcome = new JSONObject(testCaseDTO.getOutput());
+		String outputStr = testCaseDTO.getOutput();
+		JSONObject expectedOutcome = new JSONObject(outputStr == null || outputStr.trim().isEmpty() ? "{}" : outputStr);
 		if (expectedOutcome.has("expectedFeedbackCodes") || expectedOutcome.has("expectConnectionFailure")) {
 			assertWebSocketOutcome(webSocketClient, slotId, tempUrl, expectedOutcome);
 			return;

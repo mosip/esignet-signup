@@ -301,7 +301,7 @@
 			value="signup/WebSocketConnection/WebSocketConnection.yml" />
 		<classes>
 			<class
-				name="io.mosip.testrig.apirig.signup.testscripts.WebScocketConnection" />
+				name="io.mosip.testrig.apirig.signup.testscripts.WebSocketConnection" />
 		</classes>
 	</test>
 	<test name="GetIdentityVerificationStatus">
@@ -552,7 +552,7 @@
 			value="signup/WebSocketConnectionNegTC/WebSocketConnectionNegTC.yml" />
 		<classes>
 			<class
-				name="io.mosip.testrig.apirig.signup.testscripts.WebScocketConnection" />
+				name="io.mosip.testrig.apirig.signup.testscripts.WebSocketConnection" />
 		</classes>
 	</test>
 	<test name="GetIdentityVerificationStatusNegTC">
@@ -665,7 +665,7 @@
 			value="signup/RegistrationFlowL2/WebSocketConnection/WebSocketConnection.yml" />
 		<classes>
 			<class
-				name="io.mosip.testrig.apirig.signup.testscripts.WebScocketConnection" />
+				name="io.mosip.testrig.apirig.signup.testscripts.WebSocketConnection" />
 		</classes>
 	</test>
 	<test name="GetIdentityVerificationStatusForRegistrationFlow">
