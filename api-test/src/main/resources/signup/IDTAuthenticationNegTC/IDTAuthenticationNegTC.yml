@@ -5,7 +5,6 @@ IDTAuthenticationNegTC:
       description: Perform IDT authentication with empty transaction id - Failure
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/IDTAuthenticationNegTC/IDTAuthenticationNegTC
       outputTemplate: signup/error
       input: '{
@@ -33,7 +32,6 @@ IDTAuthenticationNegTC:
       description: Perform IDT authentication with emptyString transaction id - Failure
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/IDTAuthenticationNegTC/IDTAuthenticationNegTC
       outputTemplate: signup/error
       input: '{
@@ -61,7 +59,6 @@ IDTAuthenticationNegTC:
       description: Perform IDT authentication without transaction id - Failure
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/IDTAuthenticationNegTC/IDTAuthenticationNegTC
       outputTemplate: signup/error
       input: '{
@@ -89,7 +86,6 @@ IDTAuthenticationNegTC:
       description: Perform IDT authentication with transaction id from other API - Failure
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/IDTAuthenticationNegTC/IDTAuthenticationNegTC
       outputTemplate: signup/error
       input: '{
@@ -117,7 +113,6 @@ IDTAuthenticationNegTC:
       description: Perform IDT authentication with already completed transaction id - Failure
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/IDTAuthenticationNegTC/IDTAuthenticationNegTC
       outputTemplate: signup/error
       input: '{
@@ -145,7 +140,6 @@ IDTAuthenticationNegTC:
       description: Perform IDT authentication with invalid transaction id - Failure
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/IDTAuthenticationNegTC/IDTAuthenticationNegTC
       outputTemplate: signup/error
       input: '{
@@ -173,7 +167,6 @@ IDTAuthenticationNegTC:
       description: Perform IDT authentication with invalid auth factor type - Failure
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/IDTAuthenticationNegTC/IDTAuthenticationNegTC
       outputTemplate: signup/error
       input: '{
@@ -201,7 +194,6 @@ IDTAuthenticationNegTC:
       description: Perform IDT authentication with empty auth factor type - Failure
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/IDTAuthenticationNegTC/IDTAuthenticationNegTC
       outputTemplate: signup/error
       input: '{
@@ -229,7 +221,6 @@ IDTAuthenticationNegTC:
       description: Perform IDT authentication with missing auth factor type - Failure
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/IDTAuthenticationNegTC/IDTAuthenticationNegTC
       outputTemplate: signup/error
       input: '{
@@ -257,7 +248,6 @@ IDTAuthenticationNegTC:
       description: Perform IDT authentication with emptyString auth factor type - Failure
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/IDTAuthenticationNegTC/IDTAuthenticationNegTC
       outputTemplate: signup/error
       input: '{
@@ -285,7 +275,6 @@ IDTAuthenticationNegTC:
       description: Perform IDT authentication with empty challenge - Failure
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/IDTAuthenticationNegTC/IDTAuthenticationNegTC
       outputTemplate: signup/error
       input: '{
@@ -313,7 +302,6 @@ IDTAuthenticationNegTC:
       description: Perform IDT authentication with invalid requestTime - Failure
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/IDTAuthenticationNegTC/IDTAuthenticationNegTC
       outputTemplate: signup/error
       input: '{
@@ -341,7 +329,6 @@ IDTAuthenticationNegTC:
       description: Perform IDT authentication with diff format requestTime - Failure
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/IDTAuthenticationNegTC/IDTAuthenticationNegTC
       outputTemplate: signup/error
       input: '{
@@ -369,7 +356,6 @@ IDTAuthenticationNegTC:
       description: Perform IDT authentication with missing requestTime - Failure
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/IDTAuthenticationNegTC/IDTAuthenticationNegTC
       outputTemplate: signup/error
       input: '{
@@ -397,7 +383,6 @@ IDTAuthenticationNegTC:
       description: Perform IDT authentication with empty requestTime - Failure
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/IDTAuthenticationNegTC/IDTAuthenticationNegTC
       outputTemplate: signup/error
       input: '{
@@ -425,7 +410,6 @@ IDTAuthenticationNegTC:
       description: Perform IDT authentication with emptyString requestTime - Failure
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/IDTAuthenticationNegTC/IDTAuthenticationNegTC
       outputTemplate: signup/error
       input: '{
@@ -453,7 +437,6 @@ IDTAuthenticationNegTC:
       description: Perform IDT authentication with numericString as requestTime - Failure
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/IDTAuthenticationNegTC/IDTAuthenticationNegTC
       outputTemplate: signup/error
       input: '{
@@ -481,7 +464,6 @@ IDTAuthenticationNegTC:
       description: Perform IDT authentication without request - Failure
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/IDTAuthenticationNegTC/IDTAuthenticationNegTC
       outputTemplate: signup/error
       input: '{
@@ -499,7 +481,6 @@ IDTAuthenticationNegTC:
       description: Perform IDT authentication with only individualId - Failure
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/IDTAuthenticationNegTC/IDTAuthenticationNegTC
       outputTemplate: signup/error
       input: '{
@@ -527,7 +508,6 @@ IDTAuthenticationNegTC:
       description: Perform IDT authentication with only transaction id - Failure
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/IDTAuthenticationNegTC/IDTAuthenticationNegTC
       outputTemplate: signup/error
       input: '{
@@ -555,7 +535,6 @@ IDTAuthenticationNegTC:
       description: Perform IDT authentication with Lower Case authFactorType - Failure
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/IDTAuthenticationNegTC/IDTAuthenticationNegTC
       outputTemplate: signup/error
       input: '{
@@ -583,7 +562,6 @@ IDTAuthenticationNegTC:
       description: Perform IDT authentication with Camel Case authFactorType - Failure
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/IDTAuthenticationNegTC/IDTAuthenticationNegTC
       outputTemplate: signup/error
       input: '{
@@ -611,7 +589,6 @@ IDTAuthenticationNegTC:
       description: Perform IDT authentication with only authFactorType - Failure
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/IDTAuthenticationNegTC/IDTAuthenticationNegTC
       outputTemplate: signup/error
       input: '{
@@ -639,7 +616,6 @@ IDTAuthenticationNegTC:
       description: Perform IDT authentication with invalid requestTime - Failure
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/IDTAuthenticationNegTC/IDTAuthenticationNegTC
       outputTemplate: signup/error
       input: '{
@@ -667,7 +643,6 @@ IDTAuthenticationNegTC:
       description: Perform IDT authentication with pastTime as requestTime - Failure
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/IDTAuthenticationNegTC/IDTAuthenticationNegTC
       outputTemplate: signup/error
       input: '{
@@ -695,7 +670,6 @@ IDTAuthenticationNegTC:
       description: Perform IDT authentication without RequestObject - Failure
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/IDTAuthenticationNegTC/IDTAuthenticationNegTC
       outputTemplate: signup/error
       input: '{
@@ -723,7 +697,6 @@ IDTAuthenticationNegTC:
       description: Perform IDT authentication with empty individualId - Failure
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/IDTAuthenticationNegTC/IDTAuthenticationNegTC
       outputTemplate: signup/error
       input: '{
@@ -751,7 +724,6 @@ IDTAuthenticationNegTC:
       description: Perform IDT authentication with empty string individualId - Failure
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/IDTAuthenticationNegTC/IDTAuthenticationNegTC
       outputTemplate: signup/error
       input: '{
@@ -779,7 +751,6 @@ IDTAuthenticationNegTC:
       description: Perform IDT authentication with empty individualId - Failure
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/IDTAuthenticationNegTC/IDTAuthenticationNegTC
       outputTemplate: signup/error
       input: '{
@@ -807,7 +778,6 @@ IDTAuthenticationNegTC:
       description: Perform IDT authentication with without challenge - Failure
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/IDTAuthenticationNegTC/IDTAuthenticationNegTC
       outputTemplate: signup/error
       input: '{
@@ -835,7 +805,6 @@ IDTAuthenticationNegTC:
       description: Perform IDT authentication with invalid challenge - Failure
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/IDTAuthenticationNegTC/IDTAuthenticationNegTC
       outputTemplate: signup/error
       input: '{
@@ -863,7 +832,6 @@ IDTAuthenticationNegTC:
       description: Perform IDT authentication with without challengeList - Failure
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/IDTAuthenticationNegTC/IDTAuthenticationNegTCwithoutChallengeList
       outputTemplate: signup/error
       input: '{
@@ -888,7 +856,6 @@ IDTAuthenticationNegTC:
       description: Perform IDT authentication with empty challenge - Failure
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/IDTAuthenticationNegTC/IDTAuthenticationNegTC
       outputTemplate: signup/error
       input: '{
@@ -916,7 +883,6 @@ IDTAuthenticationNegTC:
       description: Perform IDT authentication with empty String challenge - Failure
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/IDTAuthenticationNegTC/IDTAuthenticationNegTC
       outputTemplate: signup/error
       input: '{
@@ -944,7 +910,6 @@ IDTAuthenticationNegTC:
       description: Perform IDT authentication with only format in challenge list- Failure
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/IDTAuthenticationNegTC/IDTAuthenticationNegTC
       outputTemplate: signup/error
       input: '{
@@ -972,7 +937,6 @@ IDTAuthenticationNegTC:
       description: Perform IDT authentication without format in challenge list - Failure
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/IDTAuthenticationNegTC/IDTAuthenticationNegTC
       outputTemplate: signup/error
       input: '{
@@ -1000,7 +964,6 @@ IDTAuthenticationNegTC:
       description: Perform IDT authentication with empty format in challenge list - Failure
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/IDTAuthenticationNegTC/IDTAuthenticationNegTC
       outputTemplate: signup/error
       input: '{
@@ -1028,7 +991,6 @@ IDTAuthenticationNegTC:
       description: Perform IDT authentication with empty string format in challenge list - Failure
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/IDTAuthenticationNegTC/IDTAuthenticationNegTC
       outputTemplate: signup/error
       input: '{
@@ -1056,7 +1018,6 @@ IDTAuthenticationNegTC:
       description: Perform IDT authentication with invalid format in challenge list - Failure
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/IDTAuthenticationNegTC/IDTAuthenticationNegTC
       outputTemplate: signup/error
       input: '{
@@ -1109,7 +1070,6 @@ IDTAuthenticationNegTC:
       description: Perform IDT authentication with invaid IDTindividualID - Failure
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/IDTAuthenticationNegTC/IDTAuthenticationNegTC
       outputTemplate: signup/error
       input: '{
@@ -1137,7 +1097,6 @@ IDTAuthenticationNegTC:
       description: Perform IDT authentication with invaid IDTindividualID - Failure
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/IDTAuthenticationNegTC/IDTAuthenticationNegTC
       outputTemplate: signup/error
       input: '{
@@ -1224,7 +1183,6 @@ IDTAuthenticationNegTC:
       role: resident
       restMethod: post
       allowedErrorCodes: invalid_token,auth_failed
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/IDTAuthenticationNegTC/IDTAuthenticationNegTC
       outputTemplate: signup/error
       input: '{

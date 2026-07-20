@@ -547,6 +547,14 @@
 				name="io.mosip.testrig.apirig.signup.testscripts.SimplePostForAutoGenId" />
 		</classes>
 	</test>
+	<test name="WebSocketConnectionNegTC">
+		<parameter name="ymlFile"
+			value="signup/WebSocketConnectionNegTC/WebSocketConnectionNegTC.yml" />
+		<classes>
+			<class
+				name="io.mosip.testrig.apirig.signup.testscripts.WebScocketConnection" />
+		</classes>
+	</test>
 	<test name="GetIdentityVerificationStatusNegTC">
 		<parameter name="ymlFile"
 			value="signup/GetIdentityVerificationStatusNegTC/GetIdentityVerificationStatusNegTC.yml" />

@@ -5,7 +5,6 @@ ClaimDetailsConsentNoCapture:
       description: Verify claim-details returns consentAction as NOCAPTURE when consent was already captured for the same claims - expected, consentAction=NOCAPTURE
       role: resident
       restMethod: get
-      checkErrorsOnlyInResponse: true
       validityCheckRequired: true
       additionalDependencies: TC_Signup_ESignet_AuthenticateConsentNoCapture_01
       inputTemplate: signup/ClaimDetails/ClaimDetails

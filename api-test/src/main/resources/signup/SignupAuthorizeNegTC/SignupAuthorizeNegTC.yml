@@ -5,7 +5,6 @@ SignupAuthorizeNegTC:
       description: Create consent details and unique transactionID with invalid client id - Failure
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/SignupAuthorizeNegTC/SignupAuthorizeNegTC
       outputTemplate: signup/error
       input: '{
@@ -34,7 +33,6 @@ SignupAuthorizeNegTC:
       description: Create consent details and unique transactionID with empty client id - Failure
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/SignupAuthorizeNegTC/SignupAuthorizeNegTC
       outputTemplate: signup/error
       input: '{
@@ -63,7 +61,6 @@ SignupAuthorizeNegTC:
       description: Create consent details and unique transactionID with missing client id - Failure
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/SignupAuthorizeNegTC/SignupAuthorizeNegTC
       outputTemplate: signup/error
       input: '{
@@ -92,7 +89,6 @@ SignupAuthorizeNegTC:
       description: Create consent details and unique transactionID with null client id - Failure
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/SignupAuthorizeNegTC/SignupAuthorizeNegTC
       outputTemplate: signup/error
       input: '{
@@ -121,7 +117,6 @@ SignupAuthorizeNegTC:
       description: Create consent details and unique transactionID with empty redirect URI - Failure
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/SignupAuthorizeNegTC/SignupAuthorizeNegTC
       outputTemplate: signup/error
       input: '{
@@ -150,7 +145,6 @@ SignupAuthorizeNegTC:
       description: Create consent details and unique transactionID with invalid redirect URI - Failure
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/SignupAuthorizeNegTC/SignupAuthorizeNegTC
       outputTemplate: signup/error
       input: '{
@@ -179,7 +173,6 @@ SignupAuthorizeNegTC:
       description: Create consent details and unique transactionID with missing redirect URI - Failure
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/SignupAuthorizeNegTC/SignupAuthorizeNegTC
       outputTemplate: signup/error
       input: '{
@@ -208,7 +201,6 @@ SignupAuthorizeNegTC:
       description: Create consent details and unique transactionID with empty response type - Failure
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/SignupAuthorizeNegTC/SignupAuthorizeNegTC
       outputTemplate: signup/error
       input: '{
@@ -237,7 +229,6 @@ SignupAuthorizeNegTC:
       description: Create consent details and unique transactionID with invalid response type - Failure
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/SignupAuthorizeNegTC/SignupAuthorizeNegTC
       outputTemplate: signup/error
       input: '{
@@ -266,7 +257,6 @@ SignupAuthorizeNegTC:
       description: Create consent details and unique transactionID with missing response type - Failure
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/SignupAuthorizeNegTC/SignupAuthorizeNegTC
       outputTemplate: signup/error
       input: '{
@@ -295,7 +285,6 @@ SignupAuthorizeNegTC:
       description: Create consent details and unique transactionID with null response type - Failure
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/SignupAuthorizeNegTC/SignupAuthorizeNegTC
       outputTemplate: signup/error
       input: '{
@@ -324,7 +313,6 @@ SignupAuthorizeNegTC:
       description: Create consent details and unique transactionID with invalid scope - Failure
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/SignupAuthorizeNegTC/SignupAuthorizeNegTC
       outputTemplate: signup/error
       input: '{
@@ -353,7 +341,6 @@ SignupAuthorizeNegTC:
       description: Create consent details and unique transactionID without space in scope - Failure
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/SignupAuthorizeNegTC/SignupAuthorizeNegTC
       outputTemplate: signup/error
       input: '{
@@ -406,7 +393,6 @@ SignupAuthorizeNegTC:
       description: Create consent details and unique transactionID with missing scope - Failure
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/SignupAuthorizeNegTC/SignupAuthorizeNegTC
       outputTemplate: signup/error
       input: '{
@@ -435,7 +421,6 @@ SignupAuthorizeNegTC:
       description: Create consent details and unique transactionID with empty scope - Failure
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/SignupAuthorizeNegTC/SignupAuthorizeNegTC
       outputTemplate: signup/error
       input: '{
@@ -728,7 +713,6 @@ SignupAuthorizeNegTC:
       description: Create consent details and unique transactionID with empty request time - Failure
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/SignupAuthorizeNegTC/SignupAuthorizeNegTC
       outputTemplate: signup/error
       input: '{
@@ -757,7 +741,6 @@ SignupAuthorizeNegTC:
       description: Create consent details and unique transactionID with different format request time - Failure
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/SignupAuthorizeNegTC/SignupAuthorizeNegTC
       outputTemplate: signup/error
       input: '{
@@ -786,7 +769,6 @@ SignupAuthorizeNegTC:
       description: Create consent details and unique transactionID with invalid request time - Failure
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/SignupAuthorizeNegTC/SignupAuthorizeNegTC
       outputTemplate: signup/error
       input: '{
@@ -815,7 +797,6 @@ SignupAuthorizeNegTC:
       description: Create consent details and unique transactionID with missing request time - Failure
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/SignupAuthorizeNegTC/SignupAuthorizeNegTC
       outputTemplate: signup/error
       input: '{
@@ -844,7 +825,6 @@ SignupAuthorizeNegTC:
       description: Create consent details and unique transactionID with empty String as request time - Failure
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/SignupAuthorizeNegTC/SignupAuthorizeNegTC
       outputTemplate: signup/error
       input: '{

@@ -5,7 +5,6 @@ ClaimDetailsNegTC:
       description: To get ClaimDetails with invalid EncodedHash and all valid data
       role: resident
       restMethod: get
-      checkErrorsOnlyInResponse: true
       validityCheckRequired: true
       inputTemplate: signup/ClaimDetailsNegTC/ClaimDetailsNegTC
       outputTemplate: signup/error
@@ -28,7 +27,6 @@ ClaimDetailsNegTC:
       description: To get ClaimDetails with null value in EncodedHash and all valid data
       role: resident
       restMethod: get
-      checkErrorsOnlyInResponse: true
       validityCheckRequired: true
       inputTemplate: signup/ClaimDetailsNegTC/ClaimDetailsNegTC
       outputTemplate: signup/error
@@ -51,7 +49,6 @@ ClaimDetailsNegTC:
       description: To get ClaimDetails with an empty EncodedHash and all valid data
       role: resident
       restMethod: get
-      checkErrorsOnlyInResponse: true
       validityCheckRequired: true
       inputTemplate: signup/ClaimDetailsNegTC/ClaimDetailsNegTC
       outputTemplate: signup/error
@@ -74,7 +71,6 @@ ClaimDetailsNegTC:
       description: To get ClaimDetails with space value in EncodedHash and all valid data
       role: resident
       restMethod: get
-      checkErrorsOnlyInResponse: true
       validityCheckRequired: true
       inputTemplate: signup/ClaimDetailsNegTC/ClaimDetailsNegTC
       outputTemplate: signup/error
@@ -97,7 +93,6 @@ ClaimDetailsNegTC:
       description: To get ClaimDetails with missing EncodedHash and all valid data
       role: resident
       restMethod: get
-      checkErrorsOnlyInResponse: true
       validityCheckRequired: true
       inputTemplate: signup/ClaimDetailsNegTC/ClaimDetailsNegTC
       outputTemplate: signup/error
@@ -120,7 +115,6 @@ ClaimDetailsNegTC:
       description: To get ClaimDetails with invalid TransactionId and all valid data
       role: resident
       restMethod: get
-      checkErrorsOnlyInResponse: true
       validityCheckRequired: true
       inputTemplate: signup/ClaimDetailsNegTC/ClaimDetailsNegTC
       outputTemplate: signup/error
@@ -143,7 +137,6 @@ ClaimDetailsNegTC:
       description: To get ClaimDetails with null value in TransactionId and all valid data
       role: resident
       restMethod: get
-      checkErrorsOnlyInResponse: true
       validityCheckRequired: true
       inputTemplate: signup/ClaimDetailsNegTC/ClaimDetailsNegTC
       outputTemplate: signup/error
@@ -166,7 +159,6 @@ ClaimDetailsNegTC:
       description: To get ClaimDetails with an empty TransactionId and all valid data
       role: resident
       restMethod: get
-      checkErrorsOnlyInResponse: true
       validityCheckRequired: true
       inputTemplate: signup/ClaimDetailsNegTC/ClaimDetailsNegTC
       outputTemplate: signup/error
@@ -189,7 +181,6 @@ ClaimDetailsNegTC:
       description: To get ClaimDetails with space value in TransactionId and all valid data
       role: resident
       restMethod: get
-      checkErrorsOnlyInResponse: true
       validityCheckRequired: true
       inputTemplate: signup/ClaimDetailsNegTC/ClaimDetailsNegTC
       outputTemplate: signup/error
@@ -212,7 +203,6 @@ ClaimDetailsNegTC:
       description: To get ClaimDetails with missing TransactionId and all valid data
       role: resident
       restMethod: get
-      checkErrorsOnlyInResponse: true
       validityCheckRequired: true
       inputTemplate: signup/ClaimDetailsNegTC/ClaimDetailsNegTC
       outputTemplate: signup/error
@@ -250,7 +240,6 @@ ClaimDetailsNegTC:
       description: Fetching the claim details without authentication
       role: resident
       restMethod: get
-      checkErrorsOnlyInResponse: true
       validityCheckRequired: true
       inputTemplate: signup/ClaimDetails/ClaimDetails
       outputTemplate: signup/error
@@ -272,7 +261,6 @@ ClaimDetailsNegTC:
       description: Verify claim-details is rejected when the transaction is no longer valid - expected, invalid_transaction error
       role: resident
       restMethod: get
-      checkErrorsOnlyInResponse: true
       validityCheckRequired: true
       additionalDependencies: TC_ESignet_AuthenticateUserV3_12
       inputTemplate: signup/ClaimDetailsNegTC/ClaimDetailsNegTC

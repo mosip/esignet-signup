@@ -432,7 +432,7 @@ PrepareSignupRedirectNegTC:
       output: '{
         "status": "403"
 	}'
-   Signup_ESignet_PrepareSignupRedirectNegTC_AuthToken_Xsrf_STransId_uin_Otp_Expired_Transaction_Neg_sid:
+   Signup_ESignet_PrepareSignupRedirectNegTC_AuthToken_Xsrf_STransId_uin_Otp_Expired_Transaction_Neg:
       endPoint: /v1/esignet/authorization/prepare-signup-redirect
       uniqueIdentifier: TC_ESignet_PrepareSignupRedirectNegTC_21
       description: Verify ID token creation is rejected for an unrecognized transaction - expected, invalid_transaction error

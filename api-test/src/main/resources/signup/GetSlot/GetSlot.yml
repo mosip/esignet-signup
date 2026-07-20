@@ -130,3 +130,39 @@ GetSlot:
       output: '{
 
 }'
+   Signup_ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_forWsFrameEdge_Smoke_Sid:
+      endPoint: /v1/signup/identity-verification/slot
+      uniqueIdentifier: TC_ESignet_GetSlot_WsFrameEdge
+      description: Verify GetSlot succeeds using a valid transaction created for the websocket frame-field edge-case scenario - expected, a slot is allocated successfully
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/GetSlot/GetSlot
+      outputTemplate: signup/GetSlot/GetSlotResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forWsFrameEdge_Smoke_Sid_idvTransactionID$",
+        "verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forWsFrameEdge_Smoke_Sid_id$",
+        "consent": "AGREE"
+}'
+      output: '{
+
+}'
+   Signup_ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_forNegOrder_Smoke_Sid:
+      endPoint: /v1/signup/identity-verification/slot
+      uniqueIdentifier: TC_ESignet_GetSlot_NegOrder
+      description: Verify GetSlot succeeds using a valid transaction created for the websocket negative-order scenario - expected, a slot is allocated successfully
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/GetSlot/GetSlot
+      outputTemplate: signup/GetSlot/GetSlotResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forNegOrder_Smoke_Sid_idvTransactionID$",
+        "verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forNegOrder_Smoke_Sid_id$",
+        "consent": "AGREE"
+}'
+      output: '{
+
+}'
