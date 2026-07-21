@@ -1,0 +1,25 @@
+OAuthDetailsTrustFrameworkMismatch:
+   Signup_ESignet_OAuthDetailsRequest_V3_TrustFrameworkMismatch_uin_Smoke_sid:
+      endPoint: /v1/esignet/authorization/v3/oauth-details
+      uniqueIdentifier: TC_Signup_ESignet_OAuthDetailsRequestV3_TrustFrameworkMismatch_01
+      description: Verify OAuth details request succeeds when requesting a claim for verification with a trust_framework that does not match the stored verification record - expected, a valid transactionId and encodedResp are returned
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/ClaimDetailsTrustFrameworkMismatch/OAuthDetailsRequestTrustFrameworkMismatch
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
+        "scope": "openid profile",
+        "responseType": "code",
+        "redirectUri": "$IDPREDIRECTURI$",
+        "display": "popup",
+        "prompt": "consent",
+        "acrValues": "mosip:idp:acr:generated-code",
+        "nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
+        "state": "urlInfo1724138417665",
+        "claimsLocales": "en",
+        "uiLocales": "en-US"
+}'
+      output: '{
+}'

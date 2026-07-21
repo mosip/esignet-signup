@@ -1,0 +1,18 @@
+ClaimDetailsTrustFrameworkMismatch:
+   Signup_ESignet_ClaimDetailsTrustFrameworkMismatch_AuthToken_Xsrf_uin_Smoke:
+      endPoint: /v1/esignet/authorization/claim-details
+      uniqueIdentifier: TC_Signup_ESignet_ClaimDetailsTrustFrameworkMismatch_01
+      description: Verify verified is false in claim-details when the requested trust_framework does not match the stored verification record - expected, email claim shows available=true and verified=false
+      role: resident
+      restMethod: get
+      checkErrorsOnlyInResponse: true
+      validityCheckRequired: true
+      additionalDependencies: TC_Signup_ESignet_AuthenticateTrustFrameworkMismatch_01
+      inputTemplate: signup/ClaimDetails/ClaimDetails
+      outputTemplate: signup/ClaimDetailsTrustFrameworkMismatch/ClaimDetailsResultTrustFrameworkMismatch$MOCKVARIANT$
+      input: '{
+        "encodedHash": "$ID:ESignet_OAuthDetailsRequest_V3_TrustFrameworkMismatch_uin_Smoke_sid_encodedResp$",
+      	"transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_TrustFrameworkMismatch_uin_Smoke_sid_transactionId$"
+    }'
+      output: '{
+}'

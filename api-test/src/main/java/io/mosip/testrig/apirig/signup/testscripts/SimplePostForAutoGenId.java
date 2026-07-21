@@ -183,11 +183,28 @@ public class SimplePostForAutoGenId extends SignupUtil implements ITest {
 
 				ouputValid = new HashMap<>();
 				ouputValid.put(GlobalConstants.EXPECTED_VS_ACTUAL, List.of(customResponse));
+			} else if (testCaseDTO.getEndPoint().endsWith("prepare-signup-redirect")) {
+				String actualJson = response.asString();
+				try {
+					String idToken = new JSONObject(actualJson).getJSONObject(GlobalConstants.RESPONSE)
+							.getString(idKeyName);
+					actualJson = AdminTestUtil.decodeAndCombineJwt(idToken);
+				} catch (Exception e) {
+					logger.info(
+							"idToken not decodable, falling back to raw response validation (likely a negative test case). Error: "
+									+ e.getClass().getSimpleName());
+				}
+				ouputValid = OutputValidationUtil.doJsonOutputValidation(actualJson,
+						inputstringKeyWordHandeler(
+								getJsonFromTemplate(testCaseDTO.getOutput(), testCaseDTO.getOutputTemplate()),
+								testCaseName),
+						testCaseDTO, response.getStatusCode());
 			} else {
 				ouputValid = OutputValidationUtil.doJsonOutputValidation(response.asString(),
 						getJsonFromTemplate(testCaseDTO.getOutput(), testCaseDTO.getOutputTemplate()), testCaseDTO,
 						response.getStatusCode());
 			}
+
 			Reporter.log(ReportUtil.getOutputValidationReport(ouputValid));
 			if (!OutputValidationUtil.publishOutputResult(ouputValid))
 				throw new AdminTestException("Failed at output validation");

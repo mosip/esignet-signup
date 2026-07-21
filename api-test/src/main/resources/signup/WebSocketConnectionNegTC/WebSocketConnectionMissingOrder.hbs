@@ -1,0 +1,19 @@
+{
+  "slotId": "{{slotId}}",
+  "idvSlotAllotted": "{{idvSlotAllotted}}",
+  "sendDestination": "{{sendDestination}}",
+  "message1": {
+    "slotId": "{{slotId}}",
+    "stepCode": "START",
+    "frames": [
+      { "frame": "frame1" }
+    ]
+  },
+  "message2": {
+    "slotId": "{{slotId}}",
+    "stepCode": "liveness_check",
+    "frames": [
+      { "frame": "frame1", "order": "1" }
+    ]
+  }
+}

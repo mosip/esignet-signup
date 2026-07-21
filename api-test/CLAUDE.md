@@ -73,7 +73,7 @@ src/main/java/io/mosip/testrig/apirig/signup/
 │   ├── PatchWithPathParamsAndBody       ← PATCH with path params + body
 │   ├── PutWithPathParamsAndBody         ← PUT with path params + body
 │   ├── AddIdentity                      ← prerequisite: creates identity records
-│   └── WebScocketConnection             ← WebSocket interaction
+│   └── WebSocketConnection             ← WebSocket interaction
 └── utils/
     ├── SignupUtil.java      ← core utility; extends parent AdminTestUtil; keyword replacement, request helpers
     ├── SignupConfigManager  ← loads signup.properties; exposes typed config accessors

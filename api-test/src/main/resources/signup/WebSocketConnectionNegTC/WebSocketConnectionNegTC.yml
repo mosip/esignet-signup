@@ -1,0 +1,170 @@
+WebSocketConnectionNegTC:
+   Signup_ESignet_WebSocketConnection_Empty_SlotId_Neg:
+      endPoint: /v1/signup/ws
+      uniqueIdentifier: TC_Signup_ESignet_WebSocketConnectionNegTC_01
+      description: WebSocket connection with an empty slotId - expected, connection fails
+      role: resident
+      inputTemplate: signup/WebSocketConnection/WebSocketConnection
+      outputTemplate: signup/WebSocketConnection/WebSocketConnectionResult
+      input: '{
+        "slotId": "",
+        "idvSlotAllotted": "$ID:ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_Smoke_Sid_idvSlotAllotted$",
+        "sendDestination": "/v1/signup/ws/process-frame",
+        "message1": {
+          "stepCode": "START",
+          "frames": [
+            { "frame": "frame1", "order": "0" }
+          ]
+        },
+        "message2": {
+          "stepCode": "liveness_check",
+          "frames": [
+            { "frame": "frame1", "order": "1" }
+          ]
+        }
+}'
+      output: '{
+        "expectConnectionFailure": true
+}'
+   Signup_ESignet_WebSocketConnection_InvalidStepCode_Neg:
+      endPoint: /v1/signup/ws
+      uniqueIdentifier: TC_Signup_ESignet_WebSocketConnectionNegTC_02
+      description: Process-frame with a blank stepCode - expected, invalid_step_code error
+      role: resident
+      inputTemplate: signup/WebSocketConnectionNegTC/WebSocketConnectionInvalidStepCode
+      outputTemplate: signup/WebSocketConnection/WebSocketConnectionResult
+      input: '{
+        "slotId": "$ID:ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_disabilityTypeAUDITORY_Smoke_Sid_slotId$",
+        "idvSlotAllotted": "$ID:ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_disabilityTypeAUDITORY_Smoke_Sid_idvSlotAllotted$",
+        "sendDestination": "/v1/signup/ws/process-frame",
+        "message1": {
+          "stepCode": "",
+          "frames": [
+            { "frame": "frame1", "order": "0" }
+          ]
+        },
+        "message2": {
+          "stepCode": "liveness_check",
+          "frames": [
+            { "frame": "frame1", "order": "1" }
+          ]
+        }
+}'
+      output: '{
+        "expectedFeedbackCodes": [
+          "invalid_step_code"
+        ]
+}'
+   Signup_ESignet_WebSocketConnection_MissingStepCode_Neg:
+      endPoint: /v1/signup/ws
+      uniqueIdentifier: TC_Signup_ESignet_WebSocketConnectionNegTC_03
+      description: Process-frame with the stepCode field omitted - expected, invalid_step_code error
+      role: resident
+      inputTemplate: signup/WebSocketConnectionNegTC/WebSocketConnectionMissingStepCode
+      outputTemplate: signup/WebSocketConnection/WebSocketConnectionResult
+      input: '{
+        "slotId": "$ID:ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_disabilityTypeMOBILITY_Smoke_Sid_slotId$",
+        "idvSlotAllotted": "$ID:ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_disabilityTypeMOBILITY_Smoke_Sid_idvSlotAllotted$",
+        "sendDestination": "/v1/signup/ws/process-frame",
+        "message1": {
+          "frames": [
+            { "frame": "frame1", "order": "0" }
+          ]
+        },
+        "message2": {
+          "stepCode": "liveness_check",
+          "frames": [
+            { "frame": "frame1", "order": "1" }
+          ]
+        }
+}'
+      output: '{
+        "expectedFeedbackCodes": [
+          "invalid_step_code"
+        ]
+}'
+   Signup_ESignet_WebSocketConnection_InvalidFrame_Neg:
+      endPoint: /v1/signup/ws
+      uniqueIdentifier: TC_Signup_ESignet_WebSocketConnectionNegTC_04
+      description: Process-frame with a blank frame value - expected, invalid_frame error
+      role: resident
+      inputTemplate: signup/WebSocketConnection/WebSocketConnection
+      outputTemplate: signup/WebSocketConnection/WebSocketConnectionResult
+      input: '{
+        "slotId": "$ID:ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_disabilityTypeNEUROLOGICAL_Smoke_Sid_slotId$",
+        "idvSlotAllotted": "$ID:ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_disabilityTypeNEUROLOGICAL_Smoke_Sid_idvSlotAllotted$",
+        "sendDestination": "/v1/signup/ws/process-frame",
+        "message1": {
+          "stepCode": "START",
+          "frames": [
+            { "frame": "", "order": "0" }
+          ]
+        },
+        "message2": {
+          "stepCode": "liveness_check",
+          "frames": [
+            { "frame": "frame1", "order": "1" }
+          ]
+        }
+}'
+      output: '{
+        "expectedFeedbackCodes": [
+          "invalid_frame"
+        ]
+}'
+   Signup_ESignet_WebSocketConnection_MissingOrder_Neg:
+      endPoint: /v1/signup/ws
+      uniqueIdentifier: TC_Signup_ESignet_WebSocketConnectionNegTC_05
+      description: Process-frame with the order field omitted (defaults to 0) - expected, frame accepted with no error
+      role: resident
+      inputTemplate: signup/WebSocketConnectionNegTC/WebSocketConnectionMissingOrder
+      outputTemplate: signup/WebSocketConnection/WebSocketConnectionResult
+      input: '{
+        "slotId": "$ID:ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_forWsFrameEdge_Smoke_Sid_slotId$",
+        "idvSlotAllotted": "$ID:ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_forWsFrameEdge_Smoke_Sid_idvSlotAllotted$",
+        "sendDestination": "/v1/signup/ws/process-frame",
+        "message1": {
+          "stepCode": "START",
+          "frames": [
+            { "frame": "frame1" }
+          ]
+        },
+        "message2": {
+          "stepCode": "liveness_check",
+          "frames": [
+            { "frame": "frame1", "order": "1" }
+          ]
+        }
+}'
+      output: '{
+        "expectedFeedbackCodes": []
+}'
+   Signup_ESignet_WebSocketConnection_NegativeOrder_Neg:
+      endPoint: /v1/signup/ws
+      uniqueIdentifier: TC_Signup_ESignet_WebSocketConnectionNegTC_06
+      description: Process-frame with a negative order value - expected, invalid_order error
+      role: resident
+      inputTemplate: signup/WebSocketConnection/WebSocketConnection
+      outputTemplate: signup/WebSocketConnection/WebSocketConnectionResult
+      input: '{
+        "slotId": "$ID:ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_forNegOrder_Smoke_Sid_slotId$",
+        "idvSlotAllotted": "$ID:ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_forNegOrder_Smoke_Sid_idvSlotAllotted$",
+        "sendDestination": "/v1/signup/ws/process-frame",
+        "message1": {
+          "stepCode": "START",
+          "frames": [
+            { "frame": "frame1", "order": "-1" }
+          ]
+        },
+        "message2": {
+          "stepCode": "liveness_check",
+          "frames": [
+            { "frame": "frame1", "order": "1" }
+          ]
+        }
+}'
+      output: '{
+        "expectedFeedbackCodes": [
+          "invalid_order"
+        ]
+}'
