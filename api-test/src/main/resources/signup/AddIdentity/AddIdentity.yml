@@ -309,3 +309,59 @@ AddIdentity:
       output: '{
   "status":"ACTIVATED"
 }'
+   Signup_AddIdentity_L2_Valid_forGetSlot_differentIdentifier_Parameters_smoke_Pos:
+      endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_IdRepo_Dependent_AddIdentity_12
+      description: Verify a new identity can be created for the GetSlot different-identifier scenario - expected, identity is created successfully with status=ACTIVATED
+      role: idrepo
+      restMethod: post
+      inputTemplate: signup/AddIdentity/addIdentity_$LANGNUMBER$
+      outputTemplate: signup/AddIdentity/addIdentityResult
+      input: '{
+  "value": "$BIOVALUE$",
+  "id": "mosip.id.create",
+  "registrationId": "$RID$",
+  "biometricReferenceId": "23452353",
+   "UIN": "$UIN$",
+  "dateOfBirth": "1992/04/15",
+  "postalCode": "14022",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
+  "referenceIdentityNumber": "6789545678878",
+  "version": "v1",
+   "introducerRID": "212124324784879",
+   "introducerUIN": "212124324784879",
+   "category": "individualBiometrics",
+   "requesttime": "$TIMESTAMP$"
+}'
+      output: '{
+  "status":"ACTIVATED"
+}'
+   Signup_AddIdentity_L2_Valid_forPrepareSignupRedirectExpiry_Parameters_smoke_Pos:
+      endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_IdRepo_Dependent_AddIdentity_13
+      description: Verify a new identity can be created for the PrepareSignupRedirect transaction-expiry scenario - expected, identity is created successfully with status=ACTIVATED
+      role: idrepo
+      restMethod: post
+      inputTemplate: signup/AddIdentity/addIdentity_$LANGNUMBER$
+      outputTemplate: signup/AddIdentity/addIdentityResult
+      input: '{
+  "value": "$BIOVALUE$",
+  "id": "mosip.id.create",
+  "registrationId": "$RID$",
+  "biometricReferenceId": "23452353",
+   "UIN": "$UIN$",
+  "dateOfBirth": "1992/04/15",
+  "postalCode": "14022",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
+  "referenceIdentityNumber": "6789545678878",
+  "version": "v1",
+   "introducerRID": "212124324784879",
+   "introducerUIN": "212124324784879",
+   "category": "individualBiometrics",
+   "requesttime": "$TIMESTAMP$"
+}'
+      output: '{
+  "status":"ACTIVATED"
+}'

@@ -1,0 +1,34 @@
+AuthenticateTrustFrameworkMismatch:
+   Signup_ESignet_AuthenticateTrustFrameworkMismatch_uin_Otp_Smoke:
+      endPoint: /v1/esignet/authorization/v3/authenticate
+      uniqueIdentifier: TC_Signup_ESignet_AuthenticateTrustFrameworkMismatch_01
+      description: Verify authentication succeeds for the trust-framework-mismatch scenario - expected, authentication succeeds
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      validityCheckRequired: true
+      additionalDependencies: TC_ESignet_CompleteSignupVerification_01
+      inputTemplate: signup/AuthenticateUserV3/AuthenticateUser
+      outputTemplate: signup/AuthenticateUserV3/AuthenticateUserResult
+      input: '{
+        "encodedHash": "$ID:ESignet_OAuthDetailsRequest_V3_TrustFrameworkMismatch_uin_Smoke_sid_encodedResp$",
+      	"requestTime": "$TIMESTAMP$",
+      	"transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_TrustFrameworkMismatch_uin_Smoke_sid_transactionId$",
+      	"individualId": "$ID:AddIdentity_L2_Valid_Parameters_smoke_Pos_UIN$",
+      	"authFactorType" : "OTP",
+      	"challenge" : "$ID:AddIdentity_L2_Valid_Parameters_smoke_Pos_PHONE$@phone",
+        "sendOtp":{
+    "encodedHash": "$ID:ESignet_OAuthDetailsRequest_V3_TrustFrameworkMismatch_uin_Smoke_sid_encodedResp$",
+    "requestTime": "$TIMESTAMP$",
+    "transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_TrustFrameworkMismatch_uin_Smoke_sid_transactionId$",
+    "individualId": "$ID:AddIdentity_L2_Valid_Parameters_smoke_Pos_UIN$",
+    "otpChannels": [{"channel": "email"},{"channel": "phone"}],
+    "sendOtpReqTemplate": "signup/SendOtp/SendOtp",
+    "sendOtpEndPoint": "/v1/esignet/authorization/send-otp"
+    }
+    }'
+      output: '{
+  "sendOtpResp":{
+        "sendOtpResTemplate":"signup/SendOtp/SendOtpResult"
+    }
+}'

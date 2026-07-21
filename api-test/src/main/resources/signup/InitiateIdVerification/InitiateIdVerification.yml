@@ -5,7 +5,6 @@ InitiateIdVerification:
       description: Intiating Identity verification process with valid details
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/InitiateIdVerification/InitiateIdVerification
       outputTemplate: signup/InitiateIdVerification/InitiateIdVerificationResult
       input: '{
@@ -14,7 +13,14 @@ InitiateIdVerification:
       	"state": "urlInfo1724138417665"
 }'
       output: '{
-       
+  "response": {
+    "identityVerifiers": [
+      {
+        "processType": "VIDEO",
+        "active": true
+      }
+    ]
+  }
 }'
    Signup_ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeVISION_Smoke_Sid:
       endPoint: /v1/signup/identity-verification/initiate
@@ -22,7 +28,6 @@ InitiateIdVerification:
       description: Intiating Identity verification process with valid details and this testcase is prerequisite
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/InitiateIdVerification/InitiateIdVerification
       outputTemplate: signup/InitiateIdVerification/InitiateIdVerificationResult
       input: '{
@@ -31,7 +36,14 @@ InitiateIdVerification:
       	"state": "urlInfo1724138417665"
 }'
       output: '{
-       
+  "response": {
+    "identityVerifiers": [
+      {
+        "processType": "VIDEO",
+        "active": true
+      }
+    ]
+  }
 }'
    Signup_ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeAUDITORY_Smoke_Sid:
       endPoint: /v1/signup/identity-verification/initiate
@@ -39,7 +51,6 @@ InitiateIdVerification:
       description: Intiating Identity verification process with valid details and this testcase is prerequisite
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/InitiateIdVerification/InitiateIdVerification
       outputTemplate: signup/InitiateIdVerification/InitiateIdVerificationResult
       input: '{
@@ -48,7 +59,14 @@ InitiateIdVerification:
       	"state": "urlInfo1724138417665"
 }'
       output: '{
-       
+  "response": {
+    "identityVerifiers": [
+      {
+        "processType": "VIDEO",
+        "active": true
+      }
+    ]
+  }
 }'
    Signup_ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeMOBILITY_Smoke_Sid:
       endPoint: /v1/signup/identity-verification/initiate
@@ -56,7 +74,6 @@ InitiateIdVerification:
       description: Intiating Identity verification process with valid details and this testcase is prerequisite
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/InitiateIdVerification/InitiateIdVerification
       outputTemplate: signup/InitiateIdVerification/InitiateIdVerificationResult
       input: '{
@@ -65,7 +82,14 @@ InitiateIdVerification:
       	"state": "urlInfo1724138417665"
 }'
       output: '{
-       
+  "response": {
+    "identityVerifiers": [
+      {
+        "processType": "VIDEO",
+        "active": true
+      }
+    ]
+  }
 }'
    Signup_ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_Smoke_Sid:
       endPoint: /v1/signup/identity-verification/initiate
@@ -73,7 +97,6 @@ InitiateIdVerification:
       description: Intiating Identity verification process with valid details and this testcase is prerequisite
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/InitiateIdVerification/InitiateIdVerification
       outputTemplate: signup/InitiateIdVerification/InitiateIdVerificationResult
       input: '{
@@ -82,7 +105,14 @@ InitiateIdVerification:
       	"state": "urlInfo1724138417665"
 }'
       output: '{
-       
+  "response": {
+    "identityVerifiers": [
+      {
+        "processType": "VIDEO",
+        "active": true
+      }
+    ]
+  }
 }'
    Signup_ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdVerStatusWithoutWebsocket_Smoke_Sid:
       endPoint: /v1/signup/identity-verification/initiate
@@ -90,7 +120,6 @@ InitiateIdVerification:
       description: Intiating Identity verification process with valid details and this testcase is prerequisite
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: signup/InitiateIdVerification/InitiateIdVerification
       outputTemplate: signup/InitiateIdVerification/InitiateIdVerificationResult
       input: '{
@@ -99,5 +128,81 @@ InitiateIdVerification:
       	"state": "urlInfo1724138417665"
 }'
       output: '{
-       
+  "response": {
+    "identityVerifiers": [
+      {
+        "processType": "VIDEO",
+        "active": true
+      }
+    ]
+  }
+}'
+   Signup_ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_forGetSlot_differentIdentifier_Smoke_Sid:
+      endPoint: /v1/signup/identity-verification/initiate
+      uniqueIdentifier: TC_ESignet_InitiateIdVerification_07
+      description: Verify identity verification initiation succeeds for the GetSlot different-identifier scenario - expected, the verification process is initiated successfully and returns the available identity verifiers
+      role: resident
+      restMethod: post
+      inputTemplate: signup/InitiateIdVerification/InitiateIdVerification
+      outputTemplate: signup/InitiateIdVerification/InitiateIdVerificationResult
+      input: '{
+      	"requestTime": "$TIMESTAMP$",
+      	"authorizationCode": "$ID:ESignet_SignupAuthorizeCode_AuthToken_Xsrf_uin_all_Valid_forGetSlot_differentIdentifier_Smoke_sid_code$",
+      	"state": "urlInfo1724138417665"
+}'
+      output: '{
+  "response": {
+    "identityVerifiers": [
+      {
+        "processType": "VIDEO",
+        "active": true
+      }
+    ]
+  }
+}'
+   Signup_ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forWsFrameEdge_Smoke_Sid:
+      endPoint: /v1/signup/identity-verification/initiate
+      uniqueIdentifier: TC_ESignet_InitiateIdVerification_WsFrameEdge
+      description: Verify identity verification initiation succeeds for the websocket frame-field edge-case scenario - expected, the verification process is initiated successfully
+      role: resident
+      restMethod: post
+      inputTemplate: signup/InitiateIdVerification/InitiateIdVerification
+      outputTemplate: signup/InitiateIdVerification/InitiateIdVerificationResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "authorizationCode": "$ID:ESignet_SignupAuthorizeCode_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forWsFrameEdge_Smoke_sid_code$",
+        "state": "urlInfo1724138417665"
+}'
+      output: '{
+  "response": {
+    "identityVerifiers": [
+      {
+        "processType": "VIDEO",
+        "active": true
+      }
+    ]
+  }
+}'
+   Signup_ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forNegOrder_Smoke_Sid:
+      endPoint: /v1/signup/identity-verification/initiate
+      uniqueIdentifier: TC_ESignet_InitiateIdVerification_NegOrder
+      description: Verify identity verification initiation succeeds for the websocket negative-order scenario - expected, the verification process is initiated successfully
+      role: resident
+      restMethod: post
+      inputTemplate: signup/InitiateIdVerification/InitiateIdVerification
+      outputTemplate: signup/InitiateIdVerification/InitiateIdVerificationResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "authorizationCode": "$ID:ESignet_SignupAuthorizeCode_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forNegOrder_Smoke_sid_code$",
+        "state": "urlInfo1724138417665"
+}'
+      output: '{
+  "response": {
+    "identityVerifiers": [
+      {
+        "processType": "VIDEO",
+        "active": true
+      }
+    ]
+  }
 }'

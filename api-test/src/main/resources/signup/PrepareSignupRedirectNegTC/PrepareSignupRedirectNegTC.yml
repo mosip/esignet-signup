@@ -432,3 +432,25 @@ PrepareSignupRedirectNegTC:
       output: '{
         "status": "403"
 	}'
+   Signup_ESignet_PrepareSignupRedirectNegTC_AuthToken_Xsrf_STransId_uin_Otp_Expired_Transaction_Neg:
+      endPoint: /v1/esignet/authorization/prepare-signup-redirect
+      uniqueIdentifier: TC_ESignet_PrepareSignupRedirectNegTC_21
+      description: Verify ID token creation is rejected for an unrecognized transaction - expected, invalid_transaction error
+      role: resident
+      restMethod: post
+      additionalDependencies: TC_ESignet_AuthenticateUserV3_12
+      inputTemplate: signup/PrepareSignupRedirectNegTC/PrepareSignupRedirectNegTC
+      outputTemplate: signup/error
+      input: '{
+        "encodedHash": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forPrepareSignupRedirectExpiry_Smoke_sid_encodedResp$",
+      	"requestTime": "$TIMESTAMP$",
+      	"transactionId": "4eKDB4GPk6fP8XXEDY7rktwtQF6WiwrOCehT2CwyVT1",
+      	"pathFragment": "path-fragment"
+    }'
+      output: '{
+        "errors": [
+    {
+      "errorCode": "invalid_transaction"
+    }
+  ]
+}'

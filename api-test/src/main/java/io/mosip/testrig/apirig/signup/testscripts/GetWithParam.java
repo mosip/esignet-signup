@@ -102,6 +102,11 @@ public class GetWithParam extends SignupUtil implements ITest {
 		if (testCaseDTO.getOutputTemplate().contains(GlobalConstants.$PRIMARYLANG$))
 			testCaseDTO.setOutputTemplate(testCaseDTO.getOutputTemplate().replace(GlobalConstants.$PRIMARYLANG$,
 					BaseTestCase.languageList.get(0)));
+		if (testCaseDTO.getOutputTemplate().contains("$MOCKVARIANT$")) {
+			String variantSuffix = SignupUtil.getIdentityPluginNameFromEsignetActuator().toLowerCase()
+					.contains("mockauthenticationservice") ? "Mock" : "";
+			testCaseDTO.setOutputTemplate(testCaseDTO.getOutputTemplate().replace("$MOCKVARIANT$", variantSuffix));
+		}
 		if (testCaseDTO.getInput().contains(GlobalConstants.$PRIMARYLANG$))
 			testCaseDTO.setInput(
 					testCaseDTO.getInput().replace(GlobalConstants.$PRIMARYLANG$, BaseTestCase.languageList.get(0)));

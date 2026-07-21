@@ -15,7 +15,7 @@ SignupAuthorizeCode:
       	"pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_Smoke_sid_pathFragmentCookie$",
       	"pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_transactionId$",
       	"transactionId": "$ID:ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_Smoke_sid_transactionId$",
-      	"acceptedClaims": [{channel: "email"},{channel: "phone_number"}]
+      	"acceptedClaims": [{"channel": "email"},{"channel": "phone_number"}]
 }'
       output: '{
        
@@ -36,7 +36,7 @@ SignupAuthorizeCode:
       	"pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_forGetSlot_disabilityTypeVISION_Smoke_sid_pathFragmentCookie$",
       	"pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeVISION_Smoke_sid_transactionId$",
       	"transactionId": "$ID:ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeVISION_Smoke_sid_transactionId$",
-      	"acceptedClaims": [{channel: "email"},{channel: "phone_number"}]
+      	"acceptedClaims": [{"channel": "email"},{"channel": "phone_number"}]
 }'
       output: '{
        
@@ -57,7 +57,7 @@ SignupAuthorizeCode:
       	"pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_forGetSlot_disabilityTypeAUDITORY_Smoke_sid_pathFragmentCookie$",
       	"pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeAUDITORY_Smoke_sid_transactionId$",
       	"transactionId": "$ID:ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeAUDITORY_Smoke_sid_transactionId$",
-      	"acceptedClaims": [{channel: "email"},{channel: "phone_number"}]
+      	"acceptedClaims": [{"channel": "email"},{"channel": "phone_number"}]
 }'
       output: '{
        
@@ -78,7 +78,7 @@ SignupAuthorizeCode:
       	"pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_forGetSlot_disabilityTypeMOBILITY_Smoke_sid_pathFragmentCookie$",
       	"pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeMOBILITY_Smoke_sid_transactionId$",
       	"transactionId": "$ID:ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeMOBILITY_Smoke_sid_transactionId$",
-      	"acceptedClaims": [{channel: "email"},{channel: "phone_number"}]
+      	"acceptedClaims": [{"channel": "email"},{"channel": "phone_number"}]
 }'
       output: '{
        
@@ -99,7 +99,7 @@ SignupAuthorizeCode:
       	"pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_Smoke_sid_pathFragmentCookie$",
       	"pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_Smoke_sid_transactionId$",
       	"transactionId": "$ID:ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_Smoke_sid_transactionId$",
-      	"acceptedClaims": [{channel: "email"},{channel: "phone_number"}]
+      	"acceptedClaims": [{"channel": "email"},{"channel": "phone_number"}]
 }'
       output: '{
        
@@ -120,8 +120,71 @@ SignupAuthorizeCode:
       	"pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdVerStatusWithoutWebsocket_Smoke_sid_pathFragmentCookie$",
       	"pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdVerStatusWithoutWebsocket_Smoke_sid_transactionId$",
       	"transactionId": "$ID:ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forIdVerStatusWithoutWebsocket_Smoke_sid_transactionId$",
-      	"acceptedClaims": [{channel: "email"},{channel: "phone_number"}]
+      	"acceptedClaims": [{"channel": "email"},{"channel": "phone_number"}]
 }'
       output: '{
-       
+
+}'
+   Signup_ESignet_SignupAuthorizeCode_AuthToken_Xsrf_uin_all_Valid_forGetSlot_differentIdentifier_Smoke_sid:
+      endPoint: /v1/esignet/authorization/auth-code
+      uniqueIdentifier: TC_ESignet_SignupAuthorizeCode_07
+      description: Verify authorization code creation succeeds for the GetSlot different-identifier scenario - expected, a valid authorization code is returned
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      additionalDependencies: TC_ESignet_IDTAuthentication_07
+      inputTemplate: signup/SignupAuthorizeCode/SignupAuthorizeCode
+      outputTemplate: signup/SignupAuthorizeCode/SignupAuthorizeCodeResult
+      input: '{
+        "encodedHash": "$ID:ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_differentIdentifier_Smoke_sid_encodedResp$",
+      	"requestTime": "$TIMESTAMP$",
+      	"pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_forGetSlot_differentIdentifier_Smoke_sid_pathFragmentCookie$",
+      	"pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_differentIdentifier_Smoke_sid_transactionId$",
+      	"transactionId": "$ID:ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_differentIdentifier_Smoke_sid_transactionId$",
+      	"acceptedClaims": [{"channel": "email"},{"channel": "phone_number"}]
+}'
+      output: '{
+
+}'
+   Signup_ESignet_SignupAuthorizeCode_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forWsFrameEdge_Smoke_sid:
+      endPoint: /v1/esignet/authorization/auth-code
+      uniqueIdentifier: TC_ESignet_SignupAuthorizeCode_WsFrameEdge
+      description: Verify authorization code creation succeeds for the websocket frame-field edge-case scenario - expected, a valid authorization code is returned
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      additionalDependencies: TC_ESignet_IDTAuthentication_WsFrameEdge
+      inputTemplate: signup/SignupAuthorizeCode/SignupAuthorizeCode
+      outputTemplate: signup/SignupAuthorizeCode/SignupAuthorizeCodeResult
+      input: '{
+        "encodedHash": "$ID:ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forWsFrameEdge_Smoke_sid_encodedResp$",
+        "requestTime": "$TIMESTAMP$",
+        "pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_forGetSlot_forWsFrameEdge_Smoke_sid_pathFragmentCookie$",
+        "pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forWsFrameEdge_Smoke_sid_transactionId$",
+        "transactionId": "$ID:ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forWsFrameEdge_Smoke_sid_transactionId$",
+        "acceptedClaims": [{"channel": "email"},{"channel": "phone_number"}]
+}'
+      output: '{
+
+}'
+   Signup_ESignet_SignupAuthorizeCode_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forNegOrder_Smoke_sid:
+      endPoint: /v1/esignet/authorization/auth-code
+      uniqueIdentifier: TC_ESignet_SignupAuthorizeCode_NegOrder
+      description: Verify authorization code creation succeeds for the websocket negative-order scenario - expected, a valid authorization code is returned
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      additionalDependencies: TC_ESignet_IDTAuthentication_NegOrder
+      inputTemplate: signup/SignupAuthorizeCode/SignupAuthorizeCode
+      outputTemplate: signup/SignupAuthorizeCode/SignupAuthorizeCodeResult
+      input: '{
+        "encodedHash": "$ID:ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forNegOrder_Smoke_sid_encodedResp$",
+        "requestTime": "$TIMESTAMP$",
+        "pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_forGetSlot_forNegOrder_Smoke_sid_pathFragmentCookie$",
+        "pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forNegOrder_Smoke_sid_transactionId$",
+        "transactionId": "$ID:ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forNegOrder_Smoke_sid_transactionId$",
+        "acceptedClaims": [{"channel": "email"},{"channel": "phone_number"}]
+}'
+      output: '{
+
 }'

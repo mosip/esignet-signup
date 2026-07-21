@@ -197,5 +197,80 @@ SignupAuthorize:
       	"idTokenHint": "$ID:ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_forGetSlot_disabilityTypeNEUROLOGICAL_forDeletingCookies_Smoke_sid_idToken$"
 }'
       output: '{
-       
+
+}'
+   Signup_ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_differentIdentifier_Smoke_sid:
+      endPoint: /v1/esignet/authorization/v3/oauth-details
+      uniqueIdentifier: TC_ESignet_SignupAuthorize_09
+      description: Verify consent authorization succeeds for the GetSlot different-identifier scenario - expected, a valid transactionId and consent details are returned
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/SignupAuthorize/SignupAuthorize
+      outputTemplate: signup/SignupAuthorize/SignupAuthorizeResult
+      input: '{
+      	"pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_forGetSlot_differentIdentifier_Smoke_sid_pathFragmentCookie$",
+      	"pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_differentIdentifier_Smoke_sid_transactionId$",
+      	"requestTime": "$TIMESTAMP$",
+      	"clientId": "$MOSIP_SIGNUP_OAUTH_CLIENT_ID_VALUE$",
+      	"scope": "openid",
+      	"responseType": "code",
+      	"redirectUri": "$SIGNUPREDIRECTURI$",
+      	"acrValues": "mosip:idp:acr:id-token",
+      	"state": "urlInfo1724138417665",
+      	"uiLocales": "en",
+      	"idTokenHint": "$ID:ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_forGetSlot_differentIdentifier_Smoke_sid_idToken$"
+}'
+      output: '{
+
+}'
+   Signup_ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forWsFrameEdge_Smoke_sid:
+      endPoint: /v1/esignet/authorization/v3/oauth-details
+      uniqueIdentifier: TC_ESignet_SignupAuthorize_WsFrameEdge
+      description: Verify consent authorization succeeds for the websocket frame-field edge-case scenario - expected, a valid transactionId and consent details are returned
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/SignupAuthorize/SignupAuthorize
+      outputTemplate: signup/SignupAuthorize/SignupAuthorizeResult
+      input: '{
+        "pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_forGetSlot_forWsFrameEdge_Smoke_sid_pathFragmentCookie$",
+        "pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forWsFrameEdge_Smoke_sid_transactionId$",
+        "requestTime": "$TIMESTAMP$",
+        "clientId": "$MOSIP_SIGNUP_OAUTH_CLIENT_ID_VALUE$",
+        "scope": "openid",
+        "responseType": "code",
+        "redirectUri": "$SIGNUPREDIRECTURI$",
+        "acrValues": "mosip:idp:acr:id-token",
+        "state": "urlInfo1724138417665",
+        "uiLocales": "en",
+        "idTokenHint": "$ID:ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_forGetSlot_forWsFrameEdge_Smoke_sid_idToken$"
+}'
+      output: '{
+
+}'
+   Signup_ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forNegOrder_Smoke_sid:
+      endPoint: /v1/esignet/authorization/v3/oauth-details
+      uniqueIdentifier: TC_ESignet_SignupAuthorize_NegOrder
+      description: Verify consent authorization succeeds for the websocket negative-order scenario - expected, a valid transactionId and consent details are returned
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/SignupAuthorize/SignupAuthorize
+      outputTemplate: signup/SignupAuthorize/SignupAuthorizeResult
+      input: '{
+        "pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_forGetSlot_forNegOrder_Smoke_sid_pathFragmentCookie$",
+        "pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forNegOrder_Smoke_sid_transactionId$",
+        "requestTime": "$TIMESTAMP$",
+        "clientId": "$MOSIP_SIGNUP_OAUTH_CLIENT_ID_VALUE$",
+        "scope": "openid",
+        "responseType": "code",
+        "redirectUri": "$SIGNUPREDIRECTURI$",
+        "acrValues": "mosip:idp:acr:id-token",
+        "state": "urlInfo1724138417665",
+        "uiLocales": "en",
+        "idTokenHint": "$ID:ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_forGetSlot_forNegOrder_Smoke_sid_idToken$"
+}'
+      output: '{
+
 }'
