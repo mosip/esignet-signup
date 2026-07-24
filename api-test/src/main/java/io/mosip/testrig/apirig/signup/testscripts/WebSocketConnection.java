@@ -258,11 +258,7 @@ public class WebSocketConnection extends SignupUtil implements ITest {
 
 		Set<String> actualCodes = pollFeedbackCodes(slotId, expectedCodes);
 
-		try {
-			wsSession.close(new CloseReason(CloseReason.CloseCodes.NORMAL_CLOSURE, ""));
-		} catch (Exception e) {
-			logger.info("Error closing websocket session: " + e.getMessage());
-		}
+		closeSessionQuietly(wsSession, "websocket");
 
 		GlobalMethods.reportResponse(null, tempUrl,
 				"Expected feedback codes: " + expectedCodes + ", received: " + actualCodes, true);
@@ -311,11 +307,7 @@ public class WebSocketConnection extends SignupUtil implements ITest {
 
 		Session wsSession = webSocketClient.getSession();
 		if (wsSession != null) {
-			try {
-				wsSession.close(new CloseReason(CloseReason.CloseCodes.NORMAL_CLOSURE, ""));
-			} catch (Exception e) {
-				logger.info("Error closing websocket session: " + e.getMessage());
-			}
+			closeSessionQuietly(wsSession, "websocket");
 		}
 	}
 
@@ -335,11 +327,7 @@ public class WebSocketConnection extends SignupUtil implements ITest {
 			throw new AdminTestException(
 					"Expected the first WebSocket connection to be established, but it was not");
 		}
-		try {
-			firstSession.close(new CloseReason(CloseReason.CloseCodes.NORMAL_CLOSURE, ""));
-		} catch (Exception e) {
-			logger.info("Error closing first websocket session: " + e.getMessage());
-		}
+		closeSessionQuietly(firstSession, "first websocket");
 
 		SignupCustomWebSocketClientUtil secondClient = new SignupCustomWebSocketClientUtil(cookie,
 				subscribeDestination, sendDestination);
@@ -347,17 +335,25 @@ public class WebSocketConnection extends SignupUtil implements ITest {
 		Session secondSession = secondClient.getSession();
 
 		if (secondSession != null) {
-			try {
-				secondSession.close(new CloseReason(CloseReason.CloseCodes.NORMAL_CLOSURE, ""));
-			} catch (Exception e) {
-				logger.info("Error closing second websocket session: " + e.getMessage());
-			}
+			closeSessionQuietly(secondSession, "second websocket");
 			throw new AdminTestException(
 					"Expected reconnection with the same slotId to be rejected, but a second session was established");
 		}
 
 		GlobalMethods.reportResponse(null, tempUrl, "Reconnection with the same slotId was rejected as expected",
 				true);
+	}
+
+	/**
+	 * Closes a websocket session with a normal-closure reason, logging (rather than throwing) on
+	 * failure since a close error at teardown time should never fail the test itself.
+	 */
+	private void closeSessionQuietly(Session session, String label) {
+		try {
+			session.close(new CloseReason(CloseReason.CloseCodes.NORMAL_CLOSURE, ""));
+		} catch (Exception e) {
+			logger.info("Error closing " + label + " session: " + e.getMessage());
+		}
 	}
 
 	/**
