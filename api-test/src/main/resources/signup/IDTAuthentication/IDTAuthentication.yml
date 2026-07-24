@@ -162,7 +162,7 @@ IDTAuthentication:
 }'
    Signup_ESignet_IDTAuthentication_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forWsFrameEdge_Smoke:
       endPoint: /v1/esignet/authorization/v3/authenticate
-      uniqueIdentifier: TC_ESignet_IDTAuthentication_WsFrameEdge
+      uniqueIdentifier: TC_ESignet_IDTAuthentication_08
       description: Verify IDT authentication succeeds for the websocket frame-field edge-case scenario - expected, a valid transactionId and consentAction are returned
       role: resident
       restMethod: post
@@ -185,7 +185,7 @@ IDTAuthentication:
 }'
    Signup_ESignet_IDTAuthentication_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forNegOrder_Smoke:
       endPoint: /v1/esignet/authorization/v3/authenticate
-      uniqueIdentifier: TC_ESignet_IDTAuthentication_NegOrder
+      uniqueIdentifier: TC_ESignet_IDTAuthentication_09
       description: Verify IDT authentication succeeds for the websocket negative-order scenario - expected, a valid transactionId and consentAction are returned
       role: resident
       restMethod: post
@@ -199,6 +199,98 @@ IDTAuthentication:
         "pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forNegOrder_Smoke_sid_transactionId$",
         "idtToken": "$ID:ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_forGetSlot_forNegOrder_Smoke_sid_idToken$",
         "transactionId": "$ID:ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forNegOrder_Smoke_sid_transactionId$",
+        "individualId": "$IDTINDIVIUALID$",
+        "authFactorType" : "IDT",
+        "challenge" : "$IDTCHALLENGE$"
+}'
+      output: '{
+
+}'
+   Signup_ESignet_IDTAuthentication_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forInvalidJson_Smoke:
+      endPoint: /v1/esignet/authorization/v3/authenticate
+      uniqueIdentifier: TC_ESignet_IDTAuthentication_10
+      description: Verify IDT authentication succeeds for the websocket invalid-JSON scenario - expected, a valid transactionId and consentAction are returned
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/IDTAuthentication/IDTAuthentication
+      outputTemplate: signup/IDTAuthentication/IDTAuthenticationResult
+      input: '{
+        "encodedHash": "$ID:ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forInvalidJson_Smoke_sid_encodedResp$",
+        "requestTime": "$TIMESTAMP$",
+        "pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_forGetSlot_forInvalidJson_Smoke_sid_pathFragmentCookie$",
+        "pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forInvalidJson_Smoke_sid_transactionId$",
+        "idtToken": "$ID:ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_forGetSlot_forInvalidJson_Smoke_sid_idToken$",
+        "transactionId": "$ID:ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forInvalidJson_Smoke_sid_transactionId$",
+        "individualId": "$IDTINDIVIUALID$",
+        "authFactorType" : "IDT",
+        "challenge" : "$IDTCHALLENGE$"
+}'
+      output: '{
+
+}'
+   Signup_ESignet_IDTAuthentication_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forInvalidFrame_Smoke:
+      endPoint: /v1/esignet/authorization/v3/authenticate
+      uniqueIdentifier: TC_ESignet_IDTAuthentication_11
+      description: Verify IDT authentication succeeds for the websocket invalid-frame scenario - expected, a valid transactionId and consentAction are returned
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/IDTAuthentication/IDTAuthentication
+      outputTemplate: signup/IDTAuthentication/IDTAuthenticationResult
+      input: '{
+        "encodedHash": "$ID:ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forInvalidFrame_Smoke_sid_encodedResp$",
+        "requestTime": "$TIMESTAMP$",
+        "pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_forGetSlot_forInvalidFrame_Smoke_sid_pathFragmentCookie$",
+        "pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forInvalidFrame_Smoke_sid_transactionId$",
+        "idtToken": "$ID:ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_forGetSlot_forInvalidFrame_Smoke_sid_idToken$",
+        "transactionId": "$ID:ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forInvalidFrame_Smoke_sid_transactionId$",
+        "individualId": "$IDTINDIVIUALID$",
+        "authFactorType" : "IDT",
+        "challenge" : "$IDTCHALLENGE$"
+}'
+      output: '{
+
+}'
+   Signup_ESignet_IDTAuthentication_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forFramesShape_Smoke:
+      endPoint: /v1/esignet/authorization/v3/authenticate
+      uniqueIdentifier: TC_ESignet_IDTAuthentication_12
+      description: Verify IDT authentication succeeds for the websocket frames-shape scenario - expected, a valid transactionId and consentAction are returned
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/IDTAuthentication/IDTAuthentication
+      outputTemplate: signup/IDTAuthentication/IDTAuthenticationResult
+      input: '{
+        "encodedHash": "$ID:ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forFramesShape_Smoke_sid_encodedResp$",
+        "requestTime": "$TIMESTAMP$",
+        "pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_forGetSlot_forFramesShape_Smoke_sid_pathFragmentCookie$",
+        "pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forFramesShape_Smoke_sid_transactionId$",
+        "idtToken": "$ID:ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_forGetSlot_forFramesShape_Smoke_sid_idToken$",
+        "transactionId": "$ID:ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forFramesShape_Smoke_sid_transactionId$",
+        "individualId": "$IDTINDIVIUALID$",
+        "authFactorType" : "IDT",
+        "challenge" : "$IDTCHALLENGE$"
+}'
+      output: '{
+
+}'
+   Signup_ESignet_IDTAuthentication_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forSlotReconnect_Smoke:
+      endPoint: /v1/esignet/authorization/v3/authenticate
+      uniqueIdentifier: TC_ESignet_IDTAuthentication_13
+      description: Verify IDT authentication succeeds for the websocket slot-reconnection scenario - expected, a valid transactionId and consentAction are returned
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/IDTAuthentication/IDTAuthentication
+      outputTemplate: signup/IDTAuthentication/IDTAuthenticationResult
+      input: '{
+        "encodedHash": "$ID:ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forSlotReconnect_Smoke_sid_encodedResp$",
+        "requestTime": "$TIMESTAMP$",
+        "pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_forGetSlot_forSlotReconnect_Smoke_sid_pathFragmentCookie$",
+        "pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forSlotReconnect_Smoke_sid_transactionId$",
+        "idtToken": "$ID:ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_forGetSlot_forSlotReconnect_Smoke_sid_idToken$",
+        "transactionId": "$ID:ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forSlotReconnect_Smoke_sid_transactionId$",
         "individualId": "$IDTINDIVIUALID$",
         "authFactorType" : "IDT",
         "challenge" : "$IDTCHALLENGE$"

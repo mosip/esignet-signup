@@ -102,8 +102,20 @@ public class WebSocketConnection extends SignupUtil implements ITest {
 		JSONObject webSocketReqJson = new JSONObject(inputJson);
 		String message1 = webSocketReqJson.get("message1").toString();
 		String message2 = webSocketReqJson.get("message2").toString();
+		// Optional: a test may supply "rawMessage1" - a string sent verbatim instead of the serialized
+		// message1, to exercise payloads (e.g. malformed JSON) that can't be expressed as a JSON object.
+		String rawMessage1 = webSocketReqJson.optString("rawMessage1", null);
+		// Optional: a test may supply "steps" - an ordered list of independent frame-validation checks
+		// to run over one connection/slot, instead of the single rawMessage1/expectedOutcome pair.
+		JSONArray steps = webSocketReqJson.optJSONArray("steps");
+		// Optional: a test may supply "reconnectSameSlot" - after sending message1 and closing, attempt
+		// a second connection to the same slotId and assert it is rejected (slots are single-use).
+		boolean reconnectSameSlot = webSocketReqJson.optBoolean("reconnectSameSlot", false);
 		webSocketReqJson.remove("message1");
 		webSocketReqJson.remove("message2");
+		webSocketReqJson.remove("rawMessage1");
+		webSocketReqJson.remove("steps");
+		webSocketReqJson.remove("reconnectSameSlot");
 
 		String slotId = webSocketReqJson.getString("slotId");
 		String idvSlotAllotted = webSocketReqJson.getString("idvSlotAllotted");
@@ -124,8 +136,19 @@ public class WebSocketConnection extends SignupUtil implements ITest {
 		// Connect to WebSocket server
 		webSocketClient.connect(tempUrl);
 
+		if (steps != null) {
+			assertWebSocketStepsOutcome(webSocketClient, slotId, tempUrl, steps);
+			return;
+		}
+
+		if (reconnectSameSlot) {
+			assertSlotReconnectionRejected(webSocketClient, message1, tempUrl, cookie, subscribeDestination,
+					sendDestination);
+			return;
+		}
+
 		// Send a message
-		webSocketClient.sendMessage(message1);
+		webSocketClient.sendMessage(rawMessage1 != null ? rawMessage1 : message1);
 
 		// Data-driven assertion path: a test declares its expected websocket outcome in its output
 		// (expectConnectionFailure and/or expectedFeedbackCodes). One logic handles every negative
@@ -141,6 +164,8 @@ public class WebSocketConnection extends SignupUtil implements ITest {
 		String typeValue = "START";
 		JSONObject messageObject = new JSONObject(message2);
 		
+		// _Incomplete simulates an abrupt client disconnect: return immediately after sending one frame,
+		// skipping the loop below so the session is abandoned without a close handshake.
 		if (testCaseName.contains("_Incomplete")) {
 			sendWebsocketMessage = false;
 		}
@@ -246,6 +271,103 @@ public class WebSocketConnection extends SignupUtil implements ITest {
 			throw new AdminTestException(
 					"Expected websocket feedback codes " + expectedCodes + ", but received " + actualCodes);
 		}
+	}
+
+	/**
+	 * Sequential variant of assertWebSocketOutcome: runs an ordered list of independent
+	 * frame-validation checks over one connection/slot, declared in the test's input as "steps"
+	 * (each a {"rawMessage": ..., "expectedFeedbackCodes": [...]} pair). Since the message store
+	 * keeps only the most recent frame per slot (see assertWebSocketOutcome), each step's message is
+	 * sent and its feedback asserted - then that slot's stored frames are cleared - before the next
+	 * step's message is sent, so no step's feedback can be lost to or confused with another's.
+	 */
+	private void assertWebSocketStepsOutcome(SignupCustomWebSocketClientUtil webSocketClient, String slotId,
+			String tempUrl, JSONArray steps) throws AdminTestException, InterruptedException {
+
+		for (int i = 0; i < steps.length(); i++) {
+			JSONObject step = steps.getJSONObject(i);
+			String rawMessage = step.getString("rawMessage");
+
+			Set<String> expectedCodes = new LinkedHashSet<>();
+			JSONArray expectedArray = step.optJSONArray("expectedFeedbackCodes");
+			if (expectedArray != null) {
+				for (int j = 0; j < expectedArray.length(); j++) {
+					expectedCodes.add(expectedArray.getString(j));
+				}
+			}
+
+			webSocketClient.sendMessage(rawMessage);
+			Set<String> actualCodes = pollFeedbackCodes(slotId, expectedCodes);
+			clearFeedbackForSlot(slotId);
+
+			GlobalMethods.reportResponse(null, tempUrl, "Step " + (i + 1) + " - expected feedback codes: "
+					+ expectedCodes + ", received: " + actualCodes, true);
+
+			if (!actualCodes.equals(expectedCodes)) {
+				throw new AdminTestException("Step " + (i + 1) + ": expected websocket feedback codes "
+						+ expectedCodes + ", but received " + actualCodes);
+			}
+		}
+
+		Session wsSession = webSocketClient.getSession();
+		if (wsSession != null) {
+			try {
+				wsSession.close(new CloseReason(CloseReason.CloseCodes.NORMAL_CLOSURE, ""));
+			} catch (Exception e) {
+				logger.info("Error closing websocket session: " + e.getMessage());
+			}
+		}
+	}
+
+	/**
+	 * Verifies a slot cannot be reused once its first connection has sent a frame and closed. Sends
+	 * message1 on the already-connected client, closes that session gracefully, then attempts a second
+	 * connection to the same slotId URL and asserts the reconnection is rejected (no session established).
+	 */
+	private void assertSlotReconnectionRejected(SignupCustomWebSocketClientUtil firstClient, String message1,
+			String tempUrl, String cookie, String subscribeDestination, String sendDestination)
+			throws AdminTestException {
+
+		firstClient.sendMessage(message1);
+
+		Session firstSession = firstClient.getSession();
+		if (firstSession == null) {
+			throw new AdminTestException(
+					"Expected the first WebSocket connection to be established, but it was not");
+		}
+		try {
+			firstSession.close(new CloseReason(CloseReason.CloseCodes.NORMAL_CLOSURE, ""));
+		} catch (Exception e) {
+			logger.info("Error closing first websocket session: " + e.getMessage());
+		}
+
+		SignupCustomWebSocketClientUtil secondClient = new SignupCustomWebSocketClientUtil(cookie,
+				subscribeDestination, sendDestination);
+		secondClient.connect(tempUrl);
+		Session secondSession = secondClient.getSession();
+
+		if (secondSession != null) {
+			try {
+				secondSession.close(new CloseReason(CloseReason.CloseCodes.NORMAL_CLOSURE, ""));
+			} catch (Exception e) {
+				logger.info("Error closing second websocket session: " + e.getMessage());
+			}
+			throw new AdminTestException(
+					"Expected reconnection with the same slotId to be rejected, but a second session was established");
+		}
+
+		GlobalMethods.reportResponse(null, tempUrl, "Reconnection with the same slotId was rejected as expected",
+				true);
+	}
+
+	/**
+	 * Removes this slot's stored frames so the next assertion step only observes fresh feedback.
+	 * Scoped to this slot's own topic (not a global clear) to avoid interfering with any other
+	 * websocket test running concurrently against the same shared message store.
+	 */
+	private void clearFeedbackForSlot(String slotId) {
+		SignupCustomWebSocketClientUtil.getMessageStore().entrySet()
+				.removeIf(e -> e.getValue() != null && e.getValue().contains("/topic/" + slotId));
 	}
 
 	/**

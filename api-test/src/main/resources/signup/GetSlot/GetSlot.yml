@@ -132,7 +132,7 @@ GetSlot:
 }'
    Signup_ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_forWsFrameEdge_Smoke_Sid:
       endPoint: /v1/signup/identity-verification/slot
-      uniqueIdentifier: TC_ESignet_GetSlot_WsFrameEdge
+      uniqueIdentifier: TC_ESignet_GetSlot_08
       description: Verify GetSlot succeeds using a valid transaction created for the websocket frame-field edge-case scenario - expected, a slot is allocated successfully
       role: resident
       restMethod: post
@@ -150,7 +150,7 @@ GetSlot:
 }'
    Signup_ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_forNegOrder_Smoke_Sid:
       endPoint: /v1/signup/identity-verification/slot
-      uniqueIdentifier: TC_ESignet_GetSlot_NegOrder
+      uniqueIdentifier: TC_ESignet_GetSlot_09
       description: Verify GetSlot succeeds using a valid transaction created for the websocket negative-order scenario - expected, a slot is allocated successfully
       role: resident
       restMethod: post
@@ -161,6 +161,78 @@ GetSlot:
         "requestTime": "$TIMESTAMP$",
         "idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forNegOrder_Smoke_Sid_idvTransactionID$",
         "verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forNegOrder_Smoke_Sid_id$",
+        "consent": "AGREE"
+}'
+      output: '{
+
+}'
+   Signup_ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_forInvalidJson_Smoke_Sid:
+      endPoint: /v1/signup/identity-verification/slot
+      uniqueIdentifier: TC_ESignet_GetSlot_10
+      description: Verify GetSlot succeeds using a valid transaction created for the websocket invalid-JSON scenario - expected, a slot is allocated successfully
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/GetSlot/GetSlot
+      outputTemplate: signup/GetSlot/GetSlotResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forInvalidJson_Smoke_Sid_idvTransactionID$",
+        "verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forInvalidJson_Smoke_Sid_id$",
+        "consent": "AGREE"
+}'
+      output: '{
+
+}'
+   Signup_ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_forInvalidFrame_Smoke_Sid:
+      endPoint: /v1/signup/identity-verification/slot
+      uniqueIdentifier: TC_ESignet_GetSlot_11
+      description: Verify GetSlot succeeds using a valid transaction created for the websocket invalid-frame scenario - expected, a slot is allocated successfully
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/GetSlot/GetSlot
+      outputTemplate: signup/GetSlot/GetSlotResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forInvalidFrame_Smoke_Sid_idvTransactionID$",
+        "verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forInvalidFrame_Smoke_Sid_id$",
+        "consent": "AGREE"
+}'
+      output: '{
+
+}'
+   Signup_ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_forFramesShape_Smoke_Sid:
+      endPoint: /v1/signup/identity-verification/slot
+      uniqueIdentifier: TC_ESignet_GetSlot_12
+      description: Verify GetSlot succeeds using a valid transaction created for the websocket frames-shape scenario - expected, a slot is allocated successfully
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/GetSlot/GetSlot
+      outputTemplate: signup/GetSlot/GetSlotResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forFramesShape_Smoke_Sid_idvTransactionID$",
+        "verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forFramesShape_Smoke_Sid_id$",
+        "consent": "AGREE"
+}'
+      output: '{
+
+}'
+   Signup_ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_forSlotReconnect_Smoke_Sid:
+      endPoint: /v1/signup/identity-verification/slot
+      uniqueIdentifier: TC_ESignet_GetSlot_13
+      description: Verify GetSlot succeeds using a valid transaction created for the websocket slot-reconnection scenario - expected, a slot is allocated successfully
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/GetSlot/GetSlot
+      outputTemplate: signup/GetSlot/GetSlotResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forSlotReconnect_Smoke_Sid_idvTransactionID$",
+        "verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forSlotReconnect_Smoke_Sid_id$",
         "consent": "AGREE"
 }'
       output: '{
