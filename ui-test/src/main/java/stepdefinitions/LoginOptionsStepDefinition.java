@@ -18,7 +18,6 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.mosip.testrig.apirig.testrunner.OTPListener;
-import io.mosip.testrig.apirig.utils.NotificationListener;
 import pages.LoginOptionsPage;
 import pages.RegistrationPage;
 import utils.EsignetUtil;
@@ -69,8 +68,8 @@ public class LoginOptionsStepDefinition {
 
 	@When("user enters the correct OTP as input")
 	public void userEntersOtp() {
-		String mobile = EsignetUtil.normalizeIdentifierForOtp(RegisteredDetails.getMobileNumber());
-		registrationPage.enterOtp(NotificationListener.getOtp(mobile));
+		String otp = EsignetUtil.getVerifiedOtp(RegisteredDetails.getMobileNumber());
+		registrationPage.enterOtp(otp);
 	}
 
 	@And("user redirected to registration page")
@@ -432,6 +431,51 @@ public class LoginOptionsStepDefinition {
 	public void entersAlphaNumeric() {
 		String alphaNumeric = EsignetUtil.getAlphaNumeric();
 		loginOptionsPage.enterRegisteredMobileNumber(alphaNumeric);
+	}
+
+	// ---- Password language + login field ------------------------------------
+
+	private String lastLanguagePassword;
+
+	@When("user enters a valid format mobile number in the login mobile field")
+	public void userEntersValidFormatMobile() {
+		String number = EsignetUtil.generateMobileNumberFromRegex();
+		loginOptionsPage.enterRegisteredMobileNumber(number);
+	}
+
+	@When("user enters English and Khmer combined password into password field")
+	public void userEntersEngKhmerPassword() {
+		lastLanguagePassword = EsignetUtil.generateEngKhmerPassword();
+		loginOptionsPage.enterRegisteredPassword(lastLanguagePassword);
+	}
+
+	@When("user enters Khmer and numbers combined password into password field")
+	public void userEntersKhmerNumericPassword() {
+		lastLanguagePassword = EsignetUtil.generateKhmerNumericPassword();
+		loginOptionsPage.enterRegisteredPassword(lastLanguagePassword);
+	}
+
+	@When("user enters Hindi and English combined password into password field")
+	public void userEntersHindiEnglishPassword() {
+		lastLanguagePassword = EsignetUtil.generateHindiEnglishPassword();
+		loginOptionsPage.enterRegisteredPassword(lastLanguagePassword);
+	}
+
+	@Then("verify the password field is retained the entered value")
+	public void verifyPasswordFieldRetainsValue() {
+		String retained = loginOptionsPage.getEnteredPassword();
+		assertEquals("Password field should retain the multi-language input", lastLanguagePassword, retained);
+	}
+
+	@When("user enters a valid password into the password field")
+	public void userEntersValidPassword() {
+		String password = EsignetUtil.generateValidPasswordFromActuator();
+		loginOptionsPage.enterRegisteredPassword(password);
+	}
+
+	@Then("verify the login button is in disabled state")
+	public void verifyLoginButtonDisabledState() {
+		Assert.assertTrue(loginOptionsPage.isLoginButtonDisabled(), "Login button should be disabled");
 	}
 
 }

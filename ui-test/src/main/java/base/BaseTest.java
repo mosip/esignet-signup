@@ -68,21 +68,50 @@ public class BaseTest {
 		}
 	}
 
+	/**
+	 * The single place a scenario can be rejected before the driver is created.
+	 *
+	 * <p>Add new skip conditions here rather than in a separate hook class: every
+	 * condition then shares one ordering, one report-entry convention and one
+	 * guarantee that the decision happens before any (possibly remote) session is
+	 * opened. Returns the reason to report, or {@code null} to run the scenario.
+	 */
+	private String skipReasonFor(Scenario scenario) {
+		String bugId = runners.Runner.knownIssues.get(scenario.getName());
+		if (bugId != null) {
+			return "🟠 Skipped due to Known Issue: " + bugId;
+		}
+
+		// CDP network interception is a local-Chrome capability, so @localOnly
+		// scenarios cannot run against BrowserStack.
+		if (scenario.getSourceTagNames().contains("@localOnly")
+				&& Boolean.parseBoolean(EsignetConfigManager.getproperty("runOnBrowserStack"))) {
+			return "⚠️ Requires local Chrome with CDP network interception. Skipped on BrowserStack. "
+					+ "Run with runOnBrowserStack=false to execute.";
+		}
+
+		return null;
+	}
+
 	@Before
 	public void beforeAll(Scenario scenario) {
 		LOGGER.info("Initializing WebDriver...");
 
-		if (runners.Runner.knownIssues.containsKey(scenario.getName())) {
-			String bugId = runners.Runner.knownIssues.get(scenario.getName());
-			LOGGER.info("Skipping Known Issue Scenario: " + scenario.getName() + " | Bug: " + bugId);
-			isKnownIssueScenario.set(true);
-			throw new SkipException("Known Issue - Skipped: " + scenario.getName() + " | " + bugId);
-		}
-		isKnownIssueScenario.set(false);
-
-		totalCount++;
 		String browser = BaseTestUtil.getBrowserForScenario(scenario);
 		String lang = BaseTestUtil.getThreadLocalLanguage();
+		isKnownIssueScenario.set(runners.Runner.knownIssues.containsKey(scenario.getName()));
+
+		String skipReason = skipReasonFor(scenario);
+		if (skipReason != null) {
+			// Create the report entry before skipping so the shared @After has a test
+			// object for *this* scenario rather than whatever the thread ran last.
+			ExtentReportManager.createTest(scenario.getName() + " [" + browser + " | " + lang + "]");
+			ExtentReportManager.getTest().skip(skipReason);
+			LOGGER.info("Skipping scenario: " + scenario.getName() + " - " + skipReason);
+			throw new SkipException(skipReason + " - " + scenario.getName());
+		}
+
+		totalCount++;
 		ExtentReportManager.createTest(scenario.getName() + " [" + browser + " | " + lang + "]");
 		ExtentReportManager
 				.logStep("Scenario Started: " + scenario.getName() + " | Browser: " + browser + " | Language: " + lang);
@@ -204,8 +233,9 @@ public class BaseTest {
 				String bugId = runners.Runner.knownIssues.get(scenario.getName());
 				String bugUrl = "https://mosip.atlassian.net/browse/" + bugId;
 
+				// The report entry already exists - the @Before skip gate creates it
+				// before throwing - so this adds the bug link rather than a second entry.
 				ExtentReportManager.incrementKnownIssue();
-				ExtentReportManager.createTest(scenario.getName());
 				ExtentReportManager.getTest().skip(
 						"🟠 Skipped due to Known Issue → <a href='" + bugUrl + "' target='_blank'>" + bugId + "</a>");
 

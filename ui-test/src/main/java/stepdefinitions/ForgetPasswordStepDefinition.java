@@ -48,9 +48,8 @@ public class ForgetPasswordStepDefinition {
 
 	@When("user enters the OTP")
 	public void userEnterOtp() {
-		String number = RegisteredDetails.getMobileNumber();
-		number = EsignetUtil.normalizeIdentifierForOtp(number);
-		forgetPasswordPage.enterOtp(NotificationListener.getOtp(number));
+		String otp = EsignetUtil.getVerifiedOtp(RegisteredDetails.getMobileNumber());
+		forgetPasswordPage.enterOtp(otp);
 	}
 
 	@When("user click on reset password button")

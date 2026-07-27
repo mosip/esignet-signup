@@ -2,6 +2,7 @@ package pages;
 
 import base.BasePage;
 import utils.EsignetUtil;
+import utils.WaitUtil;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -275,7 +276,7 @@ public class RegistrationPage extends BasePage {
 
 	public WebElement getIdentifierFieldElement() {
 		String fieldId = EsignetUtil.getIdentifierFieldId();
-		return driver.findElement(By.id(fieldId));
+		return WaitUtil.waitForVisibility(driver, By.id(fieldId));
 	}
 
 	public void enterIdentifierValue(String value) {
@@ -403,6 +404,8 @@ public class RegistrationPage extends BasePage {
 	}
 
 	public void clickOnVerifyOtpButton() {
+		// The Verify button is enabled only once the entered OTP passes form
+		// validation; clickOnElement waits for clickability, not just visibility.
 		clickOnElement(verifyOtpButton, "Click verify OTP Button");
 	}
 
@@ -814,8 +817,6 @@ public class RegistrationPage extends BasePage {
 	}
 
 	public void clickOnCaptureButton() {
-		new WebDriverWait(driver, Duration.ofSeconds(10))
-				.until(ExpectedConditions.elementToBeClickable(captureButton));
 		clickOnElement(captureButton, "click on capture button");
 	}
 
