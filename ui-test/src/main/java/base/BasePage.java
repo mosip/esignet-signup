@@ -11,12 +11,15 @@ import java.util.List;
 
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
+import org.openqa.selenium.ElementClickInterceptedException;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.OutputType;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
@@ -85,9 +88,23 @@ public class BasePage {
 		WaitUtil.waitForVisibility(driver, element);
 	}
 
+	public void waitForElementClickable(WebElement element) {
+		WaitUtil.waitForClickability(driver, element);
+	}
+
+	/**
+	 * Clicks the element once it is clickable - visible <em>and</em> enabled.
+	 *
+	 * <p>Waiting on visibility alone is not enough on these screens: buttons are
+	 * commonly rendered disabled until form validation passes, or are still
+	 * animating in, so a click fired the instant they become visible lands on a
+	 * still-disabled control and is silently dropped (or throws
+	 * ElementClickInterceptedException). Waiting for clickability here means page
+	 * objects do not each have to re-add that wait before every click.
+	 */
 	public void clickOnElement(WebElement element, String stepDesc) {
 		try {
-			waitForElementVisible(element);
+			waitForElementClickable(element);
 
 			element.click();
 			logStep(stepDesc, element);
@@ -358,6 +375,82 @@ public class BasePage {
 		}
 	}
 	
+	// ---- Shared NavBar language dropdown --------------------------------------
+
+	/** Attempts a transiently-flaky interaction gets before it is treated as failed. */
+	private static final int TRANSIENT_RETRY_ATTEMPTS = 3;
+
+	private static final By LANGUAGE_TRIGGER = By.id("language-select-button");
+
+	/**
+	 * Runs an interaction that is known to fail transiently, retrying it before
+	 * giving up.
+	 *
+	 * <p>Retried on the three symptoms a half-rendered React control produces: a
+	 * wait that expires ({@link TimeoutException}), an element replaced by a
+	 * re-render ({@link StaleElementReferenceException}) and a click landing on
+	 * something still animating over the target
+	 * ({@link ElementClickInterceptedException}). Anything else is a real failure
+	 * and propagates immediately.
+	 *
+	 * @param description what is being attempted, used in the failure message
+	 * @param action      the interaction; must be safe to run more than once
+	 */
+	public void retryOnTransientFailure(String description, Runnable action) {
+		RuntimeException lastError = null;
+		for (int attempt = 1; attempt <= TRANSIENT_RETRY_ATTEMPTS; attempt++) {
+			try {
+				action.run();
+				return;
+			} catch (TimeoutException | StaleElementReferenceException | ElementClickInterceptedException e) {
+				lastError = e;
+				LOGGER.warn("Attempt {}/{} to {} failed with {}, retrying", attempt, TRANSIENT_RETRY_ATTEMPTS,
+						description, e.getClass().getSimpleName());
+			}
+		}
+		throw new TimeoutException(
+				"Failed to " + description + " after " + TRANSIENT_RETRY_ATTEMPTS + " attempts", lastError);
+	}
+
+	/**
+	 * Budget for a single attempt inside {@link #retryOnTransientFailure}. The
+	 * configured timeout is split across the attempts so that retrying bounds the
+	 * total wait at roughly explicitWaitTimeout per element, instead of multiplying
+	 * it by the attempt count.
+	 *
+	 * <p>Rounded up so the attempts together still spend the whole configured
+	 * budget: rounding down would give 3s x 3 = 9s for a 10s timeout, and 1s x 3 =
+	 * 3s for a 5s one, waiting less in total than the configuration asks for. The
+	 * one-second floor keeps a very small configured timeout usable.
+	 */
+	private static Duration perAttemptWait() {
+		int timeout = EsignetConfigManager.getTimeout();
+		return Duration
+				.ofSeconds(Math.max(1, (timeout + TRANSIENT_RETRY_ATTEMPTS - 1) / TRANSIENT_RETRY_ATTEMPTS));
+	}
+
+	/**
+	 * Switches the app language through the NavBar dropdown shared by every screen.
+	 *
+	 * <p>The dropdown is a headless-UI menu whose trigger only becomes interactive
+	 * once React has attached its handler, so a click fired the instant the button
+	 * is merely visible can be a no-op that leaves the menu closed and the option
+	 * never appearing. Selecting a language then re-renders the page (i18n change),
+	 * which can stale a menu still mid-animation. Opening and selecting is therefore
+	 * retried as a unit. This lives here rather than in a page object because the
+	 * NavBar - and this flakiness - is common to all of them.
+	 *
+	 * @param twoLetterLangKey two letter language key, e.g. "en" or "km"
+	 */
+	public void switchLanguage(String twoLetterLangKey) {
+		By option = By.id(twoLetterLangKey + "_language");
+		retryOnTransientFailure("switch language to '" + twoLetterLangKey + "'", () -> {
+			WaitUtil.waitForClickability(driver, LANGUAGE_TRIGGER, perAttemptWait()).click();
+			WaitUtil.waitForClickability(driver, option, perAttemptWait()).click();
+		});
+		logStep("Switched language to '" + twoLetterLangKey + "'", option);
+	}
+
 	public static void selectCurrentRunLanguage(WebDriver driver) {
 	String languagePassed = MultiLanguageUtil.getDisplayName(BaseTestUtil.getThreadLocalLanguage());
 

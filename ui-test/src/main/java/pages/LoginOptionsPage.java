@@ -407,4 +407,12 @@ public class LoginOptionsPage extends BasePage {
 		return welcomePageOfRelyingParty.getText();
 	}
 
+	public String getEnteredPassword() {
+		return getElementValue(passwordField, "read entered password value");
+	}
+
+	public boolean isLoginButtonDisabled() {
+		return !isButtonEnabled(loginButton, "check login button is disabled");
+	}
+
 }
