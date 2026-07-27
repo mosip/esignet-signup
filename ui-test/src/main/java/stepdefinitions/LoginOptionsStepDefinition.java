@@ -68,9 +68,7 @@ public class LoginOptionsStepDefinition {
 
 	@When("user enters the correct OTP as input")
 	public void userEntersOtp() {
-		String mobile = EsignetUtil.normalizeIdentifierForOtp(RegisteredDetails.getMobileNumber());
-		String otp = EsignetUtil.waitForDeliveredOtp(mobile);
-		Assert.assertTrue(otp != null && !otp.trim().isEmpty(), "OTP was not delivered for: " + mobile);
+		String otp = EsignetUtil.getVerifiedOtp(RegisteredDetails.getMobileNumber());
 		registrationPage.enterOtp(otp);
 	}
 

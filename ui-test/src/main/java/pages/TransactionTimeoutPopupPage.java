@@ -6,12 +6,12 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import base.BasePage;
 import utils.EsignetConfigManager;
+import utils.WaitUtil;
 
 /**
  * Page object for the signup critical-error popup (the {@code SignUpPopover}
@@ -55,8 +55,8 @@ public class TransactionTimeoutPopupPage extends BasePage {
 	}
 
 	public void clickOkay() {
-		WebElement okay = newWait().until(ExpectedConditions.elementToBeClickable(OKAY_BUTTON));
-		clickOnElement(okay, "Click Okay on the transaction timeout popup");
+		clickOnElement(WaitUtil.waitForClickability(driver, OKAY_BUTTON),
+				"Click Okay on the transaction timeout popup");
 	}
 
 	/**

@@ -48,10 +48,7 @@ public class ForgetPasswordStepDefinition {
 
 	@When("user enters the OTP")
 	public void userEnterOtp() {
-		String number = RegisteredDetails.getMobileNumber();
-		number = EsignetUtil.normalizeIdentifierForOtp(number);
-		String otp = EsignetUtil.waitForDeliveredOtp(number);
-		Assert.assertTrue(otp != null && !otp.trim().isEmpty(), "OTP was not delivered for: " + number);
+		String otp = EsignetUtil.getVerifiedOtp(RegisteredDetails.getMobileNumber());
 		forgetPasswordPage.enterOtp(otp);
 	}
 

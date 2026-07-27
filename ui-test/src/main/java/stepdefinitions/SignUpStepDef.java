@@ -357,9 +357,7 @@ public class SignUpStepDef {
 
 	@When("user enters the complete 6-digit OTP")
 	public void userEntersOtp() {
-		String number = EsignetUtil.normalizeIdentifierForOtp(lastGeneratedIdentifier);
-		String otp = EsignetUtil.waitForDeliveredOtp(number);
-		Assert.assertTrue(otp != null && !otp.trim().isEmpty(), "OTP was not delivered for: " + number);
+		String otp = EsignetUtil.getVerifiedOtp(lastGeneratedIdentifier);
 		registrationPage.enterOtp(otp);
 	}
 

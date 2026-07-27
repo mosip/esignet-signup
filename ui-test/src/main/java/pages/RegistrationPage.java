@@ -1,7 +1,6 @@
 package pages;
 
 import base.BasePage;
-import utils.EsignetConfigManager;
 import utils.EsignetUtil;
 import utils.WaitUtil;
 
@@ -405,11 +404,8 @@ public class RegistrationPage extends BasePage {
 	}
 
 	public void clickOnVerifyOtpButton() {
-		// The Verify button is enabled only after the entered OTP passes form
-		// validation; clicking on mere visibility can hit a still-disabled button
-		// (ElementClickInterceptedException). Wait until it is actually clickable.
-		new WebDriverWait(driver, Duration.ofSeconds(EsignetConfigManager.getTimeout()))
-				.until(ExpectedConditions.elementToBeClickable(verifyOtpButton));
+		// The Verify button is enabled only once the entered OTP passes form
+		// validation; clickOnElement waits for clickability, not just visibility.
 		clickOnElement(verifyOtpButton, "Click verify OTP Button");
 	}
 
@@ -759,10 +755,6 @@ public class RegistrationPage extends BasePage {
 		clickOnElement(setupContinueButton, "Click on Setup Account continue button");
 	}
 
-	public boolean isSetupAccountContinueEnabled() {
-		return isButtonEnabled(setupContinueButton, "Check Setup Account continue button enabled");
-	}
-
 	public void clickOnContinueButtonInSetupAccountScreen() {
 		// NOTE: This button requires both a JS click and a Selenium click due to
 		// layout shifting and delayed interactability. A single click fails
@@ -825,8 +817,6 @@ public class RegistrationPage extends BasePage {
 	}
 
 	public void clickOnCaptureButton() {
-		new WebDriverWait(driver, Duration.ofSeconds(10))
-				.until(ExpectedConditions.elementToBeClickable(captureButton));
 		clickOnElement(captureButton, "click on capture button");
 	}
 

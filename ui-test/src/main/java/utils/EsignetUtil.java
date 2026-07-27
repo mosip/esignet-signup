@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.testng.Assert;
 
 import javax.ws.rs.core.MediaType;
 
@@ -280,17 +281,12 @@ public class EsignetUtil extends AdminTestUtil {
 	}
 
 	// ---- Mixed-language passwords (login password-language tests) --------------
-	// Whether the client shows a format error is driven by the deployed password
-	// policy regex, so tests assert against matchesPasswordPolicy(..) rather than a
-	// hard-coded accept/reject - keeping them correct across environments.
-
-	public static boolean matchesPasswordPolicy(String password) {
-		String regex = getPasswordPattern();
-		if (regex == null || regex.trim().isEmpty()) {
-			return false;
-		}
-		return Pattern.compile(regex).matcher(password).matches();
-	}
+	// These feed the eSignet login (relying-party) screen, whose accept/reject
+	// behaviour is governed by the oidc-ui client policy - not the signup policy
+	// that getPasswordPattern() reads from the signup actuator. There is therefore
+	// no policy assertion to make here that would be correct across environments,
+	// so PasswordLanguageLogin.feature asserts the reliably verifiable behaviour
+	// instead: the field accepts and retains the multi-language input.
 
 	// Password material is generated with SecureRandom (not java.util.Random) to
 	// satisfy static analysis, even though these are throwaway test inputs.
@@ -780,7 +776,26 @@ public class EsignetUtil extends AdminTestUtil {
 				"mosip.signup.identifier.prefix");
 	}
 
-	public static String normalizeIdentifierForOtp(String number) {
+	/**
+	 * Returns the OTP delivered to {@code identifier}, failing the scenario if none
+	 * arrives.
+	 *
+	 * <p>Normalising the identifier, waiting for delivery and asserting the result
+	 * are kept together because every caller needs all three: a change to the wait,
+	 * the retry behaviour or the failure message is then a single edit here rather
+	 * than the same edit repeated in each step definition.
+	 *
+	 * @param identifier the number the OTP was sent to, prefixed or unprefixed
+	 * @return the delivered OTP, trimmed and guaranteed non-empty
+	 */
+	public static String getVerifiedOtp(String identifier) {
+		String number = normalizeIdentifierForOtp(identifier);
+		String otp = waitForDeliveredOtp(number);
+		Assert.assertTrue(otp != null && !otp.trim().isEmpty(), "OTP was not delivered for: " + number);
+		return otp.trim();
+	}
+
+	private static String normalizeIdentifierForOtp(String number) {
 		boolean removeCode = Boolean.parseBoolean(getRemoveCountryCode());
 		String prefix = getIdentifierPrefix();
 		if (prefix == null) {
@@ -808,7 +823,7 @@ public class EsignetUtil extends AdminTestUtil {
 	// therefore already tolerates delivery lag - looping over it only multiplies the
 	// worst-case wait (3x the OTP-expiry window) when the OTP never arrives, and any
 	// OTP that lands after that window has already expired and is useless anyway.
-	public static String waitForDeliveredOtp(String mobile) {
+	private static String waitForDeliveredOtp(String mobile) {
 		String otp = NotificationListener.getOtp(mobile);
 		return otp == null ? "" : otp.trim();
 	}

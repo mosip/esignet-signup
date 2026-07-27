@@ -3,8 +3,6 @@ package pages;
 import java.time.Duration;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.ElementClickInterceptedException;
-import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -21,7 +19,7 @@ import utils.EsignetConfigManager;
  * (route: /something-went-wrong).
  *
  * The page is rendered by ErrorPageTemplate:
- * - title       -> h1.text-center.text-2xl
+ * - title       -> h1.text-center.text-2xl.font-semibold
  * - description -> p.text-center.text-gray-500
  * The language switcher (from the shared NavBar) is present here as well,
  * so the same ids used across the app apply:
@@ -30,8 +28,18 @@ import utils.EsignetConfigManager;
  */
 public class ErrorHandlerPage extends BasePage {
 
-	private static final By ERROR_TITLE = By.xpath("//h1[@class='text-center text-2xl']");
-	private static final By ERROR_DESCRIPTION = By.xpath("//p[@class='text-center text-gray-500']");
+	/*
+	 * Match the class attribute per token rather than with '=': the rendered
+	 * markup carries additional utility classes (the title is
+	 * "text-center text-2xl font-semibold"), and an exact match silently stops
+	 * matching the moment a class is added. The XPaths are held as constants so
+	 * the By locators and the @FindBy fields below cannot drift apart.
+	 */
+	private static final String ERROR_TITLE_XPATH = "//h1[contains(@class,'text-center') and contains(@class,'text-2xl')]";
+	private static final String ERROR_DESCRIPTION_XPATH = "//p[contains(@class,'text-center') and contains(@class,'text-gray-500')]";
+
+	private static final By ERROR_TITLE = By.xpath(ERROR_TITLE_XPATH);
+	private static final By ERROR_DESCRIPTION = By.xpath(ERROR_DESCRIPTION_XPATH);
 	private static final String ERROR_ROUTE = "something-went-wrong";
 
 	public ErrorHandlerPage(WebDriver driver) {
@@ -39,14 +47,11 @@ public class ErrorHandlerPage extends BasePage {
 		PageFactory.initElements(driver, this);
 	}
 
-	@FindBy(xpath = "//h1[@class='text-center text-2xl']")
+	@FindBy(xpath = ERROR_TITLE_XPATH)
 	WebElement errorTitle;
 
-	@FindBy(xpath = "//p[@class='text-center text-gray-500']")
+	@FindBy(xpath = ERROR_DESCRIPTION_XPATH)
 	WebElement errorDescription;
-
-	@FindBy(id = "language-select-button")
-	WebElement languageSelectButton;
 
 	private String signupPortalBaseUrl() {
 		String base = EsignetConfigManager.getSignupPortalUrl();
@@ -79,11 +84,24 @@ public class ErrorHandlerPage extends BasePage {
 		return isElementVisible(errorDescription, "Check error handler description displayed");
 	}
 
+	/**
+	 * Extra time the redirect needs on top of the configured wait.
+	 *
+	 * <p>The app's react-query client (signup-ui App.tsx) retries any non-4XX
+	 * settings response three times, and react-query's default backoff is
+	 * exponential - 1s + 2s + 4s. The 5XX examples in the outline therefore cannot
+	 * reach the error route until that budget is spent, while the 4XX ones are not
+	 * retried at all and redirect immediately. This is added to the configured
+	 * timeout rather than replacing it, so the wait still scales with
+	 * explicitWaitTimeout instead of being an unexplained constant.
+	 */
+	private static final Duration REDIRECT_RETRY_BUDGET = Duration.ofSeconds(7);
+
 	/** Waits until the app has redirected to the error handler route. */
 	public boolean waitForErrorPage() {
+		Duration timeout = Duration.ofSeconds(EsignetConfigManager.getTimeout()).plus(REDIRECT_RETRY_BUDGET);
 		try {
-			new WebDriverWait(driver, Duration.ofSeconds(40))
-					.until(ExpectedConditions.urlContains(ERROR_ROUTE));
+			new WebDriverWait(driver, timeout).until(ExpectedConditions.urlContains(ERROR_ROUTE));
 			return isElementVisible(errorTitle, "Wait for error handler page");
 		} catch (TimeoutException e) {
 			return false;
@@ -107,34 +125,6 @@ public class ErrorHandlerPage extends BasePage {
 		}
 	}
 
-	/**
-	 * Switches the page language using the shared language dropdown.
-	 *
-	 * <p>The dropdown is a headless-UI menu whose trigger only becomes interactive
-	 * once React has attached its handler; a click fired the instant the button is
-	 * merely visible can be a no-op, leaving the menu closed so the option never
-	 * appears. Selecting a language then re-renders the page (i18n change), which
-	 * can stale a menu still mid-animation. To stay deterministic under load we
-	 * wait for the trigger to be clickable and retry the whole open-and-select if
-	 * the option does not show up (or an element goes stale / a click is
-	 * intercepted) rather than failing the scenario on the first miss.
-	 *
-	 * @param twoLetterLangKey two letter language key, e.g. "en" or "km"
-	 */
-	public void switchLanguage(String twoLetterLangKey) {
-		By optionLocator = By.id(twoLetterLangKey + "_language");
-		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(EsignetConfigManager.getTimeout()));
-		RuntimeException lastError = null;
-		for (int attempt = 1; attempt <= 3; attempt++) {
-			try {
-				wait.until(ExpectedConditions.elementToBeClickable(languageSelectButton)).click();
-				wait.until(ExpectedConditions.elementToBeClickable(optionLocator)).click();
-				return;
-			} catch (TimeoutException | StaleElementReferenceException | ElementClickInterceptedException e) {
-				lastError = e;
-			}
-		}
-		throw new TimeoutException(
-				"Failed to switch error handler page language to '" + twoLetterLangKey + "' after 3 attempts", lastError);
-	}
+	// Language switching is inherited from BasePage.switchLanguage(..): the
+	// dropdown here is the shared NavBar one, not an error-page control.
 }

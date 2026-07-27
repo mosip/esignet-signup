@@ -26,8 +26,11 @@ import base.BasePage;
  * Page object for the dynamically rendered (JsonFormBuilder) Setup Account form
  * fields - radio (e.g. gender), textarea (e.g. details) and file upload (e.g.
  * passport / photo). Locators follow the conventions already used by
- * {@link SignupFormDynamicFiller} and {@link RegistrationPage}; invalid state is
- * detected via the {@code aria-invalid} attribute the app sets on invalid fields.
+ * {@link SignupFormDynamicFiller} and {@link RegistrationPage}: the builder gives
+ * each field a wrapper carrying {@code data-field-id}, marks an invalid control
+ * with {@code class="error"} and renders that control's message into a
+ * {@code .error-message} element inside the same wrapper. Anything read for a
+ * field is therefore looked up within that wrapper.
  */
 public class SignupFormFieldPage extends BasePage {
 
@@ -57,19 +60,67 @@ public class SignupFormFieldPage extends BasePage {
 		return By.xpath("//label[@for='" + fieldId + "' or contains(@for,'" + fieldId + "')]");
 	}
 
-	/** True when the field (or its group) is flagged invalid via aria-invalid. */
+	/**
+	 * XPath predicate matching a whole class token, so 'error' does not also match
+	 * 'error-icon' / 'upload-error-area' the way a bare contains(@class,...) would.
+	 */
+	private static String hasClass(String cssClass) {
+		return "contains(concat(' ', normalize-space(@class), ' '), ' " + cssClass + " ')";
+	}
+
+	/**
+	 * The part of the page that belongs to one field, used to bound every lookup so
+	 * it cannot reach a neighbouring field or unrelated page chrome.
+	 *
+	 * <p>The builder gives each field a container carrying data-field-id, e.g.
+	 * {@code <div class="form-field file-upload" data-field-id="passport">}. Most
+	 * field types keep their message inside that container, but a radio group
+	 * renders it as a <em>sibling</em> of the container, inside the enclosing
+	 * {@code .form-field-group}. The scope is therefore the enclosing
+	 * {@code .form-field-group} when there is one, and the container itself
+	 * otherwise.
+	 */
+	private String fieldScopeXpath(String fieldId) {
+		String container = "//*[@data-field-id='" + fieldId + "']";
+		return "(" + container + "/ancestor-or-self::*[" + hasClass("form-field-group") + "][1] | " + container + ")";
+	}
+
+	/**
+	 * True when the field's own control is flagged invalid.
+	 *
+	 * <p>The builder marks an invalid control with {@code class="error"}; the
+	 * aria-invalid check is retained for controls rendered outside the builder. The
+	 * id is matched exactly rather than with starts-with(), which would also match
+	 * this field's sub-controls (a file field renders {@code <id>_docType} and
+	 * {@code <id>_refId}) and report their state as this field's.
+	 */
 	public boolean isFieldInvalid(String fieldId) {
-		List<WebElement> flagged = driver.findElements(By.xpath(
-				"//*[(@id='" + fieldId + "' or @name='" + fieldId + "' or @data-field-id='" + fieldId
-						+ "' or starts-with(@id,'" + fieldId + "')) and @aria-invalid='true']"));
+		String identifies = "(@id='" + fieldId + "' or @name='" + fieldId + "' or @data-field-id='" + fieldId + "')";
+		List<WebElement> flagged = driver.findElements(
+				By.xpath("//*[" + identifies + " and (@aria-invalid='true' or " + hasClass("error") + ")]"));
 		return !flagged.isEmpty();
 	}
 
-	/** First non-empty inline error text rendered near the field, if any. */
+	/**
+	 * First non-empty inline error text belonging to this field, if any.
+	 *
+	 * <p>The builder renders inline errors as
+	 * {@code <div class="error-message">} holding a {@code <span class="error-text">},
+	 * and empties that div when the error clears. The search is bounded to this
+	 * field's scope, and skips the nested {@code .file-subfield} blocks a
+	 * file field renders for document type / reference id - those carry their own
+	 * error text, which belongs to the sub-field and not to this field. (A file
+	 * upload dispatches an input event at its document-type dropdown after a
+	 * successful upload, so that sub-field can legitimately show a "required"
+	 * error while the upload itself was accepted.) Messages sitting inside another
+	 * field's container are excluded too, so a group holding more than one field
+	 * cannot report its neighbour's error as this field's.
+	 */
 	public String getFieldErrorText(String fieldId) {
-		List<WebElement> errors = driver.findElements(By.xpath(
-				"//*[@data-field-id='" + fieldId + "' or starts-with(@id,'" + fieldId
-						+ "')]/following::*[contains(@class,'message') or contains(@class,'error')][1]"));
+		List<WebElement> errors = driver.findElements(By.xpath(fieldScopeXpath(fieldId) + "//*["
+				+ hasClass("error-message")
+				+ " and not(ancestor::*[" + hasClass("file-subfield") + "])"
+				+ " and not(ancestor::*[@data-field-id and not(@data-field-id='" + fieldId + "')])]"));
 		for (WebElement e : errors) {
 			String text = e.getText();
 			if (text != null && !text.trim().isEmpty()) {
@@ -99,29 +150,6 @@ public class SignupFormFieldPage extends BasePage {
 		} catch (org.openqa.selenium.TimeoutException e) {
 			return false;
 		}
-	}
-
-	// ---- Submit / mandatory validation ---------------------------------------
-
-	private final RegistrationPage registrationPage = new RegistrationPage(driver);
-
-	public void submitForm() {
-		registrationPage.clickOnSetupAccountContinueButton();
-	}
-
-	public boolean isContinueButtonDisabled() {
-		return !registrationPage.isSetupAccountContinueEnabled();
-	}
-
-	/** Focus then blur a field via JS to mark it touched and surface validation. */
-	public void touchAndBlur(By locator) {
-		List<WebElement> els = driver.findElements(locator);
-		if (els.isEmpty()) {
-			return;
-		}
-		WebElement el = els.get(0);
-		((JavascriptExecutor) driver).executeScript(
-				"arguments[0].scrollIntoView({block:'center'}); arguments[0].focus(); arguments[0].blur();", el);
 	}
 
 	// ---- Radio ----------------------------------------------------------------
@@ -170,10 +198,6 @@ public class SignupFormFieldPage extends BasePage {
 		return getSelectedRadioCount(fieldId);
 	}
 
-	public boolean hasDefaultSelection(String fieldId) {
-		return getSelectedRadioCount(fieldId) > 0;
-	}
-
 	// ---- Textarea -------------------------------------------------------------
 
 	public boolean isTextareaRendered(String fieldId) {
@@ -205,15 +229,6 @@ public class SignupFormFieldPage extends BasePage {
 
 	public String getTextareaValue(String fieldId) {
 		return getTextarea(fieldId).getAttribute("value");
-	}
-
-	public int getTextareaMaxLength(String fieldId) {
-		String max = getTextarea(fieldId).getAttribute("maxlength");
-		try {
-			return max == null ? -1 : Integer.parseInt(max.trim());
-		} catch (NumberFormatException e) {
-			return -1;
-		}
 	}
 
 	// ---- File upload ----------------------------------------------------------
@@ -300,12 +315,4 @@ public class SignupFormFieldPage extends BasePage {
 		}
 	}
 
-	public String getUploadedFileName(String fieldId) {
-		List<WebElement> inputs = driver.findElements(fileInputBy(fieldId));
-		if (inputs.isEmpty()) {
-			return "";
-		}
-		String value = inputs.get(0).getAttribute("value");
-		return value == null ? "" : value;
-	}
 }
