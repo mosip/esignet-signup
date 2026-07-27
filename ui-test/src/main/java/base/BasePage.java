@@ -417,9 +417,16 @@ public class BasePage {
 	 * configured timeout is split across the attempts so that retrying bounds the
 	 * total wait at roughly explicitWaitTimeout per element, instead of multiplying
 	 * it by the attempt count.
+	 *
+	 * <p>Rounded up so the attempts together still spend the whole configured
+	 * budget: rounding down would give 3s x 3 = 9s for a 10s timeout, and 1s x 3 =
+	 * 3s for a 5s one, waiting less in total than the configuration asks for. The
+	 * one-second floor keeps a very small configured timeout usable.
 	 */
 	private static Duration perAttemptWait() {
-		return Duration.ofSeconds(Math.max(1, EsignetConfigManager.getTimeout() / TRANSIENT_RETRY_ATTEMPTS));
+		int timeout = EsignetConfigManager.getTimeout();
+		return Duration
+				.ofSeconds(Math.max(1, (timeout + TRANSIENT_RETRY_ATTEMPTS - 1) / TRANSIENT_RETRY_ATTEMPTS));
 	}
 
 	/**
