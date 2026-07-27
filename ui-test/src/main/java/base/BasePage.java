@@ -440,15 +440,34 @@ public class BasePage {
 	 * retried as a unit. This lives here rather than in a page object because the
 	 * NavBar - and this flakiness - is common to all of them.
 	 *
+	 * <p>The trigger toggles, so a retry only opens the menu when the option is not
+	 * already showing. Clicking it unconditionally would close a menu that the
+	 * previous attempt had successfully opened, spending that attempt waiting for an
+	 * option that can no longer appear.
+	 *
 	 * @param twoLetterLangKey two letter language key, e.g. "en" or "km"
 	 */
 	public void switchLanguage(String twoLetterLangKey) {
 		By option = By.id(twoLetterLangKey + "_language");
 		retryOnTransientFailure("switch language to '" + twoLetterLangKey + "'", () -> {
-			WaitUtil.waitForClickability(driver, LANGUAGE_TRIGGER, perAttemptWait()).click();
+			if (!isElementDisplayed(option)) {
+				WaitUtil.waitForClickability(driver, LANGUAGE_TRIGGER, perAttemptWait()).click();
+			}
 			WaitUtil.waitForClickability(driver, option, perAttemptWait()).click();
 		});
 		logStep("Switched language to '" + twoLetterLangKey + "'", option);
+	}
+
+	/**
+	 * Whether an element is present in the DOM and displayed, without waiting.
+	 *
+	 * <p>Locator counterpart to {@link #isElementDisplayed(WebElement)}, for asking
+	 * about something that may legitimately be absent: {@code findElements} yields
+	 * an empty list rather than throwing.
+	 */
+	private boolean isElementDisplayed(By locator) {
+		List<WebElement> matches = driver.findElements(locator);
+		return !matches.isEmpty() && isElementDisplayed(matches.get(0));
 	}
 
 	public static void selectCurrentRunLanguage(WebDriver driver) {

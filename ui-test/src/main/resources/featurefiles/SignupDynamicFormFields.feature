@@ -27,6 +27,7 @@ Feature: Esignet Signup - Dynamic Setup Account form fields
     When user selects an option in the "gender" radio field
     Then verify one option is selected in the "gender" radio field
     When user selects two different options in the "gender" radio field
+    Then verify one option is selected in the "gender" radio field
 
   @regression @textareaField
   Scenario: Textarea renders with default rows and placeholder and accepts input

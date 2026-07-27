@@ -43,6 +43,11 @@ public class LocaleTextUtil {
 			throw new RuntimeException(
 					"Locale key '" + key + "' not found in '" + twoLetterLang + "' locale file");
 		}
+		if (!value.isTextual()) {
+			throw new RuntimeException("Locale key '" + key + "' in '" + twoLetterLang
+					+ "' locale file is not a text value but " + value.getNodeType()
+					+ ", so it holds no translation to assert against");
+		}
 		return value.asText();
 	}
 

@@ -145,6 +145,9 @@
   </build>
   <repositories>
     <repository>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
       <snapshots />
       <id>ossrh-central</id>
       <name>MavenCentralRepository</name>

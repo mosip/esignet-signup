@@ -8,6 +8,8 @@ import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import base.BasePage;
 import utils.EsignetConfigManager;
@@ -24,6 +26,8 @@ import utils.WaitUtil;
  * </ul>
  */
 public class TransactionTimeoutPopupPage extends BasePage {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(TransactionTimeoutPopupPage.class);
 
 	private static final By POPUP = By.cssSelector("[role='alertdialog']");
 	private static final By TITLE = By.xpath("//*[@role='alertdialog']//h2");
@@ -70,6 +74,7 @@ public class TransactionTimeoutPopupPage extends BasePage {
 					.executeScript("return window.localStorage.getItem('esignet-signup-language');");
 			return (lang == null || lang.toString().isBlank()) ? "en" : lang.toString();
 		} catch (Exception e) {
+			LOGGER.warn("Could not read the active language from localStorage, falling back to 'en'", e);
 			return "en";
 		}
 	}
