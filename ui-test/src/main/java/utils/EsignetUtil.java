@@ -281,15 +281,10 @@ public class EsignetUtil extends AdminTestUtil {
 	}
 
 	// ---- Mixed-language passwords (login password-language tests) --------------
-	// These feed the eSignet login (relying-party) screen, whose accept/reject
-	// behaviour is governed by the oidc-ui client policy - not the signup policy
-	// that getPasswordPattern() reads from the signup actuator. There is therefore
-	// no policy assertion to make here that would be correct across environments,
-	// so PasswordLanguageLogin.feature asserts the reliably verifiable behaviour
-	// instead: the field accepts and retains the multi-language input.
+	// Accept/reject here is governed by the oidc-ui client policy, not the signup policy,
+	// so the feature asserts only that the field retains the multi-language input.
 
-	// Password material is generated with SecureRandom (not java.util.Random) to
-	// satisfy static analysis, even though these are throwaway test inputs.
+	// SecureRandom over java.util.Random to satisfy static analysis, though these are throwaway inputs
 	private static final SecureRandom SECURE_RANDOM = new SecureRandom();
 
 	private static String randomCharsInRange(int start, int end, int count) {
@@ -308,7 +303,6 @@ public class EsignetUtil extends AdminTestUtil {
 		return pwd.toString();
 	}
 
-	/** English letters combined with Khmer characters (plus baseline complexity). */
 	public static String generateEngKhmerPassword() {
 		StringBuilder pwd = new StringBuilder("Aa1@");
 		pwd.append(randomCharsInRange(0x1780, 0x17FF, 4));
@@ -316,7 +310,6 @@ public class EsignetUtil extends AdminTestUtil {
 		return padToMinLength(pwd, 'x');
 	}
 
-	/** Khmer characters combined with numbers. */
 	public static String generateKhmerNumericPassword() {
 		StringBuilder pwd = new StringBuilder();
 		pwd.append(randomCharsInRange(0x1780, 0x17FF, 4));
@@ -324,7 +317,7 @@ public class EsignetUtil extends AdminTestUtil {
 		return padToMinLength(pwd, '7');
 	}
 
-	/** Hindi (Devanagari) characters combined with English - unsupported language. */
+	// Devanagari is an unsupported language for this deployment
 	public static String generateHindiEnglishPassword() {
 		StringBuilder pwd = new StringBuilder("Ab1@");
 		pwd.append(randomCharsInRange(0x0900, 0x097F, 4));
@@ -776,18 +769,7 @@ public class EsignetUtil extends AdminTestUtil {
 				"mosip.signup.identifier.prefix");
 	}
 
-	/**
-	 * Returns the OTP delivered to {@code identifier}, failing the scenario if none
-	 * arrives.
-	 *
-	 * <p>Normalising the identifier, waiting for delivery and asserting the result
-	 * are kept together because every caller needs all three: a change to the wait,
-	 * the retry behaviour or the failure message is then a single edit here rather
-	 * than the same edit repeated in each step definition.
-	 *
-	 * @param identifier the number the OTP was sent to, prefixed or unprefixed
-	 * @return the delivered OTP, trimmed and guaranteed non-empty
-	 */
+	// Normalise, wait and assert are kept together since every caller needs all three
 	public static String getVerifiedOtp(String identifier) {
 		String number = normalizeIdentifierForOtp(identifier);
 		String otp = waitForDeliveredOtp(number);
@@ -818,11 +800,7 @@ public class EsignetUtil extends AdminTestUtil {
 		return number;
 	}
 
-	// NotificationListener.getOtp() already blocks and self-polls the queue for the
-	// full OTP-expiry window, returning the moment the OTP is delivered. A single call
-	// therefore already tolerates delivery lag - looping over it only multiplies the
-	// worst-case wait (3x the OTP-expiry window) when the OTP never arrives, and any
-	// OTP that lands after that window has already expired and is useless anyway.
+	// getOtp() already blocks for the full OTP-expiry window, so looping over it only multiplies the wait
 	private static String waitForDeliveredOtp(String mobile) {
 		String otp = NotificationListener.getOtp(mobile);
 		return otp == null ? "" : otp.trim();

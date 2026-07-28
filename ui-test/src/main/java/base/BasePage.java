@@ -92,16 +92,7 @@ public class BasePage {
 		WaitUtil.waitForClickability(driver, element);
 	}
 
-	/**
-	 * Clicks the element once it is clickable - visible <em>and</em> enabled.
-	 *
-	 * <p>Waiting on visibility alone is not enough on these screens: buttons are
-	 * commonly rendered disabled until form validation passes, or are still
-	 * animating in, so a click fired the instant they become visible lands on a
-	 * still-disabled control and is silently dropped (or throws
-	 * ElementClickInterceptedException). Waiting for clickability here means page
-	 * objects do not each have to re-add that wait before every click.
-	 */
+	// Clickability, not just visibility: buttons here stay disabled until validation passes
 	public void clickOnElement(WebElement element, String stepDesc) {
 		try {
 			waitForElementClickable(element);
@@ -377,25 +368,11 @@ public class BasePage {
 	
 	// ---- Shared NavBar language dropdown --------------------------------------
 
-	/** Attempts a transiently-flaky interaction gets before it is treated as failed. */
 	private static final int TRANSIENT_RETRY_ATTEMPTS = 3;
 
 	private static final By LANGUAGE_TRIGGER = By.id("language-select-button");
 
-	/**
-	 * Runs an interaction that is known to fail transiently, retrying it before
-	 * giving up.
-	 *
-	 * <p>Retried on the three symptoms a half-rendered React control produces: a
-	 * wait that expires ({@link TimeoutException}), an element replaced by a
-	 * re-render ({@link StaleElementReferenceException}) and a click landing on
-	 * something still animating over the target
-	 * ({@link ElementClickInterceptedException}). Anything else is a real failure
-	 * and propagates immediately.
-	 *
-	 * @param description what is being attempted, used in the failure message
-	 * @param action      the interaction; must be safe to run more than once
-	 */
+	// Retries only the symptoms of a half-rendered React control; the action must be safe to repeat
 	public void retryOnTransientFailure(String description, Runnable action) {
 		RuntimeException lastError = null;
 		for (int attempt = 1; attempt <= TRANSIENT_RETRY_ATTEMPTS; attempt++) {
@@ -412,44 +389,18 @@ public class BasePage {
 				"Failed to " + description + " after " + TRANSIENT_RETRY_ATTEMPTS + " attempts", lastError);
 	}
 
-	/**
-	 * Budget for a single attempt inside {@link #retryOnTransientFailure}. The
-	 * configured timeout is split across the attempts so that retrying bounds the
-	 * total wait at roughly explicitWaitTimeout per element, instead of multiplying
-	 * it by the attempt count.
-	 *
-	 * <p>Rounded up so the attempts together still spend the whole configured
-	 * budget: rounding down would give 3s x 3 = 9s for a 10s timeout, and 1s x 3 =
-	 * 3s for a 5s one, waiting less in total than the configuration asks for. The
-	 * one-second floor keeps a very small configured timeout usable.
-	 */
+	// Splits the configured timeout across the attempts, rounded up, so retrying does not multiply the wait
 	private static Duration perAttemptWait() {
 		int timeout = EsignetConfigManager.getTimeout();
 		return Duration
 				.ofSeconds(Math.max(1, (timeout + TRANSIENT_RETRY_ATTEMPTS - 1) / TRANSIENT_RETRY_ATTEMPTS));
 	}
 
-	/**
-	 * Switches the app language through the NavBar dropdown shared by every screen.
-	 *
-	 * <p>The dropdown is a headless-UI menu whose trigger only becomes interactive
-	 * once React has attached its handler, so a click fired the instant the button
-	 * is merely visible can be a no-op that leaves the menu closed and the option
-	 * never appearing. Selecting a language then re-renders the page (i18n change),
-	 * which can stale a menu still mid-animation. Opening and selecting is therefore
-	 * retried as a unit. This lives here rather than in a page object because the
-	 * NavBar - and this flakiness - is common to all of them.
-	 *
-	 * <p>The trigger toggles, so a retry only opens the menu when the option is not
-	 * already showing. Clicking it unconditionally would close a menu that the
-	 * previous attempt had successfully opened, spending that attempt waiting for an
-	 * option that can no longer appear.
-	 *
-	 * @param twoLetterLangKey two letter language key, e.g. "en" or "km"
-	 */
+	// Opening and selecting is retried as a unit: the i18n re-render can stale a menu mid-animation
 	public void switchLanguage(String twoLetterLangKey) {
 		By option = By.id(twoLetterLangKey + "_language");
 		retryOnTransientFailure("switch language to '" + twoLetterLangKey + "'", () -> {
+			// The trigger toggles, so a retry must not close a menu already opened
 			if (!isElementDisplayed(option)) {
 				WaitUtil.waitForClickability(driver, LANGUAGE_TRIGGER, perAttemptWait()).click();
 			}
@@ -458,13 +409,7 @@ public class BasePage {
 		logStep("Switched language to '" + twoLetterLangKey + "'", option);
 	}
 
-	/**
-	 * Whether an element is present in the DOM and displayed, without waiting.
-	 *
-	 * <p>Locator counterpart to {@link #isElementDisplayed(WebElement)}, for asking
-	 * about something that may legitimately be absent: {@code findElements} yields
-	 * an empty list rather than throwing.
-	 */
+	// Locator variant of isElementDisplayed, for elements that may legitimately be absent
 	private boolean isElementDisplayed(By locator) {
 		List<WebElement> matches = driver.findElements(locator);
 		return !matches.isEmpty() && isElementDisplayed(matches.get(0));

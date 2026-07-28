@@ -14,27 +14,10 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import base.BasePage;
 import utils.EsignetConfigManager;
 
-/**
- * Page object for the "Something went wrong" error handler page
- * (route: /something-went-wrong).
- *
- * The page is rendered by ErrorPageTemplate:
- * - title       -> h1.text-center.text-2xl.font-semibold
- * - description -> p.text-center.text-gray-500
- * The language switcher (from the shared NavBar) is present here as well,
- * so the same ids used across the app apply:
- * - language-select-button (dropdown trigger)
- * - {lang}_language        (dropdown item, e.g. en_language / km_language)
- */
+// Page object for the "Something went wrong" error handler page (route: /something-went-wrong)
 public class ErrorHandlerPage extends BasePage {
 
-	/*
-	 * Match the class attribute per token rather than with '=': the rendered
-	 * markup carries additional utility classes (the title is
-	 * "text-center text-2xl font-semibold"), and an exact match silently stops
-	 * matching the moment a class is added. The XPaths are held as constants so
-	 * the By locators and the @FindBy fields below cannot drift apart.
-	 */
+	// Matched per class token, not with '=': the markup carries extra utility classes
 	private static final String ERROR_TITLE_XPATH = "//h1[contains(@class,'text-center') and contains(@class,'text-2xl')]";
 	private static final String ERROR_DESCRIPTION_XPATH = "//p[contains(@class,'text-center') and contains(@class,'text-gray-500')]";
 
@@ -58,12 +41,11 @@ public class ErrorHandlerPage extends BasePage {
 		return base.endsWith("/") ? base : base + "/";
 	}
 
-	/** Loads the error page directly (no HTTP status code in router state). */
 	public void navigateToErrorPage() {
 		driver.get(signupPortalBaseUrl() + ERROR_ROUTE);
 	}
 
-	/** Loads the signup portal root so a failing API call redirects to the error page. */
+	// Root is loaded so that a failing API call redirects to the error page
 	public void navigateToSignupPortalRoot() {
 		driver.get(signupPortalBaseUrl());
 	}
@@ -84,20 +66,9 @@ public class ErrorHandlerPage extends BasePage {
 		return isElementVisible(errorDescription, "Check error handler description displayed");
 	}
 
-	/**
-	 * Extra time the redirect needs on top of the configured wait.
-	 *
-	 * <p>The app's react-query client (signup-ui App.tsx) retries any non-4XX
-	 * settings response three times, and react-query's default backoff is
-	 * exponential - 1s + 2s + 4s. The 5XX examples in the outline therefore cannot
-	 * reach the error route until that budget is spent, while the 4XX ones are not
-	 * retried at all and redirect immediately. This is added to the configured
-	 * timeout rather than replacing it, so the wait still scales with
-	 * explicitWaitTimeout instead of being an unexplained constant.
-	 */
+	// Covers react-query's three retries of a non-4XX settings response (1s + 2s + 4s backoff)
 	private static final Duration REDIRECT_RETRY_BUDGET = Duration.ofSeconds(7);
 
-	/** Waits until the app has redirected to the error handler route. */
 	public boolean waitForErrorPage() {
 		Duration timeout = Duration.ofSeconds(EsignetConfigManager.getTimeout()).plus(REDIRECT_RETRY_BUDGET);
 		try {
@@ -125,6 +96,5 @@ public class ErrorHandlerPage extends BasePage {
 		}
 	}
 
-	// Language switching is inherited from BasePage.switchLanguage(..): the
-	// dropdown here is the shared NavBar one, not an error-page control.
+	// Language switching is inherited from BasePage.switchLanguage(..)
 }

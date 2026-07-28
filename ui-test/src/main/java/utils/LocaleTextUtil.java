@@ -13,11 +13,7 @@ import org.apache.log4j.Logger;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-/**
- * Reads localized UI strings straight from the signup portal locale files
- * ({portalUrl}/locales/{lang}.json), so text assertions stay in sync with the
- * application copy instead of being hard-coded in tests.
- */
+// Reads localized strings from the portal's own locale files, so assertions stay in sync with the app copy
 public class LocaleTextUtil {
 
 	private static final Logger logger = Logger.getLogger(LocaleTextUtil.class);
@@ -27,13 +23,7 @@ public class LocaleTextUtil {
 	private LocaleTextUtil() {
 	}
 
-	/**
-	 * @param twoLetterLang locale file name without extension, e.g. "en" / "km"
-	 * @param key           translation key. Supports nested keys using dot
-	 *                      notation, e.g. "something_went_wrong" or
-	 *                      "error_response.invalid_transaction"
-	 * @return the translated value for the given key and language
-	 */
+	// Nested keys use dot notation, e.g. "error_response.invalid_transaction"
 	public static String get(String twoLetterLang, String key) {
 		JsonNode value = load(twoLetterLang);
 		for (String part : key.split("\\.")) {

@@ -26,20 +26,12 @@ public class WaitUtil {
 		wait.until(ExpectedConditions.elementToBeClickable(element));
 	}
 
-	/**
-	 * Resolves a locator once the element behind it is clickable. Throws
-	 * {@link org.openqa.selenium.TimeoutException} (not NoSuchElementException) when
-	 * it never becomes clickable, so callers can retry on a single exception type.
-	 */
+	// Throws TimeoutException rather than NoSuchElementException, so callers retry on one exception type
 	public static WebElement waitForClickability(WebDriver driver, By locator) {
 		return waitForClickability(driver, locator, Duration.ofSeconds(TIMEOUT));
 	}
 
-	/**
-	 * As {@link #waitForClickability(WebDriver, By)}, but with an explicit budget -
-	 * for callers that retry and so want each attempt to wait a fraction of the
-	 * configured timeout rather than all of it.
-	 */
+	// Explicit budget, for retrying callers that want each attempt to wait a fraction of the timeout
 	public static WebElement waitForClickability(WebDriver driver, By locator, Duration timeout) {
 		WebDriverWait wait = new WebDriverWait(driver, timeout);
 		return wait.until(ExpectedConditions.elementToBeClickable(locator));

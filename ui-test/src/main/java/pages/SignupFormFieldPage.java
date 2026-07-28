@@ -22,16 +22,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import base.BasePage;
 
-/**
- * Page object for the dynamically rendered (JsonFormBuilder) Setup Account form
- * fields - radio (e.g. gender), textarea (e.g. details) and file upload (e.g.
- * passport / photo). Locators follow the conventions already used by
- * {@link SignupFormDynamicFiller} and {@link RegistrationPage}: the builder gives
- * each field a wrapper carrying {@code data-field-id}, marks an invalid control
- * with {@code class="error"} and renders that control's message into a
- * {@code .error-message} element inside the same wrapper. Anything read for a
- * field is therefore looked up within that wrapper.
- */
+// Page object for the dynamically rendered (JsonFormBuilder) Setup Account form fields
 public class SignupFormFieldPage extends BasePage {
 
 	private static final Logger logger = Logger.getLogger(SignupFormFieldPage.class);
@@ -60,40 +51,18 @@ public class SignupFormFieldPage extends BasePage {
 		return By.xpath("//label[@for='" + fieldId + "' or contains(@for,'" + fieldId + "')]");
 	}
 
-	/**
-	 * XPath predicate matching a whole class token, so 'error' does not also match
-	 * 'error-icon' / 'upload-error-area' the way a bare contains(@class,...) would.
-	 */
+	// Matches a whole class token, so 'error' does not also match 'error-icon'
 	private static String hasClass(String cssClass) {
 		return "contains(concat(' ', normalize-space(@class), ' '), ' " + cssClass + " ')";
 	}
 
-	/**
-	 * The part of the page that belongs to one field, used to bound every lookup so
-	 * it cannot reach a neighbouring field or unrelated page chrome.
-	 *
-	 * <p>The builder gives each field a container carrying data-field-id, e.g.
-	 * {@code <div class="form-field file-upload" data-field-id="passport">}. Most
-	 * field types keep their message inside that container, but a radio group
-	 * renders it as a <em>sibling</em> of the container, inside the enclosing
-	 * {@code .form-field-group}. The scope is therefore the enclosing
-	 * {@code .form-field-group} when there is one, and the container itself
-	 * otherwise.
-	 */
+	// Bounds lookups to one field; the group is preferred since a radio renders its message outside the container
 	private String fieldScopeXpath(String fieldId) {
 		String container = "//*[@data-field-id='" + fieldId + "']";
 		return "(" + container + "/ancestor-or-self::*[" + hasClass("form-field-group") + "][1] | " + container + ")";
 	}
 
-	/**
-	 * True when the field's own control is flagged invalid.
-	 *
-	 * <p>The builder marks an invalid control with {@code class="error"}; the
-	 * aria-invalid check is retained for controls rendered outside the builder. The
-	 * id is matched exactly rather than with starts-with(), which would also match
-	 * this field's sub-controls (a file field renders {@code <id>_docType} and
-	 * {@code <id>_refId}) and report their state as this field's.
-	 */
+	// Exact id match, since starts-with() would also pick up sub-controls like <id>_docType
 	public boolean isFieldInvalid(String fieldId) {
 		String identifies = "(@id='" + fieldId + "' or @name='" + fieldId + "' or @data-field-id='" + fieldId + "')";
 		List<WebElement> flagged = driver.findElements(
@@ -101,21 +70,7 @@ public class SignupFormFieldPage extends BasePage {
 		return !flagged.isEmpty();
 	}
 
-	/**
-	 * First non-empty inline error text belonging to this field, if any.
-	 *
-	 * <p>The builder renders inline errors as
-	 * {@code <div class="error-message">} holding a {@code <span class="error-text">},
-	 * and empties that div when the error clears. The search is bounded to this
-	 * field's scope, and skips the nested {@code .file-subfield} blocks a
-	 * file field renders for document type / reference id - those carry their own
-	 * error text, which belongs to the sub-field and not to this field. (A file
-	 * upload dispatches an input event at its document-type dropdown after a
-	 * successful upload, so that sub-field can legitimately show a "required"
-	 * error while the upload itself was accepted.) Messages sitting inside another
-	 * field's container are excluded too, so a group holding more than one field
-	 * cannot report its neighbour's error as this field's.
-	 */
+	// Sub-field and neighbouring-field messages are excluded so they are not reported as this field's
 	public String getFieldErrorText(String fieldId) {
 		List<WebElement> errors = driver.findElements(By.xpath(fieldScopeXpath(fieldId) + "//*["
 				+ hasClass("error-message")
@@ -135,13 +90,7 @@ public class SignupFormFieldPage extends BasePage {
 				.until(ExpectedConditions.visibilityOfElementLocated(locator));
 	}
 
-	/**
-	 * Waits (up to the standard timeout) for at least one matching element to be
-	 * present in the DOM, returning {@code false} instead of throwing on timeout.
-	 * Presence (not visibility) is used so form hydration is tolerated without
-	 * false negatives on inputs that are present but visually styled/hidden
-	 * (e.g. radio and file inputs behind custom controls).
-	 */
+	// Presence, not visibility: radio and file inputs sit hidden behind custom controls
 	private boolean waitUntilRendered(By locator) {
 		try {
 			new WebDriverWait(driver, Duration.ofSeconds(10))
@@ -187,7 +136,6 @@ public class SignupFormFieldPage extends BasePage {
 		return selected;
 	}
 
-	/** Selects two different options in turn and returns the final selected count. */
 	public int selectTwoOptionsAndCountSelected(String fieldId) {
 		List<WebElement> radios = getRadioOptions(fieldId);
 		if (radios.size() < 2) {
@@ -253,7 +201,6 @@ public class SignupFormFieldPage extends BasePage {
 		logger.info("Uploaded supported file for " + fieldId + ": " + fileName);
 	}
 
-	/** Creates a throwaway unsupported (.exe) file on the fly and uploads it. */
 	public void uploadUnsupportedFile(String fieldId) throws IOException {
 		Path tempPath = createRestrictedTempFile("malware-", ".exe");
 		Files.write(tempPath, new byte[] { 0x4D, 0x5A });
@@ -261,11 +208,7 @@ public class SignupFormFieldPage extends BasePage {
 		logger.info("Uploaded unsupported .exe file for " + fieldId);
 	}
 
-	/**
-	 * Creates a temp file restricted to the owner. Uses POSIX owner-only
-	 * permissions where the filesystem supports them, falling back to the File
-	 * permission API on non-POSIX platforms (e.g. Windows).
-	 */
+	// Falls back to the File permission API where POSIX permissions are unsupported (e.g. Windows)
 	private Path createRestrictedTempFile(String prefix, String suffix) throws IOException {
 		Path tempPath;
 		try {
@@ -298,13 +241,7 @@ public class SignupFormFieldPage extends BasePage {
 		return isFieldInvalid(fieldId) || !getFieldErrorText(fieldId).isEmpty();
 	}
 
-	/**
-	 * Waits (up to the standard timeout) for the field's validation to settle to a
-	 * valid state: {@code aria-invalid} cleared and no inline error text. This lets
-	 * asynchronous client-side validation finish after an upload before acceptance
-	 * is asserted. Returns {@code false} if it does not become valid within the
-	 * timeout.
-	 */
+	// Lets asynchronous client-side validation settle after an upload before acceptance is asserted
 	public boolean waitForFieldValid(String fieldId) {
 		try {
 			new WebDriverWait(driver, Duration.ofSeconds(10))

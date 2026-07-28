@@ -3,14 +3,7 @@ Feature: Esignet Signup Transaction Timeout
   registration shows the transaction-timeout error popup
   (Header: "Error!", the localized timeout message, Button: "Okay").
 
-  # Entry is the relying party ("Sign In with eSignet" -> "Sign-Up with Unified
-  # Login"), reusing the existing login/registration steps. A real expiry takes
-  # ~5 minutes (mosip.signup.*.txn.timeout = 300s), so via CDP we stub
-  # generate-challenge to succeed (reaching the OTP screen deterministically,
-  # without depending on real SMS/send-OTP throttling) and verify-challenge to
-  # return the backend's invalid_transaction error - the same critical error a
-  # genuine expiry raises when the user clicks Verify OTP. CDP interception is
-  # local-Chrome only, hence @localOnly (skipped on BrowserStack).
+  # A real expiry takes ~5 minutes, so verify-challenge is stubbed to return invalid_transaction
   @transactionTimeout @localOnly
   Scenario: Setup account after the signup transaction has expired
     Given click on Sign In with eSignet

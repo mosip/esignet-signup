@@ -404,8 +404,7 @@ public class RegistrationPage extends BasePage {
 	}
 
 	public void clickOnVerifyOtpButton() {
-		// The Verify button is enabled only once the entered OTP passes form
-		// validation; clickOnElement waits for clickability, not just visibility.
+		// Verify is enabled only once the entered OTP passes form validation
 		clickOnElement(verifyOtpButton, "Click verify OTP Button");
 	}
 

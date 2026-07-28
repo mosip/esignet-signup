@@ -3,11 +3,7 @@ Feature: Esignet Signup - Dynamic Setup Account form fields
   on the Setup Account form from the deployed UI-spec (esqa2: gender, details,
   passport, photo).
 
-  # These fields are optional (required=false) in the esqa2 spec, so only
-  # rendering and input behaviour are asserted here. Mandatory-validation,
-  # error-clearing and default-selection cases require a required=true / default
-  # schema and are covered separately when such a schema is available.
-
+  # These fields are optional in the esqa2 spec, so only rendering and input behaviour are asserted
   Background:
     Given user directly navigates to sign-up portal URL
     And user clicks on Register button

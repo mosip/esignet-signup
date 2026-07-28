@@ -8,16 +8,8 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import pages.SignupFormFieldPage;
 
-/**
- * Steps for the dynamically rendered Setup Account form fields - radio (gender),
- * textarea (details) and file upload (passport / photo). The Setup Account form
- * itself is reached through the existing registration-flow steps used as a
- * Background in the feature files.
- *
- * Scope note: in the esqa2 UI-spec these fields are optional (required=false),
- * so mandatory-validation / error-clearing cases (which need required=true) are
- * intentionally not covered here - they require a modified schema.
- */
+// Steps for the dynamically rendered Setup Account form fields - radio, textarea and file upload.
+// These fields are optional in the esqa2 UI-spec, so mandatory-validation cases are not covered here.
 public class SignupFormFieldStepDef {
 
 	private final WebDriver driver;

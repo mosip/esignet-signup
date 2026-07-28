@@ -15,16 +15,7 @@ import base.BasePage;
 import utils.EsignetConfigManager;
 import utils.WaitUtil;
 
-/**
- * Page object for the signup critical-error popup (the {@code SignUpPopover}
- * rendered on {@code invalid_transaction}). It is a Radix AlertDialog:
- * <ul>
- * <li>container -&gt; role="alertdialog"</li>
- * <li>title     -&gt; h2 (shows the localized "error" title, e.g. "Error!")</li>
- * <li>message   -&gt; p (localized error description)</li>
- * <li>action    -&gt; button#okay-button (localized "okay" text)</li>
- * </ul>
- */
+// Page object for the signup critical-error popup rendered on invalid_transaction
 public class TransactionTimeoutPopupPage extends BasePage {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TransactionTimeoutPopupPage.class);
@@ -63,11 +54,7 @@ public class TransactionTimeoutPopupPage extends BasePage {
 				"Click Okay on the transaction timeout popup");
 	}
 
-	/**
-	 * @return the app's active UI language code (e.g. "en" / "km"), read from the
-	 *         same localStorage key the signup portal persists it under; defaults
-	 *         to "en" if unavailable, so locale lookups match what is rendered.
-	 */
+	// Read from the localStorage key the portal persists it under, so locale lookups match what is rendered
 	public String getActiveLanguage() {
 		try {
 			Object lang = ((JavascriptExecutor) driver)

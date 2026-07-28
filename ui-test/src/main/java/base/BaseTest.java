@@ -68,22 +68,14 @@ public class BaseTest {
 		}
 	}
 
-	/**
-	 * The single place a scenario can be rejected before the driver is created.
-	 *
-	 * <p>Add new skip conditions here rather than in a separate hook class: every
-	 * condition then shares one ordering, one report-entry convention and one
-	 * guarantee that the decision happens before any (possibly remote) session is
-	 * opened. Returns the reason to report, or {@code null} to run the scenario.
-	 */
+	// Single skip gate, evaluated before the driver is created; returns null to run the scenario
 	private String skipReasonFor(Scenario scenario) {
 		String bugId = runners.Runner.knownIssues.get(scenario.getName());
 		if (bugId != null) {
 			return "🟠 Skipped due to Known Issue: " + bugId;
 		}
 
-		// CDP network interception is a local-Chrome capability, so @localOnly
-		// scenarios cannot run against BrowserStack.
+		// CDP interception is a local-Chrome capability, so @localOnly cannot run on BrowserStack
 		if (scenario.getSourceTagNames().contains("@localOnly")
 				&& Boolean.parseBoolean(EsignetConfigManager.getproperty("runOnBrowserStack"))) {
 			return "⚠️ Requires local Chrome with CDP network interception. Skipped on BrowserStack. "
@@ -103,8 +95,7 @@ public class BaseTest {
 
 		String skipReason = skipReasonFor(scenario);
 		if (skipReason != null) {
-			// Create the report entry before skipping so the shared @After has a test
-			// object for *this* scenario rather than whatever the thread ran last.
+			// Created before skipping so the shared @After reports against this scenario, not the last one
 			ExtentReportManager.createTest(scenario.getName() + " [" + browser + " | " + lang + "]");
 			ExtentReportManager.getTest().skip(skipReason);
 			LOGGER.info("Skipping scenario: " + scenario.getName() + " - " + skipReason);

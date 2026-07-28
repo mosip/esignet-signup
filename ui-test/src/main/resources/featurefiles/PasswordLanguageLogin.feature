@@ -2,11 +2,7 @@ Feature: Esignet Login - Password language and username field
   Verifying the login (relying-party) password field accepts multi-language
   passwords and the login button state.
 
-  # The password field's accept/reject behaviour on the eSignet login screen is
-  # governed by the oidc-ui client policy (not this repo's signup policy), so we
-  # assert the reliably verifiable behaviour: the field accepts and retains the
-  # multi-language input the user types.
-
+  # Accept/reject is governed by the oidc-ui client policy, so only retention is asserted
   @regression @passwordLanguage
   Scenario: Enter password as a combination of English and Khmer
     Given click on Sign In with eSignet

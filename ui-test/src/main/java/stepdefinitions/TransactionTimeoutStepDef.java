@@ -17,30 +17,13 @@ import pages.TransactionTimeoutPopupPage;
 import utils.ForcedApiResponseInterceptor;
 import utils.LocaleTextUtil;
 
-/**
- * Steps for "Setup account after the signup transaction has expired".
- *
- * <p>A real transaction expiry takes ~5 minutes ({@code mosip.signup.*.txn.timeout
- * = 300s}); to keep the scenario fast the {@code /registration/verify-challenge}
- * response is faked via CDP interception (@localOnly) to carry the backend's
- * {@code invalid_transaction} error. The signup app treats that as a critical
- * error and raises the {@code SignUpPopover} (title "Error!", the localized
- * error message, and an "Okay" button) &mdash; exactly what a genuine expiry
- * shows when the user clicks Verify OTP.
- *
- * <p>Text is asserted against the app's own locale files (via
- * {@link LocaleTextUtil}) so it stays in sync with the UI. The popup message is
- * {@code error_response.invalid_transaction}, which the app renders as "The
- * request took too long to process. Please try again later." (the current
- * wording for a timed-out transaction).
- */
+// Steps for "Setup account after the signup transaction has expired".
+// A real expiry takes ~5 minutes, so verify-challenge is faked to return invalid_transaction instead.
 public class TransactionTimeoutStepDef {
 
 	private static final String GENERATE_CHALLENGE_API = "/registration/generate-challenge";
 	private static final String VERIFY_CHALLENGE_API = "/registration/verify-challenge";
-	// generate-challenge is stubbed to succeed so the OTP screen is reached
-	// deterministically (no dependency on real SMS delivery / send-OTP rate limits),
-	// while verify-challenge returns the backend's expired-transaction error.
+	// Stubbed to succeed so the OTP screen is reached without depending on real SMS delivery
 	private static final String GENERATE_CHALLENGE_SUCCESS_BODY =
 			"{\"response\":{\"status\":\"SUCCESS\"},\"errors\":[]}";
 	private static final String INVALID_TRANSACTION_BODY =
@@ -96,8 +79,7 @@ public class TransactionTimeoutStepDef {
 		popupPage.clickOkay();
 	}
 
-	// Higher order than BaseTest's @After so interception is released while the
-	// driver is still alive (mirrors ErrorHandlerStepDef).
+	// Higher order than BaseTest's @After so interception is released while the driver is alive
 	@After(value = "@transactionTimeout", order = 20000)
 	public void tearDownInterceptor() {
 		if (interceptor != null) {

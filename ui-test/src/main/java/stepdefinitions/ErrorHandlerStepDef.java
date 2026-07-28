@@ -13,22 +13,12 @@ import pages.ErrorHandlerPage;
 import utils.LocaleTextUtil;
 import utils.NetworkErrorInterceptor;
 
-/**
- * Steps for the "Something went wrong" error handler page.
- *
- * Two layers are covered:
- * - Generic page + language switch via direct navigation (runs everywhere).
- * - Real HTTP 4XX/5XX (400/403/404/405/415/500/502/503/504) forced through CDP
- *   interception (@localOnly), which drives the app's axios error interceptor
- *   into the error page carrying the status code, so the title renders the HTTP
- *   reason phrase.
- */
+// Steps for the "Something went wrong" error handler page
 public class ErrorHandlerStepDef {
 
 	private static final String TITLE_KEY = "something_went_wrong";
 	private static final String DETAIL_KEY = "something_went_wrong_detail";
-	// Only the /settings call goes through the app's ApiService response
-	// interceptor and is guaranteed on every page load (via the shared NavBar).
+	// Only /settings goes through the app's ApiService interceptor on every page load
 	private static final String SETTINGS_API = "/v1/signup/settings";
 
 	private final WebDriver driver;
@@ -91,8 +81,7 @@ public class ErrorHandlerStepDef {
 				errorPage.waitForDescription(expected));
 	}
 
-	// Higher order than BaseTest's @After (default 10000) so interception is
-	// released while the driver is still alive.
+	// Higher order than BaseTest's @After so interception is released while the driver is alive
 	@After(value = "@errorHandlerHttp", order = 20000)
 	public void tearDownInterceptor() {
 		if (interceptor != null) {
