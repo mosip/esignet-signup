@@ -148,12 +148,12 @@ SignupAuthorizeCode:
 }'
    Signup_ESignet_SignupAuthorizeCode_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forWsFrameEdge_Smoke_sid:
       endPoint: /v1/esignet/authorization/auth-code
-      uniqueIdentifier: TC_ESignet_SignupAuthorizeCode_WsFrameEdge
+      uniqueIdentifier: TC_ESignet_SignupAuthorizeCode_08
       description: Verify authorization code creation succeeds for the websocket frame-field edge-case scenario - expected, a valid authorization code is returned
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true
-      additionalDependencies: TC_ESignet_IDTAuthentication_WsFrameEdge
+      additionalDependencies: TC_ESignet_IDTAuthentication_08
       inputTemplate: signup/SignupAuthorizeCode/SignupAuthorizeCode
       outputTemplate: signup/SignupAuthorizeCode/SignupAuthorizeCodeResult
       input: '{
@@ -169,12 +169,12 @@ SignupAuthorizeCode:
 }'
    Signup_ESignet_SignupAuthorizeCode_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forNegOrder_Smoke_sid:
       endPoint: /v1/esignet/authorization/auth-code
-      uniqueIdentifier: TC_ESignet_SignupAuthorizeCode_NegOrder
+      uniqueIdentifier: TC_ESignet_SignupAuthorizeCode_09
       description: Verify authorization code creation succeeds for the websocket negative-order scenario - expected, a valid authorization code is returned
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true
-      additionalDependencies: TC_ESignet_IDTAuthentication_NegOrder
+      additionalDependencies: TC_ESignet_IDTAuthentication_09
       inputTemplate: signup/SignupAuthorizeCode/SignupAuthorizeCode
       outputTemplate: signup/SignupAuthorizeCode/SignupAuthorizeCodeResult
       input: '{
@@ -183,6 +183,90 @@ SignupAuthorizeCode:
         "pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_forGetSlot_forNegOrder_Smoke_sid_pathFragmentCookie$",
         "pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forNegOrder_Smoke_sid_transactionId$",
         "transactionId": "$ID:ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forNegOrder_Smoke_sid_transactionId$",
+        "acceptedClaims": [{"channel": "email"},{"channel": "phone_number"}]
+}'
+      output: '{
+
+}'
+   Signup_ESignet_SignupAuthorizeCode_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forInvalidJson_Smoke_sid:
+      endPoint: /v1/esignet/authorization/auth-code
+      uniqueIdentifier: TC_ESignet_SignupAuthorizeCode_10
+      description: Verify authorization code creation succeeds for the websocket invalid-JSON scenario - expected, a valid authorization code is returned
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      additionalDependencies: TC_ESignet_IDTAuthentication_10
+      inputTemplate: signup/SignupAuthorizeCode/SignupAuthorizeCode
+      outputTemplate: signup/SignupAuthorizeCode/SignupAuthorizeCodeResult
+      input: '{
+        "encodedHash": "$ID:ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forInvalidJson_Smoke_sid_encodedResp$",
+        "requestTime": "$TIMESTAMP$",
+        "pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_forGetSlot_forInvalidJson_Smoke_sid_pathFragmentCookie$",
+        "pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forInvalidJson_Smoke_sid_transactionId$",
+        "transactionId": "$ID:ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forInvalidJson_Smoke_sid_transactionId$",
+        "acceptedClaims": [{"channel": "email"},{"channel": "phone_number"}]
+}'
+      output: '{
+
+}'
+   Signup_ESignet_SignupAuthorizeCode_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forInvalidFrame_Smoke_sid:
+      endPoint: /v1/esignet/authorization/auth-code
+      uniqueIdentifier: TC_ESignet_SignupAuthorizeCode_11
+      description: Verify authorization code creation succeeds for the websocket invalid-frame scenario - expected, a valid authorization code is returned
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      additionalDependencies: TC_ESignet_IDTAuthentication_11
+      inputTemplate: signup/SignupAuthorizeCode/SignupAuthorizeCode
+      outputTemplate: signup/SignupAuthorizeCode/SignupAuthorizeCodeResult
+      input: '{
+        "encodedHash": "$ID:ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forInvalidFrame_Smoke_sid_encodedResp$",
+        "requestTime": "$TIMESTAMP$",
+        "pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_forGetSlot_forInvalidFrame_Smoke_sid_pathFragmentCookie$",
+        "pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forInvalidFrame_Smoke_sid_transactionId$",
+        "transactionId": "$ID:ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forInvalidFrame_Smoke_sid_transactionId$",
+        "acceptedClaims": [{"channel": "email"},{"channel": "phone_number"}]
+}'
+      output: '{
+
+}'
+   Signup_ESignet_SignupAuthorizeCode_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forFramesShape_Smoke_sid:
+      endPoint: /v1/esignet/authorization/auth-code
+      uniqueIdentifier: TC_ESignet_SignupAuthorizeCode_12
+      description: Verify authorization code creation succeeds for the websocket frames-shape scenario - expected, a valid authorization code is returned
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      additionalDependencies: TC_ESignet_IDTAuthentication_12
+      inputTemplate: signup/SignupAuthorizeCode/SignupAuthorizeCode
+      outputTemplate: signup/SignupAuthorizeCode/SignupAuthorizeCodeResult
+      input: '{
+        "encodedHash": "$ID:ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forFramesShape_Smoke_sid_encodedResp$",
+        "requestTime": "$TIMESTAMP$",
+        "pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_forGetSlot_forFramesShape_Smoke_sid_pathFragmentCookie$",
+        "pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forFramesShape_Smoke_sid_transactionId$",
+        "transactionId": "$ID:ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forFramesShape_Smoke_sid_transactionId$",
+        "acceptedClaims": [{"channel": "email"},{"channel": "phone_number"}]
+}'
+      output: '{
+
+}'
+   Signup_ESignet_SignupAuthorizeCode_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forSlotReconnect_Smoke_sid:
+      endPoint: /v1/esignet/authorization/auth-code
+      uniqueIdentifier: TC_ESignet_SignupAuthorizeCode_13
+      description: Verify authorization code creation succeeds for the websocket slot-reconnection scenario - expected, a valid authorization code is returned
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      additionalDependencies: TC_ESignet_IDTAuthentication_13
+      inputTemplate: signup/SignupAuthorizeCode/SignupAuthorizeCode
+      outputTemplate: signup/SignupAuthorizeCode/SignupAuthorizeCodeResult
+      input: '{
+        "encodedHash": "$ID:ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forSlotReconnect_Smoke_sid_encodedResp$",
+        "requestTime": "$TIMESTAMP$",
+        "pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_forGetSlot_forSlotReconnect_Smoke_sid_pathFragmentCookie$",
+        "pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forSlotReconnect_Smoke_sid_transactionId$",
+        "transactionId": "$ID:ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forSlotReconnect_Smoke_sid_transactionId$",
         "acceptedClaims": [{"channel": "email"},{"channel": "phone_number"}]
 }'
       output: '{

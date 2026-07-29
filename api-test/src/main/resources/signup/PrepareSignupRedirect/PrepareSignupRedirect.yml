@@ -174,13 +174,13 @@ PrepareSignupRedirect:
 }'
    Signup_ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_forGetSlot_forWsFrameEdge_Smoke_sid:
       endPoint: /v1/esignet/authorization/prepare-signup-redirect
-      uniqueIdentifier: TC_Signup_ESignet_PrepareSignupRedirect_Prerequisite_WsFrameEdge
+      uniqueIdentifier: TC_Signup_ESignet_PrepareSignupRedirect_Prerequisite_10
       description: Verify ID token creation succeeds for the websocket frame-field edge-case scenario - expected, a valid ID token is returned
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true
       validityCheckRequired: true
-      additionalDependencies: TC_ESignet_AuthenticateUserV3_WsFrameEdge,TC_Signup_ESignet_ClaimDetails_Prerequisite_WsFrameEdge
+      additionalDependencies: TC_ESignet_AuthenticateUserV3_13,TC_Signup_ESignet_ClaimDetails_Prerequisite_07
       inputTemplate: signup/PrepareSignupRedirect/PrepareSignupRedirect
       outputTemplate: signup/PrepareSignupRedirect/PrepareSignupRedirectResult
       input: '{
@@ -193,19 +193,95 @@ PrepareSignupRedirect:
 }'
    Signup_ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_forGetSlot_forNegOrder_Smoke_sid:
       endPoint: /v1/esignet/authorization/prepare-signup-redirect
-      uniqueIdentifier: TC_Signup_ESignet_PrepareSignupRedirect_Prerequisite_NegOrder
+      uniqueIdentifier: TC_Signup_ESignet_PrepareSignupRedirect_Prerequisite_11
       description: Verify ID token creation succeeds for the websocket negative-order scenario - expected, a valid ID token is returned
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true
       validityCheckRequired: true
-      additionalDependencies: TC_ESignet_AuthenticateUserV3_NegOrder,TC_Signup_ESignet_ClaimDetails_Prerequisite_NegOrder
+      additionalDependencies: TC_ESignet_AuthenticateUserV3_14,TC_Signup_ESignet_ClaimDetails_Prerequisite_08
       inputTemplate: signup/PrepareSignupRedirect/PrepareSignupRedirect
       outputTemplate: signup/PrepareSignupRedirect/PrepareSignupRedirectResult
       input: '{
         "encodedHash": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forNegOrder_Smoke_sid_encodedResp$",
         "requestTime": "$TIMESTAMP$",
         "transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forNegOrder_Smoke_sid_transactionId$",
+        "pathFragment": "path-fragment"
+    }'
+      output: '{
+}'
+   Signup_ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_forGetSlot_forInvalidJson_Smoke_sid:
+      endPoint: /v1/esignet/authorization/prepare-signup-redirect
+      uniqueIdentifier: TC_Signup_ESignet_PrepareSignupRedirect_Prerequisite_12
+      description: Verify ID token creation succeeds for the websocket invalid-JSON scenario - expected, a valid ID token is returned
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      validityCheckRequired: true
+      additionalDependencies: TC_ESignet_AuthenticateUserV3_15,TC_Signup_ESignet_ClaimDetails_Prerequisite_09
+      inputTemplate: signup/PrepareSignupRedirect/PrepareSignupRedirect
+      outputTemplate: signup/PrepareSignupRedirect/PrepareSignupRedirectResult
+      input: '{
+        "encodedHash": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forInvalidJson_Smoke_sid_encodedResp$",
+        "requestTime": "$TIMESTAMP$",
+        "transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forInvalidJson_Smoke_sid_transactionId$",
+        "pathFragment": "path-fragment"
+    }'
+      output: '{
+}'
+   Signup_ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_forGetSlot_forInvalidFrame_Smoke_sid:
+      endPoint: /v1/esignet/authorization/prepare-signup-redirect
+      uniqueIdentifier: TC_Signup_ESignet_PrepareSignupRedirect_Prerequisite_13
+      description: Verify ID token creation succeeds for the websocket invalid-frame scenario - expected, a valid ID token is returned
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      validityCheckRequired: true
+      additionalDependencies: TC_ESignet_AuthenticateUserV3_16,TC_Signup_ESignet_ClaimDetails_Prerequisite_10
+      inputTemplate: signup/PrepareSignupRedirect/PrepareSignupRedirect
+      outputTemplate: signup/PrepareSignupRedirect/PrepareSignupRedirectResult
+      input: '{
+        "encodedHash": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forInvalidFrame_Smoke_sid_encodedResp$",
+        "requestTime": "$TIMESTAMP$",
+        "transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forInvalidFrame_Smoke_sid_transactionId$",
+        "pathFragment": "path-fragment"
+    }'
+      output: '{
+}'
+   Signup_ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_forGetSlot_forFramesShape_Smoke_sid:
+      endPoint: /v1/esignet/authorization/prepare-signup-redirect
+      uniqueIdentifier: TC_Signup_ESignet_PrepareSignupRedirect_Prerequisite_14
+      description: Verify ID token creation succeeds for the websocket frames-shape scenario - expected, a valid ID token is returned
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      validityCheckRequired: true
+      additionalDependencies: TC_ESignet_AuthenticateUserV3_17,TC_Signup_ESignet_ClaimDetails_Prerequisite_11
+      inputTemplate: signup/PrepareSignupRedirect/PrepareSignupRedirect
+      outputTemplate: signup/PrepareSignupRedirect/PrepareSignupRedirectResult
+      input: '{
+        "encodedHash": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forFramesShape_Smoke_sid_encodedResp$",
+        "requestTime": "$TIMESTAMP$",
+        "transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forFramesShape_Smoke_sid_transactionId$",
+        "pathFragment": "path-fragment"
+    }'
+      output: '{
+}'
+   Signup_ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_forGetSlot_forSlotReconnect_Smoke_sid:
+      endPoint: /v1/esignet/authorization/prepare-signup-redirect
+      uniqueIdentifier: TC_Signup_ESignet_PrepareSignupRedirect_Prerequisite_15
+      description: Verify ID token creation succeeds for the websocket slot-reconnection scenario - expected, a valid ID token is returned
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      validityCheckRequired: true
+      additionalDependencies: TC_ESignet_AuthenticateUserV3_18,TC_Signup_ESignet_ClaimDetails_Prerequisite_12
+      inputTemplate: signup/PrepareSignupRedirect/PrepareSignupRedirect
+      outputTemplate: signup/PrepareSignupRedirect/PrepareSignupRedirectResult
+      input: '{
+        "encodedHash": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forSlotReconnect_Smoke_sid_encodedResp$",
+        "requestTime": "$TIMESTAMP$",
+        "transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forSlotReconnect_Smoke_sid_transactionId$",
         "pathFragment": "path-fragment"
     }'
       output: '{
