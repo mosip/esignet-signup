@@ -32,6 +32,7 @@ import io.mosip.testrig.apirig.utils.GlobalConstants;
 import io.mosip.testrig.apirig.utils.OutputValidationUtil;
 import io.mosip.testrig.apirig.utils.ReportUtil;
 import io.mosip.testrig.apirig.utils.SecurityXSSException;
+import io.restassured.http.Cookie;
 import io.restassured.response.Response;
 
 public class SimplePostForAutoGenId extends SignupUtil implements ITest {
@@ -185,14 +186,19 @@ public class SimplePostForAutoGenId extends SignupUtil implements ITest {
 				ouputValid.put(GlobalConstants.EXPECTED_VS_ACTUAL, List.of(customResponse));
 			} else if (testCaseDTO.getEndPoint().endsWith("prepare-signup-redirect")) {
 				String actualJson = response.asString();
+				boolean idTokenDecoded = false;
 				try {
 					String idToken = new JSONObject(actualJson).getJSONObject(GlobalConstants.RESPONSE)
 							.getString(idKeyName);
 					actualJson = AdminTestUtil.decodeAndCombineJwt(idToken);
+					idTokenDecoded = true;
 				} catch (Exception e) {
 					logger.info(
 							"idToken not decodable, falling back to raw response validation (likely a negative test case). Error: "
 									+ e.getClass().getSimpleName());
+				}
+				if (idTokenDecoded && testCaseName.contains("CookieExpiry")) {
+					assertCookieExpiryMatchesIdTokenValidity(response, actualJson);
 				}
 				ouputValid = OutputValidationUtil.doJsonOutputValidation(actualJson,
 						inputstringKeyWordHandeler(
@@ -212,9 +218,31 @@ public class SimplePostForAutoGenId extends SignupUtil implements ITest {
 
 	}
 
+	private void assertCookieExpiryMatchesIdTokenValidity(Response response, String decodedJwtJson)
+			throws AdminTestException {
+		JSONObject payload = new JSONObject(decodedJwtJson).getJSONObject("payload");
+		if (!payload.has("exp") || !payload.has("iat")) {
+			throw new AdminTestException(
+					"Decoded ID token is missing exp/iat claims; cannot verify cookie expiry");
+		}
+		long tokenValiditySeconds = payload.getLong("exp") - payload.getLong("iat");
+
+		List<Cookie> cookies = response.getDetailedCookies().asList();
+		if (cookies.isEmpty()) {
+			throw new AdminTestException(
+					"Expected a Set-Cookie header on the prepare-signup-redirect response, but none was found");
+		}
+		long cookieMaxAge = cookies.get(0).getMaxAge();
+
+		if (cookieMaxAge != tokenValiditySeconds) {
+			throw new AdminTestException("Expected cookie Max-Age (" + cookieMaxAge
+					+ "s) to equal the ID token validity (" + tokenValiditySeconds + "s), but they differ");
+		}
+	}
+
 	/**
 	 * The method ser current test name to result
-	 * 
+	 *
 	 * @param result
 	 */
 	@AfterMethod(alwaysRun = true)

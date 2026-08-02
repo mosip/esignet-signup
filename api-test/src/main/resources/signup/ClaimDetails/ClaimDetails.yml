@@ -220,3 +220,151 @@ ClaimDetails:
     }'
       output: '{
 }'
+   Signup_ESignet_ClaimDetails_AuthToken_Xsrf_uin_Valid_forCookieExpiry_Smoke:
+      endPoint: /v1/esignet/authorization/claim-details
+      uniqueIdentifier: TC_Signup_ESignet_ClaimDetails_Prerequisite_13
+      description: Verify claim-details succeeds for the prepare-signup-redirect cookie-expiry scenario - expected, claim details are returned successfully
+      role: resident
+      restMethod: get
+      checkErrorsOnlyInResponse: true
+      validityCheckRequired: true
+      additionalDependencies: TC_ESignet_AuthenticateUserV3_19
+      inputTemplate: signup/ClaimDetails/ClaimDetails
+      outputTemplate: signup/ClaimDetails/ClaimDetailsResult
+      input: '{
+        "encodedHash": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forCookieExpiry_Smoke_sid_encodedResp$",
+        "transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forCookieExpiry_Smoke_sid_transactionId$"
+    }'
+      output: '{
+}'
+   Signup_ESignet_ClaimDetails_AuthToken_Xsrf_uin_Valid_forGetSlot_forStepDetails_Smoke:
+      endPoint: /v1/esignet/authorization/claim-details
+      uniqueIdentifier: TC_Signup_ESignet_ClaimDetails_Prerequisite_14
+      description: Verify claim-details succeeds for the websocket step-details scenario - expected, claim details are returned successfully
+      role: resident
+      restMethod: get
+      checkErrorsOnlyInResponse: true
+      validityCheckRequired: true
+      additionalDependencies: TC_ESignet_AuthenticateUserV3_20
+      inputTemplate: signup/ClaimDetails/ClaimDetails
+      outputTemplate: signup/ClaimDetails/ClaimDetailsResult
+      input: '{
+        "encodedHash": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forStepDetails_Smoke_sid_encodedResp$",
+        "transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forStepDetails_Smoke_sid_transactionId$"
+    }'
+      output: '{
+}'
+
+
+   Signup_ESignet_ClaimDetails_AuthToken_Xsrf_uin_Valid_forGetSlot_forContentType_Smoke:
+      endPoint: /v1/esignet/authorization/claim-details
+      uniqueIdentifier: TC_Signup_ESignet_ClaimDetails_Prerequisite_15
+      description: Verify claim-details succeeds for the websocket incorrect-content-type scenario - expected, claim details are returned successfully
+      role: resident
+      restMethod: get
+      checkErrorsOnlyInResponse: true
+      validityCheckRequired: true
+      additionalDependencies: TC_ESignet_AuthenticateUserV3_21
+      inputTemplate: signup/ClaimDetails/ClaimDetails
+      outputTemplate: signup/ClaimDetails/ClaimDetailsResult
+      input: '{
+        "encodedHash": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forContentType_Smoke_sid_encodedResp$",
+        "transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forContentType_Smoke_sid_transactionId$"
+    }'
+      output: '{
+}'
+
+
+   Signup_ESignet_ClaimDetails_AuthToken_Xsrf_uin_Valid_forGetSlot_forDuplicateFrames_Smoke:
+      endPoint: /v1/esignet/authorization/claim-details
+      uniqueIdentifier: TC_Signup_ESignet_ClaimDetails_Prerequisite_16
+      description: Verify claim-details succeeds for the websocket duplicate-frames scenario - expected, claim details are returned successfully
+      role: resident
+      restMethod: get
+      checkErrorsOnlyInResponse: true
+      validityCheckRequired: true
+      additionalDependencies: TC_ESignet_AuthenticateUserV3_22
+      inputTemplate: signup/ClaimDetails/ClaimDetails
+      outputTemplate: signup/ClaimDetails/ClaimDetailsResult
+      input: '{
+        "encodedHash": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forDuplicateFrames_Smoke_sid_encodedResp$",
+        "transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forDuplicateFrames_Smoke_sid_transactionId$"
+    }'
+      output: '{
+}'
+
+
+   Signup_ESignet_ClaimDetails_AuthToken_Xsrf_uin_Valid_forGetSlot_forRapidMessaging_Smoke:
+      endPoint: /v1/esignet/authorization/claim-details
+      uniqueIdentifier: TC_Signup_ESignet_ClaimDetails_Prerequisite_17
+      description: Verify claim-details succeeds for the websocket rapid-messaging scenario - expected, claim details are returned successfully
+      role: resident
+      restMethod: get
+      checkErrorsOnlyInResponse: true
+      validityCheckRequired: true
+      additionalDependencies: TC_ESignet_AuthenticateUserV3_23
+      inputTemplate: signup/ClaimDetails/ClaimDetails
+      outputTemplate: signup/ClaimDetails/ClaimDetailsResult
+      input: '{
+        "encodedHash": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forRapidMessaging_Smoke_sid_encodedResp$",
+        "transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forRapidMessaging_Smoke_sid_transactionId$"
+    }'
+      output: '{
+}'
+
+
+   Signup_ESignet_ClaimDetails_AuthToken_Xsrf_uin_Valid_forGetSlot_forConcurrentSubscription_Smoke:
+      endPoint: /v1/esignet/authorization/claim-details
+      uniqueIdentifier: TC_Signup_ESignet_ClaimDetails_Prerequisite_18
+      description: Verify claim-details succeeds for the websocket concurrent-subscription scenario - expected, claim details are returned successfully
+      role: resident
+      restMethod: get
+      checkErrorsOnlyInResponse: true
+      validityCheckRequired: true
+      additionalDependencies: TC_ESignet_AuthenticateUserV3_24
+      inputTemplate: signup/ClaimDetails/ClaimDetails
+      outputTemplate: signup/ClaimDetails/ClaimDetailsResult
+      input: '{
+        "encodedHash": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forConcurrentSubscription_Smoke_sid_encodedResp$",
+        "transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forConcurrentSubscription_Smoke_sid_transactionId$"
+    }'
+      output: '{
+}'
+
+
+   Signup_ESignet_ClaimDetails_AuthToken_Xsrf_uin_Valid_forGetSlot_forFailedStatus_Smoke:
+      endPoint: /v1/esignet/authorization/claim-details
+      uniqueIdentifier: TC_Signup_ESignet_ClaimDetails_Prerequisite_19
+      description: Verify claim-details succeeds for the websocket failed-status scenario - expected, claim details are returned successfully
+      role: resident
+      restMethod: get
+      checkErrorsOnlyInResponse: true
+      validityCheckRequired: true
+      additionalDependencies: TC_ESignet_AuthenticateUserV3_25
+      inputTemplate: signup/ClaimDetails/ClaimDetails
+      outputTemplate: signup/ClaimDetails/ClaimDetailsResult
+      input: '{
+        "encodedHash": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forFailedStatus_Smoke_sid_encodedResp$",
+        "transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forFailedStatus_Smoke_sid_transactionId$"
+    }'
+      output: '{
+}'
+
+
+   Signup_ESignet_ClaimDetails_AuthToken_Xsrf_uin_Valid_forGetSlot_forUnrecognizedSlotId_Smoke:
+      endPoint: /v1/esignet/authorization/claim-details
+      uniqueIdentifier: TC_Signup_ESignet_ClaimDetails_Prerequisite_20
+      description: Verify claim-details succeeds for the websocket unrecognized-slotId subscription scenario - expected, claim details are returned successfully
+      role: resident
+      restMethod: get
+      checkErrorsOnlyInResponse: true
+      validityCheckRequired: true
+      additionalDependencies: TC_ESignet_AuthenticateUserV3_26
+      inputTemplate: signup/ClaimDetails/ClaimDetails
+      outputTemplate: signup/ClaimDetails/ClaimDetailsResult
+      input: '{
+        "encodedHash": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forUnrecognizedSlotId_Smoke_sid_encodedResp$",
+        "transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forUnrecognizedSlotId_Smoke_sid_transactionId$"
+    }'
+      output: '{
+}'

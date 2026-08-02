@@ -298,3 +298,176 @@ InitiateIdVerification:
     ]
   }
 }'
+   Signup_ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forStepDetails_Smoke_Sid:
+      endPoint: /v1/signup/identity-verification/initiate
+      uniqueIdentifier: TC_ESignet_InitiateIdVerification_14
+      description: Verify identity verification initiation succeeds for the websocket step-details scenario - expected, the verification process is initiated successfully
+      role: resident
+      restMethod: post
+      inputTemplate: signup/InitiateIdVerification/InitiateIdVerification
+      outputTemplate: signup/InitiateIdVerification/InitiateIdVerificationResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "authorizationCode": "$ID:ESignet_SignupAuthorizeCode_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forStepDetails_Smoke_sid_code$",
+        "state": "urlInfo1724138417665"
+}'
+      output: '{
+  "response": {
+    "identityVerifiers": [
+      {
+        "processType": "VIDEO",
+        "active": true
+      }
+    ]
+  }
+}'
+
+
+   Signup_ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forContentType_Smoke_Sid:
+      endPoint: /v1/signup/identity-verification/initiate
+      uniqueIdentifier: TC_ESignet_InitiateIdVerification_15
+      description: Verify identity verification initiation succeeds for the websocket incorrect-content-type scenario - expected, the verification process is initiated successfully
+      role: resident
+      restMethod: post
+      inputTemplate: signup/InitiateIdVerification/InitiateIdVerification
+      outputTemplate: signup/InitiateIdVerification/InitiateIdVerificationResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "authorizationCode": "$ID:ESignet_SignupAuthorizeCode_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forContentType_Smoke_sid_code$",
+        "state": "urlInfo1724138417665"
+}'
+      output: '{
+  "response": {
+    "identityVerifiers": [
+      {
+        "processType": "VIDEO",
+        "active": true
+      }
+    ]
+  }
+}'
+
+
+   Signup_ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forDuplicateFrames_Smoke_Sid:
+      endPoint: /v1/signup/identity-verification/initiate
+      uniqueIdentifier: TC_ESignet_InitiateIdVerification_16
+      description: Verify identity verification initiation succeeds for the websocket duplicate-frames scenario - expected, the verification process is initiated successfully
+      role: resident
+      restMethod: post
+      inputTemplate: signup/InitiateIdVerification/InitiateIdVerification
+      outputTemplate: signup/InitiateIdVerification/InitiateIdVerificationResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "authorizationCode": "$ID:ESignet_SignupAuthorizeCode_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forDuplicateFrames_Smoke_sid_code$",
+        "state": "urlInfo1724138417665"
+}'
+      output: '{
+  "response": {
+    "identityVerifiers": [
+      {
+        "processType": "VIDEO",
+        "active": true
+      }
+    ]
+  }
+}'
+
+
+   Signup_ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forRapidMessaging_Smoke_Sid:
+      endPoint: /v1/signup/identity-verification/initiate
+      uniqueIdentifier: TC_ESignet_InitiateIdVerification_17
+      description: Verify identity verification initiation succeeds for the websocket rapid-messaging scenario - expected, the verification process is initiated successfully
+      role: resident
+      restMethod: post
+      inputTemplate: signup/InitiateIdVerification/InitiateIdVerification
+      outputTemplate: signup/InitiateIdVerification/InitiateIdVerificationResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "authorizationCode": "$ID:ESignet_SignupAuthorizeCode_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forRapidMessaging_Smoke_sid_code$",
+        "state": "urlInfo1724138417665"
+}'
+      output: '{
+  "response": {
+    "identityVerifiers": [
+      {
+        "processType": "VIDEO",
+        "active": true
+      }
+    ]
+  }
+}'
+
+
+   Signup_ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forConcurrentSubscription_Smoke_Sid:
+      endPoint: /v1/signup/identity-verification/initiate
+      uniqueIdentifier: TC_ESignet_InitiateIdVerification_18
+      description: Verify identity verification initiation succeeds for the websocket concurrent-subscription scenario - expected, the verification process is initiated successfully
+      role: resident
+      restMethod: post
+      inputTemplate: signup/InitiateIdVerification/InitiateIdVerification
+      outputTemplate: signup/InitiateIdVerification/InitiateIdVerificationResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "authorizationCode": "$ID:ESignet_SignupAuthorizeCode_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forConcurrentSubscription_Smoke_sid_code$",
+        "state": "urlInfo1724138417665"
+}'
+      output: '{
+  "response": {
+    "identityVerifiers": [
+      {
+        "processType": "VIDEO",
+        "active": true
+      }
+    ]
+  }
+}'
+
+
+   Signup_ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forFailedStatus_Smoke_Sid:
+      endPoint: /v1/signup/identity-verification/initiate
+      uniqueIdentifier: TC_ESignet_InitiateIdVerification_19
+      description: Verify identity verification initiation succeeds for the websocket failed-status scenario - expected, the verification process is initiated successfully
+      role: resident
+      restMethod: post
+      inputTemplate: signup/InitiateIdVerification/InitiateIdVerification
+      outputTemplate: signup/InitiateIdVerification/InitiateIdVerificationResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "authorizationCode": "$ID:ESignet_SignupAuthorizeCode_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forFailedStatus_Smoke_sid_code$",
+        "state": "urlInfo1724138417665"
+}'
+      output: '{
+  "response": {
+    "identityVerifiers": [
+      {
+        "processType": "VIDEO",
+        "active": true
+      }
+    ]
+  }
+}'
+
+
+   Signup_ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forUnrecognizedSlotId_Smoke_Sid:
+      endPoint: /v1/signup/identity-verification/initiate
+      uniqueIdentifier: TC_ESignet_InitiateIdVerification_20
+      description: Verify identity verification initiation succeeds for the websocket unrecognized-slotId subscription scenario - expected, the verification process is initiated successfully
+      role: resident
+      restMethod: post
+      inputTemplate: signup/InitiateIdVerification/InitiateIdVerification
+      outputTemplate: signup/InitiateIdVerification/InitiateIdVerificationResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "authorizationCode": "$ID:ESignet_SignupAuthorizeCode_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forUnrecognizedSlotId_Smoke_sid_code$",
+        "state": "urlInfo1724138417665"
+}'
+      output: '{
+  "response": {
+    "identityVerifiers": [
+      {
+        "processType": "VIDEO",
+        "active": true
+      }
+    ]
+  }
+}'
