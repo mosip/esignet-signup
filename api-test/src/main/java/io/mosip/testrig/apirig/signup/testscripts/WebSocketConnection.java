@@ -124,7 +124,10 @@ public class WebSocketConnection extends SignupUtil implements ITest {
 		tempUrl = tempUrl.replace("https", "wss") + testCaseDTO.getEndPoint() + "?slotId=" + slotId;
 
 		SignupCustomWebSocketClientUtil webSocketClient = new SignupCustomWebSocketClientUtil(cookie, subscribeDestination, sendDestination);
-		
+
+		if (expectSubscriptionRejected) {
+			clearErrorFrames();
+		}
 
 		webSocketClient.connect(tempUrl);
 
@@ -435,8 +438,9 @@ public class WebSocketConnection extends SignupUtil implements ITest {
 		try {
 			wsSession.close(new CloseReason(CloseReason.CloseCodes.GOING_AWAY, "Simulated abnormal disconnect"));
 		} catch (Exception e) {
+			logger.error("Failed to close the websocket session with an abnormal close code", e);
 			throw new AdminTestException(
-					"Failed to close the websocket session with an abnormal close code: " + e.getMessage());
+					"Failed to close the websocket session with an abnormal close code: " + e);
 		}
 
 		try {
@@ -494,6 +498,10 @@ public class WebSocketConnection extends SignupUtil implements ITest {
 			}
 		}
 		return null;
+	}
+
+	private void clearErrorFrames() {
+		SignupCustomWebSocketClientUtil.getMessageStore().keySet().removeIf(key -> key != null && key.startsWith("ERROR-"));
 	}
 
 	// Logs rather than throws on failure - a close error at teardown time should never fail the test itself.

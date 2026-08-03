@@ -37,4 +37,3 @@ GetUISpec:
       input: '{
 }'
       output: '__invalid_test_attribute_not_in_uispec__'
-}'

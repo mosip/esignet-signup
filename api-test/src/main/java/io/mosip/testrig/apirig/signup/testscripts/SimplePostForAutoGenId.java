@@ -227,12 +227,14 @@ public class SimplePostForAutoGenId extends SignupUtil implements ITest {
 		}
 		long tokenValiditySeconds = payload.getLong("exp") - payload.getLong("iat");
 
-		List<Cookie> cookies = response.getDetailedCookies().asList();
-		if (cookies.isEmpty()) {
-			throw new AdminTestException(
-					"Expected a Set-Cookie header on the prepare-signup-redirect response, but none was found");
-		}
-		long cookieMaxAge = cookies.get(0).getMaxAge();
+		String transactionId = new JSONObject(response.asString()).getJSONObject(GlobalConstants.RESPONSE)
+				.getString("transactionId");
+		Cookie redirectCookie = response.getDetailedCookies().asList().stream()
+				.filter(c -> transactionId.equals(c.getName()))
+				.findFirst()
+				.orElseThrow(() -> new AdminTestException(
+						"Expected a cookie named '" + transactionId + "' on the prepare-signup-redirect response, but it was not found"));
+		long cookieMaxAge = redirectCookie.getMaxAge();
 
 		if (cookieMaxAge != tokenValiditySeconds) {
 			throw new AdminTestException("Expected cookie Max-Age (" + cookieMaxAge
