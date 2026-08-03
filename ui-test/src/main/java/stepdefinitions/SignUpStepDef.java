@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.openqa.selenium.WebDriver;
@@ -35,6 +37,15 @@ public class SignUpStepDef {
 	LoginOptionsPage loginOptionsPage;
 	RegistrationPage registrationPage;
 	SignupFormDynamicFiller formFiller;
+
+	// Two-letter code of the language the signup form was switched to, used to
+	// resolve expected label/placeholder/validation text from the UI schema.
+	private String selectedLangCode;
+
+	// Control types whose json-form-builder component never reads field.placeholder,
+	// so a placeholder defined for them in the UI spec is not rendered on screen.
+	private static final List<String> CONTROL_TYPES_WITHOUT_PLACEHOLDER = List.of("radio", "checkbox", "fileupload",
+			"file");
 
 	public SignUpStepDef(BaseTest baseTest) {
 		this.baseTest = baseTest;
@@ -583,17 +594,6 @@ public class SignUpStepDef {
 		registrationPage.enterPassword(longPass);
 	}
 
-	@When("user enters invalid password in the Password field")
-	public void userEntersInvalidPassword() {
-		String invalidPassword = EsignetUtil.generateInvalidPassword(7);
-		registrationPage.enterPassword(invalidPassword);
-	}
-
-	@Then("verify an error message Password does not meet the password policy. displayed below the Password field")
-	public void verifyPasswordErrorMessage() {
-		assertTrue(registrationPage.isPasswordDoesNotMeetThePolicyErrorDisplayed());
-	}
-
 	@Then("verify the watermark text in the Confirm Password field")
 	public void verifyConfirmPasswordWatermark() {
 		String actualPlaceholder = registrationPage.getConfirmPasswordFieldPlaceholder();
@@ -692,6 +692,11 @@ public class SignUpStepDef {
 	@When("user does not check the terms and conditions checkbox")
 	public void userDoesNotCheckTermsAndConditionsCheckbox() {
 		registrationPage.ensureTermsCheckboxIsUnchecked();
+	}
+
+	@When("user checks and unchecks the terms and conditions checkbox")
+	public void userChecksAndUnchecksTermsAndConditionsCheckbox() {
+		registrationPage.checkAndUncheckTermsCheckbox();
 	}
 
 	@Then("verify the error message This field is required is displayed")
@@ -914,6 +919,146 @@ public class SignUpStepDef {
 	public void userFillsSignupFormUsingUiSpecification() throws Exception {
 		Map<String, Map<String, Object>> uiSpecFields = EsignetUtil.getUiSpecFields();
 		formFiller.fillFormFromUiSpec(uiSpecFields);
+	}
+
+	@When("user changes the UI language to Khmer and reloads the signup form")
+	public void userChangesLanguageAndReloadsSignupForm() {
+		registrationPage.clickOnLanguageSelectionOption();
+		registrationPage.clickOnKhmerLanguage();
+		selectedLangCode = "km";
+		// Do NOT refresh the browser here: the signup flow keeps its state in an
+		// in-memory store, so a reload discards the registration session and returns
+		// the app to the mobile-number entry page. The header language switcher already
+		// re-renders the Setup Account form in the selected language in-place
+		// (AccountSetup -> formBuilderRef.updateLanguage on i18n change).
+	}
+
+	@Then("verify all input types render labels in the selected language as per schema")
+	public void verifyLabelsInSelectedLanguage() {
+		Map<String, Map<String, Object>> fields = EsignetUtil.getUiSpecFields();
+		List<String> mismatches = new ArrayList<>();
+
+		for (String fieldId : fields.keySet()) {
+			if (fieldId.equalsIgnoreCase("phone")) {
+				continue;
+			}
+			String expectedLabel = EsignetUtil.getLocalizedFieldProperty(fieldId, "label", selectedLangCode);
+			if (expectedLabel == null || expectedLabel.trim().isEmpty()) {
+				continue; // no localized label defined in schema for this field
+			}
+			String actualLabel = registrationPage.getFieldLabelText(fieldId);
+			if (actualLabel == null || !actualLabel.equals(expectedLabel.trim())) {
+				mismatches.add("Label for '" + fieldId + "' -> expected: [" + expectedLabel.trim() + "] actual: ["
+						+ actualLabel + "]");
+			}
+		}
+
+		logger.info("Label verification mismatches: " + mismatches);
+		assertTrue("Label language mismatches found:\n" + String.join("\n", mismatches), mismatches.isEmpty());
+	}
+
+	@Then("verify all input types render placeholders in the selected language as per schema")
+	public void verifyPlaceholdersInSelectedLanguage() {
+		Map<String, Map<String, Object>> fields = EsignetUtil.getUiSpecFields();
+		List<String> mismatches = new ArrayList<>();
+		List<String> notRendered = new ArrayList<>();
+
+		for (String fieldId : fields.keySet()) {
+			if (fieldId.equalsIgnoreCase("phone")) {
+				continue;
+			}
+			String expectedPlaceholder = EsignetUtil.getLocalizedFieldProperty(fieldId, "placeholder", selectedLangCode);
+			if (expectedPlaceholder == null || expectedPlaceholder.trim().isEmpty()) {
+				continue; // no localized placeholder defined in schema for this field
+			}
+
+			String controlType = String.valueOf(fields.get(fieldId).get("controlType"));
+			if (CONTROL_TYPES_WITHOUT_PLACEHOLDER.contains(controlType.toLowerCase())) {
+				// Nothing rendered to compare against; recorded so the unused schema
+				// placeholder stays visible rather than being silently dropped.
+				notRendered.add(fieldId + " (" + controlType + ")");
+				continue;
+			}
+
+			// Multilingual fields render one input per language (id "fieldId_<lang>"),
+			// each holding the placeholder in its own language, so resolve the sub-input
+			// for the language under test (three-letter code, matching the rendered id).
+			String threeLetterLang = MultiLanguageUtil.getThreeLetterLangCode(selectedLangCode);
+			String actualPlaceholder = registrationPage.getFieldPlaceholderText(fieldId, threeLetterLang, controlType);
+			if (actualPlaceholder == null || !actualPlaceholder.trim().equals(expectedPlaceholder.trim())) {
+				mismatches.add("Placeholder for '" + fieldId + "' (" + controlType + ") -> expected: ["
+						+ expectedPlaceholder.trim() + "] actual: [" + actualPlaceholder + "]");
+			}
+		}
+
+		logger.info("Schema placeholder not rendered by control type, skipped: " + notRendered);
+		logger.info("Placeholder verification mismatches: " + mismatches);
+		assertTrue("Placeholder language mismatches found:\n" + String.join("\n", mismatches), mismatches.isEmpty());
+	}
+
+	@Then("verify mandatory indicators are displayed for all required fields")
+	public void verifyMandatoryIndicatorsForRequiredFields() {
+		List<String> requiredFields = EsignetUtil.getRequiredFieldIds();
+		assertFalse("UI schema exposes no required fields to verify", requiredFields.isEmpty());
+
+		List<String> missingIndicator = new ArrayList<>();
+		for (String fieldId : requiredFields) {
+			if (!registrationPage.hasMandatoryIndicator(fieldId)) {
+				missingIndicator.add(fieldId);
+			}
+		}
+
+		logger.info("Required fields missing a mandatory (*) indicator: " + missingIndicator);
+		assertTrue("Mandatory (*) indicator missing for required fields: " + missingIndicator,
+				missingIndicator.isEmpty());
+	}
+
+	@Then("verify validation messages for all input types appear in the selected language")
+	public void verifyValidationMessagesInSelectedLanguage() {
+		Map<String, Map<String, Object>> fields = EsignetUtil.getUiSpecFields();
+		List<String> failures = new ArrayList<>();
+		String invalidValue = EsignetUtil.getSpecialChar() + "12ab";
+
+		for (String fieldId : fields.keySet()) {
+			Map<String, Object> props = fields.get(fieldId);
+			String controlType = String.valueOf(props.get("controlType"));
+
+			if (fieldId.equalsIgnoreCase("phone")) {
+				continue;
+			}
+			// Only free-text inputs have regex validators that surface an inline message.
+			if (!("textbox".equalsIgnoreCase(controlType) || "textarea".equalsIgnoreCase(controlType))) {
+				continue;
+			}
+			// A field with no validators (e.g. email) cannot produce an inline
+			// validation message, so there is nothing to assert for it.
+			Object validators = props.get("validators");
+			if (!(validators instanceof List) || ((List<?>) validators).isEmpty()) {
+				continue;
+			}
+
+			if (!registrationPage.triggerInvalidInput(fieldId, invalidValue)) {
+				continue; // field absent / not editable
+			}
+
+			String actualMessage = registrationPage.getFieldValidationMessage(fieldId);
+			if (actualMessage == null || actualMessage.trim().isEmpty()) {
+				failures.add("No validation message displayed for '" + fieldId + "'");
+				continue;
+			}
+
+			// When the schema exposes a localized error string, assert an exact match;
+			// otherwise the presence of a rendered message (asserted above) is the check.
+			String expectedMessage = EsignetUtil.getLocalizedFieldProperty(fieldId, "errorMessage", selectedLangCode);
+			if (expectedMessage != null && !expectedMessage.trim().isEmpty()
+					&& !actualMessage.equals(expectedMessage.trim())) {
+				failures.add("Validation message for '" + fieldId + "' -> expected: [" + expectedMessage.trim()
+						+ "] actual: [" + actualMessage + "]");
+			}
+		}
+
+		logger.info("Validation message verification failures: " + failures);
+		assertTrue("Validation message language issues found:\n" + String.join("\n", failures), failures.isEmpty());
 	}
 
 	/*

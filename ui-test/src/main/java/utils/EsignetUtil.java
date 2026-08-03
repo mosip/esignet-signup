@@ -393,6 +393,24 @@ public class EsignetUtil extends AdminTestUtil {
 		return getInfoForField("password", langCode);
 	}
 
+	public static String getLabelForField(String fieldId, String langCode) {
+		return getFieldProperty(fieldId, "label", langCode);
+	}
+
+	/**
+	 * Resolves a localized schema property for a field, tolerating both the
+	 * three-letter (eng/khm) and two-letter (en/km) langCode keys used across the
+	 * UI spec. Returns the three-letter value first, falling back to two-letter.
+	 */
+	public static String getLocalizedFieldProperty(String fieldId, String property, String twoLetterLang) {
+		String threeLetter = MultiLanguageUtil.getThreeLetterLangCode(twoLetterLang);
+		String value = getFieldProperty(fieldId, property, threeLetter);
+		if (value == null || value.isEmpty()) {
+			value = getFieldProperty(fieldId, property, twoLetterLang);
+		}
+		return value;
+	}
+
 	public static class FullName {
 		public String english;
 		public String khmer;
@@ -692,6 +710,41 @@ public class EsignetUtil extends AdminTestUtil {
 		}
 
 		return fieldsMap;
+	}
+
+	/**
+	 * Returns the IDs of all fields the UI schema marks as required (mandatory),
+	 * excluding the pre-filled phone/identifier field. NOTE: this reads a boolean
+	 * "required" flag on each schema field - confirm the key against the live UI
+	 * spec and adjust if the app uses a different marker.
+	 */
+	public static List<String> getRequiredFieldIds() {
+		List<String> requiredFields = new ArrayList<>();
+
+		JSONObject response = getSignupUISpecResponse().optJSONObject("response");
+		if (response == null)
+			return requiredFields;
+
+		JSONArray schema = response.optJSONArray("schema");
+		if (schema == null)
+			return requiredFields;
+
+		for (int i = 0; i < schema.length(); i++) {
+			JSONObject field = schema.optJSONObject(i);
+			if (field == null)
+				continue;
+
+			String fieldId = field.optString("id", null);
+			if (fieldId == null || fieldId.equalsIgnoreCase("phone"))
+				continue;
+
+			if (field.optBoolean("required", false)) {
+				requiredFields.add(fieldId);
+			}
+		}
+
+		logger.info("Required fields from UI Spec: " + requiredFields);
+		return requiredFields;
 	}
 
 	public static String getRandomDOB() {

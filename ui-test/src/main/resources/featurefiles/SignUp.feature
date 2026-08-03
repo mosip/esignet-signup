@@ -15,7 +15,7 @@ Scenario Outline: Signup and Mobile Number Registration
   And user verify footer text and logo
   Then user verify the mobile number text field should be pre-filled with country code
   Then user verify the help text in mobile number text field is displayed
- 
+
   When user enters less than minimum digit in the mobile number text box
   And user tabs out
   Then verify the error message Enter valid username is displayed
@@ -23,10 +23,10 @@ Scenario Outline: Signup and Mobile Number Registration
 
   When user enters valid_mobile_number in the mobile number text box
   Then the placeholder will be replaced with the entered mobile number
-  And user tabs out 
+  And user tabs out
   Then validate that the Continue button enabled
   And verify no error message is displayed
- 
+
   When user enters digit starting with 0 in the mobile number text box
   And user tabs out
   Then verify the error Number cannot start with zero.Enter valid username is shown
@@ -63,7 +63,7 @@ Scenario Outline: OTP input acceptance and Verify button state
   And user verifies a countdown timer is displayed
   And user verifies the Resend OTP option is visible
   And user verifies an option to go back and update the mobile number is be present
-  
+
   When user clicks the back button on the OTP screen
   Then verify user is redirected back to the Registration screen
 
@@ -72,22 +72,22 @@ Scenario Outline: OTP input acceptance and Verify button state
   Then verify user is navigated to the OTP screen
 
   And user waits for OTP timer to expire
-  When user enters "<expired_otp>" as a Otp 
+  When user enters "<expired_otp>" as a Otp
   And user clicks on the Verify OTP button
   Then verify an error message OTP expired. Please request a new one and try again. is displayed at the top
   When user clicks on the close icon of the error message
   Then verify the error message is not visible
-  
+
   Then user clicks on the Resend OTP button
   When user enters "<invalid_otp>" as a Otp
   And user clicks on the Verify OTP button
   Then verify an error message OTP authentication failed. Please try again. is displayed at the top
   And verify error message disappears after 10 seconds
-  
+
   When user enters "<invalid_otp>" as a Otp
   And user clicks on the Verify OTP button
   Then verify an error message OTP authentication failed. Please try again. is displayed at the top
-  
+
   When user enters "<special_characters>" as a Otp
   Then verify error message disappears as user starts typing in the input field
   And verify OTP field is rejecting special characters
@@ -97,17 +97,17 @@ Scenario Outline: OTP input acceptance and Verify button state
 
   When user enters "<alphanumeric_characters>" as a Otp
   Then verify OTP field is rejecting alphanumeric characters
-  
+
   When user enters "<incomplete_otp>" as a Otp
   Then validate the verify button is disabled
-  
+
   When user clicks the back button on the OTP screen
   Then verify user is redirected back to the Registration screen
 
   When user enters valid_mobile_number in the mobile number text box
   And user clicks on the Continue button
   Then verify user is navigated to the OTP screen
-  
+
   Then user waits for OTP time to expire and resend button gets enabled
   And user validates 2 out of 3 attempts message displayed
   And user waits for OTP time to expire and resend button gets enabled
@@ -115,7 +115,7 @@ Scenario Outline: OTP input acceptance and Verify button state
   And user waits for OTP time to expire and resend button gets enabled
   And user validates 0 out of 3 attempts message displayed
   Then validate the verify button is disabled
-  
+
   When user clicks the back button on the OTP screen
   And user enters valid_mobile_number in the mobile number text box
   Then mark otp request timestamp
@@ -129,11 +129,11 @@ Scenario Outline: OTP input acceptance and Verify button state
   And verify the header Successful! is displayed
   And verify the message Your mobile number has been verified successfully. Please continue to setup your account and complete the registration process. is displayed
   And verify a Continue button is displayed
-  
+
 Examples:
   | expired_otp | invalid_otp | special_characters | alphabets | alphanumeric_characters | incomplete_otp |
   | 111111      | 000000      | @#%&*!             | ABCDEF    | ABC123                  | 12             |
-  
+
 
 @smoke @accountSetupValidation
 Scenario Outline: Completing Registration Process
@@ -178,7 +178,7 @@ Scenario Outline: Completing Registration Process
   When user enters only spaces in the Full Name in field
   And user tabs out from the field
   Then verify an error message Please enter a valid name. is displayed below the field
-  
+
   When user enters special characters in the Full Name in field
   And user tabs out from the field
   Then verify it restricts such input with an error message Full Name has to be in Khmer only.
@@ -193,17 +193,17 @@ Scenario Outline: Completing Registration Process
 
   And verify the watermark text in the Password field
 
-  When user enters invalid password in the Password field 
+  When user enters invalid password in the Password field
   And user tabs out from the field
   Then verify an error message Password does not meet the password policy. displayed below the Password field
-  
+
   When user enters password less than minimum length in the Password field
   And user tabs out from the field
   Then verify an error message Password does not meet the password policy. displayed below the Password field
-  
+
   When user enters password more than maximum length in the Password field
   Then verify an error message Password does not meet the password policy. displayed below the Password field
-  
+
   And verify the watermark text in the Confirm Password field
 
   When user enters valid password in the Password field
@@ -213,14 +213,14 @@ Scenario Outline: Completing Registration Process
 
   Then user enters more than max character in the Confirm Password field
   Then verify an inline error message Password and Confirm Password do not match. displayed below Confirm Password field
-  
+
   Then user enters less than min character in the Confirm Password field
   And user tabs out from the field
   Then verify an inline error message Password and Confirm Password do not match. displayed below Confirm Password field
 
   Then validate the Password field is masked
   And validate the Confirm Password field is masked
-  
+
   When user clicks on the unmask icon in the Password field
   Then validate the Password field is unmasked
 
@@ -232,7 +232,7 @@ Scenario Outline: Completing Registration Process
 
   When user clicks again on the unmask icon in the Confirm Password field
   And validate the Confirm Password field is masked
-  
+
   When user clicks on the "i" icon in the Full Name in field
   Then verify the tooltip message for full name field is displayed
 
@@ -244,7 +244,7 @@ Scenario Outline: Completing Registration Process
   Then verify the error message This field is required is displayed
 
   Then verify the terms and conditions message
-  
+
   # TODO: MOSIP-43744 - Popup tests disabled due to UI change.
   # T&C/Privacy now open via hyperlink instead of popup.
   # New hyperlink-navigation test cases will be implemented under MOSIP-43744.
@@ -264,28 +264,28 @@ Scenario Outline: Completing Registration Process
   And user clears all mandatory fields in Account Setup screen
   And user click on Continue button in Setup Account Page
   Then verify the error message This field is required is displayed
-  
+
   And user fills the signup form using UI specification
   Then verify the Continue button is enabled when all mandatory fields are filled
-  
+
   # TODO: MOSIP-43740 - Browser back-button warning popup automation is pending.
   # Reason:
   # - The browser warning popup (Leave site?) cannot be captured/handled by Selenium.
   # - Popup appears manually but cannot be automated reliably in current setup.
   # - These steps will be re-enabled only after a feasible automation approach is identified.
-  
+
   #When user clicks the browser back button
   #Then verify browser warning popup is displayed with header Leave site?
   #And verify warning message Changes you made may not be saved is displayed
   #And verify Cancel button is displayed
   #And verify Leave button is displayed
-  #When user click on cancel button 
+  #When user click on cancel button
   #Then verify user is retained on same screen
-  
+
   #When user clicks the browser back button
-  #And user click on Leave button 
+  #And user click on Leave button
   #Then verify user is redirected back to the Registration screen
-  
+
   #And user enters valid_mobile_number in the mobile number text box
   #Then mark otp request timestamp
   #And user clicks on the Continue button
@@ -293,17 +293,17 @@ Scenario Outline: Completing Registration Process
   #And user clicks on the Verify OTP button
   #Then remove otp request timestamp
   #And user click on Continue button in Success Screen
-  
+
   #And user fills the signup form using UI specification
-  
+
   When user clicks on Continue button in Setup Account Page
   Then verify system display account setup in progress message
   Then verify that success screen should display the message Congratulations! Your account has been created successfully. Please login to proceed.
   And verify a Login button is displayed
-  
+
   When user click on Login button
   Then verify user is redirected back to the Registration screen
-  
+
   When user enters already registered number in the mobile number text box
   Then mark otp request timestamp
   And user clicks on the Continue button
@@ -343,6 +343,82 @@ Scenario Outline: Verify sign-up portal by navigating directly through sign-up U
   Then verify user is navigated to the Mobile Number Registration screen
   
   
+@smoke @submitEnabledAfterValidation
+Scenario: Verify Submit button is enabled only after resolving all validation errors
+  Given user directly navigates to sign-up portal URL
+  And user clicks on Register button
+  And user enters valid_mobile_number in the mobile number text box
+  Then mark otp request timestamp
+  And user clicks on the Continue button
+  When user enters the complete 6-digit OTP
+  And user clicks on the Verify OTP button
+  Then remove otp request timestamp
+  And verify user is redirected to the success screen
+  When user click on Continue button in Success Screen
+  Then verify setup account screen is displayed with header Setup Account
+
+  # No mandatory inputs are filled yet - the submit button must stay disabled.
+  # (The password field defines no validators in the UI spec, so the policy is
+  # shown only via the info tooltip and enforced server-side - there is no inline
+  # "does not meet policy" error to assert here.)
+  Then verify the Continue button will be in disabled state
+
+  When user enters valid password in the Password field
+  Then user enters different password in the Confirm Password field
+  And user tabs out from the field
+  Then verify an inline error message Password and Confirm Password do not match. displayed below Confirm Password field
+  And verify the Continue button will be in disabled state
+
+  # Touch the consent checkbox and leave it unchecked so the required error renders.
+  # (The consent error only appears once the checkbox fires a change event while
+  # unchecked; the disabled submit button cannot trigger full-form validation.)
+  When user checks and unchecks the terms and conditions checkbox
+  Then verify the error message This field is required is displayed
+  And verify the Continue button will be in disabled state
+
+  # Resolve every validation error by filling all mandatory inputs
+  When user fills the signup form using UI specification
+  Then verify the Continue button is enabled when all mandatory fields are filled
+
+@smoke @mandatoryFieldIndicators
+Scenario: Verify mandatory field indicators are rendered for required fields on the signup form
+  Given user directly navigates to sign-up portal URL
+  And user clicks on Register button
+  And user enters valid_mobile_number in the mobile number text box
+  Then mark otp request timestamp
+  And user clicks on the Continue button
+  When user enters the complete 6-digit OTP
+  And user clicks on the Verify OTP button
+  Then remove otp request timestamp
+  And verify user is redirected to the success screen
+  When user click on Continue button in Success Screen
+  Then verify setup account screen is displayed with header Setup Account
+  And verify mandatory indicators are displayed for all required fields
+
+@smoke @multilingualSchemaValidation
+Scenario Outline: Verify all input types support multilingual labels, placeholders and validation messages as per UI schema
+  Given user directly navigates to sign-up portal URL
+  And user clicks on Register button
+  And user enters valid_mobile_number in the mobile number text box
+  Then mark otp request timestamp
+  And user clicks on the Continue button
+  When user enters the complete 6-digit OTP
+  And user clicks on the Verify OTP button
+  Then remove otp request timestamp
+  And verify user is redirected to the success screen
+  When user click on Continue button in Success Screen
+  Then verify setup account screen is displayed with header Setup Account
+
+  When user changes the UI language to Khmer and reloads the signup form
+  Then verify page rendered in selected language
+  And verify all input types render labels in the selected language as per schema
+  And verify all input types render placeholders in the selected language as per schema
+  And verify validation messages for all input types appear in the selected language
+
+Examples:
+  | run |
+  | 1   |
+
 @smoke @OtpNotification
  Scenario: Verify the notification when OTP requested
   Given user directly navigates to sign-up portal URL

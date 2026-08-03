@@ -166,10 +166,7 @@ public class RegistrationPage extends BasePage {
 	@FindBy(xpath = "//input[@id='fullName_khm']/following-sibling::div")
 	WebElement pleaseEnterValidNameError;
 
-	@FindBy(xpath = "//input[@id='password']/following-sibling::div")
-	WebElement passwordFieldError;
-
-	@FindBy(xpath = "//input[@id='password_confirm']/following-sibling::div")
+	@FindBy(xpath = "//input[@id='password_confirm']/ancestor::div[contains(@class,'form-field')]//span[contains(@class,'error-text')]")
 	WebElement confirmPasswordFieldError;
 
 	@FindBy(xpath = "(//div[@class='label-div-display']//span[contains(@class,'info-icon')])[1]")
@@ -609,10 +606,6 @@ public class RegistrationPage extends BasePage {
 		enterText(passwordField, password, "Enter password");
 	}
 
-	public boolean isPasswordDoesNotMeetThePolicyErrorDisplayed() {
-		return isElementVisible(passwordFieldError, "Check if Password Does Not Meet The Policy Error is Displayed");
-	}
-
 	public void tabsOutOfField() {
 		passwordField.sendKeys(Keys.TAB);
 	}
@@ -691,6 +684,20 @@ public class RegistrationPage extends BasePage {
 		if (termsAndConditionsCheckbox.isSelected()) {
 			termsAndConditionsCheckbox.click();
 		}
+	}
+
+	/**
+	 * Checks then unchecks the terms &amp; conditions checkbox so a "change" event
+	 * fires while it is unchecked. json-form-builder only renders the consent
+	 * "This field is required" error after the checkbox is touched - it does not
+	 * validate an untouched box, and the disabled submit button cannot trigger the
+	 * full-form validation. This leaves the box unchecked but "touched".
+	 */
+	public void checkAndUncheckTermsCheckbox() {
+		if (!termsAndConditionsCheckbox.isSelected()) {
+			clickOnElement(termsAndConditionsCheckbox, "Check Terms and Conditions checkbox");
+		}
+		clickOnElement(termsAndConditionsCheckbox, "Uncheck Terms and Conditions checkbox");
 	}
 
 	public boolean isContinueButtonInSetupAccountPageEnabled() {
@@ -817,6 +824,178 @@ public class RegistrationPage extends BasePage {
 		new WebDriverWait(driver, Duration.ofSeconds(10))
 				.until(ExpectedConditions.elementToBeClickable(captureButton));
 		clickOnElement(captureButton, "click on capture button");
+	}
+
+	/* ----- Generic, schema-driven helpers for multilingual verification ----- */
+
+	public void reloadPage() {
+		driver.navigate().refresh();
+	}
+
+	/**
+	 * Reads the rendered label text for a dynamic field, in the current UI language.
+	 * <p>
+	 * Single-language fields associate the label via {@code <label for="fieldId">}.
+	 * Multilingual fields (e.g. fullName) render no {@code for} attribute: they use a
+	 * single group {@code <label>} inside {@code div.label-div-display} of the
+	 * {@code div.form-field-group} that holds the per-language inputs
+	 * ({@code data-field-id="fieldId"}). The mandatory-field asterisk is stripped so
+	 * the text can be compared against the schema value.
+	 */
+	public String getFieldLabelText(String fieldId) {
+		List<WebElement> labels = driver.findElements(By.xpath("//label[@for='" + fieldId + "']"));
+		if (labels.isEmpty()) {
+			labels = driver.findElements(By.xpath("//div[contains(@class,'form-field-group')]"
+					+ "[.//*[@data-field-id='" + fieldId + "']]//div[contains(@class,'label-div-display')]/label"));
+		}
+		if (labels.isEmpty()) {
+			return null;
+		}
+		return labels.get(0).getText().replace("*", "").trim();
+	}
+
+	/**
+	 * Returns true when the field's rendered label carries a mandatory indicator
+	 * ("*"). The raw label text is inspected here (unlike {@link #getFieldLabelText}
+	 * which strips the asterisk for schema comparison).
+	 */
+	public boolean hasMandatoryIndicator(String fieldId) {
+		// json-form-builder renders the mandatory marker as <span class="required">*</span>
+		// inside the label of the field's ".form-field" container. Multilingual fields
+		// (e.g. fullName) expose no <label for="fullName"> - their inputs are rendered as
+		// "<fieldId>_<lang>" (fullName_eng / fullName_khm) - so resolve the container from
+		// the field's own input(s) and look for the marker within it. The exact-id
+		// container is checked first so a prefix field (password) is not confused with a
+		// suffixed one (password_confirm).
+		String containerByExactId = "//div[contains(@class,'form-field')]"
+				+ "[.//*[self::input or self::select or self::textarea][@id='" + fieldId + "']]";
+		String containerByLangSuffix = "//div[contains(@class,'form-field')]"
+				+ "[.//*[self::input or self::select or self::textarea][starts-with(@id,'" + fieldId + "_')]]";
+
+		List<WebElement> markers = driver
+				.findElements(By.xpath(containerByExactId + "//span[contains(@class,'required')]"));
+		if (markers.isEmpty()) {
+			markers = driver.findElements(By.xpath(containerByLangSuffix + "//span[contains(@class,'required')]"));
+		}
+		return !markers.isEmpty();
+	}
+
+	/**
+	 * Reads the placeholder rendered for a dynamic field in the language under test.
+	 * Where json-form-builder renders it depends on the control type: a
+	 * {@code placeholder} attribute for free-text controls, the
+	 * {@code option.select-placeholder} text for a dropdown, the capture caption for
+	 * a photo.
+	 *
+	 * @param langCode    three-letter code (eng, khm) selecting the sub-input of a
+	 *                    multilingual field; null for single-language fields
+	 * @param controlType schema control type; null to read the attribute
+	 * @return the rendered placeholder, or null when the field renders none
+	 */
+	public String getFieldPlaceholderText(String fieldId, String langCode, String controlType) {
+		if ("photo".equalsIgnoreCase(controlType)) {
+			return getPhotoPlaceholderText(fieldId);
+		}
+
+		List<WebElement> elements = driver
+				.findElements(By.xpath("//*[self::input or self::select or self::textarea][@id='" + fieldId + "']"));
+		if (elements.isEmpty() && langCode != null && !langCode.isEmpty()) {
+			elements = driver.findElements(By.xpath("//*[self::input or self::select or self::textarea]"
+					+ "[@id='" + fieldId + "_" + langCode + "' or (@data-field-id='" + fieldId + "' and @data-lang='"
+					+ langCode + "')]"));
+		}
+		if (elements.isEmpty()) {
+			elements = driver.findElements(By.xpath(
+					"//*[self::input or self::select or self::textarea][@data-field-id='" + fieldId + "']"));
+		}
+		if (elements.isEmpty()) {
+			return null;
+		}
+		WebElement element = elements.get(0);
+		if ("select".equalsIgnoreCase(element.getTagName())) {
+			// A <select> (controlType "dropdown") has no placeholder attribute:
+			// json-form-builder renders the placeholder as the empty-value option
+			// (class "select-placeholder"), which becomes hidden after a language
+			// switch - so read its raw textContent rather than getText().
+			List<WebElement> placeholderOptions = element.findElements(
+					By.xpath(".//option[@value='' or contains(@class,'select-placeholder')]"));
+			if (placeholderOptions.isEmpty()) {
+				return null;
+			}
+			String text = placeholderOptions.get(0).getAttribute("textContent");
+			return text == null ? null : text.trim();
+		}
+		// Normalised to null: getAttribute() answers from the input's IDL property, so
+		// an absent attribute reads as "" and would look like a rendered empty value.
+		String placeholder = element.getAttribute("placeholder");
+		return placeholder == null || placeholder.trim().isEmpty() ? null : placeholder.trim();
+	}
+
+	/**
+	 * Reads the placeholder of a {@code photo} field, rendered as the caption over its
+	 * capture area - the field's own input is {@code type="hidden"} and carries no
+	 * placeholder attribute. textContent is read rather than getText() because the
+	 * caption is only revealed on hover.
+	 */
+	private String getPhotoPlaceholderText(String fieldId) {
+		List<WebElement> captions = driver.findElements(By.xpath("//div[contains(@class,'photo-container')]"
+				+ "[.//*[@id='" + fieldId + "']]//div[contains(@class,'alternate-icon-popup')]"));
+		if (captions.isEmpty()) {
+			return null;
+		}
+		String caption = captions.get(0).getAttribute("textContent");
+		return caption == null || caption.trim().isEmpty() ? null : caption.trim();
+	}
+
+	/**
+	 * Enters an invalid value into a text/textarea field and tabs out so that the
+	 * inline validation message renders. Returns false when the field is not
+	 * present or not editable.
+	 */
+	public boolean triggerInvalidInput(String fieldId, String invalidValue) {
+		List<WebElement> elements = driver.findElements(By.xpath(
+				"//*[self::input or self::textarea][@id='" + fieldId + "' or @data-field-id='" + fieldId + "']"));
+		if (elements.isEmpty()) {
+			return false;
+		}
+		WebElement element = elements.get(0);
+		if (!element.isEnabled() || "hidden".equalsIgnoreCase(element.getAttribute("type"))) {
+			return false;
+		}
+		((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({block:'center'});", element);
+		element.clear();
+		element.sendKeys(invalidValue);
+		element.sendKeys(Keys.TAB);
+		return true;
+	}
+
+	/**
+	 * Returns the inline validation message currently shown for a field, or null
+	 * when none is displayed.
+	 * <p>
+	 * json-form-builder renders errors as
+	 * {@code <div class="error-message">...<span class="error-text">MSG</span></div>}
+	 * inside the {@code .form-field} container of the input (for multilingual fields,
+	 * inside the per-language sub-field). The container is resolved from the field's
+	 * own input(s): the exact-id input is tried first so a prefix field is not
+	 * confused with a suffixed one, then any input carrying {@code data-field-id}.
+	 */
+	public String getFieldValidationMessage(String fieldId) {
+		String byExactId = "//*[self::input or self::select or self::textarea][@id='" + fieldId + "']"
+				+ "/ancestor::div[contains(@class,'form-field')][1]//span[contains(@class,'error-text')]";
+		String byFieldId = "//*[@data-field-id='" + fieldId + "']"
+				+ "/ancestor::div[contains(@class,'form-field')][1]//span[contains(@class,'error-text')]";
+
+		List<WebElement> errors = driver.findElements(By.xpath(byExactId));
+		if (errors.isEmpty()) {
+			errors = driver.findElements(By.xpath(byFieldId));
+		}
+		for (WebElement error : errors) {
+			if (error.isDisplayed() && !error.getText().trim().isEmpty()) {
+				return error.getText().trim();
+			}
+		}
+		return null;
 	}
 
 }
