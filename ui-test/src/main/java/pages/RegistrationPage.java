@@ -847,15 +847,15 @@ public class RegistrationPage extends BasePage {
 		// Exact id first, so a prefix field (password) is not confused with a suffixed one (password_confirm).
 		String containerByExactId = "//div[contains(@class,'form-field')]"
 				+ "[.//*[self::input or self::select or self::textarea][@id='" + fieldId + "']]";
-		// Multilingual fields render one input per language, as "<fieldId>_<lang>" (fullName_eng / fullName_khm).
-		String containerByLangSuffix = "//div[contains(@class,'form-field')]"
-				+ "[.//*[self::input or self::select or self::textarea][" + languageSuffixedIdPredicate(fieldId) + "]]";
 
 		// The container is resolved before its marker is read, so a field whose own container has no marker
 		// reports false instead of falling through to a neighbouring field's container.
 		List<WebElement> containers = driver.findElements(By.xpath(containerByExactId));
 		if (containers.isEmpty()) {
-			containers = driver.findElements(By.xpath(containerByLangSuffix));
+			// Multilingual fields render one input per language, as "<fieldId>_<lang>" (fullName_eng / fullName_khm).
+			containers = driver.findElements(By.xpath("//div[contains(@class,'form-field')]"
+					+ "[.//*[self::input or self::select or self::textarea][" + languageSuffixedIdPredicate(fieldId)
+					+ "]]"));
 		}
 		for (WebElement container : containers) {
 			if (!container.findElements(By.xpath(".//span[contains(@class,'required')]")).isEmpty()) {
@@ -866,10 +866,12 @@ public class RegistrationPage extends BasePage {
 	}
 
 	// Matches only the per-language inputs of a field (fullName_eng, fullName_khm), never a sibling like
-	// password_confirm; falls back to a prefix match when the supported languages could not be loaded.
+	// password_confirm. Without the language codes the field cannot be resolved, so the setup failure is
+	// raised rather than widened into a prefix match that would report another field's marker.
 	private String languageSuffixedIdPredicate(String fieldId) {
 		if (MultiLanguageUtil.supportedLanguages.isEmpty()) {
-			return "starts-with(@id,'" + fieldId + "_')";
+			throw new IllegalStateException("Supported language codes are unavailable, so the multilingual inputs of '"
+					+ fieldId + "' cannot be resolved");
 		}
 		List<String> idMatches = new ArrayList<>();
 		for (String langCode : MultiLanguageUtil.supportedLanguages) {
