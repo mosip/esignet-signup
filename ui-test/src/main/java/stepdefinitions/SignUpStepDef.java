@@ -38,12 +38,10 @@ public class SignUpStepDef {
 	RegistrationPage registrationPage;
 	SignupFormDynamicFiller formFiller;
 
-	// Two-letter code of the language the signup form was switched to, used to
-	// resolve expected label/placeholder/validation text from the UI schema.
+	// Two-letter code of the language the signup form was switched to, used to resolve expected text from the schema.
 	private String selectedLangCode;
 
-	// Control types whose json-form-builder component never reads field.placeholder,
-	// so a placeholder defined for them in the UI spec is not rendered on screen.
+	// Control types that never render a placeholder, even when the UI spec defines one for them.
 	private static final List<String> CONTROL_TYPES_WITHOUT_PLACEHOLDER = List.of("radio", "checkbox", "fileupload",
 			"file");
 
@@ -926,11 +924,8 @@ public class SignUpStepDef {
 		registrationPage.clickOnLanguageSelectionOption();
 		registrationPage.clickOnKhmerLanguage();
 		selectedLangCode = "km";
-		// Do NOT refresh the browser here: the signup flow keeps its state in an
-		// in-memory store, so a reload discards the registration session and returns
-		// the app to the mobile-number entry page. The header language switcher already
-		// re-renders the Setup Account form in the selected language in-place
-		// (AccountSetup -> formBuilderRef.updateLanguage on i18n change).
+		// Do NOT refresh the browser here: the signup state is held in memory and a reload would drop the
+		// registration session. The language switcher already re-renders the form in the selected language.
 	}
 
 	@Then("verify all input types render labels in the selected language as per schema")
@@ -974,15 +969,12 @@ public class SignUpStepDef {
 
 			String controlType = String.valueOf(fields.get(fieldId).get("controlType"));
 			if (CONTROL_TYPES_WITHOUT_PLACEHOLDER.contains(controlType.toLowerCase())) {
-				// Nothing rendered to compare against; recorded so the unused schema
-				// placeholder stays visible rather than being silently dropped.
+				// Nothing rendered to compare against, so record it instead of dropping it silently.
 				notRendered.add(fieldId + " (" + controlType + ")");
 				continue;
 			}
 
-			// Multilingual fields render one input per language (id "fieldId_<lang>"),
-			// each holding the placeholder in its own language, so resolve the sub-input
-			// for the language under test (three-letter code, matching the rendered id).
+			// Multilingual fields render one input per language, so resolve the sub-input for the language under test.
 			String threeLetterLang = MultiLanguageUtil.getThreeLetterLangCode(selectedLangCode);
 			String actualPlaceholder = registrationPage.getFieldPlaceholderText(fieldId, threeLetterLang, controlType);
 			if (actualPlaceholder == null || !actualPlaceholder.trim().equals(expectedPlaceholder.trim())) {
@@ -1030,8 +1022,7 @@ public class SignUpStepDef {
 			if (!("textbox".equalsIgnoreCase(controlType) || "textarea".equalsIgnoreCase(controlType))) {
 				continue;
 			}
-			// A field with no validators (e.g. email) cannot produce an inline
-			// validation message, so there is nothing to assert for it.
+			// A field with no validators (e.g. email) cannot produce an inline validation message.
 			Object validators = props.get("validators");
 			if (!(validators instanceof List) || ((List<?>) validators).isEmpty()) {
 				continue;
@@ -1047,8 +1038,7 @@ public class SignUpStepDef {
 				continue;
 			}
 
-			// When the schema exposes a localized error string, assert an exact match;
-			// otherwise the presence of a rendered message (asserted above) is the check.
+			// Assert an exact match only when the schema exposes a localized error string for the field.
 			String expectedMessage = EsignetUtil.getLocalizedFieldProperty(fieldId, "errorMessage", selectedLangCode);
 			if (expectedMessage != null && !expectedMessage.trim().isEmpty()
 					&& !actualMessage.equals(expectedMessage.trim())) {

@@ -37,8 +37,7 @@ public class StepListener implements ConcurrentEventListener {
 
     private void captureFailure(String stepText, Throwable error) {
         ExtentReportManager.getTest().fail("❌ Step Failed: " + stepText);
-        // Carries the assertion details into the report, which would otherwise show
-        // only which step failed, not why.
+        // Carries the assertion details into the report, which would otherwise show only which step failed.
         if (error != null) {
             String reason = error.getMessage();
             ExtentReportManager.getTest().fail("Reason: " + error.getClass().getSimpleName()

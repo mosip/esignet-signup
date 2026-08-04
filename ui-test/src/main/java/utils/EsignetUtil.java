@@ -397,11 +397,7 @@ public class EsignetUtil extends AdminTestUtil {
 		return getFieldProperty(fieldId, "label", langCode);
 	}
 
-	/**
-	 * Resolves a localized schema property for a field, tolerating both the
-	 * three-letter (eng/khm) and two-letter (en/km) langCode keys used across the
-	 * UI spec. Returns the three-letter value first, falling back to two-letter.
-	 */
+	// Resolves a localized schema property, reading the three-letter key (eng/khm) first and then the two-letter one.
 	public static String getLocalizedFieldProperty(String fieldId, String property, String twoLetterLang) {
 		String threeLetter = MultiLanguageUtil.getThreeLetterLangCode(twoLetterLang);
 		String value = getFieldProperty(fieldId, property, threeLetter);
@@ -712,12 +708,7 @@ public class EsignetUtil extends AdminTestUtil {
 		return fieldsMap;
 	}
 
-	/**
-	 * Returns the IDs of all fields the UI schema marks as required (mandatory),
-	 * excluding the pre-filled phone/identifier field. NOTE: this reads a boolean
-	 * "required" flag on each schema field - confirm the key against the live UI
-	 * spec and adjust if the app uses a different marker.
-	 */
+	// Returns the IDs of the fields the UI schema marks as required, excluding the pre-filled phone field.
 	public static List<String> getRequiredFieldIds() {
 		List<String> requiredFields = new ArrayList<>();
 

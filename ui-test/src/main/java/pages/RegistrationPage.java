@@ -2,6 +2,7 @@ package pages;
 
 import base.BasePage;
 import utils.EsignetUtil;
+import utils.MultiLanguageUtil;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -10,6 +11,7 @@ import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.time.Duration;
 
@@ -686,13 +688,7 @@ public class RegistrationPage extends BasePage {
 		}
 	}
 
-	/**
-	 * Checks then unchecks the terms &amp; conditions checkbox so a "change" event
-	 * fires while it is unchecked. json-form-builder only renders the consent
-	 * "This field is required" error after the checkbox is touched - it does not
-	 * validate an untouched box, and the disabled submit button cannot trigger the
-	 * full-form validation. This leaves the box unchecked but "touched".
-	 */
+	// Leaves the checkbox unchecked but touched, since the consent error renders only after a change event.
 	public void checkAndUncheckTermsCheckbox() {
 		if (!termsAndConditionsCheckbox.isSelected()) {
 			clickOnElement(termsAndConditionsCheckbox, "Check Terms and Conditions checkbox");
@@ -826,25 +822,17 @@ public class RegistrationPage extends BasePage {
 		clickOnElement(captureButton, "click on capture button");
 	}
 
-	/* ----- Generic, schema-driven helpers for multilingual verification ----- */
+	// Generic, schema-driven helpers for multilingual verification.
 
 	public void reloadPage() {
 		driver.navigate().refresh();
 	}
 
-	/**
-	 * Reads the rendered label text for a dynamic field, in the current UI language.
-	 * <p>
-	 * Single-language fields associate the label via {@code <label for="fieldId">}.
-	 * Multilingual fields (e.g. fullName) render no {@code for} attribute: they use a
-	 * single group {@code <label>} inside {@code div.label-div-display} of the
-	 * {@code div.form-field-group} that holds the per-language inputs
-	 * ({@code data-field-id="fieldId"}). The mandatory-field asterisk is stripped so
-	 * the text can be compared against the schema value.
-	 */
+	// Reads the rendered label of a dynamic field in the current UI language, without the mandatory asterisk.
 	public String getFieldLabelText(String fieldId) {
 		List<WebElement> labels = driver.findElements(By.xpath("//label[@for='" + fieldId + "']"));
 		if (labels.isEmpty()) {
+			// Multilingual fields carry no "for" attribute; their label sits in the group holding the language inputs.
 			labels = driver.findElements(By.xpath("//div[contains(@class,'form-field-group')]"
 					+ "[.//*[@data-field-id='" + fieldId + "']]//div[contains(@class,'label-div-display')]/label"));
 		}
@@ -854,44 +842,44 @@ public class RegistrationPage extends BasePage {
 		return labels.get(0).getText().replace("*", "").trim();
 	}
 
-	/**
-	 * Returns true when the field's rendered label carries a mandatory indicator
-	 * ("*"). The raw label text is inspected here (unlike {@link #getFieldLabelText}
-	 * which strips the asterisk for schema comparison).
-	 */
+	// Returns true when the field's label carries the mandatory marker, rendered as <span class="required">*</span>.
 	public boolean hasMandatoryIndicator(String fieldId) {
-		// json-form-builder renders the mandatory marker as <span class="required">*</span>
-		// inside the label of the field's ".form-field" container. Multilingual fields
-		// (e.g. fullName) expose no <label for="fullName"> - their inputs are rendered as
-		// "<fieldId>_<lang>" (fullName_eng / fullName_khm) - so resolve the container from
-		// the field's own input(s) and look for the marker within it. The exact-id
-		// container is checked first so a prefix field (password) is not confused with a
-		// suffixed one (password_confirm).
+		// Exact id first, so a prefix field (password) is not confused with a suffixed one (password_confirm).
 		String containerByExactId = "//div[contains(@class,'form-field')]"
 				+ "[.//*[self::input or self::select or self::textarea][@id='" + fieldId + "']]";
+		// Multilingual fields render one input per language, as "<fieldId>_<lang>" (fullName_eng / fullName_khm).
 		String containerByLangSuffix = "//div[contains(@class,'form-field')]"
-				+ "[.//*[self::input or self::select or self::textarea][starts-with(@id,'" + fieldId + "_')]]";
+				+ "[.//*[self::input or self::select or self::textarea][" + languageSuffixedIdPredicate(fieldId) + "]]";
 
-		List<WebElement> markers = driver
-				.findElements(By.xpath(containerByExactId + "//span[contains(@class,'required')]"));
-		if (markers.isEmpty()) {
-			markers = driver.findElements(By.xpath(containerByLangSuffix + "//span[contains(@class,'required')]"));
+		// The container is resolved before its marker is read, so a field whose own container has no marker
+		// reports false instead of falling through to a neighbouring field's container.
+		List<WebElement> containers = driver.findElements(By.xpath(containerByExactId));
+		if (containers.isEmpty()) {
+			containers = driver.findElements(By.xpath(containerByLangSuffix));
 		}
-		return !markers.isEmpty();
+		for (WebElement container : containers) {
+			if (!container.findElements(By.xpath(".//span[contains(@class,'required')]")).isEmpty()) {
+				return true;
+			}
+		}
+		return false;
 	}
 
-	/**
-	 * Reads the placeholder rendered for a dynamic field in the language under test.
-	 * Where json-form-builder renders it depends on the control type: a
-	 * {@code placeholder} attribute for free-text controls, the
-	 * {@code option.select-placeholder} text for a dropdown, the capture caption for
-	 * a photo.
-	 *
-	 * @param langCode    three-letter code (eng, khm) selecting the sub-input of a
-	 *                    multilingual field; null for single-language fields
-	 * @param controlType schema control type; null to read the attribute
-	 * @return the rendered placeholder, or null when the field renders none
-	 */
+	// Matches only the per-language inputs of a field (fullName_eng, fullName_khm), never a sibling like
+	// password_confirm; falls back to a prefix match when the supported languages could not be loaded.
+	private String languageSuffixedIdPredicate(String fieldId) {
+		if (MultiLanguageUtil.supportedLanguages.isEmpty()) {
+			return "starts-with(@id,'" + fieldId + "_')";
+		}
+		List<String> idMatches = new ArrayList<>();
+		for (String langCode : MultiLanguageUtil.supportedLanguages) {
+			idMatches.add("@id='" + fieldId + "_" + langCode + "'");
+		}
+		return String.join(" or ", idMatches);
+	}
+
+	// Reads the placeholder rendered for a field, or null when none is rendered.
+	// langCode is the three-letter code (eng, khm) selecting the sub-input of a multilingual field.
 	public String getFieldPlaceholderText(String fieldId, String langCode, String controlType) {
 		if ("photo".equalsIgnoreCase(controlType)) {
 			return getPhotoPlaceholderText(fieldId);
@@ -913,10 +901,8 @@ public class RegistrationPage extends BasePage {
 		}
 		WebElement element = elements.get(0);
 		if ("select".equalsIgnoreCase(element.getTagName())) {
-			// A <select> (controlType "dropdown") has no placeholder attribute:
-			// json-form-builder renders the placeholder as the empty-value option
-			// (class "select-placeholder"), which becomes hidden after a language
-			// switch - so read its raw textContent rather than getText().
+			// A dropdown holds its placeholder in the empty-value option, hidden after a language switch,
+			// so read the raw textContent rather than getText().
 			List<WebElement> placeholderOptions = element.findElements(
 					By.xpath(".//option[@value='' or contains(@class,'select-placeholder')]"));
 			if (placeholderOptions.isEmpty()) {
@@ -925,18 +911,13 @@ public class RegistrationPage extends BasePage {
 			String text = placeholderOptions.get(0).getAttribute("textContent");
 			return text == null ? null : text.trim();
 		}
-		// Normalised to null: getAttribute() answers from the input's IDL property, so
-		// an absent attribute reads as "" and would look like a rendered empty value.
+		// Normalised to null, since getAttribute() reads an absent placeholder as an empty string.
 		String placeholder = element.getAttribute("placeholder");
 		return placeholder == null || placeholder.trim().isEmpty() ? null : placeholder.trim();
 	}
 
-	/**
-	 * Reads the placeholder of a {@code photo} field, rendered as the caption over its
-	 * capture area - the field's own input is {@code type="hidden"} and carries no
-	 * placeholder attribute. textContent is read rather than getText() because the
-	 * caption is only revealed on hover.
-	 */
+	// A photo field keeps its placeholder in the caption over the capture area, revealed only on hover,
+	// so the raw textContent is read rather than getText().
 	private String getPhotoPlaceholderText(String fieldId) {
 		List<WebElement> captions = driver.findElements(By.xpath("//div[contains(@class,'photo-container')]"
 				+ "[.//*[@id='" + fieldId + "']]//div[contains(@class,'alternate-icon-popup')]"));
@@ -947,11 +928,7 @@ public class RegistrationPage extends BasePage {
 		return caption == null || caption.trim().isEmpty() ? null : caption.trim();
 	}
 
-	/**
-	 * Enters an invalid value into a text/textarea field and tabs out so that the
-	 * inline validation message renders. Returns false when the field is not
-	 * present or not editable.
-	 */
+	// Enters an invalid value and tabs out so the inline validation renders; false when the field is not editable.
 	public boolean triggerInvalidInput(String fieldId, String invalidValue) {
 		List<WebElement> elements = driver.findElements(By.xpath(
 				"//*[self::input or self::textarea][@id='" + fieldId + "' or @data-field-id='" + fieldId + "']"));
@@ -969,18 +946,9 @@ public class RegistrationPage extends BasePage {
 		return true;
 	}
 
-	/**
-	 * Returns the inline validation message currently shown for a field, or null
-	 * when none is displayed.
-	 * <p>
-	 * json-form-builder renders errors as
-	 * {@code <div class="error-message">...<span class="error-text">MSG</span></div>}
-	 * inside the {@code .form-field} container of the input (for multilingual fields,
-	 * inside the per-language sub-field). The container is resolved from the field's
-	 * own input(s): the exact-id input is tried first so a prefix field is not
-	 * confused with a suffixed one, then any input carrying {@code data-field-id}.
-	 */
+	// Returns the inline validation message shown for a field, or null when none is displayed.
 	public String getFieldValidationMessage(String fieldId) {
+		// Exact id first, so a prefix field (password) is not confused with a suffixed one (password_confirm).
 		String byExactId = "//*[self::input or self::select or self::textarea][@id='" + fieldId + "']"
 				+ "/ancestor::div[contains(@class,'form-field')][1]//span[contains(@class,'error-text')]";
 		String byFieldId = "//*[@data-field-id='" + fieldId + "']"
