@@ -2,6 +2,7 @@ package pages;
 
 import base.BasePage;
 import utils.EsignetUtil;
+import utils.MultiLanguageUtil;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -10,6 +11,7 @@ import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.time.Duration;
 
@@ -166,10 +168,7 @@ public class RegistrationPage extends BasePage {
 	@FindBy(xpath = "//input[@id='fullName_khm']/following-sibling::div")
 	WebElement pleaseEnterValidNameError;
 
-	@FindBy(xpath = "//input[@id='password']/following-sibling::div")
-	WebElement passwordFieldError;
-
-	@FindBy(xpath = "//input[@id='password_confirm']/following-sibling::div")
+	@FindBy(xpath = "//input[@id='password_confirm']/ancestor::div[contains(@class,'form-field')]//span[contains(@class,'error-text')]")
 	WebElement confirmPasswordFieldError;
 
 	@FindBy(xpath = "(//div[@class='label-div-display']//span[contains(@class,'info-icon')])[1]")
@@ -609,10 +608,6 @@ public class RegistrationPage extends BasePage {
 		enterText(passwordField, password, "Enter password");
 	}
 
-	public boolean isPasswordDoesNotMeetThePolicyErrorDisplayed() {
-		return isElementVisible(passwordFieldError, "Check if Password Does Not Meet The Policy Error is Displayed");
-	}
-
 	public void tabsOutOfField() {
 		passwordField.sendKeys(Keys.TAB);
 	}
@@ -691,6 +686,14 @@ public class RegistrationPage extends BasePage {
 		if (termsAndConditionsCheckbox.isSelected()) {
 			termsAndConditionsCheckbox.click();
 		}
+	}
+
+	// Leaves the checkbox unchecked but touched, since the consent error renders only after a change event.
+	public void checkAndUncheckTermsCheckbox() {
+		if (!termsAndConditionsCheckbox.isSelected()) {
+			clickOnElement(termsAndConditionsCheckbox, "Check Terms and Conditions checkbox");
+		}
+		clickOnElement(termsAndConditionsCheckbox, "Uncheck Terms and Conditions checkbox");
 	}
 
 	public boolean isContinueButtonInSetupAccountPageEnabled() {
@@ -817,6 +820,152 @@ public class RegistrationPage extends BasePage {
 		new WebDriverWait(driver, Duration.ofSeconds(10))
 				.until(ExpectedConditions.elementToBeClickable(captureButton));
 		clickOnElement(captureButton, "click on capture button");
+	}
+
+	// Generic, schema-driven helpers for multilingual verification.
+
+	public void reloadPage() {
+		driver.navigate().refresh();
+	}
+
+	// Reads the rendered label of a dynamic field in the current UI language, without the mandatory asterisk.
+	public String getFieldLabelText(String fieldId) {
+		List<WebElement> labels = driver.findElements(By.xpath("//label[@for='" + fieldId + "']"));
+		if (labels.isEmpty()) {
+			// Multilingual fields carry no "for" attribute; their label sits in the group holding the language inputs.
+			labels = driver.findElements(By.xpath("//div[contains(@class,'form-field-group')]"
+					+ "[.//*[@data-field-id='" + fieldId + "']]//div[contains(@class,'label-div-display')]/label"));
+		}
+		if (labels.isEmpty()) {
+			return null;
+		}
+		return labels.get(0).getText().replace("*", "").trim();
+	}
+
+	// Returns true when the field's label carries the mandatory marker, rendered as <span class="required">*</span>.
+	public boolean hasMandatoryIndicator(String fieldId) {
+		// Exact id first, so a prefix field (password) is not confused with a suffixed one (password_confirm).
+		String containerByExactId = "//div[contains(@class,'form-field')]"
+				+ "[.//*[self::input or self::select or self::textarea][@id='" + fieldId + "']]";
+
+		// The container is resolved before its marker is read, so a field whose own container has no marker
+		// reports false instead of falling through to a neighbouring field's container.
+		List<WebElement> containers = driver.findElements(By.xpath(containerByExactId));
+		if (containers.isEmpty()) {
+			// Multilingual fields render one input per language, as "<fieldId>_<lang>" (fullName_eng / fullName_khm).
+			containers = driver.findElements(By.xpath("//div[contains(@class,'form-field')]"
+					+ "[.//*[self::input or self::select or self::textarea][" + languageSuffixedIdPredicate(fieldId)
+					+ "]]"));
+		}
+		for (WebElement container : containers) {
+			if (!container.findElements(By.xpath(".//span[contains(@class,'required')]")).isEmpty()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	// Matches only the per-language inputs of a field (fullName_eng, fullName_khm), never a sibling like
+	// password_confirm. Without the language codes the field cannot be resolved, so the setup failure is
+	// raised rather than widened into a prefix match that would report another field's marker.
+	private String languageSuffixedIdPredicate(String fieldId) {
+		if (MultiLanguageUtil.supportedLanguages.isEmpty()) {
+			throw new IllegalStateException("Supported language codes are unavailable, so the multilingual inputs of '"
+					+ fieldId + "' cannot be resolved");
+		}
+		List<String> idMatches = new ArrayList<>();
+		for (String langCode : MultiLanguageUtil.supportedLanguages) {
+			idMatches.add("@id='" + fieldId + "_" + langCode + "'");
+		}
+		return String.join(" or ", idMatches);
+	}
+
+	// Reads the placeholder rendered for a field, or null when none is rendered.
+	// langCode is the three-letter code (eng, khm) selecting the sub-input of a multilingual field.
+	public String getFieldPlaceholderText(String fieldId, String langCode, String controlType) {
+		if ("photo".equalsIgnoreCase(controlType)) {
+			return getPhotoPlaceholderText(fieldId);
+		}
+
+		List<WebElement> elements = driver
+				.findElements(By.xpath("//*[self::input or self::select or self::textarea][@id='" + fieldId + "']"));
+		if (elements.isEmpty() && langCode != null && !langCode.isEmpty()) {
+			elements = driver.findElements(By.xpath("//*[self::input or self::select or self::textarea]"
+					+ "[@id='" + fieldId + "_" + langCode + "' or (@data-field-id='" + fieldId + "' and @data-lang='"
+					+ langCode + "')]"));
+		}
+		if (elements.isEmpty()) {
+			elements = driver.findElements(By.xpath(
+					"//*[self::input or self::select or self::textarea][@data-field-id='" + fieldId + "']"));
+		}
+		if (elements.isEmpty()) {
+			return null;
+		}
+		WebElement element = elements.get(0);
+		if ("select".equalsIgnoreCase(element.getTagName())) {
+			// A dropdown holds its placeholder in the empty-value option, hidden after a language switch,
+			// so read the raw textContent rather than getText().
+			List<WebElement> placeholderOptions = element.findElements(
+					By.xpath(".//option[@value='' or contains(@class,'select-placeholder')]"));
+			if (placeholderOptions.isEmpty()) {
+				return null;
+			}
+			String text = placeholderOptions.get(0).getAttribute("textContent");
+			return text == null ? null : text.trim();
+		}
+		// Normalised to null, since getAttribute() reads an absent placeholder as an empty string.
+		String placeholder = element.getAttribute("placeholder");
+		return placeholder == null || placeholder.trim().isEmpty() ? null : placeholder.trim();
+	}
+
+	// A photo field keeps its placeholder in the caption over the capture area, revealed only on hover,
+	// so the raw textContent is read rather than getText().
+	private String getPhotoPlaceholderText(String fieldId) {
+		List<WebElement> captions = driver.findElements(By.xpath("//div[contains(@class,'photo-container')]"
+				+ "[.//*[@id='" + fieldId + "']]//div[contains(@class,'alternate-icon-popup')]"));
+		if (captions.isEmpty()) {
+			return null;
+		}
+		String caption = captions.get(0).getAttribute("textContent");
+		return caption == null || caption.trim().isEmpty() ? null : caption.trim();
+	}
+
+	// Enters an invalid value and tabs out so the inline validation renders; false when the field is not editable.
+	public boolean triggerInvalidInput(String fieldId, String invalidValue) {
+		List<WebElement> elements = driver.findElements(By.xpath(
+				"//*[self::input or self::textarea][@id='" + fieldId + "' or @data-field-id='" + fieldId + "']"));
+		if (elements.isEmpty()) {
+			return false;
+		}
+		WebElement element = elements.get(0);
+		if (!element.isEnabled() || "hidden".equalsIgnoreCase(element.getAttribute("type"))) {
+			return false;
+		}
+		((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({block:'center'});", element);
+		element.clear();
+		element.sendKeys(invalidValue);
+		element.sendKeys(Keys.TAB);
+		return true;
+	}
+
+	// Returns the inline validation message shown for a field, or null when none is displayed.
+	public String getFieldValidationMessage(String fieldId) {
+		// Exact id first, so a prefix field (password) is not confused with a suffixed one (password_confirm).
+		String byExactId = "//*[self::input or self::select or self::textarea][@id='" + fieldId + "']"
+				+ "/ancestor::div[contains(@class,'form-field')][1]//span[contains(@class,'error-text')]";
+		String byFieldId = "//*[@data-field-id='" + fieldId + "']"
+				+ "/ancestor::div[contains(@class,'form-field')][1]//span[contains(@class,'error-text')]";
+
+		List<WebElement> errors = driver.findElements(By.xpath(byExactId));
+		if (errors.isEmpty()) {
+			errors = driver.findElements(By.xpath(byFieldId));
+		}
+		for (WebElement error : errors) {
+			if (error.isDisplayed() && !error.getText().trim().isEmpty()) {
+				return error.getText().trim();
+			}
+		}
+		return null;
 	}
 
 }

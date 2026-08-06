@@ -393,6 +393,20 @@ public class EsignetUtil extends AdminTestUtil {
 		return getInfoForField("password", langCode);
 	}
 
+	public static String getLabelForField(String fieldId, String langCode) {
+		return getFieldProperty(fieldId, "label", langCode);
+	}
+
+	// Resolves a localized schema property, reading the three-letter key (eng/khm) first and then the two-letter one.
+	public static String getLocalizedFieldProperty(String fieldId, String property, String twoLetterLang) {
+		String threeLetter = MultiLanguageUtil.getThreeLetterLangCode(twoLetterLang);
+		String value = getFieldProperty(fieldId, property, threeLetter);
+		if (value == null || value.isEmpty()) {
+			value = getFieldProperty(fieldId, property, twoLetterLang);
+		}
+		return value;
+	}
+
 	public static class FullName {
 		public String english;
 		public String khmer;
@@ -692,6 +706,36 @@ public class EsignetUtil extends AdminTestUtil {
 		}
 
 		return fieldsMap;
+	}
+
+	// Returns the IDs of the fields the UI schema marks as required, excluding the pre-filled phone field.
+	public static List<String> getRequiredFieldIds() {
+		List<String> requiredFields = new ArrayList<>();
+
+		JSONObject response = getSignupUISpecResponse().optJSONObject("response");
+		if (response == null)
+			return requiredFields;
+
+		JSONArray schema = response.optJSONArray("schema");
+		if (schema == null)
+			return requiredFields;
+
+		for (int i = 0; i < schema.length(); i++) {
+			JSONObject field = schema.optJSONObject(i);
+			if (field == null)
+				continue;
+
+			String fieldId = field.optString("id", null);
+			if (fieldId == null || fieldId.equalsIgnoreCase("phone"))
+				continue;
+
+			if (field.optBoolean("required", false)) {
+				requiredFields.add(fieldId);
+			}
+		}
+
+		logger.info("Required fields from UI Spec: " + requiredFields);
+		return requiredFields;
 	}
 
 	public static String getRandomDOB() {
