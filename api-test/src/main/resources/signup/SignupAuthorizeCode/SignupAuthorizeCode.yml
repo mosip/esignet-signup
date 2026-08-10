@@ -272,3 +272,162 @@ SignupAuthorizeCode:
       output: '{
 
 }'
+   Signup_ESignet_SignupAuthorizeCode_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forStepDetails_Smoke_sid:
+      endPoint: /v1/esignet/authorization/auth-code
+      uniqueIdentifier: TC_ESignet_SignupAuthorizeCode_14
+      description: Verify authorization code creation succeeds for the websocket step-details scenario - expected, a valid authorization code is returned
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      additionalDependencies: TC_ESignet_IDTAuthentication_14
+      inputTemplate: signup/SignupAuthorizeCode/SignupAuthorizeCode
+      outputTemplate: signup/SignupAuthorizeCode/SignupAuthorizeCodeResult
+      input: '{
+        "encodedHash": "$ID:ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forStepDetails_Smoke_sid_encodedResp$",
+        "requestTime": "$TIMESTAMP$",
+        "pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_forGetSlot_forStepDetails_Smoke_sid_pathFragmentCookie$",
+        "pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forStepDetails_Smoke_sid_transactionId$",
+        "transactionId": "$ID:ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forStepDetails_Smoke_sid_transactionId$",
+        "acceptedClaims": [{"channel": "email"},{"channel": "phone_number"}]
+}'
+      output: '{
+
+}'
+
+
+   Signup_ESignet_SignupAuthorizeCode_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forContentType_Smoke_sid:
+      endPoint: /v1/esignet/authorization/auth-code
+      uniqueIdentifier: TC_ESignet_SignupAuthorizeCode_15
+      description: Verify authorization code creation succeeds for the websocket incorrect-content-type scenario - expected, a valid authorization code is returned
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      additionalDependencies: TC_ESignet_IDTAuthentication_15
+      inputTemplate: signup/SignupAuthorizeCode/SignupAuthorizeCode
+      outputTemplate: signup/SignupAuthorizeCode/SignupAuthorizeCodeResult
+      input: '{
+        "encodedHash": "$ID:ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forContentType_Smoke_sid_encodedResp$",
+        "requestTime": "$TIMESTAMP$",
+        "pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_forGetSlot_forContentType_Smoke_sid_pathFragmentCookie$",
+        "pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forContentType_Smoke_sid_transactionId$",
+        "transactionId": "$ID:ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forContentType_Smoke_sid_transactionId$",
+        "acceptedClaims": [{"channel": "email"},{"channel": "phone_number"}]
+}'
+      output: '{
+
+}'
+
+
+   Signup_ESignet_SignupAuthorizeCode_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forDuplicateFrames_Smoke_sid:
+      endPoint: /v1/esignet/authorization/auth-code
+      uniqueIdentifier: TC_ESignet_SignupAuthorizeCode_16
+      description: Verify authorization code creation succeeds for the websocket duplicate-frames scenario - expected, a valid authorization code is returned
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      additionalDependencies: TC_ESignet_IDTAuthentication_16
+      inputTemplate: signup/SignupAuthorizeCode/SignupAuthorizeCode
+      outputTemplate: signup/SignupAuthorizeCode/SignupAuthorizeCodeResult
+      input: '{
+        "encodedHash": "$ID:ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forDuplicateFrames_Smoke_sid_encodedResp$",
+        "requestTime": "$TIMESTAMP$",
+        "pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_forGetSlot_forDuplicateFrames_Smoke_sid_pathFragmentCookie$",
+        "pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forDuplicateFrames_Smoke_sid_transactionId$",
+        "transactionId": "$ID:ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forDuplicateFrames_Smoke_sid_transactionId$",
+        "acceptedClaims": [{"channel": "email"},{"channel": "phone_number"}]
+}'
+      output: '{
+
+}'
+
+
+   Signup_ESignet_SignupAuthorizeCode_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forRapidMessaging_Smoke_sid:
+      endPoint: /v1/esignet/authorization/auth-code
+      uniqueIdentifier: TC_ESignet_SignupAuthorizeCode_17
+      description: Verify authorization code creation succeeds for the websocket rapid-messaging scenario - expected, a valid authorization code is returned
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      additionalDependencies: TC_ESignet_IDTAuthentication_17
+      inputTemplate: signup/SignupAuthorizeCode/SignupAuthorizeCode
+      outputTemplate: signup/SignupAuthorizeCode/SignupAuthorizeCodeResult
+      input: '{
+        "encodedHash": "$ID:ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forRapidMessaging_Smoke_sid_encodedResp$",
+        "requestTime": "$TIMESTAMP$",
+        "pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_forGetSlot_forRapidMessaging_Smoke_sid_pathFragmentCookie$",
+        "pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forRapidMessaging_Smoke_sid_transactionId$",
+        "transactionId": "$ID:ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forRapidMessaging_Smoke_sid_transactionId$",
+        "acceptedClaims": [{"channel": "email"},{"channel": "phone_number"}]
+}'
+      output: '{
+
+}'
+
+
+   Signup_ESignet_SignupAuthorizeCode_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forConcurrentSubscription_Smoke_sid:
+      endPoint: /v1/esignet/authorization/auth-code
+      uniqueIdentifier: TC_ESignet_SignupAuthorizeCode_18
+      description: Verify authorization code creation succeeds for the websocket concurrent-subscription scenario - expected, a valid authorization code is returned
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      additionalDependencies: TC_ESignet_IDTAuthentication_18
+      inputTemplate: signup/SignupAuthorizeCode/SignupAuthorizeCode
+      outputTemplate: signup/SignupAuthorizeCode/SignupAuthorizeCodeResult
+      input: '{
+        "encodedHash": "$ID:ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forConcurrentSubscription_Smoke_sid_encodedResp$",
+        "requestTime": "$TIMESTAMP$",
+        "pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_forGetSlot_forConcurrentSubscription_Smoke_sid_pathFragmentCookie$",
+        "pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forConcurrentSubscription_Smoke_sid_transactionId$",
+        "transactionId": "$ID:ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forConcurrentSubscription_Smoke_sid_transactionId$",
+        "acceptedClaims": [{"channel": "email"},{"channel": "phone_number"}]
+}'
+      output: '{
+
+}'
+
+
+   Signup_ESignet_SignupAuthorizeCode_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forFailedStatus_Smoke_sid:
+      endPoint: /v1/esignet/authorization/auth-code
+      uniqueIdentifier: TC_ESignet_SignupAuthorizeCode_19
+      description: Verify authorization code creation succeeds for the websocket failed-status scenario - expected, a valid authorization code is returned
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      additionalDependencies: TC_ESignet_IDTAuthentication_19
+      inputTemplate: signup/SignupAuthorizeCode/SignupAuthorizeCode
+      outputTemplate: signup/SignupAuthorizeCode/SignupAuthorizeCodeResult
+      input: '{
+        "encodedHash": "$ID:ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forFailedStatus_Smoke_sid_encodedResp$",
+        "requestTime": "$TIMESTAMP$",
+        "pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_forGetSlot_forFailedStatus_Smoke_sid_pathFragmentCookie$",
+        "pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forFailedStatus_Smoke_sid_transactionId$",
+        "transactionId": "$ID:ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forFailedStatus_Smoke_sid_transactionId$",
+        "acceptedClaims": [{"channel": "email"},{"channel": "phone_number"}]
+}'
+      output: '{
+
+}'
+
+
+   Signup_ESignet_SignupAuthorizeCode_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forUnrecognizedSlotId_Smoke_sid:
+      endPoint: /v1/esignet/authorization/auth-code
+      uniqueIdentifier: TC_ESignet_SignupAuthorizeCode_20
+      description: Verify authorization code creation succeeds for the websocket unrecognized-slotId subscription scenario - expected, a valid authorization code is returned
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      additionalDependencies: TC_ESignet_IDTAuthentication_20
+      inputTemplate: signup/SignupAuthorizeCode/SignupAuthorizeCode
+      outputTemplate: signup/SignupAuthorizeCode/SignupAuthorizeCodeResult
+      input: '{
+        "encodedHash": "$ID:ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forUnrecognizedSlotId_Smoke_sid_encodedResp$",
+        "requestTime": "$TIMESTAMP$",
+        "pathFragmentCookie": "$ID:ESignet_PrepareSignupRedirect_AuthToken_Xsrf_STransId_uin_Otp_Valid_forGetSlot_forUnrecognizedSlotId_Smoke_sid_pathFragmentCookie$",
+        "pathFragmentCookieTransactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forUnrecognizedSlotId_Smoke_sid_transactionId$",
+        "transactionId": "$ID:ESignet_SignupAuthorize_OAuthDetailsRequest_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forUnrecognizedSlotId_Smoke_sid_transactionId$",
+        "acceptedClaims": [{"channel": "email"},{"channel": "phone_number"}]
+}'
+      output: '{
+
+}'

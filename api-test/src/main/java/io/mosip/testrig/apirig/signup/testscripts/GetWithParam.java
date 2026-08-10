@@ -170,6 +170,19 @@ public class GetWithParam extends SignupUtil implements ITest {
 
 				ouputValid = new HashMap<>();
 				ouputValid.put(GlobalConstants.EXPECTED_VS_ACTUAL, List.of(customResponse));
+			} else if (testCaseName.contains("_AttributeAbsent_")) {
+
+				String attributeName = testCaseDTO.getOutput().trim();
+				boolean present = response.asString().contains("\"" + attributeName + "\"");
+
+				OutputValidationDto customResponse = new OutputValidationDto();
+				customResponse.setFieldName("attributeAbsence");
+				customResponse.setExpValue("absent: " + attributeName);
+				customResponse.setActualValue((present ? "present: " : "absent: ") + attributeName);
+				customResponse.setStatus(present ? GlobalConstants.FAIL_STRING : "PASS");
+
+				ouputValid = new HashMap<>();
+				ouputValid.put(GlobalConstants.EXPECTED_VS_ACTUAL, List.of(customResponse));
 			} else {
 				ouputValid = OutputValidationUtil.doJsonOutputValidation(response.asString(),
 						getJsonFromTemplate(testCaseDTO.getOutput(), testCaseDTO.getOutputTemplate()), testCaseDTO,

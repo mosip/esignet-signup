@@ -133,7 +133,7 @@ GetSlot:
    Signup_ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_forWsFrameEdge_Smoke_Sid:
       endPoint: /v1/signup/identity-verification/slot
       uniqueIdentifier: TC_ESignet_GetSlot_08
-      description: Verify GetSlot succeeds using a valid transaction created for the websocket frame-field edge-case scenario - expected, a slot is allocated successfully
+      description: To get the slot ID used to test edge-case values in the websocket process-frame fields
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true
@@ -151,7 +151,7 @@ GetSlot:
    Signup_ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_forNegOrder_Smoke_Sid:
       endPoint: /v1/signup/identity-verification/slot
       uniqueIdentifier: TC_ESignet_GetSlot_09
-      description: Verify GetSlot succeeds using a valid transaction created for the websocket negative-order scenario - expected, a slot is allocated successfully
+      description: To get the slot ID used to test a websocket process-frame message sent with a negative order value
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true
@@ -169,7 +169,7 @@ GetSlot:
    Signup_ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_forInvalidJson_Smoke_Sid:
       endPoint: /v1/signup/identity-verification/slot
       uniqueIdentifier: TC_ESignet_GetSlot_10
-      description: Verify GetSlot succeeds using a valid transaction created for the websocket invalid-JSON scenario - expected, a slot is allocated successfully
+      description: To get the slot ID used to test a websocket connection receiving a malformed (invalid) JSON frame
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true
@@ -187,7 +187,7 @@ GetSlot:
    Signup_ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_forInvalidFrame_Smoke_Sid:
       endPoint: /v1/signup/identity-verification/slot
       uniqueIdentifier: TC_ESignet_GetSlot_11
-      description: Verify GetSlot succeeds using a valid transaction created for the websocket invalid-frame scenario - expected, a slot is allocated successfully
+      description: To get the slot ID used to test a websocket frame whose content is not valid base64
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true
@@ -205,7 +205,7 @@ GetSlot:
    Signup_ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_forFramesShape_Smoke_Sid:
       endPoint: /v1/signup/identity-verification/slot
       uniqueIdentifier: TC_ESignet_GetSlot_12
-      description: Verify GetSlot succeeds using a valid transaction created for the websocket frames-shape scenario - expected, a slot is allocated successfully
+      description: To get the slot ID used to test a websocket message with an invalid frames array shape
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true
@@ -223,7 +223,7 @@ GetSlot:
    Signup_ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_forSlotReconnect_Smoke_Sid:
       endPoint: /v1/signup/identity-verification/slot
       uniqueIdentifier: TC_ESignet_GetSlot_13
-      description: Verify GetSlot succeeds using a valid transaction created for the websocket slot-reconnection scenario - expected, a slot is allocated successfully
+      description: To get the slot ID used to test that reconnecting to the same slot after it is closed is rejected
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true
@@ -233,6 +233,144 @@ GetSlot:
         "requestTime": "$TIMESTAMP$",
         "idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forSlotReconnect_Smoke_Sid_idvTransactionID$",
         "verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forSlotReconnect_Smoke_Sid_id$",
+        "consent": "AGREE"
+}'
+      output: '{
+
+}'
+   Signup_ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_forStepDetails_Smoke_Sid:
+      endPoint: /v1/signup/identity-verification/slot
+      uniqueIdentifier: TC_ESignet_GetSlot_14
+      description: To get the slot ID used to validate the step details (duration, retryable error codes, startup delay) published over the websocket
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/GetSlot/GetSlot
+      outputTemplate: signup/GetSlot/GetSlotResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forStepDetails_Smoke_Sid_idvTransactionID$",
+        "verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forStepDetails_Smoke_Sid_id$",
+        "consent": "AGREE"
+}'
+      output: '{
+
+}'
+
+
+   Signup_ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_forContentType_Smoke_Sid:
+      endPoint: /v1/signup/identity-verification/slot
+      uniqueIdentifier: TC_ESignet_GetSlot_15
+      description: To get the slot ID used to test a websocket message sent with an incorrect content-type header
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/GetSlot/GetSlot
+      outputTemplate: signup/GetSlot/GetSlotResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forContentType_Smoke_Sid_idvTransactionID$",
+        "verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forContentType_Smoke_Sid_id$",
+        "consent": "AGREE"
+}'
+      output: '{
+
+}'
+
+
+   Signup_ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_forDuplicateFrames_Smoke_Sid:
+      endPoint: /v1/signup/identity-verification/slot
+      uniqueIdentifier: TC_ESignet_GetSlot_16
+      description: To get the slot ID used to test sending duplicate websocket process-frame messages
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/GetSlot/GetSlot
+      outputTemplate: signup/GetSlot/GetSlotResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forDuplicateFrames_Smoke_Sid_idvTransactionID$",
+        "verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forDuplicateFrames_Smoke_Sid_id$",
+        "consent": "AGREE"
+}'
+      output: '{
+
+}'
+
+
+   Signup_ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_forRapidMessaging_Smoke_Sid:
+      endPoint: /v1/signup/identity-verification/slot
+      uniqueIdentifier: TC_ESignet_GetSlot_17
+      description: To get the slot ID used to test rapid, back-to-back websocket messaging
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/GetSlot/GetSlot
+      outputTemplate: signup/GetSlot/GetSlotResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forRapidMessaging_Smoke_Sid_idvTransactionID$",
+        "verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forRapidMessaging_Smoke_Sid_id$",
+        "consent": "AGREE"
+}'
+      output: '{
+
+}'
+
+
+   Signup_ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_forConcurrentSubscription_Smoke_Sid:
+      endPoint: /v1/signup/identity-verification/slot
+      uniqueIdentifier: TC_ESignet_GetSlot_18
+      description: To get the slot ID used to test a second concurrent websocket connection to the same slot
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/GetSlot/GetSlot
+      outputTemplate: signup/GetSlot/GetSlotResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forConcurrentSubscription_Smoke_Sid_idvTransactionID$",
+        "verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forConcurrentSubscription_Smoke_Sid_id$",
+        "consent": "AGREE"
+}'
+      output: '{
+
+}'
+
+
+   Signup_ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_forFailedStatus_Smoke_Sid:
+      endPoint: /v1/signup/identity-verification/slot
+      uniqueIdentifier: TC_ESignet_GetSlot_19
+      description: To get the slot ID used to test that an abnormally closed websocket connection marks the verification transaction as failed
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/GetSlot/GetSlot
+      outputTemplate: signup/GetSlot/GetSlotResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forFailedStatus_Smoke_Sid_idvTransactionID$",
+        "verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forFailedStatus_Smoke_Sid_id$",
+        "consent": "AGREE"
+}'
+      output: '{
+
+}'
+
+
+   Signup_ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_forUnrecognizedSlotId_Smoke_Sid:
+      endPoint: /v1/signup/identity-verification/slot
+      uniqueIdentifier: TC_ESignet_GetSlot_20
+      description: To get the slot ID used to test subscribing to an unrecognized slotId
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/GetSlot/GetSlot
+      outputTemplate: signup/GetSlot/GetSlotResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "idvTransactionID": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forUnrecognizedSlotId_Smoke_Sid_idvTransactionID$",
+        "verifierId": "$ID:ESignet_InitiateIdVerification_STransId_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forUnrecognizedSlotId_Smoke_Sid_id$",
         "consent": "AGREE"
 }'
       output: '{

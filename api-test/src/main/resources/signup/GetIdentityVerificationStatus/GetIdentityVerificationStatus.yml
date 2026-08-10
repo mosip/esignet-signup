@@ -31,3 +31,20 @@ GetIdentityVerificationStatus:
       output: '{
       "status": "COMPLETED"
 }'
+
+   Signup_ESignet_GetIdentityVerificationStatus_AuthToken_Xsrf_STransId_uin_AbnormalClose_Failed:
+      endPoint: /v1/signup/identity-verification/status
+      uniqueIdentifier: TC_ESignet_GetIdentityVerificationStatus_03
+      description: Get Identity Verification Status after the websocket connection was closed with a non-NORMAL close code - expected, status is FAILED
+      role: resident
+      restMethod: get
+      checkErrorsOnlyInResponse: true
+      additionalDependencies: TC_Signup_ESignet_WebSocketConnection_04
+      inputTemplate: signup/GetIdentityVerificationStatus/GetIdentityVerificationStatus
+      outputTemplate: signup/GetIdentityVerificationStatus/GetIdentityVerificationStatusResult
+      input: '{
+        "idvSlotAllotted": "$ID:ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_forFailedStatus_Smoke_Sid_idvSlotAllotted$"
+}'
+      output: '{
+      "status": "FAILED"
+}'

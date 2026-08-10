@@ -576,3 +576,271 @@ AuthenticateUserV3:
         "sendOtpResTemplate":"signup/SendOtp/SendOtpResult"
     }
 }'
+   Signup_ESignet_AuthenticateUser_V3_AuthToken_Xsrf__uin_Otp_Valid_forCookieExpiry_Smoke:
+      endPoint: /v1/esignet/authorization/v3/authenticate
+      uniqueIdentifier: TC_ESignet_AuthenticateUserV3_19
+      description: Verify OTP-based authentication succeeds for the prepare-signup-redirect cookie-expiry scenario - expected, authentication succeeds and a valid transaction is created
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      validityCheckRequired: true
+      inputTemplate: signup/AuthenticateUserV3/AuthenticateUser
+      outputTemplate: signup/AuthenticateUserV3/AuthenticateUserResult
+      input: '{
+        "encodedHash": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forCookieExpiry_Smoke_sid_encodedResp$",
+        "requestTime": "$TIMESTAMP$",
+        "transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forCookieExpiry_Smoke_sid_transactionId$",
+        "individualId": "$ID:AddIdentity_L2_Valid_forGetSlot_differentIdentifier_Parameters_smoke_Pos_UIN$",
+        "authFactorType" : "OTP",
+        "challenge" : "$ID:AddIdentity_L2_Valid_forGetSlot_differentIdentifier_Parameters_smoke_Pos_PHONE$@phone",
+        "sendOtp":{
+    "encodedHash": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forCookieExpiry_Smoke_sid_encodedResp$",
+    "requestTime": "$TIMESTAMP$",
+    "transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forCookieExpiry_Smoke_sid_transactionId$",
+    "individualId": "$ID:AddIdentity_L2_Valid_forGetSlot_differentIdentifier_Parameters_smoke_Pos_UIN$",
+    "otpChannels": [{"channel": "email"},{"channel": "phone"}],
+    "sendOtpReqTemplate": "signup/SendOtp/SendOtp",
+    "sendOtpEndPoint": "/v1/esignet/authorization/send-otp"
+    }
+    }'
+      output: '{
+  "sendOtpResp":{
+        "sendOtpResTemplate":"signup/SendOtp/SendOtpResult"
+    }
+}'
+   Signup_ESignet_AuthenticateUser_V3_AuthToken_Xsrf__uin_Otp_Valid_forGetSlot_forStepDetails_Smoke:
+      endPoint: /v1/esignet/authorization/v3/authenticate
+      uniqueIdentifier: TC_ESignet_AuthenticateUserV3_20
+      description: Verify OTP-based authentication succeeds for the websocket step-details scenario - expected, authentication succeeds and a valid transaction is created
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      validityCheckRequired: true
+      inputTemplate: signup/AuthenticateUserV3/AuthenticateUser
+      outputTemplate: signup/AuthenticateUserV3/AuthenticateUserResult
+      input: '{
+        "encodedHash": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forStepDetails_Smoke_sid_encodedResp$",
+        "requestTime": "$TIMESTAMP$",
+        "transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forStepDetails_Smoke_sid_transactionId$",
+        "individualId": "$ID:AddIdentity_L2_Valid_forGetSlot_differentIdentifier_Parameters_smoke_Pos_UIN$",
+        "authFactorType" : "OTP",
+        "challenge" : "$ID:AddIdentity_L2_Valid_forGetSlot_differentIdentifier_Parameters_smoke_Pos_PHONE$@phone",
+        "sendOtp":{
+    "encodedHash": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forStepDetails_Smoke_sid_encodedResp$",
+    "requestTime": "$TIMESTAMP$",
+    "transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forStepDetails_Smoke_sid_transactionId$",
+    "individualId": "$ID:AddIdentity_L2_Valid_forGetSlot_differentIdentifier_Parameters_smoke_Pos_UIN$",
+    "otpChannels": [{"channel": "email"},{"channel": "phone"}],
+    "sendOtpReqTemplate": "signup/SendOtp/SendOtp",
+    "sendOtpEndPoint": "/v1/esignet/authorization/send-otp"
+    }
+    }'
+      output: '{
+  "sendOtpResp":{
+        "sendOtpResTemplate":"signup/SendOtp/SendOtpResult"
+    }
+}'
+
+
+   Signup_ESignet_AuthenticateUser_V3_AuthToken_Xsrf__uin_Otp_Valid_forGetSlot_forContentType_Smoke:
+      endPoint: /v1/esignet/authorization/v3/authenticate
+      uniqueIdentifier: TC_ESignet_AuthenticateUserV3_21
+      description: Verify OTP-based authentication succeeds for the websocket incorrect-content-type scenario - expected, authentication succeeds and a valid transaction is created
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      validityCheckRequired: true
+      inputTemplate: signup/AuthenticateUserV3/AuthenticateUser
+      outputTemplate: signup/AuthenticateUserV3/AuthenticateUserResult
+      input: '{
+        "encodedHash": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forContentType_Smoke_sid_encodedResp$",
+        "requestTime": "$TIMESTAMP$",
+        "transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forContentType_Smoke_sid_transactionId$",
+        "individualId": "$ID:AddIdentity_L2_Valid_forGetSlot_differentIdentifier_Parameters_smoke_Pos_UIN$",
+        "authFactorType" : "OTP",
+        "challenge" : "$ID:AddIdentity_L2_Valid_forGetSlot_differentIdentifier_Parameters_smoke_Pos_PHONE$@phone",
+        "sendOtp":{
+    "encodedHash": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forContentType_Smoke_sid_encodedResp$",
+    "requestTime": "$TIMESTAMP$",
+    "transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forContentType_Smoke_sid_transactionId$",
+    "individualId": "$ID:AddIdentity_L2_Valid_forGetSlot_differentIdentifier_Parameters_smoke_Pos_UIN$",
+    "otpChannels": [{"channel": "email"},{"channel": "phone"}],
+    "sendOtpReqTemplate": "signup/SendOtp/SendOtp",
+    "sendOtpEndPoint": "/v1/esignet/authorization/send-otp"
+    }
+    }'
+      output: '{
+  "sendOtpResp":{
+        "sendOtpResTemplate":"signup/SendOtp/SendOtpResult"
+    }
+}'
+
+
+   Signup_ESignet_AuthenticateUser_V3_AuthToken_Xsrf__uin_Otp_Valid_forGetSlot_forDuplicateFrames_Smoke:
+      endPoint: /v1/esignet/authorization/v3/authenticate
+      uniqueIdentifier: TC_ESignet_AuthenticateUserV3_22
+      description: Verify OTP-based authentication succeeds for the websocket duplicate-frames scenario - expected, authentication succeeds and a valid transaction is created
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      validityCheckRequired: true
+      inputTemplate: signup/AuthenticateUserV3/AuthenticateUser
+      outputTemplate: signup/AuthenticateUserV3/AuthenticateUserResult
+      input: '{
+        "encodedHash": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forDuplicateFrames_Smoke_sid_encodedResp$",
+        "requestTime": "$TIMESTAMP$",
+        "transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forDuplicateFrames_Smoke_sid_transactionId$",
+        "individualId": "$ID:AddIdentity_L2_Valid_forGetSlot_differentIdentifier_Parameters_smoke_Pos_UIN$",
+        "authFactorType" : "OTP",
+        "challenge" : "$ID:AddIdentity_L2_Valid_forGetSlot_differentIdentifier_Parameters_smoke_Pos_PHONE$@phone",
+        "sendOtp":{
+    "encodedHash": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forDuplicateFrames_Smoke_sid_encodedResp$",
+    "requestTime": "$TIMESTAMP$",
+    "transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forDuplicateFrames_Smoke_sid_transactionId$",
+    "individualId": "$ID:AddIdentity_L2_Valid_forGetSlot_differentIdentifier_Parameters_smoke_Pos_UIN$",
+    "otpChannels": [{"channel": "email"},{"channel": "phone"}],
+    "sendOtpReqTemplate": "signup/SendOtp/SendOtp",
+    "sendOtpEndPoint": "/v1/esignet/authorization/send-otp"
+    }
+    }'
+      output: '{
+  "sendOtpResp":{
+        "sendOtpResTemplate":"signup/SendOtp/SendOtpResult"
+    }
+}'
+
+
+   Signup_ESignet_AuthenticateUser_V3_AuthToken_Xsrf__uin_Otp_Valid_forGetSlot_forRapidMessaging_Smoke:
+      endPoint: /v1/esignet/authorization/v3/authenticate
+      uniqueIdentifier: TC_ESignet_AuthenticateUserV3_23
+      description: Verify OTP-based authentication succeeds for the websocket rapid-messaging scenario - expected, authentication succeeds and a valid transaction is created
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      validityCheckRequired: true
+      inputTemplate: signup/AuthenticateUserV3/AuthenticateUser
+      outputTemplate: signup/AuthenticateUserV3/AuthenticateUserResult
+      input: '{
+        "encodedHash": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forRapidMessaging_Smoke_sid_encodedResp$",
+        "requestTime": "$TIMESTAMP$",
+        "transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forRapidMessaging_Smoke_sid_transactionId$",
+        "individualId": "$ID:AddIdentity_L2_Valid_forGetSlot_differentIdentifier_Parameters_smoke_Pos_UIN$",
+        "authFactorType" : "OTP",
+        "challenge" : "$ID:AddIdentity_L2_Valid_forGetSlot_differentIdentifier_Parameters_smoke_Pos_PHONE$@phone",
+        "sendOtp":{
+    "encodedHash": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forRapidMessaging_Smoke_sid_encodedResp$",
+    "requestTime": "$TIMESTAMP$",
+    "transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forRapidMessaging_Smoke_sid_transactionId$",
+    "individualId": "$ID:AddIdentity_L2_Valid_forGetSlot_differentIdentifier_Parameters_smoke_Pos_UIN$",
+    "otpChannels": [{"channel": "email"},{"channel": "phone"}],
+    "sendOtpReqTemplate": "signup/SendOtp/SendOtp",
+    "sendOtpEndPoint": "/v1/esignet/authorization/send-otp"
+    }
+    }'
+      output: '{
+  "sendOtpResp":{
+        "sendOtpResTemplate":"signup/SendOtp/SendOtpResult"
+    }
+}'
+
+
+   Signup_ESignet_AuthenticateUser_V3_AuthToken_Xsrf__uin_Otp_Valid_forGetSlot_forConcurrentSubscription_Smoke:
+      endPoint: /v1/esignet/authorization/v3/authenticate
+      uniqueIdentifier: TC_ESignet_AuthenticateUserV3_24
+      description: Verify OTP-based authentication succeeds for the websocket concurrent-subscription scenario - expected, authentication succeeds and a valid transaction is created
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      validityCheckRequired: true
+      inputTemplate: signup/AuthenticateUserV3/AuthenticateUser
+      outputTemplate: signup/AuthenticateUserV3/AuthenticateUserResult
+      input: '{
+        "encodedHash": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forConcurrentSubscription_Smoke_sid_encodedResp$",
+        "requestTime": "$TIMESTAMP$",
+        "transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forConcurrentSubscription_Smoke_sid_transactionId$",
+        "individualId": "$ID:AddIdentity_L2_Valid_forGetSlot_differentIdentifier_Parameters_smoke_Pos_UIN$",
+        "authFactorType" : "OTP",
+        "challenge" : "$ID:AddIdentity_L2_Valid_forGetSlot_differentIdentifier_Parameters_smoke_Pos_PHONE$@phone",
+        "sendOtp":{
+    "encodedHash": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forConcurrentSubscription_Smoke_sid_encodedResp$",
+    "requestTime": "$TIMESTAMP$",
+    "transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forConcurrentSubscription_Smoke_sid_transactionId$",
+    "individualId": "$ID:AddIdentity_L2_Valid_forGetSlot_differentIdentifier_Parameters_smoke_Pos_UIN$",
+    "otpChannels": [{"channel": "email"},{"channel": "phone"}],
+    "sendOtpReqTemplate": "signup/SendOtp/SendOtp",
+    "sendOtpEndPoint": "/v1/esignet/authorization/send-otp"
+    }
+    }'
+      output: '{
+  "sendOtpResp":{
+        "sendOtpResTemplate":"signup/SendOtp/SendOtpResult"
+    }
+}'
+
+
+   Signup_ESignet_AuthenticateUser_V3_AuthToken_Xsrf__uin_Otp_Valid_forGetSlot_forFailedStatus_Smoke:
+      endPoint: /v1/esignet/authorization/v3/authenticate
+      uniqueIdentifier: TC_ESignet_AuthenticateUserV3_25
+      description: Verify OTP-based authentication succeeds for the websocket failed-status scenario - expected, authentication succeeds and a valid transaction is created
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      validityCheckRequired: true
+      inputTemplate: signup/AuthenticateUserV3/AuthenticateUser
+      outputTemplate: signup/AuthenticateUserV3/AuthenticateUserResult
+      input: '{
+        "encodedHash": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forFailedStatus_Smoke_sid_encodedResp$",
+        "requestTime": "$TIMESTAMP$",
+        "transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forFailedStatus_Smoke_sid_transactionId$",
+        "individualId": "$ID:AddIdentity_L2_Valid_forGetSlot_differentIdentifier_Parameters_smoke_Pos_UIN$",
+        "authFactorType" : "OTP",
+        "challenge" : "$ID:AddIdentity_L2_Valid_forGetSlot_differentIdentifier_Parameters_smoke_Pos_PHONE$@phone",
+        "sendOtp":{
+    "encodedHash": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forFailedStatus_Smoke_sid_encodedResp$",
+    "requestTime": "$TIMESTAMP$",
+    "transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forFailedStatus_Smoke_sid_transactionId$",
+    "individualId": "$ID:AddIdentity_L2_Valid_forGetSlot_differentIdentifier_Parameters_smoke_Pos_UIN$",
+    "otpChannels": [{"channel": "email"},{"channel": "phone"}],
+    "sendOtpReqTemplate": "signup/SendOtp/SendOtp",
+    "sendOtpEndPoint": "/v1/esignet/authorization/send-otp"
+    }
+    }'
+      output: '{
+  "sendOtpResp":{
+        "sendOtpResTemplate":"signup/SendOtp/SendOtpResult"
+    }
+}'
+
+
+   Signup_ESignet_AuthenticateUser_V3_AuthToken_Xsrf__uin_Otp_Valid_forGetSlot_forUnrecognizedSlotId_Smoke:
+      endPoint: /v1/esignet/authorization/v3/authenticate
+      uniqueIdentifier: TC_ESignet_AuthenticateUserV3_26
+      description: Verify OTP-based authentication succeeds for the websocket unrecognized-slotId subscription scenario - expected, authentication succeeds and a valid transaction is created
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      validityCheckRequired: true
+      inputTemplate: signup/AuthenticateUserV3/AuthenticateUser
+      outputTemplate: signup/AuthenticateUserV3/AuthenticateUserResult
+      input: '{
+        "encodedHash": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forUnrecognizedSlotId_Smoke_sid_encodedResp$",
+        "requestTime": "$TIMESTAMP$",
+        "transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forUnrecognizedSlotId_Smoke_sid_transactionId$",
+        "individualId": "$ID:AddIdentity_L2_Valid_forGetSlot_differentIdentifier_Parameters_smoke_Pos_UIN$",
+        "authFactorType" : "OTP",
+        "challenge" : "$ID:AddIdentity_L2_Valid_forGetSlot_differentIdentifier_Parameters_smoke_Pos_PHONE$@phone",
+        "sendOtp":{
+    "encodedHash": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forUnrecognizedSlotId_Smoke_sid_encodedResp$",
+    "requestTime": "$TIMESTAMP$",
+    "transactionId": "$ID:ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forUnrecognizedSlotId_Smoke_sid_transactionId$",
+    "individualId": "$ID:AddIdentity_L2_Valid_forGetSlot_differentIdentifier_Parameters_smoke_Pos_UIN$",
+    "otpChannels": [{"channel": "email"},{"channel": "phone"}],
+    "sendOtpReqTemplate": "signup/SendOtp/SendOtp",
+    "sendOtpEndPoint": "/v1/esignet/authorization/send-otp"
+    }
+    }'
+      output: '{
+  "sendOtpResp":{
+        "sendOtpResTemplate":"signup/SendOtp/SendOtpResult"
+    }
+}'

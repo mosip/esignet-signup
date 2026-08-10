@@ -19,10 +19,21 @@ GetUISpec:
       description: Try to Fetch UI spec with invalid token
       role: invalidtoken
       restMethod: get
-      checkErrorsOnlyInResponse: true	  
+      checkErrorsOnlyInResponse: true
       inputTemplate: signup/GetUISpec/GetUISpec
       outputTemplate: signup/GetUISpec/GetUISpecResult
       input: '{
 }'
       output: '{
 }'
+   Signup_ESignet_GetUISpec_AttributeAbsent_Pos:
+      endPoint: /v1/signup/registration/ui-spec
+      uniqueIdentifier: TC_ESignet_GetUISpec_03
+      description: Fetch UI spec and verify a nonexistent attribute is not present in the response
+      role: resident
+      restMethod: get
+      inputTemplate: signup/GetUISpec/GetUISpec
+      outputTemplate: signup/GetUISpec/GetUISpecResult
+      input: '{
+}'
+      output: '__invalid_test_attribute_not_in_uispec__'
