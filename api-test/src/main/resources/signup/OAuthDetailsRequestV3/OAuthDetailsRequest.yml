@@ -326,7 +326,7 @@ OAuthDetailsRequestV3:
 }'
    Signup_ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forWsFrameEdge_Smoke_sid:
       endPoint: /v1/esignet/authorization/v3/oauth-details
-      uniqueIdentifier: TC_Signup_ESignet_OAuthDetailsRequestV3_Prerequisite_WsFrameEdge
+      uniqueIdentifier: TC_Signup_ESignet_OAuthDetailsRequestV3_Prerequisite_14
       description: Verify OAuth details request succeeds for the websocket frame-field edge-case scenario - expected, a valid transactionId and encodedResp are returned
       role: resident
       restMethod: post
@@ -351,8 +351,320 @@ OAuthDetailsRequestV3:
 }'
    Signup_ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forNegOrder_Smoke_sid:
       endPoint: /v1/esignet/authorization/v3/oauth-details
-      uniqueIdentifier: TC_Signup_ESignet_OAuthDetailsRequestV3_Prerequisite_NegOrder
+      uniqueIdentifier: TC_Signup_ESignet_OAuthDetailsRequestV3_Prerequisite_15
       description: Verify OAuth details request succeeds for the websocket negative-order scenario - expected, a valid transactionId and encodedResp are returned
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/OAuthDetailsRequestV3/OAuthDetailsRequest
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
+        "scope": "openid profile",
+        "responseType": "code",
+        "redirectUri": "$IDPREDIRECTURI$",
+        "display": "popup",
+        "prompt": "consent",
+        "acrValues": "mosip:idp:acr:generated-code",
+        "nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
+        "state": "urlInfo1724138417665",
+        "claimsLocales": "en",
+        "uiLocales": "en-US"
+}'
+      output: '{
+
+}'
+   Signup_ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forInvalidJson_Smoke_sid:
+      endPoint: /v1/esignet/authorization/v3/oauth-details
+      uniqueIdentifier: TC_Signup_ESignet_OAuthDetailsRequestV3_Prerequisite_16
+      description: Verify OAuth details request succeeds for the websocket invalid-JSON scenario - expected, a valid transactionId and encodedResp are returned
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/OAuthDetailsRequestV3/OAuthDetailsRequest
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
+        "scope": "openid profile",
+        "responseType": "code",
+        "redirectUri": "$IDPREDIRECTURI$",
+        "display": "popup",
+        "prompt": "consent",
+        "acrValues": "mosip:idp:acr:generated-code",
+        "nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
+        "state": "urlInfo1724138417665",
+        "claimsLocales": "en",
+        "uiLocales": "en-US"
+}'
+      output: '{
+
+}'
+   Signup_ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forInvalidFrame_Smoke_sid:
+      endPoint: /v1/esignet/authorization/v3/oauth-details
+      uniqueIdentifier: TC_Signup_ESignet_OAuthDetailsRequestV3_Prerequisite_17
+      description: Verify OAuth details request succeeds for the websocket invalid-frame scenario - expected, a valid transactionId and encodedResp are returned
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/OAuthDetailsRequestV3/OAuthDetailsRequest
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
+        "scope": "openid profile",
+        "responseType": "code",
+        "redirectUri": "$IDPREDIRECTURI$",
+        "display": "popup",
+        "prompt": "consent",
+        "acrValues": "mosip:idp:acr:generated-code",
+        "nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
+        "state": "urlInfo1724138417665",
+        "claimsLocales": "en",
+        "uiLocales": "en-US"
+}'
+      output: '{
+
+}'
+   Signup_ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forFramesShape_Smoke_sid:
+      endPoint: /v1/esignet/authorization/v3/oauth-details
+      uniqueIdentifier: TC_Signup_ESignet_OAuthDetailsRequestV3_Prerequisite_18
+      description: Verify OAuth details request succeeds for the websocket frames-shape scenario - expected, a valid transactionId and encodedResp are returned
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/OAuthDetailsRequestV3/OAuthDetailsRequest
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
+        "scope": "openid profile",
+        "responseType": "code",
+        "redirectUri": "$IDPREDIRECTURI$",
+        "display": "popup",
+        "prompt": "consent",
+        "acrValues": "mosip:idp:acr:generated-code",
+        "nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
+        "state": "urlInfo1724138417665",
+        "claimsLocales": "en",
+        "uiLocales": "en-US"
+}'
+      output: '{
+
+}'
+   Signup_ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forSlotReconnect_Smoke_sid:
+      endPoint: /v1/esignet/authorization/v3/oauth-details
+      uniqueIdentifier: TC_Signup_ESignet_OAuthDetailsRequestV3_Prerequisite_19
+      description: Verify OAuth details request succeeds for the websocket slot-reconnection scenario - expected, a valid transactionId and encodedResp are returned
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/OAuthDetailsRequestV3/OAuthDetailsRequest
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
+        "scope": "openid profile",
+        "responseType": "code",
+        "redirectUri": "$IDPREDIRECTURI$",
+        "display": "popup",
+        "prompt": "consent",
+        "acrValues": "mosip:idp:acr:generated-code",
+        "nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
+        "state": "urlInfo1724138417665",
+        "claimsLocales": "en",
+        "uiLocales": "en-US"
+}'
+      output: '{
+
+}'
+   Signup_ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forCookieExpiry_Smoke_sid:
+      endPoint: /v1/esignet/authorization/v3/oauth-details
+      uniqueIdentifier: TC_Signup_ESignet_OAuthDetailsRequestV3_Prerequisite_20
+      description: Verify OAuth details request succeeds for the prepare-signup-redirect cookie-expiry scenario - expected, a valid transactionId and encodedResp are returned
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/OAuthDetailsRequestV3/OAuthDetailsRequest
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
+        "scope": "openid profile",
+        "responseType": "code",
+        "redirectUri": "$IDPREDIRECTURI$",
+        "display": "popup",
+        "prompt": "consent",
+        "acrValues": "mosip:idp:acr:generated-code",
+        "nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
+        "state": "urlInfo1724138417665",
+        "claimsLocales": "en",
+        "uiLocales": "en-US"
+}'
+      output: '{
+
+}'
+   Signup_ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forStepDetails_Smoke_sid:
+      endPoint: /v1/esignet/authorization/v3/oauth-details
+      uniqueIdentifier: TC_Signup_ESignet_OAuthDetailsRequestV3_Prerequisite_21
+      description: Verify OAuth details request succeeds for the websocket step-details scenario - expected, a valid transactionId and encodedResp are returned
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/OAuthDetailsRequestV3/OAuthDetailsRequest
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
+        "scope": "openid profile",
+        "responseType": "code",
+        "redirectUri": "$IDPREDIRECTURI$",
+        "display": "popup",
+        "prompt": "consent",
+        "acrValues": "mosip:idp:acr:generated-code",
+        "nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
+        "state": "urlInfo1724138417665",
+        "claimsLocales": "en",
+        "uiLocales": "en-US"
+}'
+      output: '{
+
+}'
+
+
+   Signup_ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forContentType_Smoke_sid:
+      endPoint: /v1/esignet/authorization/v3/oauth-details
+      uniqueIdentifier: TC_Signup_ESignet_OAuthDetailsRequestV3_Prerequisite_22
+      description: Verify OAuth details request succeeds for the websocket incorrect-content-type scenario - expected, a valid transactionId and encodedResp are returned
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/OAuthDetailsRequestV3/OAuthDetailsRequest
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
+        "scope": "openid profile",
+        "responseType": "code",
+        "redirectUri": "$IDPREDIRECTURI$",
+        "display": "popup",
+        "prompt": "consent",
+        "acrValues": "mosip:idp:acr:generated-code",
+        "nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
+        "state": "urlInfo1724138417665",
+        "claimsLocales": "en",
+        "uiLocales": "en-US"
+}'
+      output: '{
+
+}'
+
+
+   Signup_ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forDuplicateFrames_Smoke_sid:
+      endPoint: /v1/esignet/authorization/v3/oauth-details
+      uniqueIdentifier: TC_Signup_ESignet_OAuthDetailsRequestV3_Prerequisite_23
+      description: Verify OAuth details request succeeds for the websocket duplicate-frames scenario - expected, a valid transactionId and encodedResp are returned
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/OAuthDetailsRequestV3/OAuthDetailsRequest
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
+        "scope": "openid profile",
+        "responseType": "code",
+        "redirectUri": "$IDPREDIRECTURI$",
+        "display": "popup",
+        "prompt": "consent",
+        "acrValues": "mosip:idp:acr:generated-code",
+        "nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
+        "state": "urlInfo1724138417665",
+        "claimsLocales": "en",
+        "uiLocales": "en-US"
+}'
+      output: '{
+
+}'
+
+
+   Signup_ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forRapidMessaging_Smoke_sid:
+      endPoint: /v1/esignet/authorization/v3/oauth-details
+      uniqueIdentifier: TC_Signup_ESignet_OAuthDetailsRequestV3_Prerequisite_24
+      description: Verify OAuth details request succeeds for the websocket rapid-messaging scenario - expected, a valid transactionId and encodedResp are returned
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/OAuthDetailsRequestV3/OAuthDetailsRequest
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
+        "scope": "openid profile",
+        "responseType": "code",
+        "redirectUri": "$IDPREDIRECTURI$",
+        "display": "popup",
+        "prompt": "consent",
+        "acrValues": "mosip:idp:acr:generated-code",
+        "nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
+        "state": "urlInfo1724138417665",
+        "claimsLocales": "en",
+        "uiLocales": "en-US"
+}'
+      output: '{
+
+}'
+
+
+   Signup_ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forConcurrentSubscription_Smoke_sid:
+      endPoint: /v1/esignet/authorization/v3/oauth-details
+      uniqueIdentifier: TC_Signup_ESignet_OAuthDetailsRequestV3_Prerequisite_25
+      description: Verify OAuth details request succeeds for the websocket concurrent-subscription scenario - expected, a valid transactionId and encodedResp are returned
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/OAuthDetailsRequestV3/OAuthDetailsRequest
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
+        "scope": "openid profile",
+        "responseType": "code",
+        "redirectUri": "$IDPREDIRECTURI$",
+        "display": "popup",
+        "prompt": "consent",
+        "acrValues": "mosip:idp:acr:generated-code",
+        "nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
+        "state": "urlInfo1724138417665",
+        "claimsLocales": "en",
+        "uiLocales": "en-US"
+}'
+      output: '{
+
+}'
+
+
+   Signup_ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forFailedStatus_Smoke_sid:
+      endPoint: /v1/esignet/authorization/v3/oauth-details
+      uniqueIdentifier: TC_Signup_ESignet_OAuthDetailsRequestV3_Prerequisite_26
+      description: Verify OAuth details request succeeds for the websocket failed-status scenario - expected, a valid transactionId and encodedResp are returned
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/OAuthDetailsRequestV3/OAuthDetailsRequest
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "clientId": "$ID:ESignet_CreateOIDCClient_all_Valid_Smoke_sid_clientId$",
+        "scope": "openid profile",
+        "responseType": "code",
+        "redirectUri": "$IDPREDIRECTURI$",
+        "display": "popup",
+        "prompt": "consent",
+        "acrValues": "mosip:idp:acr:generated-code",
+        "nonce": "$UNIQUENONCEVALUEFORSIGNUP$",
+        "state": "urlInfo1724138417665",
+        "claimsLocales": "en",
+        "uiLocales": "en-US"
+}'
+      output: '{
+
+}'
+
+
+   Signup_ESignet_OAuthDetailsRequest_V3_AuthToken_Xsrf_uin_all_Valid_forGetSlot_forUnrecognizedSlotId_Smoke_sid:
+      endPoint: /v1/esignet/authorization/v3/oauth-details
+      uniqueIdentifier: TC_Signup_ESignet_OAuthDetailsRequestV3_Prerequisite_27
+      description: Verify OAuth details request succeeds for the websocket unrecognized-slotId subscription scenario - expected, a valid transactionId and encodedResp are returned
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true

@@ -168,3 +168,307 @@ WebSocketConnectionNegTC:
           "invalid_order"
         ]
 }'
+   Signup_ESignet_WebSocketConnection_InvalidJson_Neg:
+      endPoint: /v1/signup/ws
+      uniqueIdentifier: TC_Signup_ESignet_WebSocketConnectionNegTC_07
+      description: Process-frame with malformed JSON in the request body - expected, no error feedback is returned
+      role: resident
+      inputTemplate: signup/WebSocketConnectionNegTC/WebSocketConnectionInvalidJson
+      outputTemplate: signup/WebSocketConnection/WebSocketConnectionResult
+      input: '{
+        "slotId": "$ID:ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_forInvalidJson_Smoke_Sid_slotId$",
+        "idvSlotAllotted": "$ID:ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_forInvalidJson_Smoke_Sid_idvSlotAllotted$",
+        "sendDestination": "/v1/signup/ws/process-frame",
+        "message1": {
+          "stepCode": "START",
+          "frames": [
+            { "frame": "frame1", "order": "0" }
+          ]
+        },
+        "rawMessage1": "{ \"stepCode\": \"START\", \"frames\": [ { \"frame\": \"frame1\" order: 0 } ] }",
+        "message2": {
+          "stepCode": "liveness_check",
+          "frames": [
+            { "frame": "frame1", "order": "1" }
+          ]
+        }
+}'
+      output: '{
+        "expectedFeedbackCodes": []
+}'
+   Signup_ESignet_WebSocketConnection_NonBase64Frame_Neg:
+      endPoint: /v1/signup/ws
+      uniqueIdentifier: TC_Signup_ESignet_WebSocketConnectionNegTC_08
+      description: Process-frame with a frame value that is not base64 encoded - expected, no error feedback is returned
+      role: resident
+      inputTemplate: signup/WebSocketConnection/WebSocketConnection
+      outputTemplate: signup/WebSocketConnection/WebSocketConnectionResult
+      input: '{
+        "slotId": "$ID:ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_forInvalidFrame_Smoke_Sid_slotId$",
+        "idvSlotAllotted": "$ID:ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_forInvalidFrame_Smoke_Sid_idvSlotAllotted$",
+        "sendDestination": "/v1/signup/ws/process-frame",
+        "message1": {
+          "stepCode": "START",
+          "frames": [
+            { "frame": "not valid base64 data!!!", "order": "0" }
+          ]
+        },
+        "message2": {
+          "stepCode": "liveness_check",
+          "frames": [
+            { "frame": "frame1", "order": "1" }
+          ]
+        }
+}'
+      output: '{
+        "expectedFeedbackCodes": []
+}'
+   Signup_ESignet_WebSocketConnection_FramesShape_Neg:
+      endPoint: /v1/signup/ws
+      uniqueIdentifier: TC_Signup_ESignet_WebSocketConnectionNegTC_09
+      description: Process-frame with frames as a non-array value, then with frames set to null - expected, no error feedback is returned for either
+      role: resident
+      inputTemplate: signup/WebSocketConnectionNegTC/WebSocketConnectionFramesShapeNeg
+      outputTemplate: signup/WebSocketConnection/WebSocketConnectionResult
+      input: '{
+        "slotId": "$ID:ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_forFramesShape_Smoke_Sid_slotId$",
+        "idvSlotAllotted": "$ID:ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_forFramesShape_Smoke_Sid_idvSlotAllotted$",
+        "sendDestination": "/v1/signup/ws/process-frame",
+        "message1": {
+          "stepCode": "START",
+          "frames": [
+            { "frame": "frame1", "order": "0" }
+          ]
+        },
+        "message2": {
+          "stepCode": "liveness_check",
+          "frames": [
+            { "frame": "frame1", "order": "1" }
+          ]
+        },
+        "steps": [
+          {
+            "rawMessage": "{ \"stepCode\": \"START\", \"frames\": \"not-an-array\" }",
+            "expectedFeedbackCodes": []
+          },
+          {
+            "rawMessage": "{ \"stepCode\": \"START\", \"frames\": null }",
+            "expectedFeedbackCodes": []
+          }
+        ]
+}'
+      output: '{
+}'
+   Signup_ESignet_WebSocketConnection_SameSlotReconnect_Neg:
+      endPoint: /v1/signup/ws
+      uniqueIdentifier: TC_Signup_ESignet_WebSocketConnectionNegTC_10
+      description: Reconnect with the same slotId after closing the first connection - expected, the reconnection is rejected
+      role: resident
+      inputTemplate: signup/WebSocketConnectionNegTC/WebSocketConnectionReconnectNeg
+      outputTemplate: signup/WebSocketConnection/WebSocketConnectionResult
+      input: '{
+        "slotId": "$ID:ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_forSlotReconnect_Smoke_Sid_slotId$",
+        "idvSlotAllotted": "$ID:ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_forSlotReconnect_Smoke_Sid_idvSlotAllotted$",
+        "sendDestination": "/v1/signup/ws/process-frame",
+        "message1": {
+          "stepCode": "START",
+          "frames": [
+            { "frame": "frame1", "order": "0" }
+          ]
+        },
+        "message2": {
+          "stepCode": "liveness_check",
+          "frames": [
+            { "frame": "frame1", "order": "1" }
+          ]
+        }
+}'
+      output: '{
+}'
+   Signup_ESignet_WebSocketConnection_StepDetails_Neg:
+      endPoint: /v1/signup/ws
+      uniqueIdentifier: TC_Signup_ESignet_WebSocketConnectionNegTC_11
+      description: Verify the step details published over the websocket after sending a valid process-frame message
+      role: resident
+      inputTemplate: signup/WebSocketConnection/WebSocketConnection
+      outputTemplate: signup/WebSocketConnection/WebSocketConnectionResult
+      input: '{
+        "slotId": "$ID:ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_forStepDetails_Smoke_Sid_slotId$",
+        "idvSlotAllotted": "$ID:ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_forStepDetails_Smoke_Sid_idvSlotAllotted$",
+        "sendDestination": "/v1/signup/ws/process-frame",
+        "message1": {
+          "stepCode": "START",
+          "frames": [
+            { "frame": "frame1", "order": "0" }
+          ]
+        },
+        "message2": {
+          "stepCode": "liveness_check",
+          "frames": [
+            { "frame": "frame1", "order": "1" }
+          ]
+        }
+}'
+      output: '{
+        "expectedStepDetails": {
+          "durationInSecondsGreaterThan": 0,
+          "retryableErrorCodesValid": true,
+          "startupDelayInSecondsAtLeast": 0
+        }
+}'
+   Signup_ESignet_WebSocketConnection_IncorrectContentType_Neg:
+      endPoint: /v1/signup/ws
+      uniqueIdentifier: TC_Signup_ESignet_WebSocketConnectionNegTC_12
+      description: Send a websocket process-frame message with an incorrect Content-Type header
+      role: resident
+      inputTemplate: signup/WebSocketConnection/WebSocketConnection
+      outputTemplate: signup/WebSocketConnection/WebSocketConnectionResult
+      input: '{
+        "slotId": "$ID:ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_forContentType_Smoke_Sid_slotId$",
+        "idvSlotAllotted": "$ID:ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_forContentType_Smoke_Sid_idvSlotAllotted$",
+        "sendDestination": "/v1/signup/ws/process-frame",
+        "contentType": "text/plain",
+        "message1": {
+          "stepCode": "START",
+          "frames": [
+            { "frame": "frame1", "order": "0" }
+          ]
+        },
+        "message2": {
+          "stepCode": "liveness_check",
+          "frames": [
+            { "frame": "frame1", "order": "1" }
+          ]
+        }
+}'
+      output: '{
+        "expectedFeedbackCodes": []
+}'
+   Signup_ESignet_WebSocketConnection_DuplicateFrames_Neg:
+      endPoint: /v1/signup/ws
+      uniqueIdentifier: TC_Signup_ESignet_WebSocketConnectionNegTC_13
+      description: Send a websocket process-frame message whose frames array contains duplicate frame entries
+      role: resident
+      inputTemplate: signup/WebSocketConnection/WebSocketConnection
+      outputTemplate: signup/WebSocketConnection/WebSocketConnectionResult
+      input: '{
+        "slotId": "$ID:ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_forDuplicateFrames_Smoke_Sid_slotId$",
+        "idvSlotAllotted": "$ID:ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_forDuplicateFrames_Smoke_Sid_idvSlotAllotted$",
+        "sendDestination": "/v1/signup/ws/process-frame",
+        "message1": {
+          "stepCode": "START",
+          "frames": [
+            { "frame": "frame1", "order": "0" },
+            { "frame": "frame1", "order": "0" }
+          ]
+        },
+        "message2": {
+          "stepCode": "liveness_check",
+          "frames": [
+            { "frame": "frame1", "order": "1" }
+          ]
+        }
+}'
+      output: '{
+        "expectedFeedbackCodes": []
+}'
+   Signup_ESignet_WebSocketConnection_RapidMessaging_Neg:
+      endPoint: /v1/signup/ws
+      uniqueIdentifier: TC_Signup_ESignet_WebSocketConnectionNegTC_14
+      description: Send several valid websocket process-frame messages back-to-back over one connection to test rapid messaging
+      role: resident
+      inputTemplate: signup/WebSocketConnectionNegTC/WebSocketConnectionFramesShapeNeg
+      outputTemplate: signup/WebSocketConnection/WebSocketConnectionResult
+      input: '{
+        "slotId": "$ID:ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_forRapidMessaging_Smoke_Sid_slotId$",
+        "idvSlotAllotted": "$ID:ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_forRapidMessaging_Smoke_Sid_idvSlotAllotted$",
+        "sendDestination": "/v1/signup/ws/process-frame",
+        "message1": {
+          "stepCode": "START",
+          "frames": [
+            { "frame": "frame1", "order": "0" }
+          ]
+        },
+        "message2": {
+          "stepCode": "liveness_check",
+          "frames": [
+            { "frame": "frame1", "order": "1" }
+          ]
+        },
+        "steps": [
+          {
+            "rawMessage": "{ \"stepCode\": \"START\", \"frames\": [ { \"frame\": \"frame1\", \"order\": \"0\" } ] }",
+            "expectedFeedbackCodes": []
+          },
+          {
+            "rawMessage": "{ \"stepCode\": \"START\", \"frames\": [ { \"frame\": \"frame2\", \"order\": \"1\" } ] }",
+            "expectedFeedbackCodes": []
+          },
+          {
+            "rawMessage": "{ \"stepCode\": \"START\", \"frames\": [ { \"frame\": \"frame3\", \"order\": \"2\" } ] }",
+            "expectedFeedbackCodes": []
+          },
+          {
+            "rawMessage": "{ \"stepCode\": \"START\", \"frames\": [ { \"frame\": \"frame4\", \"order\": \"3\" } ] }",
+            "expectedFeedbackCodes": []
+          },
+          {
+            "rawMessage": "{ \"stepCode\": \"START\", \"frames\": [ { \"frame\": \"frame5\", \"order\": \"4\" } ] }",
+            "expectedFeedbackCodes": []
+          }
+        ]
+}'
+      output: '{
+}'
+   Signup_ESignet_WebSocketConnection_ConcurrentSubscription_Neg:
+      endPoint: /v1/signup/ws
+      uniqueIdentifier: TC_Signup_ESignet_WebSocketConnectionNegTC_15
+      description: Open a second WebSocket connection to the same slotId while the first connection is still open
+      role: resident
+      inputTemplate: signup/WebSocketConnectionNegTC/WebSocketConnectionConcurrentSubscriptionNeg
+      outputTemplate: signup/WebSocketConnection/WebSocketConnectionResult
+      input: '{
+        "slotId": "$ID:ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_forConcurrentSubscription_Smoke_Sid_slotId$",
+        "idvSlotAllotted": "$ID:ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_forConcurrentSubscription_Smoke_Sid_idvSlotAllotted$",
+        "sendDestination": "/v1/signup/ws/process-frame",
+        "message1": {
+          "stepCode": "START",
+          "frames": [
+            { "frame": "frame1", "order": "0" }
+          ]
+        },
+        "message2": {
+          "stepCode": "liveness_check",
+          "frames": [
+            { "frame": "frame1", "order": "1" }
+          ]
+        }
+}'
+      output: '{
+}'
+   Signup_ESignet_WebSocketConnection_UnrecognizedSlotId_Neg:
+      endPoint: /v1/signup/ws
+      uniqueIdentifier: TC_Signup_ESignet_WebSocketConnectionNegTC_16
+      description: Establish a WebSocket connection with a valid slotId, then subscribe to an unrecognized slotId
+      role: resident
+      inputTemplate: signup/WebSocketConnectionNegTC/WebSocketConnectionUnrecognizedSlotIdNeg
+      outputTemplate: signup/WebSocketConnection/WebSocketConnectionResult
+      input: '{
+        "slotId": "$ID:ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_forUnrecognizedSlotId_Smoke_Sid_slotId$",
+        "idvSlotAllotted": "$ID:ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_forUnrecognizedSlotId_Smoke_Sid_idvSlotAllotted$",
+        "sendDestination": "/v1/signup/ws/process-frame",
+        "message1": {
+          "stepCode": "START",
+          "frames": [
+            { "frame": "frame1", "order": "0" }
+          ]
+        },
+        "message2": {
+          "stepCode": "liveness_check",
+          "frames": [
+            { "frame": "frame1", "order": "1" }
+          ]
+        }
+}'
+      output: '{
+}'

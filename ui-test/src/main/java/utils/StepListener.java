@@ -27,7 +27,7 @@ public class StepListener implements ConcurrentEventListener {
 
         switch (event.getResult().getStatus()) {
             case PASSED -> ExtentReportManager.logStep("ℹ️ Step completed successfully: " + stepText);
-            case FAILED -> captureFailure(stepText);
+            case FAILED -> captureFailure(stepText, event.getResult().getError());
             case SKIPPED -> {
                 // Do nothing for skipped steps
             }
@@ -35,8 +35,14 @@ public class StepListener implements ConcurrentEventListener {
         }
     }
 
-    private void captureFailure(String stepText) {
+    private void captureFailure(String stepText, Throwable error) {
         ExtentReportManager.getTest().fail("❌ Step Failed: " + stepText);
+        // Carries the assertion details into the report, which would otherwise show only which step failed.
+        if (error != null) {
+            String reason = error.getMessage();
+            ExtentReportManager.getTest().fail("Reason: " + error.getClass().getSimpleName()
+                    + (reason == null || reason.isBlank() ? "" : " - " + reason.replace("\n", "<br/>")));
+        }
         WebDriver driver = BaseTest.getDriver();
         if (driver != null) {
             try {

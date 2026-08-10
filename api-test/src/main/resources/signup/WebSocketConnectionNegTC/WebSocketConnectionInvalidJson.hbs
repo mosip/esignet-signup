@@ -2,7 +2,6 @@
   "slotId": "{{slotId}}",
   "idvSlotAllotted": "{{idvSlotAllotted}}",
   "sendDestination": "{{sendDestination}}",
-  {{#if contentType}}"contentType": "{{contentType}}",{{/if}}
   "message1": {
     "slotId": "{{slotId}}",
     "stepCode": "START",
@@ -12,6 +11,7 @@
       {{/each}}
     ]
   },
+  "rawMessage1": {{json rawMessage1}},
   "message2": {
     "slotId": "{{slotId}}",
     "stepCode": "liveness_check",

@@ -2,7 +2,6 @@
   "slotId": "{{slotId}}",
   "idvSlotAllotted": "{{idvSlotAllotted}}",
   "sendDestination": "{{sendDestination}}",
-  {{#if contentType}}"contentType": "{{contentType}}",{{/if}}
   "message1": {
     "slotId": "{{slotId}}",
     "stepCode": "START",
@@ -20,5 +19,13 @@
       { "frame": "{{this.frame}}", "order": "{{this.order}}" }{{#unless @last}},{{/unless}}
       {{/each}}
     ]
-  }
+  },
+  "steps": [
+    {{#each steps}}
+    {
+      "rawMessage": {{json this.rawMessage}},
+      "expectedFeedbackCodes": {{json this.expectedFeedbackCodes}}
+    }{{#unless @last}},{{/unless}}
+    {{/each}}
+  ]
 }

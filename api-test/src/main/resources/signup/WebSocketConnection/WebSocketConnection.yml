@@ -29,7 +29,7 @@ WebSocketConnection:
    Signup_ESignet_WebSocketConnection_uin_Incomplete:
       endPoint: /v1/signup/ws
       uniqueIdentifier: TC_Signup_ESignet_WebSocketConnection_02
-      description: Creating websocket connection and sending message to it
+      description: WebSocket client sends one frame then disconnects abruptly without a close handshake - expected, no exception on the client and the suite continues unaffected
       role: resident
       checkErrorsOnlyInResponse: true
       inputTemplate: signup/WebSocketConnection/WebSocketConnection
@@ -79,4 +79,31 @@ WebSocketConnection:
 }'
       output: '{
         "expectedFeedbackCodes": []
+}'
+   Signup_ESignet_WebSocketConnection_uin_AbnormalClose:
+      endPoint: /v1/signup/ws
+      uniqueIdentifier: TC_Signup_ESignet_WebSocketConnection_04
+      description: WebSocket client sends one frame then closes with a non-NORMAL close code - expected, the server's disconnect handler marks the verification transaction as FAILED
+      role: resident
+      checkErrorsOnlyInResponse: true
+      inputTemplate: signup/WebSocketConnectionNegTC/WebSocketConnectionAbnormalClose
+      outputTemplate: signup/WebSocketConnection/WebSocketConnectionResult
+      input: '{
+        "slotId": "$ID:ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_forFailedStatus_Smoke_Sid_slotId$",
+        "idvSlotAllotted": "$ID:ESignet_GetSlot_STransId_AuthToken_Xsrf_uin_all_Valid_forFailedStatus_Smoke_Sid_idvSlotAllotted$",
+        "sendDestination": "/v1/signup/ws/process-frame",
+        "message1": {
+          "stepCode": "START",
+          "frames": [
+            { "frame": "frame1", "order": "0" }
+          ]
+        },
+        "message2": {
+          "stepCode": "liveness_check",
+          "frames": [
+            { "frame": "frame1", "order": "1" }
+          ]
+        }
+}'
+      output: '{
 }'
