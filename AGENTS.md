@@ -51,7 +51,7 @@ See the per-module guides linked above for exact commands.
 - Backend local overrides: `signup-service/src/main/resources/application-local.properties` (has placeholder values such as `mosip.signup.client.secret=secret-from-env` — replace with real values locally, never commit real secrets there).
 - Backend default profile: `signup-service/src/main/resources/application-default.properties`.
 - Frontend local overrides: copy `signup-ui/.env.example` into a self-created `signup-ui/.env.local` (per `signup-ui/README.md`) — do not commit `.env.local`.
-- Kubernetes secrets (e.g. `signup-keystore`, `signup-captcha`, DB/Redis credentials) are created with `kubectl create secret` / `helm --set` from the `deploy/*.sh` scripts, not by hand-editing Helm `values.yaml` — see [deploy/AGENTS.md](deploy/AGENTS.md).
+- Kubernetes secrets (e.g. `signup-keystore`, `signup-captcha`, DB/Redis credentials) are created with `kubectl create secret` from the `deploy/*.sh` scripts, not by hand-editing Helm `values.yaml`. Reserve `helm --set` for non-sensitive chart values only — `--set` values can leak via shell history, process arguments, CI logs, and Helm release metadata — see [deploy/AGENTS.md](deploy/AGENTS.md).
 
 ## Project Structure Notes
 
@@ -87,7 +87,7 @@ See the per-module guides linked above for exact commands.
 2. Read the linked module guide before editing inside `signup-service`, `signup-ui`, `signup-with-plugins`, or `deploy`.
 3. Keep secrets out of commits — use the `.env.local` / `application-local.properties` local-override pattern already established, not real values in tracked files.
 4. Update `docs/esignet-signup-openapi.yaml` when changing a REST API's request/response contract.
-5. Preserve the `-D` system property ordering before `-jar` in any Maven/Java command you write (e.g. `mvn ... -Dfoo=bar` before `-jar target/x.jar`, never after).
+5. Preserve `-D` system property ordering: in a Maven command, `-D` flags go before the goal (e.g. `mvn -Dfoo=bar test`, never after); in a plain `java` command, `-D` flags go before `-jar` (e.g. `java -Dfoo=bar -jar target/x.jar`).
 
 ### Do not
 

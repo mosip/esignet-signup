@@ -25,7 +25,7 @@ Shell scripts that install, restart, and delete the signup module (`signup-servi
 
 Secrets are **not** hand-edited into `values.yaml`. The scripts either:
 
-1. Copy an existing Kubernetes `Secret`/`ConfigMap` from another namespace with `kubectl create secret/configmap ... --from-literal=... --dry-run=client -o yaml | kubectl apply -f -` (see `prereq.sh`'s captcha-secret handling), or
+1. Copy an existing Kubernetes `Secret`/`ConfigMap` from another namespace via `copy_cm_func.sh`, which fetches the source resource as YAML, rewrites its namespace/name, and pipes it to `kubectl create -f -` (see `prereq.sh`'s use of `copy_cm_func.sh` for `redis`/`esignet-global`). To create a brand-new secret from literal values (not a copy), use `kubectl create secret ... --from-literal=... --dry-run=client -o yaml | kubectl apply -f -` (see `prereq.sh`'s captcha/keystore secret creation), or
 2. Pass values at install time with Helm's `--set` (see `deploy/signup-service/install.sh`'s `--set image.repository=... --set pluginNameEnv=... --set pluginUrlEnv=...`).
 
 Follow this same pattern for any new secret-bearing configuration rather than adding it as a plaintext default in a chart's `values.yaml`.

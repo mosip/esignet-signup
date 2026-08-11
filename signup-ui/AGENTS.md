@@ -66,7 +66,9 @@ Copy `.env.example` to a self-created `.env.local` and adjust as needed. The onl
 |---|---|
 | `REACT_APP_API_BASE_URL` | `http://localhost:8088/v1/signup` |
 
-During development, `README.md` recommends running Chrome with `--disable-web-security` to avoid CORS errors against a locally-running backend, since `signup-service`'s default port (`8089`) differs from the API base URL's port shown above — confirm the actual backend port in your environment before relying on the CORS workaround.
+`signup-service` actually listens on port `8089` by default (`bootstrap.properties`'s `server.port`), not `8088` — the `8088` default shown above (from `.env.example`/`README.md`) will not reach a locally-running backend as-is; point `REACT_APP_API_BASE_URL` at `8089` (or your backend's actual port) in your own `.env.local`.
+
+Do not use Chrome's `--disable-web-security` to work around the resulting CORS error, even though `README.md` suggests it — it disables same-origin protection for the whole browser profile, exposing any site you visit (including OTP/credential/identity-verification data from this app) to cross-origin access. Use a local dev proxy or configure backend CORS instead. If you must use the flag as a one-off, do it only in a disposable browser profile used for nothing else.
 
 ## Agent rules
 
