@@ -87,7 +87,15 @@ See the per-module guides linked above for exact commands.
 2. Read the linked module guide before editing inside `signup-service`, `signup-ui`, `signup-with-plugins`, or `deploy`.
 3. Keep secrets out of commits — use the `.env.local` / `application-local.properties` local-override pattern already established, not real values in tracked files.
 4. Update `docs/esignet-signup-openapi.yaml` when changing a REST API's request/response contract.
-5. Preserve `-D` system property ordering: in a Maven command, `-D` flags go before the goal (e.g. `mvn -Dfoo=bar test`, never after); in a plain `java` command, `-D` flags go before `-jar` (e.g. `java -Dfoo=bar -jar target/x.jar`).
+5. Preserve `-D` system property ordering, matching each tool's actual
+   requirement: for a plain `java` command, `-D` flags **must** come
+   before `-jar` (e.g. `java -Dfoo=bar -jar target/x.jar`) — the JVM
+   stops parsing options once it hits `-jar`. For a Maven command,
+   Maven's CLI parser accepts `-D` in either position relative to the
+   goal; this repo's own build commands consistently write it *after*
+   the goal (e.g. `mvn clean install -Dgpg.skip=true`, as used
+   throughout this file and the module guides) — match that existing
+   style rather than moving `-D` before the goal.
 
 ### Do not
 
