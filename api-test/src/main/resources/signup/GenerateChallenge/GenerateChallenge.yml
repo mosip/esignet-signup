@@ -33,3 +33,39 @@ GenerateChallenge:
       output: '{
   "status":"SUCCESS"
 }'
+
+   Signup_ESignet_GenerateChallenge_STransId_ConcurrentSession1_Pos:
+      endPoint: /v1/signup/registration/generate-challenge
+      uniqueIdentifier: TC_ESignet_GenerateChallenge_03
+      description: First of a pair of self-contained test cases verifying generate-challenge allows two independently-active transactions for the same identifier
+      role: resident
+      restMethod: post
+      inputTemplate: signup/GenerateChallenge/GenerateChallenge
+      outputTemplate: signup/GenerateChallenge/GenerateChallengeResult
+      input: '{
+   "identifier": "$PHONENUMBERFROMREGEXFORSIGNUP$",
+   "captchaToken": "",
+   "purpose": "REGISTRATION",
+   "requestTime": "$TIMESTAMP$"
+}'
+      output: '{
+  "status":"SUCCESS"
+}'
+
+   Signup_ESignet_GenerateChallenge_STransId_ConcurrentSession2_Pos:
+      endPoint: /v1/signup/registration/generate-challenge
+      uniqueIdentifier: TC_ESignet_GenerateChallenge_04
+      description: Second of the pair - reuses the identifier from Signup_ESignet_GenerateChallenge_STransId_ConcurrentSession1_Pos to generate a second, independent transaction for the same identifier - expected, this also succeeds since the identifier already having an active transaction does not block a new one
+      role: resident
+      restMethod: post
+      inputTemplate: signup/GenerateChallenge/GenerateChallenge
+      outputTemplate: signup/GenerateChallenge/GenerateChallengeResult
+      input: '{
+   "identifier": "$ID:ESignet_GenerateChallenge_STransId_ConcurrentSession1_Pos_PHONE$",
+   "captchaToken": "",
+   "purpose": "REGISTRATION",
+   "requestTime": "$TIMESTAMP$"
+}'
+      output: '{
+  "status":"SUCCESS"
+}'

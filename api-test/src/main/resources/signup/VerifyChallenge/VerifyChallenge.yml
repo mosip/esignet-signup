@@ -17,3 +17,22 @@ VerifyChallenge:
       output: '{
   "status":"SUCCESS"
 }'
+   Signup_ESignet_VerifyChallenge_ConcurrentSession_SameIdentifier_Pos:
+      endPoint: /v1/signup/registration/verify-challenge
+      uniqueIdentifier: TC_ESignet_VerifyChallenge_02
+      description: Verify the challenge for a second, independently-generated transaction on an identifier that already has another active transaction from a different session - expected, verification succeeds on its own merits without being affected by the other active transaction
+      role: resident
+      restMethod: post
+      inputTemplate: signup/VerifyChallenge/VerifyChallenge
+      outputTemplate: signup/VerifyChallenge/VerifyChallengeResult
+      input: '{
+         "headerTransactionID": "$ID:ESignet_GenerateChallenge_STransId_ConcurrentSession2_Pos_TransactionID$",
+         "identifier": "$ID:ESignet_GenerateChallenge_STransId_ConcurrentSession1_Pos_PHONE$",
+         "challenge": "$ID:ESignet_GenerateChallenge_STransId_ConcurrentSession1_Pos_PHONE$@phone",
+         "format": "alpha-numeric",
+         "type": "OTP",
+         "requestTime": "$TIMESTAMP$"
+}'
+      output: '{
+  "status":"SUCCESS"
+}'

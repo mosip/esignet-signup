@@ -2099,11 +2099,45 @@ public class SignupUtil extends AdminTestUtil {
 	}
 
 	private static String generateFromRegex(String regex) {
-		try {
-			return genStringAsperRegex(regex); // Generex method
-		} catch (Exception e) {
+		if (regex == null || regex.isBlank())
 			return SignupConstants.TEST_AUTOMATION;
+
+		// Generex misreads unsupported "(?" constructs (e.g. lookaheads) as literal chars, which for some patterns (e.g. fullName) built a pathological automaton that overflowed the stack; stripping/rewriting them here avoids that, and the result is re-verified against the original regex below to stay correct.
+		String patternForGenerex = regex.replaceAll("\\(\\?<?[=!][^)]*\\)", "") // look-ahead, look-behind
+				.replaceAll("\\(\\?[idmsuxU]+\\)", "") // inline flags
+				.replace("(?:", "(") // non-capturing group
+				.replaceAll("\\(\\?<[a-zA-Z][a-zA-Z0-9]*>", "("); // named group
+
+		Pattern javaPattern = null;
+		try {
+			javaPattern = Pattern.compile(regex);
+		} catch (Exception e) {
+			logger.warn("Not a valid java regex, generated value will not be verified: " + regex);
 		}
+
+		// Every attempt is an independent random walk, hence the retry
+		for (int attempt = 1; attempt <= 10; attempt++) {
+			try {
+				String value = genStringAsperRegex(patternForGenerex); // Generex method
+
+				if (value.length() > 50)
+					logger.warn("Generated value of length " + value.length() + " is too long for regex: " + regex
+							+ ", attempt " + attempt);
+				else if (javaPattern != null && !javaPattern.matcher(value).matches())
+					logger.warn("Generated value does not match regex: " + regex + ", attempt " + attempt);
+				else
+					return value;
+
+			} catch (StackOverflowError soe) {
+				logger.warn("Generex ran out of stack for regex: " + regex + ", attempt " + attempt);
+			} catch (Exception e) {
+				logger.error("Value generation failed for regex: " + regex + " - " + e.getMessage());
+				break;
+			}
+		}
+
+		logger.error("Could not generate a value for regex: " + regex + ", using default value");
+		return SignupConstants.TEST_AUTOMATION;
 	}
 
 	private static boolean isBackendRequiredField(String id, JsonNode allowedValues) {
