@@ -2120,10 +2120,7 @@ public class SignupUtil extends AdminTestUtil {
 			try {
 				String value = genStringAsperRegex(patternForGenerex); // Generex method
 
-				if (value.length() > 50)
-					logger.warn("Generated value of length " + value.length() + " is too long for regex: " + regex
-							+ ", attempt " + attempt);
-				else if (javaPattern != null && !javaPattern.matcher(value).matches())
+				if (javaPattern != null && !javaPattern.matcher(value).matches())
 					logger.warn("Generated value does not match regex: " + regex + ", attempt " + attempt);
 				else
 					return value;
