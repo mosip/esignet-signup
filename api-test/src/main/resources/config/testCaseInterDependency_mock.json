@@ -137,6 +137,11 @@
         "TC_Signup_ESignet_OAuthDetailsRequestV3_ProfileUpdateNotRequired_01"
     ],
     "TC_ESignet_VerifyChallenge_01": ["TC_ESignet_GenerateChallenge_01"],
+    "TC_ESignet_GenerateChallenge_04": ["TC_ESignet_GenerateChallenge_03"],
+    "TC_ESignet_VerifyChallenge_02": [
+        "TC_ESignet_GenerateChallenge_04",
+        "TC_ESignet_GenerateChallenge_03"
+    ],
     "TC_Signup_ESignet_OAuthDetailsRequestV3_16": ["TC_ESignet_OIDCClientV2_01"],
     "TC_Signup_ESignet_OAuthDetailsRequestV3_Prerequisite_05": ["TC_ESignet_OIDCClientV2_01"],
     "TC_Signup_ESignet_OAuthDetailsRequestV3_14": ["TC_ESignet_OIDCClientV2_01"],
