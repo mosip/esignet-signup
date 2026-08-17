@@ -1,5 +1,6 @@
 package utils;
 
+import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -17,11 +18,13 @@ import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.testng.Assert;
 
 import javax.ws.rs.core.MediaType;
 
 import io.mosip.testrig.apirig.utils.AdminTestUtil;
 import io.mosip.testrig.apirig.utils.GlobalConstants;
+import io.mosip.testrig.apirig.utils.NotificationListener;
 import io.mosip.testrig.apirig.utils.RestClient;
 import io.restassured.response.Response;
 import constants.UiConstants;
@@ -275,6 +278,51 @@ public class EsignetUtil extends AdminTestUtil {
 			pwd.append(all.charAt(random.nextInt(all.length())));
 		}
 		return pwd.toString();
+	}
+
+	// ---- Mixed-language passwords (login password-language tests) --------------
+	// Accept/reject here is governed by the oidc-ui client policy, not the signup policy,
+	// so the feature asserts only that the field retains the multi-language input.
+
+	// SecureRandom over java.util.Random to satisfy static analysis, though these are throwaway inputs
+	private static final SecureRandom SECURE_RANDOM = new SecureRandom();
+
+	private static String randomCharsInRange(int start, int end, int count) {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < count; i++) {
+			sb.append((char) (start + SECURE_RANDOM.nextInt(end - start + 1)));
+		}
+		return sb.toString();
+	}
+
+	private static String padToMinLength(StringBuilder pwd, char filler) {
+		int min = getPasswordMinLength();
+		while (pwd.length() < min) {
+			pwd.append(filler);
+		}
+		return pwd.toString();
+	}
+
+	public static String generateEngKhmerPassword() {
+		StringBuilder pwd = new StringBuilder("Aa1@");
+		pwd.append(randomCharsInRange(0x1780, 0x17FF, 4));
+		pwd.append("bc");
+		return padToMinLength(pwd, 'x');
+	}
+
+	public static String generateKhmerNumericPassword() {
+		StringBuilder pwd = new StringBuilder();
+		pwd.append(randomCharsInRange(0x1780, 0x17FF, 4));
+		pwd.append("12345");
+		return padToMinLength(pwd, '7');
+	}
+
+	// Devanagari is an unsupported language for this deployment
+	public static String generateHindiEnglishPassword() {
+		StringBuilder pwd = new StringBuilder("Ab1@");
+		pwd.append(randomCharsInRange(0x0900, 0x097F, 4));
+		pwd.append("xy");
+		return padToMinLength(pwd, 'z');
 	}
 
 	private static JSONObject signupUISpecResponse;
@@ -675,7 +723,7 @@ public class EsignetUtil extends AdminTestUtil {
 			value.append(chars.charAt(random.nextInt(chars.length())));
 		}
 
-		if (regex.contains("(?!0)") && value.charAt(0) == '0') {
+		if (regex.contains("(?!0)") && value.length() > 0 && value.charAt(0) == '0') {
 			value.setCharAt(0, (char) ('1' + random.nextInt(9)));
 		}
 
@@ -765,7 +813,15 @@ public class EsignetUtil extends AdminTestUtil {
 				"mosip.signup.identifier.prefix");
 	}
 
-	public static String normalizeIdentifierForOtp(String number) {
+	// Normalise, wait and assert are kept together since every caller needs all three
+	public static String getVerifiedOtp(String identifier) {
+		String number = normalizeIdentifierForOtp(identifier);
+		String otp = waitForDeliveredOtp(number);
+		Assert.assertTrue(otp != null && !otp.trim().isEmpty(), "OTP was not delivered for: " + number);
+		return otp.trim();
+	}
+
+	private static String normalizeIdentifierForOtp(String number) {
 		boolean removeCode = Boolean.parseBoolean(getRemoveCountryCode());
 		String prefix = getIdentifierPrefix();
 		if (prefix == null) {
@@ -786,6 +842,12 @@ public class EsignetUtil extends AdminTestUtil {
 		}
 
 		return number;
+	}
+
+	// getOtp() already blocks for the full OTP-expiry window, so looping over it only multiplies the wait
+	private static String waitForDeliveredOtp(String mobile) {
+		String otp = NotificationListener.getOtp(mobile);
+		return otp == null ? "" : otp.trim();
 	}
 
 	public static String getMandatoryLanguage() {

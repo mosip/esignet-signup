@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>io.mosip.esignet</groupId>
-  <artifactId>uitest-esignet</artifactId>
-  <name>ui-test-esignet</name>
-  <version>1.6.1-SNAPSHOT</version>
+  <groupId>io.mosip.signup</groupId>
+  <artifactId>uitest-signup</artifactId>
+  <name>uitest-signup</name>
+  <version>1.4.1-SNAPSHOT</version>
   <description>UI test automation project for MOSIP eSignet</description>
-  <url>https://github.com/mosip/uitest-esignet</url>
+  <url>https://github.com/mosip/esignet-signup</url>
   <developers>
     <developer>
       <name>Mosip</name>
@@ -143,6 +143,17 @@
       </plugin>
     </plugins>
   </build>
+  <repositories>
+    <repository>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots />
+      <id>ossrh-central</id>
+      <name>MavenCentralRepository</name>
+      <url>https://central.sonatype.com/repository/maven-snapshots/</url>
+    </repository>
+  </repositories>
   <dependencies>
     <dependency>
       <groupId>org.projectlombok</groupId>
@@ -163,7 +174,7 @@
   <properties>
     <lombok.version>1.18.30</lombok.version>
     <maven.compiler.target>21</maven.compiler.target>
-    <selenium.version>4.14.1</selenium.version>
+    <selenium.version>4.45.0</selenium.version>
     <cucumber.version>7.21.1</cucumber.version>
     <maven.compiler.source>21</maven.compiler.source>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

@@ -11,12 +11,15 @@ import java.util.List;
 
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
+import org.openqa.selenium.ElementClickInterceptedException;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.OutputType;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
@@ -85,9 +88,14 @@ public class BasePage {
 		WaitUtil.waitForVisibility(driver, element);
 	}
 
+	public void waitForElementClickable(WebElement element) {
+		WaitUtil.waitForClickability(driver, element);
+	}
+
+	// Clickability, not just visibility: buttons here stay disabled until validation passes
 	public void clickOnElement(WebElement element, String stepDesc) {
 		try {
-			waitForElementVisible(element);
+			waitForElementClickable(element);
 
 			element.click();
 			logStep(stepDesc, element);
@@ -358,6 +366,55 @@ public class BasePage {
 		}
 	}
 	
+	// ---- Shared NavBar language dropdown --------------------------------------
+
+	private static final int TRANSIENT_RETRY_ATTEMPTS = 3;
+
+	private static final By LANGUAGE_TRIGGER = By.id("language-select-button");
+
+	// Retries only the symptoms of a half-rendered React control; the action must be safe to repeat
+	public void retryOnTransientFailure(String description, Runnable action) {
+		RuntimeException lastError = null;
+		for (int attempt = 1; attempt <= TRANSIENT_RETRY_ATTEMPTS; attempt++) {
+			try {
+				action.run();
+				return;
+			} catch (TimeoutException | StaleElementReferenceException | ElementClickInterceptedException e) {
+				lastError = e;
+				LOGGER.warn("Attempt {}/{} to {} failed with {}, retrying", attempt, TRANSIENT_RETRY_ATTEMPTS,
+						description, e.getClass().getSimpleName());
+			}
+		}
+		throw new TimeoutException(
+				"Failed to " + description + " after " + TRANSIENT_RETRY_ATTEMPTS + " attempts", lastError);
+	}
+
+	// Splits the configured timeout across the attempts, rounded up, so retrying does not multiply the wait
+	private static Duration perAttemptWait() {
+		int timeout = EsignetConfigManager.getTimeout();
+		return Duration
+				.ofSeconds(Math.max(1, (timeout + TRANSIENT_RETRY_ATTEMPTS - 1) / TRANSIENT_RETRY_ATTEMPTS));
+	}
+
+	// Opening and selecting is retried as a unit: the i18n re-render can stale a menu mid-animation
+	public void switchLanguage(String twoLetterLangKey) {
+		By option = By.id(twoLetterLangKey + "_language");
+		retryOnTransientFailure("switch language to '" + twoLetterLangKey + "'", () -> {
+			// The trigger toggles, so a retry must not close a menu already opened
+			if (!isElementDisplayed(option)) {
+				WaitUtil.waitForClickability(driver, LANGUAGE_TRIGGER, perAttemptWait()).click();
+			}
+			WaitUtil.waitForClickability(driver, option, perAttemptWait()).click();
+		});
+		logStep("Switched language to '" + twoLetterLangKey + "'", option);
+	}
+
+	// Locator variant of isElementDisplayed, for elements that may legitimately be absent
+	private boolean isElementDisplayed(By locator) {
+		List<WebElement> matches = driver.findElements(locator);
+		return !matches.isEmpty() && isElementDisplayed(matches.get(0));
+	}
+
 	public static void selectCurrentRunLanguage(WebDriver driver) {
 	String languagePassed = MultiLanguageUtil.getDisplayName(BaseTestUtil.getThreadLocalLanguage());
 
