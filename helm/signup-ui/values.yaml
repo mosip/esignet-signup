@@ -234,13 +234,12 @@ customReadinessProbe: {}
 updateStrategy:
   type: RollingUpdate
 
-## Additional environment variables to set
+## Additional environment variables to set, keyed by env var name.
 ## Example:
 ## extraEnvVars:
-##   - name: FOO
-##     value: "bar"
+##   FOO: "bar"
 ##
-extraEnvVars: []
+extraEnvVars: {}
 
 ## ConfigMap with extra environment variables
 ##
